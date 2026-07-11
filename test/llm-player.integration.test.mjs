@@ -44,14 +44,26 @@ test("deployed player wiring expands first and converts a weak rival next", asyn
     ], { phase: "spawn", ownState: { ...baseOwnState, tileShare: 0 }, visiblePlayers: [] }),
     request("expand", [
       { id: "boat:123:8", kind: "boat", label: "Boat to Terra Nullius 8%", risk: lowRisk },
-      { id: "expand:terra-nullius:10", kind: "attack", label: "Attack Terra Nullius 10%", risk: lowRisk },
+      {
+        id: "expand:terra-nullius:10",
+        kind: "attack",
+        label: "Expand into neutral land with 10% troops",
+        risk: lowRisk,
+        metadata: { expansion: true, troopPercent: 10 },
+      },
       { id: "hold", kind: "hold", label: "Hold", risk: lowRisk },
     ], { phase: "active", ownState: { ...baseOwnState, tileShare: 0.05 }, visiblePlayers: [] }),
     request("convert", [
       { id: "boat:456:8", kind: "boat", label: "Boat to Terra Nullius 8%", risk: lowRisk },
       { id: "attack:weak:10", kind: "attack", label: "Attack Weak 10%", risk: lowRisk },
       { id: "attack:weak:25", kind: "attack", label: "Attack Weak 25%", risk: lowRisk },
-      { id: "expand:terra-nullius:10", kind: "attack", label: "Attack Terra Nullius 10%", risk: lowRisk },
+      {
+        id: "expand:terra-nullius:10",
+        kind: "attack",
+        label: "Expand into neutral land with 10% troops",
+        risk: lowRisk,
+        metadata: { expansion: true, troopPercent: 10 },
+      },
       { id: "hold", kind: "hold", label: "Hold", risk: lowRisk },
     ], { phase: "active", ownState: { ...baseOwnState, tileShare: 0.2 }, visiblePlayers: [rival] }),
   ];

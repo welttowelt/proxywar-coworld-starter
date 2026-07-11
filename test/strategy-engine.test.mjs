@@ -42,7 +42,7 @@ function choose(actions, obs, plan = null, history = []) {
 test("opening neutral expansion overrides a boat-heavy plan", () => {
   const actions = [
     action("boat:123:8", "boat", "Boat to Terra Nullius 8%"),
-    action("expand:terra-nullius:10", "attack", "Attack Terra Nullius 10%"),
+    action("expand:terra-nullius:10", "attack", "Expand into neutral land with 10% troops"),
     action("hold", "hold", "Hold"),
   ];
   const selected = choose(actions, observation(), {
@@ -50,6 +50,18 @@ test("opening neutral expansion overrides a boat-heavy plan", () => {
     preferKinds: ["boat", "boat", "hold"],
   });
   assert.equal(selected.id, "expand:terra-nullius:10");
+});
+
+test("structured expansion metadata identifies neutral land and boats", () => {
+  const land = {
+    ...action("future-neutral-id:10", "attack", "Expand into neutral land"),
+    metadata: { expansion: true, troopPercent: 10 },
+  };
+  const boat = {
+    ...action("boat:123:8", "boat", "Send transport to neutral land"),
+    metadata: { expansion: true, troopPercent: 8 },
+  };
+  assert.equal(choose([boat, land], observation()).id, "future-neutral-id:10");
 });
 
 test("neutral expansion cadence escalates 10, 10, 20, 35 percent", () => {

@@ -154,6 +154,9 @@ socket.on("message", (data) => {
 
   const actions = message.request.legalActions ?? [];
   const obs = message.request.observation ?? {};
+  if (process.env.DEBUG_ACTIONS === "1" && history.length === 3) {
+    console.log(`debug legal actions: ${JSON.stringify(actions)}`);
+  }
   const state = buildState(obs, actions, history);
 
   // Keep the plan fresh WITHOUT blocking — the answer below never waits on Bedrock.

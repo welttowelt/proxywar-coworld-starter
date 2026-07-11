@@ -44,13 +44,16 @@ Preflight only: `bash launch.sh --doctor`. Driving it from a coding agent or CI:
 
 ## Make it your own
 
-Open **`llm-player.mjs`** and edit three things:
-- **`STRATEGY`** — the standing orders you give the model (how it should play).
-- **`buildState`** — what game facts you show the model.
-- **`choose`** — how the model's plan turns into one legal move each turn.
+The policy is split into two layers:
+- **`llm-player.mjs` / `STRATEGY`** - standing orders for the background planner.
+- **`strategy-engine.mjs`** - target scoring, attack escalation, build cadence, boat
+  limits, and the final legal move selection.
 
 That's your agent. Re-run `bash launch.sh my-agent` to push a new version.
 (`PLAN_EVERY` sets how often the plan refreshes; default every 3 decisions.)
+
+Run `npm test` before uploading. The suite covers the pure strategy engine and the
+actual WebSocket player process.
 
 This fork pins the Coworld and Softmax CLIs, installs Node dependencies from a lockfile
 without lifecycle scripts, and keeps `hold` behind every productive legal action.
@@ -68,11 +71,30 @@ uvx --from 'coworld==0.1.28' coworld submit my-agent:v1 \
 The league first runs a short self-play connection check, then promotes a working policy
 into competition automatically.
 
+## Replay data and statistics
+
+This fork can collect the latest 20 completed Competition rounds, normalize public
+replay telemetry, and run the current-meta queries with DuckDB:
+
+```bash
+npm run data:refresh
+```
+
+The versioned outputs live in [`data/`](data/README.md). They include compressed
+Parquet tables at round, episode, participant, and decision grain; official round
+standings; a leaderboard snapshot; FFA-only competitor statistics; provenance hashes;
+and automated quality checks. The 600+ MB replay cache stays local and is ignored by
+Git.
+
+Use the FFA tables for current policy decisions. Rounds 163-180 in the initial snapshot
+are head-to-head, while rounds 181 onward use four-player FFA.
+
 Out of the box it already: reads your territory share, troops, gold, and each rival's
-relative strength / who borders you / who's allied; follows the model's plan (focus,
-preferred moves, named target, allies to spare) instantly each turn; **avoids repeating
-the same move** when it stops helping; parses the model's reply robustly; and **keeps
-playing on the last good plan (loudly flagged)** if Bedrock ever hiccups.
+relative strength / who borders you / who's allied; uses the model's focus and named
+target as bounded hints; applies replay-derived target continuity and action cadence;
+**avoids repeating the same move** when it stops helping; parses the model's reply
+robustly; and **keeps playing on the last good plan (loudly flagged)** if Bedrock ever
+hiccups.
 
 ## Prefer a non-LLM agent?
 

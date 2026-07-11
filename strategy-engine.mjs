@@ -35,16 +35,25 @@ export function actionText(action) {
 }
 
 export function actionPercent(action) {
+  const metadataPercent = Number(action?.metadata?.troopPercent);
+  if (Number.isFinite(metadataPercent)) return metadataPercent;
   const match = String(action?.id ?? "").match(/:(\d+(?:\.\d+)?)$/);
   return match ? Number(match[1]) : null;
 }
 
 export function isNeutralExpansion(action) {
-  return action?.kind === "attack" && actionText(action).includes("terra nullius");
+  const id = String(action?.id ?? "").toLowerCase();
+  return action?.kind === "attack" && (
+    action?.metadata?.expansion === true ||
+    id.startsWith("expand:terra-nullius:") ||
+    actionText(action).includes("terra nullius")
+  );
 }
 
 function isNeutralBoat(action) {
-  return action?.kind === "boat" && actionText(action).includes("terra nullius");
+  return action?.kind === "boat" && (
+    action?.metadata?.expansion === true || actionText(action).includes("terra nullius")
+  );
 }
 
 export function avoidActionIDs(history) {
@@ -113,10 +122,18 @@ export function buildState(observation, actions, history = []) {
 
 export function rivalForAction(action, state) {
   const text = actionText(action);
+  const metadataID = clean(
+    action?.metadata?.targetID ?? action?.metadata?.recipientID ?? "",
+  ).toLowerCase();
+  const metadataName = clean(
+    action?.metadata?.targetName ?? action?.metadata?.recipientName ?? "",
+  ).toLowerCase();
   return state.rivals.find((rival) => {
     const nameMatches = rival.name && text.includes(rival.name.toLowerCase());
     const idMatches = rival.id && text.includes(rival.id.toLowerCase());
-    return nameMatches || idMatches;
+    const metadataNameMatches = rival.name && metadataName === rival.name.toLowerCase();
+    const metadataIDMatches = rival.id && metadataID === rival.id.toLowerCase();
+    return metadataNameMatches || metadataIDMatches || nameMatches || idMatches;
   });
 }
 
