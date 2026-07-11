@@ -133,18 +133,30 @@ in Round 185, so that sweep was not explained by seat order. Its Round 186 Europ
 spread instead points to connectivity and frontier access: one seat dominated,
 one plateaued alive, and two were eliminated.
 
+## v6 promotion
+
+Policy `oli-codex-proxywar:v6` (`cfd3c268-6d23-4aef-b9de-8cae82afd381`)
+became the active champion on 2026-07-11 after two successful hosted crash-check
+episodes. Auto-promotion was disabled for the first qualifier and enabled only
+after the local replay audit.
+
+The local four-seat Europe run ended at turn 19,600 with a 466,171-tile winner.
+Every seat used neutral boats instead of repeating land attacks indefinitely;
+the four seats reached peak territory of 148,417, 450,773, 70,120, and 109,609
+tiles with zero rejected decisions. Six holds in that run mapped to exposed
+`boat_retreat` actions or stale `Defense Post` IDs. v6 now handles the retreat
+and emergency-attack paths and excludes `Defense Post`; all 22 strategy tests pass.
+
+Round 189 is the first field test of v6 and should return to Europe in the
+three-map rotation. It must improve on v5's Round 186 second place and 0.25 score
+without sacrificing the current two-round first-place streak.
+
 ## RCI decision
 
-1. Keep v5 champion while the plateau and survival fixes complete local validation.
-2. Treat Round 185 as the baseline gate: four of four episode wins, at least
+1. Run v6 as champion for the Round 189 Europe field test.
+2. Keep Round 185 v5 as the baseline gate: four of four episode wins, at least
    200,000 mean final tiles, zero holds, and zero rejected decisions.
-3. Require every local Europe seat to escape a stagnant neutral-land frontier,
-   use legal neutral boats, and avoid holds or rejected actions before upload.
-4. When no land, build, or neutral-boat action remains, require an isolated weak
-   seat to invade the safest non-allied rival instead of holding to elimination.
-5. Require a candidate to beat or match v5 across all four local seats before
-   promotion, then use a non-promoting qualifier or hosted A/B run when available.
-6. Promote one strategic mechanism at a time. Never replace a winning champion
-   from aggregate field correlation alone.
-7. Refresh after every completed round and reset the consecutive first-place
+3. Require v6 to beat v5's Europe score, avoid stagnant neutral-land loops, and
+   record zero strategy-selected holds or rejected decisions.
+4. Refresh after every completed round and reset the consecutive first-place
    counter after any official rank below 1.
