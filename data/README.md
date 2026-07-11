@@ -25,6 +25,8 @@ DuckDB 1.5+.
 - `cache/replays/`: downloaded public replay blobs; ignored by Git.
 - `staging/`: normalized NDJSON; ignored by Git.
 - `processed/rounds.parquet`: one row per completed competition round.
+- `processed/round_standings.parquet`: one row per policy and official round result.
+- `processed/leaderboard.parquet`: current division leaderboard snapshot.
 - `processed/episodes.parquet`: one row per hosted match.
 - `processed/participants.parquet`: one row per player seat and match.
 - `processed/decisions.parquet`: one row per accepted or rejected agent decision.
@@ -40,6 +42,8 @@ model-generated text and are unnecessary for the current statistics.
 | Table | Grain | Key |
 | --- | --- | --- |
 | rounds | round | `round_id` |
+| round standings | policy result in a round | `round_id`, `policy_version_id` |
+| leaderboard | leaderboard rank at collection time | `rank` |
 | episodes | match | `episode_id` |
 | participants | player seat in a match | `episode_id`, `participant_position` |
 | decisions | global decision sequence in a match | `episode_id`, `sequence` |

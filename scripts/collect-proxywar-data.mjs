@@ -49,6 +49,7 @@ function normalizeTimestamp(value) {
 }
 
 function numberOrNull(value) {
+  if (value === null || value === undefined || value === "") return null;
   const number = Number(value);
   return Number.isFinite(number) ? number : null;
 }
@@ -68,7 +69,7 @@ async function replayBytes(url, destination) {
     throw new Error(`refusing replay URL outside the allowlist: ${url}`);
   }
   try {
-    return await readFile(destination);
+    return { bytes: await readFile(destination), cached: true };
   } catch (error) {
     if (error.code !== "ENOENT") throw error;
   }
@@ -82,7 +83,7 @@ async function replayBytes(url, destination) {
   const buffer = Buffer.from(await response.arrayBuffer());
   if (buffer.length > 64 * 1024 * 1024) throw new Error(`replay exceeds 64 MiB limit: ${url}`);
   await writeFile(destination, buffer);
-  return buffer;
+  return { bytes: buffer, cached: false };
 }
 
 function parseInlineJson(replay, name) {
@@ -203,6 +204,49 @@ const roundRows = selectedRounds.map((round) => ({
   collected_at: collectedAt,
 }));
 
+const roundStandingRows = [];
+for (const round of selectedRounds) {
+  const detail = coworldJson(["results", round.id]);
+  for (const result of detail.results || []) {
+    roundStandingRows.push({
+      round_id: round.id,
+      round_number: round.round_number,
+      rank: numberOrNull(result.rank),
+      score: numberOrNull(result.score),
+      player_id: result.player?.id ?? result.policy_version?.player_id ?? null,
+      player_name: result.player?.name ?? null,
+      policy_id: result.policy_version?.policy?.id ?? null,
+      policy_name: result.policy_version?.policy?.name ?? null,
+      policy_version: numberOrNull(result.policy_version?.version),
+      policy_version_id: result.policy_version?.id ?? null,
+      policy_label: result.policy_version?.label ?? null,
+      completed_episode_count: numberOrNull(result.result_metadata?.completed_episode_count),
+      ranked_score_count: numberOrNull(result.result_metadata?.ranked_score_count),
+      seed_order: numberOrNull(result.result_metadata?.seed_order),
+      created_at: normalizeTimestamp(result.created_at),
+      collected_at: collectedAt,
+    });
+  }
+}
+
+const divisionID = selectedRounds.at(-1).division.id;
+const leaderboardResponse = coworldJson([
+  "results", divisionID, "--include-recent-rounds", "10",
+]);
+const leaderboardRows = leaderboardResponse.map((result) => ({
+  division_id: divisionID,
+  rank: numberOrNull(result.rank),
+  player_id: result.player_id ?? null,
+  player_name: result.player_name ?? null,
+  score: numberOrNull(result.score),
+  score_label: result.score_label ?? null,
+  rounds_played: numberOrNull(result.rounds_played),
+  episode_wins: numberOrNull(result.episode_wins),
+  episodes_played: numberOrNull(result.episodes_played),
+  win_rate: numberOrNull(result.win_rate),
+  collected_at: collectedAt,
+}));
+
 const episodes = [];
 for (const round of selectedRounds) {
   const rows = coworldJson([
@@ -218,7 +262,7 @@ const decisionRows = [];
 const replayManifest = [];
 for (const episode of episodes) {
   const destination = path.join(cacheDir, `${episode.episode_id}.replay`);
-  const bytes = await replayBytes(episode.replay_url, destination);
+  const { bytes, cached } = await replayBytes(episode.replay_url, destination);
   const replayHash = sha256(bytes);
   const replay = JSON.parse(bytes.toString("utf8"));
   const gameRecord = parseInlineJson(replay, "game-record.json");
@@ -270,21 +314,25 @@ for (const episode of episodes) {
     sha256: replayHash,
     bytes: bytes.length,
   });
-  process.stdout.write(`  ${episode.episode_id}: ${decisions.length} decisions\n`);
+  if (!cached) process.stdout.write(`  ${episode.episode_id}: ${decisions.length} decisions\n`);
 }
 
 await writeFile(path.join(stagingDir, "rounds.ndjson"), ndjson(roundRows));
+await writeFile(path.join(stagingDir, "round_standings.ndjson"), ndjson(roundStandingRows));
+await writeFile(path.join(stagingDir, "leaderboard.ndjson"), ndjson(leaderboardRows));
 await writeFile(path.join(stagingDir, "episodes.ndjson"), ndjson(episodeRows));
 await writeFile(path.join(stagingDir, "participants.ndjson"), ndjson(participantRows));
 await writeFile(path.join(stagingDir, "decisions.ndjson"), ndjson(decisionRows));
 await writeFile(path.join(processedDir, "manifest.json"), `${JSON.stringify({
-  schema_version: 1,
+  schema_version: 2,
   league_id: leagueID,
   collected_at: collectedAt,
   requested_round_count: roundLimit,
   first_round_number: selectedRounds[0].round_number,
   last_round_number: selectedRounds.at(-1).round_number,
   round_count: roundRows.length,
+  round_standing_count: roundStandingRows.length,
+  leaderboard_row_count: leaderboardRows.length,
   episode_count: episodeRows.length,
   participant_count: participantRows.length,
   decision_count: decisionRows.length,

@@ -1,6 +1,12 @@
 CREATE OR REPLACE TEMP VIEW rounds AS
 SELECT * FROM read_ndjson_auto('data/staging/rounds.ndjson');
 
+CREATE OR REPLACE TEMP VIEW round_standings AS
+SELECT * FROM read_ndjson_auto('data/staging/round_standings.ndjson');
+
+CREATE OR REPLACE TEMP VIEW leaderboard AS
+SELECT * FROM read_ndjson_auto('data/staging/leaderboard.ndjson');
+
 CREATE OR REPLACE TEMP VIEW episodes AS
 SELECT * FROM read_ndjson_auto('data/staging/episodes.ndjson');
 
@@ -12,6 +18,12 @@ SELECT * FROM read_ndjson_auto('data/staging/decisions.ndjson');
 
 COPY (SELECT * FROM rounds ORDER BY round_number)
 TO 'data/processed/rounds.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);
+
+COPY (SELECT * FROM round_standings ORDER BY round_number, rank)
+TO 'data/processed/round_standings.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);
+
+COPY (SELECT * FROM leaderboard ORDER BY rank)
+TO 'data/processed/leaderboard.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);
 
 COPY (SELECT * FROM episodes ORDER BY completed_at, episode_id)
 TO 'data/processed/episodes.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);
@@ -60,6 +72,35 @@ FROM participants p
 JOIN rounds r USING (round_id)
 JOIN episodes e USING (episode_id, round_id)
 LEFT JOIN decision_rollup d USING (episode_id, participant_position);
+
+COPY (
+  SELECT
+    round_number,
+    rank,
+    score,
+    player_name,
+    policy_name,
+    policy_version,
+    policy_version_id,
+    completed_episode_count,
+    seed_order
+  FROM round_standings
+  ORDER BY round_number, rank
+) TO 'data/analysis/round_standings.csv' (HEADER, DELIMITER ',');
+
+COPY (
+  SELECT
+    rank,
+    player_name,
+    score,
+    rounds_played,
+    episode_wins,
+    episodes_played,
+    win_rate,
+    collected_at
+  FROM leaderboard
+  ORDER BY rank
+) TO 'data/analysis/leaderboard_snapshot.csv' (HEADER, DELIMITER ',');
 
 COPY (
   SELECT
@@ -234,6 +275,15 @@ COPY (
   FROM rounds
   UNION ALL
   SELECT 'duplicate_episode_ids', count(*) - count(DISTINCT episode_id), count(*) FROM episodes
+  UNION ALL
+  SELECT 'duplicate_round_standing_grain',
+    count(*) - count(DISTINCT round_id || ':' || policy_version_id), count(*) FROM round_standings
+  UNION ALL
+  SELECT 'round_standing_count_mismatch',
+    abs((SELECT count(*) FROM round_standings) - (SELECT sum(entrant_count) FROM rounds)),
+    (SELECT count(*) FROM round_standings)
+  UNION ALL
+  SELECT 'duplicate_leaderboard_ranks', count(*) - count(DISTINCT rank), count(*) FROM leaderboard
   UNION ALL
   SELECT 'duplicate_participant_grain', count(*) - count(DISTINCT episode_id || ':' || participant_position), count(*) FROM participants
   UNION ALL
