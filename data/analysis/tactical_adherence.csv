@@ -5,12 +5,12 @@ Auri,4,true,frontier_conversion,213,170,79.81
 Auri,4,true,naval_control,326,47,14.42
 Auri,4,true,opening_tempo,23,15,65.22
 Auri,4,true,transport_banking,157,32,20.38
-James Boggs,1,true,diplomacy_pressure,118,18,15.25
-James Boggs,1,true,economy_cadence,14,13,92.86
-James Boggs,1,true,frontier_conversion,141,61,43.26
-James Boggs,1,true,naval_control,177,49,27.68
-James Boggs,1,true,opening_tempo,15,12,80.0
-James Boggs,1,true,transport_banking,87,21,24.14
+James Boggs,1,true,diplomacy_pressure,143,37,25.87
+James Boggs,1,true,economy_cadence,21,20,95.24
+James Boggs,1,true,frontier_conversion,178,74,41.57
+James Boggs,1,true,naval_control,294,103,35.03
+James Boggs,1,true,opening_tempo,26,18,69.23
+James Boggs,1,true,transport_banking,205,60,29.27
 odin free,2,true,diplomacy_pressure,65,1,1.54
 odin free,2,true,economy_cadence,69,6,8.7
 odin free,2,true,frontier_conversion,60,19,31.67
@@ -37,28 +37,34 @@ odin free,6,true,frontier_conversion,260,202,77.69
 odin free,6,true,naval_control,718,217,30.22
 odin free,6,true,opening_tempo,56,56,100.0
 odin free,6,true,transport_banking,400,216,54.0
-Auri,4,false,diplomacy_pressure,2654,89,3.35
-Auri,4,false,economy_cadence,555,241,43.42
+odin free,7,true,diplomacy_pressure,533,0,0.0
+odin free,7,true,economy_cadence,314,53,16.88
+odin free,7,true,frontier_conversion,52,37,71.15
+odin free,7,true,naval_control,550,196,35.64
+odin free,7,true,opening_tempo,30,30,100.0
+odin free,7,true,transport_banking,365,197,53.97
+Auri,4,false,diplomacy_pressure,3097,95,3.07
+Auri,4,false,economy_cadence,673,291,43.24
 Auri,4,false,finish_pressure,11,8,72.73
-Auri,4,false,frontier_conversion,418,306,73.21
-Auri,4,false,naval_control,3300,225,6.82
-Auri,4,false,opening_tempo,226,155,68.58
-Auri,4,false,strike_targeting,51,0,0.0
-Auri,4,false,transport_banking,2856,173,6.06
-James Boggs,1,false,diplomacy_pressure,628,169,26.91
-James Boggs,1,false,economy_cadence,486,108,22.22
-James Boggs,1,false,finish_pressure,12,11,91.67
-James Boggs,1,false,frontier_conversion,181,83,45.86
-James Boggs,1,false,naval_control,1688,487,28.85
-James Boggs,1,false,opening_tempo,543,187,34.44
-James Boggs,1,false,transport_banking,1444,384,26.59
-Richard Higgins,1,false,diplomacy_pressure,2311,15,0.65
-Richard Higgins,1,false,economy_cadence,2047,113,5.52
+Auri,4,false,frontier_conversion,432,318,73.61
+Auri,4,false,naval_control,3705,247,6.67
+Auri,4,false,opening_tempo,286,203,70.98
+Auri,4,false,strike_targeting,68,1,1.47
+Auri,4,false,transport_banking,3201,181,5.65
+James Boggs,1,false,diplomacy_pressure,689,198,28.74
+James Boggs,1,false,economy_cadence,500,120,24.0
+James Boggs,1,false,finish_pressure,19,18,94.74
+James Boggs,1,false,frontier_conversion,208,95,45.67
+James Boggs,1,false,naval_control,1853,552,29.79
+James Boggs,1,false,opening_tempo,601,208,34.61
+James Boggs,1,false,transport_banking,1548,431,27.84
+Richard Higgins,1,false,diplomacy_pressure,2567,17,0.66
+Richard Higgins,1,false,economy_cadence,2289,138,6.03
 Richard Higgins,1,false,finish_pressure,40,39,97.5
-Richard Higgins,1,false,frontier_conversion,65,65,100.0
-Richard Higgins,1,false,naval_control,2185,130,5.95
-Richard Higgins,1,false,opening_tempo,472,442,93.64
-Richard Higgins,1,false,transport_banking,1443,117,8.11
+Richard Higgins,1,false,frontier_conversion,66,66,100.0
+Richard Higgins,1,false,naval_control,2470,145,5.87
+Richard Higgins,1,false,opening_tempo,567,525,92.59
+Richard Higgins,1,false,transport_banking,1624,131,8.07
 odin free,2,false,diplomacy_pressure,154,4,2.6
 odin free,2,false,economy_cadence,113,5,4.42
 odin free,2,false,frontier_conversion,16,2,12.5
@@ -86,3 +92,9 @@ odin free,6,false,frontier_conversion,26,15,57.69
 odin free,6,false,naval_control,130,38,29.23
 odin free,6,false,opening_tempo,21,21,100.0
 odin free,6,false,transport_banking,283,45,15.9
+odin free,7,false,diplomacy_pressure,142,0,0.0
+odin free,7,false,economy_cadence,48,12,25.0
+odin free,7,false,frontier_conversion,29,21,72.41
+odin free,7,false,naval_control,105,29,27.62
+odin free,7,false,opening_tempo,13,13,100.0
+odin free,7,false,transport_banking,90,52,57.78
