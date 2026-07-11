@@ -1,27 +1,27 @@
 # Proxy War meta report
 
-Snapshot collected 2026-07-11 after Competition Round 187. The source window
-covers rounds 168-187, 75 episodes, 196 participant seats, and 28,882 agent
+Snapshot collected 2026-07-11 after Competition Round 188. The source window
+covers rounds 169-188, 75 episodes, 204 participant seats, and 28,153 agent
 decisions. All 12 ingestion quality checks pass with zero failures.
 
-Round 188 is running with v5 in the roster. Round 187 restarted the verified
-consecutive first-place streak at 1 of the 10-round target.
+Round 188 extended the verified consecutive first-place streak to 2 of the
+10-round target.
 
 ## Current four-player field
 
-Rounds 181-187 use the current four-player FFA format. The 23 available episodes
+Rounds 181-188 use the current four-player FFA format. The 27 available episodes
 produce this table:
 
 | Player | Matches | Wins | Win rate | Mean final tiles | Rival attacks | Holds |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| odin free | 23 | 8 | 34.78% | 90,757.7 | 285 | 77 |
-| Auri | 23 | 4 | 17.39% | 70,521.7 | 389 | 128 |
-| James Boggs | 23 | 4 | 17.39% | 32,438.8 | 154 | 19 |
-| Richard Higgins | 23 | 0 | 0.00% | 1,932.3 | 65 | 1 |
+| odin free | 27 | 11 | 40.74% | 101,836.1 | 399 | 80 |
+| Auri | 27 | 5 | 18.52% | 69,594.0 | 452 | 129 |
+| James Boggs | 27 | 4 | 14.81% | 29,263.8 | 180 | 19 |
+| Richard Higgins | 27 | 0 | 0.00% | 3,255.8 | 98 | 3 |
 
 The aggregate holds column includes the broken v4 round. v5 recorded zero holds
-in Rounds 185 and 186, then nine holds in one collapsing Round 187 seat. The
-dataset still has zero rejected decisions.
+in Rounds 185 and 186, then nine holds in one collapsing Round 187 seat and
+three in the lone Round 188 loss. The dataset still has zero rejected decisions.
 
 ## Policy progression
 
@@ -34,6 +34,7 @@ dataset still has zero rejected decisions.
 | 185 | v5 | 1 | 4/4 | 218,109.5 | 0 |
 | 186 | v5 | 2 | 0/4* | 61,390.8 | 0 |
 | 187 | v5 | 1 | 1/4* | 38,463.8 | 9 |
+| 188 | v5 | 1 | 3/4 | 165,536.8 | 3 |
 
 v4 misclassified the new structured neutral-land action and held instead of
 expanding. v5 fixed the classifier and recovered immediately from every seat.
@@ -57,21 +58,27 @@ from one seat after its land collapsed and only rival boat invasions remained.
 The selector rejected those boats below its normal invasion threshold, even
 though holding guaranteed elimination.
 
+Round 188 used Asia. v5 won three seats decisively with 217,413, 212,814, and
+231,921 final tiles, while Auri won the fourth. The losing seat peaked at 61,881
+tiles, then held three times despite bordered rivals and a legal Defense Post.
+Official first place and a 0.75 score extend the streak, but the strict RCI gate
+still fails on four-seat coverage, mean territory, and zero-hold execution.
+
 ## Winning action profile
 
-Four-player winners use 29.16 rival attacks per 100 decisions versus 6.90 for
-non-winners, a 4.23x difference. Winners also allocate fewer decisions to neutral
+Four-player winners use 33.14 rival attacks per 100 decisions versus 7.71 for
+non-winners, a 4.30x difference. Winners also allocate fewer decisions to neutral
 expansion, builds, social actions, and holds.
 
 | Actions per 100 decisions | Winners | Non-winners |
 | --- | ---: | ---: |
-| Rival attacks | 29.16 | 6.90 |
-| Neutral attacks | 36.60 | 55.05 |
-| Neutral boats | 14.12 | 9.17 |
-| Naval invasions | 2.58 | 1.44 |
-| Builds | 5.92 | 7.67 |
-| Social actions | 5.09 | 13.01 |
-| Holds | 2.05 | 2.68 |
+| Rival attacks | 33.14 | 7.71 |
+| Neutral attacks | 35.20 | 53.67 |
+| Neutral boats | 12.31 | 9.65 |
+| Naval invasions | 2.19 | 1.33 |
+| Builds | 6.51 | 8.09 |
+| Social actions | 4.32 | 12.75 |
+| Holds | 1.74 | 2.56 |
 
 v5 was more decisive than the pooled winner profile in Round 185. Across those
 four wins, 56.9% of decisions attacked rivals and 28.4% expanded into neutral
@@ -105,14 +112,14 @@ The replay exposes structured game recommendations independently of each policy'
 selected action. Comparing recommendation adherence separates useful game signals
 from suggestions that consume winning tempo.
 
-| Recommendation | Winners | Non-winners | v5 R185 | v5 R186 | v5 R187 |
-| --- | ---: | ---: | ---: | ---: | ---: |
-| Opening tempo | 85.92% | 60.93% | 100.00% | 98.39% | 100.00% |
-| Frontier conversion | 56.38% | 63.35% | 85.71% | 85.71% | 51.56% |
-| Economy cadence | 8.88% | 11.56% | 10.34% | 4.75% | 7.99% |
-| Naval control | 19.76% | 10.77% | 0.95% | 0.00% | 5.03% |
-| Diplomacy pressure | 2.69% | 3.98% | 0.00% | 0.00% | 0.00% |
-| Transport banking | 23.19% | 10.21% | 0.00% | 0.00% | 5.18% |
+| Recommendation | Winners | Non-winners | v5 R185 | v5 R186 | v5 R187 | v5 R188 |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: |
+| Opening tempo | 87.91% | 61.68% | 100.00% | 98.39% | 100.00% | 100.00% |
+| Frontier conversion | 59.91% | 63.41% | 85.71% | 85.71% | 51.56% | 79.01% |
+| Economy cadence | 9.55% | 12.05% | 10.34% | 4.75% | 7.99% | 13.74% |
+| Naval control | 18.47% | 11.25% | 0.95% | 0.00% | 5.03% | 0.00% |
+| Diplomacy pressure | 2.24% | 4.16% | 0.00% | 0.00% | 0.00% | 0.00% |
+| Transport banking | 22.94% | 10.82% | 0.00% | 0.00% | 5.18% | 0.00% |
 
 Opening tempo remains the strongest positive signal, but tactical adherence alone did
 not detect the Europe plateau. Keep neutral land first while it increases tile share,
@@ -121,7 +128,7 @@ rapid rival conversion. Continue sparse builds and almost no social diversion.
 
 ## Seat effect
 
-Each seat now has 23 observed FFA appearances. v5 won exactly once from each seat
+Each seat now has 27 observed FFA appearances. v5 won exactly once from each seat
 in Round 185, so that sweep was not explained by seat order. Its Round 186 Europe
 spread instead points to connectivity and frontier access: one seat dominated,
 one plateaued alive, and two were eliminated.
