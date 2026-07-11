@@ -169,7 +169,7 @@ test("sustained territory collapse inserts an emergency build", () => {
   );
 });
 
-test("midgame pressure accepts a pending survival alliance", () => {
+test("midgame pressure prefers a stable survival alliance over a pending request", () => {
   const allianceWithLeader = {
     ...action("alliance:leader", "alliance_request", "Alliance with Leader"),
     metadata: { recipientID: "leader", relation: 1 },
@@ -196,14 +196,80 @@ test("midgame pressure accepts a pending survival alliance", () => {
   });
   assert.equal(
     choose([land, allianceWithLeader, pendingAlliance], obs, null, history).id,
-    pendingAlliance.id,
+    allianceWithLeader.id,
   );
+});
+
+test("a pending-only survival alliance preserves the tactical turn", () => {
+  const pendingAlliance = {
+    ...action("alliance:requester", "alliance_request", "Alliance with Requester"),
+    metadata: { recipientID: "requester", relation: 2 },
+  };
+  const land = action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%");
+  const history = Array.from({ length: 18 }, (_, index) => ({
+    actionID: `expand:terra-nullius:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare: 0.1 + index * 0.005,
+  }));
+  const obs = observation({
+    tileShare: 0.2,
+    troopRatio: 0.9,
+    incomingAttacks: [{ attackerID: "leader" }],
+    rivals: [
+      { id: "leader", name: "Leader", tileShare: 0.28, relativeTroopRatio: 0.8 },
+      { id: "requester", name: "Requester", tileShare: 0.12, relativeTroopRatio: 1.1 },
+    ],
+  });
+  assert.equal(choose([land, pendingAlliance], obs, null, history).id, land.id);
+});
+
+test("an isolated player uses a stable alliance instead of holding", () => {
+  const stableAlliance = {
+    ...action("alliance:leader", "alliance_request", "Alliance with Leader"),
+    metadata: { recipientID: "leader", relation: 0 },
+  };
+  const pendingAlliance = {
+    ...action("alliance:other", "alliance_request", "Alliance with Other"),
+    metadata: { recipientID: "other", relation: 2 },
+  };
+  const hold = action("hold", "hold", "Hold");
+  const obs = observation({
+    tileShare: 0.01,
+    troopRatio: 0.98,
+    rivals: [
+      { id: "leader", name: "Leader", tileShare: 0.7, relativeTroopRatio: 0.1 },
+      { id: "other", name: "Other", tileShare: 0.2, relativeTroopRatio: 0.2 },
+    ],
+  });
+  assert.equal(choose([pendingAlliance, stableAlliance, hold], obs).id, stableAlliance.id);
+});
+
+test("an isolated player pressures a rival instead of using a pending alliance", () => {
+  const pendingAlliance = {
+    ...action("alliance:other", "alliance_request", "Alliance with Other"),
+    metadata: { recipientID: "other", relation: 2 },
+  };
+  const targetLeader = {
+    ...action("target:leader", "target_player", "Target Leader"),
+    metadata: { targetID: "leader" },
+  };
+  const hold = action("hold", "hold", "Hold");
+  const obs = observation({
+    tileShare: 0.01,
+    troopRatio: 0.98,
+    rivals: [
+      { id: "leader", name: "Leader", tileShare: 0.7, relativeTroopRatio: 0.1 },
+      { id: "other", name: "Other", tileShare: 0.2, relativeTroopRatio: 0.2 },
+    ],
+  });
+  assert.equal(choose([pendingAlliance, targetLeader, hold], obs).id, targetLeader.id);
 });
 
 test("survival alliance does not consume tempo without incoming pressure", () => {
   const alliance = {
     ...action("alliance:leader", "alliance_request", "Alliance with Leader"),
-    metadata: { recipientID: "leader", relation: 2 },
+    metadata: { recipientID: "leader", relation: 1 },
   };
   const land = action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%");
   const history = Array.from({ length: 18 }, (_, index) => ({
@@ -225,7 +291,7 @@ test("survival alliance does not consume tempo without incoming pressure", () =>
 test("survival alliance waits eighteen decisions before retrying", () => {
   const alliance = {
     ...action("alliance:leader", "alliance_request", "Alliance with Leader"),
-    metadata: { recipientID: "leader", relation: 2 },
+    metadata: { recipientID: "leader", relation: 1 },
   };
   const land = action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%");
   const history = [

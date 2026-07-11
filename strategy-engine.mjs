@@ -160,6 +160,21 @@ function incomingThreatCount(value) {
   return value ? 1 : 0;
 }
 
+function stableAllianceRequests(actions) {
+  // Relation 2 is a transient pending-request action. It can disappear while the
+  // simultaneous turn is resolving, which makes the game replace it with HOLD.
+  return safeActions(actions, (action) =>
+    action.kind === "alliance_request" && Number(action?.metadata?.relation) !== 2
+  );
+}
+
+function bestStableAllianceRequest(actions, state) {
+  return stableAllianceRequests(actions)
+    .map((action) => ({ action, rival: rivalForAction(action, state) }))
+    .filter(({ rival }) => rival && !rival.isAllied)
+    .sort((left, right) => right.rival.tileShare - left.rival.tileShare)[0]?.action ?? null;
+}
+
 function chooseAllianceMove(actions, state, history, threatCount, collapsing, activeDecisions) {
   const sinceAllianceMove = decisionsSince(
     history,
@@ -185,15 +200,7 @@ function chooseAllianceMove(actions, state, history, threatCount, collapsing, ac
     return null;
   }
 
-  const requests = safeActions(actions, (action) => action.kind === "alliance_request")
-    .map((action) => ({ action, rival: rivalForAction(action, state) }))
-    .filter(({ rival }) => rival && !rival.isAllied)
-    .sort((left, right) => {
-      const leftPending = Number(left.action?.metadata?.relation) === 2 ? 1 : 0;
-      const rightPending = Number(right.action?.metadata?.relation) === 2 ? 1 : 0;
-      return rightPending - leftPending || right.rival.tileShare - left.rival.tileShare;
-    });
-  return requests[0]?.action ?? null;
+  return bestStableAllianceRequest(actions, state);
 }
 
 function safeActions(actions, predicate = () => true) {
@@ -388,7 +395,7 @@ function chooseUtility(actions, plan, history) {
 
   const recentSocial = decisionsSince(history, (entry) => SOCIAL_KINDS.has(entry.kind));
   if (recentSocial >= 12 && plan?.focus === "ally") {
-    const alliance = safeActions(actions, (action) => action.kind === "alliance_request")[0];
+    const alliance = stableAllianceRequests(actions)[0];
     if (alliance) return alliance;
   }
   return null;
@@ -477,6 +484,14 @@ export function chooseAction(actions, state, plan = null, history = []) {
   });
   const emergencyAttack = pickPercent(emergencyAttacks, 10, avoid);
   if (emergencyAttack) return emergencyAttack;
+
+  const survivalAlliance = bestStableAllianceRequest(actions, state);
+  if (survivalAlliance) return survivalAlliance;
+  const pressure = safeActions(actions, (action) => action.kind === "target_player")
+    .map((action) => ({ action, rival: rivalForAction(action, state) }))
+    .filter(({ rival }) => rival && !rival.isAllied)
+    .sort((left, right) => right.rival.tileShare - left.rival.tileShare)[0]?.action;
+  if (pressure) return pressure;
 
   return actions.find((action) => action.kind === "hold") ?? actions[0];
 }
