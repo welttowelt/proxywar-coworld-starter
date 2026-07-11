@@ -168,11 +168,18 @@ function stableAllianceRequests(actions) {
   );
 }
 
-function bestStableAllianceRequest(actions, state) {
-  return stableAllianceRequests(actions)
+function bestAllianceRequest(actions, state, allowPending = false) {
+  const candidates = allowPending
+    ? safeActions(actions, (action) => action.kind === "alliance_request")
+    : stableAllianceRequests(actions);
+  return candidates
     .map((action) => ({ action, rival: rivalForAction(action, state) }))
     .filter(({ rival }) => rival && !rival.isAllied)
-    .sort((left, right) => right.rival.tileShare - left.rival.tileShare)[0]?.action ?? null;
+    .sort((left, right) => {
+      const leftPending = Number(left.action?.metadata?.relation) === 2 ? 1 : 0;
+      const rightPending = Number(right.action?.metadata?.relation) === 2 ? 1 : 0;
+      return leftPending - rightPending || right.rival.tileShare - left.rival.tileShare;
+    })[0]?.action ?? null;
 }
 
 function chooseAllianceMove(actions, state, history, threatCount, collapsing, activeDecisions) {
@@ -200,7 +207,7 @@ function chooseAllianceMove(actions, state, history, threatCount, collapsing, ac
     return null;
   }
 
-  return bestStableAllianceRequest(actions, state);
+  return bestAllianceRequest(actions, state, true);
 }
 
 function safeActions(actions, predicate = () => true) {
@@ -485,7 +492,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
   const emergencyAttack = pickPercent(emergencyAttacks, 10, avoid);
   if (emergencyAttack) return emergencyAttack;
 
-  const survivalAlliance = bestStableAllianceRequest(actions, state);
+  const survivalAlliance = bestAllianceRequest(actions, state);
   if (survivalAlliance) return survivalAlliance;
   const pressure = safeActions(actions, (action) => action.kind === "target_player")
     .map((action) => ({ action, rival: rivalForAction(action, state) }))

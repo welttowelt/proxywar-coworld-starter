@@ -200,7 +200,7 @@ test("midgame pressure prefers a stable survival alliance over a pending request
   );
 });
 
-test("a pending-only survival alliance preserves the tactical turn", () => {
+test("active survival pressure can accept a pending-only alliance", () => {
   const pendingAlliance = {
     ...action("alliance:requester", "alliance_request", "Alliance with Requester"),
     metadata: { recipientID: "requester", relation: 2 },
@@ -221,7 +221,7 @@ test("a pending-only survival alliance preserves the tactical turn", () => {
       { id: "requester", name: "Requester", tileShare: 0.12, relativeTroopRatio: 1.1 },
     ],
   });
-  assert.equal(choose([land, pendingAlliance], obs, null, history).id, land.id);
+  assert.equal(choose([land, pendingAlliance], obs, null, history).id, pendingAlliance.id);
 });
 
 test("an isolated player uses a stable alliance instead of holding", () => {
