@@ -7,3 +7,4 @@ coworld/
 .netlify/
 .playwright-cli/
 output/playwright/
+output/rci-*/

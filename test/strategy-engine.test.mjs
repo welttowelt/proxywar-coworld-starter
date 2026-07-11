@@ -52,6 +52,26 @@ test("opening neutral expansion overrides a boat-heavy plan", () => {
   assert.equal(selected.id, "expand:terra-nullius:10");
 });
 
+test("an opening counterattack outranks neutral expansion under active attack", () => {
+  const rival = {
+    id: "threat",
+    name: "Threat",
+    tileShare: 0.08,
+    relativeTroopRatio: 1.2,
+  };
+  const actions = [
+    action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%"),
+    action("attack:threat:10", "attack", "Attack Threat 10%"),
+    action("hold", "hold", "Hold"),
+  ];
+  const selected = choose(actions, observation({
+    tileShare: 0.05,
+    rivals: [rival],
+    incomingAttacks: [{ attackerID: "threat" }],
+  }));
+  assert.equal(selected.id, "attack:threat:10");
+});
+
 test("structured expansion metadata identifies neutral land and boats", () => {
   const land = {
     ...action("future-neutral-id:10", "attack", "Expand into neutral land"),
@@ -125,6 +145,26 @@ test("stalled expansion builds after two escape boats", () => {
   ];
   assert.equal(
     choose([land, boat, build], observation({ tileShare: 0.045 }), null, history).id,
+    build.id,
+  );
+});
+
+test("sustained territory collapse inserts an emergency build", () => {
+  const land = action(
+    "expand:terra-nullius:10",
+    "attack",
+    "Expand into Terra Nullius 10%",
+  );
+  const build = action("build:City:500", "build", "Build City");
+  const history = [
+    { actionID: "attack:a:10", kind: "attack", tileShare: 0.24 },
+    { actionID: "build:Factory:400", kind: "build", tileShare: 0.23 },
+    { actionID: "attack:a:10", kind: "attack", tileShare: 0.22 },
+    { actionID: "attack:a:10", kind: "attack", tileShare: 0.20 },
+    { actionID: "attack:a:10", kind: "attack", tileShare: 0.18 },
+  ];
+  assert.equal(
+    choose([land, build], observation({ tileShare: 0.17 }), null, history).id,
     build.id,
   );
 });

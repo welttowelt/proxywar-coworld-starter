@@ -270,6 +270,18 @@ export function neutralExpansionStalled(state, history) {
   return stagnant.filter((entry) => entry.kind === "attack" && entry.neutral === true).length >= 3;
 }
 
+export function territoryCollapsing(state, history) {
+  const currentShare = finiteNumber(state?.self?.tileShare, NaN);
+  if (!Number.isFinite(currentShare)) return false;
+  const recentShares = history.slice(-8)
+    .map((entry) => finiteNumber(entry?.tileShare, NaN))
+    .filter(Number.isFinite);
+  if (recentShares.length < 3) return false;
+  const recentPeak = Math.max(...recentShares);
+  const meaningfulDrop = Math.max(0.005, recentPeak * 0.15);
+  return recentPeak - currentShare >= meaningfulDrop;
+}
+
 function builtUnits(history) {
   return history
     .filter((entry) => entry.kind === "build")
@@ -372,6 +384,9 @@ export function chooseAction(actions, state, plan = null, history = []) {
     sinceBuild >= 14;
   const finishingTarget = rivalAttack && rivalAttack.streak > 0 &&
     rivalAttack.rival.relativeTroopRatio >= 1.5;
+  const collapsing = territoryCollapsing(state, history);
+
+  if (collapsing && build && sinceBuild >= 3 && !finishingTarget) return build;
 
   if (neutralExpansionStalled(state, history)) {
     const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
@@ -382,7 +397,9 @@ export function chooseAction(actions, state, plan = null, history = []) {
   }
 
   if (cadenceBuild && !finishingTarget) return build;
-  if (state.self.tileShare < 0.12 && neutralAttack) return neutralAttack;
+  if (state.self.tileShare < 0.12 && neutralAttack && threatCount === 0 && !collapsing) {
+    return neutralAttack;
+  }
   if (rivalAttack?.action) return rivalAttack.action;
   if (neutralAttack) return neutralAttack;
   if (build && sinceBuild >= 5) return build;
