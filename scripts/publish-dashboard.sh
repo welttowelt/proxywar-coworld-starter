@@ -6,6 +6,21 @@ export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 LOCK_DIR="${TMPDIR:-/tmp}/proxywar-dashboard-update.lock"
 
+retry() {
+  local attempt=1
+  local max_attempts=5
+
+  while ! "$@"; do
+    if (( attempt >= max_attempts )); then
+      printf 'command failed after %d attempts: %s\n' "$attempt" "$*" >&2
+      return 1
+    fi
+    printf 'command failed; retrying in %d seconds: %s\n' "$((attempt * 5))" "$*" >&2
+    sleep "$((attempt * 5))"
+    ((attempt += 1))
+  done
+}
+
 if ! mkdir "$LOCK_DIR" 2>/dev/null; then
   printf '%s\n' "dashboard update already running"
   exit 0
@@ -19,7 +34,7 @@ if [[ -n "$(git status --porcelain --untracked-files=normal)" ]]; then
   exit 0
 fi
 
-git pull --ff-only origin main
+retry git pull --ff-only origin main
 npm run data:refresh
 git add data/analysis data/processed site/data
 
@@ -29,8 +44,8 @@ if git diff --cached --quiet; then
 fi
 
 git commit -m "Refresh Proxy War dashboard data"
-git push origin main
-npx --yes netlify deploy \
+retry git push origin main
+retry npx --yes netlify deploy \
   --prod \
   --dir site \
   --site a18dda9f-1550-440f-a7bc-40deaa7c2e8a \
