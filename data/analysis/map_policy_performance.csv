@@ -1,11 +1,12 @@
 map,player_name,policy_version,matches,declared_wins,episode_points,point_rate_pct,mean_final_tiles,rival_attacks_per_100_decisions,neutral_attacks_per_100_decisions,neutral_boats_per_100_decisions,holds
-Asia,Auri,4,18,4,4,22.22,60457.6,29.68,30.78,21.03,5
-Asia,James Boggs,1,18,0,0,0.0,6551.6,15.4,20.32,11.9,3
-Asia,Richard Higgins,1,18,0,0,0.0,11425.7,12.23,58.83,11.18,2
+Asia,Auri,4,22,5,5,22.73,59815.5,28.83,31.98,20.8,5
+Asia,James Boggs,1,22,0,0,0.0,6965.3,14.92,20.54,11.99,3
+Asia,Richard Higgins,1,22,0,0,0.0,12651.1,12.32,60.02,10.64,2
 Asia,odin free,3,2,1,1,50.0,127807.0,18.37,34.69,36.73,0
 Asia,odin free,5,8,7,7,87.5,191823.3,54.17,27.55,1.16,3
 Asia,odin free,6,4,3,3,75.0,168586.5,50.49,29.9,5.39,0
 Asia,odin free,8,4,3,3,75.0,164939.8,47.93,31.34,7.83,0
+Asia,odin free,9,4,3,3,75.0,168315.3,49.77,29.58,7.04,1
 Europe,Auri,4,17,0,5,29.41,110220.5,6.85,62.52,5.87,136
 Europe,James Boggs,1,17,1,1,5.88,62513.2,6.82,16.04,20.03,39
 Europe,Richard Higgins,1,17,0,1,5.88,24327.3,4.62,77.93,4.38,6
