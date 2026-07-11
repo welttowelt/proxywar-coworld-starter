@@ -1,0 +1,6 @@
+round_number,rank,score,policy_version,policy_version_id,matches,wins,win_rate_pct,mean_final_tiles,decisions,rival_attacks,neutral_attacks,neutral_boats,builds,social_actions,holds,fallbacks
+181,3,0.25,2,e9cf590e-ad4f-4d7f-8e03-b7b0783f7275,4,1,25.0,24526.5,285,27,60,120,22,18,6,13
+182,2,0.5,3,7af15b29-54e2-4af4-a18c-7668378fa7c9,2,1,50.0,127807.0,147,27,51,54,4,0,0,2
+183,1,1.0,3,7af15b29-54e2-4af4-a18c-7668378fa7c9,1,1,100.0,461851.0,258,11,184,58,1,0,0,1
+184,3,0.0,4,6f44aa76-16f6-42d4-b94a-6cc53924faf5,4,0,0.0,0.0,83,1,0,0,5,0,62,4
+185,1,1.0,5,a82e7462-a7fe-486c-8f2b-9fa1d750ae02,4,4,100.0,218109.5,211,120,60,1,18,0,0,5

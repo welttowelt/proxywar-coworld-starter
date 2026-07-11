@@ -148,7 +148,9 @@ function renderOverview(data) {
   byId("our-win-note").textContent = ourFfa.matches
     ? `${formatInteger(ourFfa.wins)} wins / ${formatInteger(ourFfa.matches)} matches`
     : "Collected matches";
-  byId("progression").textContent = progression || "--";
+  byId("progression").textContent = snapshot.target_first_place_streak
+    ? `${formatInteger(snapshot.current_first_place_streak)} / ${formatInteger(snapshot.target_first_place_streak)}`
+    : "--";
   byId("decision-count").textContent = formatInteger(snapshot.decisions);
   byId("quality-note").textContent = asNumber(snapshot.data_quality_failures) === 0
     ? "0 validation failures"

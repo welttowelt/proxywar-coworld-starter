@@ -1,72 +1,92 @@
 # Proxy War meta report
 
-Snapshot collected 2026-07-11 after Competition Round 182. The source window
-covers rounds 163-182, 78 episodes, 168 participant seats, and 29,147 agent
-decisions. All seven ingestion quality checks pass with zero failures.
+Snapshot collected 2026-07-11 after Competition Round 185. The source window
+covers rounds 166-185, 75 episodes, 180 participant seats, and 27,179 agent
+decisions. All 12 ingestion quality checks pass with zero failures.
+
+Round 186 is running with v5 in the roster. The verified consecutive first-place
+streak is therefore 1 of the 10-round target.
 
 ## Current four-player field
 
-Rounds 181-182 are the current four-player FFA format. The six available
-episodes produced this table:
+Rounds 181-185 use the current four-player FFA format. The 15 available episodes
+produce this table:
 
-| Player | Matches | Wins | Win rate | Mean final tiles | Rival attacks | Neutral boats |
+| Player | Matches | Wins | Win rate | Mean final tiles | Rival attacks | Holds |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Auri | 6 | 2 | 33.33% | 64,885.7 | 138 | 89 |
-| odin free | 6 | 2 | 33.33% | 58,953.3 | 54 | 174 |
-| James Boggs | 6 | 2 | 33.33% | 31,245.5 | 83 | 35 |
-| Richard Higgins | 6 | 0 | 0% | 1,150.0 | 25 | 39 |
+| odin free | 15 | 7 | 46.67% | 112,533.9 | 186 | 68 |
+| Auri | 15 | 3 | 20.00% | 46,081.6 | 246 | 39 |
+| James Boggs | 15 | 3 | 20.00% | 22,257.7 | 124 | 11 |
+| Richard Higgins | 15 | 0 | 0.00% | 2,177.3 | 46 | 1 |
 
-Our versions are split across the two rounds. v2 won 1 of 4 matches. v3 won 1
-of 2, averaged 127,807 final tiles, and finished Round 182 second only because
-Auri won the seed-order tiebreak at the same 0.5 round score.
+The aggregate holds column includes the broken v4 round. v5 itself recorded zero
+holds and zero rejected decisions in Round 185.
+
+## Policy progression
+
+| Round | Version | Official rank | Episode wins | Mean final tiles | Holds |
+| ---: | ---: | ---: | ---: | ---: | ---: |
+| 181 | v2 | 3 | 1/4 | 24,526.5 | 6 |
+| 182 | v3 | 2 | 1/2 | 127,807.0 | 0 |
+| 183 | v3 | 1 | 1/1 | 461,851.0 | 0 |
+| 184 | v4 | 3 | 0/4 | 0.0 | 62 |
+| 185 | v5 | 1 | 4/4 | 218,109.5 | 0 |
+
+v4 misclassified the new structured neutral-land action and held instead of
+expanding. v5 fixed the classifier and recovered immediately from every seat.
 
 ## Winning action profile
 
-Four-player winners used **32.87 rival attacks per 100 decisions**, versus
-**14.04** for non-winners. That is a 2.34x difference. Winners also spent less
-of their action budget on neutral boats, builds, social actions, and holds.
+Four-player winners use 29.79 rival attacks per 100 decisions versus 9.62 for
+non-winners, a 3.10x difference. Winners also allocate fewer decisions to neutral
+expansion, builds, social actions, and holds.
 
 | Actions per 100 decisions | Winners | Non-winners |
 | --- | ---: | ---: |
-| Rival attacks | 32.87 | 14.04 |
-| Neutral attacks | 21.30 | 28.36 |
-| Neutral boats | 19.91 | 22.31 |
-| Naval invasions | 2.55 | 5.42 |
-| Builds | 6.71 | 11.11 |
-| Social actions | 8.80 | 11.20 |
-| Holds | 1.85 | 2.13 |
+| Rival attacks | 29.79 | 9.62 |
+| Neutral attacks | 35.96 | 48.81 |
+| Neutral boats | 15.65 | 13.02 |
+| Naval invasions | 1.14 | 2.10 |
+| Builds | 5.60 | 9.85 |
+| Social actions | 4.74 | 8.48 |
+| Holds | 2.56 | 3.07 |
 
-The current policy's clearest leak is conversion tempo. Across the six FFA
-matches, Auri issued 138 rival attacks while we issued 54, but we launched 174
-neutral boats versus Auri's 89. The v4 strategy engine directly addresses this
-with target continuity, 10/25/40 attack escalation, a dynamic attack floor, and
-a two-boat streak cap.
+v5 is more decisive than the pooled winner profile. Across its four Round 185
+wins, 56.9% of decisions attacked rivals and 28.4% expanded into neutral land.
+
+## v5 phase profile
+
+| Phase | Decisions | Rival attacks | Neutral attacks | Builds | Holds |
+| --- | ---: | ---: | ---: | ---: | ---: |
+| Opening, decisions 1-10 | 40 | 0.00% | 70.00% | 0.00% | 0.00% |
+| Conversion, decisions 11-25 | 60 | 56.67% | 33.33% | 10.00% | 0.00% |
+| Finish, decision 26+ | 111 | 77.48% | 10.81% | 10.81% | 0.00% |
+
+The handoff from land acquisition to conversion is consistent. The first rival
+attack occurred on decisions 15, 18, 15, and 17 across the four seats.
 
 ## Targeting pattern
 
-Auri first converts vulnerable opponents: 65 attacks into Richard, 26 into
-James, then 47 into us. We attacked Auri 23 times, Richard 17, and James 14.
-The data supports finishing the weakest profitable target before spending the
-same decision budget contesting the leader directly.
+v5 attacked Auri 62 times, Richard Higgins 32 times, and James Boggs 26 times in
+Round 185. Mean attack commitment was 26.0% at a 2.01 relative troop ratio. Its
+17.24% target-switch rate is above Auri's winning 13.25% baseline but well below
+James Boggs's winning 31.67% rate. No change is justified from this sample because
+v5 converted all four matches decisively.
 
 ## Seat effect
 
-The six FFA winners came only from positions 0 and 3. Each position won three
-matches; positions 1 and 2 won none. In Round 182 both episodes were won by
-position 0, once by us and once by Auri. Spawn actions are deterministic by
-seat in the replays, so this is a scheduling and map confound rather than a
-clean policy comparison.
+Each seat now has 15 observed FFA appearances. Seats 1 and 4 each won five,
+seat 2 won one, and seat 3 won two. v5 won exactly once from each seat in Round
+185, so its result is not explained by the historical outer-seat advantage.
 
-The sample is too small to estimate a stable seat adjustment. Keep raw seat
-results in every round report and require at least ten FFA rounds before
-treating a small win-rate difference as durable.
+## RCI decision
 
-## Operating loop
-
-1. Run `npm run data:refresh` after each completed competition round.
-2. Require zero failures in `data_quality.csv`.
-3. Compare `ffa_player_performance.csv`, `ffa_action_profile_by_outcome.csv`,
-   `ffa_attack_targets.csv`, and `seat_performance.csv`.
-4. Change one strategic mechanism at a time and publish a new policy version.
-5. Attribute results by policy version and seat. Do not merge v2, v3, and v4
-   when deciding whether a code change worked.
+1. Keep v5 champion while Round 186 is running.
+2. Treat Round 185 as the baseline gate: four of four episode wins, at least
+   200,000 mean final tiles, zero holds, and zero rejected decisions.
+3. Require a candidate to beat or match v5 across all four local seats before
+   upload, then use a non-promoting qualifier or hosted A/B run when available.
+4. Promote one strategic mechanism at a time. Never replace a winning champion
+   from aggregate field correlation alone.
+5. Refresh after every completed round and reset the consecutive first-place
+   counter after any official rank below 1.

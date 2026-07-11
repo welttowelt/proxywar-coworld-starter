@@ -229,8 +229,112 @@ COPY (
     sum(social_actions) AS social_actions
   FROM player_matches
   GROUP BY round_number, player_count, player_name, policy_version
-  ORDER BY round_number, wins DESC, mean_final_tiles DESC
+  ORDER BY round_number, wins DESC, mean_final_tiles DESC, player_name
 ) TO 'data/analysis/round_results.csv' (HEADER, DELIMITER ',');
+
+COPY (
+  SELECT
+    p.round_number,
+    s.rank,
+    s.score,
+    p.policy_version,
+    p.policy_version_id,
+    count(*) AS matches,
+    sum(p.won::INTEGER) AS wins,
+    round(100.0 * avg(p.won::INTEGER), 2) AS win_rate_pct,
+    round(avg(p.final_tiles), 1) AS mean_final_tiles,
+    sum(p.decisions) AS decisions,
+    sum(p.rival_attacks) AS rival_attacks,
+    sum(p.neutral_attacks) AS neutral_attacks,
+    sum(p.neutral_boats) AS neutral_boats,
+    sum(p.builds) AS builds,
+    sum(p.social_actions) AS social_actions,
+    sum(p.holds) AS holds,
+    sum(p.fallbacks) AS fallbacks
+  FROM player_matches p
+  JOIN round_standings s
+    ON s.round_id = p.round_id
+    AND s.policy_version_id = p.policy_version_id
+  WHERE p.player_name = 'odin free'
+  GROUP BY p.round_number, s.rank, s.score, p.policy_version, p.policy_version_id
+  ORDER BY p.round_number
+) TO 'data/analysis/policy_round_performance.csv' (HEADER, DELIMITER ',');
+
+COPY (
+  WITH ordered AS (
+    SELECT
+      d.*,
+      p.won,
+      row_number() OVER (
+        PARTITION BY d.episode_id, d.participant_position
+        ORDER BY d.sequence
+      ) AS own_decision
+    FROM decisions d
+    JOIN episodes e USING (episode_id, round_id)
+    JOIN participants p USING (episode_id, round_id, participant_position)
+    WHERE e.player_count = 4
+  )
+  SELECT
+    player_name,
+    policy_version,
+    won,
+    CASE
+      WHEN own_decision <= 10 THEN 'opening'
+      WHEN own_decision <= 25 THEN 'conversion'
+      ELSE 'finish'
+    END AS phase,
+    count(*) AS decisions,
+    round(100.0 * avg(is_rival_attack::INTEGER), 2) AS rival_attack_rate_pct,
+    round(100.0 * avg(is_neutral_attack::INTEGER), 2) AS neutral_attack_rate_pct,
+    round(100.0 * avg(is_build::INTEGER), 2) AS build_rate_pct,
+    round(100.0 * avg(is_social::INTEGER), 2) AS social_rate_pct,
+    round(100.0 * avg(is_hold::INTEGER), 2) AS hold_rate_pct,
+    round(avg(relative_troop_ratio) FILTER (WHERE is_rival_attack), 2) AS mean_attack_ratio,
+    round(avg(troop_percent) FILTER (WHERE is_rival_attack), 1) AS mean_attack_percent
+  FROM ordered
+  GROUP BY player_name, policy_version, won, phase
+  ORDER BY player_name, policy_version, won DESC,
+    CASE phase WHEN 'opening' THEN 1 WHEN 'conversion' THEN 2 ELSE 3 END
+) TO 'data/analysis/ffa_phase_profile.csv' (HEADER, DELIMITER ',');
+
+COPY (
+  WITH attacks AS (
+    SELECT
+      d.player_name,
+      d.policy_version,
+      p.won,
+      d.episode_id,
+      d.participant_position,
+      d.sequence,
+      d.target_name,
+      d.relative_troop_ratio,
+      d.troop_percent,
+      lag(d.target_name) OVER (
+        PARTITION BY d.episode_id, d.participant_position
+        ORDER BY d.sequence
+      ) AS previous_target
+    FROM decisions d
+    JOIN episodes e USING (episode_id, round_id)
+    JOIN participants p USING (episode_id, round_id, participant_position)
+    WHERE e.player_count = 4 AND d.is_rival_attack
+  )
+  SELECT
+    player_name,
+    policy_version,
+    won,
+    count(*) AS rival_attacks,
+    count(*) FILTER (
+      WHERE previous_target IS NOT NULL AND target_name <> previous_target
+    ) AS target_switches,
+    round(100.0 * count(*) FILTER (
+      WHERE previous_target IS NOT NULL AND target_name <> previous_target
+    ) / nullif(count(*) FILTER (WHERE previous_target IS NOT NULL), 0), 2) AS switch_rate_pct,
+    round(avg(relative_troop_ratio), 2) AS mean_attack_ratio,
+    round(avg(troop_percent), 1) AS mean_attack_percent
+  FROM attacks
+  GROUP BY player_name, policy_version, won
+  ORDER BY won DESC, rival_attacks DESC
+) TO 'data/analysis/target_continuity.csv' (HEADER, DELIMITER ',');
 
 COPY (
   SELECT
@@ -324,6 +428,23 @@ COPY (
     (SELECT count(*) FROM episodes) AS episodes,
     (SELECT count(*) FROM participants) AS participant_rows,
     (SELECT count(*) FROM decisions) AS decisions,
+    (
+      SELECT count(*)
+      FROM round_standings
+      WHERE player_name = 'odin free'
+        AND rank = 1
+        AND round_number > coalesce((
+          SELECT max(round_number)
+          FROM round_standings
+          WHERE player_name = 'odin free' AND rank <> 1
+        ), -1)
+    ) AS current_first_place_streak,
+    10 AS target_first_place_streak,
+    (
+      SELECT count(*)
+      FROM round_standings
+      WHERE player_name = 'odin free' AND rank = 1
+    ) AS first_place_finishes,
     (
       SELECT coalesce(sum(failures), 0)
       FROM read_csv_auto('data/analysis/data_quality.csv')
