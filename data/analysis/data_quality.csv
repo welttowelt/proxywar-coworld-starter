@@ -1,0 +1,10 @@
+check_name,failures,rows_checked
+duplicate_round_ids,0,20
+duplicate_episode_ids,0,78
+duplicate_participant_grain,0,168
+duplicate_decision_sequence,0,29147
+decisions_without_participant,0,29147
+participants_without_final_tiles,0,168
+rejected_decisions,0,29147
+participant_count_mismatch,0,168
+decisions_without_episode,0,29147
