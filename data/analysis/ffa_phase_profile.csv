@@ -2,18 +2,18 @@ player_name,policy_version,won,phase,decisions,rival_attack_rate_pct,neutral_att
 Auri,4,true,opening,30,0.0,13.33,20.0,0.0,0.0,,
 Auri,4,true,conversion,45,55.56,11.11,0.0,2.22,2.22,2.05,22.6
 Auri,4,true,finish,168,36.31,34.52,4.76,8.93,13.69,2.09,27.2
-Auri,4,false,opening,120,0.0,19.17,20.0,0.0,0.0,,
-Auri,4,false,conversion,180,51.11,26.67,3.89,1.11,0.0,1.98,21.9
-Auri,4,false,finish,930,7.31,71.29,7.31,2.47,1.61,2.87,22.4
+Auri,4,false,opening,160,0.0,16.88,20.0,0.63,0.0,,
+Auri,4,false,conversion,240,42.92,29.17,3.33,1.67,0.42,1.95,21.8
+Auri,4,false,finish,2042,7.25,71.11,7.69,4.41,4.85,3.22,26.9
 James Boggs,1,true,opening,30,6.67,16.67,20.0,0.0,0.0,1.45,17.5
 James Boggs,1,true,conversion,45,37.78,17.78,13.33,17.78,0.0,1.6,17.9
 James Boggs,1,true,finish,108,40.74,5.56,8.33,23.15,0.93,4.44,23.3
-James Boggs,1,false,opening,120,0.0,20.83,18.33,26.67,0.0,,
-James Boggs,1,false,conversion,150,12.0,19.33,19.33,37.33,0.0,1.37,14.2
-James Boggs,1,false,finish,250,17.2,8.4,13.2,35.2,4.0,1.21,12.8
-Richard Higgins,1,false,opening,150,0.67,69.33,0.0,0.0,0.0,1.02,10.0
-Richard Higgins,1,false,conversion,201,13.43,85.57,1.0,0.0,0.0,1.47,10.0
-Richard Higgins,1,false,finish,538,3.35,58.55,15.61,6.69,0.19,2.06,10.0
+James Boggs,1,false,opening,160,0.63,19.38,17.5,28.13,0.0,1.57,25.0
+James Boggs,1,false,conversion,210,10.95,16.19,14.76,46.67,0.0,1.4,15.2
+James Boggs,1,false,finish,1085,4.24,11.43,6.73,55.3,1.29,1.16,12.6
+Richard Higgins,1,false,opening,190,1.58,68.42,0.0,0.0,0.0,1.07,10.0
+Richard Higgins,1,false,conversion,259,10.81,86.87,2.32,0.0,0.0,1.45,10.0
+Richard Higgins,1,false,finish,863,3.36,72.65,9.97,4.17,0.12,1.95,10.0
 odin free,2,true,opening,10,0.0,40.0,0.0,0.0,0.0,,
 odin free,2,true,conversion,15,33.33,26.67,0.0,0.0,0.0,1.32,22.0
 odin free,2,true,finish,51,31.37,11.76,5.88,1.96,3.92,2.62,16.6
@@ -32,3 +32,6 @@ odin free,4,false,finish,1,0.0,0.0,100.0,0.0,0.0,,
 odin free,5,true,opening,40,0.0,70.0,0.0,0.0,0.0,,
 odin free,5,true,conversion,60,56.67,33.33,10.0,0.0,0.0,1.47,25.4
 odin free,5,true,finish,111,77.48,10.81,10.81,0.0,0.0,2.22,26.2
+odin free,5,false,opening,40,0.0,70.0,0.0,0.0,0.0,,
+odin free,5,false,conversion,60,16.67,75.0,8.33,0.0,0.0,2.32,29.5
+odin free,5,false,finish,591,4.4,90.86,4.74,0.0,0.0,3.12,26.2
