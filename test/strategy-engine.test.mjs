@@ -264,18 +264,31 @@ test("desperate naval fallback never invades an ally", () => {
   assert.equal(choose(actions, obs).id, "hold");
 });
 
-test("a legal defense build beats hold even during build cooldown", () => {
+test("a reliable build beats hold even during build cooldown", () => {
+  const actions = [
+    action("attack:leader:10", "attack", "Attack Leader 10%"),
+    action("build:City:307123", "build", "Build City"),
+    action("hold", "hold", "Hold"),
+  ];
+  const history = [{ actionID: "build:City:300000", kind: "build", tileShare: 0.09 }];
+  const obs = observation({
+    tileShare: 0.08,
+    rivals: [{ id: "leader", name: "Leader", tileShare: 0.46, relativeTroopRatio: 0.79 }],
+  });
+  assert.equal(choose(actions, obs, null, history).id, "build:City:307123");
+});
+
+test("a stale Defense Post action is bypassed for a valid counterattack", () => {
   const actions = [
     action("attack:leader:10", "attack", "Attack Leader 10%"),
     action("build:Defense Post:307123", "build", "Build Defense Post"),
     action("hold", "hold", "Hold"),
   ];
-  const history = [{ actionID: "build:Defense Post:300000", kind: "build", tileShare: 0.09 }];
   const obs = observation({
     tileShare: 0.08,
     rivals: [{ id: "leader", name: "Leader", tileShare: 0.46, relativeTroopRatio: 0.79 }],
   });
-  assert.equal(choose(actions, obs, null, history).id, "build:Defense Post:307123");
+  assert.equal(choose(actions, obs).id, "attack:leader:10");
 });
 
 test("an exposed transport retreats instead of holding", () => {

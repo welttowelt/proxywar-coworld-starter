@@ -277,16 +277,18 @@ function builtUnits(history) {
 }
 
 function chooseBuild(actions, history, defend = false) {
-  const candidates = safeActions(actions, (action) => action.kind === "build");
+  const candidates = safeActions(actions, (action) =>
+    action.kind === "build" && !actionText(action).includes("defense post")
+  );
   if (candidates.length === 0) return null;
   const built = builtUnits(history);
   const preferences = defend
-    ? ["defense post", "city", "factory", "port"]
+    ? ["city", "factory", "port", "sam launcher", "missile silo"]
     : [
         ...(built.some((id) => id.includes("city")) ? [] : ["city"]),
         ...(built.some((id) => id.includes("factory")) ? [] : ["factory"]),
         ...(built.some((id) => id.includes("port")) ? [] : ["port"]),
-        "city", "factory", "port", "defense post", "missile silo", "sam launcher",
+        "city", "factory", "port", "missile silo", "sam launcher",
       ];
   for (const unit of preferences) {
     const action = candidates.find((candidate) => actionText(candidate).includes(unit));
