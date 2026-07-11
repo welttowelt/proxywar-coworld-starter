@@ -1,19 +1,19 @@
 player_name,policy_version,won,phase,decisions,rival_attack_rate_pct,neutral_attack_rate_pct,build_rate_pct,social_rate_pct,hold_rate_pct,mean_attack_ratio,mean_attack_percent
-Auri,4,true,opening,40,0.0,12.5,20.0,0.0,0.0,,
-Auri,4,true,conversion,60,55.0,16.67,0.0,1.67,1.67,1.92,21.4
-Auri,4,true,finish,252,34.13,34.92,3.97,8.33,9.13,2.03,26.6
-Auri,4,false,opening,190,0.0,15.79,20.0,0.53,0.0,,
-Auri,4,false,conversion,285,42.46,28.77,4.56,2.11,0.7,2.03,21.7
-Auri,4,false,finish,2349,6.34,71.6,7.02,3.87,4.34,3.21,26.8
+Auri,4,true,opening,50,0.0,20.0,20.0,0.0,0.0,,
+Auri,4,true,conversion,75,53.33,18.67,0.0,1.33,1.33,1.83,20.5
+Auri,4,true,finish,290,37.93,34.48,4.14,7.24,7.93,1.97,26.0
+Auri,4,false,opening,220,0.0,16.36,20.0,0.45,0.0,,
+Auri,4,false,conversion,330,43.03,28.48,4.55,1.82,0.61,1.94,21.5
+Auri,4,false,finish,2437,6.57,70.5,7.06,4.02,4.23,3.09,26.0
 James Boggs,1,true,opening,40,7.5,17.5,20.0,0.0,0.0,1.53,20.0
 James Boggs,1,true,conversion,60,38.33,16.67,13.33,21.67,0.0,1.67,19.1
 James Boggs,1,true,finish,136,34.56,9.56,8.09,22.79,0.74,4.43,23.4
-James Boggs,1,false,opening,190,1.05,19.47,17.89,26.84,0.0,1.68,25.0
-James Boggs,1,false,conversion,244,11.07,16.39,15.57,43.85,0.0,1.53,16.1
-James Boggs,1,false,finish,1245,4.18,11.65,7.31,52.29,1.45,1.13,13.2
-Richard Higgins,1,false,opening,230,2.17,67.83,0.0,0.0,0.0,1.08,10.0
-Richard Higgins,1,false,conversion,304,10.2,86.84,2.96,0.0,0.0,1.42,10.0
-Richard Higgins,1,false,finish,880,3.3,73.07,9.89,4.09,0.11,1.95,10.0
+James Boggs,1,false,opening,230,0.87,20.43,18.26,25.22,0.0,1.68,25.0
+James Boggs,1,false,conversion,295,11.86,17.29,16.27,41.69,0.0,1.51,16.9
+James Boggs,1,false,finish,1306,5.36,11.72,7.58,51.38,1.38,1.25,14.9
+Richard Higgins,1,false,opening,270,1.85,68.15,0.0,0.0,0.0,1.08,10.0
+Richard Higgins,1,false,conversion,364,9.62,87.91,2.47,0.0,0.0,1.41,10.0
+Richard Higgins,1,false,finish,1010,5.74,67.13,11.39,4.26,0.3,1.68,10.0
 odin free,2,true,opening,10,0.0,40.0,0.0,0.0,0.0,,
 odin free,2,true,conversion,15,33.33,26.67,0.0,0.0,0.0,1.32,22.0
 odin free,2,true,finish,51,31.37,11.76,5.88,1.96,3.92,2.62,16.6
@@ -29,9 +29,9 @@ odin free,3,false,finish,39,15.38,12.82,2.56,0.0,0.0,3.14,12.5
 odin free,4,false,opening,40,0.0,0.0,10.0,0.0,60.0,,
 odin free,4,false,conversion,42,2.38,0.0,0.0,0.0,90.48,2.1,10.0
 odin free,4,false,finish,1,0.0,0.0,100.0,0.0,0.0,,
-odin free,5,true,opening,50,0.0,68.0,2.0,0.0,0.0,,
-odin free,5,true,conversion,75,58.67,32.0,9.33,0.0,0.0,1.42,25.7
-odin free,5,true,finish,187,55.08,31.02,10.16,0.0,0.0,2.28,26.2
-odin free,5,false,opening,70,0.0,65.71,4.29,0.0,0.0,,
-odin free,5,false,conversion,102,33.33,57.84,8.82,0.0,0.0,1.71,24.6
-odin free,5,false,finish,936,4.06,87.29,5.66,0.0,0.96,3.89,26.6
+odin free,5,true,opening,80,0.0,68.75,1.25,0.0,0.0,,
+odin free,5,true,conversion,120,57.5,34.17,8.33,0.0,0.0,1.41,25.9
+odin free,5,true,finish,283,62.54,22.26,12.37,0.0,0.0,2.29,25.6
+odin free,5,false,opening,80,0.0,66.25,3.75,0.0,0.0,,
+odin free,5,false,conversion,117,35.04,52.99,11.97,0.0,0.0,1.7,25.0
+odin free,5,false,finish,961,4.79,85.64,6.04,0.0,1.25,3.39,25.0
