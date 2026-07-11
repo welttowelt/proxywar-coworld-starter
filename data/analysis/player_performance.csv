@@ -1,13 +1,13 @@
 player_count,player_name,policy_name,policy_version,policy_version_id,matches,wins,win_rate_pct,mean_final_tiles,median_final_tiles,decisions,rival_attacks,neutral_attacks,neutral_boats,naval_invasions,builds,social_actions,holds,fallback_rate_pct
-4,odin free,oli-codex-proxywar,6,cfd3c268-6d23-4aef-b9de-8cae82afd381,8,6,75.0,220229.1,92095.0,1089,182,330,241,20,92,149,51,19.56
+4,odin free,oli-codex-proxywar,6,cfd3c268-6d23-4aef-b9de-8cae82afd381,12,9,75.0,203014.9,154903.0,1293,285,391,252,20,107,149,51,17.4
 4,odin free,oli-codex-proxywar,3,7af15b29-54e2-4af4-a18c-7668378fa7c9,3,2,66.67,239155.0,213074.0,405,38,235,112,1,5,0,0,0.74
 4,odin free,oli-codex-proxywar,5,a82e7462-a7fe-486c-8f2b-9fa1d750ae02,16,8,50.0,120875.3,148342.5,1641,333,1097,24,6,121,0,12,1.34
 4,odin free,oli-codex-proxywar,2,e9cf590e-ad4f-4d7f-8e03-b7b0783f7275,4,1,25.0,24526.5,7490.0,285,27,60,120,17,22,18,6,4.56
-4,Auri,proxywar-keystone,4,5c8ab955-7d80-42f5-8599-a88478f31ae5,35,6,17.14,62581.4,30102.0,4352,522,2477,379,46,356,173,157,3.63
-4,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,35,4,11.43,25586.9,338.0,2728,246,410,467,61,285,1082,30,31.12
-4,Richard Higgins,proxywar-starter-b,1,aeaf01bc-682b-4aa3-9bdc-20e2a3fe3922,35,0,0.0,7795.4,0.0,2529,148,1874,129,25,168,76,4,0.16
+4,Auri,proxywar-keystone,4,5c8ab955-7d80-42f5-8599-a88478f31ae5,39,7,17.95,62950.2,30102.0,4556,583,2541,422,46,374,178,158,3.49
+4,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,39,4,10.26,23818.0,338.0,2864,260,438,484,61,307,1125,30,29.64
+4,Richard Higgins,proxywar-starter-b,1,aeaf01bc-682b-4aa3-9bdc-20e2a3fe3922,39,0,0.0,8001.6,0.0,2708,171,1996,143,25,176,76,4,0.15
 4,odin free,oli-codex-proxywar,4,6f44aa76-16f6-42d4-b94a-6cc53924faf5,4,0,0.0,0.0,0.0,83,1,0,0,0,5,0,62,4.82
-2,Auri,proxywar-keystone,1,4eab3f56-03c7-4c07-8a26-9b092e46fa54,24,11,45.83,79458.6,53926.0,4273,329,2085,977,2,127,197,174,0.49
-2,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,20,8,40.0,83188.7,83051.5,4628,995,627,677,21,151,1240,244,3.37
+2,Auri,proxywar-keystone,1,4eab3f56-03c7-4c07-8a26-9b092e46fa54,21,9,42.86,80330.5,38882.0,3667,267,1861,875,2,112,90,114,0.44
+2,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,18,7,38.89,85050.9,83051.5,4208,917,587,641,21,139,1131,146,1.4
 2,Auri,proxywar-keystone,4,5c8ab955-7d80-42f5-8599-a88478f31ae5,6,2,33.33,93971.8,102736.5,1454,31,753,226,0,26,101,243,12.1
-2,Richard Higgins,proxywar-starter-b,1,aeaf01bc-682b-4aa3-9bdc-20e2a3fe3922,30,8,26.67,98254.7,53844.5,5321,1401,3497,24,0,39,0,0,0.0
+2,Richard Higgins,proxywar-starter-b,1,aeaf01bc-682b-4aa3-9bdc-20e2a3fe3922,27,8,29.63,107762.9,130871.0,4919,1291,3247,24,0,33,0,0,0.0
