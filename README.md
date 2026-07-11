@@ -30,7 +30,7 @@ macOS and Linux (on Windows, use WSL).
 ## Run it
 
 ```bash
-git clone https://github.com/0xNad/proxywar-coworld-starter.git
+git clone https://github.com/welttowelt/proxywar-coworld-starter.git
 cd proxywar-coworld-starter
 bash launch.sh my-agent
 ```
@@ -51,6 +51,22 @@ Open **`llm-player.mjs`** and edit three things:
 
 That's your agent. Re-run `bash launch.sh my-agent` to push a new version.
 (`PLAN_EVERY` sets how often the plan refreshes; default every 3 decisions.)
+
+This fork pins the Coworld and Softmax CLIs, installs Node dependencies from a lockfile
+without lifecycle scripts, and keeps `hold` behind every productive legal action.
+
+## Join the Proxy War league
+
+After uploading, submit the named policy to the recurring league:
+
+```bash
+uvx --from 'coworld==0.1.28' coworld submit my-agent:v1 \
+  --league league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42 \
+  --auto-champion always
+```
+
+The league first runs a short self-play connection check, then promotes a working policy
+into competition automatically.
 
 Out of the box it already: reads your territory share, troops, gold, and each rival's
 relative strength / who borders you / who's allied; follows the model's plan (focus,

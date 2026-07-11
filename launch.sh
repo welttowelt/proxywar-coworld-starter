@@ -43,6 +43,8 @@ done
 IMAGE="proxywar-agent-llm:latest"
 HERE="$(cd "$(dirname "$0")" && pwd)"
 SERVER="https://softmax.com/api"
+COWORLD_PACKAGE="coworld==0.1.28"
+SOFTMAX_CLI_PACKAGE="softmax-cli==0.26.24"
 BLOCKED=0
 AUTH="unknown"
 
@@ -122,7 +124,7 @@ fi
 
 # Softmax sign-in — probe only; the actual login runs after all checks pass
 if command -v uv >/dev/null 2>&1; then
-  AUTH="$(uvx --from coworld python - "$SERVER" 2>/dev/null <<'PY' || true
+  AUTH="$(uvx --from "$COWORLD_PACKAGE" python - "$SERVER" 2>/dev/null <<'PY' || true
 import sys
 try:
     from coworld.api_client import CoworldApiClient
@@ -161,7 +163,7 @@ fi
 
 if [ "$AUTH" != "ok" ]; then
   echo "==> Signing in to Softmax (browser sign-in; free account)..."
-  uvx --from softmax-cli softmax login
+  uvx --from "$SOFTMAX_CLI_PACKAGE" softmax login --server "$SERVER"
   fixed "Softmax sign-in"
 fi
 
@@ -169,11 +171,11 @@ echo "==> Building your agent image (linux/amd64)..."
 docker build --platform linux/amd64 -t "$IMAGE" "$HERE"
 
 echo "==> Uploading to Softmax as policy '$NAME' (Bedrock enabled)..."
-uvx --from coworld coworld upload-policy "$IMAGE" \
+uvx --from "$COWORLD_PACKAGE" coworld upload-policy "$IMAGE" \
   --name "$NAME" --use-bedrock --run node --run /app/llm-player.mjs
 
 echo "==> Resolving your policy id..."
-POLICY_ID="$(uvx --from coworld python - "$NAME" "$SERVER" <<'PY'
+POLICY_ID="$(uvx --from "$COWORLD_PACKAGE" python - "$NAME" "$SERVER" <<'PY'
 import sys
 try:
     from coworld.api_client import CoworldApiClient
