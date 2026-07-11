@@ -256,6 +256,20 @@ function chooseNeutralAttack(actions, history, avoid) {
   return pickPercent(candidates, cadence[Math.min(streak, cadence.length - 1)], avoid);
 }
 
+export function neutralExpansionStalled(state, history) {
+  const currentShare = finiteNumber(state?.self?.tileShare, NaN);
+  if (!Number.isFinite(currentShare)) return false;
+
+  const stagnant = [];
+  for (let index = history.length - 1; index >= 0; index--) {
+    const previousShare = finiteNumber(history[index]?.tileShare, NaN);
+    if (!Number.isFinite(previousShare) || Math.abs(currentShare - previousShare) > 0.0005) break;
+    stagnant.push(history[index]);
+  }
+  if (stagnant.length < 4) return false;
+  return stagnant.filter((entry) => entry.kind === "attack" && entry.neutral === true).length >= 3;
+}
+
 function builtUnits(history) {
   return history
     .filter((entry) => entry.kind === "build")
@@ -281,18 +295,30 @@ function chooseBuild(actions, history, defend = false) {
   return candidates[0];
 }
 
-function chooseBoat(actions, state, history, avoid) {
+function chooseBoat(actions, state, history, avoid, allowDesperateInvasion = false) {
   const candidates = safeActions(actions, (action) => action.kind === "boat");
   if (candidates.length === 0) return null;
 
-  const invasion = candidates.filter((action) => {
+  const invasionOptions = candidates.map((action) => {
     if (isNeutralBoat(action)) return false;
     const rival = rivalForAction(action, state);
-    return rival && !rival.isAllied && Number.isFinite(rival.relativeTroopRatio) &&
-      rival.relativeTroopRatio >= 1.15;
-  });
+    return rival && !rival.isAllied ? { action, rival } : null;
+  }).filter(Boolean);
+  const favorableInvasions = invasionOptions.filter(({ rival }) =>
+    Number.isFinite(rival.relativeTroopRatio) && rival.relativeTroopRatio >= 1.15
+  );
   const neutral = candidates.filter(isNeutralBoat);
-  const pool = state.self.tileShare >= 0.15 && invasion.length > 0 ? invasion : neutral;
+  let pool = neutral;
+  if (state.self.tileShare >= 0.15 && favorableInvasions.length > 0) {
+    pool = favorableInvasions.map(({ action }) => action);
+  } else if (neutral.length === 0 && allowDesperateInvasion && invasionOptions.length > 0) {
+    const bestRatio = Math.max(...invasionOptions.map(({ rival }) =>
+      Number.isFinite(rival.relativeTroopRatio) ? rival.relativeTroopRatio : -Infinity
+    ));
+    pool = invasionOptions
+      .filter(({ rival }) => !Number.isFinite(bestRatio) || rival.relativeTroopRatio === bestRatio)
+      .map(({ action }) => action);
+  }
   if (pool.length === 0) return null;
   const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
   return pickPercent(pool, boatStreak === 0 ? 8 : 16, avoid);
@@ -345,6 +371,14 @@ export function chooseAction(actions, state, plan = null, history = []) {
   const finishingTarget = rivalAttack && rivalAttack.streak > 0 &&
     rivalAttack.rival.relativeTroopRatio >= 1.5;
 
+  if (neutralExpansionStalled(state, history)) {
+    const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
+    if (boatStreak >= 2 && build) return build;
+    const escapeBoat = chooseBoat(actions, state, history, avoid);
+    if (escapeBoat) return escapeBoat;
+    if (build) return build;
+  }
+
   if (cadenceBuild && !finishingTarget) return build;
   if (state.self.tileShare < 0.12 && neutralAttack) return neutralAttack;
   if (rivalAttack?.action) return rivalAttack.action;
@@ -353,7 +387,8 @@ export function chooseAction(actions, state, plan = null, history = []) {
 
   const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
   if (boatStreak >= 2 && build) return build;
-  const boat = chooseBoat(actions, state, history, avoid);
+  const desperateInvasion = !neutralAttack && !rivalAttack?.action && !build;
+  const boat = chooseBoat(actions, state, history, avoid, desperateInvasion);
   if (boat) return boat;
 
   const utility = chooseUtility(actions, plan, history);

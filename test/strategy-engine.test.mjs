@@ -85,6 +85,68 @@ test("neutral expansion cadence escalates 10, 10, 20, 35 percent", () => {
   ]);
 });
 
+test("stalled land expansion switches to a neutral boat", () => {
+  const land = {
+    ...action("expand:terra-nullius:35", "attack", "Expand into neutral land 35%"),
+    metadata: { expansion: true, troopPercent: 35 },
+  };
+  const boat = {
+    ...action("boat:675041:8", "boat", "Boat to Terra Nullius 8%"),
+    metadata: { expansion: true, troopPercent: 8 },
+  };
+  const history = Array.from({ length: 4 }, (_, index) => ({
+    actionID: `expand:terra-nullius:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare: 0.045,
+  }));
+  assert.equal(choose([land, boat], observation({ tileShare: 0.045 }), null, history).id, boat.id);
+});
+
+test("stalled expansion builds after two escape boats", () => {
+  const land = {
+    ...action("expand:terra-nullius:35", "attack", "Expand into neutral land 35%"),
+    metadata: { expansion: true, troopPercent: 35 },
+  };
+  const boat = {
+    ...action("boat:675041:16", "boat", "Boat to Terra Nullius 16%"),
+    metadata: { expansion: true, troopPercent: 16 },
+  };
+  const build = action("build:City:696749", "build", "Build City");
+  const history = [
+    ...Array.from({ length: 4 }, (_, index) => ({
+      actionID: `expand:terra-nullius:${index}`,
+      kind: "attack",
+      neutral: true,
+      tileShare: 0.045,
+    })),
+    { actionID: "boat:675041:8", kind: "boat", neutral: true, tileShare: 0.045 },
+    { actionID: "boat:675042:16", kind: "boat", neutral: true, tileShare: 0.045 },
+  ];
+  assert.equal(
+    choose([land, boat, build], observation({ tileShare: 0.045 }), null, history).id,
+    build.id,
+  );
+});
+
+test("productive land expansion stays on land", () => {
+  const land = {
+    ...action("expand:terra-nullius:35", "attack", "Expand into neutral land 35%"),
+    metadata: { expansion: true, troopPercent: 35 },
+  };
+  const boat = {
+    ...action("boat:675041:8", "boat", "Boat to Terra Nullius 8%"),
+    metadata: { expansion: true, troopPercent: 8 },
+  };
+  const history = [0.02, 0.025, 0.03, 0.035].map((tileShare, index) => ({
+    actionID: `expand:terra-nullius:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare,
+  }));
+  assert.equal(choose([land, boat], observation({ tileShare: 0.04 }), null, history).id, land.id);
+});
+
 test("post-opening converts a rival at 1.01 instead of spamming boats", () => {
   const actions = [
     action("boat:123:8", "boat", "Boat to Terra Nullius 8%"),
@@ -169,6 +231,37 @@ test("boat streak is capped by an available economy build", () => {
     { actionID: "boat:110:16", kind: "boat", neutral: true },
   ];
   assert.equal(choose(actions, observation({ tileShare: 0.18 }), null, history).id, "build:City:99");
+});
+
+test("an isolated collapsing player invades instead of holding", () => {
+  const actions = [
+    action("boat:rival:8", "boat", "Boat to Rival 8%"),
+    action("boat:rival:16", "boat", "Boat to Rival 16%"),
+    action("hold", "hold", "Hold"),
+  ];
+  const obs = observation({
+    tileShare: 0.001,
+    rivals: [{ id: "rival", name: "Rival", tileShare: 0.7, relativeTroopRatio: 0.7 }],
+  });
+  assert.equal(choose(actions, obs).id, "boat:rival:8");
+});
+
+test("desperate naval fallback never invades an ally", () => {
+  const actions = [
+    action("boat:friend:8", "boat", "Boat to Friend 8%"),
+    action("hold", "hold", "Hold"),
+  ];
+  const obs = observation({
+    tileShare: 0.001,
+    rivals: [{
+      id: "friend",
+      name: "Friend",
+      tileShare: 0.7,
+      relativeTroopRatio: 0.7,
+      isAllied: true,
+    }],
+  });
+  assert.equal(choose(actions, obs).id, "hold");
 });
 
 test("economy cadence interrupts generic expansion but not a target finish", () => {
