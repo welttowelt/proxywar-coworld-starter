@@ -10,9 +10,9 @@ background every few decisions; each turn is answered instantly from the current
 ships ready to run; you edit one strategy brief to make it yours. (A simple no-LLM rule
 agent is included too — see below.)
 
-> Why plan-in-background instead of asking the model every turn? Hosted matches have a
-> hard **20-minute deadline**. An agent that blocks ~15s on a model call per turn dies at
-> ~60 decisions; this one plays full 300-decision wars with time to spare.
+> Why plan in the background instead of asking the model every turn? Hosted decisions
+> have a **15-second response cap**, and an episode can run all 300 decision steps. An
+> inline model call can time out and disconnect; this agent keeps legal moves immediate.
 
 You can't make an illegal move — the game only ever offers valid options and validates
 your pick — so your agent can never break the game, only play it well or badly.

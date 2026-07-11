@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "license": "MIT",
-  "description": "ProxyWar LLM agent (Bedrock). Claude plans in the background; every decision is answered instantly from the current plan (hosted matches have a hard 20-min deadline). Keeps playing, loudly degraded, if Bedrock is unreachable.",
+  "description": "ProxyWar LLM agent (Bedrock). Claude plans in the background; every decision is answered instantly within the hosted response cap. Keeps playing, loudly degraded, if Bedrock is unreachable.",
   "scripts": {
     "test": "node --test",
     "data:collect": "node scripts/collect-proxywar-data.mjs --rounds 20",

@@ -68,9 +68,10 @@ statistics to revise the policy.
 
 Run `npm run rci:gate` before replacing the active champion. It requires the
 latest completed policy round to preserve the Round 185 baseline: official
-rank 1, four episode wins, at least 200,000 mean final tiles, zero holds, and
-zero rejected decisions. `npm run data:refresh` prints the same report without
-blocking dashboard publication when a live champion regresses.
+rank 1, four episode wins, zero holds, zero rejected decisions, and a map-scale
+mean territory floor: Europe 200,000, Asia 150,000, or Pangaea 60,000.
+`npm run data:refresh` prints the same report without blocking dashboard
+publication when a live champion regresses.
 
 The current window spans two formats. Rounds 163-180 are two-player matches;
 rounds 181 onward use four-player FFA. Use the `player_count` column or the

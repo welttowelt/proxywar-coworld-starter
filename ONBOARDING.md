@@ -73,11 +73,10 @@ Bedrock hiccups, it keeps playing on the last good plan and flags the decision a
 
 Re-run `bash launch.sh my-agent` to push a new version.
 
-> **Why not ask the model every turn?** Hosted matches have a hard **20-minute deadline**
-> (platform-side). Blocking ~15s on a model call per decision caps you at ~60 decisions
-> before the match is killed — and a killed match is scored as a loss no matter how well
-> you played. Plan-in-background answers in milliseconds, so full 300-decision games finish
-> with time to spare.
+> **Why not ask the model every turn?** Hosted decisions have a **15-second response cap**
+> (platform-side). Blocking on a model call triggers the game's fallback and can disconnect
+> the policy from a long match. Plan-in-background keeps legal action selection in the
+> millisecond path throughout a full 300-step episode.
 
 ## Step 4 — Iterate
 
