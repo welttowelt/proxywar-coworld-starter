@@ -44,6 +44,8 @@ The RCI-oriented analysis outputs include:
 - `analysis/tactical_adherence.csv`: how often each policy follows structured game
   recommendations for opening, conversion, finishing, economy, naval control,
   diplomacy, troop banking, and strikes.
+- `analysis/map_policy_performance.csv`: per-map scored seats, declared wins,
+  territory, action mix, and holds for each player and policy version.
 
 Raw replay text, action labels, model reasons, and chat are excluded from the
 processed decision table. They are untrusted opponent-controlled or

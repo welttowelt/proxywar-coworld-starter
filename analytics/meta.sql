@@ -67,9 +67,14 @@ CREATE OR REPLACE TEMP VIEW player_matches AS
 SELECT
   r.round_number,
   e.player_count,
+  e.map,
   e.variant_name,
   e.coworld_version,
   p.*,
+  (
+    p.score > 0
+    AND p.score = max(p.score) OVER (PARTITION BY p.episode_id)
+  ) AS episode_lead,
   coalesce(d.decisions, 0) AS decisions,
   coalesce(d.neutral_attacks, 0) AS neutral_attacks,
   coalesce(d.rival_attacks, 0) AS rival_attacks,
@@ -179,6 +184,26 @@ COPY (
   GROUP BY player_name
   ORDER BY wins DESC, mean_final_tiles DESC
 ) TO 'data/analysis/ffa_player_performance.csv' (HEADER, DELIMITER ',');
+
+COPY (
+  SELECT
+    map,
+    player_name,
+    policy_version,
+    count(*) AS matches,
+    sum(won::INTEGER) AS declared_wins,
+    sum(episode_lead::INTEGER) AS episode_points,
+    round(100.0 * avg(episode_lead::INTEGER), 2) AS point_rate_pct,
+    round(avg(final_tiles), 1) AS mean_final_tiles,
+    round(100.0 * sum(rival_attacks) / nullif(sum(decisions), 0), 2) AS rival_attacks_per_100_decisions,
+    round(100.0 * sum(neutral_attacks) / nullif(sum(decisions), 0), 2) AS neutral_attacks_per_100_decisions,
+    round(100.0 * sum(neutral_boats) / nullif(sum(decisions), 0), 2) AS neutral_boats_per_100_decisions,
+    sum(holds) AS holds
+  FROM player_matches
+  WHERE player_count = 4 AND map IS NOT NULL
+  GROUP BY map, player_name, policy_version
+  ORDER BY map, player_name, policy_version
+) TO 'data/analysis/map_policy_performance.csv' (HEADER, DELIMITER ',');
 
 COPY (
   SELECT
@@ -567,6 +592,12 @@ COPY (
   FROM read_csv_auto('data/analysis/ffa_player_performance.csv')
   ORDER BY wins DESC, mean_final_tiles DESC
 ) TO 'site/data/ffa-players.json' (FORMAT JSON, ARRAY true);
+
+COPY (
+  SELECT *
+  FROM read_csv_auto('data/analysis/map_policy_performance.csv')
+  ORDER BY map, player_name, policy_version
+) TO 'site/data/map-performance.json' (FORMAT JSON, ARRAY true);
 
 COPY (
   SELECT *

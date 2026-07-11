@@ -4,6 +4,7 @@ const DATA_FILES = {
   standings: "round-standings.json",
   ourResults: "our-results.json",
   ffaPlayers: "ffa-players.json",
+  mapPerformance: "map-performance.json",
   outcomeProfile: "outcome-profile.json",
   seatPerformance: "seat-performance.json",
   tacticalAdherence: "tactical-adherence.json",
@@ -321,6 +322,55 @@ function renderSeatBars(seats) {
   }).join("");
 }
 
+function renderMapPerformance(data) {
+  const champion = data.memberships.find((membership) => membership.is_champion === true);
+  const maps = ["Pangaea", "Asia", "Europe"];
+
+  byId("map-grid").innerHTML = maps.map((mapName) => {
+    const ourRows = data.mapPerformance
+      .filter((row) => row.map === mapName && row.player_name === OUR_PLAYER)
+      .sort((left, right) => asNumber(right.policy_version) - asNumber(left.policy_version));
+    const championRow = ourRows.find((row) =>
+      asNumber(row.policy_version) === asNumber(champion?.policy_version));
+    const ourRow = championRow ?? ourRows[0] ?? {};
+    const auriRow = data.mapPerformance
+      .filter((row) => row.map === mapName && row.player_name === "Auri")
+      .sort((left, right) => asNumber(right.policy_version) - asNumber(left.policy_version))[0] ?? {};
+    const policyState = championRow ? "champion" : "baseline";
+
+    return `
+      <section class="map-column" aria-label="${escapeHtml(mapName)} policy performance">
+        <div class="map-title-row">
+          <h4>${escapeHtml(mapName)}</h4>
+          <span>${ourRow.policy_version ? `v${escapeHtml(ourRow.policy_version)} ${policyState}` : "No sample"}</span>
+        </div>
+        <dl class="map-stats">
+          <div>
+            <dt>Scored seats</dt>
+            <dd>${escapeHtml(ourRow.episode_points ?? "--")}/${escapeHtml(ourRow.matches ?? "--")} / ${ourRow.point_rate_pct !== undefined ? `${escapeHtml(formatDecimal(ourRow.point_rate_pct))}%` : "--"}</dd>
+          </div>
+          <div>
+            <dt>Mean territory</dt>
+            <dd>${ourRow.mean_final_tiles !== undefined ? escapeHtml(formatInteger(ourRow.mean_final_tiles)) : "--"}</dd>
+          </div>
+          <div>
+            <dt>Neutral boats / 100</dt>
+            <dd>${ourRow.neutral_boats_per_100_decisions !== undefined ? escapeHtml(formatDecimal(ourRow.neutral_boats_per_100_decisions)) : "--"}</dd>
+          </div>
+          <div>
+            <dt>Holds</dt>
+            <dd>${escapeHtml(ourRow.holds ?? "--")}</dd>
+          </div>
+          <div>
+            <dt>Auri scored seats</dt>
+            <dd>${auriRow.episode_points !== undefined ? `${escapeHtml(auriRow.episode_points)}/${escapeHtml(auriRow.matches)} / ${escapeHtml(formatDecimal(auriRow.point_rate_pct))}%` : "--"}</dd>
+          </div>
+        </dl>
+      </section>
+    `;
+  }).join("");
+}
+
 function renderSignals(data) {
   const winner = data.outcomeProfile.find(isWinnerRow) ?? {};
   const field = data.outcomeProfile.find((row) => !isWinnerRow(row)) ?? {};
@@ -394,6 +444,7 @@ async function main() {
     renderPlayerBars(data.ffaPlayers);
     renderOutcomeProfile(data.outcomeProfile);
     renderSeatBars(data.seatPerformance);
+    renderMapPerformance(data);
     renderSignals(data);
     renderDataLedger(data);
   } catch (error) {
