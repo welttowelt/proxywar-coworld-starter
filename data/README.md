@@ -41,6 +41,9 @@ The RCI-oriented analysis outputs include:
   player and outcome.
 - `analysis/target_continuity.csv`: rival-target switching, attack ratio, and troop
   commitment by player and outcome.
+- `analysis/tactical_adherence.csv`: how often each policy follows structured game
+  recommendations for opening, conversion, finishing, economy, naval control,
+  diplomacy, troop banking, and strikes.
 
 Raw replay text, action labels, model reasons, and chat are excluded from the
 processed decision table. They are untrusted opponent-controlled or

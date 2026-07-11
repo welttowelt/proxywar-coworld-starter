@@ -337,6 +337,67 @@ COPY (
 ) TO 'data/analysis/target_continuity.csv' (HEADER, DELIMITER ',');
 
 COPY (
+  WITH ffa AS (
+    SELECT d.*, p.won
+    FROM decisions d
+    JOIN episodes e USING (episode_id, round_id)
+    JOIN participants p USING (episode_id, round_id, participant_position)
+    WHERE e.player_count = 4
+  ), tactical AS (
+    SELECT player_name, policy_version, won, 'opening_tempo' AS tactic,
+      count(*) FILTER (WHERE opening_tempo_recommended) AS recommendations,
+      count(*) FILTER (WHERE opening_tempo_recommended AND opening_tempo_aligned) AS aligned
+    FROM ffa GROUP BY player_name, policy_version, won
+    UNION ALL
+    SELECT player_name, policy_version, won, 'frontier_conversion',
+      count(*) FILTER (WHERE conversion_recommended),
+      count(*) FILTER (WHERE conversion_recommended AND conversion_aligned)
+    FROM ffa GROUP BY player_name, policy_version, won
+    UNION ALL
+    SELECT player_name, policy_version, won, 'finish_pressure',
+      count(*) FILTER (WHERE finish_recommended),
+      count(*) FILTER (WHERE finish_recommended AND finish_aligned)
+    FROM ffa GROUP BY player_name, policy_version, won
+    UNION ALL
+    SELECT player_name, policy_version, won, 'economy_cadence',
+      count(*) FILTER (WHERE economy_recommended),
+      count(*) FILTER (WHERE economy_recommended AND economy_aligned)
+    FROM ffa GROUP BY player_name, policy_version, won
+    UNION ALL
+    SELECT player_name, policy_version, won, 'naval_control',
+      count(*) FILTER (WHERE naval_recommended),
+      count(*) FILTER (WHERE naval_recommended AND naval_aligned)
+    FROM ffa GROUP BY player_name, policy_version, won
+    UNION ALL
+    SELECT player_name, policy_version, won, 'diplomacy_pressure',
+      count(*) FILTER (WHERE diplomacy_recommended),
+      count(*) FILTER (WHERE diplomacy_recommended AND diplomacy_aligned)
+    FROM ffa GROUP BY player_name, policy_version, won
+    UNION ALL
+    SELECT player_name, policy_version, won, 'transport_banking',
+      count(*) FILTER (WHERE banking_recommended),
+      count(*) FILTER (WHERE banking_recommended AND banking_aligned)
+    FROM ffa GROUP BY player_name, policy_version, won
+    UNION ALL
+    SELECT player_name, policy_version, won, 'strike_targeting',
+      count(*) FILTER (WHERE strike_recommended),
+      count(*) FILTER (WHERE strike_recommended AND strike_aligned)
+    FROM ffa GROUP BY player_name, policy_version, won
+  )
+  SELECT
+    player_name,
+    policy_version,
+    won,
+    tactic,
+    recommendations,
+    aligned,
+    round(100.0 * aligned / nullif(recommendations, 0), 2) AS adherence_rate_pct
+  FROM tactical
+  WHERE recommendations > 0
+  ORDER BY won DESC, player_name, policy_version, tactic
+) TO 'data/analysis/tactical_adherence.csv' (HEADER, DELIMITER ',');
+
+COPY (
   SELECT
     player_count,
     participant_position,
@@ -519,6 +580,12 @@ COPY (
   WHERE player_count = 4
   ORDER BY participant_position
 ) TO 'site/data/seat-performance.json' (FORMAT JSON, ARRAY true);
+
+COPY (
+  SELECT *
+  FROM read_csv_auto('data/analysis/tactical_adherence.csv')
+  ORDER BY won DESC, player_name, policy_version, tactic
+) TO 'site/data/tactical-adherence.json' (FORMAT JSON, ARRAY true);
 
 COPY (
   SELECT *

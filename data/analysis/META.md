@@ -73,6 +73,26 @@ Round 185. Mean attack commitment was 26.0% at a 2.01 relative troop ratio. Its
 James Boggs's winning 31.67% rate. No change is justified from this sample because
 v5 converted all four matches decisively.
 
+## Tactical recommendation audit
+
+The replay exposes structured game recommendations independently of each policy's
+selected action. Comparing recommendation adherence separates useful game signals
+from suggestions that consume winning tempo.
+
+| Recommendation | Winners | Non-winners | v5 |
+| --- | ---: | ---: | ---: |
+| Opening tempo | 87.30% | 54.86% | 100.00% |
+| Frontier conversion | 55.27% | 61.39% | 85.71% |
+| Economy cadence | 7.88% | 15.89% | 10.34% |
+| Naval control | 20.03% | 17.26% | 0.95% |
+| Diplomacy pressure | 2.68% | 4.45% | 0.00% |
+| Transport banking | 22.82% | 18.14% | 0.00% |
+
+Opening tempo is the strongest positive signal. Economy and diplomacy adherence are
+higher among non-winners, while the small naval and banking differences do not offset
+v5's four-seat sweep. Keep the current priority order: neutral land first, rapid rival
+conversion second, sparse builds, and almost no social or naval diversion.
+
 ## Seat effect
 
 Each seat now has 15 observed FFA appearances. Seats 1 and 4 each won five,

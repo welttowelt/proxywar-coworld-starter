@@ -131,8 +131,17 @@ function decisionRow(decision, episode, participant, replayHash) {
   const metadata = decision.selectedActionMetadata || {};
   const before = decision.auditBefore || {};
   const after = decision.auditAfter || {};
+  const tactics = decision.tacticalAffordances || {};
   const kind = decision.selectedActionKind || null;
   const expansion = metadata.expansion === true;
+  const hostileAttack = kind === "attack" && !expansion;
+  const navalAction = ["boat", "warship", "move_warship"].includes(kind);
+  const finishTargetID = tactics.frontierFinishPressure?.activeTargetID ?? null;
+  const finishTargetName = tactics.frontierFinishPressure?.activeTargetName ?? null;
+  const finishAligned = hostileAttack && (
+    (finishTargetID && metadata.targetID === finishTargetID) ||
+    (finishTargetName && metadata.targetName === finishTargetName)
+  );
   return {
     episode_id: episode.episode_id,
     episode_request_id: episode.id,
@@ -166,6 +175,22 @@ function decisionRow(decision, episode, participant, replayHash) {
     objective_kind: decision.objectiveKind ?? null,
     audit_status: decision.auditStatus ?? null,
     accepted: decision.result?.accepted ?? null,
+    opening_tempo_recommended: tactics.openingExpansionTempo?.recommended === true,
+    opening_tempo_aligned: expansion && (kind === "attack" || kind === "boat"),
+    conversion_recommended: tactics.frontierConversionTiming?.recommended === true,
+    conversion_aligned: hostileAttack,
+    finish_recommended: tactics.frontierFinishPressure?.recommended === true,
+    finish_aligned: finishAligned,
+    economy_recommended: tactics.economyCadence?.recommended === true,
+    economy_aligned: kind === "build" || kind === "upgrade_structure",
+    naval_recommended: tactics.navalControl?.recommended === true,
+    naval_aligned: navalAction,
+    diplomacy_recommended: tactics.personalityDiplomacyPressure?.recommended === true,
+    diplomacy_aligned: SOCIAL_KINDS.has(kind),
+    banking_recommended: tactics.transportTroopBanking?.recommended === true,
+    banking_aligned: kind === "boat",
+    strike_recommended: tactics.lateGameStrikeTargeting?.recommended === true,
+    strike_aligned: kind === "nuke",
     tiles_before: numberOrNull(before.tilesOwned),
     tiles_after: numberOrNull(after.tilesOwned),
     troops_before: numberOrNull(before.troops),
@@ -365,7 +390,7 @@ await writeFile(path.join(stagingDir, "episodes.ndjson"), ndjson(episodeRows));
 await writeFile(path.join(stagingDir, "participants.ndjson"), ndjson(participantRows));
 await writeFile(path.join(stagingDir, "decisions.ndjson"), ndjson(decisionRows));
 await writeFile(path.join(processedDir, "manifest.json"), `${JSON.stringify({
-  schema_version: 3,
+  schema_version: 4,
   league_id: leagueID,
   collected_at: collectedAt,
   requested_round_count: roundLimit,

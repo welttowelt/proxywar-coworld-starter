@@ -6,6 +6,7 @@ const DATA_FILES = {
   ffaPlayers: "ffa-players.json",
   outcomeProfile: "outcome-profile.json",
   seatPerformance: "seat-performance.json",
+  tacticalAdherence: "tactical-adherence.json",
   leaderboard: "leaderboard.json",
   liveRounds: "live-rounds.json",
   memberships: "memberships.json",
@@ -340,9 +341,30 @@ function renderSignals(data) {
     liveRound && champion && liveRound.entrant_policy_version_ids?.includes(champion.policy_version_id),
   );
   const edge = asNumber(ourFfa.win_rate_pct) - asNumber(nearest.win_rate_pct);
+  const adherenceRate = (tactic, won) => {
+    const rows = data.tacticalAdherence.filter((row) =>
+      row.tactic === tactic && isWinnerRow({ won: row.won }) === won);
+    const recommendations = rows.reduce(
+      (sum, row) => sum + asNumber(row.recommendations),
+      0,
+    );
+    const aligned = rows.reduce((sum, row) => sum + asNumber(row.aligned), 0);
+    return recommendations > 0 ? 100 * aligned / recommendations : 0;
+  };
+  const v5Adherence = (tactic) => asNumber(
+    data.tacticalAdherence.find((row) =>
+      row.player_name === OUR_PLAYER && asNumber(row.policy_version) === 5 &&
+      isWinnerRow({ won: row.won }) && row.tactic === tactic)?.adherence_rate_pct,
+  );
+  const winnerOpening = adherenceRate("opening_tempo", true);
+  const fieldOpening = adherenceRate("opening_tempo", false);
+  const winnerEconomy = adherenceRate("economy_cadence", true);
+  const fieldEconomy = adherenceRate("economy_cadence", false);
 
   const signals = [
     `<strong>Attack tempo:</strong> winners attack rivals ${formatDecimal(attackRatio)}x as often per decision as the field.`,
+    `<strong>Opening discipline:</strong> winners follow the tempo signal ${formatDecimal(winnerOpening)}% vs ${formatDecimal(fieldOpening)}%; v5 is ${formatDecimal(v5Adherence("opening_tempo"))}%.`,
+    `<strong>Economy trap:</strong> non-winners follow build recommendations ${formatDecimal(fieldEconomy)}% vs winners at ${formatDecimal(winnerEconomy)}%; v5 stays at ${formatDecimal(v5Adherence("economy_cadence"))}%.`,
     `<strong>Seat exposure:</strong> seats 1 and 4 account for ${formatInteger(edgeSeatWins)} of ${formatInteger(totalSeatWins)} observed FFA wins.`,
     `<strong>Our edge:</strong> ${formatDecimal(ourFfa.win_rate_pct)}% win rate, ${formatDecimal(edge)} points above the nearest field rate.`,
     champion
