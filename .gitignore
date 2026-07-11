@@ -4,3 +4,6 @@ node_modules/
 data/cache/
 data/staging/
 coworld/
+.netlify/
+.playwright-cli/
+output/playwright/

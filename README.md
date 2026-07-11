@@ -89,6 +89,21 @@ Git.
 Use the FFA tables for current policy decisions. Rounds 163-180 in the initial snapshot
 are head-to-head, while rounds 181 onward use four-player FFA.
 
+## Results dashboard
+
+The static dashboard in [`site/`](site/) turns the committed round data into a compact
+results, standings, and FFA-meta view. Refreshing the data also regenerates the JSON used
+by the frontend:
+
+```bash
+npm run data:refresh
+npm run dashboard:serve
+```
+
+`npm run dashboard:update` is the guarded publish loop. It only runs from a clean
+worktree, refreshes the snapshot, commits changed datasets, and pushes `main`. A linked
+Netlify site then publishes the new snapshot from `site/`.
+
 Out of the box it already: reads your territory share, troops, gold, and each rival's
 relative strength / who borders you / who's allied; uses the model's focus and named
 target as bounded hints; applies replay-derived target continuity and action cadence;

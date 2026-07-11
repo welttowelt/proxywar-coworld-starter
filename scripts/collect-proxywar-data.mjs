@@ -182,14 +182,31 @@ await mkdir(stagingDir, { recursive: true });
 await mkdir(processedDir, { recursive: true });
 
 const roundsResponse = coworldJson(["rounds", "--league", leagueID, "--limit", "200"]);
-const selectedRounds = roundsResponse.entries
-  .filter((round) => round.division?.type === "competition" && round.status === "completed")
+const competitionRounds = roundsResponse.entries
+  .filter((round) => round.division?.type === "competition");
+const selectedRounds = competitionRounds
+  .filter((round) => round.status === "completed")
   .sort((left, right) => right.round_number - left.round_number)
   .slice(0, roundLimit)
   .sort((left, right) => left.round_number - right.round_number);
 if (selectedRounds.length === 0) throw new Error("no completed competition rounds found");
 
 const collectedAt = new Date().toISOString();
+const liveRoundRows = competitionRounds
+  .sort((left, right) => right.round_number - left.round_number)
+  .slice(0, 12)
+  .map((round) => ({
+    round_id: round.id,
+    round_number: round.round_number,
+    status: round.status,
+    entrant_policy_version_ids: round.round_config?.entrant_policy_version_ids || [],
+    entrant_count: round.round_config?.entrant_policy_version_ids?.length ?? 0,
+    created_at: normalizeTimestamp(round.created_at),
+    started_at: normalizeTimestamp(round.started_at),
+    completed_at: normalizeTimestamp(round.completed_at),
+    error: round.error ?? null,
+    collected_at: collectedAt,
+  }));
 const roundRows = selectedRounds.map((round) => ({
   round_id: round.id,
   round_number: round.round_number,
@@ -244,6 +261,28 @@ const leaderboardRows = leaderboardResponse.map((result) => ({
   episode_wins: numberOrNull(result.episode_wins),
   episodes_played: numberOrNull(result.episodes_played),
   win_rate: numberOrNull(result.win_rate),
+  collected_at: collectedAt,
+}));
+
+const membershipResponse = coworldJson([
+  "memberships", "--league", leagueID, "--mine", "--active-only",
+]);
+const membershipRows = membershipResponse.map((membership) => ({
+  membership_id: membership.id,
+  status: membership.status,
+  substatus: membership.substatus,
+  is_champion: membership.is_champion === true,
+  division_id: membership.division?.id ?? null,
+  division_name: membership.division?.name ?? null,
+  policy_id: membership.policy_version?.policy?.id ?? null,
+  policy_name: membership.policy_version?.policy?.name ?? null,
+  policy_version: numberOrNull(membership.policy_version?.version),
+  policy_version_id: membership.policy_version?.id ?? null,
+  policy_label: membership.policy_version?.label ?? null,
+  player_id: membership.player?.id ?? null,
+  player_name: membership.player?.name ?? null,
+  start_time: normalizeTimestamp(membership.start_time),
+  end_time: normalizeTimestamp(membership.end_time),
   collected_at: collectedAt,
 }));
 
@@ -318,21 +357,25 @@ for (const episode of episodes) {
 }
 
 await writeFile(path.join(stagingDir, "rounds.ndjson"), ndjson(roundRows));
+await writeFile(path.join(stagingDir, "live_rounds.ndjson"), ndjson(liveRoundRows));
 await writeFile(path.join(stagingDir, "round_standings.ndjson"), ndjson(roundStandingRows));
 await writeFile(path.join(stagingDir, "leaderboard.ndjson"), ndjson(leaderboardRows));
+await writeFile(path.join(stagingDir, "memberships.ndjson"), ndjson(membershipRows));
 await writeFile(path.join(stagingDir, "episodes.ndjson"), ndjson(episodeRows));
 await writeFile(path.join(stagingDir, "participants.ndjson"), ndjson(participantRows));
 await writeFile(path.join(stagingDir, "decisions.ndjson"), ndjson(decisionRows));
 await writeFile(path.join(processedDir, "manifest.json"), `${JSON.stringify({
-  schema_version: 2,
+  schema_version: 3,
   league_id: leagueID,
   collected_at: collectedAt,
   requested_round_count: roundLimit,
   first_round_number: selectedRounds[0].round_number,
   last_round_number: selectedRounds.at(-1).round_number,
   round_count: roundRows.length,
+  live_round_count: liveRoundRows.length,
   round_standing_count: roundStandingRows.length,
   leaderboard_row_count: leaderboardRows.length,
+  membership_count: membershipRows.length,
   episode_count: episodeRows.length,
   participant_count: participantRows.length,
   decision_count: decisionRows.length,

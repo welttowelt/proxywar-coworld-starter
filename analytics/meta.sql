@@ -1,11 +1,17 @@
 CREATE OR REPLACE TEMP VIEW rounds AS
 SELECT * FROM read_ndjson_auto('data/staging/rounds.ndjson');
 
+CREATE OR REPLACE TEMP VIEW live_rounds AS
+SELECT * FROM read_ndjson_auto('data/staging/live_rounds.ndjson');
+
 CREATE OR REPLACE TEMP VIEW round_standings AS
 SELECT * FROM read_ndjson_auto('data/staging/round_standings.ndjson');
 
 CREATE OR REPLACE TEMP VIEW leaderboard AS
 SELECT * FROM read_ndjson_auto('data/staging/leaderboard.ndjson');
+
+CREATE OR REPLACE TEMP VIEW memberships AS
+SELECT * FROM read_ndjson_auto('data/staging/memberships.ndjson');
 
 CREATE OR REPLACE TEMP VIEW episodes AS
 SELECT * FROM read_ndjson_auto('data/staging/episodes.ndjson');
@@ -19,11 +25,17 @@ SELECT * FROM read_ndjson_auto('data/staging/decisions.ndjson');
 COPY (SELECT * FROM rounds ORDER BY round_number)
 TO 'data/processed/rounds.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);
 
+COPY (SELECT * FROM live_rounds ORDER BY round_number DESC)
+TO 'data/processed/live_rounds.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);
+
 COPY (SELECT * FROM round_standings ORDER BY round_number, rank)
 TO 'data/processed/round_standings.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);
 
 COPY (SELECT * FROM leaderboard ORDER BY rank)
 TO 'data/processed/leaderboard.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);
+
+COPY (SELECT * FROM memberships ORDER BY policy_version DESC)
+TO 'data/processed/memberships.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);
 
 COPY (SELECT * FROM episodes ORDER BY completed_at, episode_id)
 TO 'data/processed/episodes.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);
@@ -302,3 +314,131 @@ COPY (
   SELECT 'decisions_without_episode', count(*) FILTER (WHERE e.episode_id IS NULL), count(*)
   FROM decisions d LEFT JOIN episodes e USING (episode_id, round_id)
 ) TO 'data/analysis/data_quality.csv' (HEADER, DELIMITER ',');
+
+COPY (
+  SELECT
+    strftime(max(r.collected_at), '%Y-%m-%dT%H:%M:%S.%gZ') AS collected_at,
+    count(DISTINCT r.round_id) AS collected_rounds,
+    min(r.round_number) AS first_round,
+    max(r.round_number) AS last_completed_round,
+    (SELECT count(*) FROM episodes) AS episodes,
+    (SELECT count(*) FROM participants) AS participant_rows,
+    (SELECT count(*) FROM decisions) AS decisions,
+    (
+      SELECT coalesce(sum(failures), 0)
+      FROM read_csv_auto('data/analysis/data_quality.csv')
+    ) AS data_quality_failures
+  FROM rounds r
+) TO 'site/data/snapshot.json' (FORMAT JSON, ARRAY true);
+
+COPY (
+  SELECT
+    r.round_id,
+    r.round_number,
+    r.status,
+    r.entrant_count,
+    count(DISTINCT e.episode_id) AS episodes,
+    max(e.player_count) AS player_count,
+    strftime(r.started_at, '%Y-%m-%dT%H:%M:%S.%gZ') AS started_at,
+    strftime(r.completed_at, '%Y-%m-%dT%H:%M:%S.%gZ') AS completed_at
+  FROM rounds r
+  LEFT JOIN episodes e USING (round_id)
+  GROUP BY ALL
+  ORDER BY r.round_number DESC
+) TO 'site/data/rounds.json' (FORMAT JSON, ARRAY true);
+
+COPY (
+  SELECT
+    round_id,
+    round_number,
+    rank,
+    score,
+    player_name,
+    policy_name,
+    policy_version,
+    policy_version_id,
+    completed_episode_count,
+    seed_order
+  FROM round_standings
+  ORDER BY round_number DESC, rank
+) TO 'site/data/round-standings.json' (FORMAT JSON, ARRAY true);
+
+COPY (
+  SELECT
+    round_id,
+    round_number,
+    rank,
+    score,
+    player_name,
+    policy_name,
+    policy_version,
+    policy_version_id,
+    completed_episode_count,
+    seed_order
+  FROM round_standings
+  WHERE player_name = 'odin free'
+  ORDER BY round_number DESC
+) TO 'site/data/our-results.json' (FORMAT JSON, ARRAY true);
+
+COPY (
+  SELECT *
+  FROM read_csv_auto('data/analysis/ffa_player_performance.csv')
+  ORDER BY wins DESC, mean_final_tiles DESC
+) TO 'site/data/ffa-players.json' (FORMAT JSON, ARRAY true);
+
+COPY (
+  SELECT *
+  FROM read_csv_auto('data/analysis/ffa_action_profile_by_outcome.csv')
+  ORDER BY won DESC
+) TO 'site/data/outcome-profile.json' (FORMAT JSON, ARRAY true);
+
+COPY (
+  SELECT *
+  FROM read_csv_auto('data/analysis/seat_performance.csv')
+  WHERE player_count = 4
+  ORDER BY participant_position
+) TO 'site/data/seat-performance.json' (FORMAT JSON, ARRAY true);
+
+COPY (
+  SELECT *
+  FROM leaderboard
+  ORDER BY rank
+) TO 'site/data/leaderboard.json' (FORMAT JSON, ARRAY true);
+
+COPY (
+  SELECT
+    round_id,
+    round_number,
+    status,
+    entrant_policy_version_ids,
+    entrant_count,
+    strftime(created_at, '%Y-%m-%dT%H:%M:%S.%gZ') AS created_at,
+    strftime(started_at, '%Y-%m-%dT%H:%M:%S.%gZ') AS started_at,
+    strftime(completed_at, '%Y-%m-%dT%H:%M:%S.%gZ') AS completed_at,
+    error,
+    strftime(collected_at, '%Y-%m-%dT%H:%M:%S.%gZ') AS collected_at
+  FROM live_rounds
+  ORDER BY round_number DESC
+) TO 'site/data/live-rounds.json' (FORMAT JSON, ARRAY true);
+
+COPY (
+  SELECT
+    membership_id,
+    status,
+    substatus,
+    is_champion,
+    division_id,
+    division_name,
+    policy_id,
+    policy_name,
+    policy_version,
+    policy_version_id,
+    policy_label,
+    player_id,
+    player_name,
+    strftime(start_time, '%Y-%m-%dT%H:%M:%S.%gZ') AS start_time,
+    strftime(end_time::TIMESTAMP, '%Y-%m-%dT%H:%M:%S.%gZ') AS end_time,
+    strftime(collected_at, '%Y-%m-%dT%H:%M:%S.%gZ') AS collected_at
+  FROM memberships
+  ORDER BY is_champion DESC, policy_version DESC
+) TO 'site/data/memberships.json' (FORMAT JSON, ARRAY true);

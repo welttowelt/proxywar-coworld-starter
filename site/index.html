@@ -1,0 +1,269 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#0c0a18">
+    <meta
+      name="description"
+      content="Proxy War competition results and strategy statistics for odin free."
+    >
+    <title>Proxy War Control Room</title>
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    >
+    <link rel="stylesheet" href="./styles.css">
+    <script type="module" src="./app.js"></script>
+  </head>
+  <body>
+    <div class="page">
+      <header class="site-head">
+        <a class="brand" href="#overview">WELTTOWELT / PROXY WAR</a>
+        <nav class="site-nav" aria-label="Dashboard sections">
+          <a href="#overview">Overview</a>
+          <a href="#results">Rounds</a>
+          <a href="#meta">Meta</a>
+          <a href="#data">Data</a>
+        </nav>
+        <div class="header-state" id="header-state">
+          <span class="status-dot" aria-hidden="true"></span>
+          <span>Loading snapshot</span>
+        </div>
+      </header>
+
+      <main>
+        <section class="overview" id="overview">
+          <div class="overview-main">
+            <p class="kicker">Competitive intelligence / odin free</p>
+            <h1>Proxy War<br>control room</h1>
+            <p class="overview-line" id="overview-line">Loading official round data.</p>
+          </div>
+
+          <aside class="current-state" aria-labelledby="current-state-title">
+            <div class="state-rule"></div>
+            <p class="meta-label" id="current-state-title">Current state</p>
+            <strong class="state-title" id="state-title">Checking league</strong>
+            <p class="state-copy" id="state-copy">Waiting for the latest public-safe snapshot.</p>
+            <dl class="state-list">
+              <div>
+                <dt>Active policy</dt>
+                <dd id="active-policy">--</dd>
+              </div>
+              <div>
+                <dt>Snapshot</dt>
+                <dd id="snapshot-time">--</dd>
+              </div>
+            </dl>
+          </aside>
+        </section>
+
+        <section class="kpi-grid" aria-label="Key performance indicators">
+          <article class="kpi">
+            <span>Latest finish</span>
+            <strong id="latest-finish">--</strong>
+            <small id="latest-finish-note">Official rank</small>
+          </article>
+          <article class="kpi">
+            <span>FFA win rate</span>
+            <strong id="our-win-rate">--</strong>
+            <small id="our-win-note">Collected matches</small>
+          </article>
+          <article class="kpi">
+            <span>Progression</span>
+            <strong class="kpi-sequence" id="progression">--</strong>
+            <small>Official entries</small>
+          </article>
+          <article class="kpi">
+            <span>Decision corpus</span>
+            <strong id="decision-count">--</strong>
+            <small id="quality-note">Validation pending</small>
+          </article>
+        </section>
+
+        <section class="section" id="results">
+          <header class="section-head">
+            <p class="section-index">01 / round results</p>
+            <h2>Official round ledger.</h2>
+          </header>
+
+          <div class="results-grid">
+            <article class="panel placement-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="panel-label">Our entries</p>
+                  <h3>Placement trail</h3>
+                </div>
+                <span class="panel-meta" id="entry-count">-- entries</span>
+              </div>
+              <div class="placement-trail" id="placement-trail" aria-live="polite"></div>
+            </article>
+
+            <article class="panel live-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="panel-label">League pulse</p>
+                  <h3 id="live-round-title">Latest round</h3>
+                </div>
+                <span class="live-badge" id="live-badge">Checking</span>
+              </div>
+              <div class="live-value" id="live-value">--</div>
+              <p class="live-copy" id="live-copy">Loading entrant and policy state.</p>
+              <div class="live-facts">
+                <span id="live-entrants">-- entrants</span>
+                <span id="live-started">--</span>
+              </div>
+            </article>
+          </div>
+
+          <div class="table-panel">
+            <div class="table-toolbar">
+              <div>
+                <p class="panel-label">Official standings</p>
+                <h3 id="table-title">Our round history</h3>
+              </div>
+              <div class="segmented" role="tablist" aria-label="Standings view">
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected="true"
+                  data-view="ours"
+                >Our entries</button>
+                <button
+                  type="button"
+                  role="tab"
+                  aria-selected="false"
+                  data-view="all"
+                >All collected</button>
+              </div>
+            </div>
+            <div class="table-scroll">
+              <table>
+                <thead>
+                  <tr>
+                    <th scope="col">Round</th>
+                    <th scope="col">Rank</th>
+                    <th scope="col">Player</th>
+                    <th scope="col">Score</th>
+                    <th scope="col">Policy</th>
+                    <th scope="col">Episodes</th>
+                  </tr>
+                </thead>
+                <tbody id="standings-body"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section class="section" id="meta">
+          <header class="section-head">
+            <p class="section-index">02 / competitive meta</p>
+            <h2>What wins in four-player FFA.</h2>
+          </header>
+
+          <div class="meta-grid">
+            <article class="panel field-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="panel-label">Field performance</p>
+                  <h3>Win rate by player</h3>
+                </div>
+                <span class="panel-meta">4-player only</span>
+              </div>
+              <div class="bar-list" id="player-bars"></div>
+            </article>
+
+            <article class="panel action-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="panel-label">Action profile</p>
+                  <h3>Winners vs field</h3>
+                </div>
+                <span class="panel-meta">Per 100 decisions</span>
+              </div>
+              <div class="profile-legend" aria-hidden="true">
+                <span><i class="legend-winner"></i>Winner</span>
+                <span><i class="legend-field"></i>Field</span>
+              </div>
+              <div class="profile-list" id="profile-list"></div>
+            </article>
+
+            <article class="panel seat-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="panel-label">Spawn exposure</p>
+                  <h3>Win rate by seat</h3>
+                </div>
+                <span class="panel-meta">Observed FFA</span>
+              </div>
+              <div class="seat-bars" id="seat-bars"></div>
+            </article>
+
+            <article class="panel intelligence-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="panel-label">Readout</p>
+                  <h3>Current signals</h3>
+                </div>
+              </div>
+              <ol class="signal-list" id="signal-list"></ol>
+            </article>
+          </div>
+        </section>
+
+        <section class="section data-section" id="data">
+          <header class="section-head">
+            <p class="section-index">03 / data ledger</p>
+            <h2>Replay-backed and auditable.</h2>
+          </header>
+
+          <div class="data-ledger">
+            <dl>
+              <div>
+                <dt>Completed rounds</dt>
+                <dd id="round-count">--</dd>
+              </div>
+              <div>
+                <dt>Episodes</dt>
+                <dd id="episode-count">--</dd>
+              </div>
+              <div>
+                <dt>Participant rows</dt>
+                <dd id="participant-count">--</dd>
+              </div>
+              <div>
+                <dt>Quality failures</dt>
+                <dd id="quality-count">--</dd>
+              </div>
+            </dl>
+            <div class="data-links">
+              <a
+                href="https://github.com/welttowelt/proxywar-coworld-starter/tree/main/data"
+                target="_blank"
+                rel="noreferrer"
+              >Open datasets <span aria-hidden="true">&#8599;</span></a>
+              <a
+                href="https://softmax.com/observatory"
+                target="_blank"
+                rel="noreferrer"
+              >Softmax Observatory <span aria-hidden="true">&#8599;</span></a>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <span>Proxy War / odin free / official standings plus replay telemetry</span>
+        <span id="footer-snapshot">Snapshot pending</span>
+      </footer>
+    </div>
+
+    <div class="fatal-state" id="fatal-state" hidden>
+      <strong>Dashboard data unavailable</strong>
+      <span>Refresh the deployment after running the data pipeline.</span>
+    </div>
+  </body>
+</html>

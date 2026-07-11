@@ -8,7 +8,9 @@
     "test": "node --test",
     "data:collect": "node scripts/collect-proxywar-data.mjs --rounds 20",
     "data:analyze": "duckdb < analytics/meta.sql",
-    "data:refresh": "npm run data:collect && npm run data:analyze"
+    "data:refresh": "npm run data:collect && npm run data:analyze",
+    "dashboard:serve": "npx --yes serve site --listen 4173",
+    "dashboard:update": "bash scripts/publish-dashboard.sh"
   },
   "dependencies": {
     "ws": "^8.18.0",
