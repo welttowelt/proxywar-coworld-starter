@@ -160,6 +160,42 @@ function incomingThreatCount(value) {
   return value ? 1 : 0;
 }
 
+function chooseAllianceMove(actions, state, history, threatCount, collapsing, activeDecisions) {
+  const sinceAllianceMove = decisionsSince(
+    history,
+    (entry) => entry.kind === "alliance_request" || entry.kind === "break_alliance",
+  );
+  const allies = state.rivals.filter((rival) => rival.isAllied);
+
+  if (allies.length > 0) {
+    if (state.self.tileShare < 0.45 || sinceAllianceMove < 10) return null;
+    const breaks = safeActions(actions, (action) => {
+      if (action.kind !== "break_alliance") return false;
+      const rival = rivalForAction(action, state);
+      return rival?.isAllied === true;
+    });
+    return breaks[0] ?? null;
+  }
+
+  const trailing = state.self.tileShare <= state.topRivalTileShare + 0.02;
+  if (
+    state.rivals.length < 2 || threatCount === 0 || activeDecisions < 18 ||
+    sinceAllianceMove < 18 || (!collapsing && !trailing)
+  ) {
+    return null;
+  }
+
+  const requests = safeActions(actions, (action) => action.kind === "alliance_request")
+    .map((action) => ({ action, rival: rivalForAction(action, state) }))
+    .filter(({ rival }) => rival && !rival.isAllied)
+    .sort((left, right) => {
+      const leftPending = Number(left.action?.metadata?.relation) === 2 ? 1 : 0;
+      const rightPending = Number(right.action?.metadata?.relation) === 2 ? 1 : 0;
+      return rightPending - leftPending || right.rival.tileShare - left.rival.tileShare;
+    });
+  return requests[0]?.action ?? null;
+}
+
 function safeActions(actions, predicate = () => true) {
   const matching = actions.filter(predicate);
   const safe = matching.filter((action) => action.risk?.level !== "high");
@@ -387,6 +423,16 @@ export function chooseAction(actions, state, plan = null, history = []) {
   const collapsing = territoryCollapsing(state, history);
 
   if (collapsing && build && sinceBuild >= 3 && !finishingTarget) return build;
+
+  const allianceMove = chooseAllianceMove(
+    actions,
+    state,
+    history,
+    threatCount,
+    collapsing,
+    activeDecisions,
+  );
+  if (allianceMove && !finishingTarget) return allianceMove;
 
   if (neutralExpansionStalled(state, history)) {
     const boatStreak = consecutive(history, (entry) => entry.kind === "boat");

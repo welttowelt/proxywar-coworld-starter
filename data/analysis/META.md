@@ -1,23 +1,23 @@
 # Proxy War meta report
 
-Snapshot collected 2026-07-11 after Competition Round 195. The source window
-covers rounds 176-195, 75 episodes, 260 participant seats, and 29,078 agent
+Snapshot collected 2026-07-11 after Competition Round 196. The source window
+covers rounds 177-196, 75 episodes, 268 participant seats, and 28,398 agent
 decisions. All 12 ingestion quality checks pass with zero failures.
 
-Round 195 extended the verified consecutive first-place streak to 9 of the
+Round 196 extended the verified consecutive first-place streak to 10 of the
 100-round target.
 
 ## Current four-player field
 
-Rounds 181-195 use the current four-player FFA format. The 55 available episodes
+Rounds 181-196 use the current four-player FFA format. The 59 available episodes
 produce this table:
 
 | Player | Matches | Wins | Win rate | Mean final tiles | Rival attacks | Holds |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| odin free | 55 | 30 | 54.55% | 155,540.7 | 1,039 | 133 |
-| Auri | 55 | 8 | 14.55% | 64,948.1 | 784 | 200 |
-| James Boggs | 55 | 7 | 12.73% | 32,260.8 | 417 | 64 |
-| Richard Higgins | 55 | 0 | 0.00% | 11,577.9 | 304 | 9 |
+| odin free | 59 | 33 | 55.93% | 149,502.5 | 1,141 | 133 |
+| Auri | 59 | 9 | 15.25% | 62,501.7 | 841 | 203 |
+| James Boggs | 59 | 7 | 11.86% | 30,304.9 | 444 | 67 |
+| Richard Higgins | 59 | 0 | 0.00% | 10,793.0 | 309 | 9 |
 
 The aggregate holds column includes the broken v4 round and 51 Round 189 actions
 selected by the game's fallback brain after the v6 container disconnected. v6's
@@ -43,6 +43,7 @@ decisions.
 | 193 | v7 | 1 | 2/4 | 44,823.3 | 2* |
 | 194 | v8 | 1 | 3/4 | 164,939.8 | 0 |
 | 195 | v8 | 1 | 2/4 | 265,029.3 | 0 |
+| 196 | v8 | 1 | 3/4 | 66,477.8 | 0 |
 
 v4 misclassified the new structured neutral-land action and held instead of
 expanding. v5 fixed the classifier and recovered immediately from every seat.
@@ -127,21 +128,27 @@ and no socket disconnect. The strict RCI gate fails only the four-of-four win
 check. The official 0.50 score and seed-order tie-break extended the streak to
 nine first-place rounds.
 
+Round 196 used Pangaea. v8 won seats 1, 3, and 4 with 88,560, 84,186, and
+92,541 final tiles. Auri won seat 2 after v8 peaked at 35,127 and took 31 attacks
+from all three rivals. v8 made 294 decisions with zero holds and zero rejected
+actions. The 0.75 score reached the 10-round checkpoint while preserving the
+expanded 100-round objective.
+
 ## Winning action profile
 
-Four-player winners use 28.76 rival attacks per 100 decisions versus 8.27 for
-non-winners, a 3.48x difference. Winners also allocate fewer decisions to neutral
+Four-player winners use 29.68 rival attacks per 100 decisions versus 8.34 for
+non-winners, a 3.56x difference. Winners also allocate fewer decisions to neutral
 expansion, builds, social actions, and holds.
 
 | Actions per 100 decisions | Winners | Non-winners |
 | --- | ---: | ---: |
-| Rival attacks | 28.76 | 8.27 |
-| Neutral attacks | 33.47 | 50.22 |
-| Neutral boats | 19.78 | 12.13 |
-| Naval invasions | 1.84 | 1.28 |
-| Builds | 8.25 | 8.19 |
-| Social actions | 3.52 | 11.52 |
-| Holds | 0.65 | 2.34 |
+| Rival attacks | 29.68 | 8.34 |
+| Neutral attacks | 32.50 | 49.57 |
+| Neutral boats | 19.80 | 12.31 |
+| Naval invasions | 2.12 | 1.41 |
+| Builds | 8.18 | 8.38 |
+| Social actions | 3.29 | 11.63 |
+| Holds | 0.60 | 2.28 |
 
 v5 was more decisive than the pooled winner profile in Round 185. Across those
 four wins, 56.9% of decisions attacked rivals and 28.4% expanded into neutral
@@ -191,7 +198,7 @@ rapid rival conversion. Continue sparse builds and almost no social diversion.
 
 ## Seat effect
 
-Each seat now has 55 observed FFA appearances. v5 won exactly once from each seat
+Each seat now has 59 observed FFA appearances. v5 won exactly once from each seat
 in Round 185, so that sweep was not explained by seat order. Its Round 186 Europe
 spread instead points to connectivity and frontier access: one seat dominated,
 one plateaued alive, and two were eliminated.
@@ -224,8 +231,17 @@ field round won three of four Asia seats without holds, rejected actions, or a
 socket disconnect. The isolated loss was driven by sustained 26-action pressure
 from Auri with a growing troop advantage. Round 195 added two Europe wins and
 two multi-rival pressure losses, again without holds, rejected actions, or a
-disconnect. v8 now has two official first-place finishes and five wins across
-eight field episodes.
+disconnect. Round 196 added three Pangaea wins and a third multi-rival pressure
+loss. v8 has three official first-place finishes and eight wins across 12 field
+episodes.
+
+The v9 candidate adds one survival-alliance action under sustained midgame
+pressure, waits at least 18 decisions before retrying, and breaks an alliance
+only after reaching 45% territory. Its 29 tests pass. A four-seat local Pangaea
+run produced a decisive 90,000-tile winner, two alliance requests across 268
+decisions, zero holds, and zero rejected actions. The test ran in deterministic
+fallback mode because the local Coworld Bedrock path requires an absent `aws`
+binary; hosted qualification still exercises the normal Bedrock container path.
 
 ## PUA/PIP operating loop
 
@@ -243,7 +259,7 @@ eight field episodes.
 2. Require four of four declared wins, zero holds, and zero rejected decisions
    for a full RCI pass. Use map-specific mean-tile floors: Europe 200,000, Asia
    150,000, and Pangaea 60,000.
-3. Keep v8 as champion through Round 196. Design a survival-alliance experiment
-   for repeated multi-rival pressure, but do not promote it without local proof.
+3. Submit v9 through the hosted qualifier and promote only after a successful
+   connection check. Preserve v8 until the normal champion handoff completes.
 4. Refresh after every completed round and reset the consecutive first-place
    counter after any official rank below 1.

@@ -169,6 +169,107 @@ test("sustained territory collapse inserts an emergency build", () => {
   );
 });
 
+test("midgame pressure accepts a pending survival alliance", () => {
+  const allianceWithLeader = {
+    ...action("alliance:leader", "alliance_request", "Alliance with Leader"),
+    metadata: { recipientID: "leader", relation: 1 },
+  };
+  const pendingAlliance = {
+    ...action("alliance:requester", "alliance_request", "Alliance with Requester"),
+    metadata: { recipientID: "requester", relation: 2 },
+  };
+  const land = action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%");
+  const history = Array.from({ length: 18 }, (_, index) => ({
+    actionID: `expand:terra-nullius:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare: 0.1 + index * 0.005,
+  }));
+  const obs = observation({
+    tileShare: 0.2,
+    troopRatio: 0.9,
+    incomingAttacks: [{ attackerID: "leader" }],
+    rivals: [
+      { id: "leader", name: "Leader", tileShare: 0.28, relativeTroopRatio: 0.8 },
+      { id: "requester", name: "Requester", tileShare: 0.12, relativeTroopRatio: 1.1 },
+    ],
+  });
+  assert.equal(
+    choose([land, allianceWithLeader, pendingAlliance], obs, null, history).id,
+    pendingAlliance.id,
+  );
+});
+
+test("survival alliance does not consume tempo without incoming pressure", () => {
+  const alliance = {
+    ...action("alliance:leader", "alliance_request", "Alliance with Leader"),
+    metadata: { recipientID: "leader", relation: 2 },
+  };
+  const land = action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%");
+  const history = Array.from({ length: 18 }, (_, index) => ({
+    actionID: `build:City:${index}`,
+    kind: "build",
+    tileShare: 0.1 + index * 0.005,
+  }));
+  const obs = observation({
+    tileShare: 0.2,
+    troopRatio: 0.9,
+    rivals: [
+      { id: "leader", name: "Leader", tileShare: 0.28, relativeTroopRatio: 0.8 },
+      { id: "other", name: "Other", tileShare: 0.12, relativeTroopRatio: 1.1 },
+    ],
+  });
+  assert.equal(choose([land, alliance], obs, null, history).id, land.id);
+});
+
+test("survival alliance waits eighteen decisions before retrying", () => {
+  const alliance = {
+    ...action("alliance:leader", "alliance_request", "Alliance with Leader"),
+    metadata: { recipientID: "leader", relation: 2 },
+  };
+  const land = action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%");
+  const history = [
+    ...Array.from({ length: 17 }, (_, index) => ({
+      actionID: `build:City:${index}`,
+      kind: "build",
+      tileShare: 0.1 + index * 0.005,
+    })),
+    { actionID: alliance.id, kind: "alliance_request", tileShare: 0.19 },
+  ];
+  const obs = observation({
+    tileShare: 0.18,
+    troopRatio: 0.9,
+    incomingAttacks: [{ attackerID: "leader" }],
+    rivals: [
+      { id: "leader", name: "Leader", tileShare: 0.3, relativeTroopRatio: 0.8 },
+      { id: "other", name: "Other", tileShare: 0.12, relativeTroopRatio: 1.1 },
+    ],
+  });
+  assert.equal(choose([land, alliance], obs, null, history).id, land.id);
+});
+
+test("a dominant player breaks an alliance to finish", () => {
+  const breakAlliance = {
+    ...action("break:ally", "break_alliance", "Break alliance with Ally"),
+    metadata: { targetID: "ally" },
+  };
+  const land = action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%");
+  const obs = observation({
+    tileShare: 0.48,
+    troopRatio: 0.9,
+    rivals: [
+      {
+        id: "ally",
+        name: "Ally",
+        tileShare: 0.3,
+        relativeTroopRatio: 1.1,
+        isAllied: true,
+      },
+    ],
+  });
+  assert.equal(choose([land, breakAlliance], obs).id, breakAlliance.id);
+});
+
 test("productive land expansion stays on land", () => {
   const land = {
     ...action("expand:terra-nullius:35", "attack", "Expand into neutral land 35%"),
