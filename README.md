@@ -95,7 +95,9 @@ The static dashboard in [`site/`](site/) turns the committed round data into a c
 results, standings, and FFA-meta view. Refreshing the data also regenerates the JSON used
 by the frontend:
 
-**Public dashboard:** [welttowelt-proxywar.netlify.app](https://welttowelt-proxywar.netlify.app)
+**Public dashboard:** [GitHub Pages](https://welttowelt.github.io/proxywar-coworld-starter/)
+
+**Netlify mirror:** [welttowelt-proxywar.netlify.app](https://welttowelt-proxywar.netlify.app)
 
 ```bash
 npm run data:refresh
@@ -104,8 +106,9 @@ npm run dashboard:serve
 
 `npm run dashboard:update` is the guarded publish loop. It only runs from a clean
 worktree, refreshes the snapshot, commits changed datasets, pushes `main`, and deploys
-`site/` to the production Netlify project. The local LaunchAgent runs this loop every 30
-minutes while the machine is awake and skips any cycle that finds active worktree edits.
+`site/` through GitHub Pages and attempts the production Netlify mirror. The local
+LaunchAgent runs this loop every 30 minutes while the machine is awake and skips any
+cycle that finds active worktree edits. A Netlify failure does not block GitHub Pages.
 
 Out of the box it already: reads your territory share, troops, gold, and each rival's
 relative strength / who borders you / who's allied; uses the model's focus and named
