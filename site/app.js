@@ -13,10 +13,6 @@ const DATA_FILES = {
 
 const OUR_PLAYER = "odin free";
 const numberFormat = new Intl.NumberFormat("en-CH");
-const decimalFormat = new Intl.NumberFormat("en-CH", {
-  minimumFractionDigits: 1,
-  maximumFractionDigits: 1,
-});
 const dateFormat = new Intl.DateTimeFormat("en-CH", {
   day: "2-digit",
   month: "short",
@@ -67,6 +63,11 @@ function ordinal(value) {
 function widthPercent(value, maximum) {
   if (maximum <= 0) return 0;
   return Math.max(0, Math.min(100, (asNumber(value) / maximum) * 100));
+}
+
+function widthClass(value) {
+  const bounded = Math.max(0, Math.min(100, asNumber(value)));
+  return `w-${Math.round(bounded / 5) * 5}`;
 }
 
 function isWinnerRow(row) {
@@ -159,7 +160,7 @@ function renderPlacementTrail(results) {
     (left, right) => asNumber(left.round_number) - asNumber(right.round_number),
   );
   byId("entry-count").textContent = `${ordered.length} ${ordered.length === 1 ? "entry" : "entries"}`;
-  byId("placement-trail").innerHTML = ordered.map((result, index) => {
+  byId("placement-trail").innerHTML = ordered.map((result) => {
     const rank = asNumber(result.rank);
     const width = Math.max(18, widthPercent(5 - rank, 4));
     return `
@@ -169,7 +170,7 @@ function renderPlacementTrail(results) {
           class="placement-track"
           role="img"
           aria-label="Round ${escapeHtml(result.round_number)}, ${escapeHtml(ordinal(rank))} place"
-        ><span style="width:${width.toFixed(1)}%;animation-delay:${index * 80}ms"></span></div>
+        ><span class="${widthClass(width)}"></span></div>
         <strong class="placement-rank">#${escapeHtml(rank)}</strong>
         <span class="placement-version">v${escapeHtml(result.policy_version)}</span>
       </div>
@@ -251,7 +252,7 @@ function renderStandings(data) {
 
 function renderPlayerBars(players) {
   const maximum = Math.max(1, ...players.map((player) => asNumber(player.win_rate_pct)));
-  byId("player-bars").innerHTML = players.map((player, index) => {
+  byId("player-bars").innerHTML = players.map((player) => {
     const ours = player.player_name === OUR_PLAYER;
     const rate = asNumber(player.win_rate_pct);
     return `
@@ -261,7 +262,7 @@ function renderPlayerBars(players) {
           class="bar-track"
           role="img"
           aria-label="${escapeHtml(player.player_name)} win rate ${escapeHtml(formatDecimal(rate))} percent"
-        ><span style="width:${widthPercent(rate, maximum).toFixed(1)}%;animation-delay:${index * 70}ms"></span></div>
+        ><span class="${widthClass(widthPercent(rate, maximum))}"></span></div>
         <span class="bar-value">${escapeHtml(player.wins)}/${escapeHtml(player.matches)} / ${escapeHtml(formatDecimal(rate))}%</span>
       </div>
     `;
@@ -278,7 +279,7 @@ function renderOutcomeProfile(rows) {
     ["Social", "social_per_100_decisions"],
   ];
 
-  byId("profile-list").innerHTML = metrics.map(([label, key], index) => {
+  byId("profile-list").innerHTML = metrics.map(([label, key]) => {
     const winnerValue = asNumber(winner[key]);
     const fieldValue = asNumber(field[key]);
     const maximum = Math.max(1, winnerValue, fieldValue);
@@ -287,11 +288,11 @@ function renderOutcomeProfile(rows) {
         <span>${escapeHtml(label)}</span>
         <div class="profile-pair">
           <div class="profile-line" data-kind="winner">
-            <div class="profile-track"><span style="width:${widthPercent(winnerValue, maximum).toFixed(1)}%;animation-delay:${index * 60}ms"></span></div>
+            <div class="profile-track"><span class="${widthClass(widthPercent(winnerValue, maximum))}"></span></div>
             <strong>${escapeHtml(formatDecimal(winnerValue))}</strong>
           </div>
           <div class="profile-line" data-kind="field">
-            <div class="profile-track"><span style="width:${widthPercent(fieldValue, maximum).toFixed(1)}%;animation-delay:${index * 60 + 40}ms"></span></div>
+            <div class="profile-track"><span class="${widthClass(widthPercent(fieldValue, maximum))}"></span></div>
             <strong>${escapeHtml(formatDecimal(fieldValue))}</strong>
           </div>
         </div>
@@ -301,7 +302,7 @@ function renderOutcomeProfile(rows) {
 }
 
 function renderSeatBars(seats) {
-  byId("seat-bars").innerHTML = seats.map((seat, index) => {
+  byId("seat-bars").innerHTML = seats.map((seat) => {
     const rate = asNumber(seat.win_rate_pct);
     return `
       <div class="seat-row" data-active="${rate > 0}">
@@ -310,7 +311,7 @@ function renderSeatBars(seats) {
           class="seat-track"
           role="img"
           aria-label="Seat ${asNumber(seat.participant_position) + 1} win rate ${escapeHtml(formatDecimal(rate))} percent"
-        ><span style="width:${rate.toFixed(1)}%;animation-delay:${index * 70}ms"></span></div>
+        ><span class="${widthClass(rate)}"></span></div>
         <span class="seat-value">${escapeHtml(seat.wins)}/${escapeHtml(seat.player_matches)} / ${escapeHtml(formatDecimal(rate))}%</span>
       </div>
     `;
