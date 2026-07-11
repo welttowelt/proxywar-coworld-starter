@@ -324,7 +324,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
   );
   const activeDecisions = history.filter((entry) => entry.kind !== "spawn").length;
   const cadenceBuild = build && state.self.tileShare >= 0.08 && activeDecisions >= 6 &&
-    sinceBuild >= 9;
+    sinceBuild >= 14;
   const finishingTarget = rivalAttack && rivalAttack.streak > 0 &&
     rivalAttack.rival.relativeTroopRatio >= 1.5;
 

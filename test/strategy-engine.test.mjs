@@ -107,6 +107,22 @@ test("target continuity escalates a favorable attack from 10 to 25 to 40", () =>
   assert.deepEqual(selected, ["attack:weak:10", "attack:weak:25", "attack:weak:40"]);
 });
 
+test("a vulnerable target outranks a planner preference for the leader", () => {
+  const actions = [
+    action("attack:weak:10", "attack", "Attack Weak 10%"),
+    action("attack:leader:10", "attack", "Attack Leader 10%"),
+  ];
+  const obs = observation({
+    tileShare: 0.18,
+    rivals: [
+      { id: "weak", name: "Weak", tileShare: 0.08, relativeTroopRatio: 1.6 },
+      { id: "leader", name: "Leader", tileShare: 0.3, relativeTroopRatio: 1.1 },
+    ],
+  });
+  const plan = { focus: "attack", target: "Leader", avoidTargets: [] };
+  assert.equal(choose(actions, obs, plan).id, "attack:weak:10");
+});
+
 test("a runaway leader can be pressured at a 0.9 relative ratio", () => {
   const actions = [
     action("attack:leader:10", "attack", "Attack Leader 10%"),
@@ -167,6 +183,25 @@ test("economy cadence interrupts generic expansion but not a target finish", () 
     rivals: [{ id: "weak", name: "Weak", tileShare: 0.08, relativeTroopRatio: 1.8 }],
   });
   assert.equal(choose(actions, target, null, finishingHistory).id, "attack:weak:40");
+});
+
+test("recurring economy builds wait fourteen decisions", () => {
+  const actions = [
+    action("expand:terra-nullius:10", "attack", "Attack Terra Nullius 10%"),
+    action("build:Factory:99", "build", "Build Factory"),
+  ];
+  const baseHistory = [
+    { actionID: "build:City:10", kind: "build", neutral: false },
+    ...Array.from({ length: 13 }, (_, index) => ({
+      actionID: `expand:terra-nullius:${index}`,
+      kind: "attack",
+      neutral: true,
+    })),
+  ];
+  const obs = observation({ tileShare: 0.16 });
+  assert.equal(choose(actions, obs, null, baseHistory).id, "expand:terra-nullius:10");
+  baseHistory.push({ actionID: "hold", kind: "hold", neutral: false });
+  assert.equal(choose(actions, obs, null, baseHistory).id, "build:Factory:99");
 });
 
 test("donations require an allied recipient and ally focus", () => {
