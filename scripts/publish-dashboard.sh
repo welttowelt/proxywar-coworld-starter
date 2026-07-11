@@ -30,3 +30,8 @@ fi
 
 git commit -m "Refresh Proxy War dashboard data"
 git push origin main
+npx --yes netlify deploy \
+  --prod \
+  --dir site \
+  --site a18dda9f-1550-440f-a7bc-40deaa7c2e8a \
+  --message "Automated Proxy War dashboard refresh"
