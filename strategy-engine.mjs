@@ -5,8 +5,8 @@ const SOCIAL_KINDS = new Set([
 ]);
 
 export const PLAN_KINDS = [
-  "spawn", "attack", "nuke", "build", "upgrade_structure", "boat", "warship",
-  "move_warship", "alliance_request", "alliance_extend", "break_alliance",
+  "spawn", "attack", "nuke", "build", "upgrade_structure", "boat", "boat_retreat",
+  "warship", "move_warship", "alliance_request", "alliance_extend", "break_alliance",
   "target_player", "embargo", "embargo_all", "embargo_stop", "donate_gold",
   "donate_troops", "quick_chat", "emoji", "hold",
 ];
@@ -400,6 +400,18 @@ export function chooseAction(actions, state, plan = null, history = []) {
     return plan?.focus === "ally" && rival?.isAllied === true;
   })[0];
   if (donation) return donation;
+
+  // Holding while legal tactical actions remain turns a weak position into a certain loss.
+  if (build) return build;
+  const retreat = safeActions(actions, (action) => action.kind === "boat_retreat")[0];
+  if (retreat) return retreat;
+  const emergencyAttacks = safeActions(actions, (action) => {
+    if (action.kind !== "attack" || isNeutralExpansion(action)) return false;
+    const rival = rivalForAction(action, state);
+    return rival && !rival.isAllied;
+  });
+  const emergencyAttack = pickPercent(emergencyAttacks, 10, avoid);
+  if (emergencyAttack) return emergencyAttack;
 
   return actions.find((action) => action.kind === "hold") ?? actions[0];
 }

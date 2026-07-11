@@ -264,6 +264,41 @@ test("desperate naval fallback never invades an ally", () => {
   assert.equal(choose(actions, obs).id, "hold");
 });
 
+test("a legal defense build beats hold even during build cooldown", () => {
+  const actions = [
+    action("attack:leader:10", "attack", "Attack Leader 10%"),
+    action("build:Defense Post:307123", "build", "Build Defense Post"),
+    action("hold", "hold", "Hold"),
+  ];
+  const history = [{ actionID: "build:Defense Post:300000", kind: "build", tileShare: 0.09 }];
+  const obs = observation({
+    tileShare: 0.08,
+    rivals: [{ id: "leader", name: "Leader", tileShare: 0.46, relativeTroopRatio: 0.79 }],
+  });
+  assert.equal(choose(actions, obs, null, history).id, "build:Defense Post:307123");
+});
+
+test("an exposed transport retreats instead of holding", () => {
+  const actions = [
+    action("boat_retreat:113", "boat_retreat", "Retreat boat 113"),
+    action("hold", "hold", "Hold"),
+  ];
+  assert.equal(choose(actions, observation()).id, "boat_retreat:113");
+});
+
+test("a low-commitment counterattack beats hold as the last tactical option", () => {
+  const actions = [
+    action("attack:rival:10", "attack", "Attack Rival 10%"),
+    action("attack:rival:25", "attack", "Attack Rival 25%"),
+    action("hold", "hold", "Hold"),
+  ];
+  const obs = observation({
+    tileShare: 0.08,
+    rivals: [{ id: "rival", name: "Rival", tileShare: 0.46, relativeTroopRatio: 0.7 }],
+  });
+  assert.equal(choose(actions, obs).id, "attack:rival:10");
+});
+
 test("economy cadence interrupts generic expansion but not a target finish", () => {
   const actions = [
     action("attack:weak:40", "attack", "Attack Weak 40%"),

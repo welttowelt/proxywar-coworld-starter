@@ -53,6 +53,7 @@ const STRATEGY = [
   "Build cities, factories, ports, and defenses on a regular cadence without interrupting a finish.",
   "Use boats for neutral expansion or favorable invasion, but never let boats replace land conversion.",
   "If isolated and only rival boats remain, invade the safest non-allied target instead of holding.",
+  "If territory is collapsing, defend, retreat exposed boats, or probe a rival before considering HOLD.",
   "When a nuke is legal, use it to stop the leader, break a stalemate, or finish a rival.",
   "Use alliances for early safety. Donate only to an allied recipient when it prevents their collapse.",
   "Do not loop embargo, donation, chat, or emoji actions when expansion, economy, or combat is available.",
