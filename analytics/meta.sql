@@ -235,7 +235,7 @@ COPY (
   JOIN episodes e USING (episode_id, round_id)
   WHERE e.player_count = 4 AND d.is_rival_attack AND d.target_name IS NOT NULL
   GROUP BY d.player_name, d.target_name
-  ORDER BY d.player_name, rival_attacks DESC
+  ORDER BY d.player_name, rival_attacks DESC, d.target_name
 ) TO 'data/analysis/ffa_attack_targets.csv' (HEADER, DELIMITER ',');
 
 COPY (
@@ -525,7 +525,7 @@ COPY (
           WHERE player_name = 'odin free' AND rank <> 1
         ), -1)
     ) AS current_first_place_streak,
-    10 AS target_first_place_streak,
+    100 AS target_first_place_streak,
     (
       SELECT count(*)
       FROM round_standings

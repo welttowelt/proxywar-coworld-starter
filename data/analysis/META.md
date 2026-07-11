@@ -5,7 +5,7 @@ covers rounds 175-194, 75 episodes, 252 participant seats, and 27,335 agent
 decisions. All 12 ingestion quality checks pass with zero failures.
 
 Round 194 extended the verified consecutive first-place streak to 8 of the
-10-round target.
+100-round target.
 
 ## Current four-player field
 
@@ -216,7 +216,7 @@ the policy before the next map rotation.
 
 ## RCI decision
 
-1. Keep the official goal strict: rank first for 10 consecutive rounds.
+1. Keep the official goal strict: rank first for 100 consecutive rounds.
 2. Require four of four declared wins, zero holds, and zero rejected decisions
    for a full RCI pass. Use map-specific mean-tile floors: Europe 200,000, Asia
    150,000, and Pangaea 60,000.
