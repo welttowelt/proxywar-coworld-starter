@@ -1,23 +1,23 @@
 # Proxy War meta report
 
-Snapshot collected 2026-07-11 after Competition Round 198. The source window
-covers rounds 179-198, 75 episodes, 284 participant seats, and 28,143 agent
+Snapshot collected 2026-07-12 after Competition Round 199. The source window
+covers rounds 180-199, 75 episodes, 292 participant seats, and 27,431 agent
 decisions. All 12 ingestion quality checks pass with zero failures.
 
-Round 198 extended the verified consecutive first-place streak to 12 of the
+Round 199 extended the verified consecutive first-place streak to 13 of the
 100-round target.
 
 ## Current four-player field
 
-Rounds 181-198 use the current four-player FFA format. The 67 available episodes
+Rounds 181-199 use the current four-player FFA format. The 71 available episodes
 produce this table:
 
 | Player | Matches | Wins | Win rate | Mean final tiles | Rival attacks | Holds |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| odin free | 67 | 39 | 58.21% | 162,246.7 | 1,330 | 134 |
-| Auri | 67 | 10 | 14.93% | 64,349.6 | 939 | 254 |
-| James Boggs | 67 | 7 | 10.45% | 27,475.5 | 530 | 108 |
-| Richard Higgins | 67 | 0 | 0.00% | 10,912.8 | 367 | 15 |
+| odin free | 71 | 42 | 59.15% | 156,967.7 | 1,394 | 134 |
+| Auri | 71 | 11 | 15.49% | 61,901.8 | 984 | 254 |
+| James Boggs | 71 | 7 | 9.86% | 25,996.4 | 543 | 108 |
+| Richard Higgins | 71 | 0 | 0.00% | 10,723.9 | 386 | 15 |
 
 The aggregate holds column includes the broken v4 round and 51 Round 189 actions
 selected by the game's fallback brain after the v6 container disconnected. v6's
@@ -47,6 +47,7 @@ resolution. The dataset has zero rejected decisions.
 | 196 | v8 | 1 | 3/4 | 66,477.8 | 0 |
 | 197 | v9 | 1 | 3/4 | 168,315.3 | 1 |
 | 198 | v9 | 1 | 3/4 | 344,155.3 | 0 |
+| 199 | v11 | 1 | 3/4 | 68,545.0 | 0 |
 
 v4 misclassified the new structured neutral-land action and held instead of
 expanding. v5 fixed the classifier and recovered immediately from every seat.
@@ -157,6 +158,23 @@ to v9, showing that pending requests can be useful despite the race during
 simultaneous turn execution. Across 571 decisions, v9 recorded zero holds, zero
 rejected actions, and 12 planner fallbacks. The 0.75 score and first place
 extended the streak to 12.
+
+Round 199 used Pangaea for v11's first field test. v11 won seats 1, 3, and 4
+with 87,364, 82,412, and 90,082 final tiles. Auri won seat 2 after v11 peaked at
+20,149 and finished with 14,322. Auri attacked that seat five times and reached
+79% territory by turn 3,400; map geometry exposed no legal attack on Auri, so
+v11 attacked Richard Higgins three times and James Boggs once. It formed a
+stable alliance with Richard at turn 3,100, too late to slow Auri. Across 178
+decisions, v11 recorded zero holds, zero rejected actions, and 38 planner
+fallbacks. Its 0.75 score and first place extended the streak to 13.
+
+Recent Pangaea rounds show the same seat effect: our seat 2 finished with 12,095
+tiles in Round 190, 624 in Round 196, and 14,322 in Round 199 while seats 1, 3,
+and 4 won. A defensive-spawn candidate was tested and rejected. The Coworld
+runtime labels these actions `deterministic-spawn` and records
+`externalActionCall=false`, so the external policy cannot alter spawn choice.
+The controlled candidate replay was identical to v11 at 12,211 seat-2 tiles and
+a 90,000-tile seat-3 winner. The candidate was removed and never promoted.
 
 ## Winning action profile
 
@@ -283,6 +301,7 @@ last-resort selection still excludes pending requests. All 32 tests pass. Its
 four-seat local Pangaea run produced a 90,000-tile winner at turn 8,500 with 268
 accepted decisions, zero holds, and zero rejected actions. Hosted qualifier
 Round 32 completed successfully, promoted v11, and locked it into Round 199.
+Round 199 then produced three Pangaea wins with zero holds or rejected actions.
 
 ## PUA/PIP operating loop
 
@@ -300,7 +319,7 @@ Round 32 completed successfully, promoted v11, and locked it into Round 199.
 2. Require four of four declared wins, zero holds, and zero rejected decisions
    for a full RCI pass. Use map-specific mean-tile floors: Europe 200,000, Asia
    150,000, and Pangaea 60,000.
-3. Keep qualified v11 as champion for Round 199 and evaluate the conditional
-   pending-request path from its replay before another policy change.
+3. Keep qualified v11 as champion for Round 200. Do not pursue spawn-selection
+   changes because the tournament runtime handles spawn outside the policy.
 4. Refresh after every completed round and reset the consecutive first-place
    counter after any official rank below 1.
