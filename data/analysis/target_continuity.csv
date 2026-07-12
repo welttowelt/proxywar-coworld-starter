@@ -1,10 +1,10 @@
 player_name,policy_version,won,rival_attacks,target_switches,switch_rate_pct,mean_attack_ratio,mean_attack_percent
-odin free,14,true,1704,242,14.71,2.97,25.2
-Auri,4,true,151,9,6.25,1.79,23.4
-Auri,5,true,117,29,25.44,2.68,24.4
-James Boggs,1,true,54,14,27.45,1.57,18.1
-James Boggs,1,false,549,109,21.84,1.64,16.2
-Auri,4,false,462,23,5.49,2.22,21.9
-Richard Higgins,1,false,363,24,8.0,1.83,10.0
-Auri,5,false,283,26,9.92,3.21,23.2
-odin free,14,false,270,27,10.8,2.1,23.1
+odin free,14,true,1623,224,14.29,3.08,25.1
+Auri,5,true,144,30,21.43,2.79,24.8
+Auri,4,true,128,8,6.56,1.79,23.2
+James Boggs,1,true,75,20,28.17,1.64,18.8
+James Boggs,1,false,572,109,20.88,1.6,16.1
+Auri,4,false,395,17,4.74,2.25,22.1
+Auri,5,false,395,41,11.17,3.29,23.4
+odin free,14,false,375,38,10.8,2.36,22.4
+Richard Higgins,1,false,363,25,8.28,1.93,10.0
