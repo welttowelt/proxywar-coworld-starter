@@ -419,7 +419,7 @@ test("post-opening converts a rival at 1.01 instead of spamming boats", () => {
   assert.equal(selected.id, "attack:weak:10");
 });
 
-test("target continuity escalates a favorable attack from 10 to 25 to 40", () => {
+test("target continuity holds at 25 percent in the middle reserve band", () => {
   const actions = [10, 25, 40].map((percent) =>
     action(`attack:weak:${percent}`, "attack", `Attack Weak ${percent}%`)
   );
@@ -435,7 +435,47 @@ test("target continuity escalates a favorable attack from 10 to 25 to 40", () =>
     selected.push(choice.id);
     recordDecision(history, choice, state);
   }
-  assert.deepEqual(selected, ["attack:weak:10", "attack:weak:25", "attack:weak:40"]);
+  assert.deepEqual(selected, ["attack:weak:10", "attack:weak:25", "attack:weak:25"]);
+});
+
+test("target continuity stays at 10 percent below the reserve floor", () => {
+  const actions = [10, 25, 40].map((percent) =>
+    action(`attack:weak:${percent}`, "attack", `Attack Weak ${percent}%`)
+  );
+  const obs = observation({
+    tileShare: 0.25,
+    troopRatio: 0.7,
+    rivals: [{ id: "weak", name: "Weak", tileShare: 0.09, relativeTroopRatio: 1.7 }],
+  });
+  const history = [10, 25].map((percent) => ({
+    actionID: `attack:weak:${percent}`,
+    kind: "attack",
+    neutral: false,
+    targetName: "Weak",
+    tileShare: 0.25,
+  }));
+
+  assert.equal(choose(actions, obs, null, history).id, "attack:weak:10");
+});
+
+test("target continuity reaches 40 percent only with a full troop bank", () => {
+  const actions = [10, 25, 40].map((percent) =>
+    action(`attack:weak:${percent}`, "attack", `Attack Weak ${percent}%`)
+  );
+  const obs = observation({
+    tileShare: 0.25,
+    troopRatio: 0.9,
+    rivals: [{ id: "weak", name: "Weak", tileShare: 0.09, relativeTroopRatio: 1.7 }],
+  });
+  const history = [10, 25].map((percent) => ({
+    actionID: `attack:weak:${percent}`,
+    kind: "attack",
+    neutral: false,
+    targetName: "Weak",
+    tileShare: 0.25,
+  }));
+
+  assert.equal(choose(actions, obs, null, history).id, "attack:weak:40");
 });
 
 test("a planner avoid list cannot cancel an active favorable finish", () => {
@@ -449,6 +489,7 @@ test("a planner avoid list cannot cancel an active favorable finish", () => {
   ));
   const obs = observation({
     tileShare: 0.19,
+    troopRatio: 0.95,
     rivals: [{ id: "weak", name: "Weak", tileShare: 0.03, relativeTroopRatio: 3.2 }],
   });
   const history = [10, 25, 40].map((percent) => ({
@@ -622,6 +663,7 @@ test("economy cadence interrupts generic expansion but not a target finish", () 
   ];
   const target = observation({
     tileShare: 0.2,
+    troopRatio: 0.95,
     rivals: [{ id: "weak", name: "Weak", tileShare: 0.08, relativeTroopRatio: 1.8 }],
   });
   assert.equal(choose(actions, target, null, finishingHistory).id, "attack:weak:40");

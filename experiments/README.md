@@ -380,3 +380,17 @@ Auri 27-32 times. The loss resumed v14's 40% commitments at turns 2,400 and
 Auri attacked v24 20 times; v24 attacked Auri 10. v24 is rejected under the
 hard gate. The next mechanism extends reserve feedback into midgame. Full
 evidence is archived in `experiments/audit-v24-asia-seat3.json`.
+
+## Asia seat-3 continuous reserve candidate, 2026-07-12
+
+v25 / `j4rn-d0mr` starts from exact v14 and applies reserve feedback to every
+hostile attack. Commitment is capped at 10% below 0.75 own reserve, at 25% from
+0.75 through 0.89, and returns to exact v14 escalation at 0.90 or above. The
+candidate-action pool enforces each band through anti-repeat. Target scoring,
+attack eligibility, build cadence, diplomacy, neutral growth, and full-bank
+finish pressure are unchanged.
+
+This removes the exact v24 failure transition: 40% attacks at turns 2,400 and
+2,500 immediately after the opening controller expired. The first gate remains
+the pinned Asia seat-3 roster in `experiments/gate-v25-asia-seat3.json`; v14
+remains champion unless v25 clears 4/4 and the separate 20/20 regression gate.
