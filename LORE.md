@@ -1,5 +1,9 @@
 # odin ledger
 
+## Qd1n takes the seat
+
+F4bl3 br0k3 th3 0ld l1n3. V14 r3t1r3d. Qd1n h0lds th3 s34t.
+
 This is the public chronicle of the campaign. It records only events that changed
 the agent, the field, or the standard of proof. Strategy detail belongs in the
 experiment ledger; unsupported legend does not enter here.

@@ -1,5 +1,12 @@
 # merit ledger
 
+## active seat
+
+| Policy | State | Evidence |
+| --- | --- | --- |
+| `qd1n:v2` | champion | membership `lpm_fb9d79c9-0eb7-4a96-8bea-cf8122fd81bf` |
+| `oli-codex-proxywar:v14` | retired | membership benched after Qd1n promotion |
+
 Merit is replay-backed progress toward sustained FFA control. A policy earns no
 credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 

@@ -36,7 +36,8 @@ function setPolicyCodenames(rows) {
   ]));
 }
 
-function publicPolicyLabel(version) {
+function publicPolicyLabel(version, policyName = "") {
+  if (String(policyName).toLowerCase() === "qd1n") return "Qd1n";
   const key = String(version ?? "--").replace(/^v/, "");
   const release = policyCodenames.get(key);
   return release ? `v${key} / ${release.codename}` : `v${key}`;
@@ -150,26 +151,26 @@ function renderOverview(data) {
   if (liveRound) {
     byId("state-title").textContent = `Round ${liveRound.round_number} is running`;
     if (championIsLive) {
-      byId("state-copy").textContent = `${publicPolicyLabel(champion.policy_version)} is in the active roster.`;
+      byId("state-copy").textContent = `${publicPolicyLabel(champion.policy_version, champion.policy_name)} / ch4mp10n / l1v3 r0st3r.`;
     } else if (livePolicy && champion) {
-      byId("state-copy").textContent = `${publicPolicyLabel(livePolicy.policy_version)} entered before ${publicPolicyLabel(champion.policy_version)} was promoted. The champion is queued for the next roster snapshot.`;
+      byId("state-copy").textContent = `${publicPolicyLabel(livePolicy.policy_version, livePolicy.policy_name)} / r3t1r3d. ${publicPolicyLabel(champion.policy_version, champion.policy_name)} / ch4mp10n / n3xt r0st3r.`;
     } else {
       byId("state-copy").textContent = "The active round predates the latest champion promotion.";
     }
   } else {
     byId("state-title").textContent = `Round ${latestRound.round_number ?? "--"} ${latestRound.status ?? "snapshot"}`;
     byId("state-copy").textContent = champion
-      ? `${publicPolicyLabel(champion.policy_version)} is the active league champion.`
+      ? `${publicPolicyLabel(champion.policy_version, champion.policy_name)} / 4ct1v3 ch4mp10n.`
       : "No active champion was found in this snapshot.";
   }
 
   byId("active-policy").textContent = champion
-    ? `${publicPolicyLabel(champion.policy_version)} / ${champion.substatus}`
+    ? `${publicPolicyLabel(champion.policy_version, champion.policy_name)} / ${champion.substatus}`
     : "Unknown";
   byId("snapshot-time").textContent = formatDate(snapshot.collected_at);
   byId("latest-finish").textContent = latestResult.rank ? ordinal(latestResult.rank) : "--";
   byId("latest-finish-note").textContent = latestResult.round_number
-    ? `Round ${latestResult.round_number} / ${publicPolicyLabel(latestResult.policy_version)} / score ${formatDecimal(latestResult.score, 2)}`
+    ? `Round ${latestResult.round_number} / ${publicPolicyLabel(latestResult.policy_version, latestResult.policy_name)} / score ${formatDecimal(latestResult.score, 2)}`
     : "Official rank";
   byId("our-win-rate").textContent = ourFfa.win_rate_pct !== undefined
     ? `${formatDecimal(ourFfa.win_rate_pct)}%`
@@ -288,17 +289,17 @@ function renderLiveRound(data) {
 
   if (round.status === "running" && roundPolicy && champion) {
     byId("live-copy").textContent = roundPolicy.policy_version_id === champion.policy_version_id
-      ? `${publicPolicyLabel(champion.policy_version)} is competing in this round.`
-      : `${publicPolicyLabel(roundPolicy.policy_version)} is competing. ${publicPolicyLabel(champion.policy_version)} was promoted after roster lock.`;
+      ? `${publicPolicyLabel(champion.policy_version, champion.policy_name)} / f1ght1ng n0w.`
+      : `${publicPolicyLabel(roundPolicy.policy_version, roundPolicy.policy_name)} / r3t1r3d r0st3r. ${publicPolicyLabel(champion.policy_version, champion.policy_name)} / n3xt.`;
   } else if (round.status === "running") {
     byId("live-copy").textContent = "Competition is running with the roster captured in this snapshot.";
   } else {
     const ourStanding = data.standings.find((standing) =>
       standing.round_id === round.round_id && standing.player_name === OUR_PLAYER);
     byId("live-copy").textContent = ourStanding
-      ? `${publicPolicyLabel(ourStanding.policy_version)} finished ${ordinal(ourStanding.rank)} with score ${formatDecimal(ourStanding.score, 2)} across ${ourStanding.completed_episode_count} episodes.`
+      ? `${publicPolicyLabel(ourStanding.policy_version, ourStanding.policy_name)} / ${ordinal(ourStanding.rank)} / ${formatDecimal(ourStanding.score, 2)} / ${ourStanding.completed_episode_count} g4m3s.`
       : champion
-        ? `${publicPolicyLabel(champion.policy_version)} is ready for the next competition roster.`
+        ? `${publicPolicyLabel(champion.policy_version, champion.policy_name)} / r34dy / n3xt r0st3r.`
         : "Waiting for the next competition roster.";
   }
 
@@ -312,7 +313,7 @@ function tableRows(rows) {
   return rows.map((row) => {
     const ours = row.player_name === OUR_PLAYER;
     const policy = row.player_name === OUR_PLAYER
-      ? publicPolicyLabel(row.policy_version)
+      ? publicPolicyLabel(row.policy_version, row.policy_name)
       : `${row.player_name} / v${row.policy_version ?? "--"}`;
     return `
       <tr data-player="${ours ? "ours" : "field"}">
@@ -433,7 +434,7 @@ function renderMapPerformance(data) {
       <section class="map-column" aria-label="${escapeHtml(mapName)} policy performance">
         <div class="map-title-row">
           <h4>${escapeHtml(mapName)}</h4>
-          <span class="codename">${ourRow.policy_version ? `${escapeHtml(publicPolicyLabel(ourRow.policy_version))} / ${policyState}` : "No sample"}</span>
+          <span class="codename">${ourRow.policy_version ? `${escapeHtml(publicPolicyLabel(ourRow.policy_version, ourRow.policy_name))} / ${policyState}` : "No sample"}</span>
         </div>
         <dl class="map-stats">
           <div>
@@ -661,7 +662,7 @@ function renderSignals(data) {
       ? `<strong>Board control:</strong> Odin holds ${formatInteger(odinRows.length)}/${formatInteger(listedRows.length)} listed rows and ${formatInteger(odinCrownRows.length)}/${formatInteger(crownRows.length)} crown slots.`
       : "<strong>Board control:</strong> no leaderboard rows were present in the snapshot.",
     champion
-      ? `<strong>Policy state:</strong> ${escapeHtml(publicPolicyLabel(champion.policy_version))} is champion${liveRound && !championIsLive ? `; Round ${escapeHtml(liveRound.round_number)} locked its roster before promotion.` : "."}`
+      ? `<strong>Policy state:</strong> ${escapeHtml(publicPolicyLabel(champion.policy_version, champion.policy_name))} / ch4mp10n${liveRound && !championIsLive ? `; r0und ${escapeHtml(liveRound.round_number)} / 0ld r0st3r / r3t1r3d.` : "."}`
       : "<strong>Policy state:</strong> no champion was present in the snapshot.",
     newestAuri
       ? `<strong>Challenger drift:</strong> newest Auri league policy is v${escapeHtml(newestAuri.policy_version)} (${escapeHtml(newestAuri.substatus)})${auriDrift ? `, ahead of completed-round v${escapeHtml(latestAuri.policy_version)}` : ""}; ${formatInteger(auriVersions.size)} version${auriVersions.size === 1 ? "" : "s"} observed.`

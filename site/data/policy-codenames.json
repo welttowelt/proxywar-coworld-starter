@@ -7,7 +7,7 @@
 	{"version":"v11","codename":"vegtam-t1de","status":"retired"},
 	{"version":"v12","codename":"f1mbul-gr1p","status":"retired"},
 	{"version":"v13","codename":"sanngetal-l0ck","status":"retired"},
-	{"version":"v14","codename":"b0lverk-h0gg","status":"champion"},
+	{"version":"v14","codename":"b0lverk-h0gg","status":"retired"},
 	{"version":"v15","codename":"gr1mnir-pr0be","status":"rejected"},
 	{"version":"v17","codename":"v1drir-v0rn","status":"rejected"},
 	{"version":"v18","codename":"ygg-v0rn","status":"rejected"},
@@ -27,5 +27,5 @@
 	{"version":"v32","codename":"hrafn-s4r","status":"rejected"},
 	{"version":"v33","codename":"g4lga-v4rd","status":"rejected"},
 	{"version":"v34","codename":"n1dh0ggr","status":"rejected"},
-	{"version":"v35","codename":"f3nr1r","status":"testing"}
+	{"version":"v35","codename":"f3nr1r","status":"retired"}
 ]
