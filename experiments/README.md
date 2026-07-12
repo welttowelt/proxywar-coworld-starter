@@ -304,3 +304,19 @@ at 40%; 27 occurred while its own troop reserve ratio was below 0.75. Its first
 a 1.66 relative troop advantage. The next isolated candidate will preserve the
 opening troop bank rather than alter target choice. Full evidence is archived
 in `experiments/audit-v22-asia-seat3.json`.
+
+## Asia seat-3 opening reserve candidate, 2026-07-12
+
+v23 / `v1g-l0k` starts from exact v14 and changes only the opening commitment
+schedule. Target continuity still opens at 10% and rises to 25%, but 40%
+hostile attacks are unavailable during the first 20 active decisions. After
+that window, v14's 40% finish rule is unchanged. Target scoring, attack floors,
+build cadence, diplomacy, neutral growth, and all post-opening behavior remain
+identical.
+
+This isolates the earliest divergence from Auri v5. In every v22 Asia run, our
+selector began 40% attacks on Richard at turn 1,700 and drove its troop reserve
+ratio from 0.70 toward 0.43 before Auri's first attack. Auri used no opening 40%
+attacks and began pressure at turn 1,900 with a 1.66 relative troop advantage.
+The hosted diagnostic is pinned in `experiments/gate-v23-asia-seat3.json`; v14
+remains champion unless v23 clears 4/4 plus the separate 20/20 regression gate.

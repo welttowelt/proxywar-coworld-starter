@@ -419,7 +419,7 @@ test("post-opening converts a rival at 1.01 instead of spamming boats", () => {
   assert.equal(selected.id, "attack:weak:10");
 });
 
-test("target continuity escalates a favorable attack from 10 to 25 to 40", () => {
+test("opening target continuity preserves reserves at 10 then 25 percent", () => {
   const actions = [10, 25, 40].map((percent) =>
     action(`attack:weak:${percent}`, "attack", `Attack Weak ${percent}%`)
   );
@@ -435,7 +435,41 @@ test("target continuity escalates a favorable attack from 10 to 25 to 40", () =>
     selected.push(choice.id);
     recordDecision(history, choice, state);
   }
-  assert.deepEqual(selected, ["attack:weak:10", "attack:weak:25", "attack:weak:40"]);
+  assert.deepEqual(selected, ["attack:weak:10", "attack:weak:25", "attack:weak:25"]);
+});
+
+test("post-opening target continuity can escalate to 40 percent", () => {
+  const actions = [10, 25, 40].map((percent) =>
+    action(`attack:weak:${percent}`, "attack", `Attack Weak ${percent}%`)
+  );
+  const obs = observation({
+    tileShare: 0.25,
+    rivals: [{ id: "weak", name: "Weak", tileShare: 0.09, relativeTroopRatio: 1.7 }],
+  });
+  const history = [
+    ...Array.from({ length: 18 }, (_, index) => ({
+      actionID: `expand:terra-nullius:${index}`,
+      kind: "attack",
+      neutral: true,
+      tileShare: 0.2,
+    })),
+    {
+      actionID: "attack:weak:10",
+      kind: "attack",
+      neutral: false,
+      targetName: "Weak",
+      tileShare: 0.25,
+    },
+    {
+      actionID: "attack:weak:25",
+      kind: "attack",
+      neutral: false,
+      targetName: "Weak",
+      tileShare: 0.25,
+    },
+  ];
+
+  assert.equal(choose(actions, obs, null, history).id, "attack:weak:40");
 });
 
 test("a planner avoid list cannot cancel an active favorable finish", () => {
@@ -451,13 +485,21 @@ test("a planner avoid list cannot cancel an active favorable finish", () => {
     tileShare: 0.19,
     rivals: [{ id: "weak", name: "Weak", tileShare: 0.03, relativeTroopRatio: 3.2 }],
   });
-  const history = [10, 25, 40].map((percent) => ({
-    actionID: `attack:weak:${percent}`,
-    kind: "attack",
-    neutral: false,
-    targetName: "Weak",
-    tileShare: 0.19,
-  }));
+  const history = [
+    ...Array.from({ length: 17 }, (_, index) => ({
+      actionID: `expand:terra-nullius:${index}`,
+      kind: "attack",
+      neutral: true,
+      tileShare: 0.19,
+    })),
+    ...[10, 25, 40].map((percent) => ({
+      actionID: `attack:weak:${percent}`,
+      kind: "attack",
+      neutral: false,
+      targetName: "Weak",
+      tileShare: 0.19,
+    })),
+  ];
   const plan = { focus: "attack", target: "Leader", avoidTargets: ["Weak"] };
   assert.equal(choose(actions, obs, plan, history).id, "attack:weak:40");
 });
@@ -607,7 +649,7 @@ test("economy cadence interrupts generic expansion but not a target finish", () 
     action("expand:terra-nullius:10", "attack", "Attack Terra Nullius 10%"),
     action("build:City:99", "build", "Build City"),
   ];
-  const baseHistory = Array.from({ length: 9 }, (_, index) => ({
+  const baseHistory = Array.from({ length: 20 }, (_, index) => ({
     actionID: `expand:terra-nullius:${index}`,
     kind: "attack",
     neutral: true,
@@ -616,7 +658,7 @@ test("economy cadence interrupts generic expansion but not a target finish", () 
   assert.equal(choose(actions, noRivals, null, baseHistory).id, "build:City:99");
 
   const finishingHistory = [
-    ...baseHistory.slice(0, 7),
+    ...baseHistory.slice(0, 18),
     { actionID: "attack:weak:10", kind: "attack", targetName: "Weak", neutral: false },
     { actionID: "attack:weak:25", kind: "attack", targetName: "Weak", neutral: false },
   ];
