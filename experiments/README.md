@@ -249,3 +249,17 @@ Local Bedrock planning was unavailable, so 212 decisions used the deterministic
 fallback path and the new plan-gated mechanism was not reachable. The run proves
 container, protocol, and selector safety; only the hosted gate can prove the
 mechanism and outcome.
+
+The hosted diagnostic request
+`xreq_f2b64577-49ae-4ccf-9210-a3a2b447ef20` completed four episodes against the
+exact Round 221 roster. Auri v5 won all four; v21 won none and finished with
+0, 2,444, 2,491, and 0 tiles. All 187 decisions were accepted with zero holds,
+but the collapse-pressure branch executed zero times.
+
+The failure is structural rather than a missing target signal. Claude named
+Auri in 67 decisions and Auri was legally attackable in 64. Instead, v21
+attacked Richard Higgins 42 times while following an Auri attack plan; 22 of
+those attacks happened under incoming pressure. Auri attacked v21 64 times.
+Lowering the same troop-ratio floor would repeat the failed mechanism, so v21
+is rejected and the exact v14 selector remains champion. The machine-readable
+audit is archived in `experiments/audit-v21-asia-seat3.json`.

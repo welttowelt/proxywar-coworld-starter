@@ -70,7 +70,7 @@ single winner attacked Auri 21 times. The three losing runs never attacked
 Auri, who won each episode. An accepted opening request to Richard Higgins did
 not create reliable pressure on the eventual leader. v20 cannot be promoted.
 
-## Next isolated mechanism
+## Rejected v21 mechanism
 
 v21 (`skuld-h0gg`) starts from exact v14 and changes one selector branch. During
 measured territory collapse, a Claude attack plan may keep 10% counterpressure
@@ -85,6 +85,21 @@ Auri remained legal. Round 221 was the strongest instance: 37 legal pressure
 opportunities, two selected Auri attacks, 14 neutral land attacks, and 11
 neutral boats before v14 fell from a 55,872-tile peak to 2,491. The complete
 replay-hash ledger is in `experiments/diagnosis-v21-asia-seat3.json`.
+
+The hosted gate failed 0/4 while Auri v5 won 4/4. Claude named Auri in 67
+decisions and Auri was legally attackable in 64, but the new branch executed
+zero times. v21 instead attacked Richard Higgins 42 times while the active plan
+named Auri, including 22 decisions under incoming pressure. Auri attacked v21
+64 times. v21 is rejected; lowering the same 0.60 floor is not a new mechanism.
+
+## Next isolated mechanism
+
+v22 (`gr1mnir-vard`) will start from exact v14 and test buffer preservation.
+When Claude explicitly targets the top rival, that leader is legally reachable,
+and incoming pressure is active, the selector must not convert a weaker third
+player. It will prefer an existing legal retreat, then a low-commitment neutral
+expansion. This keeps the third player alive as a second front and conserves
+troops while the leader is already spending attacks on us.
 
 ## Promotion gate
 
