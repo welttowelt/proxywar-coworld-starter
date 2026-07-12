@@ -464,6 +464,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
   }
 
   if (neutralExpansionStalled(state, history)) {
+    if (rivalAttack?.action) return rivalAttack.action;
     const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
     if (boatStreak >= 2 && build) return build;
     const escapeBoat = chooseBoat(actions, state, history, avoid);

@@ -123,6 +123,29 @@ test("stalled land expansion switches to a neutral boat", () => {
   assert.equal(choose([land, boat], observation({ tileShare: 0.045 }), null, history).id, boat.id);
 });
 
+test("stalled expansion converts a favorable rival before launching a boat", () => {
+  const land = {
+    ...action("expand:terra-nullius:35", "attack", "Expand into neutral land 35%"),
+    metadata: { expansion: true, troopPercent: 35 },
+  };
+  const boat = {
+    ...action("boat:675041:8", "boat", "Boat to Terra Nullius 8%"),
+    metadata: { expansion: true, troopPercent: 8 },
+  };
+  const rivalAttack = action("attack:weak:10", "attack", "Attack Weak 10%");
+  const history = Array.from({ length: 4 }, (_, index) => ({
+    actionID: `expand:terra-nullius:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare: 0.17,
+  }));
+  const obs = observation({
+    tileShare: 0.17,
+    rivals: [{ id: "weak", name: "Weak", tileShare: 0.08, relativeTroopRatio: 1.5 }],
+  });
+  assert.equal(choose([land, boat, rivalAttack], obs, null, history).id, rivalAttack.id);
+});
+
 test("stalled expansion builds after two escape boats", () => {
   const land = {
     ...action("expand:terra-nullius:35", "attack", "Expand into neutral land 35%"),
