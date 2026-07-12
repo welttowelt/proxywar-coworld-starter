@@ -66,9 +66,42 @@ if (!baselineReady && !diagnosticOnly) {
 if (!baselineReady) warnings.push("no matched hosted baseline; this run cannot support promotion");
 
 const valid = errors.length === 0;
-const promotionEligible = valid && baselineReady && !diagnosticOnly;
+const hostedGateReady = valid && baselineReady && !diagnosticOnly;
+const hostedResult = preflight.hosted?.result ?? {};
+const hostedEpisodes = Number(hostedResult.episodes);
+const hostedWins = Number(hostedResult.wins);
+const hostedPassed =
+  typeof preflight.hosted?.request_id === "string" &&
+  preflight.hosted.request_id.startsWith("xreq_") &&
+  hostedResult.status === "completed" &&
+  Number.isInteger(hostedEpisodes) &&
+  hostedEpisodes >= 4 &&
+  hostedWins === hostedEpisodes &&
+  hostedResult.holds === 0 &&
+  hostedResult.rejections === 0 &&
+  Number(hostedResult.mechanism_executions) >= criteria.min_mechanism_executions &&
+  hostedResult.planner_degradation_rule_passed === true;
+const regressionResult = preflight.promotion?.result ?? {};
+const regressionEpisodes = Number(regressionResult.episodes);
+const regressionWins = Number(regressionResult.wins);
+const regressionPassed =
+  regressionResult.status === "completed" &&
+  regressionEpisodes === preflight.promotion?.regression_episodes &&
+  regressionWins === regressionEpisodes &&
+  regressionResult.holds === 0 &&
+  regressionResult.rejections === 0;
+const promotionEligible = hostedGateReady && hostedPassed && regressionPassed;
+if (hostedGateReady && !hostedPassed) {
+  warnings.push("hosted 4/4 result is not complete; promotion is not eligible");
+}
+if (hostedGateReady && !regressionPassed) {
+  warnings.push("20/20 regression result is not complete; promotion is not eligible");
+}
 const report = {
   valid,
+  hosted_gate_ready: hostedGateReady,
+  hosted_gate_passed: hostedPassed,
+  regression_passed: regressionPassed,
   promotion_eligible: promotionEligible,
   candidate: preflight.candidate?.policy_ref ?? null,
   diagnostic_only: diagnosticOnly,

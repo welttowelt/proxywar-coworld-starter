@@ -581,3 +581,44 @@ the target's troop count zero times. Because v31's own marker never fired, these
 episodes are v24-equivalent behavior and bring the combined parent result to
 4/8. The arm had stale reach and was not uploaded. Evidence is archived in
 `experiments/no-go-v32-lean-finish.json`.
+
+## Frontier parity-pressure candidate, 2026-07-12
+
+The current v28 parent control completed on the exact Asia seat-3 roster in
+`xreq_7ec6308b-cf9f-421b-95ab-bf711b619b40`. Auri v5 won all four episodes;
+v28 finished with 2,041; 34,930; 3,783; and 4,600 tiles. The request had zero
+rejected decisions but 45 holds and 43 planner-degraded decisions.
+
+Three independent parent traces expose a current pressure window. Odin held at
+least 20% land, Auri led by 8-22 points, own-to-Auri troop strength was at least
+0.90, no incoming attack was active, and `attack:28k1hctz:10` was legal. v28
+instead selected an alliance at turns 3,200 and 3,800 and a warship at turn
+9,900. The recorded ratios were 0.97, 0.95, and 0.99. This is current hosted
+reach, not an older favorable trace.
+
+v32 / `hrafn-s4r` keeps v28's economy bootstrap and request coalescing, removes
+the rejected v29/v30 arms, and changes one arbitration. A non-hostile choice is
+replaced with a 10% strike on the non-allied land leader only inside that parity
+window. Active incoming pressure, a troop ratio below 0.90, a gap above 0.22,
+or a leader strike in the prior two decisions blocks the pulse. Existing
+hostile attacks are never replaced. The replay marker is
+`[hrafn-s4r:r1ft]`.
+
+The commitment is grounded in the v24 comparison rather than invented from the
+loss alone: each of its three same-roster wins opened Auri pressure with 10% at
+0.91-0.93 relative troop strength. The comparison supports timing and size; it
+does not prove the v32 counterfactual.
+
+Canonical local self-play completed at turn 11,000 with 407 accepted decisions,
+zero holds, zero rejections, and zero degraded decisions. The strategic trace
+did not enter the registered window, so this proves runtime and replay safety
+only. Replay SHA-256 is
+`2f224fbd0a9c029ecbc871a8a0e64ba3b5763d229ca65e465e4bcf876d28c251`.
+Evidence and the valid preflight live in
+`experiments/diagnosis-v32-asia-seat3.json` and
+`experiments/preflight-v32.json`.
+
+The RCI validator now distinguishes a candidate that is ready for a hosted gate
+from one eligible for promotion. Promotion remains false until structured
+hosted `4/4` and separate `20/20` results both pass with zero holds and zero
+rejections.

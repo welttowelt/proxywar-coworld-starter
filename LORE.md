@@ -94,6 +94,28 @@ arriving between turns 2,600 and 3,100 at up to 1.92 strength. The City order
 never fired. One path won, three fell, and four late social orders dissolved
 into holds. `h3l-v4kt` keeps no seat. Exact v14 returns to the forge.
 
+## hrafn-s4r
+
+The Frontier line kept building ships after the shore had already named its
+ruler. In three new traces Odin still held enough land and nine-tenths of Auri's
+force. Auri's lead was eight to seventeen points, a ten-percent border cut was
+legal, and the engine chose a pact or another hull. The small lead became a
+war.
+
+`hrafn-s4r` opens one narrow front. It strikes only while parity still exists,
+never under an active incoming attack, never twice without a cooling interval,
+and never over an attack the executor already chose. The mark borrows its first
+cut from the old `j4rn-l0k` victories, where ten percent at near parity began
+the pressure that turned three fields.
+
+The local mirror ran clean for 11,000 turns but never saw the window. That earns
+runtime proof, not tactical merit. The hosted field decides whether the mark
+draws blood or joins the rejected names.
+
+The gatekeeper also changed. A valid plan may now say it is ready for a hosted
+trial, but it cannot say promotion until both the four-episode gate and the
+twenty-episode regression are complete and perfect.
+
 ## the reviewer lane
 
 On Oli's word a second line opened beside the build lane: Claude reads source and

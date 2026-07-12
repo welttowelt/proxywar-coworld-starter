@@ -12,12 +12,16 @@ const canonicalAnchor = `  // Serialize decision handling: a platform retry that
   let sawFinal = false;
   socket.on("message", (data: unknown) => {`;
 
+const importAnchor =
+  `import type { LlmProvider } from "../../src/server/agents/LlmProvider";`;
+
 test("keystone patch replaces the stale FIFO with latest-request coalescing", () => {
   const directory = mkdtempSync(path.join(tmpdir(), "keystone-patch-"));
   const target = path.join(directory, "keystone-player.ts");
   writeFileSync(
     target,
-    `${canonicalAnchor}
+    `${importAnchor}
+${canonicalAnchor}
     decisionChain = decisionChain.then(async () => {
       socket.send(JSON.stringify(response));
     });
@@ -35,8 +39,8 @@ test("keystone patch replaces the stale FIFO with latest-request coalescing", ()
   assert.match(patched, /pendingDecision = message/);
   assert.match(patched, /discarded superseded decision response/);
   assert.match(patched, /while \(pendingDecision !== null && !sawFinal\)/);
-  assert.match(patched, /oneShotSocialKinds/);
-  assert.match(patched, /vetoRemaining\.has\(action\.id\)/);
-  assert.match(patched, /wireVeto=/);
-  assert.match(patched, /wire guard replaced unknown action ids/);
+  assert.match(patched, /import \{ applyParityPulse \}/);
+  assert.match(patched, /decision = applyParityPulse\(input, decision\)/);
+  assert.doesNotMatch(patched, /oneShotSocialKinds/);
+  assert.doesNotMatch(patched, /wireVeto=/);
 });

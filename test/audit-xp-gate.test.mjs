@@ -236,6 +236,42 @@ test("pressure-pulse gate requires an accepted tagged execution", () => {
   assert.equal(report.passed, true);
 });
 
+test("parity-pulse gate parses and requires a productive 10 percent strike", () => {
+  const fixture = replay("expand:terra-nullius:10");
+  const decisions = fixture.inlineRunArtifacts["decisions.jsonl"]
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line));
+  decisions[1] = {
+    ...decisions[1],
+    selectedActionKind: "attack",
+    selectedLegalActionId: "attack:auri:10",
+    selectedActionMetadata: {
+      targetID: "auri",
+      targetName: "Auri",
+      troopPercent: 10,
+      relativeTroopRatio: 0.95,
+    },
+    reason: "bedrock diagnostic || [hrafn-s4r:r1ft] leader=Auri",
+  };
+  fixture.inlineRunArtifacts["decisions.jsonl"] =
+    `${decisions.map((decision) => JSON.stringify(decision)).join("\n")}\n`;
+
+  const audit = auditEpisodeReplay(episode(), fixture);
+  const report = buildGateReport(
+    { id: "xreq-parity-pulse", status: "completed" },
+    [audit, audit, audit, audit],
+    4,
+    { mechanism: "parity-pulse" },
+  );
+
+  assert.equal(audit.parity_pulse_selections.length, 1);
+  assert.equal(report.parity_pulse_selections, 4);
+  assert.equal(report.checks.parity_pulse_mechanism_exercised, true);
+  assert.equal(report.checks.all_parity_pulses_productive, true);
+  assert.equal(report.passed, true);
+});
+
 test("wire-veto gate requires an observed productive rerank", () => {
   const audits = Array.from({ length: 4 }, (_, index) => ({
     won: true,

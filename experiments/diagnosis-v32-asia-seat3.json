@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "oli-codex-proxywar:v32",
+    "codename": "hrafn-s4r",
+    "parent_ref": "oli-codex-proxywar:v28",
+    "parent_policy_version_id": "38cd19ef-0508-4063-9c7d-4727866ac075"
+  },
+  "matched_parent": {
+    "request_id": "xreq_7ec6308b-cf9f-421b-95ab-bf711b619b40",
+    "variant": "tournament-4p-asia",
+    "seat": 3,
+    "roster": [
+      "jamesboggs-warlord:v1",
+      "proxywar-keystone:v5",
+      "oli-codex-proxywar:v28",
+      "proxywar-starter-b:v1"
+    ],
+    "wins": 0,
+    "episodes": 4,
+    "final_tiles": [2041, 34930, 3783, 4600],
+    "holds": 45,
+    "rejections": 0,
+    "planner_degraded_decisions": 43,
+    "audit": "experiments/audit-v28-current-asia-seat3.json"
+  },
+  "failure": {
+    "summary": "Frontier finishes the weak rival, then keeps choosing boats, alliances, builds, or holds while Auri leads by 8-22 tile-share points at near troop parity.",
+    "engine_block": "the scheduler blocks medium leader pressure without a decisive edge and often ranks neutral transport or social actions above the legal 10 percent leader probe",
+    "consequence": "Auri converts a small lead into the first sustained attack wave while Odin has mounted no containment front"
+  },
+  "mechanism": {
+    "marker": "[hrafn-s4r:r1ft]",
+    "action": "replace a non-hostile parent choice with the legal 10 percent attack on the land leader",
+    "guards": {
+      "minimum_own_tile_share": 0.2,
+      "minimum_leader_gap": 0.08,
+      "maximum_leader_gap": 0.22,
+      "minimum_relative_troop_ratio": 0.9,
+      "minimum_alive_players": 3,
+      "incoming_attacks": 0,
+      "leader_allied": false,
+      "cooldown_decisions": 2,
+      "preserve_existing_hostile_attack": true
+    }
+  },
+  "current_parent_reach": [
+    {
+      "episode_id": "3d08315c-7685-43f2-aa01-8185764b080f",
+      "turn": 3200,
+      "own_tile_share": 0.28,
+      "leader_tile_share": 0.41,
+      "leader_gap": 0.13,
+      "relative_troop_ratio": 0.971,
+      "ratio_evidence": "planner reported Auri with a 1.03x edge; reciprocal normalized to own/target",
+      "parent_action": "alliance_request",
+      "legal_pulse": "attack:28k1hctz:10"
+    },
+    {
+      "episode_id": "271d36d2-d3ac-441d-963f-8e9a89fe161b",
+      "turn": 3800,
+      "own_tile_share": 0.28,
+      "leader_tile_share": 0.45,
+      "leader_gap": 0.17,
+      "relative_troop_ratio": 0.95,
+      "ratio_evidence": "planner reported relativeTroopRatio vs Auri 0.95",
+      "parent_action": "alliance_request",
+      "legal_pulse": "attack:28k1hctz:10"
+    },
+    {
+      "episode_id": "3041f818-85e1-4a09-b50e-2ed4e43c6e18",
+      "turn": 9900,
+      "own_tile_share": 0.24,
+      "leader_tile_share": 0.4,
+      "leader_gap": 0.16,
+      "relative_troop_ratio": 0.99,
+      "ratio_evidence": "planner reported relativeTroopRatio 0.99 against Auri",
+      "parent_action": "warship",
+      "legal_pulse": "attack:28k1hctz:10"
+    }
+  ],
+  "independent_parent_traces_with_reach": 3,
+  "unreached_parent_trace": {
+    "episode_id": "67e02476-fcb1-4312-9289-29b1ca3964ed",
+    "reason": "the Auri alliance and troop deficit persisted until the leader gap had already escaped the registered window"
+  },
+  "comparative_evidence": {
+    "parent_ref": "oli-codex-proxywar:v24",
+    "same_roster_result": "3/4",
+    "first_auri_pressure_in_wins": [
+      {"turn": 2800, "troop_percent": 10, "relative_troop_ratio": 0.91},
+      {"turn": 2800, "troop_percent": 10, "relative_troop_ratio": 0.92},
+      {"turn": 2600, "troop_percent": 10, "relative_troop_ratio": 0.93}
+    ],
+    "limit": "the v24 comparison supports timing and commitment size but does not prove the v32 counterfactual"
+  },
+  "local": {
+    "mode": "canonical local Claude mode; hosted Bedrock credential bridge unavailable because the AWS CLI is not installed",
+    "self_play": true,
+    "variant": "tournament-4p-asia",
+    "winner_slot": 0,
+    "turn_count": 11000,
+    "accepted_decisions": 407,
+    "holds": 0,
+    "rejections": 0,
+    "planner_degraded_decisions": 0,
+    "mechanism_executions": 0,
+    "replay_sha256": "2f224fbd0a9c029ecbc871a8a0e64ba3b5763d229ca65e465e4bcf876d28c251",
+    "verdict": "runtime and replay safe; strategic trace did not enter the registered window"
+  },
+  "hosted_kill_criteria": {
+    "wins": "4/4",
+    "holds": 0,
+    "rejections": 0,
+    "minimum_mechanism_executions": 1,
+    "planner_degradation": "no unexplained regression versus v28 parent"
+  }
+}

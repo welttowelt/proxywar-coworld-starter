@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "oli-codex-proxywar:v32",
+    "policy_version_id": "58412fa2-36a1-488d-b10e-f93326898771",
+    "parent_ref": "oli-codex-proxywar:v28",
+    "exact_deltas": [
+      "replace a non-hostile parent action with a cooldown-bound 10 percent attack on the non-allied land leader when own share is at least 0.20, the leader gap is 0.08-0.22, own-to-leader troop ratio is at least 0.90, and no incoming attack is active"
+    ]
+  },
+  "hypothesis": "a reserve-safe leader probe inside the measured parity window creates the containment front before Auri converts a modest tile lead into an unrecoverable troop edge",
+  "mechanism": {
+    "marker": "[hrafn-s4r:r1ft]",
+    "prior_reachable_decisions": 3,
+    "source": "experiments/diagnosis-v32-asia-seat3.json"
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "wins": 1,
+    "self_play": true,
+    "accepted_decisions": 407,
+    "holds": 0,
+    "rejections": 0,
+    "planner_degraded_decisions": 0,
+    "mechanism_reached": false,
+    "replay_sha256": "2f224fbd0a9c029ecbc871a8a0e64ba3b5763d229ca65e465e4bcf876d28c251"
+  },
+  "matched_baseline": {
+    "policy_ref": "oli-codex-proxywar:v28",
+    "request_id": "xreq_7ec6308b-cf9f-421b-95ab-bf711b619b40",
+    "same_roster": true,
+    "same_variant": true
+  },
+  "champion_control": {
+    "policy_ref": "oli-codex-proxywar:v14",
+    "request_id": "xreq_f828169f-4885-48b9-9dcf-9287256ebb15",
+    "wins": 0,
+    "episodes": 4
+  },
+  "diagnostic_only": false,
+  "hosted": {
+    "request_id": "xreq_67cf6f10-9400-4e7e-ae1a-28c1fc81d280",
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  },
+  "verdict": "pending hosted gate"
+}

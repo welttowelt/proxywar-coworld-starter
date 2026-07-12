@@ -28,6 +28,9 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | v24 requalified parent | 28 replay-derived reserve interventions; prior `3/4` on the same roster | diagnostic parent only |
 | v31 hosted | `1/4`; opening reserve fired 28 times; bank-build fired zero times; four holds | rejected, no league change |
 | lean-finish no-go | old reach `4/4`, current reach `0/4`; combined v24-equivalent parent `4/8` | killed before upload |
+| v28 current control | `0/4`; tiles 2,041 / 34,930 / 3,783 / 4,600; 45 holds; three current parity-window traces | tactical parent only |
+| v32 local | 407 accepted; zero holds/rejections/degradation; parity marker `0`; verified replay | runtime proof only |
+| promotion validator | hosted-ready is separate from hosted `4/4` and regression `20/20` completion | false promotion claim closed |
 
 Detailed evidence lives in [`experiments/`](experiments/README.md). Public round
 statistics live on the [dashboard](https://welttowelt-proxywar.netlify.app/).

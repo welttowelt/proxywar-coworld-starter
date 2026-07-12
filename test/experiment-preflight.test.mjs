@@ -52,6 +52,7 @@ test("diagnostic preflight is valid but cannot claim promotion eligibility", () 
   const result = validate(fixture());
   assert.equal(result.status, 0);
   assert.equal(result.report.valid, true);
+  assert.equal(result.report.hosted_gate_ready, false);
   assert.equal(result.report.promotion_eligible, false);
   assert.match(result.report.warnings.join(" "), /repeated strategic traces/);
   assert.match(result.report.warnings.join(" "), /no matched hosted baseline/);
@@ -71,4 +72,57 @@ test("promotion mode fails a diagnostic-only candidate", () => {
   assert.equal(result.status, 1);
   assert.equal(result.report.valid, true);
   assert.equal(result.report.promotion_eligible, false);
+});
+
+test("matched evidence is hosted-gate ready but not promotion eligible", () => {
+  const value = fixture();
+  value.diagnostic_only = false;
+  value.matched_baseline = {
+    policy_ref: "agent:v29",
+    request_id: "xreq_parent",
+    same_roster: true,
+    same_variant: true,
+  };
+  const result = validate(value);
+
+  assert.equal(result.status, 0);
+  assert.equal(result.report.valid, true);
+  assert.equal(result.report.hosted_gate_ready, true);
+  assert.equal(result.report.hosted_gate_passed, false);
+  assert.equal(result.report.regression_passed, false);
+  assert.equal(result.report.promotion_eligible, false);
+});
+
+test("promotion eligibility requires completed perfect hosted and regression results", () => {
+  const value = fixture();
+  value.diagnostic_only = false;
+  value.matched_baseline = {
+    policy_ref: "agent:v29",
+    request_id: "xreq_parent",
+    same_roster: true,
+    same_variant: true,
+  };
+  value.hosted.request_id = "xreq_child";
+  value.hosted.result = {
+    status: "completed",
+    episodes: 4,
+    wins: 4,
+    holds: 0,
+    rejections: 0,
+    mechanism_executions: 3,
+    planner_degradation_rule_passed: true,
+  };
+  value.promotion.result = {
+    status: "completed",
+    episodes: 20,
+    wins: 20,
+    holds: 0,
+    rejections: 0,
+  };
+  const result = validate(value, "--require-promotion");
+
+  assert.equal(result.status, 0);
+  assert.equal(result.report.hosted_gate_passed, true);
+  assert.equal(result.report.regression_passed, true);
+  assert.equal(result.report.promotion_eligible, true);
 });
