@@ -4,8 +4,11 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 
+import { buildOfficialStreakState } from "./official-streak.mjs";
+
 const COWORLD_PACKAGE = "coworld==0.1.28";
 const DEFAULT_LEAGUE_ID = "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42";
+const TRACKED_PLAYER_NAME = "odin free";
 const ALLOWED_REPLAY_HOSTS = new Set(["softmax-public.s3.amazonaws.com"]);
 const SOCIAL_KINDS = new Set([
   "alliance_request", "alliance_extend", "break_alliance", "target_player",
@@ -31,6 +34,7 @@ const root = process.cwd();
 const cacheDir = path.join(root, "data", "cache", "replays");
 const stagingDir = path.join(root, "data", "staging");
 const processedDir = path.join(root, "data", "processed");
+const officialStreakPath = path.join(processedDir, "official_streak.json");
 
 function coworldJson(args) {
   const result = spawnSync(
@@ -84,6 +88,15 @@ async function replayBytes(url, destination) {
   if (buffer.length > 64 * 1024 * 1024) throw new Error(`replay exceeds 64 MiB limit: ${url}`);
   await writeFile(destination, buffer);
   return { bytes: buffer, cached: false };
+}
+
+async function readJsonIfExists(filePath, fallback) {
+  try {
+    return JSON.parse(await readFile(filePath, "utf8"));
+  } catch (error) {
+    if (error.code === "ENOENT") return fallback;
+    throw error;
+  }
 }
 
 function parseInlineJson(replay, name) {
@@ -202,6 +215,27 @@ function ndjson(rows) {
   return `${rows.map((row) => JSON.stringify(row)).join("\n")}\n`;
 }
 
+function roundStandingRow(round, result, collectedAt) {
+  return {
+    round_id: round.id,
+    round_number: round.round_number,
+    rank: numberOrNull(result.rank),
+    score: numberOrNull(result.score),
+    player_id: result.player?.id ?? result.policy_version?.player_id ?? null,
+    player_name: result.player?.name ?? null,
+    policy_id: result.policy_version?.policy?.id ?? null,
+    policy_name: result.policy_version?.policy?.name ?? null,
+    policy_version: numberOrNull(result.policy_version?.version),
+    policy_version_id: result.policy_version?.id ?? null,
+    policy_label: result.policy_version?.label ?? null,
+    completed_episode_count: numberOrNull(result.result_metadata?.completed_episode_count),
+    ranked_score_count: numberOrNull(result.result_metadata?.ranked_score_count),
+    seed_order: numberOrNull(result.result_metadata?.seed_order),
+    created_at: normalizeTimestamp(result.created_at),
+    collected_at: collectedAt,
+  };
+}
+
 await mkdir(cacheDir, { recursive: true });
 await mkdir(stagingDir, { recursive: true });
 await mkdir(processedDir, { recursive: true });
@@ -246,30 +280,36 @@ const roundRows = selectedRounds.map((round) => ({
   collected_at: collectedAt,
 }));
 
+const roundDetails = new Map();
+function roundDetail(round) {
+  if (!roundDetails.has(round.id)) {
+    roundDetails.set(round.id, coworldJson(["results", round.id]));
+  }
+  return roundDetails.get(round.id);
+}
+
 const roundStandingRows = [];
 for (const round of selectedRounds) {
-  const detail = coworldJson(["results", round.id]);
+  const detail = roundDetail(round);
   for (const result of detail.results || []) {
-    roundStandingRows.push({
-      round_id: round.id,
-      round_number: round.round_number,
-      rank: numberOrNull(result.rank),
-      score: numberOrNull(result.score),
-      player_id: result.player?.id ?? result.policy_version?.player_id ?? null,
-      player_name: result.player?.name ?? null,
-      policy_id: result.policy_version?.policy?.id ?? null,
-      policy_name: result.policy_version?.policy?.name ?? null,
-      policy_version: numberOrNull(result.policy_version?.version),
-      policy_version_id: result.policy_version?.id ?? null,
-      policy_label: result.policy_version?.label ?? null,
-      completed_episode_count: numberOrNull(result.result_metadata?.completed_episode_count),
-      ranked_score_count: numberOrNull(result.result_metadata?.ranked_score_count),
-      seed_order: numberOrNull(result.result_metadata?.seed_order),
-      created_at: normalizeTimestamp(result.created_at),
-      collected_at: collectedAt,
-    });
+    roundStandingRows.push(roundStandingRow(round, result, collectedAt));
   }
 }
+
+const priorOfficialStreak = await readJsonIfExists(officialStreakPath, { rounds: [] });
+const officialStreakState = await buildOfficialStreakState({
+  competitionRounds,
+  currentStandings: roundStandingRows,
+  priorState: priorOfficialStreak,
+  trackedPlayerName: TRACKED_PLAYER_NAME,
+  leagueID,
+  collectedAt,
+  loadStanding: async (round) => {
+    const result = (roundDetail(round).results || [])
+      .find((entry) => entry.player?.name === TRACKED_PLAYER_NAME);
+    return result ? roundStandingRow(round, result, collectedAt) : null;
+  },
+});
 
 const divisionID = selectedRounds.at(-1).division.id;
 const leaderboardResponse = coworldJson([
@@ -389,6 +429,7 @@ await writeFile(path.join(stagingDir, "memberships.ndjson"), ndjson(membershipRo
 await writeFile(path.join(stagingDir, "episodes.ndjson"), ndjson(episodeRows));
 await writeFile(path.join(stagingDir, "participants.ndjson"), ndjson(participantRows));
 await writeFile(path.join(stagingDir, "decisions.ndjson"), ndjson(decisionRows));
+await writeFile(officialStreakPath, `${JSON.stringify(officialStreakState, null, 2)}\n`);
 await writeFile(path.join(processedDir, "manifest.json"), `${JSON.stringify({
   schema_version: 4,
   league_id: leagueID,
@@ -399,6 +440,8 @@ await writeFile(path.join(processedDir, "manifest.json"), `${JSON.stringify({
   round_count: roundRows.length,
   live_round_count: liveRoundRows.length,
   round_standing_count: roundStandingRows.length,
+  official_streak_round_count: officialStreakState.rounds.length,
+  current_first_place_streak: officialStreakState.current_first_place_streak,
   leaderboard_row_count: leaderboardRows.length,
   membership_count: membershipRows.length,
   episode_count: episodeRows.length,

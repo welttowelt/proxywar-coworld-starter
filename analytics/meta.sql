@@ -7,6 +7,9 @@ SELECT * FROM read_ndjson_auto('data/staging/live_rounds.ndjson');
 CREATE OR REPLACE TEMP VIEW round_standings AS
 SELECT * FROM read_ndjson_auto('data/staging/round_standings.ndjson');
 
+CREATE OR REPLACE TEMP VIEW official_streak AS
+SELECT * FROM read_json_auto('data/processed/official_streak.json');
+
 CREATE OR REPLACE TEMP VIEW leaderboard AS
 SELECT * FROM read_ndjson_auto('data/staging/leaderboard.ndjson');
 
@@ -514,23 +517,9 @@ COPY (
     (SELECT count(*) FROM episodes) AS episodes,
     (SELECT count(*) FROM participants) AS participant_rows,
     (SELECT count(*) FROM decisions) AS decisions,
-    (
-      SELECT count(*)
-      FROM round_standings
-      WHERE player_name = 'odin free'
-        AND rank = 1
-        AND round_number > coalesce((
-          SELECT max(round_number)
-          FROM round_standings
-          WHERE player_name = 'odin free' AND rank <> 1
-        ), -1)
-    ) AS current_first_place_streak,
+    (SELECT current_first_place_streak FROM official_streak) AS current_first_place_streak,
     100 AS target_first_place_streak,
-    (
-      SELECT count(*)
-      FROM round_standings
-      WHERE player_name = 'odin free' AND rank = 1
-    ) AS first_place_finishes,
+    (SELECT first_place_finishes FROM official_streak) AS first_place_finishes,
     (
       SELECT coalesce(sum(failures), 0)
       FROM read_csv_auto('data/analysis/data_quality.csv')

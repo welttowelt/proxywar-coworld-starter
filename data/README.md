@@ -26,6 +26,9 @@ DuckDB 1.5+.
 - `staging/`: normalized NDJSON; ignored by Git.
 - `processed/rounds.parquet`: one row per completed competition round.
 - `processed/round_standings.parquet`: one row per policy and official round result.
+- `processed/official_streak.json`: persisted official standings from the latest
+  result through the most recent non-first-place boundary. This keeps the
+  100-round counter independent of the rolling replay-analysis window.
 - `processed/leaderboard.parquet`: current division leaderboard snapshot.
 - `processed/episodes.parquet`: one row per hosted match.
 - `processed/participants.parquet`: one row per player seat and match.
