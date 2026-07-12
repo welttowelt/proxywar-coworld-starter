@@ -439,6 +439,24 @@ function renderDataLedger(data) {
 
 let refreshInFlight = false;
 let hasRendered = false;
+let hasAlignedHash = false;
+
+function alignHashTarget() {
+  if (hasAlignedHash || !window.location.hash) return;
+
+  let targetId;
+  try {
+    targetId = decodeURIComponent(window.location.hash.slice(1));
+  } catch {
+    hasAlignedHash = true;
+    return;
+  }
+  const target = document.getElementById(targetId);
+  if (!target) return;
+
+  hasAlignedHash = true;
+  requestAnimationFrame(() => target.scrollIntoView({ block: "start" }));
+}
 
 async function refreshDashboard() {
   if (refreshInFlight) return;
@@ -458,6 +476,7 @@ async function refreshDashboard() {
     renderDataLedger(data);
     byId("fatal-state").hidden = true;
     hasRendered = true;
+    alignHashTarget();
   } catch (error) {
     console.error(error);
     if (!hasRendered) {
