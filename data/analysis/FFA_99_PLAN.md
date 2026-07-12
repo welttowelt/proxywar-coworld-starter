@@ -92,14 +92,29 @@ zero times. v21 instead attacked Richard Higgins 42 times while the active plan
 named Auri, including 22 decisions under incoming pressure. Auri attacked v21
 64 times. v21 is rejected; lowering the same 0.60 floor is not a new mechanism.
 
-## Next isolated mechanism
+## Rejected v22 mechanism
 
-v22 (`gr1mnir-vard`) starts from exact v14 and tests buffer preservation.
+v22 (`gr1mnir-vard`) started from exact v14 and tested buffer preservation.
 When Claude explicitly targets the top rival, that leader is legally reachable,
 and incoming pressure is active, the selector must not convert a weaker third
 player. It will prefer an existing legal retreat, then a low-commitment neutral
 expansion. This keeps the third player alive as a second front and conserves
 troops while the leader is already spending attacks on us.
+
+The hosted gate failed 0/4 while Auri v5 won 4/4. The branch executed an
+estimated 14 times from replay reconstruction and raised average final territory
+from 1,234 under v21 to 18,949, but Auri still averaged 217,032 tiles. Richard
+survived only one episode, down from two under v21. v22 is rejected.
+
+## Next isolated mechanism
+
+v23 (`v1g-l0k`) will start from exact v14 and preserve opening troop reserves.
+Auri used 25% for 98 of 128 hostile attacks and never used 40% in the opening.
+Our selector escalated to 40% at turn 1,700 and made 27 such attacks while its
+own troop reserve ratio was below 0.75. Auri began attacking at turn 1,900 with
+a 1.66 troop advantage. v23 will retain the 10% to 25% target-continuity ramp
+but suppress 40% commitments during the first 20 active decisions. Later finish
+pressure remains unchanged.
 
 ## Promotion gate
 

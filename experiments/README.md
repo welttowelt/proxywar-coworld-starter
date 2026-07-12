@@ -287,3 +287,20 @@ failures. Its replay SHA-256 is
 Local Bedrock planning was unavailable for 212 decisions, so this establishes
 container, protocol, selector, and replay safety without claiming mechanism
 reachability or competitive outcome.
+
+The hosted diagnostic request
+`xreq_450ab82b-0c1a-443e-85ab-19536b795501` completed all four episodes with
+zero holds and zero rejected decisions. Auri v5 won 4/4; v22 won 0/4 and
+finished with 33,720, 2,444, 37,435, and 2,196 tiles. Replay reconstruction
+identified 14 buffer-preservation executions. Average final territory improved
+from 1,234 in the v21 gate to 18,949, but Auri still averaged 217,032 tiles and
+Richard survived only one episode versus two under v21. The buffer thesis is
+rejected on both outcome and its intended second-front effect.
+
+The same replays expose a stronger opening mechanism. Auri selected 128 hostile
+attacks, 98 at 25%, and did not use 40% in the opening. v22 selected 28 attacks
+at 40%; 27 occurred while its own troop reserve ratio was below 0.75. Its first
+40% escalation began at turn 1,700, and Auri began attacking at turn 1,900 with
+a 1.66 relative troop advantage. The next isolated candidate will preserve the
+opening troop bank rather than alter target choice. Full evidence is archived
+in `experiments/audit-v22-asia-seat3.json`.

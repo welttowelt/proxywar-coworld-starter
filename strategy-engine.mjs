@@ -309,40 +309,6 @@ function chooseRivalAttack(actions, state, plan, history, avoid) {
   };
 }
 
-function chooseBufferPreservation(actions, state, plan, rivalAttack, threatCount, avoid) {
-  const planTarget = clean(plan?.target).toLowerCase();
-  if (
-    threatCount === 0 || clean(plan?.focus).toLowerCase() !== "attack" ||
-    !planTarget || !rivalAttack?.rival
-  ) {
-    return null;
-  }
-
-  const plannedRival = state.rivals.find((rival) =>
-    rival.name.toLowerCase() === planTarget
-  );
-  const plannedLeaderIsLegal = plannedRival && !plannedRival.isAllied &&
-    plannedRival.tileShare >= state.topRivalTileShare - 0.005 &&
-    actions.some((action) =>
-      action.kind === "attack" && !isNeutralExpansion(action) &&
-      rivalForAction(action, state)?.name.toLowerCase() === planTarget
-    );
-  if (
-    !plannedLeaderIsLegal ||
-    rivalAttack.rival.name.toLowerCase() === planTarget
-  ) {
-    return null;
-  }
-
-  const retreats = safeActions(actions, (action) =>
-    action.kind === "boat_retreat" || action.kind === "retreat"
-  );
-  const retreat = retreats.find((action) => !avoid.has(action.id)) ?? retreats[0];
-  if (retreat) return retreat;
-
-  return pickPercent(safeActions(actions, isNeutralExpansion), 10, avoid);
-}
-
 function chooseNeutralAttack(actions, history, avoid) {
   const candidates = safeActions(actions, isNeutralExpansion);
   const streak = consecutive(history, (entry) => entry.neutral === true && entry.kind === "attack");
@@ -481,16 +447,6 @@ export function chooseAction(actions, state, plan = null, history = []) {
   const collapsing = territoryCollapsing(state, history);
 
   if (collapsing && build && sinceBuild >= 3 && !finishingTarget) return build;
-
-  const bufferPreservation = chooseBufferPreservation(
-    actions,
-    state,
-    plan,
-    rivalAttack,
-    threatCount,
-    avoid,
-  );
-  if (bufferPreservation) return bufferPreservation;
 
   const allianceMove = chooseAllianceMove(
     actions,
