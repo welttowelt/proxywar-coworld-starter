@@ -73,6 +73,26 @@
     "image_sha256": "fba81e6f15ab342ad5f7d18b7d4a96ce375473bc2814a1bd4250ec58ddc5662a",
     "verdict": "wire and runtime safe; no tactical evidence because the registered window did not occur"
   },
+  "hosted": {
+    "request_id": "xreq_b8157cd6-8daa-4b9d-a4ce-10b5e7104f80",
+    "wins": 0,
+    "episodes": 4,
+    "final_tiles": [28543, 31434, 20739, 32388],
+    "holds": 25,
+    "rejections": 0,
+    "planner_degraded_decisions": 29,
+    "parity_pulses": 8,
+    "leader_severs": 0,
+    "audit": "experiments/audit-v34-hosted-asia-seat3.json",
+    "verdict": "rejected"
+  },
+  "post_gate_finding": {
+    "summary": "the branch required risk below high, but LegalActionBuilder classifies every legal break_alliance action as high risk by construction",
+    "source": "/app/proxywar/src/server/agents/LegalActionBuilder.ts",
+    "reachable_decisions_without_the_risk_filter": 16,
+    "independent_traces_with_reach": 3,
+    "direction": "remove only the redundant risk filter and keep the legal action ID as the authority"
+  },
   "hosted_kill_criteria": {
     "wins": "4/4",
     "holds": 0,

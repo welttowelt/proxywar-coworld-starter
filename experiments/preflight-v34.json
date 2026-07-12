@@ -41,6 +41,15 @@
   "diagnostic_only": false,
   "hosted": {
     "request_id": "xreq_b8157cd6-8daa-4b9d-a4ce-10b5e7104f80",
+    "result": {
+      "status": "completed",
+      "episodes": 4,
+      "wins": 0,
+      "holds": 25,
+      "rejections": 0,
+      "mechanism_executions": 0,
+      "planner_degradation_rule_passed": false
+    },
     "criteria": {
       "win_rate_pct": 100,
       "max_holds": 0,
@@ -53,5 +62,5 @@
     "regression_episodes": 20,
     "league_change_allowed": false
   },
-  "verdict": "ready for hosted diagnostic; local runtime passed but the registered branch was not reached"
+  "verdict": "rejected: 0/4, 25 holds, and zero leader-sever executions; no league change"
 }

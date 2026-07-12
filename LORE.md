@@ -167,6 +167,11 @@ break while Odin still held troop parity; none of the three winning fields did.
 The local mirror gave Auri the field and never invoked the mark. That is clean
 transport evidence, not merit. The hosted field alone can name a successor.
 
+The hosted field gave all four paths to Auri. The sever rune appeared nowhere.
+Its own wording forbade it: every break is branded high risk by the field, while
+the guard admitted only a low-risk break. Sixteen legal cuts stood behind that
+contradiction. `n1dh0ggr` is denied; the impossible adjective is removed.
+
 ## the rival shifts
 
 Auri stopped standing still. Versions seven and ten reached the field: seven

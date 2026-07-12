@@ -702,3 +702,15 @@ proves transport safety only. Replay SHA-256 is
 `c24de5eacf937e314cc31211b5b35f8c6247b8009a8f6cb97ebeb20d9dc3fd03`.
 Current reach and the local record are archived in
 `experiments/diagnosis-v34-asia-seat3.json`.
+
+The hosted gate `xreq_b8157cd6-8daa-4b9d-a4ce-10b5e7104f80` rejected v34 with
+an Auri sweep. Odin finished with 28,543; 31,434; 20,739; and 32,388 tiles.
+The audit found 25 holds, 29 degraded decisions, eight accepted parity strikes,
+and zero leader-sever marks.
+
+The zero reach has a direct source cause. `LegalActionBuilder` assigns every
+`break_alliance` action `risk.level = high`, while v34 accepted only a low-risk
+break. Removing that filter exposes 16 exact parent decisions across three
+independent traces; every one names the allied tile leader and preserves the
+same share, troop-ratio, incoming-pressure, and non-hostile-parent gates. v34
+is rejected. The next arm removes only that impossible filter.

@@ -1,0 +1,561 @@
+{
+  "schema_version": 1,
+  "experience_request_id": "xreq_b8157cd6-8daa-4b9d-a4ce-10b5e7104f80",
+  "status": "completed",
+  "policy_version": 34,
+  "policy_version_id": "3ec8ae7b-60aa-4aeb-b880-fab781e9aa87",
+  "mechanism": "leader-sever",
+  "opening_decision_limit": 3,
+  "episodes": 4,
+  "wins": 0,
+  "win_rate_pct": 0,
+  "final_tiles": [
+    28543,
+    31434,
+    20739,
+    32388
+  ],
+  "holds": 25,
+  "rejected": 0,
+  "fallbacks": 29,
+  "planner_degraded_decisions": 29,
+  "alliance_selections": 35,
+  "opening_alliance_selections": 0,
+  "opening_alliance_opportunities": 12,
+  "opening_alliance_alignments": 0,
+  "opening_reserve_selections": 1,
+  "bank_build_selections": 0,
+  "pressure_pulse_selections": 0,
+  "parity_pulse_selections": 8,
+  "leader_sever_selections": 0,
+  "wire_salvage_selections": 0,
+  "wire_veto_selections": 0,
+  "checks": {
+    "completed_episode_floor": true,
+    "perfect_episode_wins": false,
+    "zero_holds": false,
+    "zero_rejected_decisions": true,
+    "leader_sever_mechanism_exercised": false,
+    "all_leader_severs_productive": false
+  },
+  "passed": false,
+  "episode_audits": [
+    {
+      "episode_request_id": "ereq_e2adbec7-1565-41bd-bb0a-d12757d0f4ca",
+      "episode_id": "089f5999-2c51-48e0-8ee9-48f715a42fc8",
+      "map": "Asia",
+      "seat": 3,
+      "policy_version": 34,
+      "policy_version_id": "3ec8ae7b-60aa-4aeb-b880-fab781e9aa87",
+      "won": false,
+      "score": 0,
+      "final_tiles": 28543,
+      "is_alive": true,
+      "decisions": 155,
+      "opening_decision_limit": 3,
+      "holds": 18,
+      "rejected": 0,
+      "fallbacks": 21,
+      "profiles": [
+        "diplomatic"
+      ],
+      "alliance_selections": [
+        {
+          "turn": 1500,
+          "action_id": "alliance:c4o8gv6v",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 3400,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 3700,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 5200,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 5500,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 6600,
+          "action_id": "alliance:c4o8gv6v",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 7000,
+          "action_id": "alliance:c4o8gv6v",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 7400,
+          "action_id": "alliance:c4o8gv6v",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 7800,
+          "action_id": "alliance:c4o8gv6v",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 8100,
+          "action_id": "alliance:c4o8gv6v",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 8400,
+          "action_id": "alliance:c4o8gv6v",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 8900,
+          "action_id": "alliance:c4o8gv6v",
+          "accepted": true,
+          "opening": false
+        }
+      ],
+      "opening_alliance_opportunities": [
+        {
+          "turn": 400,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "build:City:307292",
+          "aligned": false
+        },
+        {
+          "turn": 500,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "expand:terra-nullius:35",
+          "aligned": false
+        },
+        {
+          "turn": 600,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "expand:terra-nullius:35",
+          "aligned": false
+        }
+      ],
+      "opening_reserve_selections": [
+        {
+          "turn": 1800,
+          "action_id": "attack:xbt2wt14:25",
+          "target_name": "Richard Higgins",
+          "selected_percent": 25,
+          "reserve": 0.75,
+          "reserve_limit": 25,
+          "active_decision": 14,
+          "accepted": true,
+          "fallback": false
+        }
+      ],
+      "bank_build_selections": [],
+      "pressure_pulse_selections": [],
+      "parity_pulse_selections": [
+        {
+          "turn": 6900,
+          "action_id": "attack:28k1hctz:10",
+          "target_name": "Auri",
+          "troop_percent": 10,
+          "relative_troop_ratio": 1.01,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 8200,
+          "action_id": "attack:28k1hctz:10",
+          "target_name": "Auri",
+          "troop_percent": 10,
+          "relative_troop_ratio": 1.02,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 8500,
+          "action_id": "attack:28k1hctz:10",
+          "target_name": "Auri",
+          "troop_percent": 10,
+          "relative_troop_ratio": 1.12,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 9000,
+          "action_id": "attack:28k1hctz:10",
+          "target_name": "Auri",
+          "troop_percent": 10,
+          "relative_troop_ratio": 1.01,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 9300,
+          "action_id": "attack:28k1hctz:10",
+          "target_name": "Auri",
+          "troop_percent": 10,
+          "relative_troop_ratio": 1.23,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 9600,
+          "action_id": "attack:28k1hctz:10",
+          "target_name": "Auri",
+          "troop_percent": 10,
+          "relative_troop_ratio": 1.36,
+          "accepted": true,
+          "fallback": false
+        }
+      ],
+      "leader_sever_selections": [],
+      "wire_salvage_selections": [],
+      "wire_veto_selections": [],
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/988c9308-072f-4593-a97d-97e9182b2480.replay",
+      "replay_sha256": "b10960b1599e17b8202be5792cd62347520974101c8f586fbad9b337b7a6697d",
+      "replay_path": "data/cache/replays/089f5999-2c51-48e0-8ee9-48f715a42fc8.replay"
+    },
+    {
+      "episode_request_id": "ereq_4802112d-48f7-4dc7-b804-746298fdee90",
+      "episode_id": "97c78466-099d-446b-8d8e-3adda7f044ed",
+      "map": "Asia",
+      "seat": 3,
+      "policy_version": 34,
+      "policy_version_id": "3ec8ae7b-60aa-4aeb-b880-fab781e9aa87",
+      "won": false,
+      "score": 0,
+      "final_tiles": 31434,
+      "is_alive": true,
+      "decisions": 70,
+      "opening_decision_limit": 3,
+      "holds": 2,
+      "rejected": 0,
+      "fallbacks": 3,
+      "profiles": [
+        "diplomatic"
+      ],
+      "alliance_selections": [
+        {
+          "turn": 1200,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 1500,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 1700,
+          "action_id": "alliance:c4o8gv6v",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 4800,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 5100,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 5500,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 5800,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 6000,
+          "action_id": "alliance:c4o8gv6v",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 6100,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        }
+      ],
+      "opening_alliance_opportunities": [
+        {
+          "turn": 400,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "build:City:307292",
+          "aligned": false
+        },
+        {
+          "turn": 500,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "expand:terra-nullius:35",
+          "aligned": false
+        },
+        {
+          "turn": 600,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "expand:terra-nullius:35",
+          "aligned": false
+        }
+      ],
+      "opening_reserve_selections": [],
+      "bank_build_selections": [],
+      "pressure_pulse_selections": [],
+      "parity_pulse_selections": [
+        {
+          "turn": 4600,
+          "action_id": "attack:28k1hctz:10",
+          "target_name": "Auri",
+          "troop_percent": 10,
+          "relative_troop_ratio": 1.04,
+          "accepted": true,
+          "fallback": false
+        }
+      ],
+      "leader_sever_selections": [],
+      "wire_salvage_selections": [],
+      "wire_veto_selections": [],
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/b8ac92d9-9a05-43be-b99d-4eddbc3b975a.replay",
+      "replay_sha256": "8ae39c9f5ed2c9224b93d94b1fbcaf4013539ac438c6edbc29618b0a3b158713",
+      "replay_path": "data/cache/replays/97c78466-099d-446b-8d8e-3adda7f044ed.replay"
+    },
+    {
+      "episode_request_id": "ereq_a1529ddf-95e6-4d57-9e84-0ac7a84055f1",
+      "episode_id": "0aab257c-3e5d-4b2d-8853-a07728716084",
+      "map": "Asia",
+      "seat": 3,
+      "policy_version": 34,
+      "policy_version_id": "3ec8ae7b-60aa-4aeb-b880-fab781e9aa87",
+      "won": false,
+      "score": 0,
+      "final_tiles": 20739,
+      "is_alive": true,
+      "decisions": 62,
+      "opening_decision_limit": 3,
+      "holds": 3,
+      "rejected": 0,
+      "fallbacks": 3,
+      "profiles": [
+        "diplomatic"
+      ],
+      "alliance_selections": [
+        {
+          "turn": 2500,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 2800,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 3200,
+          "action_id": "alliance:c4o8gv6v",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 4600,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 4900,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 5200,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        }
+      ],
+      "opening_alliance_opportunities": [
+        {
+          "turn": 400,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "build:City:307292",
+          "aligned": false
+        },
+        {
+          "turn": 500,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "expand:terra-nullius:35",
+          "aligned": false
+        },
+        {
+          "turn": 600,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "expand:terra-nullius:35",
+          "aligned": false
+        }
+      ],
+      "opening_reserve_selections": [],
+      "bank_build_selections": [],
+      "pressure_pulse_selections": [],
+      "parity_pulse_selections": [],
+      "leader_sever_selections": [],
+      "wire_salvage_selections": [],
+      "wire_veto_selections": [],
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/344b598f-08c6-4861-af0b-561f41ce6fed.replay",
+      "replay_sha256": "8d8126b3909242029c99978b409526cb47189484a872a20e1ee9dfbc9ecd7d83",
+      "replay_path": "data/cache/replays/0aab257c-3e5d-4b2d-8853-a07728716084.replay"
+    },
+    {
+      "episode_request_id": "ereq_4ac14d9f-8691-4bee-b45d-0e3a30650874",
+      "episode_id": "2e119112-d692-4a67-8f58-0d691ae9ded0",
+      "map": "Asia",
+      "seat": 3,
+      "policy_version": 34,
+      "policy_version_id": "3ec8ae7b-60aa-4aeb-b880-fab781e9aa87",
+      "won": false,
+      "score": 0,
+      "final_tiles": 32388,
+      "is_alive": true,
+      "decisions": 58,
+      "opening_decision_limit": 3,
+      "holds": 2,
+      "rejected": 0,
+      "fallbacks": 2,
+      "profiles": [
+        "diplomatic"
+      ],
+      "alliance_selections": [
+        {
+          "turn": 2500,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 2800,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 4100,
+          "action_id": "alliance:c4o8gv6v",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 4400,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 4700,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 5000,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 5300,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 5600,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        }
+      ],
+      "opening_alliance_opportunities": [
+        {
+          "turn": 400,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "build:City:307292",
+          "aligned": false
+        },
+        {
+          "turn": 500,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "expand:terra-nullius:35",
+          "aligned": false
+        },
+        {
+          "turn": 600,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "expand:terra-nullius:35",
+          "aligned": false
+        }
+      ],
+      "opening_reserve_selections": [],
+      "bank_build_selections": [],
+      "pressure_pulse_selections": [],
+      "parity_pulse_selections": [
+        {
+          "turn": 2900,
+          "action_id": "attack:28k1hctz:10",
+          "target_name": "Auri",
+          "troop_percent": 10,
+          "relative_troop_ratio": 1.13,
+          "accepted": true,
+          "fallback": false
+        }
+      ],
+      "leader_sever_selections": [],
+      "wire_salvage_selections": [],
+      "wire_veto_selections": [],
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/531dfb54-45e4-44f8-8346-0b1505d6c498.replay",
+      "replay_sha256": "b5e037d38e0cf75bb2e11835170a40c807368db97690b33009f7c22c348adbdf",
+      "replay_path": "data/cache/replays/2e119112-d692-4a67-8f58-0d691ae9ded0.replay"
+    }
+  ]
+}
