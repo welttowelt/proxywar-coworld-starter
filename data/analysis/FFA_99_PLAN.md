@@ -57,6 +57,12 @@ the same profiles against v14. A 20/20 targeted pass is a regression gate, not
 a statistical proof of a 99% underlying win probability; the official rolling
 window remains the final KPI.
 
+Immediately before promotion, read Auri's policy version from the latest
+completed competition roster. If it differs from the `proxywar-keystone:v4`
+fixed baseline, repeat the two weakest candidate profiles against the new live
+version. A challenger version shift invalidates the old promotion gate until
+that retest completes.
+
 If the candidate misses any profile, keep v14 champion and assign the next
 codename only after the mechanism changes. Reserved release names live in
 `experiments/codenames.json`.
