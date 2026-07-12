@@ -7,6 +7,7 @@ import { pathToFileURL } from "node:url";
 
 const COWORLD_PACKAGE = "coworld==0.1.28";
 const DEFAULT_PLAYER = "odin free";
+const PRESSURE_PULSE_TAG = "[g4gnr4d-t4kt:pulse]";
 const ALLOWED_REPLAY_HOSTS = new Set(["softmax-public.s3.amazonaws.com"]);
 const MAX_REPLAY_BYTES = 64 * 1024 * 1024;
 
@@ -65,6 +66,7 @@ export function auditEpisodeReplay(
   let activeDecisions = 0;
   const openingAllianceOpportunities = [];
   const allianceSelections = [];
+  const pressurePulseSelections = [];
   for (const decision of decisions) {
     const isSpawn = decision.selectedActionKind === "spawn";
     const survival = decision.tacticalAffordances?.survivalAlliance ?? {};
@@ -92,6 +94,16 @@ export function auditEpisodeReplay(
         opening: !isSpawn && activeDecisions < openingDecisionLimit,
       });
     }
+    if (String(decision.reason ?? "").startsWith(PRESSURE_PULSE_TAG)) {
+      pressurePulseSelections.push({
+        turn: decision.turnNumber,
+        action_id: decision.selectedLegalActionId ?? null,
+        target_name: decision.selectedActionMetadata?.targetName ?? null,
+        troop_percent: decision.selectedActionMetadata?.troopPercent ?? null,
+        relative_troop_ratio: decision.selectedActionMetadata?.relativeTroopRatio ?? null,
+        accepted: decision.result?.accepted ?? null,
+      });
+    }
     if (!isSpawn) activeDecisions += 1;
   }
 
@@ -114,10 +126,16 @@ export function auditEpisodeReplay(
     profiles: [...new Set(decisions.map((decision) => decision.profile).filter(Boolean))],
     alliance_selections: allianceSelections,
     opening_alliance_opportunities: openingAllianceOpportunities,
+    pressure_pulse_selections: pressurePulseSelections,
   };
 }
 
-export function buildGateReport(request, audits, minimumEpisodes = 4) {
+export function buildGateReport(
+  request,
+  audits,
+  minimumEpisodes = 4,
+  { mechanism = "opening-alliance" } = {},
+) {
   const wins = audits.filter((audit) => audit.won).length;
   const holds = audits.reduce((sum, audit) => sum + audit.holds, 0);
   const rejected = audits.reduce((sum, audit) => sum + audit.rejected, 0);
@@ -125,6 +143,7 @@ export function buildGateReport(request, audits, minimumEpisodes = 4) {
   const opportunities = audits.flatMap((audit) => audit.opening_alliance_opportunities);
   const selections = audits.flatMap((audit) => audit.alliance_selections);
   const openingSelections = selections.filter((selection) => selection.opening);
+  const pressurePulses = audits.flatMap((audit) => audit.pressure_pulse_selections ?? []);
   const aligned = opportunities.filter((opportunity) => opportunity.aligned).length;
   const mechanismExercised = openingSelections.length > 0;
   const mechanismPassed = mechanismExercised && aligned === opportunities.length;
@@ -134,15 +153,22 @@ export function buildGateReport(request, audits, minimumEpisodes = 4) {
     perfect_episode_wins: completed && wins === audits.length,
     zero_holds: holds === 0,
     zero_rejected_decisions: rejected === 0,
-    opening_alliance_mechanism_exercised: mechanismExercised,
-    exact_opening_alliance_alignment: mechanismPassed,
   };
+  if (mechanism === "pressure-pulse") {
+    checks.pressure_pulse_mechanism_exercised = pressurePulses.length > 0;
+    checks.all_pressure_pulses_accepted = pressurePulses.length > 0 &&
+      pressurePulses.every((selection) => selection.accepted === true);
+  } else {
+    checks.opening_alliance_mechanism_exercised = mechanismExercised;
+    checks.exact_opening_alliance_alignment = mechanismPassed;
+  }
   return {
     schema_version: 1,
     experience_request_id: request.id,
     status: request.status,
     policy_version: audits[0]?.policy_version ?? null,
     policy_version_id: audits[0]?.policy_version_id ?? null,
+    mechanism,
     opening_decision_limit: audits[0]?.opening_decision_limit ?? null,
     episodes: audits.length,
     wins,
@@ -155,6 +181,7 @@ export function buildGateReport(request, audits, minimumEpisodes = 4) {
     opening_alliance_selections: openingSelections.length,
     opening_alliance_opportunities: opportunities.length,
     opening_alliance_alignments: aligned,
+    pressure_pulse_selections: pressurePulses.length,
     checks,
     passed: Object.values(checks).every(Boolean),
     episode_audits: audits,
@@ -203,11 +230,15 @@ async function main() {
   const allowRunning = process.argv.includes("--allow-running");
   const minimumEpisodes = Number(option("min-episodes", "4"));
   const openingDecisionLimit = Number(option("opening-decisions", "3"));
+  const mechanism = option("mechanism", "opening-alliance");
   if (!Number.isInteger(minimumEpisodes) || minimumEpisodes < 1) {
     throw new Error("--min-episodes must be a positive integer");
   }
   if (!Number.isInteger(openingDecisionLimit) || openingDecisionLimit < 1) {
     throw new Error("--opening-decisions must be a positive integer");
+  }
+  if (!new Set(["opening-alliance", "pressure-pulse"]).has(mechanism)) {
+    throw new Error("--mechanism must be opening-alliance or pressure-pulse");
   }
   const request = coworldJson(["xp-request", "get", requestID], root);
   const episodes = coworldJson(["xp-request", "episodes", requestID], root);
@@ -238,7 +269,7 @@ async function main() {
     audit.replay_path = path.relative(root, destination);
     audits.push(audit);
   }
-  const report = buildGateReport(request, audits, minimumEpisodes);
+  const report = buildGateReport(request, audits, minimumEpisodes, { mechanism });
   if (outputPath) {
     await mkdir(path.dirname(path.resolve(outputPath)), { recursive: true });
     await writeFile(outputPath, `${JSON.stringify(report, null, 2)}\n`);

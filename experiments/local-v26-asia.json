@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "policy_version": 26,
+  "codename": "g4gnr4d-t4kt",
+  "map": "Asia",
+  "player_count": 4,
+  "turn_count": 5700,
+  "winner_slot": 0,
+  "final_tiles": [214323, 1132, 7240, 26395],
+  "decisions": 224,
+  "accepted": 224,
+  "rejected": 0,
+  "holds": 0,
+  "fallbacks": 212,
+  "pressure_pulses": 0,
+  "profiles": ["aggressive", "defensive", "diplomatic", "opportunistic"],
+  "action_kinds": {
+    "attack": 157,
+    "boat": 38,
+    "build": 17,
+    "spawn": 12
+  },
+  "replay_sha256": "87d3d035ae29749256b018eea5eb6abb49bc416ac6cf492f1f4d91c7e9281a9a",
+  "checks": {
+    "declared_winner": true,
+    "all_decisions_accepted": true,
+    "zero_holds": true,
+    "zero_rejections": true,
+    "mechanism_exercised": false,
+    "protocol_safety_passed": true,
+    "competitive_gate_passed": false
+  },
+  "limitations": {
+    "bedrock_planning_available": false,
+    "claim": "protocol and selector safety only",
+    "required_next_evidence": "hosted Asia seat-3 replay with pressure pulses executed, 4/4 wins, zero holds, and zero rejected decisions"
+  }
+}

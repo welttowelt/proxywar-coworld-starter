@@ -412,3 +412,31 @@ times. The continuous cap prevented that target finish, prolonged the weak
 target lock, and surrendered the leader-pressure window. v25 is rejected and
 exact v14 is restored. Full evidence is archived in
 `experiments/audit-v25-asia-seat3.json`.
+
+## Runaway-leader cadence candidate, 2026-07-12
+
+v26 / `g4gnr4d-t4kt` starts from exact v14 and changes target arbitration rather
+than commitment limits. When the current Claude plan names the top rival, that
+rival leads by at least eight tile-share points, remains legally reachable, and
+relative troop strength is at least 0.60, the selector inserts a 10% pressure
+pulse after one recovery decision when v14 has no ordinarily eligible hostile
+conversion. Vulnerable-target conversion, active finishes, and the existing
+economy cadence retain precedence.
+
+This isolates the repeated leader-pressure miss. In Round 226's two Pangaea
+losses, Auri was legally attackable on 34 and 28 decisions but v14 selected one
+attack in each. Claude named Auri on 12 and 24 of those opportunities. Across
+the current 79-episode v14 sample, wins average 29.0 hostile attacks and losses
+16.3. The candidate follows the already-available strategic signal without
+reintroducing v25's all-game reserve cap.
+
+The first hosted diagnostic is pinned to the weakest Asia diplomatic seat in
+`experiments/gate-v26-asia-seat3.json`. v14 remains champion unless v26 clears
+4/4 and a separate 20/20 map-seat regression gate.
+
+The full local Asia run completed at turn 5,700 with 224 accepted decisions,
+zero holds, and zero rejected decisions. Its verified replay SHA-256 is
+`87d3d035ae29749256b018eea5eb6abb49bc416ac6cf492f1f4d91c7e9281a9a`.
+Local Bedrock planning was unavailable on 212 decisions, so the pressure pulse
+executed zero times. This proves the exact image, selector, protocol, and replay
+path without making a competitive claim.

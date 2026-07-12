@@ -129,3 +129,29 @@ test("partial audit cannot pass before the request completes", () => {
   assert.equal(report.passed, false);
   assert.equal(report.checks.completed_episode_floor, false);
 });
+
+test("pressure-pulse gate requires an accepted tagged execution", () => {
+  const audits = [0, 1, 2, 3].map((index) => ({
+    won: true,
+    final_tiles: 220000 + index,
+    holds: 0,
+    rejected: 0,
+    fallbacks: 0,
+    alliance_selections: [],
+    opening_alliance_opportunities: [],
+    pressure_pulse_selections: index === 0
+      ? [{ turn: 1800, action_id: "attack:auri:10", accepted: true }]
+      : [],
+  }));
+  const report = buildGateReport(
+    { id: "xreq_pressure", status: "completed" },
+    audits,
+    4,
+    { mechanism: "pressure-pulse" },
+  );
+
+  assert.equal(report.pressure_pulse_selections, 1);
+  assert.equal(report.checks.pressure_pulse_mechanism_exercised, true);
+  assert.equal(report.checks.all_pressure_pulses_accepted, true);
+  assert.equal(report.passed, true);
+});

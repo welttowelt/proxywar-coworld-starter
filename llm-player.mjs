@@ -195,16 +195,17 @@ function handleMessage(activeSocket, data) {
 
   const chosen = chooseAction(actions, state, plan, history);
   const degraded = lastPlanError !== null;
+  const selectionTag = chosen.selectionTag ? `[${clean(chosen.selectionTag)}] ` : "";
   let reason;
   if (plan !== null) {
     const focus = plan.target ? `${plan.focus} -> ${plan.target}` : plan.focus;
     reason = degraded
-      ? `PLAN(${focus}; stale, refresh failed: ${lastPlanError}): ${chosen.kind}`
-      : `PLAN(${focus}) via ${plan.model}: ${chosen.kind} — ${plan.reason}`;
+      ? `${selectionTag}PLAN(${focus}; stale, refresh failed: ${lastPlanError}): ${chosen.kind}`
+      : `${selectionTag}PLAN(${focus}) via ${plan.model}: ${chosen.kind} — ${plan.reason}`;
   } else {
     reason = degraded
-      ? `BOOTSTRAP RULE (plan refresh failed: ${lastPlanError}): ${chosen.kind}`
-      : `BOOTSTRAP RULE (first plan in flight): ${chosen.kind}`;
+      ? `${selectionTag}BOOTSTRAP RULE (plan refresh failed: ${lastPlanError}): ${chosen.kind}`
+      : `${selectionTag}BOOTSTRAP RULE (first plan in flight): ${chosen.kind}`;
   }
 
   recordDecision(history, chosen, state);

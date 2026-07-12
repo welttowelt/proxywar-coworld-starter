@@ -309,6 +309,33 @@ function chooseRivalAttack(actions, state, plan, history, avoid) {
   };
 }
 
+function chooseLeaderPressurePulse(actions, state, plan, history, avoid) {
+  const planFocus = clean(plan?.focus).toLowerCase();
+  const planTarget = clean(plan?.target).toLowerCase();
+  if (planFocus !== "attack" || !planTarget || state.self.tileShare < 0.08) return null;
+
+  const leader = state.rivals.find((rival) =>
+    rival.name.toLowerCase() === planTarget &&
+    rival.tileShare >= state.topRivalTileShare - 0.005
+  );
+  if (!leader || leader.isAllied) return null;
+  if (leader.tileShare - state.self.tileShare < 0.08) return null;
+  if (!Number.isFinite(leader.relativeTroopRatio) || leader.relativeTroopRatio < 0.6) return null;
+
+  const sinceLeaderAttack = decisionsSince(
+    history,
+    (entry) => entry.kind === "attack" && targetName(entry) === planTarget,
+  );
+  if (sinceLeaderAttack < 1) return null;
+
+  const candidates = safeActions(actions, (action) => {
+    if (action.kind !== "attack" || isNeutralExpansion(action)) return false;
+    const rival = rivalForAction(action, state);
+    return rival?.name.toLowerCase() === planTarget && !rival.isAllied;
+  });
+  return pickPercent(candidates, 10, avoid);
+}
+
 function chooseNeutralAttack(actions, history, avoid) {
   const candidates = safeActions(actions, isNeutralExpansion);
   const streak = consecutive(history, (entry) => entry.neutral === true && entry.kind === "attack");
@@ -461,6 +488,13 @@ export function chooseAction(actions, state, plan = null, history = []) {
     (allianceMove.kind === "break_alliance" || !hasReliableTacticalAction(actions))
   ) {
     return allianceMove;
+  }
+
+  if (!rivalAttack?.action && !cadenceBuild) {
+    const leaderPressure = chooseLeaderPressurePulse(actions, state, plan, history, avoid);
+    if (leaderPressure) {
+      return { ...leaderPressure, selectionTag: "g4gnr4d-t4kt:pulse" };
+    }
   }
 
   if (neutralExpansionStalled(state, history)) {

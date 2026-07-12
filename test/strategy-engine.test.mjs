@@ -490,6 +490,73 @@ test("a runaway leader can be pressured at a 0.9 relative ratio", () => {
   assert.equal(choose(actions, obs).id, "attack:leader:10");
 });
 
+test("a plan-backed pressure pulse reaches a stronger runaway leader", () => {
+  const actions = [
+    action("expand:terra-nullius:10", "attack", "Expand Terra Nullius 10%"),
+    action("attack:leader:10", "attack", "Attack Leader 10%"),
+    action("attack:leader:25", "attack", "Attack Leader 25%"),
+  ];
+  const obs = observation({
+    tileShare: 0.12,
+    troopRatio: 0.9,
+    rivals: [{ id: "leader", name: "Leader", tileShare: 0.22, relativeTroopRatio: 0.7 }],
+  });
+  const plan = { focus: "attack", target: "Leader" };
+
+  const selected = choose(actions, obs, plan);
+  assert.equal(selected.id, "attack:leader:10");
+  assert.equal(selected.selectionTag, "g4gnr4d-t4kt:pulse");
+});
+
+test("leader pressure pulse leaves one recovery decision between probes", () => {
+  const actions = [
+    action("expand:terra-nullius:10", "attack", "Expand Terra Nullius 10%"),
+    action("attack:leader:10", "attack", "Attack Leader 10%"),
+  ];
+  const obs = observation({
+    tileShare: 0.12,
+    troopRatio: 0.9,
+    rivals: [{ id: "leader", name: "Leader", tileShare: 0.22, relativeTroopRatio: 0.7 }],
+  });
+  const history = [{
+    actionID: "attack:leader:10",
+    kind: "attack",
+    neutral: false,
+    targetName: "Leader",
+    tileShare: 0.12,
+  }];
+  const plan = { focus: "attack", target: "Leader" };
+
+  assert.equal(choose(actions, obs, plan, history).id, "expand:terra-nullius:10");
+});
+
+test("leader pressure pulse does not interrupt a vulnerable target finish", () => {
+  const actions = [
+    ...[10, 25, 40].map((percent) =>
+      action(`attack:weak:${percent}`, "attack", `Attack Weak ${percent}%`)
+    ),
+    action("attack:leader:10", "attack", "Attack Leader 10%"),
+  ];
+  const obs = observation({
+    tileShare: 0.15,
+    troopRatio: 0.8,
+    rivals: [
+      { id: "weak", name: "Weak", tileShare: 0.03, relativeTroopRatio: 2.0 },
+      { id: "leader", name: "Leader", tileShare: 0.25, relativeTroopRatio: 0.7 },
+    ],
+  });
+  const history = [10, 25].map((percent) => ({
+    actionID: `attack:weak:${percent}`,
+    kind: "attack",
+    neutral: false,
+    targetName: "Weak",
+    tileShare: 0.15,
+  }));
+  const plan = { focus: "attack", target: "Leader" };
+
+  assert.equal(choose(actions, obs, plan, history).id, "attack:weak:40");
+});
+
 test("a weak non-leader attack is rejected", () => {
   const actions = [
     action("attack:rival:10", "attack", "Attack Rival 10%"),

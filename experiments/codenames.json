@@ -114,6 +114,12 @@
       "codename": "j4rn-d0mr",
       "status": "rejected",
       "mechanism": "extend reserve feedback through midgame with three commitment bands"
+    },
+    {
+      "version": "v26",
+      "codename": "g4gnr4d-t4kt",
+      "status": "candidate",
+      "mechanism": "maintain plan-backed pressure cadence on a reachable runaway leader"
     }
   ]
 }
