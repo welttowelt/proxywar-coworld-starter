@@ -2,6 +2,7 @@
   "schema_version": 1,
   "candidate": {
     "policy_ref": "oli-codex-proxywar:v35",
+    "policy_version_id": "23343a1d-0b3a-474d-8d00-de1e8c5669af",
     "codename": "f3nr1r",
     "parent_ref": "oli-codex-proxywar:v34",
     "parent_policy_version_id": "3ec8ae7b-60aa-4aeb-b880-fab781e9aa87"

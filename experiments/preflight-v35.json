@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "oli-codex-proxywar:v35",
+    "policy_version_id": "23343a1d-0b3a-474d-8d00-de1e8c5669af",
+    "parent_ref": "oli-codex-proxywar:v34",
+    "exact_deltas": [
+      "remove only the risk-level exclusion from the legal break_alliance lookup for the allied tile leader"
+    ]
+  },
+  "hypothesis": "executing the server-authorized leader break at the first parity-window opportunity prevents the protected-runaway loop that Auri converted into a 4/4 sweep",
+  "mechanism": {
+    "marker": "[f3nr1r:s3vr]",
+    "prior_reachable_decisions": 16,
+    "source": "experiments/diagnosis-v35-asia-seat3.json"
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "wins": 0,
+    "self_play": false,
+    "accepted_decisions": 1,
+    "holds": 0,
+    "rejections": 0,
+    "planner_degraded_decisions": 0,
+    "mechanism_reached": true,
+    "full_episode_skipped_by_user": true,
+    "replay_sha256": null
+  },
+  "matched_baseline": {
+    "policy_ref": "oli-codex-proxywar:v34",
+    "request_id": "xreq_b8157cd6-8daa-4b9d-a4ce-10b5e7104f80",
+    "same_roster": true,
+    "same_variant": true
+  },
+  "champion_control": {
+    "policy_ref": "oli-codex-proxywar:v14",
+    "request_id": "xreq_f828169f-4885-48b9-9dcf-9287256ebb15",
+    "wins": 0,
+    "episodes": 4
+  },
+  "diagnostic_only": false,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  },
+  "verdict": "ready for hosted diagnostic; full local episode explicitly skipped by user"
+}
