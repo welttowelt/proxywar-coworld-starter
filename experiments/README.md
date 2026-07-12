@@ -394,3 +394,11 @@ This removes the exact v24 failure transition: 40% attacks at turns 2,400 and
 2,500 immediately after the opening controller expired. The first gate remains
 the pinned Asia seat-3 roster in `experiments/gate-v25-asia-seat3.json`; v14
 remains champion unless v25 clears 4/4 and the separate 20/20 regression gate.
+
+The full local Asia run completed at turn 6,800 with 268 accepted decisions,
+zero holds, zero rejections, and zero parse failures. Across 97 hostile attacks,
+all three reserve bands were exercised with zero commitment violations. Its
+verified replay SHA-256 is
+`687b008a6dd68bc62845cc648f86d19ad17e38ebd28fc3c312a375325fc47c5a`.
+Local Bedrock planning was unavailable for 256 decisions, so this proves the
+continuous reserve invariant and protocol safety without a competitive claim.

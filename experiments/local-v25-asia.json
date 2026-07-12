@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "candidate": "oli-codex-proxywar:v25",
+  "codename": "j4rn-d0mr",
+  "map": "Asia",
+  "status": "completed",
+  "winner_slot": 1,
+  "turn_count": 6800,
+  "decisions": 268,
+  "accepted_decisions": 268,
+  "holds": 0,
+  "rejected_decisions": 0,
+  "parse_failures": 0,
+  "fallbacks": 256,
+  "hostile_attacks": 97,
+  "low_band_attacks": 57,
+  "middle_band_attacks": 36,
+  "full_band_attacks": 4,
+  "reserve_commitment_violations": 0,
+  "replay_verified": true,
+  "replay_sha256": "687b008a6dd68bc62845cc648f86d19ad17e38ebd28fc3c312a375325fc47c5a",
+  "conclusion": {
+    "protocol_safe": true,
+    "selector_safe": true,
+    "mechanism_reached": true,
+    "continuous_reserve_invariant_passed": true,
+    "competitive_claim": false,
+    "required_next_evidence": "hosted Asia seat-3 replay against Auri v5 with 4/4 wins and zero reserve commitment violations"
+  }
+}
