@@ -24,7 +24,7 @@ function fixture() {
         win_rate_pct: 100,
         max_holds: 0,
         max_rejections: 0,
-        max_fallbacks: 0,
+        planner_degradation_rule: "no_unexplained_regression_vs_parent",
         min_mechanism_executions: 1,
       },
     },

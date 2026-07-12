@@ -37,8 +37,13 @@ if (preflight.local?.independent_traces < preflight.local?.runs) {
 
 const criteria = preflight.hosted?.criteria ?? {};
 if (criteria.win_rate_pct !== 100) errors.push("hosted.criteria.win_rate_pct must be 100");
-for (const field of ["max_holds", "max_rejections", "max_fallbacks"]) {
+for (const field of ["max_holds", "max_rejections"]) {
   if (criteria[field] !== 0) errors.push(`hosted.criteria.${field} must be 0`);
+}
+if (criteria.planner_degradation_rule !== "no_unexplained_regression_vs_parent") {
+  errors.push(
+    "hosted.criteria.planner_degradation_rule must compare against the matched parent",
+  );
 }
 if (!Number.isInteger(criteria.min_mechanism_executions) || criteria.min_mechanism_executions < 1) {
   errors.push("hosted.criteria.min_mechanism_executions must be at least 1");

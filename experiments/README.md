@@ -518,3 +518,20 @@ tiles were 1,859; 23,211; 1,264; and 27,140. The mechanism was observable and
 active but strategically negative. v30 is rejected and the Frontier branch is
 closed until exact v14 completes a matched current-roster baseline. The revised
 gate is documented in `experiments/PROTOCOL.md`.
+
+## RCI matched champion baseline, 2026-07-12
+
+Exact v14 returned to the current Asia seat-3 roster in
+`xreq_f828169f-4885-48b9-9dcf-9287256ebb15`. Auri v5 won all four episodes;
+v14 finished with 0, 2,175, 0, and 0 tiles. The wire stayed valid with zero
+holds and zero rejected actions, but planner degradation produced 15 fallbacks.
+
+The four openings were strategically identical. v14 escalated against Richard
+to 40% at turn 1,700, reached only 0.48 troop reserve at turn 1,900, and let
+Auri enter at a 1.66 relative troop advantage. v14 then attacked Auri zero
+times while Auri attacked it 9-16 times per episode. This reproduces the
+pre-v24 failure and restores the strongest prior arm to the evidence line: the
+v24 live opening-reserve controller executed on 28 historical decisions,
+removed Auri's turn-1,900 entry, and won 3/4 on the same roster. It remains a
+diagnostic parent, not a promotion candidate. Full evidence is archived in
+`experiments/audit-v14-current-asia-seat3.json`.

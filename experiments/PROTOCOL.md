@@ -22,8 +22,10 @@ reaching promotion gates.
    request starts.
 5. Run a matched v14 baseline with identical roster, variant, seat, and episode
    count. Without it, the request is diagnostic-only.
-6. Require `4/4`, zero holds, zero rejections, zero fallbacks, and at least one
-   productive mechanism execution.
+6. Require `4/4`, zero holds, zero rejections, and at least one productive
+   mechanism execution. Compare planner-degraded decisions with the matched
+   parent; do not classify the policy's accepted deterministic path as an
+   execution fallback.
 7. Require a separate `20/20` map-and-seat regression before league promotion.
 8. Keep v14 as the sole active league policy until every condition passes.
 

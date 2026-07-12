@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "experience_request_id": "xreq_f828169f-4885-48b9-9dcf-9287256ebb15",
+  "policy_ref": "oli-codex-proxywar:v14",
+  "variant": "tournament-4p-asia",
+  "seat": 3,
+  "roster": [
+    "jamesboggs-warlord:v1",
+    "proxywar-keystone:v5",
+    "oli-codex-proxywar:v14",
+    "proxywar-starter-b:v1"
+  ],
+  "episodes": 4,
+  "wins": 0,
+  "winner_counts": {
+    "Auri": 4
+  },
+  "final_tiles": [0, 2175, 0, 0],
+  "holds": 0,
+  "rejected": 0,
+  "fallbacks": 15,
+  "opening_failure": {
+    "first_auri_attack_turns": [1900, 1900, 1900, 1900],
+    "first_auri_relative_troop_ratio": [1.66, 1.66, 1.66, 1.66],
+    "odin_reserve_at_first_auri_attack": [0.48, 0.48, 0.48, 0.48],
+    "odin_action_at_first_auri_attack": [
+      "attack Richard Higgins 40%",
+      "attack Richard Higgins 40%",
+      "attack Richard Higgins 40%",
+      "attack Richard Higgins 40%"
+    ]
+  },
+  "attack_counts": [
+    {
+      "episode_id": "0f29413c-5d94-48a9-897c-c3e198aa9a53",
+      "odin_to_auri": 0,
+      "odin_to_richard": 13,
+      "auri_to_odin": 15,
+      "james_to_odin": 4,
+      "richard_to_odin": 6,
+      "replay_sha256": "b160cbfd7fbaac92f33544027475c1ae16f8205d0333638452cd063575895625"
+    },
+    {
+      "episode_id": "40f70e1d-3814-45c0-9b2b-1bc1d227c436",
+      "odin_to_auri": 0,
+      "odin_to_richard": 10,
+      "auri_to_odin": 16,
+      "james_to_odin": 4,
+      "richard_to_odin": 7,
+      "replay_sha256": "f2215ae13eb68ca48b41586d88f776f87c2d886b35a8be57768cf6fbb452365d"
+    },
+    {
+      "episode_id": "80936469-6b01-4171-bfc5-1e0b69a6c3f6",
+      "odin_to_auri": 0,
+      "odin_to_richard": 13,
+      "auri_to_odin": 9,
+      "james_to_odin": 6,
+      "richard_to_odin": 1,
+      "replay_sha256": "be3320c299e67e6842acce7e9a573113bf70a28e0b3e83b34ce69ef65cf3c864"
+    },
+    {
+      "episode_id": "26c5e7c3-adeb-4a6b-a624-70c3580fd7b1",
+      "odin_to_auri": 0,
+      "odin_to_richard": 13,
+      "auri_to_odin": 11,
+      "james_to_odin": 6,
+      "richard_to_odin": 1,
+      "replay_sha256": "7e4ae9c11f1f05c31797fad3a781c4137975526efa75e2668e4e4656a6f0d748"
+    }
+  ],
+  "verdict": "v14 repeats the pre-v24 opening failure: it drains its reserve into Richard, gives Auri a deterministic turn-1900 entry, and never attacks Auri in four episodes"
+}

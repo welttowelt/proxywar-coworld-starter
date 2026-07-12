@@ -130,6 +130,53 @@ test("partial audit cannot pass before the request completes", () => {
   assert.equal(report.checks.completed_episode_floor, false);
 });
 
+test("opening-reserve gate proves a capped attack where 40 percent was legal", () => {
+  const fixture = replay("expand:terra-nullius:10");
+  const decisions = fixture.inlineRunArtifacts["decisions.jsonl"]
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line));
+  decisions.splice(1, 1, ...[10, 25, 10].map((percent, index) => ({
+    agentID: "defensive-agent-2",
+    turnNumber: 400 + index * 100,
+    profile: "defensive",
+    selectedActionKind: "attack",
+    selectedLegalActionId: `attack:weak:${percent}`,
+    selectedActionMetadata: {
+      targetID: "weak",
+      targetName: "Weak",
+      troopPercent: percent,
+      relativeTroopRatio: 1.7,
+    },
+    legalActionIDsByKind: {
+      attack: ["attack:weak:10", "attack:weak:25", "attack:weak:40"],
+    },
+    tacticalAffordances: {
+      transportTroopBanking: { troopRatio: index === 1 ? 0.8 : 0.7 },
+    },
+    result: { accepted: true },
+    fallbackUsed: false,
+  })));
+  fixture.inlineRunArtifacts["decisions.jsonl"] =
+    `${decisions.map((decision) => JSON.stringify(decision)).join("\n")}\n`;
+
+  const audit = auditEpisodeReplay(episode(), fixture);
+  const report = buildGateReport(
+    { id: "xreq-opening-reserve", status: "completed" },
+    [audit, audit, audit, audit],
+    4,
+    { mechanism: "opening-reserve" },
+  );
+
+  assert.equal(audit.opening_reserve_selections.length, 1);
+  assert.equal(audit.opening_reserve_selections[0].reserve_limit, 10);
+  assert.equal(report.opening_reserve_selections, 4);
+  assert.equal(report.checks.opening_reserve_mechanism_exercised, true);
+  assert.equal(report.checks.all_opening_reserve_decisions_productive, true);
+  assert.equal(report.planner_degraded_decisions, 0);
+  assert.equal(report.passed, true);
+});
+
 test("pressure-pulse gate requires an accepted tagged execution", () => {
   const audits = [0, 1, 2, 3].map((index) => ({
     won: true,

@@ -63,6 +63,19 @@ trace count, a replay marker, a matched champion baseline, then `4/4` and `20/20
 Without the baseline the run is diagnostic. Without the marker the mechanism did
 not earn a claim.
 
+## the broken opening
+
+The champion returned to the current weak seat and lost four of four. Each path
+repeated the same opening: forty percent into Richard, reserve at 0.48, then
+Auri crossing the border at 1.66 strength on turn 1,900. Odin never struck Auri
+once; Auri struck nine to sixteen times. The wire was clean. The doctrine was
+not.
+
+An older mark survived the audit. `j4rn-l0k` had already broken this opening by
+governing commitment from the live reserve. It denied Auri the early crossing
+and won three of four on the same field. The mark returns only as a parent for
+forensic work. Three victories do not erase its fourth loss.
+
 ## the reviewer lane
 
 On Oli's word a second line opened beside the build lane: Claude reads source and
