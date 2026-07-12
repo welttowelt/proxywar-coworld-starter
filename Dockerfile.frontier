@@ -2,6 +2,8 @@ FROM public.ecr.aws/q5f4m8t9/cogames@sha256:926265ab4e5ca749be3ac7df2696a0653f0a
 
 ARG POLICY_CODENAME=s1gtyr-k3rn
 ARG ECONOMY_BOOTSTRAP=1
+ARG BEHIND_RIVAL_DOMINANCE=1.5
+ARG BEHIND_BANK_CAP_CYCLES=2
 
 COPY scripts/patch-keystone-latest-request.mjs /tmp/patch-keystone-latest-request.mjs
 RUN node /tmp/patch-keystone-latest-request.mjs /app/integration/src/keystone-player.ts \
@@ -9,6 +11,8 @@ RUN node /tmp/patch-keystone-latest-request.mjs /app/integration/src/keystone-pl
 
 ENV POLICY_CODENAME=$POLICY_CODENAME \
     PROXYWAR_KEYSTONE_PROFILE=aggressive \
-    PROXYWAR_TUNE_ECONOMY_BOOTSTRAP=$ECONOMY_BOOTSTRAP
+    PROXYWAR_TUNE_ECONOMY_BOOTSTRAP=$ECONOMY_BOOTSTRAP \
+    PROXYWAR_TUNE_BEHIND_RIVAL_DOMINANCE=$BEHIND_RIVAL_DOMINANCE \
+    PROXYWAR_TUNE_BEHIND_BANK_CAP_CYCLES=$BEHIND_BANK_CAP_CYCLES
 
 CMD ["npx", "tsx", "/app/integration/src/keystone-player.ts"]

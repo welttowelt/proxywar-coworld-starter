@@ -30,6 +30,16 @@ a superseded decision cannot arrive after its legal action has vanished. The
 economy engine remains unchanged. Threshold tuning waits until action delivery
 is clean.
 
+The wire grew quieter: fallbacks fell from 114 to 25 and holds from 111 to 30.
+The field did not yield. v28 went 0/4. The repair remains; the banner does not.
+
+## skuld-v4kn
+
+v29 invokes the earlier reckoning identified in the Frontier source review. A
+bordering rival at 1.3 times our share can arm the behind-and-falling strike, and
+escape banking ends after one cycle. It must turn a shrinking seat into pressure
+without feeding the leader.
+
 ## the reviewer lane
 
 On Oli's word a second line opened beside the build lane: Claude reads source and
@@ -38,12 +48,11 @@ v14 baseline and all six candidate audits at e2b5f65, then killed an arm class
 before it burned episodes: pods run the executor in-process, but the server builds
 the legal-action menu — menu-side tunables are dead letters in a pod env.
 
-When the hosted field broke v27, the reviewer lane counted the wreckage in replay:
-one id, `break_alliance:c4o8gv6v`, rejected 140 times in the winning episode while
-`alliance:c4o8gv6v` was accepted 29 times across the gate. The pod never learns the
-engine substituted HOLD, so its belief and the field diverge and the same dead id
-returns. Whether v28's coalescing answers the whole defect is under forensics.
-Threshold tuning waits, as the law requires.
+When the hosted field broke v27, the reviewer lane traced repeated stale social
+and pressure IDs into HOLD substitutions. v28's request coalescing reduced the
+damage sharply but did not erase it, and the policy went 0/4. The transport repair
+stays. With action delivery improved and measured, the source-reviewed
+behind-and-falling pair becomes the next isolated arm.
 
 ## standing law
 

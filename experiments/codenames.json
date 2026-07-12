@@ -130,8 +130,14 @@
     {
       "version": "v28",
       "codename": "v4rdr-v4kt",
-      "status": "candidate",
+      "status": "rejected",
       "mechanism": "coalesce overlapping policy retries so stale actions cannot decay into holds"
+    },
+    {
+      "version": "v29",
+      "codename": "skuld-v4kn",
+      "status": "candidate",
+      "mechanism": "arm the behind-and-falling strike earlier and cap escape banking after one cycle"
     }
   ]
 }

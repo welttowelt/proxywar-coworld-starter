@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "experience_request_id": "xreq_215600f3-4d01-4b92-a74e-43eb679cc97e",
+  "status": "completed",
+  "policy_version": 28,
+  "policy_version_id": "38cd19ef-0508-4063-9c7d-4727866ac075",
+  "codename": "v4rdr-v4kt",
+  "episodes": 4,
+  "wins": 0,
+  "win_rate_pct": 0,
+  "final_tiles": [2279, 8726, 34122, 40153],
+  "holds": 30,
+  "rejected": 0,
+  "fallbacks": 25,
+  "checks": {
+    "completed_episode_floor": true,
+    "perfect_episode_wins": false,
+    "zero_holds": false,
+    "zero_rejected_decisions": true,
+    "fallbacks_reduced_vs_v27": true,
+    "holds_reduced_vs_v27": true
+  },
+  "passed": false,
+  "verdict": "request freshness improved execution integrity but did not improve the hosted win rate",
+  "episodes_detail": [
+    {
+      "episode_id": "34fb2aa0-53a6-4299-9761-3e2fc75a968e",
+      "final_tiles": 2279,
+      "holds": 6,
+      "fallbacks": 7,
+      "replay_sha256": "3dbd391e5710ac13228859a6a5b93db5bd4ddb40ecc23f645bd663fb29686903"
+    },
+    {
+      "episode_id": "107dcaba-dcec-4fe2-8287-62a66767d444",
+      "final_tiles": 8726,
+      "holds": 4,
+      "fallbacks": 5,
+      "replay_sha256": "019ff060929e1144a40dcf38bc4d925cb0467b959478126f5df0d2687ceb549f"
+    },
+    {
+      "episode_id": "89d9bf6e-01cf-4169-90e6-56ad4493c768",
+      "final_tiles": 34122,
+      "holds": 11,
+      "fallbacks": 10,
+      "replay_sha256": "6a716a3a088f660feaf07fd7ca83c80eed38b0dacf1065f03a8616d425cfd942"
+    },
+    {
+      "episode_id": "6e1b6197-2a1d-4a47-b283-ae31558f28b9",
+      "final_tiles": 40153,
+      "holds": 9,
+      "fallbacks": 3,
+      "replay_sha256": "fdb12f014ba0c0e4b5d348b290d0cec97dcc58259ffaaebdd12e09b8ba8515ef"
+    }
+  ]
+}

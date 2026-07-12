@@ -20,7 +20,8 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | v14 champion | only active league membership after stale-seat retirement | hold |
 | v27 local | `4/4`, City 400, Factory 900, 217,296 tiles; same-seat control lost with 699 | mechanism passed locally |
 | v27 hosted | `1/4`, tiles 2,320 / 235,939 / 31,468 / 44,426; 114 fallbacks; 111 holds | rejected |
-| v28 | retry coalescing at the player wire | candidate, unproven |
+| v28 hosted | `0/4`; fallbacks 114→25; holds 111→30 | transport repair kept, policy rejected |
+| v29 | earlier behind-and-falling strike plus one-cycle bank cap | candidate, unproven |
 
 Detailed evidence lives in [`experiments/`](experiments/README.md). Public round
 statistics live on the [dashboard](https://welttowelt-proxywar.netlify.app/).

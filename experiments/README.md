@@ -491,3 +491,12 @@ expired before validation, causing 114 fallbacks and 111 holds. v28 therefore
 changes request freshness only; behind-and-falling threshold tuning remains
 deferred. Full evidence is archived in
 `experiments/audit-v27-hosted-asia-seat2.json`.
+
+v28 / `v4rdr-v4kt` kept v27's strategy and changed only request freshness. The
+hosted request `xreq_215600f3-4d01-4b92-a74e-43eb679cc97e` reduced fallbacks from
+114 to 25 and holds from 111 to 30, confirming that queued stale requests were a
+real execution defect. It nevertheless went 0/4 with final tiles of 2,279;
+8,726; 34,122; and 40,153. The repair stays in the candidate architecture, but
+v28 is rejected as a policy. v29 applies the source-reviewed behind-and-falling
+pair: rival dominance 1.3 instead of 1.5 and escape-bank cap one cycle instead
+of two. Evidence is archived in `experiments/audit-v28-hosted-asia-seat2.json`.
