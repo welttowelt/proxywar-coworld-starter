@@ -261,7 +261,11 @@ function attackScore(rival, state, plan, history) {
   const avoided = (plan?.avoidTargets || [])
     .map((name) => String(name).toLowerCase())
     .includes(rival.name.toLowerCase());
-  if (avoided && !(recentTarget > 0 && ratio >= 1.5)) return -Infinity;
+  const pressuredConversion = incomingThreatCount(state.self.incomingAttacks) > 0 &&
+    state.self.tileShare >= 0.12 && ratio >= 1.15;
+  if (avoided && !(recentTarget > 0 && ratio >= 1.5) && !pressuredConversion) {
+    return -Infinity;
+  }
 
   const isTopRival = rival.tileShare >= state.topRivalTileShare - 0.005;
   const planTarget = String(plan?.target ?? "").toLowerCase() === rival.name.toLowerCase();
