@@ -100,8 +100,14 @@
     {
       "version": "v23",
       "codename": "v1g-l0k",
-      "status": "candidate",
+      "status": "rejected",
       "mechanism": "lock opening hostile commitments at twenty-five percent to preserve the troop bank"
+    },
+    {
+      "version": "v24",
+      "codename": "j4rn-l0k",
+      "status": "reserved",
+      "mechanism": "govern opening commitments from the live troop reserve instead of elapsed decisions"
     }
   ]
 }

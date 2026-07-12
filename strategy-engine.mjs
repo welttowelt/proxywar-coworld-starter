@@ -299,23 +299,11 @@ function chooseRivalAttack(actions, state, plan, history, avoid) {
     history,
     (entry) => entry.kind === "attack" && targetName(entry) === best.rival.name.toLowerCase(),
   );
-  const activeDecisions = history.filter((entry) => entry.kind !== "spawn").length;
   let desiredPercent = 10;
   if (streak >= 1 && best.rival.relativeTroopRatio >= 1.1) desiredPercent = 25;
-  if (
-    activeDecisions >= 20 && streak >= 2 &&
-    best.rival.relativeTroopRatio >= 1.5
-  ) {
-    desiredPercent = 40;
-  }
-  const commitmentActions = activeDecisions < 20
-    ? best.actions.filter((action) => {
-        const percent = actionPercent(action);
-        return percent === null || percent <= 25;
-      })
-    : best.actions;
+  if (streak >= 2 && best.rival.relativeTroopRatio >= 1.5) desiredPercent = 40;
   return {
-    action: pickPercent(commitmentActions, desiredPercent, avoid),
+    action: pickPercent(best.actions, desiredPercent, avoid),
     rival: best.rival,
     streak,
   };

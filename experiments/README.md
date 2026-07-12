@@ -328,3 +328,17 @@ exceeded 25%. Its verified replay SHA-256 is
 `4ee98ba182a1bfa8c38ea1fa69e84d736932bd0c04f6ee1dcd2adb3d8869af94`.
 Local Bedrock planning was unavailable for 248 decisions, so this proves the
 deterministic commitment invariant and protocol safety, not competitive outcome.
+
+The hosted request `xreq_2486d874-20a0-4f24-b7df-4a31b7bc6d06` completed four
+episodes with zero holds and zero rejected decisions. v23 won one, Auri won two,
+and James Boggs won one. v23 finished with 0, 2,491, 215,116, and 2,024 tiles.
+The opening invariant held in every replay, but 1/4 fails promotion.
+
+The reserve lock reduced Auri's first attack advantage from 1.66 under v22 to
+1.31 in all four runs and changed Auri's first commitment from 25% to 10%.
+That still exceeded Auri's observed 1.20 attack floor. The winning replay was
+the only run where v23 mounted sustained leader pressure: 14 attacks on Auri,
+while Auri attacked v23 only five times. The three losses selected 0, 0, and 2
+attacks on Auri while receiving 13-14. v23 is rejected; the next candidate will
+govern commitment from the live reserve ratio rather than elapsed decisions.
+The complete evidence is in `experiments/audit-v23-asia-seat3.json`.

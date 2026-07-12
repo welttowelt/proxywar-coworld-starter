@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "experience_request_id": "xreq_2486d874-20a0-4f24-b7df-4a31b7bc6d06",
+  "status": "completed",
+  "policy_version": 23,
+  "policy_version_id": "d22f02e2-e217-4194-823f-3aabba7babad",
+  "map": "Asia",
+  "seat": 3,
+  "episodes": 4,
+  "wins": 1,
+  "win_rate_pct": 25,
+  "winner_counts": {
+    "odin free": 1,
+    "Auri": 2,
+    "James Boggs": 1
+  },
+  "final_tiles": [0, 2491, 215116, 2024],
+  "average_final_tiles": 54907.75,
+  "decisions": 235,
+  "holds": 0,
+  "rejected": 0,
+  "fallbacks": 13,
+  "opening_commitments_above_25_pct": 0,
+  "hostile_attacks": 87,
+  "auri_attacks": 16,
+  "auri_attacks_on_policy": 46,
+  "first_auri_attack": {
+    "turn": 1900,
+    "relative_troop_ratio_each_episode": [1.31, 1.31, 1.31, 1.31],
+    "troop_commitment_pct_each_episode": [10, 10, 10, 10],
+    "v22_relative_troop_ratio": 1.66,
+    "v22_troop_commitment_pct": 25
+  },
+  "winning_episode_divergence": {
+    "policy_attacks_on_auri": 14,
+    "auri_attacks_on_policy": 5,
+    "losing_episode_policy_attacks_on_auri": [2, 0, 0],
+    "losing_episode_auri_attacks_on_policy": [14, 14, 13]
+  },
+  "checks": {
+    "completed_episode_floor": true,
+    "perfect_episode_wins": false,
+    "zero_holds": true,
+    "zero_rejected_decisions": true,
+    "opening_commitment_invariant": true,
+    "first_auri_advantage_below_1_20": false
+  },
+  "passed": false,
+  "decision": "rejected",
+  "active_champion": "oli-codex-proxywar:v14",
+  "episode_audits": [
+    {
+      "episode_request_id": "ereq_089cd783-866e-4ca0-a1dd-ee9a032a4261",
+      "episode_id": "90ad329f-ef06-472a-912b-3d39b0a6ad7e",
+      "winner": "James Boggs",
+      "cost_usd": 0.028783,
+      "final_tiles": 0,
+      "decisions": 48,
+      "fallbacks": 2,
+      "policy_attacks_on_auri": 2,
+      "auri_attacks_on_policy": 14,
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/5bca80f3-da13-44b6-b8e7-14d464b0838c.replay",
+      "replay_sha256": "0abfca8ceebc1c99a40eb649402b5e3b7da6a3cc9a799ce3ba1626da5ea1038f"
+    },
+    {
+      "episode_request_id": "ereq_170ddf03-a194-491b-a1f9-9d11c4e1d7df",
+      "episode_id": "503ed625-eb87-47bf-9571-1e2e2ebfb15d",
+      "winner": "Auri",
+      "cost_usd": 0.022663,
+      "final_tiles": 2491,
+      "decisions": 61,
+      "fallbacks": 1,
+      "policy_attacks_on_auri": 0,
+      "auri_attacks_on_policy": 14,
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/77454495-b0c5-41fe-825a-49dfd7ec9a60.replay",
+      "replay_sha256": "48bdcae631a2d8b0440f5934c9122f63f118a13ea4162bf5aa0bf7b6df79678f"
+    },
+    {
+      "episode_request_id": "ereq_3a1282e3-27b4-4cd7-9a67-8f8cebf9d567",
+      "episode_id": "4b3d289d-2da1-42fe-a613-c3ba3ae428b5",
+      "winner": "odin free",
+      "cost_usd": 0.026488,
+      "final_tiles": 215116,
+      "decisions": 70,
+      "fallbacks": 9,
+      "policy_attacks_on_auri": 14,
+      "auri_attacks_on_policy": 5,
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/02dae90d-22c5-4891-9364-6ccb3f93adb9.replay",
+      "replay_sha256": "55d48252a034e8971858ae1818c7f6499ff99fd313a8cf3d89d978f3e69a24dc"
+    },
+    {
+      "episode_request_id": "ereq_c3d85995-dc70-4aae-bd03-dc70303631da",
+      "episode_id": "9bdbcdac-17b7-4a6a-aaf0-f200abcf1f8d",
+      "winner": "Auri",
+      "cost_usd": 0.021303,
+      "final_tiles": 2024,
+      "decisions": 56,
+      "fallbacks": 1,
+      "policy_attacks_on_auri": 0,
+      "auri_attacks_on_policy": 13,
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/6c2d9210-eac6-4386-aa6e-6a89e88a2c14.replay",
+      "replay_sha256": "9b591753f7c4f1d684c3ddd574ce6648e93f63ba0bc3e11270e14daee32a2e96"
+    }
+  ]
+}

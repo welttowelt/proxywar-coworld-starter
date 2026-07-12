@@ -106,15 +106,29 @@ estimated 14 times from replay reconstruction and raised average final territory
 from 1,234 under v21 to 18,949, but Auri still averaged 217,032 tiles. Richard
 survived only one episode, down from two under v21. v22 is rejected.
 
-## Next isolated mechanism
+## Rejected v23 mechanism
 
-v23 (`v1g-l0k`) will start from exact v14 and preserve opening troop reserves.
+v23 (`v1g-l0k`) started from exact v14 and preserved opening troop reserves.
 Auri used 25% for 98 of 128 hostile attacks and never used 40% in the opening.
 Our selector escalated to 40% at turn 1,700 and made 27 such attacks while its
 own troop reserve ratio was below 0.75. Auri began attacking at turn 1,900 with
-a 1.66 troop advantage. v23 will retain the 10% to 25% target-continuity ramp
-but suppress 40% commitments during the first 20 active decisions. Later finish
+a 1.66 troop advantage. v23 retained the 10% to 25% target-continuity ramp
+but suppressed 40% commitments during the first 20 active decisions. Later finish
 pressure remains unchanged.
+
+The hosted gate finished 1/4: v23 won one, Auri won two, and James Boggs won
+one. The lock reduced Auri's first relative troop advantage from 1.66 to 1.31
+and its opening commitment from 25% to 10%, but did not move below Auri's 1.20
+attack floor. In the win, v23 attacked Auri 14 times and received five attacks;
+the losses attacked Auri 0-2 times and received 13-14. v23 is rejected.
+
+## Next isolated mechanism
+
+v24 (`j4rn-l0k`) will replace the elapsed-decision lock with live reserve
+feedback. During the opening, a hostile attack is capped at 10% whenever the
+own troop reserve ratio is below 0.75; 25% remains available at or above 0.75,
+and 40% remains locked. Post-opening v14 behavior stays unchanged. The gate
+must show Auri's first advantage below 1.20 as well as 4/4 wins.
 
 ## Promotion gate
 
