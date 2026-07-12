@@ -358,3 +358,12 @@ first advantage from 1.66 to 1.31 but allowed own reserve to fall from 0.76 to
 its observed 1.20 attack threshold. The hosted diagnostic is pinned in
 `experiments/gate-v24-asia-seat3.json`; v14 remains champion until 4/4 plus the
 separate 20/20 regression gate.
+
+The full local Asia run completed at turn 6,600 with 260 accepted decisions,
+zero holds, zero rejections, and zero parse failures. All four seats exercised
+both sides of the reserve controller and produced zero violations: sub-0.75
+reserve attacks stayed at 10%, while recovered reserves permitted 25%. Its
+verified replay SHA-256 is
+`468c5efb5954245e777e87e21c9126617b999f63fd067998bd8d0e1d6abd8a48`.
+Local Bedrock planning was unavailable for 248 decisions, so this proves the
+feedback invariant and protocol safety without a competitive claim.

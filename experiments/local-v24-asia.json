@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "candidate": "oli-codex-proxywar:v24",
+  "codename": "j4rn-l0k",
+  "map": "Asia",
+  "status": "completed",
+  "winner_slot": 0,
+  "turn_count": 6600,
+  "decisions": 260,
+  "accepted_decisions": 260,
+  "holds": 0,
+  "rejected_decisions": 0,
+  "parse_failures": 0,
+  "fallbacks": 248,
+  "low_reserve_actions_observed": 13,
+  "healthy_reserve_25_pct_actions_observed": 6,
+  "reserve_commitment_violations": 0,
+  "replay_verified": true,
+  "replay_sha256": "468c5efb5954245e777e87e21c9126617b999f63fd067998bd8d0e1d6abd8a48",
+  "conclusion": {
+    "protocol_safe": true,
+    "selector_safe": true,
+    "mechanism_reached": true,
+    "reserve_feedback_invariant_passed": true,
+    "competitive_claim": false,
+    "required_next_evidence": "hosted Asia seat-3 replay against Auri v5 with 4/4 wins and first Auri relative troop advantage below 1.20"
+  }
+}
