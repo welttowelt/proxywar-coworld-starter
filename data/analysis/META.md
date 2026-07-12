@@ -302,7 +302,14 @@ executor-ready conversion and the policy launched a boat. Candidate v15 lets
 active incoming pressure override that planner veto only after 12% territory
 and at least a 1.15x favorable ratio. All 36 tests pass, and a four-seat local
 Asia replay completed 224 accepted decisions with zero holds or rejections.
-The candidate remains unpromoted pending hosted same-roster evidence.
+
+The exact hosted seat-3 A/B rejected v15. v14 won 2/2 with 221,193 and 225,038
+tiles; v15 lost 0/2 to Auri with 4,048 and 20,384 tiles. Both v15 episodes
+completed normally with 103 policy decisions, zero holds, zero rejected actions,
+and no timeout or disconnect signal. The small unpaired sample does not prove
+the override caused either loss, but it provides no promotion case against a
+2/2 baseline. v15 remains non-champion and the candidate rule was removed from
+the source branch.
 
 ## Winning action profile
 
@@ -478,6 +485,7 @@ already locked v12.
    150,000, and Pangaea 60,000.
 3. Keep qualified v14 as the sole champion after its 2/2 reliability retry and
    4/4 first official field sweep completed without timeout, disconnect, hold,
-   or rejection.
+   or rejection. The v15 pressure-override candidate failed its pinned hosted
+   A/B 0/2 against v14's 2/2 and was rejected.
 4. Refresh after every completed round and reset the consecutive first-place
    counter after any official rank below 1.

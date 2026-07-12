@@ -108,3 +108,30 @@ The retry cleared the reliability blocker from the first v14 request. Round 204
 locked v13 in its entrant list at 02:30:20 UTC. v14 was then promoted through
 the league champion endpoint and verified as the sole active champion, leaving
 the running Round 204 roster unchanged.
+
+## Asia seat-3 pressure-override A/B, 2026-07-12
+
+Goal: test whether incoming pressure should override a Claude `avoidTargets`
+entry for a rival with at least a 1.15x favorable troop ratio. Both requests
+used the exact Round 206 seat-3 roster: Richard Higgins in slot 0, James Boggs
+in slot 1, our baseline or candidate in slot 2, and Auri in slot 3.
+
+| Policy | Experience request | Wins | Final tiles | Holds | Cost |
+| --- | --- | ---: | --- | ---: | ---: |
+| v14 | `xreq_7ff69d17-d06c-4933-a433-8d9dfaa7c370` | 2/2 | 221,193; 225,038 | 0 | $0.044182 |
+| v15 | `xreq_e6e9fbe4-8f41-4686-935c-2e3b042ad88d` | 0/2 | 4,048; 20,384 | 0 | $0.056909 |
+
+All four episodes completed without rejected actions or a socket-disconnect
+signal. v15 used 103 policy decisions with 17 planner fallbacks. Auri won both
+v15 episodes, while v14 won both baseline episodes. The requests did not share
+fixed seeds, so the result does not establish that the override caused the two
+losses. It does reject promotion: v15 added behavioral risk without beating the
+current champion on the targeted roster. v15 remains non-champion, and the
+candidate rule was removed from the source branch.
+
+| Policy | Episode | Result | Replay SHA-256 |
+| --- | --- | --- | --- |
+| v14 | `fbef5adf-178c-416f-b721-33ab22344895` | win, 221,193 tiles | `c96db9b8508aecdf19fe5896d9d1c5dd320b624797bc07055ccd96bf328e7a15` |
+| v14 | `f2544cfb-f790-445b-95c4-18b2471e4351` | win, 225,038 tiles | `c0487310a5072874c8509be7e50a7774bf10c1eb43d57131318b17b14e58a53f` |
+| v15 | `bde44a72-cbda-4cfa-861a-3e9764ff91c7` | loss, 4,048 tiles | `b1c90a5da4ba3c072b264aceb4376ef2bc0c654f45ebe6f08ab2834786c93529` |
+| v15 | `3bd8d9b7-a1a3-48e8-9028-4a581abe8dcf` | loss, 20,384 tiles | `9dbd003655fcfae06d6b28b07ca449d423d3edc50def8f52e06b0c46f0a7f853` |

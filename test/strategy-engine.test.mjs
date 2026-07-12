@@ -435,40 +435,6 @@ test("a planner avoid list cannot cancel an active favorable finish", () => {
   assert.equal(choose(actions, obs, plan, history).id, "attack:weak:40");
 });
 
-test("incoming pressure overrides a planner avoid for a favorable conversion", () => {
-  const actions = [
-    action("attack:richard:10", "attack", "Attack Richard Higgins 10%"),
-    action("expand:terra-nullius:10", "attack", "Attack Terra Nullius 10%"),
-  ];
-  const rivals = [
-    {
-      id: "richard",
-      name: "Richard Higgins",
-      tileShare: 0.2,
-      relativeTroopRatio: 1.2,
-    },
-    { id: "auri", name: "Auri", tileShare: 0.36, relativeTroopRatio: 0.7 },
-  ];
-  const plan = {
-    focus: "attack",
-    target: "Auri",
-    avoidTargets: ["Richard Higgins"],
-  };
-
-  assert.equal(
-    choose(actions, observation({ tileShare: 0.18, rivals }), plan).id,
-    "expand:terra-nullius:10",
-  );
-  assert.equal(
-    choose(actions, observation({
-      tileShare: 0.18,
-      rivals,
-      incomingAttacks: [{ attackerID: "auri" }, { attackerID: "richard" }],
-    }), plan).id,
-    "attack:richard:10",
-  );
-});
-
 test("a vulnerable target outranks a planner preference for the leader", () => {
   const actions = [
     action("attack:weak:10", "attack", "Attack Weak 10%"),
