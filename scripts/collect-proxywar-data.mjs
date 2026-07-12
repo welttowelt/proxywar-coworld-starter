@@ -70,6 +70,31 @@ function sha256(buffer) {
   return createHash("sha256").update(buffer).digest("hex");
 }
 
+async function downloadReplay(url, attempts = 5) {
+  let lastError;
+  for (let attempt = 1; attempt <= attempts; attempt++) {
+    try {
+      const response = await fetch(url, { signal: AbortSignal.timeout(120000) });
+      if (!response.ok) throw new Error(`replay download failed (${response.status}): ${url}`);
+      const declaredLength = Number(response.headers.get("content-length"));
+      if (Number.isFinite(declaredLength) && declaredLength > 64 * 1024 * 1024) {
+        throw new Error(`replay exceeds 64 MiB limit: ${url}`);
+      }
+      const buffer = Buffer.from(await response.arrayBuffer());
+      if (buffer.length > 64 * 1024 * 1024) {
+        throw new Error(`replay exceeds 64 MiB limit: ${url}`);
+      }
+      return buffer;
+    } catch (error) {
+      lastError = error;
+      if (attempt < attempts) {
+        await new Promise((resolve) => setTimeout(resolve, attempt * 1000));
+      }
+    }
+  }
+  throw lastError;
+}
+
 async function replayBytes(url, destination) {
   const parsed = new URL(url);
   if (parsed.protocol !== "https:" || !ALLOWED_REPLAY_HOSTS.has(parsed.hostname)) {
@@ -81,14 +106,7 @@ async function replayBytes(url, destination) {
     if (error.code !== "ENOENT") throw error;
   }
 
-  const response = await fetch(url, { signal: AbortSignal.timeout(120000) });
-  if (!response.ok) throw new Error(`replay download failed (${response.status}): ${url}`);
-  const declaredLength = Number(response.headers.get("content-length"));
-  if (Number.isFinite(declaredLength) && declaredLength > 64 * 1024 * 1024) {
-    throw new Error(`replay exceeds 64 MiB limit: ${url}`);
-  }
-  const buffer = Buffer.from(await response.arrayBuffer());
-  if (buffer.length > 64 * 1024 * 1024) throw new Error(`replay exceeds 64 MiB limit: ${url}`);
+  const buffer = await downloadReplay(url);
   await writeFile(destination, buffer);
   return { bytes: buffer, cached: false };
 }

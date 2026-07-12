@@ -1,33 +1,27 @@
 # Proxy War meta report
 
-Snapshot collected 2026-07-12 after Competition Round 208. The source window
-covers rounds 189-208, 79 completed episodes, 316 participant seats, and 25,979 agent
+Snapshot collected 2026-07-12 after Competition Round 209. The source window
+covers rounds 190-209, 79 completed episodes, 316 participant seats, and 23,924 agent
 decisions. All 12 ingestion quality checks pass with zero failures.
 
-Round 208 extended the verified consecutive first-place streak to 22 of the
+Round 209 extended the verified consecutive first-place streak to 23 of the
 100-round target.
 
 ## Current four-player field
 
-Rounds 189-208 use the current four-player FFA format. The 79 available episodes
+Rounds 190-209 use the current four-player FFA format. The 79 available episodes
 produce this table:
 
 | Player | Matches | Wins | Win rate | Mean final tiles | Rival attacks | Holds |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| odin free | 79 | 56 | 70.89% | 193,302.7 | 1,802 | 55 |
-| Auri | 79 | 11 | 13.92% | 60,860.9 | 956 | 248 |
-| James Boggs | 79 | 4 | 5.06% | 20,565.4 | 586 | 103 |
-| Richard Higgins | 79 | 0 | 0.00% | 12,046.2 | 497 | 15 |
+| odin free | 79 | 56 | 70.89% | 182,765.4 | 1,818 | 4 |
+| Auri | 79 | 12 | 15.19% | 61,180.6 | 994 | 229 |
+| James Boggs | 79 | 4 | 5.06% | 19,763.0 | 549 | 104 |
+| Richard Higgins | 79 | 0 | 0.00% | 10,723.4 | 478 | 14 |
 
-The aggregate holds column includes 51 Round 189 actions selected by the game's
-fallback brain after the v6 container disconnected. v6's own selector recorded
-zero holds in Round 190. Round 197 added one hold when a transient
-pending-alliance action disappeared during simultaneous turn resolution. The
-dataset has zero rejected decisions.
-
-Round 200 added one v11 hold when an alliance request to Auri disappeared during
-simultaneous resolution. The policy returned a legal action ID, but the runtime
-could no longer resolve it and substituted `HOLD`.
+The four policy holds in the current window are the two forced isolated-seat
+holds from Round 193 and one disappearing-alliance race in each of Rounds 197
+and 200. The dataset has zero rejected decisions.
 
 ## Policy progression
 
@@ -61,6 +55,7 @@ could no longer resolve it and substituted `HOLD`.
 | 206 | v14 | 1 | 3/4 | 164,574.3 | 0 |
 | 207 | v14 | 1 | 3/4 | 346,975.8 | 0 |
 | 208 | v14 | 1 | 2/3* | 61,929.3 | 0 |
+| 209 | v14 | 1 | 3/4 | 163,915.5 | 0 |
 
 v4 misclassified the new structured neutral-land action and held instead of
 expanding. v5 fixed the classifier and recovered immediately from every seat.
@@ -330,21 +325,30 @@ with zero holds, zero rejected actions, and 21 planner fallbacks. The
 commissioner scored only completed episodes, awarding v14 0.667 and first place.
 The infrastructure exclusion and official result extend the streak to 22.
 
+Round 209 returned to Asia. v14 won seats 1, 2, and 4 with 219,489, 213,979,
+and 217,460 final tiles. Auri won seat 3 after v14 peaked at 45,009 and finished
+with 4,734 under 24 Auri attacks, four Richard Higgins attacks, and one James
+Boggs attack. Across 224 decisions, v14 made 112 rival attacks, 72 neutral-land
+attacks, 11 boats, and 17 builds with zero holds, zero rejected actions, and 30
+planner fallbacks. The 0.75 score and first place extend the streak to 23. The
+loss repeats the known Asia seat-3 pressure pattern without a new execution or
+selector failure, so v14 remains champion.
+
 ## Winning action profile
 
-Four-player winners use 29.79 rival attacks per 100 decisions versus 9.86 for
+Four-player winners use 31.99 rival attacks per 100 decisions versus 10.59 for
 non-winners, a 3.02x difference. Winners also allocate fewer decisions to
 neutral expansion, social actions, and holds while using more neutral boats.
 
 | Actions per 100 decisions | Winners | Non-winners |
 | --- | ---: | ---: |
-| Rival attacks | 29.79 | 9.86 |
-| Neutral attacks | 34.28 | 42.38 |
-| Neutral boats | 20.94 | 14.35 |
-| Naval invasions | 2.06 | 0.86 |
-| Builds | 7.72 | 8.23 |
-| Social actions | 1.64 | 12.85 |
-| Holds | 0.03 | 2.14 |
+| Rival attacks | 31.99 | 10.59 |
+| Neutral attacks | 33.58 | 40.90 |
+| Neutral boats | 19.51 | 14.99 |
+| Naval invasions | 2.08 | 0.94 |
+| Builds | 7.30 | 8.47 |
+| Social actions | 1.72 | 12.49 |
+| Holds | 0.03 | 1.96 |
 
 v5 was more decisive than the pooled winner profile in Round 185. Across those
 four wins, 56.9% of decisions attacked rivals and 28.4% expanded into neutral
@@ -394,7 +398,7 @@ rapid rival conversion. Continue sparse builds and almost no social diversion.
 
 ## Seat effect
 
-Each seat now has 79 observed FFA appearances. Seats 1 and 4 produced 22 and 23
+Each seat now has 79 observed FFA appearances. Seats 1 and 4 produced 22 and 24
 wins, seat 2 produced 15, and seat 3 produced 11. v5 won exactly once from each
 seat in Round 185, so that sweep was not explained by seat order. The aggregate
 gap and repeated Asia seat-3 losses still support map geometry and frontier
