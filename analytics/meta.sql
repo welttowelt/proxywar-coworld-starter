@@ -16,6 +16,9 @@ SELECT * FROM read_ndjson_auto('data/staging/leaderboard.ndjson');
 CREATE OR REPLACE TEMP VIEW memberships AS
 SELECT * FROM read_ndjson_auto('data/staging/memberships.ndjson');
 
+CREATE OR REPLACE TEMP VIEW challenger_memberships AS
+SELECT * FROM read_ndjson_auto('data/staging/challenger_memberships.ndjson');
+
 CREATE OR REPLACE TEMP VIEW episodes AS
 SELECT * FROM read_ndjson_auto('data/staging/episodes.ndjson');
 
@@ -39,6 +42,9 @@ TO 'data/processed/leaderboard.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);
 
 COPY (SELECT * FROM memberships ORDER BY policy_version DESC)
 TO 'data/processed/memberships.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);
+
+COPY (SELECT * FROM challenger_memberships ORDER BY start_time DESC)
+TO 'data/processed/challenger_memberships.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);
 
 COPY (SELECT * FROM episodes ORDER BY completed_at, episode_id)
 TO 'data/processed/episodes.parquet' (FORMAT PARQUET, COMPRESSION ZSTD);
@@ -755,3 +761,17 @@ COPY (
   FROM memberships
   ORDER BY is_champion DESC, policy_version DESC
 ) TO 'site/data/memberships.json' (FORMAT JSON, ARRAY true);
+
+COPY (
+  SELECT
+    membership_id,
+    substatus,
+    is_champion,
+    policy_version,
+    policy_version_id,
+    player_name,
+    strftime(start_time, '%Y-%m-%dT%H:%M:%S.%gZ') AS start_time,
+    strftime(collected_at, '%Y-%m-%dT%H:%M:%S.%gZ') AS collected_at
+  FROM challenger_memberships
+  ORDER BY start_time DESC, policy_version DESC
+) TO 'site/data/challenger-memberships.json' (FORMAT JSON, ARRAY true);

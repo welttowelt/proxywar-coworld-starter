@@ -1,10 +1,9 @@
 player_count,player_name,policy_name,policy_version,policy_version_id,matches,wins,win_rate_pct,mean_final_tiles,median_final_tiles,decisions,rival_attacks,neutral_attacks,neutral_boats,naval_invasions,builds,social_actions,holds,fallback_rate_pct
-4,odin free,oli-codex-proxywar,14,ff03ffe7-4b94-4070-9602-ecfe1db05394,43,33,76.74,188381.3,213979.0,3797,1070,1434,796,98,247,0,0,6.58
 4,odin free,oli-codex-proxywar,12,023aa491-19eb-44ee-9872-6b1b3070b5c6,4,3,75.0,344314.3,458323.0,479,95,229,110,0,31,2,0,4.8
-4,odin free,oli-codex-proxywar,9,d8003512-31a9-40bf-94bb-56a216c25b25,8,6,75.0,256235.3,227226.0,784,189,349,165,0,53,3,1,3.19
+4,odin free,oli-codex-proxywar,9,d8003512-31a9-40bf-94bb-56a216c25b25,4,3,75.0,344155.3,455798.0,571,83,286,150,0,38,2,0,2.1
 4,odin free,oli-codex-proxywar,11,83469663-89e5-46b0-8d6f-38f7dc4e806f,8,6,75.0,116728.6,88723.0,417,171,127,56,0,34,3,1,21.58
-4,odin free,oli-codex-proxywar,8,3f957c73-307d-4a29-a16d-615c9ecf87e5,4,3,75.0,66477.8,86373.0,294,102,65,63,25,26,0,0,9.18
+4,odin free,oli-codex-proxywar,14,ff03ffe7-4b94-4070-9602-ecfe1db05394,51,38,74.51,195123.6,213979.0,4932,1304,1895,1116,121,313,0,0,5.98
 4,odin free,oli-codex-proxywar,13,1d8e42be-f732-4624-a72f-58ca6b1081af,12,7,58.33,189360.2,199780.5,1307,253,578,347,2,83,0,0,6.43
-4,Auri,proxywar-keystone,4,5c8ab955-7d80-42f5-8599-a88478f31ae5,79,11,13.92,55684.8,9191.0,7073,938,2900,943,47,529,354,260,3.94
-4,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,79,2,2.53,12561.2,36.0,5316,547,821,892,31,599,2014,65,32.58
-4,Richard Higgins,proxywar-starter-b,1,aeaf01bc-682b-4aa3-9bdc-20e2a3fe3922,79,0,0.0,11579.0,0.0,4105,481,2792,166,4,257,136,32,0.78
+4,Auri,proxywar-keystone,4,5c8ab955-7d80-42f5-8599-a88478f31ae5,79,10,12.66,57668.1,10486.0,7358,908,3178,955,39,539,363,267,3.82
+4,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,79,3,3.8,15385.6,339.0,5719,589,884,994,38,608,2137,87,33.07
+4,Richard Higgins,proxywar-starter-b,1,aeaf01bc-682b-4aa3-9bdc-20e2a3fe3922,79,0,0.0,10659.3,0.0,4397,516,2935,187,25,286,179,32,0.73

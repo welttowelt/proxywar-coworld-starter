@@ -9,6 +9,7 @@ import { buildOfficialStreakState } from "./official-streak.mjs";
 const COWORLD_PACKAGE = "coworld==0.1.28";
 const DEFAULT_LEAGUE_ID = "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42";
 const TRACKED_PLAYER_NAME = "odin free";
+const CHALLENGER_PLAYER_NAME = "Auri";
 const SOURCE_FINGERPRINT_VERSION = 1;
 const ALLOWED_REPLAY_HOSTS = new Set(["softmax-public.s3.amazonaws.com"]);
 const SOCIAL_KINDS = new Set([
@@ -372,6 +373,26 @@ const membershipRows = membershipResponse.map((membership) => ({
   collected_at: collectedAt,
 }));
 
+const challengerPlayerID = [...roundStandingRows]
+  .sort((left, right) => right.round_number - left.round_number)
+  .find((standing) => standing.player_name === CHALLENGER_PLAYER_NAME)?.player_id;
+const challengerMembershipResponse = challengerPlayerID
+  ? coworldJson([
+      "memberships", "--league", leagueID, "--player", challengerPlayerID,
+      "--active-only", "--limit", "1000",
+    ])
+  : [];
+const challengerMembershipRows = challengerMembershipResponse.map((membership) => ({
+  membership_id: membership.id,
+  substatus: membership.substatus,
+  is_champion: membership.is_champion === true,
+  policy_version: numberOrNull(membership.policy_version?.version),
+  policy_version_id: membership.policy_version?.id ?? null,
+  player_name: membership.player?.name ?? null,
+  start_time: normalizeTimestamp(membership.start_time),
+  collected_at: collectedAt,
+}));
+
 const withoutCollectedAt = ({ collected_at: _collectedAt, ...row }) => row;
 const sourceFingerprint = sha256(Buffer.from(JSON.stringify({
   version: SOURCE_FINGERPRINT_VERSION,
@@ -379,6 +400,9 @@ const sourceFingerprint = sha256(Buffer.from(JSON.stringify({
   live_rounds: liveRoundRows.map(withoutCollectedAt),
   leaderboard: leaderboardRows.map(withoutCollectedAt),
   memberships: membershipRows
+    .map(withoutCollectedAt)
+    .sort((left, right) => left.membership_id.localeCompare(right.membership_id)),
+  challenger_memberships: challengerMembershipRows
     .map(withoutCollectedAt)
     .sort((left, right) => left.membership_id.localeCompare(right.membership_id)),
 })));
@@ -463,6 +487,10 @@ await writeFile(path.join(stagingDir, "live_rounds.ndjson"), ndjson(liveRoundRow
 await writeFile(path.join(stagingDir, "round_standings.ndjson"), ndjson(roundStandingRows));
 await writeFile(path.join(stagingDir, "leaderboard.ndjson"), ndjson(leaderboardRows));
 await writeFile(path.join(stagingDir, "memberships.ndjson"), ndjson(membershipRows));
+await writeFile(
+  path.join(stagingDir, "challenger_memberships.ndjson"),
+  ndjson(challengerMembershipRows),
+);
 await writeFile(path.join(stagingDir, "episodes.ndjson"), ndjson(episodeRows));
 await writeFile(path.join(stagingDir, "participants.ndjson"), ndjson(participantRows));
 await writeFile(path.join(stagingDir, "decisions.ndjson"), ndjson(decisionRows));
@@ -482,6 +510,7 @@ await writeFile(manifestPath, `${JSON.stringify({
   current_first_place_streak: officialStreakState.current_first_place_streak,
   leaderboard_row_count: leaderboardRows.length,
   membership_count: membershipRows.length,
+  challenger_membership_count: challengerMembershipRows.length,
   episode_count: episodeRows.length,
   participant_count: participantRows.length,
   decision_count: decisionRows.length,

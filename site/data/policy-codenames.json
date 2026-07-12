@@ -9,9 +9,10 @@
 	{"version":"v13","codename":"sanngetal-l0ck","status":"retired"},
 	{"version":"v14","codename":"b0lverk-h0gg","status":"champion"},
 	{"version":"v15","codename":"gr1mnir-pr0be","status":"rejected"},
-	{"version":"v17","codename":"v1drir-v0rn","status":"candidate"},
-	{"version":"v18","codename":"hrafn-t1de","status":"reserved"},
-	{"version":"v19","codename":"hug1nn-syn","status":"reserved"},
-	{"version":"v20","codename":"mun1nn-rune","status":"reserved"},
-	{"version":"v21","codename":"draupn1r-l0ck","status":"reserved"}
+	{"version":"v17","codename":"v1drir-v0rn","status":"rejected"},
+	{"version":"v18","codename":"ygg-v0rn","status":"rejected"},
+	{"version":"v19","codename":"hrafn-syn","status":"candidate"},
+	{"version":"v20","codename":"hug1nn-r1st","status":"reserved"},
+	{"version":"v21","codename":"mun1nn-rune","status":"reserved"},
+	{"version":"v22","codename":"draupn1r-l0ck","status":"reserved"}
 ]

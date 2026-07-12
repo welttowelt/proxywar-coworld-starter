@@ -13,6 +13,7 @@ const DATA_FILES = {
   leaderboard: "leaderboard.json",
   liveRounds: "live-rounds.json",
   memberships: "memberships.json",
+  challengerMemberships: "challenger-memberships.json",
 };
 
 const OUR_PLAYER = "odin free";
@@ -91,6 +92,15 @@ function widthClass(value) {
 
 function isWinnerRow(row) {
   return row.won === true || String(row.won).toLowerCase() === "true";
+}
+
+function newestChallengerMembership(data) {
+  return [...data.challengerMemberships]
+    .filter((membership) => membership.player_name === "Auri")
+    .sort((left, right) =>
+      new Date(right.start_time).getTime() - new Date(left.start_time).getTime() ||
+      asNumber(right.policy_version) - asNumber(left.policy_version)
+    )[0];
 }
 
 async function loadData() {
@@ -408,6 +418,7 @@ function renderDominanceTrend(data) {
   const latestAuri = data.standings
     .filter((standing) => standing.player_name === "Auri")
     .sort((left, right) => asNumber(right.round_number) - asNumber(left.round_number))[0];
+  const newestAuri = newestChallengerMembership(data);
   const change = asNumber(latest.odin_rolling_win_rate_pct) - asNumber(previous.odin_rolling_win_rate_pct);
   const currentMatches = asNumber(snapshot.current_ffa_matches);
   const currentWins = asNumber(snapshot.current_ffa_wins);
@@ -421,8 +432,10 @@ function renderDominanceTrend(data) {
   byId("dominance-gap-note").textContent = "vs five rounds ago";
   byId("dominance-target").textContent = `${formatDecimal(snapshot.target_ffa_win_rate_pct, 0)}%`;
   byId("dominance-target-note").textContent = `${targetWins}/${currentMatches} needed in this window`;
-  byId("challenger-state").textContent = latestAuri
-    ? `auri v${latestAuri.policy_version} / 99% target`
+  byId("challenger-state").textContent = newestAuri
+    ? `auri v${newestAuri.policy_version} / ${newestAuri.substatus}`
+    : latestAuri
+      ? `auri v${latestAuri.policy_version} / observed`
     : "challenger unknown / 99% target";
 
   const compact = window.matchMedia("(max-width: 520px)").matches;
@@ -532,11 +545,25 @@ function renderSignals(data) {
   const latestAuri = data.standings
     .filter((standing) => standing.player_name === "Auri")
     .sort((left, right) => asNumber(right.round_number) - asNumber(left.round_number))[0];
+  const newestAuri = newestChallengerMembership(data);
   const auriVersions = new Set(
-    data.standings
-      .filter((standing) => standing.player_name === "Auri")
-      .map((standing) => String(standing.policy_version)),
+    [
+      ...data.standings
+        .filter((standing) => standing.player_name === "Auri")
+        .map((standing) => String(standing.policy_version)),
+      ...data.challengerMemberships
+        .filter((membership) => membership.player_name === "Auri")
+        .map((membership) => String(membership.policy_version)),
+    ],
   );
+  const auriDrift = Boolean(
+    newestAuri && latestAuri &&
+    newestAuri.policy_version_id !== latestAuri.policy_version_id
+  );
+  const listedRows = data.leaderboard.filter((row) => asNumber(row.rank) > 0);
+  const odinRows = listedRows.filter((row) => row.player_name === OUR_PLAYER);
+  const crownRows = listedRows.filter((row) => asNumber(row.rank) <= 5);
+  const odinCrownRows = crownRows.filter((row) => row.player_name === OUR_PLAYER);
   const liveRound = data.liveRounds.find((round) => round.status === "running");
   const championIsLive = Boolean(
     liveRound && champion && liveRound.entrant_policy_version_ids?.includes(champion.policy_version_id),
@@ -568,11 +595,16 @@ function renderSignals(data) {
     `<strong>Economy trap:</strong> non-winners follow build recommendations ${formatDecimal(fieldEconomy)}% vs winners at ${formatDecimal(winnerEconomy)}%; v5 stays at ${formatDecimal(v5Adherence("economy_cadence"))}%.`,
     `<strong>Seat exposure:</strong> seats 1 and 4 account for ${formatInteger(edgeSeatWins)} of ${formatInteger(totalSeatWins)} observed FFA wins.`,
     `<strong>Our edge:</strong> ${formatDecimal(ourFfa.win_rate_pct)}% win rate, ${formatDecimal(edge)} points above the nearest field rate.`,
+    listedRows.length
+      ? `<strong>Board control:</strong> Odin holds ${formatInteger(odinRows.length)}/${formatInteger(listedRows.length)} listed rows and ${formatInteger(odinCrownRows.length)}/${formatInteger(crownRows.length)} crown slots.`
+      : "<strong>Board control:</strong> no leaderboard rows were present in the snapshot.",
     champion
       ? `<strong>Policy state:</strong> ${escapeHtml(publicPolicyLabel(champion.policy_version))} is champion${liveRound && !championIsLive ? `; Round ${escapeHtml(liveRound.round_number)} locked its roster before promotion.` : "."}`
       : "<strong>Policy state:</strong> no champion was present in the snapshot.",
-    latestAuri
-      ? `<strong>Challenger drift:</strong> Auri is on v${escapeHtml(latestAuri.policy_version)} in Round ${escapeHtml(latestAuri.round_number)}; ${formatInteger(auriVersions.size)} version${auriVersions.size === 1 ? "" : "s"} observed in this window.`
+    newestAuri
+      ? `<strong>Challenger drift:</strong> newest Auri league policy is v${escapeHtml(newestAuri.policy_version)} (${escapeHtml(newestAuri.substatus)})${auriDrift ? `, ahead of completed-round v${escapeHtml(latestAuri.policy_version)}` : ""}; ${formatInteger(auriVersions.size)} version${auriVersions.size === 1 ? "" : "s"} observed.`
+      : latestAuri
+        ? `<strong>Challenger drift:</strong> Auri is on v${escapeHtml(latestAuri.policy_version)} in Round ${escapeHtml(latestAuri.round_number)}; ${formatInteger(auriVersions.size)} version${auriVersions.size === 1 ? "" : "s"} observed in this window.`
       : "<strong>Challenger drift:</strong> no Auri policy was present in the collected window.",
   ];
 
