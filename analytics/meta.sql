@@ -593,7 +593,7 @@ COPY (
     (SELECT count(*) FROM participants) AS participant_rows,
     (SELECT count(*) FROM decisions) AS decisions,
     (SELECT current_first_place_streak FROM official_streak) AS current_first_place_streak,
-    100 AS target_first_place_streak,
+    1000 AS target_first_place_streak,
     (SELECT first_place_finishes FROM official_streak) AS first_place_finishes,
     (
       SELECT wins

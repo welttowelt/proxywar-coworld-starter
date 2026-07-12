@@ -79,4 +79,5 @@ test("generated dashboard uses the persisted official streak", async () => {
 
   assert.equal(official.last_round_number, snapshot.last_completed_round);
   assert.equal(official.current_first_place_streak, snapshot.current_first_place_streak);
+  assert.equal(snapshot.target_first_place_streak, 1000);
 });
