@@ -87,3 +87,23 @@ unclassified and v14 failed the promotion gate.
 | v13 | `552cbdba-4bf3-4e78-91b4-6b0a2860dced` | win, 88,348 tiles | `3756d712fc2fd52710f7061ee155eeccc52fdc56ea9c2b7141377057b6639f59` |
 | v14 | `f0342f5c-4f67-40a9-803b-c16da9faaa24` | loss, 14,020 tiles; timeout | `ed20969b4f92f87ab5ba6eeff4c7d2bf915ddeaf2a6c6fcaf6d6113a357490ec` |
 | v14 | `200241b8-1b07-4287-ab6a-8b086b73f617` | win, 89,765 tiles | `0ef083754d1ba9b262a701ea266063d7fd7ea85700bfdca15eb3e0809dbfccc0` |
+
+### v14 reliability retry
+
+Experience request `xreq_52ff88e9-5909-43fa-87fe-453de6d87ccb` repeated the
+same pinned v14 seat-4 configuration after Round 203. v14 won both episodes
+with 90,409 and 83,616 final tiles. Its 169 decisions included 92 rival or
+neutral land attacks, 59 boats, 10 builds, two warship actions, and six spawn
+records. Both episodes completed normally with zero holds, zero rejected
+actions, zero timeouts, and zero socket disconnects. Planner fallbacks were
+bounded at one and eight and did not transfer control to the game's generic
+fallback brain. The total hosted cost was $0.031653.
+
+| Episode | Result | Replay SHA-256 |
+| --- | --- | --- |
+| `ba381abc-f0bd-478a-9a26-a1204218095a` | win, 90,409 tiles | `f628352858f4743c95f71101694ea1c967b2ab991a596b73dba71426217ecded` |
+| `2a4293c7-8bce-4cd0-935d-a2882dd5fec4` | win, 83,616 tiles | `f64886f226e26c8d9020e4ad52a8e35d6f76edb8272e131c35e9d27152dec1b4` |
+
+The retry clears the reliability blocker from the first v14 request. Promotion
+still waits for the already-qualified candidate to be activated outside an
+official entrant-lock window.
