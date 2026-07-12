@@ -449,3 +449,35 @@ across two episodes, but anti-repeat raised the second pulse in each from 10% to
 eligible attacks on Richard prevented the fallback cadence from executing at
 all. v26 is rejected and exact v14 is restored. Full evidence is archived in
 `experiments/audit-v26-asia-seat3.json`.
+
+## Frontier-kernel candidate, 2026-07-12
+
+v27 / `s1gtyr-k3rn` changes architecture rather than another v14 threshold. It
+derives from the canonical public Proxy War `0.1.5` game image and runs its
+Commander-Executor `FrontierPolicyExecutor`, the same engine family used by
+Keystone. The base image is pinned by digest in `Dockerfile.frontier`.
+
+Only one documented off-by-default engine lever is enabled:
+`PROXYWAR_TUNE_ECONOMY_BOOTSTRAP=1`. Before the first City and outside active
+attack, it suppresses precautionary Defense Post spending and banks gold for a
+City, then strongly prefers that City once offered. Binding commitment and
+diplomacy directives, conversion-over-neutral enforcement, and the
+behind-and-falling escape path retain their canonical defaults.
+
+The first evidence gate is local same-engine comparison, not a hosted claim:
+four Asia episodes with v27 fixed in the historically weak diplomatic slot
+against three digest-identical Frontier executors with economy bootstrap off.
+All seats use the mock Commander locally so only executor behavior differs. A
+hosted Auri gate is allowed only if this arm beats the default executor from the
+weak slot.
+
+v27 won all four seeded candidate episodes from slot 2 at turn 6300 with
+217,296 final tiles, zero fallbacks, and zero rejected decisions. Its first City
+landed at turn 400 and its first Factory at turn 900. The same-seat all-default
+counterfactual lost from slot 2 with 699 final tiles and three fallbacks; its
+first City landed at turn 600, its first Factory at turn 1500, and the match did
+not resolve until turn 14200. The mock planner converged on the same strategic
+trace across the four candidate seeds, so this is a reproducible local mechanism
+gate rather than four independent strategic trials. Evidence is archived in
+`experiments/audit-v27-local-asia-seat2.json`; league promotion remains barred
+until a hosted live-roster gate passes.

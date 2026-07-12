@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "policy_version": 27,
+  "codename": "s1gtyr-k3rn",
+  "status": "local_gate_passed",
+  "mechanism": "canonical Frontier executor with economy bootstrap enabled",
+  "fixture": {
+    "map": "Asia",
+    "map_size": "Compact",
+    "seat": 2,
+    "planner_mode": "mock",
+    "candidate_image": "proxywar-frontier-v27:local",
+    "control_image": "proxywar-frontier-default:local",
+    "candidate_tunable": "PROXYWAR_TUNE_ECONOMY_BOOTSTRAP=1",
+    "control_tunable": "PROXYWAR_TUNE_ECONOMY_BOOTSTRAP=0"
+  },
+  "candidate": {
+    "episodes": 4,
+    "wins": 4,
+    "win_rate_pct": 100,
+    "winner_slot": 2,
+    "turn_count": 6300,
+    "final_tiles": 217296,
+    "first_city_turn": 400,
+    "first_factory_turn": 900,
+    "fallbacks": 0,
+    "rejected": 0,
+    "replay_sha256": [
+      "30332e08261eb10bcc3b8743134a72084c56dbf37fdc12dc6e4305209958c444",
+      "924061ef63f8add818ba4c492a9017ae9db153a999a3d227b62b81a503103ee2",
+      "37c1e7393ca946765f65f80a531d645e9376836f30ede72bfb4c3950576d3f0e",
+      "a06e2da92387a40564e34d70078e158e46a0df7b6afec34d24d03e1d8a00c040"
+    ]
+  },
+  "same_seat_control": {
+    "episodes": 1,
+    "wins": 0,
+    "win_rate_pct": 0,
+    "winner_slot": 3,
+    "turn_count": 14200,
+    "seat_2_final_tiles": 699,
+    "seat_2_first_city_turn": 600,
+    "seat_2_first_factory_turn": 1500,
+    "seat_2_fallbacks": 3,
+    "seat_2_rejected": 0,
+    "replay_sha256": "cf173d9628fce9f292e707ad811a7dd306ac159e8df03dc5ad4281d67d01a0b7"
+  },
+  "checks": {
+    "candidate_perfect_on_seeded_local_gate": true,
+    "same_seat_control_lost": true,
+    "candidate_city_built_earlier": true,
+    "candidate_factory_built_earlier": true,
+    "candidate_resolved_faster": true,
+    "candidate_zero_fallbacks": true,
+    "candidate_zero_rejections": true
+  },
+  "passed": true,
+  "limitations": [
+    "The mock planner produced the same strategic action trace across the four incremented seeds, so the 4/4 candidate sweep demonstrates reproducibility more than independent strategic diversity.",
+    "The local fixture isolates executor behavior and does not validate Bedrock planner behavior or the current hosted opponent roster.",
+    "This evidence permits a hosted experience gate only; it does not permit league promotion."
+  ]
+}
