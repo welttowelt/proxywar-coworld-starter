@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "gate": "v19-pangaea-seat2",
+  "experience_request_id": "xreq_bba92034-76eb-47fc-8129-14c437248034",
+  "status": "completed",
+  "policy_version": 19,
+  "policy_version_id": "1a2409ef-6e48-4f87-910e-eb7718fc02ad",
+  "episodes": 4,
+  "wins": 1,
+  "win_rate_pct": 25,
+  "final_tiles": [
+    386,
+    87031,
+    19940,
+    0
+  ],
+  "holds": 0,
+  "rejected": 0,
+  "fallbacks": 95,
+  "alliance_selections": 0,
+  "opening_alliance_opportunities": 8,
+  "opening_alliance_alignments": 0,
+  "checks": {
+    "completed_episode_floor": true,
+    "perfect_episode_wins": false,
+    "zero_holds": true,
+    "zero_rejected_decisions": true,
+    "opening_alliance_mechanism_exercised": false,
+    "exact_opening_alliance_alignment": false
+  },
+  "passed": false,
+  "episode_audits": [
+    {
+      "episode_request_id": "ereq_beafee24-26b9-4ce0-9c2c-4e565407d6db",
+      "episode_id": "034769f1-dfc9-4a5c-83f9-f32a65db411f",
+      "map": "Pangaea",
+      "seat": 2,
+      "policy_version": 19,
+      "policy_version_id": "1a2409ef-6e48-4f87-910e-eb7718fc02ad",
+      "won": false,
+      "score": 0,
+      "final_tiles": 386,
+      "is_alive": true,
+      "decisions": 44,
+      "holds": 0,
+      "rejected": 0,
+      "fallbacks": 16,
+      "profiles": [
+        "defensive"
+      ],
+      "alliance_selections": [],
+      "opening_alliance_opportunities": [
+        {
+          "turn": 400,
+          "profile": "defensive",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "expand:terra-nullius:10",
+          "aligned": false
+        },
+        {
+          "turn": 600,
+          "profile": "defensive",
+          "expected_action_id": "alliance:r5o3pta1",
+          "selected_action_id": "expand:terra-nullius:20",
+          "aligned": false
+        }
+      ],
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/0c052968-3a09-43af-a248-9526ecf4e766.replay",
+      "replay_sha256": "7f4b4cc764c6dac6c7d9b961cfb43b3701e6fdc8dfdf7c40c69af09b8ea9f930",
+      "replay_path": "data/cache/replays/034769f1-dfc9-4a5c-83f9-f32a65db411f.replay"
+    },
+    {
+      "episode_request_id": "ereq_12f636df-3245-4c4f-9e42-71a660e8587b",
+      "episode_id": "22aca3ad-d876-4ddb-ba59-8eb3d9b90a7e",
+      "map": "Pangaea",
+      "seat": 2,
+      "policy_version": 19,
+      "policy_version_id": "1a2409ef-6e48-4f87-910e-eb7718fc02ad",
+      "won": true,
+      "score": 1,
+      "final_tiles": 87031,
+      "is_alive": true,
+      "decisions": 84,
+      "holds": 0,
+      "rejected": 0,
+      "fallbacks": 25,
+      "profiles": [
+        "defensive"
+      ],
+      "alliance_selections": [],
+      "opening_alliance_opportunities": [
+        {
+          "turn": 400,
+          "profile": "defensive",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "expand:terra-nullius:10",
+          "aligned": false
+        },
+        {
+          "turn": 600,
+          "profile": "defensive",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "expand:terra-nullius:20",
+          "aligned": false
+        }
+      ],
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/ef59f340-9acd-4db4-8757-4ce77732e777.replay",
+      "replay_sha256": "d33034cf07263ed1b3d84c353527efc4474d8d1ef19d60b204f65018ce48ba8a",
+      "replay_path": "data/cache/replays/22aca3ad-d876-4ddb-ba59-8eb3d9b90a7e.replay"
+    },
+    {
+      "episode_request_id": "ereq_0530b255-7a57-448b-a2f0-ffaa010e75c2",
+      "episode_id": "06a7c787-8aaa-4594-9bbb-c5d2ab9c8ad9",
+      "map": "Pangaea",
+      "seat": 2,
+      "policy_version": 19,
+      "policy_version_id": "1a2409ef-6e48-4f87-910e-eb7718fc02ad",
+      "won": false,
+      "score": 0,
+      "final_tiles": 19940,
+      "is_alive": true,
+      "decisions": 94,
+      "holds": 0,
+      "rejected": 0,
+      "fallbacks": 47,
+      "profiles": [
+        "defensive"
+      ],
+      "alliance_selections": [],
+      "opening_alliance_opportunities": [
+        {
+          "turn": 400,
+          "profile": "defensive",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "expand:terra-nullius:10",
+          "aligned": false
+        },
+        {
+          "turn": 600,
+          "profile": "defensive",
+          "expected_action_id": "alliance:r5o3pta1",
+          "selected_action_id": "expand:terra-nullius:20",
+          "aligned": false
+        }
+      ],
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/bab546c2-832c-49fd-ae13-4650fafa3434.replay",
+      "replay_sha256": "5eb0ebfe215a3a4a9fb2240c621c5c8dd2fc1e8a9dac0d4f7e9a94d8b25db4fb",
+      "replay_path": "data/cache/replays/06a7c787-8aaa-4594-9bbb-c5d2ab9c8ad9.replay"
+    },
+    {
+      "episode_request_id": "ereq_0d4f4959-955c-414a-b495-5777025d56f0",
+      "episode_id": "bc16a277-c4ac-4875-a2cd-aaebfdf0d807",
+      "map": "Pangaea",
+      "seat": 2,
+      "policy_version": 19,
+      "policy_version_id": "1a2409ef-6e48-4f87-910e-eb7718fc02ad",
+      "won": false,
+      "score": 0,
+      "final_tiles": 0,
+      "is_alive": false,
+      "decisions": 32,
+      "holds": 0,
+      "rejected": 0,
+      "fallbacks": 7,
+      "profiles": [
+        "defensive"
+      ],
+      "alliance_selections": [],
+      "opening_alliance_opportunities": [
+        {
+          "turn": 400,
+          "profile": "defensive",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "expand:terra-nullius:10",
+          "aligned": false
+        },
+        {
+          "turn": 600,
+          "profile": "defensive",
+          "expected_action_id": "alliance:r5o3pta1",
+          "selected_action_id": "expand:terra-nullius:20",
+          "aligned": false
+        }
+      ],
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/d5b3a2d6-2d9a-4c5f-b8d9-b2fa57045016.replay",
+      "replay_sha256": "8e4b7da94bc81ff8f634252f3491a0ec48cb36d8221e3a0c61302ae77b3ca59a",
+      "replay_path": "data/cache/replays/bc16a277-c4ac-4875-a2cd-aaebfdf0d807.replay"
+    }
+  ]
+}

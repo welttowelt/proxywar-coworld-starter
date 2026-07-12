@@ -147,14 +147,22 @@ Higgins in slot 3.
 | --- | --- | ---: | --- | ---: | ---: | ---: |
 | v17 / `v1drir-v0rn` | `xreq_fe4cd17a-ef22-4dea-8433-a0ed742075dc` | 0/4 | 264; 502; 0; 0 | 3 | 0 | $0.111916 |
 | v18 / `ygg-v0rn` | `xreq_6a3bfe64-78ba-465a-add7-d033a1c58e96` | 0/4 | 484; 0; 656; 7,068 | 0 | 0 | $0.076936 |
+| v19 / `hrafn-syn` | `xreq_bba92034-76eb-47fc-8129-14c437248034` | 1/4 | 386; 87,031; 19,940; 0 | 0 | 0 | $0.105125 |
 | v14 baseline | `xreq_2fde5089-d10f-4e86-a623-dcd2c8a7a5b7` | 3/4 | not retained | not retained | not retained | not retained |
 
 v17's retreat improvement did not solve the opening. Three episodes eventually
 held once a late social action disappeared, and all four lost. v18 removed the
-holds but never selected an alliance action. Hosted source inspection confirmed
-that the profile can live in the request envelope, while the tactical
-recommendation exposes the exact ally target ID. v19 / `hrafn-syn` addresses
-those two wiring failures and remains a candidate only.
+holds but never selected an alliance action. v19 also selected zero alliances
+across eight exact audit opportunities and won only one episode. Hosted source
+inspection explains the miss: the external request carries the full profile,
+objective, strategic state, and legal-action metadata, but the server computes
+`tacticalAffordances` only after the external response for the decision record.
+The tactical recommendation was therefore never available to v18 or v19.
+
+The three failed candidates also inherited 203 strategy lines added after the
+exact v14 source at `dd8dbce`, so their same-profile collapse cannot isolate an
+alliance effect. v19 is rejected. The next candidate starts from exact v14 and
+changes only one wire-observable opening decision.
 
 | Policy | Episode | Result | Replay SHA-256 |
 | --- | --- | --- | --- |
@@ -166,3 +174,7 @@ those two wiring failures and remains a candidate only.
 | v18 | `6a8bf08f-dfc1-4dbd-8192-230369761eed` | loss, 0 tiles; Auri won | `a15a388aec55ba3ddeec904d98e4992dc301f30adf9902aa1a895ad7db8c481f` |
 | v18 | `168f708c-5703-4f1f-8029-9596807d0ecb` | loss, 656 tiles; James Boggs won | `1a585d320868eb53cb0803798a36b5f251e73d3c5217e60b0c4f8c8371177291` |
 | v18 | `af68ae17-ef4c-45d8-a73e-faec2108b34c` | loss, 7,068 tiles; James Boggs won | `ed1c096e76cfc215d12ac6c3b0d3f0921bcbe1bc5fb2a8749e0ad9663ba40f72` |
+| v19 | `034769f1-dfc9-4a5c-83f9-f32a65db411f` | loss, 386 tiles; Auri won | `7f4b4cc764c6dac6c7d9b961cfb43b3701e6fdc8dfdf7c40c69af09b8ea9f930` |
+| v19 | `22aca3ad-d876-4ddb-ba59-8eb3d9b90a7e` | win, 87,031 tiles | `d33034cf07263ed1b3d84c353527efc4474d8d1ef19d60b204f65018ce48ba8a` |
+| v19 | `06a7c787-8aaa-4594-9bbb-c5d2ab9c8ad9` | loss, 19,940 tiles; Richard Higgins won | `5eb0ebfe215a3a4a9fb2240c621c5c8dd2fc1e8a9dac0d4f7e9a94d8b25db4fb` |
+| v19 | `bc16a277-c4ac-4875-a2cd-aaebfdf0d807` | loss, eliminated; James Boggs won | `8e4b7da94bc81ff8f634252f3491a0ec48cb36d8221e3a0c61302ae77b3ca59a` |
