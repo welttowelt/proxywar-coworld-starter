@@ -8,7 +8,7 @@
 #   bash launch.sh [agent-name] [--codename name] [--yes] [--doctor]
 #
 #   agent-name   name for your uploaded policy (default: my-proxywar-agent)
-#   --codename   lowercase Norse-root release name (example: n0rn-flank)
+#   --codename   lowercase Norse-root release name (example: v1drir-v0rn)
 #   --yes        auto-approve safe setup steps (installing uv, starting Docker);
 #                for coding agents / CI, PROXYWAR_STARTER_YES=1 works too
 #   --doctor     only check the environment and report; change nothing
@@ -20,7 +20,7 @@
 set -euo pipefail
 
 NAME="my-proxywar-agent"
-CODENAME="${PROXYWAR_CODENAME:-n0rn-flank}"
+CODENAME="${PROXYWAR_CODENAME:-v1drir-v0rn}"
 YES="${PROXYWAR_STARTER_YES:-0}"
 DOCTOR=0
 while [ "$#" -gt 0 ]; do
@@ -40,7 +40,7 @@ while [ "$#" -gt 0 ]; do
 Usage: bash launch.sh [agent-name] [--codename name] [--yes] [--doctor]
 
   agent-name   name for your uploaded policy (default: my-proxywar-agent)
-  --codename   lowercase Norse-root release name (example: n0rn-flank)
+  --codename   lowercase Norse-root release name (example: v1drir-v0rn)
   --yes        auto-approve safe setup steps (installing uv, starting Docker);
                for coding agents / CI, PROXYWAR_STARTER_YES=1 works too
   --doctor     only check the environment and report; change nothing

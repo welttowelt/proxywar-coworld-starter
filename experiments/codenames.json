@@ -1,33 +1,93 @@
 {
-  "style": "lowercase norse root, restrained leet, concrete mechanism",
+  "style": "lowercase Odin-root, restrained leet, concrete mechanism",
   "releases": [
     {
-      "version": "v16",
-      "codename": "n0rn-flank",
+      "version": "v5",
+      "codename": "gangler1-rise",
+      "status": "retired",
+      "mechanism": "recover legal expansion after the structured-action migration"
+    },
+    {
+      "version": "v6",
+      "codename": "v1drir-rush",
+      "status": "retired",
+      "mechanism": "restore attack tempo and socket resilience"
+    },
+    {
+      "version": "v7",
+      "codename": "valf0dr-v0rn",
+      "status": "retired",
+      "mechanism": "survive long Europe episodes without surrendering control"
+    },
+    {
+      "version": "v8",
+      "codename": "gr1mnir-v0rn",
+      "status": "retired",
+      "mechanism": "detect territory collapse and defend exposed seats"
+    },
+    {
+      "version": "v9",
+      "codename": "hrafn-b0nd",
+      "status": "retired",
+      "mechanism": "use bounded survival alliances under pressure"
+    },
+    {
+      "version": "v11",
+      "codename": "vegtam-t1de",
+      "status": "retired",
+      "mechanism": "escape isolated positions through legal naval routes"
+    },
+    {
+      "version": "v12",
+      "codename": "f1mbul-gr1p",
+      "status": "retired",
+      "mechanism": "preserve favorable target finishes across plan refreshes"
+    },
+    {
+      "version": "v13",
+      "codename": "sanngetal-l0ck",
+      "status": "retired",
+      "mechanism": "remove transient alliance action races"
+    },
+    {
+      "version": "v14",
+      "codename": "b0lverk-h0gg",
+      "status": "champion",
+      "mechanism": "convert vulnerable rivals before escape-boat expansion"
+    },
+    {
+      "version": "v15",
+      "codename": "gr1mnir-pr0be",
+      "status": "rejected",
+      "mechanism": "pressure override rejected after a zero-win hosted test"
+    },
+    {
+      "version": "v17",
+      "codename": "v1drir-v0rn",
       "status": "candidate",
       "mechanism": "survive pressured seats and convert the remaining leader"
     },
     {
-      "version": "v17",
-      "codename": "se1dr-tide",
+      "version": "v18",
+      "codename": "hrafn-t1de",
       "status": "reserved",
       "mechanism": "time naval conversion before neutral expansion stalls"
     },
     {
-      "version": "v18",
-      "codename": "hug1nn-sight",
+      "version": "v19",
+      "codename": "hug1nn-syn",
       "status": "reserved",
       "mechanism": "adapt target selection to opponent and seat history"
     },
     {
-      "version": "v19",
-      "codename": "mun1nn-echo",
+      "version": "v20",
+      "codename": "mun1nn-rune",
       "status": "reserved",
       "mechanism": "carry replay-derived memory into matchup policy"
     },
     {
-      "version": "v20",
-      "codename": "urdr-lock",
+      "version": "v21",
+      "codename": "draupn1r-l0ck",
       "status": "reserved",
       "mechanism": "promote only after reproducible map-seat gates"
     }

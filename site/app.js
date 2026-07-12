@@ -5,6 +5,7 @@ const DATA_FILES = {
   ourResults: "our-results.json",
   ffaPlayers: "ffa-players.json",
   dominanceTrend: "dominance-trend.json",
+  policyCodenames: "policy-codenames.json",
   mapPerformance: "map-performance.json",
   outcomeProfile: "outcome-profile.json",
   seatPerformance: "seat-performance.json",
@@ -25,6 +26,20 @@ const dateFormat = new Intl.DateTimeFormat("en-CH", {
 });
 
 const byId = (id) => document.getElementById(id);
+let policyCodenames = new Map();
+
+function setPolicyCodenames(rows) {
+  policyCodenames = new Map(rows.map((row) => [
+    String(row.version).replace(/^v/, ""),
+    row,
+  ]));
+}
+
+function publicPolicyLabel(version) {
+  const key = String(version ?? "--").replace(/^v/, "");
+  const release = policyCodenames.get(key);
+  return release ? `v${key} / ${release.codename}` : `v${key}`;
+}
 
 function escapeHtml(value) {
   return String(value ?? "")
@@ -125,26 +140,26 @@ function renderOverview(data) {
   if (liveRound) {
     byId("state-title").textContent = `Round ${liveRound.round_number} is running`;
     if (championIsLive) {
-      byId("state-copy").textContent = `${champion.policy_label} is in the active roster.`;
+      byId("state-copy").textContent = `${publicPolicyLabel(champion.policy_version)} is in the active roster.`;
     } else if (livePolicy && champion) {
-      byId("state-copy").textContent = `v${livePolicy.policy_version} entered before v${champion.policy_version} was promoted. The champion is queued for the next roster snapshot.`;
+      byId("state-copy").textContent = `${publicPolicyLabel(livePolicy.policy_version)} entered before ${publicPolicyLabel(champion.policy_version)} was promoted. The champion is queued for the next roster snapshot.`;
     } else {
       byId("state-copy").textContent = "The active round predates the latest champion promotion.";
     }
   } else {
     byId("state-title").textContent = `Round ${latestRound.round_number ?? "--"} ${latestRound.status ?? "snapshot"}`;
     byId("state-copy").textContent = champion
-      ? `${champion.policy_label} is the active league champion.`
+      ? `${publicPolicyLabel(champion.policy_version)} is the active league champion.`
       : "No active champion was found in this snapshot.";
   }
 
   byId("active-policy").textContent = champion
-    ? `v${champion.policy_version} / ${champion.substatus}`
+    ? `${publicPolicyLabel(champion.policy_version)} / ${champion.substatus}`
     : "Unknown";
   byId("snapshot-time").textContent = formatDate(snapshot.collected_at);
   byId("latest-finish").textContent = latestResult.rank ? ordinal(latestResult.rank) : "--";
   byId("latest-finish-note").textContent = latestResult.round_number
-    ? `Round ${latestResult.round_number} / v${latestResult.policy_version} / score ${formatDecimal(latestResult.score, 2)}`
+    ? `Round ${latestResult.round_number} / ${publicPolicyLabel(latestResult.policy_version)} / score ${formatDecimal(latestResult.score, 2)}`
     : "Official rank";
   byId("our-win-rate").textContent = ourFfa.win_rate_pct !== undefined
     ? `${formatDecimal(ourFfa.win_rate_pct)}%`
@@ -201,17 +216,17 @@ function renderLiveRound(data) {
 
   if (round.status === "running" && roundPolicy && champion) {
     byId("live-copy").textContent = roundPolicy.policy_version_id === champion.policy_version_id
-      ? `Champion v${champion.policy_version} is competing in this round.`
-      : `v${roundPolicy.policy_version} is competing. Champion v${champion.policy_version} was promoted after roster lock.`;
+      ? `${publicPolicyLabel(champion.policy_version)} is competing in this round.`
+      : `${publicPolicyLabel(roundPolicy.policy_version)} is competing. ${publicPolicyLabel(champion.policy_version)} was promoted after roster lock.`;
   } else if (round.status === "running") {
     byId("live-copy").textContent = "Competition is running with the roster captured in this snapshot.";
   } else {
     const ourStanding = data.standings.find((standing) =>
       standing.round_id === round.round_id && standing.player_name === OUR_PLAYER);
     byId("live-copy").textContent = ourStanding
-      ? `v${ourStanding.policy_version} finished ${ordinal(ourStanding.rank)} with score ${formatDecimal(ourStanding.score, 2)} across ${ourStanding.completed_episode_count} episodes.`
+      ? `${publicPolicyLabel(ourStanding.policy_version)} finished ${ordinal(ourStanding.rank)} with score ${formatDecimal(ourStanding.score, 2)} across ${ourStanding.completed_episode_count} episodes.`
       : champion
-        ? `Champion v${champion.policy_version} is ready for the next competition roster.`
+        ? `${publicPolicyLabel(champion.policy_version)} is ready for the next competition roster.`
         : "Waiting for the next competition roster.";
   }
 
@@ -224,9 +239,9 @@ function renderLiveRound(data) {
 function tableRows(rows) {
   return rows.map((row) => {
     const ours = row.player_name === OUR_PLAYER;
-    const policy = row.policy_name
-      ? `${row.policy_name}:v${row.policy_version}`
-      : `v${row.policy_version ?? "--"}`;
+    const policy = row.player_name === OUR_PLAYER
+      ? publicPolicyLabel(row.policy_version)
+      : `${row.player_name} / v${row.policy_version ?? "--"}`;
     return `
       <tr data-player="${ours ? "ours" : "field"}">
         <td>R${escapeHtml(row.round_number)}</td>
@@ -346,7 +361,7 @@ function renderMapPerformance(data) {
       <section class="map-column" aria-label="${escapeHtml(mapName)} policy performance">
         <div class="map-title-row">
           <h4>${escapeHtml(mapName)}</h4>
-          <span>${ourRow.policy_version ? `v${escapeHtml(ourRow.policy_version)} ${policyState}` : "No sample"}</span>
+          <span class="codename">${ourRow.policy_version ? `${escapeHtml(publicPolicyLabel(ourRow.policy_version))} / ${policyState}` : "No sample"}</span>
         </div>
         <dl class="map-stats">
           <div>
@@ -390,6 +405,9 @@ function renderDominanceTrend(data) {
 
   const latest = rows.at(-1);
   const previous = rows[Math.max(0, rows.length - 6)];
+  const latestAuri = data.standings
+    .filter((standing) => standing.player_name === "Auri")
+    .sort((left, right) => asNumber(right.round_number) - asNumber(left.round_number))[0];
   const change = asNumber(latest.odin_rolling_win_rate_pct) - asNumber(previous.odin_rolling_win_rate_pct);
   const currentMatches = asNumber(snapshot.current_ffa_matches);
   const currentWins = asNumber(snapshot.current_ffa_wins);
@@ -403,6 +421,9 @@ function renderDominanceTrend(data) {
   byId("dominance-gap-note").textContent = "vs five rounds ago";
   byId("dominance-target").textContent = `${formatDecimal(snapshot.target_ffa_win_rate_pct, 0)}%`;
   byId("dominance-target-note").textContent = `${targetWins}/${currentMatches} needed in this window`;
+  byId("challenger-state").textContent = latestAuri
+    ? `auri v${latestAuri.policy_version} / 99% target`
+    : "challenger unknown / 99% target";
 
   const compact = window.matchMedia("(max-width: 520px)").matches;
   const width = compact ? 340 : 980;
@@ -508,6 +529,14 @@ function renderSignals(data) {
     .filter((row) => row.player_name !== OUR_PLAYER)
     .sort((left, right) => asNumber(right.win_rate_pct) - asNumber(left.win_rate_pct))[0] ?? {};
   const champion = data.memberships.find((membership) => membership.is_champion === true);
+  const latestAuri = data.standings
+    .filter((standing) => standing.player_name === "Auri")
+    .sort((left, right) => asNumber(right.round_number) - asNumber(left.round_number))[0];
+  const auriVersions = new Set(
+    data.standings
+      .filter((standing) => standing.player_name === "Auri")
+      .map((standing) => String(standing.policy_version)),
+  );
   const liveRound = data.liveRounds.find((round) => round.status === "running");
   const championIsLive = Boolean(
     liveRound && champion && liveRound.entrant_policy_version_ids?.includes(champion.policy_version_id),
@@ -540,8 +569,11 @@ function renderSignals(data) {
     `<strong>Seat exposure:</strong> seats 1 and 4 account for ${formatInteger(edgeSeatWins)} of ${formatInteger(totalSeatWins)} observed FFA wins.`,
     `<strong>Our edge:</strong> ${formatDecimal(ourFfa.win_rate_pct)}% win rate, ${formatDecimal(edge)} points above the nearest field rate.`,
     champion
-      ? `<strong>Policy state:</strong> v${escapeHtml(champion.policy_version)} is champion${liveRound && !championIsLive ? `; Round ${escapeHtml(liveRound.round_number)} locked its roster before promotion.` : "."}`
+      ? `<strong>Policy state:</strong> ${escapeHtml(publicPolicyLabel(champion.policy_version))} is champion${liveRound && !championIsLive ? `; Round ${escapeHtml(liveRound.round_number)} locked its roster before promotion.` : "."}`
       : "<strong>Policy state:</strong> no champion was present in the snapshot.",
+    latestAuri
+      ? `<strong>Challenger drift:</strong> Auri is on v${escapeHtml(latestAuri.policy_version)} in Round ${escapeHtml(latestAuri.round_number)}; ${formatInteger(auriVersions.size)} version${auriVersions.size === 1 ? "" : "s"} observed in this window.`
+      : "<strong>Challenger drift:</strong> no Auri policy was present in the collected window.",
   ];
 
   byId("signal-list").innerHTML = signals.map((signal) => `<li><span>${signal}</span></li>`).join("");
@@ -583,6 +615,7 @@ async function refreshDashboard() {
 
   try {
     const data = await loadData();
+    setPolicyCodenames(data.policyCodenames);
     renderOverview(data);
     renderPlacementTrail(data.ourResults);
     renderLiveRound(data);

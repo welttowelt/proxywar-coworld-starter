@@ -271,6 +271,10 @@ th {
   margin-top: 8px;
 }
 
+#latest-finish-note {
+  text-transform: none;
+}
+
 .section {
   padding: 50px 0 56px;
   border-bottom: 1px solid var(--line);
@@ -814,6 +818,10 @@ tbody tr[data-player="ours"] td:first-child {
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
+}
+
+.map-title-row .codename {
+  text-transform: none;
 }
 
 .map-stats {

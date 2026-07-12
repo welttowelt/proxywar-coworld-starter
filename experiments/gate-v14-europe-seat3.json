@@ -1,0 +1,12 @@
+{
+  "coworld_id": "cow_e1bcda38-8d9f-491b-bf9c-3703ccbbf36f",
+  "variant_id": "tournament-4p-europe",
+  "roster": [
+    { "player": { "policy_ref": "proxywar-starter-b:v1" }, "slot": 0 },
+    { "player": { "policy_ref": "jamesboggs-warlord:v1" }, "slot": 1 },
+    { "player": { "policy_ref": "oli-codex-proxywar:v14" }, "slot": 2 },
+    { "player": { "policy_ref": "proxywar-keystone:v4" }, "slot": 3 }
+  ],
+  "num_episodes": 4,
+  "notes": "ffa-99 gate baseline: v14 Europe seat 3 against the Round 213 roster"
+}

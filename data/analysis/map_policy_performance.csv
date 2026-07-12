@@ -1,15 +1,14 @@
 map,player_name,policy_version,matches,declared_wins,episode_points,point_rate_pct,mean_final_tiles,rival_attacks_per_100_decisions,neutral_attacks_per_100_decisions,neutral_boats_per_100_decisions,holds
-Asia,Auri,4,24,5,5,20.83,55108.0,29.44,31.68,19.52,13
-Asia,James Boggs,1,24,0,0,0.0,7620.9,9.91,20.86,13.91,3
-Asia,Richard Higgins,1,24,0,0,0.0,13594.5,14.29,67.21,4.85,0
+Asia,Auri,4,28,6,6,21.43,55877.4,29.25,31.41,19.85,13
+Asia,James Boggs,1,28,0,0,0.0,7941.4,10.5,20.9,13.08,3
+Asia,Richard Higgins,1,28,0,0,0.0,13305.4,15.3,66.0,5.1,0
 Asia,odin free,9,4,3,3,75.0,168315.3,49.77,29.58,7.04,1
 Asia,odin free,11,4,3,3,75.0,164912.3,44.77,27.62,13.39,1
 Asia,odin free,13,4,3,3,75.0,163962.8,48.31,34.3,4.83,0
-Asia,odin free,14,12,10,10,83.33,182800.1,53.63,29.52,3.55,0
-Europe,Auri,4,28,0,7,25.0,108187.9,6.98,47.5,8.63,236
-Europe,James Boggs,1,28,0,0,0.0,22583.7,10.23,13.84,17.51,81
-Europe,Richard Higgins,1,28,0,1,3.57,24588.0,9.41,67.44,5.5,36
-Europe,odin free,8,4,2,2,50.0,265029.3,9.48,33.37,36.19,0
+Asia,odin free,14,16,13,13,81.25,178496.1,52.12,30.47,4.12,0
+Europe,Auri,4,24,0,5,20.83,93913.4,6.18,46.23,9.02,224
+Europe,James Boggs,1,24,0,0,0.0,22047.7,9.98,13.61,17.27,49
+Europe,Richard Higgins,1,24,0,1,4.17,21331.3,10.7,67.02,4.57,32
 Europe,odin free,9,4,3,3,75.0,344155.3,14.54,50.09,26.27,0
 Europe,odin free,12,4,3,3,75.0,344314.3,19.83,47.81,22.96,0
 Europe,odin free,13,4,2,3,75.0,359584.3,10.54,49.66,31.95,0

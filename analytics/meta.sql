@@ -679,6 +679,15 @@ COPY (
 ) TO 'site/data/dominance-trend.json' (FORMAT JSON, ARRAY true);
 
 COPY (
+  SELECT release.version, release.codename, release.status
+  FROM (
+    SELECT unnest(releases) AS release
+    FROM read_json_auto('experiments/codenames.json')
+  )
+  ORDER BY try_cast(replace(release.version, 'v', '') AS INTEGER)
+) TO 'site/data/policy-codenames.json' (FORMAT JSON, ARRAY true);
+
+COPY (
   SELECT *
   FROM read_csv_auto('data/analysis/map_policy_performance.csv')
   ORDER BY map, player_name, policy_version
