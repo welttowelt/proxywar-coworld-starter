@@ -163,10 +163,11 @@ Round 199 used Pangaea for v11's first field test. v11 won seats 1, 3, and 4
 with 87,364, 82,412, and 90,082 final tiles. Auri won seat 2 after v11 peaked at
 20,149 and finished with 14,322. Auri attacked that seat five times and reached
 79% territory by turn 3,400; map geometry exposed no legal attack on Auri, so
-v11 attacked Richard Higgins three times and James Boggs once. It formed a
-stable alliance with Richard at turn 3,100, too late to slow Auri. Across 178
-decisions, v11 recorded zero holds, zero rejected actions, and 38 planner
-fallbacks. Its 0.75 score and first place extended the streak to 13.
+v11 attacked Richard Higgins three times and James Boggs once. It sent a stable
+alliance request to Auri at turn 3,100, but the replay confirmed only the
+outgoing request and never exposed an active alliance. Across 178 decisions,
+v11 recorded zero holds, zero rejected actions, and 38 planner fallbacks. Its
+0.75 score and first place extended the streak to 13.
 
 Recent Pangaea rounds show the same seat effect: our seat 2 finished with 12,095
 tiles in Round 190, 624 in Round 196, and 14,322 in Round 199 while seats 1, 3,
