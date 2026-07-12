@@ -388,6 +388,30 @@ test("target continuity escalates a favorable attack from 10 to 25 to 40", () =>
   assert.deepEqual(selected, ["attack:weak:10", "attack:weak:25", "attack:weak:40"]);
 });
 
+test("a planner avoid list cannot cancel an active favorable finish", () => {
+  const actions = [10, 25, 40].map((percent) =>
+    action(`attack:weak:${percent}`, "attack", `Attack Weak ${percent}%`)
+  );
+  actions.push(action(
+    "expand:terra-nullius:10",
+    "attack",
+    "Expand into Terra Nullius 10%",
+  ));
+  const obs = observation({
+    tileShare: 0.19,
+    rivals: [{ id: "weak", name: "Weak", tileShare: 0.03, relativeTroopRatio: 3.2 }],
+  });
+  const history = [10, 25, 40].map((percent) => ({
+    actionID: `attack:weak:${percent}`,
+    kind: "attack",
+    neutral: false,
+    targetName: "Weak",
+    tileShare: 0.19,
+  }));
+  const plan = { focus: "attack", target: "Leader", avoidTargets: ["Weak"] };
+  assert.equal(choose(actions, obs, plan, history).id, "attack:weak:40");
+});
+
 test("a vulnerable target outranks a planner preference for the leader", () => {
   const actions = [
     action("attack:weak:10", "attack", "Attack Weak 10%"),

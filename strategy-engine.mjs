@@ -244,16 +244,16 @@ function attackScore(rival, state, plan, history) {
   const ratio = rival.relativeTroopRatio;
   if (!Number.isFinite(ratio) || ratio < attackThreshold(rival, state)) return -Infinity;
 
-  const avoided = (plan?.avoidTargets || [])
-    .map((name) => String(name).toLowerCase())
-    .includes(rival.name.toLowerCase());
-  if (avoided) return -Infinity;
-
-  const isTopRival = rival.tileShare >= state.topRivalTileShare - 0.005;
   const recentTarget = consecutive(
     history,
     (entry) => entry.kind === "attack" && targetName(entry) === rival.name.toLowerCase(),
   );
+  const avoided = (plan?.avoidTargets || [])
+    .map((name) => String(name).toLowerCase())
+    .includes(rival.name.toLowerCase());
+  if (avoided && !(recentTarget > 0 && ratio >= 1.5)) return -Infinity;
+
+  const isTopRival = rival.tileShare >= state.topRivalTileShare - 0.005;
   const planTarget = String(plan?.target ?? "").toLowerCase() === rival.name.toLowerCase();
   const vulnerability = Math.min(Math.max(ratio - 1, 0), 3) * 2;
   const landValue = rival.tileShare * 2;
