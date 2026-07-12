@@ -1,0 +1,35 @@
+{
+  "style": "lowercase norse root, restrained leet, concrete mechanism",
+  "releases": [
+    {
+      "version": "v16",
+      "codename": "n0rn-flank",
+      "status": "candidate",
+      "mechanism": "survive pressured seats and convert the remaining leader"
+    },
+    {
+      "version": "v17",
+      "codename": "se1dr-tide",
+      "status": "reserved",
+      "mechanism": "time naval conversion before neutral expansion stalls"
+    },
+    {
+      "version": "v18",
+      "codename": "hug1nn-sight",
+      "status": "reserved",
+      "mechanism": "adapt target selection to opponent and seat history"
+    },
+    {
+      "version": "v19",
+      "codename": "mun1nn-echo",
+      "status": "reserved",
+      "mechanism": "carry replay-derived memory into matchup policy"
+    },
+    {
+      "version": "v20",
+      "codename": "urdr-lock",
+      "status": "reserved",
+      "mechanism": "promote only after reproducible map-seat gates"
+    }
+  ]
+}

@@ -34,6 +34,7 @@ const MODELS = [
   "us.anthropic.claude-haiku-4-5-20251001-v1:0",
   "anthropic.claude-sonnet-4-5-20250929-v1:0",
 ].filter(Boolean);
+const CODENAME = process.env.POLICY_CODENAME || "n0rn-flank";
 
 let bedrock = null;
 try { bedrock = new AnthropicBedrock({ awsRegion: REGION }); } catch (e) { bedrock = null; }
@@ -54,6 +55,9 @@ const STRATEGY = [
   "Use boats for neutral expansion or favorable invasion, but never let boats replace land conversion.",
   "If isolated and only rival boats remain, invade the safest non-allied target instead of holding.",
   "If territory is collapsing, defend, retreat exposed boats, or probe a rival before considering HOLD.",
+  "Under incoming pressure, cancel exposed attacks and preserve troops before restarting expansion.",
+  "When the field narrows, open a naval front on the remaining leader instead of farming neutral land forever.",
+  "After the core economy is built, bank for a Missile Silo and use nuclear actions to break a timeout stalemate.",
   "When a nuke is legal, use it to stop the leader, break a stalemate, or finish a rival.",
   "Request alliances only when no tactical action exists; social IDs can disappear during simultaneous resolution.",
   "Donate only to an allied recipient when it prevents their collapse.",
@@ -199,12 +203,12 @@ function handleMessage(activeSocket, data) {
   if (plan !== null) {
     const focus = plan.target ? `${plan.focus} -> ${plan.target}` : plan.focus;
     reason = degraded
-      ? `PLAN(${focus}; stale, refresh failed: ${lastPlanError}): ${chosen.kind}`
-      : `PLAN(${focus}) via ${plan.model}: ${chosen.kind} — ${plan.reason}`;
+      ? `${CODENAME} PLAN(${focus}; stale, refresh failed: ${lastPlanError}): ${chosen.kind}`
+      : `${CODENAME} PLAN(${focus}) via ${plan.model}: ${chosen.kind} — ${plan.reason}`;
   } else {
     reason = degraded
-      ? `BOOTSTRAP RULE (plan refresh failed: ${lastPlanError}): ${chosen.kind}`
-      : `BOOTSTRAP RULE (first plan in flight): ${chosen.kind}`;
+      ? `${CODENAME} BOOTSTRAP RULE (plan refresh failed: ${lastPlanError}): ${chosen.kind}`
+      : `${CODENAME} BOOTSTRAP RULE (first plan in flight): ${chosen.kind}`;
   }
 
   recordDecision(history, chosen, state);
@@ -240,7 +244,7 @@ function connect() {
   socket = activeSocket;
   activeSocket.on("open", () => {
     reconnectAttempt = 0;
-    console.log(`connected to match (region=${REGION}, models=${MODELS.length})`);
+    console.log(`connected to match (codename=${CODENAME}, region=${REGION}, models=${MODELS.length})`);
   });
   activeSocket.on("message", (data) => handleMessage(activeSocket, data));
   activeSocket.on("close", (code, reason) => {

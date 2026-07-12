@@ -398,6 +398,7 @@ test("target continuity escalates a favorable attack from 10 to 25 to 40", () =>
   );
   const obs = observation({
     tileShare: 0.25,
+    troopRatio: 1,
     rivals: [{ id: "weak", name: "Weak", tileShare: 0.09, relativeTroopRatio: 1.7 }],
   });
   const history = [];
@@ -409,6 +410,45 @@ test("target continuity escalates a favorable attack from 10 to 25 to 40", () =>
     recordDecision(history, choice, state);
   }
   assert.deepEqual(selected, ["attack:weak:10", "attack:weak:25", "attack:weak:40"]);
+});
+
+test("target continuity never forces 40 percent when the safe size is 25", () => {
+  const actions = [10, 25, 40].map((percent) =>
+    action(`attack:weak:${percent}`, "attack", `Attack Weak ${percent}%`)
+  );
+  const history = [10, 25].map((percent) => ({
+    actionID: `attack:weak:${percent}`,
+    kind: "attack",
+    neutral: false,
+    targetName: "Weak",
+    tileShare: 0.2,
+  }));
+  const obs = observation({
+    tileShare: 0.2,
+    troopRatio: 1,
+    rivals: [{ id: "weak", name: "Weak", tileShare: 0.1, relativeTroopRatio: 1.2 }],
+  });
+  assert.equal(choose(actions, obs, null, history).id, "attack:weak:25");
+});
+
+test("incoming pressure caps a non-finishing attack at 10 percent", () => {
+  const actions = [10, 25, 40].map((percent) =>
+    action(`attack:weak:${percent}`, "attack", `Attack Weak ${percent}%`)
+  );
+  const history = [10, 25].map((percent) => ({
+    actionID: `attack:weak:${percent}`,
+    kind: "attack",
+    neutral: false,
+    targetName: "Weak",
+    tileShare: 0.2,
+  }));
+  const obs = observation({
+    tileShare: 0.2,
+    troopRatio: 0.7,
+    incomingAttacks: [{ attackerID: "weak" }],
+    rivals: [{ id: "weak", name: "Weak", tileShare: 0.1, relativeTroopRatio: 1.2 }],
+  });
+  assert.equal(choose(actions, obs, null, history).id, "attack:weak:10");
 });
 
 test("a planner avoid list cannot cancel an active favorable finish", () => {
@@ -561,6 +601,74 @@ test("a legal land retreat is used instead of holding", () => {
   assert.equal(choose(actions, observation()).id, "retreat:attack-113");
 });
 
+test("a collapsing player retreats an active front before expanding", () => {
+  const actions = [
+    action("retreat:attack-113", "retreat", "Retreat attack 113"),
+    action("expand:terra-nullius:35", "attack", "Expand into Terra Nullius 35%"),
+  ];
+  const history = [0.25, 0.23, 0.2, 0.18].map((tileShare, index) => ({
+    actionID: `attack:rival:${index}`,
+    kind: "attack",
+    targetName: "Rival",
+    tileShare,
+  }));
+  const obs = observation({
+    tileShare: 0.15,
+    troopRatio: 0.7,
+    incomingAttacks: [{ attackerID: "rival" }],
+    rivals: [{ id: "rival", name: "Rival", tileShare: 0.3, relativeTroopRatio: 0.8 }],
+  });
+  assert.equal(choose(actions, obs, null, history).id, "retreat:attack-113");
+});
+
+test("a collapsing player uses one stable alliance before neutral expansion", () => {
+  const stableAlliance = {
+    ...action("alliance:rival", "alliance_request", "Alliance with Rival"),
+    metadata: { recipientID: "rival", relation: 1 },
+  };
+  const neutral = action(
+    "expand:terra-nullius:35",
+    "attack",
+    "Expand into Terra Nullius 35%",
+  );
+  const history = Array.from({ length: 18 }, (_, index) => ({
+    actionID: `attack:rival:${index}`,
+    kind: "attack",
+    targetName: "Rival",
+    tileShare: 0.3 - index * 0.007,
+  }));
+  const obs = observation({
+    tileShare: 0.14,
+    troopRatio: 0.9,
+    incomingAttacks: [{ attackerID: "leader" }],
+    rivals: [
+      { id: "leader", name: "Leader", tileShare: 0.4, relativeTroopRatio: 0.7 },
+      { id: "rival", name: "Rival", tileShare: 0.2, relativeTroopRatio: 0.9 },
+    ],
+  });
+  assert.equal(choose([neutral, stableAlliance], obs, null, history).id, stableAlliance.id);
+});
+
+test("collapse recovery never escalates neutral expansion above 10 percent", () => {
+  const actions = [10, 20, 35].map((percent) =>
+    action(
+      `expand:terra-nullius:${percent}`,
+      "attack",
+      `Expand into Terra Nullius ${percent}%`,
+    )
+  );
+  const history = [0.24, 0.22, 0.19, 0.17].map((tileShare, index) => ({
+    actionID: `expand:terra-nullius:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare,
+  }));
+  assert.equal(
+    choose(actions, observation({ tileShare: 0.14 }), null, history).id,
+    "expand:terra-nullius:10",
+  );
+});
+
 test("a low-commitment counterattack beats hold as the last tactical option", () => {
   const actions = [
     action("attack:rival:10", "attack", "Attack Rival 10%"),
@@ -617,6 +725,141 @@ test("recurring economy builds wait fourteen decisions", () => {
   assert.equal(choose(actions, obs, null, baseHistory).id, "expand:terra-nullius:10");
   baseHistory.push({ actionID: "hold", kind: "hold", neutral: false });
   assert.equal(choose(actions, obs, null, baseHistory).id, "build:Factory:99");
+});
+
+test("late economy banks for a missile silo instead of adding another city", () => {
+  const actions = [
+    action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%"),
+    action("build:City:99", "build", "Build City"),
+  ];
+  const history = [
+    { actionID: "build:City:1", kind: "build", tileShare: 0.1 },
+    { actionID: "build:Factory:2", kind: "build", tileShare: 0.11 },
+    { actionID: "build:Port:3", kind: "build", tileShare: 0.12 },
+    ...Array.from({ length: 67 }, (_, index) => ({
+      actionID: `expand:terra-nullius:${index}`,
+      kind: "attack",
+      neutral: true,
+      tileShare: 0.12 + index * 0.002,
+    })),
+  ];
+  const obs = observation({
+    tileShare: 0.25,
+    troopRatio: 1,
+    rivals: [{ id: "leader", name: "Leader", tileShare: 0.35, relativeTroopRatio: 0.7 }],
+  });
+  assert.equal(choose(actions, obs, null, history).id, "expand:terra-nullius:10");
+});
+
+test("a legal missile silo is the first post-core build", () => {
+  const actions = [
+    action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%"),
+    action("build:City:99", "build", "Build City"),
+    action("build:Missile Silo:100", "build", "Build Missile Silo"),
+  ];
+  const history = [
+    { actionID: "build:City:1", kind: "build", tileShare: 0.1 },
+    { actionID: "build:Factory:2", kind: "build", tileShare: 0.11 },
+    { actionID: "build:Port:3", kind: "build", tileShare: 0.12 },
+    ...Array.from({ length: 67 }, (_, index) => ({
+      actionID: `expand:terra-nullius:${index}`,
+      kind: "attack",
+      neutral: true,
+      tileShare: 0.12 + index * 0.002,
+    })),
+  ];
+  const obs = observation({
+    tileShare: 0.25,
+    troopRatio: 1,
+    rivals: [{ id: "leader", name: "Leader", tileShare: 0.35, relativeTroopRatio: 0.7 }],
+  });
+  assert.equal(choose(actions, obs, null, history).id, "build:Missile Silo:100");
+});
+
+test("a mature nation uses a legal nuclear action before more expansion", () => {
+  const actions = [
+    action("nuke:leader:atom", "nuke", "Atom Bomb Leader"),
+    action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%"),
+  ];
+  const history = Array.from({ length: 50 }, (_, index) => ({
+    actionID: `expand:terra-nullius:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare: 0.1 + index * 0.002,
+  }));
+  const obs = observation({
+    tileShare: 0.2,
+    troopRatio: 1,
+    rivals: [{ id: "leader", name: "Leader", tileShare: 0.4, relativeTroopRatio: 0.8 }],
+  });
+  assert.equal(choose(actions, obs, null, history).id, "nuke:leader:atom");
+});
+
+test("a nuclear strike selects the leader instead of the first legal target", () => {
+  const weakNuke = {
+    ...action("nuke:Atom Bomb:weak:100", "nuke", "Launch Atom Bomb at Weak"),
+    metadata: {
+      targetID: "weak",
+      targetName: "Weak",
+      targetTileShare: 0.08,
+      nuclearTargetPriority: 1,
+    },
+  };
+  const leaderNuke = {
+    ...action("nuke:Atom Bomb:leader:200", "nuke", "Launch Atom Bomb at Leader"),
+    metadata: {
+      targetID: "leader",
+      targetName: "Leader",
+      targetTileShare: 0.42,
+      nuclearTargetPriority: 3,
+    },
+  };
+  const actions = [
+    weakNuke,
+    leaderNuke,
+    action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%"),
+  ];
+  const history = Array.from({ length: 50 }, (_, index) => ({
+    actionID: `expand:terra-nullius:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare: 0.1 + index * 0.002,
+  }));
+  const obs = observation({
+    tileShare: 0.2,
+    troopRatio: 1,
+    rivals: [
+      { id: "weak", name: "Weak", tileShare: 0.08, relativeTroopRatio: 1.4 },
+      { id: "leader", name: "Leader", tileShare: 0.42, relativeTroopRatio: 0.8 },
+    ],
+  });
+  assert.equal(choose(actions, obs, null, history).id, leaderNuke.id);
+});
+
+test("late play opens a naval front on the remaining leader", () => {
+  const actions = [
+    action("boat:leader:8", "boat", "Boat to Leader 8%"),
+    action("boat:leader:16", "boat", "Boat to Leader 16%"),
+    action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%"),
+  ];
+  const history = Array.from({ length: 60 }, (_, index) => ({
+    actionID: `expand:terra-nullius:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare: 0.1 + index * 0.002,
+  }));
+  const obs = observation({
+    tileShare: 0.25,
+    troopRatio: 1,
+    rivals: [{
+      id: "leader",
+      name: "Leader",
+      tileShare: 0.42,
+      relativeTroopRatio: 0.95,
+      sharesBorder: false,
+    }],
+  });
+  assert.equal(choose(actions, obs, null, history).id, "boat:leader:8");
 });
 
 test("donations require an allied recipient and ally focus", () => {

@@ -5,9 +5,10 @@
 # whoever's running the match.
 #
 # Usage:
-#   bash launch.sh [agent-name] [--yes] [--doctor]
+#   bash launch.sh [agent-name] [--codename name] [--yes] [--doctor]
 #
 #   agent-name   name for your uploaded policy (default: my-proxywar-agent)
+#   --codename   lowercase Norse-root release name (example: n0rn-flank)
 #   --yes        auto-approve safe setup steps (installing uv, starting Docker);
 #                for coding agents / CI, PROXYWAR_STARTER_YES=1 works too
 #   --doctor     only check the environment and report; change nothing
@@ -19,26 +20,41 @@
 set -euo pipefail
 
 NAME="my-proxywar-agent"
+CODENAME="${PROXYWAR_CODENAME:-n0rn-flank}"
 YES="${PROXYWAR_STARTER_YES:-0}"
 DOCTOR=0
-for arg in "$@"; do
-  case "$arg" in
-    --yes|-y) YES=1 ;;
-    --doctor|--check) DOCTOR=1 ;;
+while [ "$#" -gt 0 ]; do
+  case "$1" in
+    --yes|-y) YES=1; shift ;;
+    --doctor|--check) DOCTOR=1; shift ;;
+    --codename)
+      if [ "$#" -lt 2 ]; then
+        echo "--codename requires a value" >&2
+        exit 2
+      fi
+      CODENAME="$2"
+      shift 2
+      ;;
     -h|--help)
       cat <<'EOF'
-Usage: bash launch.sh [agent-name] [--yes] [--doctor]
+Usage: bash launch.sh [agent-name] [--codename name] [--yes] [--doctor]
 
   agent-name   name for your uploaded policy (default: my-proxywar-agent)
+  --codename   lowercase Norse-root release name (example: n0rn-flank)
   --yes        auto-approve safe setup steps (installing uv, starting Docker);
                for coding agents / CI, PROXYWAR_STARTER_YES=1 works too
   --doctor     only check the environment and report; change nothing
 EOF
       exit 0 ;;
-    -*) echo "unknown flag: $arg (try --help)" >&2; exit 2 ;;
-    *) NAME="$arg" ;;
+    -*) echo "unknown flag: $1 (try --help)" >&2; exit 2 ;;
+    *) NAME="$1"; shift ;;
   esac
 done
+
+if [ -n "$CODENAME" ] && [[ ! "$CODENAME" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
+  echo "invalid codename '$CODENAME': use lowercase letters, digits, and single hyphens" >&2
+  exit 2
+fi
 
 IMAGE="proxywar-agent-llm:latest"
 HERE="$(cd "$(dirname "$0")" && pwd)"
@@ -168,11 +184,22 @@ if [ "$AUTH" != "ok" ]; then
 fi
 
 echo "==> Building your agent image (linux/amd64)..."
-docker build --platform linux/amd64 -t "$IMAGE" "$HERE"
+docker build --platform linux/amd64 \
+  --build-arg "POLICY_CODENAME=$CODENAME" \
+  -t "$IMAGE" "$HERE"
 
 echo "==> Uploading to Softmax as policy '$NAME' (Bedrock enabled)..."
-uvx --from "$COWORLD_PACKAGE" coworld upload-policy "$IMAGE" \
-  --name "$NAME" --use-bedrock --run node --run /app/llm-player.mjs
+UPLOAD_ARGS=(
+  --name "$NAME"
+  --use-bedrock
+  --run node
+  --run /app/llm-player.mjs
+  --tag goal=ffa-99
+)
+if [ -n "$CODENAME" ]; then
+  UPLOAD_ARGS+=(--tag "codename=$CODENAME")
+fi
+uvx --from "$COWORLD_PACKAGE" coworld upload-policy "$IMAGE" "${UPLOAD_ARGS[@]}"
 
 echo "==> Resolving your policy id..."
 POLICY_ID="$(uvx --from "$COWORLD_PACKAGE" python - "$NAME" "$SERVER" <<'PY'
