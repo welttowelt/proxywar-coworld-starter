@@ -1,8 +1,7 @@
 map,player_name,policy_version,matches,declared_wins,episode_points,point_rate_pct,mean_final_tiles,rival_attacks_per_100_decisions,neutral_attacks_per_100_decisions,neutral_boats_per_100_decisions,holds
-Asia,Auri,4,26,6,6,23.08,60574.1,29.39,31.19,21.09,7
-Asia,James Boggs,1,26,0,0,0.0,7014.7,14.0,20.75,12.24,3
-Asia,Richard Higgins,1,26,0,0,0.0,13745.3,14.48,60.82,9.15,2
-Asia,odin free,3,2,1,1,50.0,127807.0,18.37,34.69,36.73,0
+Asia,Auri,4,24,5,5,20.83,54508.7,28.41,32.41,20.79,6
+Asia,James Boggs,1,24,0,0,0.0,7599.3,12.5,20.8,13.05,2
+Asia,Richard Higgins,1,24,0,0,0.0,14631.2,16.31,61.97,7.38,2
 Asia,odin free,5,8,7,7,87.5,191823.3,54.17,27.55,1.16,3
 Asia,odin free,6,4,3,3,75.0,168586.5,50.49,29.9,5.39,0
 Asia,odin free,8,4,3,3,75.0,164939.8,47.93,31.34,7.83,0
@@ -18,12 +17,13 @@ Europe,odin free,7,4,3,3,75.0,367453.3,12.66,41.03,34.56,0
 Europe,odin free,8,4,2,2,50.0,265029.3,9.48,33.37,36.19,0
 Europe,odin free,9,4,3,3,75.0,344155.3,14.54,50.09,26.27,0
 Europe,odin free,12,4,3,3,75.0,344314.3,19.83,47.81,22.96,0
-Pangaea,Auri,4,24,5,7,29.17,28609.2,13.3,53.52,10.61,47
-Pangaea,James Boggs,1,24,4,4,16.67,17697.8,10.91,15.05,20.12,17
-Pangaea,Richard Higgins,1,24,0,0,0.0,1963.8,10.24,68.37,2.56,0
+Pangaea,Auri,4,28,6,8,28.57,29103.4,13.44,52.2,12.0,51
+Pangaea,James Boggs,1,28,5,5,17.86,18520.4,10.94,15.12,19.72,17
+Pangaea,Richard Higgins,1,28,0,0,0.0,1683.3,9.83,69.46,2.26,0
 Pangaea,odin free,4,4,0,0,0.0,0.0,1.2,0.0,0.0,62
 Pangaea,odin free,5,4,1,2,50.0,38463.8,12.16,71.04,3.67,9
 Pangaea,odin free,6,4,3,3,75.0,68430.0,34.96,26.02,19.92,0
 Pangaea,odin free,7,4,2,2,50.0,44823.3,22.76,29.48,22.39,2
 Pangaea,odin free,8,4,3,3,75.0,66477.8,34.69,22.11,21.43,0
 Pangaea,odin free,11,4,3,3,75.0,68545.0,35.96,34.27,13.48,0
+Pangaea,odin free,13,4,2,2,50.0,44533.5,28.37,30.77,25.0,0
