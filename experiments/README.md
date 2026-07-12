@@ -662,3 +662,17 @@ so the local trace proves runtime safety only. Replay SHA-256 is
 The diagnosis and preflight are archived in
 `experiments/diagnosis-v33-asia-seat3.json` and
 `experiments/preflight-v33.json`.
+
+The hosted gate `xreq_2666b188-163f-470b-844b-c4a48bb46c8d` rejected v33. It
+matched v32 at `3/4`, finishing with 218,588; 228,082; 218,310; and 27,546
+tiles. The replay audit found eight holds, zero rejected decisions, seven
+accepted parity pulses, and zero wire-salvage markers. The brain had already
+normalized unavailable source actions to `hold` before the adapter ran, so the
+new branch could not observe its registered condition.
+
+The loss exposed a smaller tactical failure. Odin allied with Auri at turn
+2,700, then left `break_alliance:28k1hctz` unused on 21 later decisions while
+Auri's lead grew from 10 to 35 tile-share points. v33 is rejected, its dead
+fallback ladder is removed, and any next arm is limited to severing an allied
+leader inside the existing parity window. Full evidence is archived in
+`experiments/audit-v33-hosted-asia-seat3.json`.

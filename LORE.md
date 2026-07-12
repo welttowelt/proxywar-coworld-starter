@@ -133,6 +133,16 @@ The first lost turn is measured: Odin held 1.137 of Auri's force and a ten-point
 cut was legal. The missing pact became HOLD. Under this mark it becomes the
 cut. No saga is claimed before the hosted field answers.
 
+The mark never appeared. Three fields fell to Odin and the fourth to Auri, but
+the same eight empty turns remained. By the time the guard received each order,
+the executor had already named it HOLD; the elaborate ladder guarded a door it
+could not see. It is struck from the core.
+
+The fourth field left a cleaner rune. Odin bound himself to Auri at turn 2,700,
+then ignored twenty-one chances to break the bond as Auri's lead widened from
+ten points to thirty-five. The next blade gets one task: sever the leader's bond
+while parity still permits a fight.
+
 ## the reviewer lane
 
 On Oli's word a second line opened beside the build lane: Claude reads source and

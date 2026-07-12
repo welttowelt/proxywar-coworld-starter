@@ -84,6 +84,34 @@
     "replay_sha256": "4335ba620b766a678c3894638c0bcafa891289059549363b0548a0c3d7866b73",
     "verdict": "runtime and replay safe; self-play did not produce an unknown action ID"
   },
+  "hosted": {
+    "request_id": "xreq_2666b188-163f-470b-844b-c4a48bb46c8d",
+    "wins": 3,
+    "episodes": 4,
+    "final_tiles": [218588, 228082, 218310, 27546],
+    "holds": 8,
+    "rejections": 0,
+    "planner_degraded_decisions": 5,
+    "parity_pulses": 7,
+    "wire_salvages": 0,
+    "audit": "experiments/audit-v33-hosted-asia-seat3.json",
+    "verdict": "rejected"
+  },
+  "post_gate_finding": {
+    "summary": "the adapter saw the brain's normalized hold rather than the vanished source action ID, so the registered salvage path never executed",
+    "losing_episode_id": "e50160c9-8cf5-4982-aa6a-37e3319f799e",
+    "runaway_alliance": {
+      "leader": "Auri",
+      "alliance_turn": 2700,
+      "leader_gap_at_alliance": 0.04,
+      "first_break_window_turn": 3000,
+      "leader_gap_at_first_break_window": 0.10,
+      "last_observed_break_window_turn": 5500,
+      "leader_gap_at_last_break_window": 0.35,
+      "legal_break_decisions_ignored": 21
+    },
+    "direction": "delete wire salvage and test one leader-alliance sever rule inside the existing parity window"
+  },
   "hosted_kill_criteria": {
     "wins": "4/4",
     "holds": 0,

@@ -32,6 +32,7 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | v32 local | 407 accepted; zero holds/rejections/degradation; parity marker `0`; verified replay | runtime proof only |
 | v32 hosted | `3/4`; 15/15 parity pulses accepted; eight holds; no rejections | directional gain, rejected |
 | v33 local | 407 accepted; zero holds/rejections/degradation; salvage marker `0`; verified replay | runtime proof only |
+| v33 hosted | `3/4`; tiles 218,588 / 228,082 / 218,310 / 27,546; eight holds; salvage marker `0` | rejected, dead layer removed |
 | promotion validator | hosted-ready is separate from hosted `4/4` and regression `20/20` completion | false promotion claim closed |
 
 Detailed evidence lives in [`experiments/`](experiments/README.md). Public round
