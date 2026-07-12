@@ -44,7 +44,12 @@ function parseDecisions(replay) {
   return raw.split("\n").filter(Boolean).map((line) => JSON.parse(line));
 }
 
-export function auditEpisodeReplay(episode, replay, playerName = DEFAULT_PLAYER) {
+export function auditEpisodeReplay(
+  episode,
+  replay,
+  playerName = DEFAULT_PLAYER,
+  { openingDecisionLimit = 3 } = {},
+) {
   const position = episode.participants.findIndex((participant) =>
     participant.player_name === playerName
   );
@@ -68,7 +73,7 @@ export function auditEpisodeReplay(episode, replay, playerName = DEFAULT_PLAYER)
       : null;
     const legalAllianceIDs = decision.legalActionIDsByKind?.alliance_request ?? [];
     if (
-      !isSpawn && activeDecisions <= 2 && survival.recommended === true &&
+      !isSpawn && activeDecisions < openingDecisionLimit && survival.recommended === true &&
       expectedActionID && legalAllianceIDs.includes(expectedActionID)
     ) {
       openingAllianceOpportunities.push({
@@ -84,6 +89,7 @@ export function auditEpisodeReplay(episode, replay, playerName = DEFAULT_PLAYER)
         turn: decision.turnNumber,
         action_id: decision.selectedLegalActionId ?? null,
         accepted: decision.result?.accepted ?? null,
+        opening: !isSpawn && activeDecisions < openingDecisionLimit,
       });
     }
     if (!isSpawn) activeDecisions += 1;
@@ -101,6 +107,7 @@ export function auditEpisodeReplay(episode, replay, playerName = DEFAULT_PLAYER)
     final_tiles: Number.isFinite(Number(result.tiles_owned)) ? Number(result.tiles_owned) : null,
     is_alive: result.is_alive ?? null,
     decisions: decisions.length,
+    opening_decision_limit: openingDecisionLimit,
     holds: decisions.filter((decision) => decision.selectedActionKind === "hold").length,
     rejected: decisions.filter((decision) => decision.result?.accepted === false).length,
     fallbacks: decisions.filter((decision) => decision.fallbackUsed === true).length,
@@ -117,8 +124,9 @@ export function buildGateReport(request, audits, minimumEpisodes = 4) {
   const fallbacks = audits.reduce((sum, audit) => sum + audit.fallbacks, 0);
   const opportunities = audits.flatMap((audit) => audit.opening_alliance_opportunities);
   const selections = audits.flatMap((audit) => audit.alliance_selections);
+  const openingSelections = selections.filter((selection) => selection.opening);
   const aligned = opportunities.filter((opportunity) => opportunity.aligned).length;
-  const mechanismExercised = selections.length > 0;
+  const mechanismExercised = openingSelections.length > 0;
   const mechanismPassed = mechanismExercised && aligned === opportunities.length;
   const completed = request.status === "completed" && audits.length >= minimumEpisodes;
   const checks = {
@@ -135,6 +143,7 @@ export function buildGateReport(request, audits, minimumEpisodes = 4) {
     status: request.status,
     policy_version: audits[0]?.policy_version ?? null,
     policy_version_id: audits[0]?.policy_version_id ?? null,
+    opening_decision_limit: audits[0]?.opening_decision_limit ?? null,
     episodes: audits.length,
     wins,
     win_rate_pct: audits.length > 0 ? Number((100 * wins / audits.length).toFixed(2)) : 0,
@@ -143,6 +152,7 @@ export function buildGateReport(request, audits, minimumEpisodes = 4) {
     rejected,
     fallbacks,
     alliance_selections: selections.length,
+    opening_alliance_selections: openingSelections.length,
     opening_alliance_opportunities: opportunities.length,
     opening_alliance_alignments: aligned,
     checks,
@@ -182,15 +192,22 @@ async function replayBytes(episode, cacheDir) {
 async function main() {
   const requestID = process.argv.slice(2).find((argument) => !argument.startsWith("--"));
   if (!requestID?.startsWith("xreq_")) {
-    throw new Error("usage: node scripts/audit-xp-gate.mjs xreq_... [--player NAME] [--output PATH]");
+    throw new Error(
+      "usage: node scripts/audit-xp-gate.mjs xreq_... [--player NAME] " +
+      "[--opening-decisions N] [--output PATH]",
+    );
   }
   const root = process.cwd();
   const playerName = option("player", DEFAULT_PLAYER);
   const outputPath = option("output");
   const allowRunning = process.argv.includes("--allow-running");
   const minimumEpisodes = Number(option("min-episodes", "4"));
+  const openingDecisionLimit = Number(option("opening-decisions", "3"));
   if (!Number.isInteger(minimumEpisodes) || minimumEpisodes < 1) {
     throw new Error("--min-episodes must be a positive integer");
+  }
+  if (!Number.isInteger(openingDecisionLimit) || openingDecisionLimit < 1) {
+    throw new Error("--opening-decisions must be a positive integer");
   }
   const request = coworldJson(["xp-request", "get", requestID], root);
   const episodes = coworldJson(["xp-request", "episodes", requestID], root);
@@ -215,7 +232,7 @@ async function main() {
     if (episode.status !== "completed" || !episode.replay_url) continue;
     const { bytes, destination } = await replayBytes(episode, cacheDir);
     const replay = JSON.parse(bytes.toString("utf8"));
-    const audit = auditEpisodeReplay(episode, replay, playerName);
+    const audit = auditEpisodeReplay(episode, replay, playerName, { openingDecisionLimit });
     audit.replay_url = episode.replay_url;
     audit.replay_sha256 = sha256(bytes);
     audit.replay_path = path.relative(root, destination);

@@ -34,7 +34,7 @@ const MODELS = [
   "us.anthropic.claude-haiku-4-5-20251001-v1:0",
   "anthropic.claude-sonnet-4-5-20250929-v1:0",
 ].filter(Boolean);
-const CODENAME = process.env.POLICY_CODENAME || "hrafn-syn";
+const CODENAME = process.env.POLICY_CODENAME || "v1g-e1dr";
 
 let bedrock = null;
 try { bedrock = new AnthropicBedrock({ awsRegion: REGION }); } catch (e) { bedrock = null; }
@@ -55,9 +55,6 @@ const STRATEGY = [
   "Use boats for neutral expansion or favorable invasion, but never let boats replace land conversion.",
   "If isolated and only rival boats remain, invade the safest non-allied target instead of holding.",
   "If territory is collapsing, defend, retreat exposed boats, or probe a rival before considering HOLD.",
-  "Under incoming pressure, cancel exposed attacks and preserve troops before restarting expansion.",
-  "When the field narrows, open a naval front on the remaining leader instead of farming neutral land forever.",
-  "After the core economy is built, bank for a Missile Silo and use nuclear actions to break a timeout stalemate.",
   "When a nuke is legal, use it to stop the leader, break a stalemate, or finish a rival.",
   "Request alliances only when no tactical action exists; social IDs can disappear during simultaneous resolution.",
   "Donate only to an allied recipient when it prevents their collapse.",
@@ -191,9 +188,7 @@ function handleMessage(activeSocket, data) {
   if (process.env.DEBUG_ACTIONS === "1" && history.length === 3) {
     console.log(`debug legal actions: ${JSON.stringify(actions)}`);
   }
-  const state = buildState(obs, actions, history, {
-    profile: message.request?.agent?.profile ?? message.agent?.profile,
-  });
+  const state = buildState(obs, actions, history);
 
   // Keep the plan fresh WITHOUT blocking — the answer below never waits on Bedrock.
   planDecisionAge += 1;

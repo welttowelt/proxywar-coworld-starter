@@ -20,7 +20,7 @@
 set -euo pipefail
 
 NAME="my-proxywar-agent"
-CODENAME="${PROXYWAR_CODENAME:-hrafn-syn}"
+CODENAME="${PROXYWAR_CODENAME:-v1g-e1dr}"
 YES="${PROXYWAR_STARTER_YES:-0}"
 DOCTOR=0
 while [ "$#" -gt 0 ]; do

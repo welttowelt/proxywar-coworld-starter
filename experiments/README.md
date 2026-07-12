@@ -178,3 +178,17 @@ changes only one wire-observable opening decision.
 | v19 | `22aca3ad-d876-4ddb-ba59-8eb3d9b90a7e` | win, 87,031 tiles | `d33034cf07263ed1b3d84c353527efc4474d8d1ef19d60b204f65018ce48ba8a` |
 | v19 | `06a7c787-8aaa-4594-9bbb-c5d2ab9c8ad9` | loss, 19,940 tiles; Richard Higgins won | `5eb0ebfe215a3a4a9fb2240c621c5c8dd2fc1e8a9dac0d4f7e9a94d8b25db4fb` |
 | v19 | `bc16a277-c4ac-4875-a2cd-aaebfdf0d807` | loss, eliminated; James Boggs won | `8e4b7da94bc81ff8f634252f3491a0ec48cb36d8221e3a0c61302ae77b3ca59a` |
+
+## Asia diplomatic opening candidate, 2026-07-12
+
+v20 / `v1g-e1dr` restores the exact v14 selector and changes one decision: a
+diplomatic agent with a live `build_alliance` objective follows its exact
+`targetPlayerID` on the first active request. Opening relation `2` is allowed
+only through this exact-target branch; v14's ordinary alliance filter remains
+unchanged.
+
+The four-seat local Asia run produced a declared winner at turn 6,800. All 268
+decisions were accepted with zero holds and zero rejections. The diplomatic
+seat selected `alliance:c4o8gv6v` at turn 400, matching both the objective and
+the runtime's strongest-rival target, then made zero opening retries. Replay
+SHA-256: `065c6c60d003c35cd9aa475785d6f0ff77f31a955a5b372cce94dc0cfe390e08`.

@@ -72,6 +72,7 @@ test("gate audit proves the exact opening alliance mechanism", () => {
   );
   assert.equal(report.passed, true);
   assert.equal(report.alliance_selections, 4);
+  assert.equal(report.opening_alliance_selections, 4);
   assert.equal(report.opening_alliance_alignments, 4);
 });
 
@@ -83,8 +84,40 @@ test("gate audit fails a missed exact opening alliance", () => {
   );
   assert.equal(report.passed, false);
   assert.equal(report.alliance_selections, 0);
+  assert.equal(report.opening_alliance_selections, 0);
   assert.equal(report.checks.opening_alliance_mechanism_exercised, false);
   assert.equal(report.checks.exact_opening_alliance_alignment, false);
+});
+
+test("a one-decision gate audits the isolated opening without requiring a retry", () => {
+  const fixture = replay();
+  const decisions = fixture.inlineRunArtifacts["decisions.jsonl"]
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line));
+  decisions.push({
+    ...decisions[1],
+    turnNumber: 600,
+    selectedActionKind: "attack",
+    selectedLegalActionId: "expand:terra-nullius:10",
+  });
+  fixture.inlineRunArtifacts["decisions.jsonl"] =
+    `${decisions.map((decision) => JSON.stringify(decision)).join("\n")}\n`;
+
+  const audit = auditEpisodeReplay(
+    episode(),
+    fixture,
+    "odin free",
+    { openingDecisionLimit: 1 },
+  );
+  const report = buildGateReport(
+    { id: "xreq-test", status: "completed" },
+    [audit, audit, audit, audit],
+  );
+  assert.equal(report.opening_decision_limit, 1);
+  assert.equal(report.opening_alliance_opportunities, 4);
+  assert.equal(report.opening_alliance_alignments, 4);
+  assert.equal(report.passed, true);
 });
 
 test("partial audit cannot pass before the request completes", () => {

@@ -1,6 +1,6 @@
 FROM node:24-bookworm-slim
 WORKDIR /app
-ARG POLICY_CODENAME=hrafn-syn
+ARG POLICY_CODENAME=v1g-e1dr
 ENV POLICY_CODENAME=$POLICY_CODENAME
 COPY package.json package-lock.json ./
 RUN npm ci --omit=dev --ignore-scripts

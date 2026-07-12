@@ -80,22 +80,15 @@ export function avoidActionIDs(history) {
   return [...new Set([...(streak >= 2 ? streakIDs : []), ...exactRepeats])];
 }
 
-export function buildState(observation, actions, history = [], context = {}) {
+export function buildState(observation, actions, history = []) {
   const own = observation?.ownState || {};
-  const combat = observation?.combat || {};
-  const tactical = observation?.tacticalAffordances || {};
-  const incomingAttacks = Math.max(
-    incomingThreatCount(own.incomingAttacks),
-    Array.isArray(combat.incomingAttackPlayerIDs) ? combat.incomingAttackPlayerIDs.length : 0,
-    Array.isArray(combat.incomingAttacks) ? combat.incomingAttacks.length : 0,
-  );
   const self = {
     tileShare: finiteNumber(own.tileShare),
     troops: finiteNumber(own.troops),
     troopRatio: finiteNumber(own.troopRatio),
-    gold: finiteNumber(own.gold),
+    gold: own.gold,
     borderTiles: finiteNumber(own.borderTiles),
-    incomingAttacks,
+    incomingAttacks: own.incomingAttacks,
   };
   const rivals = (observation?.visiblePlayers || [])
     .filter((player) => player && player.isAlive)
@@ -117,7 +110,9 @@ export function buildState(observation, actions, history = [], context = {}) {
   }));
   return {
     phase: clean(observation?.phase),
-    profile: (clean(observation?.profile) || clean(context?.profile)).toLowerCase(),
+    profile: clean(observation?.profile).toLowerCase(),
+    objectiveKind: clean(observation?.objective?.kind).toLowerCase(),
+    objectiveTargetID: clean(observation?.objective?.targetPlayerID),
     decisionNumber: history.length,
     self,
     rivals,
@@ -125,17 +120,6 @@ export function buildState(observation, actions, history = [], context = {}) {
     recentKinds: history.slice(-8).map((entry) => entry.kind),
     avoid: avoidActionIDs(history),
     legalActions,
-    homeDanger: clean(
-      tactical?.transportTroopBanking?.homeDanger ??
-      tactical?.frontierFinishPressure?.homeDanger ??
-      "low",
-    ).toLowerCase(),
-    incomingThreatRatio: finiteNumber(
-      tactical?.transportTroopBanking?.incomingThreatRatio,
-    ),
-    survivalAllianceRecommended: tactical?.survivalAlliance?.recommended === true,
-    survivalAllianceTargetID: clean(tactical?.survivalAlliance?.bestAllyTargetID),
-    survivalAllianceTargetName: clean(tactical?.survivalAlliance?.bestAllyName),
   };
 }
 
@@ -187,18 +171,18 @@ function stableAllianceRequests(actions) {
   );
 }
 
-function preferredAllianceRequest(actions, targetID) {
-  const preferred = clean(targetID).toLowerCase();
-  if (!preferred) return null;
-  return stableAllianceRequests(actions).find((action) => {
+function allianceRequestForTarget(actions, targetID) {
+  const target = clean(targetID).toLowerCase();
+  if (!target) return null;
+  return safeActions(actions, (action) => action.kind === "alliance_request").find((action) => {
     const recipientID = clean(
       action?.metadata?.recipientID ?? action?.metadata?.targetID,
     ).toLowerCase();
-    return recipientID === preferred || clean(action?.id).toLowerCase() === `alliance:${preferred}`;
+    return recipientID === target || clean(action?.id).toLowerCase() === `alliance:${target}`;
   }) ?? null;
 }
 
-function bestAllianceRequest(actions, state, allowPending = false, preferredTargetName = null) {
+function bestAllianceRequest(actions, state, allowPending = false) {
   const candidates = allowPending
     ? safeActions(actions, (action) => action.kind === "alliance_request")
     : stableAllianceRequests(actions);
@@ -206,13 +190,9 @@ function bestAllianceRequest(actions, state, allowPending = false, preferredTarg
     .map((action) => ({ action, rival: rivalForAction(action, state) }))
     .filter(({ rival }) => rival && !rival.isAllied)
     .sort((left, right) => {
-      const preferred = String(preferredTargetName ?? "").toLowerCase();
-      const leftPreferred = left.rival.name.toLowerCase() === preferred ? 0 : 1;
-      const rightPreferred = right.rival.name.toLowerCase() === preferred ? 0 : 1;
       const leftPending = Number(left.action?.metadata?.relation) === 2 ? 1 : 0;
       const rightPending = Number(right.action?.metadata?.relation) === 2 ? 1 : 0;
-      return leftPreferred - rightPreferred || leftPending - rightPending ||
-        right.rival.tileShare - left.rival.tileShare;
+      return leftPending - rightPending || right.rival.tileShare - left.rival.tileShare;
     })[0]?.action ?? null;
 }
 
@@ -241,7 +221,7 @@ function chooseAllianceMove(actions, state, history, threatCount, collapsing, ac
     return null;
   }
 
-  return bestAllianceRequest(actions, state, !collapsing);
+  return bestAllianceRequest(actions, state, true);
 }
 
 function safeActions(actions, predicate = () => true) {
@@ -262,15 +242,14 @@ function hasReliableTacticalAction(actions) {
 
 function pickPercent(candidates, desiredPercent, avoid) {
   if (candidates.length === 0) return null;
-  return [...candidates].sort((left, right) => {
+  const fresh = candidates.filter((action) => !avoid.has(action.id));
+  const pool = fresh.length > 0 ? fresh : candidates;
+  return [...pool].sort((left, right) => {
     const leftPercent = actionPercent(left);
     const rightPercent = actionPercent(right);
     const leftDistance = leftPercent === null ? 1000 : Math.abs(leftPercent - desiredPercent);
     const rightDistance = rightPercent === null ? 1000 : Math.abs(rightPercent - desiredPercent);
-    const leftAvoided = avoid.has(left.id) ? 1 : 0;
-    const rightAvoided = avoid.has(right.id) ? 1 : 0;
-    return leftDistance - rightDistance || leftAvoided - rightAvoided ||
-      finiteNumber(leftPercent) - finiteNumber(rightPercent);
+    return leftDistance - rightDistance || finiteNumber(leftPercent) - finiteNumber(rightPercent);
   })[0];
 }
 
@@ -337,11 +316,6 @@ function chooseRivalAttack(actions, state, plan, history, avoid) {
   let desiredPercent = 10;
   if (streak >= 1 && best.rival.relativeTroopRatio >= 1.1) desiredPercent = 25;
   if (streak >= 2 && best.rival.relativeTroopRatio >= 1.5) desiredPercent = 40;
-  const underPressure = incomingThreatCount(state.self.incomingAttacks) > 0 ||
-    state.self.troopRatio < 0.85;
-  const decisiveFinish = best.rival.tileShare <= 0.05 &&
-    best.rival.relativeTroopRatio >= 1.8;
-  if (underPressure && !decisiveFinish) desiredPercent = 10;
   return {
     action: pickPercent(best.actions, desiredPercent, avoid),
     rival: best.rival,
@@ -371,19 +345,15 @@ export function neutralExpansionStalled(state, history) {
 }
 
 export function territoryCollapsing(state, history) {
-  return territoryDrawdown(state, history) >= 0.15;
-}
-
-function territoryDrawdown(state, history) {
   const currentShare = finiteNumber(state?.self?.tileShare, NaN);
-  if (!Number.isFinite(currentShare)) return 0;
+  if (!Number.isFinite(currentShare)) return false;
   const recentShares = history.slice(-8)
     .map((entry) => finiteNumber(entry?.tileShare, NaN))
     .filter(Number.isFinite);
-  if (recentShares.length < 3) return 0;
+  if (recentShares.length < 3) return false;
   const recentPeak = Math.max(...recentShares);
-  if (recentPeak <= 0) return 0;
-  return Math.max(0, (recentPeak - currentShare) / recentPeak);
+  const meaningfulDrop = Math.max(0.005, recentPeak * 0.15);
+  return recentPeak - currentShare >= meaningfulDrop;
 }
 
 function builtUnits(history) {
@@ -392,117 +362,25 @@ function builtUnits(history) {
     .map((entry) => String(entry.actionID).toLowerCase());
 }
 
-function builtCount(built, unit) {
-  return built.filter((id) => id.includes(unit)).length;
-}
-
-function coreEconomyBuilt(history) {
-  const built = builtUnits(history);
-  return builtCount(built, "city") > 0 && builtCount(built, "factory") > 0 &&
-    builtCount(built, "port") > 0;
-}
-
-function hasBuilt(history, unit) {
-  return builtUnits(history).some((id) => id.includes(unit));
-}
-
-function chooseBuild(actions, history, defend = false, lowRiskOnly = false) {
-  const matching = actions.filter((action) =>
+function chooseBuild(actions, history, defend = false) {
+  const candidates = safeActions(actions, (action) =>
     action.kind === "build" && !actionText(action).includes("defense post")
   );
-  const lowRisk = matching.filter((action) =>
-    !action.risk?.level || action.risk.level === "none" || action.risk.level === "low"
-  );
-  const candidates = lowRiskOnly ? lowRisk : safeActions(matching);
   if (candidates.length === 0) return null;
   const built = builtUnits(history);
-  const coreOrder = ["city", "factory", "port"];
-  const missingCore = coreOrder.filter((unit) => builtCount(built, unit) === 0);
-  const balancedCore = [...coreOrder].sort(
-    (left, right) => builtCount(built, left) - builtCount(built, right),
-  );
   const preferences = defend
     ? ["city", "factory", "port", "sam launcher", "missile silo"]
-    : missingCore.length > 0
-      ? [...missingCore, ...balancedCore, "missile silo", "sam launcher"]
-      : [
-          ...(builtCount(built, "missile silo") > 0 ? [] : ["missile silo"]),
-          ...(builtCount(built, "sam launcher") > 0 ? [] : ["sam launcher"]),
-          ...balancedCore,
-        ];
+    : [
+        ...(built.some((id) => id.includes("city")) ? [] : ["city"]),
+        ...(built.some((id) => id.includes("factory")) ? [] : ["factory"]),
+        ...(built.some((id) => id.includes("port")) ? [] : ["port"]),
+        "city", "factory", "port", "missile silo", "sam launcher",
+      ];
   for (const unit of preferences) {
     const action = candidates.find((candidate) => actionText(candidate).includes(unit));
     if (action) return action;
   }
   return candidates[0];
-}
-
-function chooseRetreat(actions) {
-  return safeActions(actions, (action) => action.kind === "retreat")[0] ??
-    safeActions(actions, (action) => action.kind === "boat_retreat")[0] ?? null;
-}
-
-function chooseNuke(actions, state) {
-  return safeActions(actions, (action) => action.kind === "nuke")
-    .map((action) => {
-      const rival = rivalForAction(action, state);
-      if (rival?.isAllied) return { action, score: -Infinity };
-      const targetShare = finiteNumber(
-        action?.metadata?.targetTileShare,
-        rival?.tileShare ?? 0,
-      );
-      const targetPriority = finiteNumber(action?.metadata?.nuclearTargetPriority, 0);
-      const structurePriority = finiteNumber(action?.metadata?.targetStructurePriority, 0);
-      const leaderBonus = rival && rival.tileShare >= state.topRivalTileShare - 0.005 ? 4 : 0;
-      return {
-        action,
-        score: targetPriority * 3 + structurePriority + targetShare * 10 + leaderBonus,
-      };
-    })
-    .filter((candidate) => Number.isFinite(candidate.score))
-    .sort((left, right) => right.score - left.score)[0]?.action ?? null;
-}
-
-function chooseLeaderInvasion(actions, state, history, avoid) {
-  const activeDecisions = history.filter((entry) => entry.kind !== "spawn").length;
-  if (activeDecisions < 60 || state.self.tileShare < 0.18) return null;
-
-  const targets = state.rivals
-    .filter((rival) => !rival.isAllied)
-    .sort((left, right) => right.tileShare - left.tileShare);
-  const target = targets[0];
-  if (!target || !Number.isFinite(target.relativeTroopRatio)) return null;
-
-  const narrowedField = targets.length <= 2;
-  const leaderGap = target.tileShare - state.self.tileShare;
-  const minimumRatio = narrowedField ? 0.9 : leaderGap >= 0.06 ? 0.95 : 1.1;
-  if (target.relativeTroopRatio < minimumRatio) return null;
-
-  const candidates = safeActions(actions, (action) => {
-    if (action.kind !== "boat" || isNeutralBoat(action)) return false;
-    return rivalForAction(action, state)?.name === target.name;
-  });
-  const streak = consecutive(
-    history,
-    (entry) => entry.kind === "boat" && targetName(entry) === target.name.toLowerCase(),
-  );
-  const desiredPercent = streak >= 2 && target.relativeTroopRatio >= 1.3
-    ? 25
-    : streak >= 1
-      ? 16
-      : 8;
-  return pickPercent(candidates, desiredPercent, avoid);
-}
-
-function shouldBankForSilo(actions, state, history, activeDecisions) {
-  if (activeDecisions < 70 || state.self.tileShare < 0.18 || state.rivals.length > 2) {
-    return false;
-  }
-  if (!coreEconomyBuilt(history) || hasBuilt(history, "missile silo")) return false;
-  const siloIsLegal = actions.some((action) =>
-    action.kind === "build" && actionText(action).includes("missile silo")
-  );
-  return !siloIsLegal;
 }
 
 function chooseBoat(actions, state, history, avoid, allowDesperateInvasion = false) {
@@ -564,42 +442,31 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (spawn) return spawn;
 
   const activeDecisions = history.filter((entry) => entry.kind !== "spawn").length;
-  const protectiveProfile = state.profile === "defensive" || state.profile === "diplomatic";
-  const sinceAllianceMove = decisionsSince(
-    history,
-    (entry) => entry.kind === "alliance_request" || entry.kind === "break_alliance",
-  );
-  if (state.survivalAllianceRecommended && activeDecisions <= 2 && sinceAllianceMove >= 18) {
-    const openingAlliance = preferredAllianceRequest(
-      actions,
-      state.survivalAllianceTargetID,
-    ) ?? bestAllianceRequest(actions, state, false, state.survivalAllianceTargetName);
+  if (
+    state.profile === "diplomatic" && state.objectiveKind === "build_alliance" &&
+    activeDecisions === 0
+  ) {
+    const openingAlliance = allianceRequestForTarget(actions, state.objectiveTargetID);
     if (openingAlliance) return openingAlliance;
   }
 
   const threatCount = incomingThreatCount(state.self.incomingAttacks);
-  const collapsing = territoryCollapsing(state, history);
-  const retreat = chooseRetreat(actions);
-  const protectiveSlip = protectiveProfile && territoryDrawdown(state, history) >= 0.06;
-  if ((collapsing || protectiveSlip) && retreat) return retreat;
-
   const defensiveBuild = threatCount > 0 && state.self.troopRatio < 0.8
-    ? chooseBuild(actions, history, true, true)
+    ? chooseBuild(actions, history, true)
     : null;
   if (defensiveBuild) return defensiveBuild;
 
   const rivalAttack = chooseRivalAttack(actions, state, plan, history, avoid);
   const neutralAttack = chooseNeutralAttack(actions, history, avoid);
+  const build = chooseBuild(actions, history);
   const sinceBuild = decisionsSince(history, (entry) =>
     entry.kind === "build" || entry.kind === "upgrade_structure"
   );
-  const bankingForSilo = shouldBankForSilo(actions, state, history, activeDecisions);
-  const build = bankingForSilo ? null : chooseBuild(actions, history, false, collapsing);
   const cadenceBuild = build && state.self.tileShare >= 0.08 && activeDecisions >= 6 &&
     sinceBuild >= 14;
   const finishingTarget = rivalAttack && rivalAttack.streak > 0 &&
     rivalAttack.rival.relativeTroopRatio >= 1.5;
-  const nuke = chooseNuke(actions, state);
+  const collapsing = territoryCollapsing(state, history);
 
   if (collapsing && build && sinceBuild >= 3 && !finishingTarget) return build;
 
@@ -613,16 +480,9 @@ export function chooseAction(actions, state, plan = null, history = []) {
   );
   if (
     allianceMove && !finishingTarget &&
-    (
-      allianceMove.kind === "break_alliance" ||
-      !hasReliableTacticalAction(actions)
-    )
+    (allianceMove.kind === "break_alliance" || !hasReliableTacticalAction(actions))
   ) {
     return allianceMove;
-  }
-
-  if (nuke && activeDecisions >= 50 && (state.self.tileShare >= 0.15 || state.rivals.length <= 2)) {
-    return nuke;
   }
 
   if (neutralExpansionStalled(state, history)) {
@@ -639,19 +499,8 @@ export function chooseAction(actions, state, plan = null, history = []) {
     return neutralAttack;
   }
   if (rivalAttack?.action) return rivalAttack.action;
-  const leaderInvasion = chooseLeaderInvasion(actions, state, history, avoid);
-  if (leaderInvasion) return leaderInvasion;
-  if (neutralAttack && !collapsing) return neutralAttack;
+  if (neutralAttack) return neutralAttack;
   if (build && sinceBuild >= 5) return build;
-
-  if (collapsing) {
-    const emergencyNeutral = pickPercent(
-      safeActions(actions, isNeutralExpansion),
-      10,
-      new Set(),
-    );
-    if (emergencyNeutral) return emergencyNeutral;
-  }
 
   const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
   if (boatStreak >= 2 && build) return build;
@@ -671,11 +520,11 @@ export function chooseAction(actions, state, plan = null, history = []) {
 
   // Holding while legal tactical actions remain turns a weak position into a certain loss.
   if (build) return build;
-  const fallbackRetreat = safeActions(
+  const retreat = safeActions(
     actions,
     (action) => action.kind === "boat_retreat" || action.kind === "retreat",
   )[0];
-  if (fallbackRetreat) return fallbackRetreat;
+  if (retreat) return retreat;
   const emergencyAttacks = safeActions(actions, (action) => {
     if (action.kind !== "attack" || isNeutralExpansion(action)) return false;
     const rival = rivalForAction(action, state);

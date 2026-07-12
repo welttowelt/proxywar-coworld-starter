@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "candidate": "oli-codex-proxywar:v20",
+  "codename": "v1g-e1dr",
+  "source_baseline": "dd8dbce",
+  "map": "Asia",
+  "image_digest": "sha256:29299bd59a31293fc8ff14c05d32bc63428b996750118b6947dcc7741e2a9b42",
+  "replay_sha256": "065c6c60d003c35cd9aa475785d6f0ff77f31a955a5b372cce94dc0cfe390e08",
+  "winner_slot": 3,
+  "turn_count": 6800,
+  "decisions": 268,
+  "accepted_decisions": 268,
+  "holds": 0,
+  "rejected_decisions": 0,
+  "diplomatic_opening": {
+    "turn": 400,
+    "action_id": "alliance:c4o8gv6v",
+    "tactical_target_id": "c4o8gv6v",
+    "accepted": true
+  },
+  "diplomatic_opening_retries": 0
+}
