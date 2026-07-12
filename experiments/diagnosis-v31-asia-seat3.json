@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "candidate": "oli-codex-proxywar:v31",
+  "codename": "h3l-v4kt",
+  "parent": {
+    "policy_ref": "oli-codex-proxywar:v24",
+    "policy_version_id": "9a47631a-113b-4d2b-9075-74c712244983",
+    "experience_request_id": "xreq_45044fe5-3f6d-46de-b470-8fb952176b5c",
+    "wins": 3,
+    "episodes": 4
+  },
+  "champion_control": {
+    "policy_ref": "oli-codex-proxywar:v14",
+    "experience_request_id": "xreq_f828169f-4885-48b9-9dcf-9287256ebb15",
+    "wins": 0,
+    "episodes": 4
+  },
+  "forensic_finding": {
+    "winning_reference_episode": "75ec6daf-5663-49b9-b05c-d0814ec64956",
+    "losing_episode": "d95268cd-eff1-4dda-ab77-db1d14a9491f",
+    "odin_actions_identical_through_turn": 3100,
+    "turn_3100_state": {
+      "winning_reference": {
+        "reserve": 0.76,
+        "home_troops_before_resolution": 1463254,
+        "selected_action": "boat:126154:8",
+        "launched_troops": 117060,
+        "leader_gap": 0.16,
+        "city_action": "build:City:296293"
+      },
+      "loss": {
+        "reserve": 0.76,
+        "home_troops_before_resolution": 1463567,
+        "selected_action": "boat:126154:8",
+        "launched_troops": 117085,
+        "leader_gap": 0.15,
+        "city_action": "build:City:296293"
+      }
+    },
+    "auri_turn_3200": {
+      "winning_reference": {
+        "selected_target": "James Boggs",
+        "relative_troop_ratio": 1.33
+      },
+      "loss": {
+        "selected_target": "odin free",
+        "relative_troop_ratio": 1.3,
+        "auri_troops": 2122267,
+        "odin_troops": 1632397
+      }
+    },
+    "conclusion": "the parent loss begins with Auri planner target variance, not an earlier divergence in Odin's selected actions; the child must survive Auri selecting Odin"
+  },
+  "isolated_delta": "after a rival has been converted, a stalled expansion banks into a legal economy build before a neutral boat when reserve is below 0.80 and the top rival leads by at least 0.12 tile share",
+  "historical_reach": [
+    {
+      "episode_id": "75ec6daf-5663-49b9-b05c-d0814ec64956",
+      "turn": 3100,
+      "reserve": 0.76,
+      "leader_gap": 0.16,
+      "avoided_boat_troops": 117060,
+      "result": "win"
+    },
+    {
+      "episode_id": "5f06b903-f76d-47b8-8734-125270150189",
+      "turn": 3100,
+      "reserve": 0.75,
+      "leader_gap": 0.14,
+      "avoided_boat_troops": 114028,
+      "result": "win"
+    },
+    {
+      "episode_id": "d95268cd-eff1-4dda-ab77-db1d14a9491f",
+      "turn": 3100,
+      "reserve": 0.76,
+      "leader_gap": 0.15,
+      "avoided_boat_troops": 117085,
+      "result": "loss"
+    }
+  ],
+  "counterfactual_limit": "replays prove reach and the exposed troop transfer, but they cannot prove that the City prevents Auri's next attack; the hosted gate must measure that outcome"
+}

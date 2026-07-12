@@ -144,6 +144,12 @@
       "codename": "v4li-v3tr",
       "status": "rejected",
       "mechanism": "veto one-shot social actions that reappear after same-turn reservation failure"
+    },
+    {
+      "version": "v31",
+      "codename": "h3l-v4kt",
+      "status": "candidate",
+      "mechanism": "bank a vulnerable post-conversion turn into City capacity before neutral transport exposure"
     }
   ]
 }

@@ -177,6 +177,39 @@ test("opening-reserve gate proves a capped attack where 40 percent was legal", (
   assert.equal(report.passed, true);
 });
 
+test("bank-build gate requires an accepted tagged build", () => {
+  const audits = Array.from({ length: 4 }, (_, index) => ({
+    won: true,
+    final_tiles: 220000 + index,
+    holds: 0,
+    rejected: 0,
+    fallbacks: 0,
+    bank_build_selections: index === 0
+      ? [{
+          turn: 3100,
+          action_id: "build:City:99",
+          selected_action_kind: "build",
+          unit: "City",
+          reserve: 0.76,
+          leader_gap: 0.15,
+          accepted: true,
+          fallback: false,
+        }]
+      : [],
+  }));
+  const report = buildGateReport(
+    { id: "xreq-bank-build", status: "completed" },
+    audits,
+    4,
+    { mechanism: "bank-build" },
+  );
+
+  assert.equal(report.bank_build_selections, 1);
+  assert.equal(report.checks.bank_build_mechanism_exercised, true);
+  assert.equal(report.checks.all_bank_build_decisions_productive, true);
+  assert.equal(report.passed, true);
+});
+
 test("pressure-pulse gate requires an accepted tagged execution", () => {
   const audits = [0, 1, 2, 3].map((index) => ({
     won: true,

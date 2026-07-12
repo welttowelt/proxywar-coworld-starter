@@ -26,6 +26,7 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | RCI protocol | preflight validates reach, trace independence, marker, baseline, `4/4`, and `20/20` | enforced |
 | v14 current control | `0/4`; Auri `4/4`; reserve 0.48 at Auri's 1.66x turn-1900 entry in every episode | weak-seat opening confirmed |
 | v24 requalified parent | 28 replay-derived reserve interventions; prior `3/4` on the same roster | diagnostic parent only |
+| v31 preflight | exact v24 parent; one bank-build delta; three historical reach decisions; local protocol clean | hosted gate armed, no league change |
 
 Detailed evidence lives in [`experiments/`](experiments/README.md). Public round
 statistics live on the [dashboard](https://welttowelt-proxywar.netlify.app/).

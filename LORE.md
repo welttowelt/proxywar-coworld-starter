@@ -76,6 +76,19 @@ governing commitment from the live reserve. It denied Auri the early crossing
 and won three of four on the same field. The mark returns only as a parent for
 forensic work. Three victories do not erase its fourth loss.
 
+## h3l-v4kt
+
+The fourth path did not begin with a different Odin move. Through turn 3,100 it
+matched a winning path: Richard gone, Auri ahead, reserve at 0.76, then an
+eight-percent boat leaving the shore. Auri chose James in one path and Odin in
+the other. The variance belonged to the rival; the exposed bank belonged to us.
+
+`h3l-v4kt` inherits the proven opening and changes that single shore order. When
+the first rival is gone and the leader has opened a twelve-point gap, a thin
+reserve raises City capacity before it launches another neutral transport. The
+mark is visible in replay. The local field stayed clean but never invoked it;
+three older hosted turns prove reach, and only a new hosted gate can prove force.
+
 ## the reviewer lane
 
 On Oli's word a second line opened beside the build lane: Claude reads source and
@@ -104,6 +117,17 @@ repair is a reappearance-veto at the wire: a submitted social id that returns in
 the next menu provably did not execute; veto it and let the executor re-rank.
 Estimated recovery, ninety of the hundred and eleven. The full anatomy and the
 v29 warning live in the reviewer lane's addendum.
+
+## the rival shifts
+
+Auri stopped standing still. Versions seven and ten reached the field: seven
+attacks below troop parity and wins on tempo; ten trades the sword for boats
+and letters. The measured record fell from 69 percent against five to 44
+against seven. Rounds 230 through 233 gave up three second places under the
+new pressure. The lead holds — first at 40.5 over 23.9 — but the trend
+inflected, and the counters are queued: the veto, the reopened defense post,
+the boat discipline. Gates must face the rival on the field, not the one
+already retired.
 
 ## standing law
 

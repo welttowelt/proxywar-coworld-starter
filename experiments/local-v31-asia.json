@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "candidate": "oli-codex-proxywar:v31",
+  "codename": "h3l-v4kt",
+  "map": "Asia",
+  "status": "completed",
+  "winner_slot": 0,
+  "turn_count": 6600,
+  "decisions": 260,
+  "accepted_decisions": 260,
+  "holds": 0,
+  "rejected_decisions": 0,
+  "parse_failures": 0,
+  "planner_degraded_decisions": 248,
+  "bank_build_markers": 0,
+  "replay_verified": true,
+  "replay_sha256": "144cc548bda5fb642bf37e8fbade086efb7accdd37d8544a70f1cb58dcb359d5",
+  "conclusion": {
+    "protocol_safe": true,
+    "selector_safe": true,
+    "mechanism_reached": false,
+    "competitive_claim": false,
+    "historical_hosted_reach_decisions": 3,
+    "required_next_evidence": "hosted Asia seat-3 replay with a productive h3l-v4kt bank-build marker and 4/4 wins"
+  }
+}

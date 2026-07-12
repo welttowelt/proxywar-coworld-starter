@@ -14,6 +14,7 @@ const requireString = (value, label) => {
 
 if (preflight.schema_version !== 1) errors.push("schema_version must be 1");
 requireString(preflight.candidate?.policy_ref, "candidate.policy_ref");
+requireString(preflight.candidate?.parent_ref, "candidate.parent_ref");
 requireString(preflight.hypothesis, "hypothesis");
 requireString(preflight.mechanism?.marker, "mechanism.marker");
 if (!Array.isArray(preflight.candidate?.exact_deltas) || preflight.candidate.exact_deltas.length !== 1) {

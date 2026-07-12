@@ -2,6 +2,7 @@
   "schema_version": 1,
   "candidate": {
     "policy_ref": "oli-codex-proxywar:v30",
+    "parent_ref": "oli-codex-proxywar:v29",
     "exact_deltas": [
       "temporarily veto a one-shot social action when its ID reappears in the next request"
     ]

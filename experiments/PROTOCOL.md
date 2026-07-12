@@ -15,13 +15,14 @@ reaching promotion gates.
 
 ## corrected gate
 
-1. Isolate exactly one candidate delta.
+1. Name the exact parent policy and isolate exactly one candidate delta from it.
 2. Prove at least one reachable historical decision before upload.
 3. Report local runs and independent strategic traces separately.
 4. Register a replay-visible mechanism marker and its parser before the hosted
    request starts.
-5. Run a matched v14 baseline with identical roster, variant, seat, and episode
-   count. Without it, the request is diagnostic-only.
+5. Run a matched parent baseline with identical roster, variant, seat, and
+   episode count, and retain a current champion control. Without the parent
+   baseline, the request is diagnostic-only.
 6. Require `4/4`, zero holds, zero rejections, and at least one productive
    mechanism execution. Compare planner-degraded decisions with the matched
    parent; do not classify the policy's accepted deterministic path as an

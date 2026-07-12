@@ -8,7 +8,11 @@ import test from "node:test";
 function fixture() {
   return {
     schema_version: 1,
-    candidate: { policy_ref: "agent:v30", exact_deltas: ["one delta"] },
+    candidate: {
+      policy_ref: "agent:v30",
+      parent_ref: "agent:v29",
+      exact_deltas: ["one delta"],
+    },
     hypothesis: "one measurable effect",
     mechanism: { marker: "wireVeto=", prior_reachable_decisions: 10 },
     local: { runs: 4, independent_traces: 1 },

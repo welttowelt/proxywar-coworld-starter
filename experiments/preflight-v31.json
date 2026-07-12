@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "oli-codex-proxywar:v31",
+    "parent_ref": "oli-codex-proxywar:v24",
+    "exact_deltas": [
+      "after the first rival conversion, choose a legal economy build before a neutral boat when reserve is below 0.80 and the top rival leads by at least 0.12 tile share"
+    ]
+  },
+  "hypothesis": "banking the observed turn-3100 boat commitment into a City preserves 114k-117k home troops and added capacity before Auri's first possible strike",
+  "mechanism": {
+    "marker": "[h3l-v4kt:bank-build]",
+    "prior_reachable_decisions": 3,
+    "source": "experiments/diagnosis-v31-asia-seat3.json"
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "wins": 1,
+    "planner_degraded_decisions": 248,
+    "mechanism_reached": false,
+    "replay_sha256": "144cc548bda5fb642bf37e8fbade086efb7accdd37d8544a70f1cb58dcb359d5"
+  },
+  "matched_baseline": {
+    "policy_ref": "oli-codex-proxywar:v24",
+    "request_id": "xreq_45044fe5-3f6d-46de-b470-8fb952176b5c",
+    "same_roster": true,
+    "same_variant": true
+  },
+  "champion_control": {
+    "policy_ref": "oli-codex-proxywar:v14",
+    "request_id": "xreq_f828169f-4885-48b9-9dcf-9287256ebb15",
+    "wins": 0,
+    "episodes": 4
+  },
+  "diagnostic_only": false,
+  "hosted": {
+    "request_id": null,
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  }
+}

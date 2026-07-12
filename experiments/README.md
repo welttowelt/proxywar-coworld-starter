@@ -535,3 +535,27 @@ v24 live opening-reserve controller executed on 28 historical decisions,
 removed Auri's turn-1,900 entry, and won 3/4 on the same roster. It remains a
 diagnostic parent, not a promotion candidate. Full evidence is archived in
 `experiments/audit-v14-current-asia-seat3.json`.
+
+## Post-conversion bank-build candidate, 2026-07-12
+
+v31 / `h3l-v4kt` names v24 as its exact parent. It retains the 28 observed
+opening reserve interventions and changes one later arbitration. After the
+first rival has been converted, if neutral expansion has stalled, reserve is
+below 0.80, and the top rival leads by at least 12 tile-share points, a legal
+economy build now precedes the first neutral boat. The replay marker is
+`[h3l-v4kt:bank-build]`.
+
+The arm is reachable in three v24 replays at turn 3,100. Each selected an 8%
+neutral boat while City was legal, exposing 114,028-117,085 troops. The losing
+episode and one winning episode had identical Odin actions through that turn
+and near-identical state; Auri then chose Odin in the loss and James in the win.
+This identifies opponent planner variance as the trigger and troop exposure as
+the condition the child can change. It does not claim the counterfactual result.
+
+The full local Asia run completed at turn 6,600 with 260 accepted decisions,
+zero holds, zero rejections, and a verified replay SHA-256 of
+`144cc548bda5fb642bf37e8fbade086efb7accdd37d8544a70f1cb58dcb359d5`.
+Its strategic trace did not reach the bank-build condition, so local evidence
+proves image and protocol safety only. Historical hosted reach, the preflight,
+and the pinned gate are archived in `experiments/diagnosis-v31-asia-seat3.json`,
+`experiments/preflight-v31.json`, and `experiments/gate-v31-asia-seat3.json`.

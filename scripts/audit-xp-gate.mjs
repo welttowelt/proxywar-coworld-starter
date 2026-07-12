@@ -8,6 +8,7 @@ import { pathToFileURL } from "node:url";
 const COWORLD_PACKAGE = "coworld==0.1.28";
 const DEFAULT_PLAYER = "odin free";
 const PRESSURE_PULSE_TAG = "[g4gnr4d-t4kt:pulse]";
+const BANK_BUILD_TAG = "[h3l-v4kt:bank-build]";
 const ALLOWED_REPLAY_HOSTS = new Set(["softmax-public.s3.amazonaws.com"]);
 const MAX_REPLAY_BYTES = 64 * 1024 * 1024;
 
@@ -69,6 +70,7 @@ export function auditEpisodeReplay(
   const openingAllianceOpportunities = [];
   const allianceSelections = [];
   const openingReserveSelections = [];
+  const bankBuildSelections = [];
   const pressurePulseSelections = [];
   const wireVetoSelections = [];
   for (const decision of decisions) {
@@ -142,6 +144,19 @@ export function auditEpisodeReplay(
         accepted: decision.result?.accepted ?? null,
       });
     }
+    if (String(decision.reason ?? "").startsWith(BANK_BUILD_TAG)) {
+      bankBuildSelections.push({
+        turn: decision.turnNumber,
+        action_id: decision.selectedLegalActionId ?? null,
+        selected_action_kind: decision.selectedActionKind ?? null,
+        unit: decision.selectedActionMetadata?.unit ?? null,
+        reserve: decision.tacticalAffordances?.transportTroopBanking?.troopRatio ?? null,
+        leader_gap: decision.tacticalAffordances?.frontierConversionTiming
+          ?.leaderTileShareGap ?? null,
+        accepted: decision.result?.accepted ?? null,
+        fallback: decision.fallbackUsed === true,
+      });
+    }
     const vetoMatch = String(decision.reason ?? "").match(/wireVeto=([^|]+)\s+\|\|/);
     if (vetoMatch) {
       wireVetoSelections.push({
@@ -178,6 +193,7 @@ export function auditEpisodeReplay(
     alliance_selections: allianceSelections,
     opening_alliance_opportunities: openingAllianceOpportunities,
     opening_reserve_selections: openingReserveSelections,
+    bank_build_selections: bankBuildSelections,
     pressure_pulse_selections: pressurePulseSelections,
     wire_veto_selections: wireVetoSelections,
   };
@@ -199,6 +215,7 @@ export function buildGateReport(
   const openingReserveSelections = audits.flatMap((audit) =>
     audit.opening_reserve_selections ?? []
   );
+  const bankBuildSelections = audits.flatMap((audit) => audit.bank_build_selections ?? []);
   const pressurePulses = audits.flatMap((audit) => audit.pressure_pulse_selections ?? []);
   const wireVetoes = audits.flatMap((audit) => audit.wire_veto_selections ?? []);
   const aligned = opportunities.filter((opportunity) => opportunity.aligned).length;
@@ -211,7 +228,14 @@ export function buildGateReport(
     zero_holds: holds === 0,
     zero_rejected_decisions: rejected === 0,
   };
-  if (mechanism === "opening-reserve") {
+  if (mechanism === "bank-build") {
+    checks.bank_build_mechanism_exercised = bankBuildSelections.length > 0;
+    checks.all_bank_build_decisions_productive = bankBuildSelections.length > 0 &&
+      bankBuildSelections.every((selection) =>
+        selection.accepted === true && selection.fallback === false &&
+        selection.selected_action_kind === "build"
+      );
+  } else if (mechanism === "opening-reserve") {
     checks.opening_reserve_mechanism_exercised = openingReserveSelections.length > 0;
     checks.all_opening_reserve_decisions_productive = openingReserveSelections.length > 0 &&
       openingReserveSelections.every((selection) =>
@@ -255,6 +279,7 @@ export function buildGateReport(
     opening_alliance_opportunities: opportunities.length,
     opening_alliance_alignments: aligned,
     opening_reserve_selections: openingReserveSelections.length,
+    bank_build_selections: bankBuildSelections.length,
     pressure_pulse_selections: pressurePulses.length,
     wire_veto_selections: wireVetoes.length,
     checks,
@@ -312,9 +337,11 @@ async function main() {
   if (!Number.isInteger(openingDecisionLimit) || openingDecisionLimit < 1) {
     throw new Error("--opening-decisions must be a positive integer");
   }
-  if (!new Set(["opening-alliance", "opening-reserve", "pressure-pulse", "wire-veto"]).has(mechanism)) {
+  if (!new Set([
+    "bank-build", "opening-alliance", "opening-reserve", "pressure-pulse", "wire-veto",
+  ]).has(mechanism)) {
     throw new Error(
-      "--mechanism must be opening-alliance, opening-reserve, pressure-pulse, or wire-veto",
+      "--mechanism must be bank-build, opening-alliance, opening-reserve, pressure-pulse, or wire-veto",
     );
   }
   const request = coworldJson(["xp-request", "get", requestID], root);
