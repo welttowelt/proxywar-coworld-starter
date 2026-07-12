@@ -116,6 +116,12 @@ The gatekeeper also changed. A valid plan may now say it is ready for a hosted
 trial, but it cannot say promotion until both the four-episode gate and the
 twenty-episode regression are complete and perfect.
 
+The field answered three times in Odin's favor. Fifteen cuts landed; none were
+rejected. The fourth path exposed the boundary: after turn 4,200 the lead crossed
+twenty-two points, the mark went silent, and three more hulls left while Odin
+still held the troop edge. Auri took that shore. Eight vanished social orders
+also left empty turns across the gate. `hrafn-s4r` earns direction, not a seat.
+
 ## the reviewer lane
 
 On Oli's word a second line opened beside the build lane: Claude reads source and

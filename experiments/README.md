@@ -622,3 +622,17 @@ The RCI validator now distinguishes a candidate that is ready for a hosted gate
 from one eligible for promotion. Promotion remains false until structured
 hosted `4/4` and separate `20/20` results both pass with zero holds and zero
 rejections.
+
+The hosted request `xreq_67cf6f10-9400-4e7e-ae1a-28c1fc81d280` moved the
+matched result from v28's `0/4` to v32's `3/4`, with final tiles of 29,583;
+219,622; 213,955; and 213,995. All 15 marked parity pulses executed as accepted
+10% attacks on Auri. Planner-degraded decisions fell from 43 to 11 and no
+decision was rejected.
+
+The arm still fails both hard hosted criteria. Eight unknown social action IDs
+became holds even though each current menu contained productive legal actions.
+In the losing replay, four pulses held Auri at ratios from 1.00 to 1.20, but the
+0.22 leader-gap ceiling stopped the mechanism after turn 4,200. Odin then chose
+three neutral boats while still holding a 1.17-1.27 troop edge; Auri converted
+the gap and won. v32 is rejected and v14 remains the sole league membership.
+Full evidence is in `experiments/audit-v32-hosted-asia-seat3.json`.

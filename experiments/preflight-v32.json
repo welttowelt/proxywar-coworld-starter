@@ -41,6 +41,15 @@
   "diagnostic_only": false,
   "hosted": {
     "request_id": "xreq_67cf6f10-9400-4e7e-ae1a-28c1fc81d280",
+    "result": {
+      "status": "completed",
+      "episodes": 4,
+      "wins": 3,
+      "holds": 8,
+      "rejections": 0,
+      "mechanism_executions": 15,
+      "planner_degradation_rule_passed": true
+    },
     "criteria": {
       "win_rate_pct": 100,
       "max_holds": 0,
@@ -53,5 +62,5 @@
     "regression_episodes": 20,
     "league_change_allowed": false
   },
-  "verdict": "pending hosted gate"
+  "verdict": "rejected: 3/4 and eight holds; no league change"
 }

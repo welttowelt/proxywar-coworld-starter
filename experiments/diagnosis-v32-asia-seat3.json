@@ -114,5 +114,18 @@
     "rejections": 0,
     "minimum_mechanism_executions": 1,
     "planner_degradation": "no unexplained regression versus v28 parent"
+  },
+  "hosted_result": {
+    "request_id": "xreq_67cf6f10-9400-4e7e-ae1a-28c1fc81d280",
+    "wins": 3,
+    "episodes": 4,
+    "final_tiles": [29583, 219622, 213955, 213995],
+    "holds": 8,
+    "rejections": 0,
+    "planner_degraded_decisions": 11,
+    "mechanism_executions": 15,
+    "mechanism_acceptances": 15,
+    "audit": "experiments/audit-v32-hosted-asia-seat3.json",
+    "verdict": "directional improvement over v28 but rejected by the perfect-win and zero-hold gates"
   }
 }
