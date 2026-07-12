@@ -1,7 +1,7 @@
 player_count,player_name,policy_name,policy_version,policy_version_id,matches,wins,win_rate_pct,mean_final_tiles,median_final_tiles,decisions,rival_attacks,neutral_attacks,neutral_boats,naval_invasions,builds,social_actions,holds,fallback_rate_pct
-4,odin free,oli-codex-proxywar,14,ff03ffe7-4b94-4070-9602-ecfe1db05394,71,53,74.65,204978.5,214680.0,7192,1783,2793,1655,249,442,0,0,6.65
-4,odin free,oli-codex-proxywar,13,1d8e42be-f732-4624-a72f-58ca6b1081af,8,5,62.5,261773.5,219488.0,1099,194,514,295,2,64,0,0,4.82
-4,Auri,proxywar-keystone,4,5c8ab955-7d80-42f5-8599-a88478f31ae5,63,8,12.7,57255.8,8120.0,5622,727,2534,710,39,425,224,165,2.03
-4,Auri,proxywar-keystone,5,cd232138-dcf6-49f7-aeeb-b86dc5fbf032,16,1,6.25,70211.9,34294.5,2173,254,1126,167,7,142,54,17,1.38
-4,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,79,3,3.8,17519.3,0.0,6017,587,947,1080,68,660,2163,46,23.65
-4,Richard Higgins,proxywar-starter-b,1,aeaf01bc-682b-4aa3-9bdc-20e2a3fe3922,79,0,0.0,9004.3,0.0,4251,412,2922,173,25,292,164,26,0.61
+4,odin free,oli-codex-proxywar,14,ff03ffe7-4b94-4070-9602-ecfe1db05394,75,56,74.67,197674.3,213979.0,7518,1895,2862,1705,297,468,0,0,6.64
+4,odin free,oli-codex-proxywar,13,1d8e42be-f732-4624-a72f-58ca6b1081af,4,2,50.0,359584.3,395788.5,892,94,443,285,2,50,0,0,4.26
+4,Auri,proxywar-keystone,4,5c8ab955-7d80-42f5-8599-a88478f31ae5,59,7,11.86,56677.0,8120.0,5426,667,2473,675,39,402,220,164,2.06
+4,Auri,proxywar-keystone,5,cd232138-dcf6-49f7-aeeb-b86dc5fbf032,20,2,10.0,61507.6,31170.0,2490,338,1217,214,31,177,65,23,1.61
+4,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,79,3,3.8,17454.9,190.0,6197,618,941,1134,82,684,2225,46,22.96
+4,Richard Higgins,proxywar-starter-b,1,aeaf01bc-682b-4aa3-9bdc-20e2a3fe3922,79,0,0.0,8339.5,0.0,4190,396,2864,176,37,287,165,28,0.67
