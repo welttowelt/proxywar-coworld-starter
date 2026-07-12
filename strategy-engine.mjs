@@ -309,6 +309,26 @@ function chooseRivalAttack(actions, state, plan, history, avoid) {
   };
 }
 
+function chooseCollapseLeaderPressure(actions, state, plan, avoid) {
+  const planFocus = clean(plan?.focus).toLowerCase();
+  const planTarget = clean(plan?.target).toLowerCase();
+  if (planFocus !== "attack" || !planTarget || state.self.tileShare < 0.08) return null;
+
+  const candidates = safeActions(actions, (action) =>
+    action.kind === "attack" && !isNeutralExpansion(action)
+  ).map((action) => ({ action, rival: rivalForAction(action, state) }))
+    .filter(({ rival }) => {
+      if (!rival || rival.isAllied || rival.name.toLowerCase() !== planTarget) return false;
+      const isTopRival = rival.tileShare >= state.topRivalTileShare - 0.005;
+      const leaderGap = rival.tileShare - state.self.tileShare;
+      return isTopRival && leaderGap >= 0.15 &&
+        Number.isFinite(rival.relativeTroopRatio) && rival.relativeTroopRatio >= 0.6;
+    })
+    .map(({ action }) => action);
+
+  return pickPercent(candidates, 10, avoid);
+}
+
 function chooseNeutralAttack(actions, history, avoid) {
   const candidates = safeActions(actions, isNeutralExpansion);
   const streak = consecutive(history, (entry) => entry.neutral === true && entry.kind === "attack");
@@ -447,6 +467,10 @@ export function chooseAction(actions, state, plan = null, history = []) {
   const collapsing = territoryCollapsing(state, history);
 
   if (collapsing && build && sinceBuild >= 3 && !finishingTarget) return build;
+  if (collapsing) {
+    const leaderPressure = chooseCollapseLeaderPressure(actions, state, plan, avoid);
+    if (leaderPressure) return leaderPressure;
+  }
 
   const allianceMove = chooseAllianceMove(
     actions,

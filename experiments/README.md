@@ -216,3 +216,36 @@ reliable leader pressure, so v20 is rejected and v14 remains champion.
 
 The machine-readable audit is archived in
 `experiments/audit-v20-asia-seat3.json`.
+
+## Asia seat-3 collapse-pressure candidate, 2026-07-12
+
+Round 221 isolated the current champion's weakest repeated profile. v14 has
+won one of six Asia seat-3 episodes. Auri won all five losses. Across those
+losses, attacking Auri remained legal on 34-41 decisions, but v14 selected only
+0-2 such attacks and chose neutral growth 19-25 times while Auri was still
+legally reachable.
+
+The Round 221 loss peaked at 55,872 tiles, selected two attacks on Auri, then
+finished at 2,491 after 21 neutral boats. Auri selected 40 rival attacks and won
+with 215,321 tiles. This rules out map geometry and points to v14's 0.9
+runaway-leader troop-ratio floor plus neutral-growth fallback order.
+
+v21 / `skuld-h0gg` starts from exact v14 and adds one collapse-only branch. It
+selects a 10% attack on the exact leader named by an active Claude attack plan
+when the target is the top rival, leads by at least 15 tile-share points, the
+policy still holds at least 8% territory, and relative troop strength remains
+at least 0.60. Reliable economic builds stay ahead of the branch. The first
+hosted diagnostic is pinned in `experiments/gate-v21-asia-seat3.json`; v14
+remains champion unless v21 clears that 4/4 diagnostic and a separate 20/20
+regression gate.
+
+The five-loss replay ledger and legal-action counts are archived in
+`experiments/diagnosis-v21-asia-seat3.json`.
+
+The full local Asia safety run completed at turn 5,700 with a declared winner,
+224 accepted decisions, zero holds, and zero rejected decisions. Its replay
+SHA-256 is `822ce70d031231998f5c3873c5aeab013d9f13d31fcea2e65b8a05efacacd971`.
+Local Bedrock planning was unavailable, so 212 decisions used the deterministic
+fallback path and the new plan-gated mechanism was not reachable. The run proves
+container, protocol, and selector safety; only the hosted gate can prove the
+mechanism and outcome.

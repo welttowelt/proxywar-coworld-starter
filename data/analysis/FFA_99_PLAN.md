@@ -9,24 +9,24 @@ isolated, wire-observable change. Promote only after the candidate records zero
 outright misses in the targeted gate. The rolling-window goal is at least 99%
 outright episode wins, which currently requires a perfect window.
 
-## Current position after Round 220
+## Current position after Round 221
 
 | Metric | Current | Target |
 | --- | ---: | ---: |
 | Rolling FFA window | 58/79 (73.42%) | 79/79 (99%+) |
 | Five-round form | 15/20 (75.00%) | 20/20 |
-| Official first-place streak | 34/1000 | 1000/1000 |
-| v14 outright results | 48/63 (76.19%) | candidate gate at 100% |
+| Official first-place streak | 35/1000 | 1000/1000 |
+| v14 outright results | 51/67 (76.12%) | candidate gate at 100% |
 
-The latest miss is in Round 220. Even with perfect play from the next round,
-the rolling 20-round corpus cannot become perfect until Round 220 leaves the
-window after Round 240 completes.
+The latest miss is in Round 221. Even with perfect play from the next round,
+the rolling 20-round corpus cannot become perfect until Round 221 leaves the
+window after Round 241 completes.
 
 ## Failure concentration
 
 | Map / seat | v14 wins | Rate |
 | --- | ---: | ---: |
-| Asia / seat 3 | 1/5 | 20.0% |
+| Asia / seat 3 | 1/6 | 16.7% |
 | Europe / seat 3 | 2/5 | 40.0% |
 | Pangaea / seat 2 | 2/5 | 40.0% |
 | Pangaea / seat 4 | 3/6 | 50.0% |
@@ -72,20 +72,30 @@ not create reliable pressure on the eventual leader. v20 cannot be promoted.
 
 ## Next isolated mechanism
 
-Keep the working source at exact v14 behavior. Compare the v20 Asia winner with
-its three losses and the earlier same-roster v14 wins before selecting v21's
-single mechanism. The first diagnostic question is why the losing diplomatic
-runs had no legal or selected pressure on Auri while the winner attacked Auri
-21 times. Do not reuse the opening alliance objective as the intervention.
+v21 (`skuld-h0gg`) starts from exact v14 and changes one selector branch. During
+measured territory collapse, a Claude attack plan may keep 10% counterpressure
+on its exact named runaway leader before neutral growth when the leader is at
+least 15 points ahead, the policy retains at least 8% territory, and the
+relative troop ratio is at least 0.60. A reliable economic build still wins.
+
+This targets a repeated Asia seat-3 failure. Auri won all five v14 losses in
+that profile. Auri attacks were legal on 34-41 decisions per loss, but v14
+selected only 0-2 of them and instead chose neutral growth 19-25 times while
+Auri remained legal. Round 221 was the strongest instance: 37 legal pressure
+opportunities, two selected Auri attacks, 14 neutral land attacks, and 11
+neutral boats before v14 fell from a 55,872-tile peak to 2,491. The complete
+replay-hash ledger is in `experiments/diagnosis-v21-asia-seat3.json`.
 
 ## Promotion gate
 
-Run fixed-roster hosted tests for Asia seat 3, Europe seat 3, and Pangaea seat
-3 before expanding to Pangaea seat 2 and the strongest baseline profile.
-Require at least four candidate episodes per profile, zero outright misses,
-zero holds, and zero rejected decisions. Compare the same profiles against v14.
-A 20/20 targeted pass is a regression gate, not a statistical proof of a 99%
-underlying win probability; the official rolling window remains the final KPI.
+First run a four-episode diagnostic on the exact Round 221 Asia seat-3 roster.
+Require 4/4 outright wins, zero holds, zero rejected decisions, and replay proof
+that the branch executed when its guards were true. If it passes, run four
+episodes each on Asia seat 3, Europe seat 3, Pangaea seat 2, Pangaea seat 4,
+and the Asia seat-1 baseline. Promotion requires 20/20. Compare the same
+profiles against v14. A 20/20 targeted pass is a regression gate, not a
+statistical proof of a 99% underlying win probability; the official rolling
+window remains the final KPI.
 
 Immediately before promotion, read Auri's newest active league membership and
 the latest completed competition roster. Auri v5 is now active, so every new

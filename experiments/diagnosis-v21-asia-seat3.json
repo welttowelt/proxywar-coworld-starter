@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "collected_at": "2026-07-12T11:18:35.915Z",
+  "source_window": {
+    "first_round": 202,
+    "last_round": 221,
+    "policy": "oli-codex-proxywar:v14",
+    "map": "Asia",
+    "seat": 3
+  },
+  "profile": {
+    "matches": 6,
+    "wins": 1,
+    "losses": 5,
+    "win_rate_pct": 16.67,
+    "loss_winner": "Auri"
+  },
+  "losses": [
+    {
+      "round": 206,
+      "episode_id": "91225dac-86b8-4081-8b7a-a6558f2de7bf",
+      "replay_sha256": "b06eba312ff0d2afd8fee2d1a1a527cb30ea5257daf47ffa254139c0bbb002bb",
+      "final_tiles": 4121,
+      "peak_tiles": 64349,
+      "auri_attack_legal_turns": 38,
+      "selected_auri_attacks": 1,
+      "neutral_boats_while_auri_legal": 7,
+      "neutral_land_while_auri_legal": 13
+    },
+    {
+      "round": 209,
+      "episode_id": "e6b8e69e-ce06-4aa1-915c-a1ff34a20174",
+      "replay_sha256": "7421668e73d423c30ca3339292ffb91e64d63f86e4eff6c7ab19ddb93f2ffe6e",
+      "final_tiles": 4734,
+      "peak_tiles": 45009,
+      "auri_attack_legal_turns": 39,
+      "selected_auri_attacks": 0,
+      "neutral_boats_while_auri_legal": 6,
+      "neutral_land_while_auri_legal": 17
+    },
+    {
+      "round": 215,
+      "episode_id": "8276a19c-78fa-41fa-9eb9-8bf8a64460e3",
+      "replay_sha256": "3deb5a310ef12b1ec96da193d449bb2945d9885b20b37d5d41349d670f0d8308",
+      "final_tiles": 4687,
+      "peak_tiles": 46788,
+      "auri_attack_legal_turns": 34,
+      "selected_auri_attacks": 2,
+      "neutral_boats_while_auri_legal": 6,
+      "neutral_land_while_auri_legal": 13
+    },
+    {
+      "round": 218,
+      "episode_id": "9ca26489-d3e3-4a37-bebe-5aabdeaa585c",
+      "replay_sha256": "4f9474f1c1a1b931c071bd0ab6bad2f835178022e6304f707ea3550c5de39ab7",
+      "final_tiles": 6089,
+      "peak_tiles": 55140,
+      "auri_attack_legal_turns": 41,
+      "selected_auri_attacks": 2,
+      "neutral_boats_while_auri_legal": 7,
+      "neutral_land_while_auri_legal": 18
+    },
+    {
+      "round": 221,
+      "episode_id": "0f810f63-b466-4d9c-bb4f-316e9b164ed5",
+      "replay_sha256": "80386bb7438a2ffc79cd22fb4f2b8aa61ebca497622faec0c9adacebe512eb09",
+      "final_tiles": 2491,
+      "peak_tiles": 55872,
+      "auri_attack_legal_turns": 37,
+      "selected_auri_attacks": 2,
+      "neutral_boats_while_auri_legal": 11,
+      "neutral_land_while_auri_legal": 14
+    }
+  ],
+  "aggregate": {
+    "auri_attack_legal_turns": 189,
+    "selected_auri_attacks": 7,
+    "neutral_boats_while_auri_legal": 37,
+    "neutral_land_while_auri_legal": 75,
+    "neutral_growth_while_auri_legal": 112
+  },
+  "candidate": {
+    "version": 21,
+    "codename": "skuld-h0gg",
+    "status": "candidate",
+    "change": "during measured collapse, pressure the exact planned runaway leader before neutral growth",
+    "guards": {
+      "plan_focus": "attack",
+      "exact_plan_target": true,
+      "target_is_top_rival": true,
+      "minimum_leader_gap": 0.15,
+      "minimum_self_tile_share": 0.08,
+      "minimum_relative_troop_ratio": 0.6,
+      "troop_percent": 10,
+      "reliable_build_precedence": true
+    }
+  },
+  "promotion": {
+    "diagnostic": "4/4 on exact Round 221 Asia seat-3 roster",
+    "regression_gate": "20/20 across five pinned map-seat profiles",
+    "active_champion_until_pass": "oli-codex-proxywar:v14"
+  }
+}

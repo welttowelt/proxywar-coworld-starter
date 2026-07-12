@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "candidate": "oli-codex-proxywar:v21",
+  "codename": "skuld-h0gg",
+  "map": "Asia",
+  "image_digest": "sha256:28a0921a77c58370c0ce09a00bd11361d6e7f7b9f7f3216ff279322aa5f16d5a",
+  "replay_sha256": "822ce70d031231998f5c3873c5aeab013d9f13d31fcea2e65b8a05efacacd971",
+  "winner_slot": 0,
+  "turn_count": 5700,
+  "decisions": 224,
+  "accepted_decisions": 224,
+  "holds": 0,
+  "rejected_decisions": 0,
+  "fallback_decisions": 212,
+  "mechanism_reachability": {
+    "proven": false,
+    "reason": "local Bedrock planning was unavailable, so no active Claude attack plan reached the plan-gated branch",
+    "required_next_evidence": "hosted replay with the collapse guards true and the exact planned runaway leader selected"
+  }
+}

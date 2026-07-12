@@ -219,6 +219,61 @@ test("sustained territory collapse inserts an emergency build", () => {
   );
 });
 
+test("a collapsing player pressures the named runaway leader before neutral growth", () => {
+  const actions = [
+    action("attack:leader:10", "attack", "Attack Leader 10%"),
+    action("attack:leader:25", "attack", "Attack Leader 25%"),
+    action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%"),
+    action("boat:123:8", "boat", "Boat to Terra Nullius 8%"),
+  ];
+  const history = [0.24, 0.23, 0.22, 0.2, 0.18].map((tileShare, index) => ({
+    actionID: `expand:terra-nullius:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare,
+  }));
+  const obs = observation({
+    tileShare: 0.16,
+    rivals: [{ id: "leader", name: "Leader", tileShare: 0.42, relativeTroopRatio: 0.65 }],
+  });
+
+  assert.equal(
+    choose(actions, obs, { focus: "attack", target: "Leader" }, history).id,
+    "attack:leader:10",
+  );
+  const build = action("build:City:500", "build", "Build City");
+  assert.equal(
+    choose([...actions, build], obs, { focus: "attack", target: "Leader" }, history).id,
+    build.id,
+  );
+  assert.equal(
+    choose(actions, obs, { focus: "expand", target: "Leader" }, history).id,
+    "expand:terra-nullius:10",
+  );
+});
+
+test("collapse pressure keeps the normal floor below a 0.6 troop ratio", () => {
+  const actions = [
+    action("attack:leader:10", "attack", "Attack Leader 10%"),
+    action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%"),
+  ];
+  const history = [0.24, 0.23, 0.22, 0.2, 0.18].map((tileShare, index) => ({
+    actionID: `expand:terra-nullius:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare,
+  }));
+  const obs = observation({
+    tileShare: 0.16,
+    rivals: [{ id: "leader", name: "Leader", tileShare: 0.42, relativeTroopRatio: 0.59 }],
+  });
+
+  assert.equal(
+    choose(actions, obs, { focus: "attack", target: "Leader" }, history).id,
+    "expand:terra-nullius:10",
+  );
+});
+
 test("midgame pressure keeps a reliable tactical action over alliance requests", () => {
   const allianceWithLeader = {
     ...action("alliance:leader", "alliance_request", "Alliance with Leader"),
