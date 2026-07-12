@@ -1,23 +1,23 @@
 # Proxy War meta report
 
-Snapshot collected 2026-07-12 after Competition Round 200. The source window
-covers rounds 181-200, 75 episodes, 300 participant seats, and 25,777 agent
+Snapshot collected 2026-07-12 after Competition Round 201. The source window
+covers rounds 182-201, 75 episodes, 300 participant seats, and 26,546 agent
 decisions. All 12 ingestion quality checks pass with zero failures.
 
-Round 200 extended the verified consecutive first-place streak to 14 of the
+Round 201 extended the verified consecutive first-place streak to 15 of the
 100-round target.
 
 ## Current four-player field
 
-Rounds 181-200 use the current four-player FFA format. The 75 available episodes
+Rounds 182-201 use the current four-player FFA format. The 75 available episodes
 produce this table:
 
 | Player | Matches | Wins | Win rate | Mean final tiles | Rival attacks | Holds |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| odin free | 75 | 45 | 60.00% | 157,391.4 | 1,501 | 135 |
-| Auri | 75 | 12 | 16.00% | 62,053.5 | 1,061 | 256 |
-| James Boggs | 75 | 7 | 9.33% | 24,998.5 | 561 | 108 |
-| Richard Higgins | 75 | 0 | 0.00% | 11,206.0 | 437 | 15 |
+| odin free | 75 | 47 | 62.67% | 174,446.8 | 1,569 | 129 |
+| Auri | 75 | 11 | 14.67% | 64,965.7 | 1,025 | 288 |
+| James Boggs | 75 | 5 | 6.67% | 25,714.6 | 548 | 104 |
+| Richard Higgins | 75 | 0 | 0.00% | 12,073.1 | 455 | 14 |
 
 The aggregate holds column includes the broken v4 round and 51 Round 189 actions
 selected by the game's fallback brain after the v6 container disconnected. v6's
@@ -53,6 +53,7 @@ could no longer resolve it and substituted `HOLD`.
 | 198 | v9 | 1 | 3/4 | 344,155.3 | 0 |
 | 199 | v11 | 1 | 3/4 | 68,545.0 | 0 |
 | 200 | v11 | 1 | 3/4 | 164,912.3 | 1 |
+| 201 | v12 | 1 | 3/4 | 344,314.3 | 0 |
 
 v4 misclassified the new structured neutral-land action and held instead of
 expanding. v5 fixed the classifier and recovered immediately from every seat.
@@ -188,6 +189,19 @@ with 1,370. At turn 2,500 v11 selected a legal stable alliance request to Auri;
 the action disappeared during simultaneous resolution and the game replaced the
 unknown ID with a hold. The other 238 decisions were accepted, and the round had
 zero rejected actions. The 0.75 score and first place extended the streak to 14.
+
+Round 201 returned to Europe for v12's first official field test. v12 won seats
+1, 2, and 4 with 459,446, 460,611, and 457,200 final tiles. Seat 3 peaked at
+72,160 and was eliminated by turn 3,900 after 14 attacks from Auri, nine from
+James Boggs, and three from Richard Higgins. The episode continued to the
+30,400-turn cap, where Auri held 329,906 tiles and James held 237,878. v12 made
+479 decisions with zero holds, zero rejected actions, and 23 planner fallbacks.
+Its 0.75 score and first place extended the streak to 15.
+
+The lost seat requested an alliance with Auri at turn 2,400 while rival and
+neutral attacks remained legal. Auri continued attacking through turn 3,900.
+v13 would keep a tactical action ahead of that request, reinforcing the separate
+hosted A/B result without claiming the request alone caused the elimination.
 
 ## Winning action profile
 
@@ -360,7 +374,7 @@ already locked v12.
 2. Require four of four declared wins, zero holds, and zero rejected decisions
    for a full RCI pass. Use map-specific mean-tile floors: Europe 200,000, Asia
    150,000, and Pangaea 60,000.
-3. Round 201 remains locked to hosted-tested v12. Use qualified v13 from Round
-   202 onward; do not pursue spawn changes because spawn runs outside the policy.
+3. Use qualified and hosted-tested v13 from Round 202 onward; do not pursue spawn
+   changes because spawn runs outside the policy.
 4. Refresh after every completed round and reset the consecutive first-place
    counter after any official rank below 1.
