@@ -2,35 +2,35 @@
 
 ## Decision
 
-Keep v14 (`b0lverk-h0gg`) as the official champion. v19 (`hrafn-syn`) failed
-its first controlled gate and is rejected. Build the next candidate from the
-exact v14 source with one isolated, wire-observable change. Promote only after
-the candidate records zero outright misses in the targeted gate. The
-rolling-window goal is at least 99% outright episode wins, which currently
-requires a perfect window.
+Keep v14 (`b0lverk-h0gg`) as the official champion. v20 (`v1g-e1dr`) executed
+its isolated opening mechanism in all four hosted episodes but won only one.
+It is rejected. Build the next candidate from the exact v14 source with one
+isolated, wire-observable change. Promote only after the candidate records zero
+outright misses in the targeted gate. The rolling-window goal is at least 99%
+outright episode wins, which currently requires a perfect window.
 
-## Current position after Round 218
+## Current position after Round 220
 
 | Metric | Current | Target |
 | --- | ---: | ---: |
-| Rolling FFA window | 57/79 (72.15%) | 79/79 (99%+) |
-| Five-round form | 13/20 (65.00%) | 20/20 |
-| Official first-place streak | 32/1000 | 1000/1000 |
-| v14 outright results | 41/55 (74.55%) | candidate gate at 100% |
+| Rolling FFA window | 58/79 (73.42%) | 79/79 (99%+) |
+| Five-round form | 15/20 (75.00%) | 20/20 |
+| Official first-place streak | 34/1000 | 1000/1000 |
+| v14 outright results | 48/63 (76.19%) | candidate gate at 100% |
 
-The latest miss is in Round 218. Even with perfect play from the next round,
-the rolling 20-round corpus cannot become perfect until Round 218 leaves the
-window after Round 238 completes.
+The latest miss is in Round 220. Even with perfect play from the next round,
+the rolling 20-round corpus cannot become perfect until Round 220 leaves the
+window after Round 240 completes.
 
 ## Failure concentration
 
 | Map / seat | v14 wins | Rate |
 | --- | ---: | ---: |
-| Europe / seat 3 | 1/4 | 25.0% |
-| Asia / seat 3 | 1/4 | 25.0% |
-| Pangaea / seat 4 | 2/5 | 40.0% |
-| Pangaea / seat 2 | 2/4 | 50.0% |
-| Europe / seat 1 | 2/4 | 50.0% |
+| Asia / seat 3 | 1/5 | 20.0% |
+| Europe / seat 3 | 2/5 | 40.0% |
+| Pangaea / seat 2 | 2/5 | 40.0% |
+| Pangaea / seat 4 | 3/6 | 50.0% |
+| Europe / seat 1 | 3/5 | 60.0% |
 
 Every other observed v14 map-seat profile is 100%. Spawn selection is owned by
 the game runtime, so the policy can only improve post-spawn survival and
@@ -61,19 +61,22 @@ post-decision `tacticalAffordances` block, so its mechanism was unreachable.
 The candidate also retained the larger v17 strategy patch, making the result a
 confounded test. v19 cannot be promoted.
 
+## Rejected `v1g-e1dr` probe
+
+v20 pinned the exact v14 selector plus one first-decision diplomatic alliance
+rule to Asia seat 3. It followed the exact objective target in all four
+episodes with zero holds and zero rejected decisions, but won only one. The
+single winner attacked Auri 21 times. The three losing runs never attacked
+Auri, who won each episode. An accepted opening request to Richard Higgins did
+not create reliable pressure on the eventual leader. v20 cannot be promoted.
+
 ## Next isolated mechanism
 
-Across 55 cached v14 episodes, the diplomatic profile won 7/14 (50.0%), versus
-11/13 for defensive, 12/14 for aggressive, and 11/14 for opportunistic. Every
-diplomatic opening carried a wire-visible `build_alliance` objective, yet v14
-never followed it in the first 1,000 turns. Asia seat 3 is 1/5 and Europe seat
-3 is 1/4; Pangaea seat 3 is 5/5.
-
-Restore `llm-player.mjs` and `strategy-engine.mjs` to the exact v14 source at
-`dd8dbce`. Add one diplomatic-only rule: on the first active decision, when the
-wire objective is `build_alliance`, select the exact legal alliance action for
-its `targetPlayerID` once, then return to unchanged v14 behavior. Test Asia and
-Europe seat 3 first, followed by Pangaea seat 3 as the regression control.
+Keep the working source at exact v14 behavior. Compare the v20 Asia winner with
+its three losses and the earlier same-roster v14 wins before selecting v21's
+single mechanism. The first diagnostic question is why the losing diplomatic
+runs had no legal or selected pressure on Auri while the winner attacked Auri
+21 times. Do not reuse the opening alliance objective as the intervention.
 
 ## Promotion gate
 
@@ -85,10 +88,10 @@ A 20/20 targeted pass is a regression gate, not a statistical proof of a 99%
 underlying win probability; the official rolling window remains the final KPI.
 
 Immediately before promotion, read Auri's newest active league membership and
-the latest completed competition roster. If either differs from the
-`proxywar-keystone:v4` fixed baseline, repeat the two weakest candidate profiles
-against the new live version. A challenger version shift invalidates the old
-promotion gate until that retest completes.
+the latest completed competition roster. Auri v5 is now active, so every new
+candidate gate must use v5. A challenger version shift invalidates an older
+promotion gate until the two weakest profiles are repeated against the new
+version.
 
 If the candidate misses any profile, keep v14 champion and assign the next
 codename only after the mechanism changes. Reserved release names live in
