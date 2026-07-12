@@ -1,9 +1,9 @@
 player_count,player_name,policy_name,policy_version,policy_version_id,matches,wins,win_rate_pct,mean_final_tiles,median_final_tiles,decisions,rival_attacks,neutral_attacks,neutral_boats,naval_invasions,builds,social_actions,holds,fallback_rate_pct
-4,odin free,oli-codex-proxywar,14,ff03ffe7-4b94-4070-9602-ecfe1db05394,79,56,70.89,207053.3,214680.0,8893,2123,3300,2104,445,576,4,2,7.66
-4,Auri,proxywar-keystone,7,6a52cdb6-4999-4425-97c7-65e24cc2e8ca,4,1,25.0,42934.5,40740.5,610,80,343,43,12,61,46,3,0.16
+4,odin free,oli-codex-proxywar,14,ff03ffe7-4b94-4070-9602-ecfe1db05394,78,54,69.23,193134.8,213301.5,8358,2132,2989,1912,429,555,4,2,8.51
+4,Auri,proxywar-keystone,7,6a52cdb6-4999-4425-97c7-65e24cc2e8ca,8,3,37.5,79135.8,40740.5,1055,238,475,97,12,114,73,5,0.19
 4,Auri,proxywar-keystone,5,cd232138-dcf6-49f7-aeeb-b86dc5fbf032,36,5,13.89,72082.6,30951.5,3895,600,1758,399,51,285,109,37,1.59
-4,Auri,proxywar-keystone,4,5c8ab955-7d80-42f5-8599-a88478f31ae5,36,4,11.11,50613.9,9303.0,3222,389,1598,433,26,252,121,94,2.11
-4,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,79,4,5.06,21496.1,190.0,6945,691,1000,1417,117,854,2236,55,13.0
-4,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,7,0,0.0,35041.6,0.0,646,74,359,0,0,56,0,0,0.0
-4,Richard Higgins,proxywar-starter-b,1,aeaf01bc-682b-4aa3-9bdc-20e2a3fe3922,72,0,0.0,8309.2,0.0,3977,320,2729,166,97,259,150,40,1.01
-4,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,7,0,0.0,0.0,0.0,534,191,181,0,0,65,0,1,0.19
+4,Auri,proxywar-keystone,4,5c8ab955-7d80-42f5-8599-a88478f31ae5,32,4,12.5,53839.8,11908.5,2637,364,1327,368,26,200,96,79,2.5
+4,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,10,1,10.0,46343.4,0.0,1057,315,412,0,0,128,0,20,0.0
+4,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,78,4,5.13,20304.3,93.0,6462,645,921,1335,117,820,2084,55,13.35
+4,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,10,0,0.0,5682.2,0.0,787,301,264,0,0,113,0,4,0.13
+4,Richard Higgins,proxywar-starter-b,1,aeaf01bc-682b-4aa3-9bdc-20e2a3fe3922,68,0,0.0,3497.8,0.0,3392,254,2322,149,93,222,121,27,0.8
