@@ -1,0 +1,774 @@
+{
+  "schema_version": 1,
+  "experience_request_id": "xreq_9f0a8897-7380-4139-b50b-e9e9b6242588",
+  "status": "completed",
+  "policy_version": 31,
+  "policy_version_id": "521c8ad1-8482-40dc-b2a2-ad1cbf42fc73",
+  "mechanism": "bank-build",
+  "opening_decision_limit": 20,
+  "episodes": 4,
+  "wins": 1,
+  "win_rate_pct": 25,
+  "final_tiles": [
+    2408,
+    2462,
+    216495,
+    2491
+  ],
+  "holds": 4,
+  "rejected": 0,
+  "fallbacks": 27,
+  "planner_degraded_decisions": 27,
+  "alliance_selections": 2,
+  "opening_alliance_selections": 0,
+  "opening_alliance_opportunities": 41,
+  "opening_alliance_alignments": 0,
+  "opening_reserve_selections": 28,
+  "bank_build_selections": 0,
+  "pressure_pulse_selections": 0,
+  "wire_veto_selections": 0,
+  "checks": {
+    "completed_episode_floor": true,
+    "perfect_episode_wins": false,
+    "zero_holds": false,
+    "zero_rejected_decisions": true,
+    "bank_build_mechanism_exercised": false,
+    "all_bank_build_decisions_productive": false
+  },
+  "passed": false,
+  "episode_audits": [
+    {
+      "episode_request_id": "ereq_09386dcf-b318-41a7-8042-b09abff406fd",
+      "episode_id": "0f7c6da7-ecf6-43fb-9fc1-1b76697146ef",
+      "map": "Asia",
+      "seat": 3,
+      "policy_version": 31,
+      "policy_version_id": "521c8ad1-8482-40dc-b2a2-ad1cbf42fc73",
+      "won": false,
+      "score": 0,
+      "final_tiles": 2408,
+      "is_alive": true,
+      "decisions": 79,
+      "opening_decision_limit": 20,
+      "holds": 2,
+      "rejected": 0,
+      "fallbacks": 10,
+      "profiles": [
+        "diplomatic"
+      ],
+      "alliance_selections": [
+        {
+          "turn": 5800,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        }
+      ],
+      "opening_alliance_opportunities": [
+        {
+          "turn": 400,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "expand:terra-nullius:10",
+          "aligned": false
+        },
+        {
+          "turn": 600,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "expand:terra-nullius:20",
+          "aligned": false
+        },
+        {
+          "turn": 700,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "expand:terra-nullius:35",
+          "aligned": false
+        },
+        {
+          "turn": 800,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "expand:terra-nullius:35",
+          "aligned": false
+        },
+        {
+          "turn": 1600,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "attack:xbt2wt14:25",
+          "aligned": false
+        },
+        {
+          "turn": 1700,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "attack:xbt2wt14:10",
+          "aligned": false
+        },
+        {
+          "turn": 1800,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "attack:xbt2wt14:10",
+          "aligned": false
+        },
+        {
+          "turn": 1900,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "attack:xbt2wt14:25",
+          "aligned": false
+        },
+        {
+          "turn": 2000,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "attack:xbt2wt14:10",
+          "aligned": false
+        },
+        {
+          "turn": 2100,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "attack:xbt2wt14:25",
+          "aligned": false
+        },
+        {
+          "turn": 2300,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "attack:xbt2wt14:10",
+          "aligned": false
+        }
+      ],
+      "opening_reserve_selections": [
+        {
+          "turn": 1700,
+          "action_id": "attack:xbt2wt14:10",
+          "target_name": "Richard Higgins",
+          "selected_percent": 10,
+          "reserve": 0.7,
+          "reserve_limit": 10,
+          "active_decision": 13,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 1800,
+          "action_id": "attack:xbt2wt14:10",
+          "target_name": "Richard Higgins",
+          "selected_percent": 10,
+          "reserve": 0.74,
+          "reserve_limit": 10,
+          "active_decision": 14,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 1900,
+          "action_id": "attack:xbt2wt14:25",
+          "target_name": "Richard Higgins",
+          "selected_percent": 25,
+          "reserve": 0.78,
+          "reserve_limit": 25,
+          "active_decision": 15,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 2000,
+          "action_id": "attack:xbt2wt14:10",
+          "target_name": "Richard Higgins",
+          "selected_percent": 10,
+          "reserve": 0.7,
+          "reserve_limit": 10,
+          "active_decision": 16,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 2100,
+          "action_id": "attack:xbt2wt14:25",
+          "target_name": "Richard Higgins",
+          "selected_percent": 25,
+          "reserve": 0.75,
+          "reserve_limit": 25,
+          "active_decision": 17,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 2200,
+          "action_id": "attack:xbt2wt14:10",
+          "target_name": "Richard Higgins",
+          "selected_percent": 10,
+          "reserve": 0.68,
+          "reserve_limit": 10,
+          "active_decision": 18,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 2300,
+          "action_id": "attack:xbt2wt14:10",
+          "target_name": "Richard Higgins",
+          "selected_percent": 10,
+          "reserve": 0.73,
+          "reserve_limit": 10,
+          "active_decision": 19,
+          "accepted": true,
+          "fallback": false
+        }
+      ],
+      "bank_build_selections": [],
+      "pressure_pulse_selections": [],
+      "wire_veto_selections": [],
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/32632fc5-5994-4191-b2a7-9719df404cc8.replay",
+      "replay_sha256": "5f00be929e3cc6642222bc781f22535b17d5a8e6417b91b80535529260d133d2",
+      "replay_path": "data/cache/replays/0f7c6da7-ecf6-43fb-9fc1-1b76697146ef.replay"
+    },
+    {
+      "episode_request_id": "ereq_915e70a2-1e75-4915-9969-cc4490eb5606",
+      "episode_id": "370c1fd2-e621-4e03-8221-e1ccbeef3151",
+      "map": "Asia",
+      "seat": 3,
+      "policy_version": 31,
+      "policy_version_id": "521c8ad1-8482-40dc-b2a2-ad1cbf42fc73",
+      "won": false,
+      "score": 0,
+      "final_tiles": 2462,
+      "is_alive": true,
+      "decisions": 62,
+      "opening_decision_limit": 20,
+      "holds": 1,
+      "rejected": 0,
+      "fallbacks": 2,
+      "profiles": [
+        "diplomatic"
+      ],
+      "alliance_selections": [],
+      "opening_alliance_opportunities": [
+        {
+          "turn": 400,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "expand:terra-nullius:10",
+          "aligned": false
+        },
+        {
+          "turn": 600,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "expand:terra-nullius:20",
+          "aligned": false
+        },
+        {
+          "turn": 700,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "expand:terra-nullius:35",
+          "aligned": false
+        },
+        {
+          "turn": 800,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "expand:terra-nullius:35",
+          "aligned": false
+        },
+        {
+          "turn": 1700,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "attack:xbt2wt14:10",
+          "aligned": false
+        },
+        {
+          "turn": 1800,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "attack:xbt2wt14:10",
+          "aligned": false
+        },
+        {
+          "turn": 1900,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "attack:xbt2wt14:25",
+          "aligned": false
+        },
+        {
+          "turn": 2100,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "attack:xbt2wt14:25",
+          "aligned": false
+        },
+        {
+          "turn": 2200,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "attack:xbt2wt14:10",
+          "aligned": false
+        },
+        {
+          "turn": 2300,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "attack:xbt2wt14:10",
+          "aligned": false
+        }
+      ],
+      "opening_reserve_selections": [
+        {
+          "turn": 1700,
+          "action_id": "attack:xbt2wt14:10",
+          "target_name": "Richard Higgins",
+          "selected_percent": 10,
+          "reserve": 0.7,
+          "reserve_limit": 10,
+          "active_decision": 13,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 1800,
+          "action_id": "attack:xbt2wt14:10",
+          "target_name": "Richard Higgins",
+          "selected_percent": 10,
+          "reserve": 0.74,
+          "reserve_limit": 10,
+          "active_decision": 14,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 1900,
+          "action_id": "attack:xbt2wt14:25",
+          "target_name": "Richard Higgins",
+          "selected_percent": 25,
+          "reserve": 0.78,
+          "reserve_limit": 25,
+          "active_decision": 15,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 2000,
+          "action_id": "attack:xbt2wt14:10",
+          "target_name": "Richard Higgins",
+          "selected_percent": 10,
+          "reserve": 0.7,
+          "reserve_limit": 10,
+          "active_decision": 16,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 2100,
+          "action_id": "attack:xbt2wt14:25",
+          "target_name": "Richard Higgins",
+          "selected_percent": 25,
+          "reserve": 0.75,
+          "reserve_limit": 25,
+          "active_decision": 17,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 2200,
+          "action_id": "attack:xbt2wt14:10",
+          "target_name": "Richard Higgins",
+          "selected_percent": 10,
+          "reserve": 0.68,
+          "reserve_limit": 10,
+          "active_decision": 18,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 2300,
+          "action_id": "attack:xbt2wt14:10",
+          "target_name": "Richard Higgins",
+          "selected_percent": 10,
+          "reserve": 0.73,
+          "reserve_limit": 10,
+          "active_decision": 19,
+          "accepted": true,
+          "fallback": false
+        }
+      ],
+      "bank_build_selections": [],
+      "pressure_pulse_selections": [],
+      "wire_veto_selections": [],
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/149bcd5e-9830-4dce-8bb4-986a40924736.replay",
+      "replay_sha256": "60a48bd40bfd51c0f144f473125fbddcc8b152f97c8ce1ffd1a89ade05242442",
+      "replay_path": "data/cache/replays/370c1fd2-e621-4e03-8221-e1ccbeef3151.replay"
+    },
+    {
+      "episode_request_id": "ereq_0736eb70-d9e3-4a2f-b2d5-54f8d5968a69",
+      "episode_id": "42359a94-1eb4-45bf-9314-ad3582626ba0",
+      "map": "Asia",
+      "seat": 3,
+      "policy_version": 31,
+      "policy_version_id": "521c8ad1-8482-40dc-b2a2-ad1cbf42fc73",
+      "won": true,
+      "score": 1,
+      "final_tiles": 216495,
+      "is_alive": true,
+      "decisions": 97,
+      "opening_decision_limit": 20,
+      "holds": 0,
+      "rejected": 0,
+      "fallbacks": 6,
+      "profiles": [
+        "diplomatic"
+      ],
+      "alliance_selections": [],
+      "opening_alliance_opportunities": [
+        {
+          "turn": 400,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "expand:terra-nullius:10",
+          "aligned": false
+        },
+        {
+          "turn": 600,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "expand:terra-nullius:20",
+          "aligned": false
+        },
+        {
+          "turn": 700,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "expand:terra-nullius:35",
+          "aligned": false
+        },
+        {
+          "turn": 800,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "expand:terra-nullius:35",
+          "aligned": false
+        },
+        {
+          "turn": 1300,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "expand:terra-nullius:10",
+          "aligned": false
+        },
+        {
+          "turn": 1800,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "attack:xbt2wt14:10",
+          "aligned": false
+        },
+        {
+          "turn": 1900,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "attack:xbt2wt14:25",
+          "aligned": false
+        },
+        {
+          "turn": 2200,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "attack:xbt2wt14:10",
+          "aligned": false
+        },
+        {
+          "turn": 2300,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "attack:xbt2wt14:10",
+          "aligned": false
+        }
+      ],
+      "opening_reserve_selections": [
+        {
+          "turn": 1700,
+          "action_id": "attack:xbt2wt14:10",
+          "target_name": "Richard Higgins",
+          "selected_percent": 10,
+          "reserve": 0.7,
+          "reserve_limit": 10,
+          "active_decision": 13,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 1800,
+          "action_id": "attack:xbt2wt14:10",
+          "target_name": "Richard Higgins",
+          "selected_percent": 10,
+          "reserve": 0.74,
+          "reserve_limit": 10,
+          "active_decision": 14,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 1900,
+          "action_id": "attack:xbt2wt14:25",
+          "target_name": "Richard Higgins",
+          "selected_percent": 25,
+          "reserve": 0.78,
+          "reserve_limit": 25,
+          "active_decision": 15,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 2000,
+          "action_id": "attack:xbt2wt14:10",
+          "target_name": "Richard Higgins",
+          "selected_percent": 10,
+          "reserve": 0.7,
+          "reserve_limit": 10,
+          "active_decision": 16,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 2100,
+          "action_id": "attack:xbt2wt14:25",
+          "target_name": "Richard Higgins",
+          "selected_percent": 25,
+          "reserve": 0.75,
+          "reserve_limit": 25,
+          "active_decision": 17,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 2200,
+          "action_id": "attack:xbt2wt14:10",
+          "target_name": "Richard Higgins",
+          "selected_percent": 10,
+          "reserve": 0.68,
+          "reserve_limit": 10,
+          "active_decision": 18,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 2300,
+          "action_id": "attack:xbt2wt14:10",
+          "target_name": "Richard Higgins",
+          "selected_percent": 10,
+          "reserve": 0.73,
+          "reserve_limit": 10,
+          "active_decision": 19,
+          "accepted": true,
+          "fallback": false
+        }
+      ],
+      "bank_build_selections": [],
+      "pressure_pulse_selections": [],
+      "wire_veto_selections": [],
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/c8b61309-038a-4896-a9c7-b8a3d77d4625.replay",
+      "replay_sha256": "5f7f2adca3045e8a34c721bfc695e5eee2b30e88691d76df24285402fe124139",
+      "replay_path": "data/cache/replays/42359a94-1eb4-45bf-9314-ad3582626ba0.replay"
+    },
+    {
+      "episode_request_id": "ereq_b0d72506-16e6-4bfe-ace1-55be2d2b112b",
+      "episode_id": "902d1670-8ebf-485d-a355-80a34b516a97",
+      "map": "Asia",
+      "seat": 3,
+      "policy_version": 31,
+      "policy_version_id": "521c8ad1-8482-40dc-b2a2-ad1cbf42fc73",
+      "won": false,
+      "score": 0,
+      "final_tiles": 2491,
+      "is_alive": true,
+      "decisions": 71,
+      "opening_decision_limit": 20,
+      "holds": 1,
+      "rejected": 0,
+      "fallbacks": 9,
+      "profiles": [
+        "diplomatic"
+      ],
+      "alliance_selections": [
+        {
+          "turn": 5700,
+          "action_id": "alliance:28k1hctz",
+          "accepted": true,
+          "opening": false
+        }
+      ],
+      "opening_alliance_opportunities": [
+        {
+          "turn": 400,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "expand:terra-nullius:10",
+          "aligned": false
+        },
+        {
+          "turn": 600,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "expand:terra-nullius:20",
+          "aligned": false
+        },
+        {
+          "turn": 700,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "expand:terra-nullius:35",
+          "aligned": false
+        },
+        {
+          "turn": 800,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "expand:terra-nullius:35",
+          "aligned": false
+        },
+        {
+          "turn": 1600,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "attack:xbt2wt14:25",
+          "aligned": false
+        },
+        {
+          "turn": 1700,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "attack:xbt2wt14:10",
+          "aligned": false
+        },
+        {
+          "turn": 1800,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "attack:xbt2wt14:10",
+          "aligned": false
+        },
+        {
+          "turn": 1900,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "attack:xbt2wt14:25",
+          "aligned": false
+        },
+        {
+          "turn": 2000,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "attack:xbt2wt14:10",
+          "aligned": false
+        },
+        {
+          "turn": 2100,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "attack:xbt2wt14:25",
+          "aligned": false
+        },
+        {
+          "turn": 2200,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:28k1hctz",
+          "selected_action_id": "attack:xbt2wt14:10",
+          "aligned": false
+        }
+      ],
+      "opening_reserve_selections": [
+        {
+          "turn": 1700,
+          "action_id": "attack:xbt2wt14:10",
+          "target_name": "Richard Higgins",
+          "selected_percent": 10,
+          "reserve": 0.7,
+          "reserve_limit": 10,
+          "active_decision": 13,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 1800,
+          "action_id": "attack:xbt2wt14:10",
+          "target_name": "Richard Higgins",
+          "selected_percent": 10,
+          "reserve": 0.74,
+          "reserve_limit": 10,
+          "active_decision": 14,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 1900,
+          "action_id": "attack:xbt2wt14:25",
+          "target_name": "Richard Higgins",
+          "selected_percent": 25,
+          "reserve": 0.78,
+          "reserve_limit": 25,
+          "active_decision": 15,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 2000,
+          "action_id": "attack:xbt2wt14:10",
+          "target_name": "Richard Higgins",
+          "selected_percent": 10,
+          "reserve": 0.7,
+          "reserve_limit": 10,
+          "active_decision": 16,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 2100,
+          "action_id": "attack:xbt2wt14:25",
+          "target_name": "Richard Higgins",
+          "selected_percent": 25,
+          "reserve": 0.75,
+          "reserve_limit": 25,
+          "active_decision": 17,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 2200,
+          "action_id": "attack:xbt2wt14:10",
+          "target_name": "Richard Higgins",
+          "selected_percent": 10,
+          "reserve": 0.68,
+          "reserve_limit": 10,
+          "active_decision": 18,
+          "accepted": true,
+          "fallback": false
+        },
+        {
+          "turn": 2300,
+          "action_id": "attack:xbt2wt14:10",
+          "target_name": "Richard Higgins",
+          "selected_percent": 10,
+          "reserve": 0.73,
+          "reserve_limit": 10,
+          "active_decision": 19,
+          "accepted": true,
+          "fallback": false
+        }
+      ],
+      "bank_build_selections": [],
+      "pressure_pulse_selections": [],
+      "wire_veto_selections": [],
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/d203dde4-a7a0-488b-9c1f-4af04350d003.replay",
+      "replay_sha256": "5f3cfcd6a16a75dbf0c655f54994760e2980640f6299ce1c5fbac16888a277fd",
+      "replay_path": "data/cache/replays/902d1670-8ebf-485d-a355-80a34b516a97.replay"
+    }
+  ]
+}

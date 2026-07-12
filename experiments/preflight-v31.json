@@ -2,6 +2,7 @@
   "schema_version": 1,
   "candidate": {
     "policy_ref": "oli-codex-proxywar:v31",
+    "policy_version_id": "521c8ad1-8482-40dc-b2a2-ad1cbf42fc73",
     "parent_ref": "oli-codex-proxywar:v24",
     "exact_deltas": [
       "after the first rival conversion, choose a legal economy build before a neutral boat when reserve is below 0.80 and the top rival leads by at least 0.12 tile share"
@@ -35,7 +36,7 @@
   },
   "diagnostic_only": false,
   "hosted": {
-    "request_id": null,
+    "request_id": "xreq_9f0a8897-7380-4139-b50b-e9e9b6242588",
     "criteria": {
       "win_rate_pct": 100,
       "max_holds": 0,
@@ -47,5 +48,6 @@
   "promotion": {
     "regression_episodes": 20,
     "league_change_allowed": false
-  }
+  },
+  "verdict": "rejected: 1/4, four holds, and zero bank-build executions"
 }

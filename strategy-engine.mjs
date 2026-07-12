@@ -299,36 +299,14 @@ function chooseRivalAttack(actions, state, plan, history, avoid) {
     history,
     (entry) => entry.kind === "attack" && targetName(entry) === best.rival.name.toLowerCase(),
   );
-  const activeDecisions = history.filter((entry) => entry.kind !== "spawn").length;
   let desiredPercent = 10;
   if (streak >= 1 && best.rival.relativeTroopRatio >= 1.1) desiredPercent = 25;
   if (streak >= 2 && best.rival.relativeTroopRatio >= 1.5) desiredPercent = 40;
-  let commitmentActions = best.actions;
-  if (activeDecisions < 20) {
-    const openingLimit = state.self.troopRatio < 0.75 ? 10 : 25;
-    desiredPercent = Math.min(desiredPercent, openingLimit);
-    commitmentActions = best.actions.filter((action) => {
-      const percent = actionPercent(action);
-      return percent === null || percent <= openingLimit;
-    });
-  }
   return {
-    action: pickPercent(commitmentActions, desiredPercent, avoid),
+    action: pickPercent(best.actions, desiredPercent, avoid),
     rival: best.rival,
     streak,
   };
-}
-
-function hasConvertedRival(state, history) {
-  const aliveNames = new Set(state.rivals.map((rival) => rival.name.toLowerCase()));
-  return history.some((entry) =>
-    entry.kind === "attack" && entry.neutral === false && entry.targetName &&
-    !aliveNames.has(String(entry.targetName).toLowerCase())
-  );
-}
-
-function mark(action, marker) {
-  return action ? { ...action, policyMarker: marker } : action;
 }
 
 function chooseNeutralAttack(actions, history, avoid) {
@@ -487,10 +465,6 @@ export function chooseAction(actions, state, plan = null, history = []) {
 
   if (neutralExpansionStalled(state, history)) {
     if (rivalAttack?.action) return rivalAttack.action;
-    const leaderGap = state.topRivalTileShare - state.self.tileShare;
-    const bankBuild = build && sinceBuild >= 3 && state.self.troopRatio < 0.8 &&
-      leaderGap >= 0.12 && hasConvertedRival(state, history);
-    if (bankBuild) return mark(build, "[h3l-v4kt:bank-build]");
     const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
     if (boatStreak >= 2 && build) return build;
     const escapeBoat = chooseBoat(actions, state, history, avoid);

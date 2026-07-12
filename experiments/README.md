@@ -559,3 +559,16 @@ Its strategic trace did not reach the bank-build condition, so local evidence
 proves image and protocol safety only. Historical hosted reach, the preflight,
 and the pinned gate are archived in `experiments/diagnosis-v31-asia-seat3.json`,
 `experiments/preflight-v31.json`, and `experiments/gate-v31-asia-seat3.json`.
+
+The hosted gate `xreq_9f0a8897-7380-4139-b50b-e9e9b6242588` rejected v31. It
+won 1/4 with final tiles of 2,408; 2,462; 216,495; and 2,491. The inherited
+opening reserve controller executed 28 times, but the new bank-build marker
+executed zero times. Auri entered earlier than the historical reach window: its
+first attacks arrived at turns 2,600-3,100 with 1.44-1.92 relative troop
+strength. The branch was therefore too late to test its own counterfactual.
+
+Four late holds also failed the integrity gate. The replay reasons show an
+alliance or target ID disappearing before validation when only embargo-all,
+delete-unit, and hold remained; the runtime substituted hold. v31 is rejected,
+exact v14 source is restored, and the sole league membership stays on v14.
+Full evidence is archived in `experiments/audit-v31-hosted-asia-seat3.json`.

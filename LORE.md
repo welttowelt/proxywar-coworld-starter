@@ -89,6 +89,11 @@ reserve raises City capacity before it launches another neutral transport. The
 mark is visible in replay. The local field stayed clean but never invoked it;
 three older hosted turns prove reach, and only a new hosted gate can prove force.
 
+The gate denied it. Auri crossed before the watched shore in every new path,
+arriving between turns 2,600 and 3,100 at up to 1.92 strength. The City order
+never fired. One path won, three fell, and four late social orders dissolved
+into holds. `h3l-v4kt` keeps no seat. Exact v14 returns to the forge.
+
 ## the reviewer lane
 
 On Oli's word a second line opened beside the build lane: Claude reads source and
