@@ -94,7 +94,7 @@ named Auri, including 22 decisions under incoming pressure. Auri attacked v21
 
 ## Next isolated mechanism
 
-v22 (`gr1mnir-vard`) will start from exact v14 and test buffer preservation.
+v22 (`gr1mnir-vard`) starts from exact v14 and tests buffer preservation.
 When Claude explicitly targets the top rival, that leader is legally reachable,
 and incoming pressure is active, the selector must not convert a weaker third
 player. It will prefer an existing legal retreat, then a low-commitment neutral

@@ -263,3 +263,19 @@ those attacks happened under incoming pressure. Auri attacked v21 64 times.
 Lowering the same troop-ratio floor would repeat the failed mechanism, so v21
 is rejected and the exact v14 selector remains champion. The machine-readable
 audit is archived in `experiments/audit-v21-asia-seat3.json`.
+
+## Asia seat-3 buffer-preservation candidate, 2026-07-12
+
+v22 / `gr1mnir-vard` starts from exact v14 and changes one action class. If an
+active Claude attack plan names the top rival, that leader remains legally
+attackable, incoming pressure is active, and the ordinary selector would attack
+a weaker rival, v22 preserves the weaker player as a second front. It retreats
+an exposed front when possible; otherwise it uses a 10% neutral expansion.
+Reliable defensive and collapse builds retain precedence.
+
+The branch is bounded to the 22 observed hosted decisions where v21 attacked
+Richard under incoming pressure while Claude named Auri. It does not change the
+leader troop-ratio floor, attack scoring, build cadence, or unpressured play.
+The first hosted diagnostic is pinned in
+`experiments/gate-v22-asia-seat3.json`; v14 remains champion unless v22 clears
+that diagnostic and the separate 20/20 regression gate.

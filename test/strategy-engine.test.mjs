@@ -219,6 +219,65 @@ test("sustained territory collapse inserts an emergency build", () => {
   );
 });
 
+test("incoming leader pressure retreats instead of converting the buffer player", () => {
+  const leaderAttack = action("attack:leader:10", "attack", "Attack Leader 10%");
+  const bufferAttack = action("attack:buffer:10", "attack", "Attack Buffer 10%");
+  const retreat = action("retreat:front-1", "retreat", "Retreat exposed front");
+  const obs = observation({
+    tileShare: 0.2,
+    incomingAttacks: [{ attackerID: "leader" }],
+    rivals: [
+      { id: "leader", name: "Leader", tileShare: 0.42, relativeTroopRatio: 0.55 },
+      { id: "buffer", name: "Buffer", tileShare: 0.16, relativeTroopRatio: 1.3 },
+    ],
+  });
+
+  assert.equal(
+    choose(
+      [leaderAttack, bufferAttack, retreat],
+      obs,
+      { focus: "attack", target: "Leader" },
+    ).id,
+    retreat.id,
+  );
+  assert.equal(
+    choose(
+      [leaderAttack, bufferAttack, retreat],
+      observation({
+        tileShare: 0.2,
+        rivals: [
+          { id: "leader", name: "Leader", tileShare: 0.42, relativeTroopRatio: 0.55 },
+          { id: "buffer", name: "Buffer", tileShare: 0.16, relativeTroopRatio: 1.3 },
+        ],
+      }),
+      { focus: "attack", target: "Leader" },
+    ).id,
+    bufferAttack.id,
+  );
+});
+
+test("buffer preservation spends only ten percent when no retreat is legal", () => {
+  const actions = [
+    action("attack:leader:10", "attack", "Attack Leader 10%"),
+    action("attack:buffer:10", "attack", "Attack Buffer 10%"),
+    action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%"),
+    action("expand:terra-nullius:35", "attack", "Expand into Terra Nullius 35%"),
+  ];
+  const obs = observation({
+    tileShare: 0.2,
+    incomingAttacks: [{ attackerID: "leader" }],
+    rivals: [
+      { id: "leader", name: "Leader", tileShare: 0.42, relativeTroopRatio: 0.55 },
+      { id: "buffer", name: "Buffer", tileShare: 0.16, relativeTroopRatio: 1.3 },
+    ],
+  });
+
+  assert.equal(
+    choose(actions, obs, { focus: "attack", target: "Leader" }).id,
+    "expand:terra-nullius:10",
+  );
+});
+
 test("midgame pressure keeps a reliable tactical action over alliance requests", () => {
   const allianceWithLeader = {
     ...action("alliance:leader", "alliance_request", "Alliance with Leader"),
