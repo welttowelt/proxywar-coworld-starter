@@ -2,16 +2,17 @@ player_name,policy_version,won,rival_attacks,target_switches,switch_rate_pct,mea
 Auri,4,true,296,29,10.18,2.09,23.6
 odin free,6,true,262,40,15.81,3.7,25.2
 odin free,8,true,261,62,24.51,2.95,23.8
-odin free,5,true,246,36,15.13,2.04,25.7
 odin free,13,true,199,34,17.71,2.45,26.4
 odin free,9,true,176,28,16.47,2.35,24.9
 odin free,11,true,147,21,14.89,1.72,26.1
+odin free,5,true,126,16,13.11,2.08,25.4
 odin free,7,true,115,15,13.64,3.34,26.2
+odin free,14,true,90,22,25.58,2.64,24.2
 odin free,12,true,84,12,14.81,5.14,26.8
 James Boggs,1,true,81,18,23.68,2.15,20.4
-Auri,4,false,757,53,7.66,2.51,22.5
-Richard Higgins,1,false,513,44,9.76,1.65,10.0
-James Boggs,1,false,507,83,18.16,1.34,14.1
+Auri,4,false,737,56,8.33,2.57,22.3
+James Boggs,1,false,508,81,17.72,1.32,14.2
+Richard Higgins,1,false,507,44,9.89,1.64,10.0
 odin free,5,false,87,12,14.63,2.59,25.0
 odin free,13,false,54,8,16.33,2.12,23.6
 odin free,7,false,42,7,17.95,1.72,24.6
