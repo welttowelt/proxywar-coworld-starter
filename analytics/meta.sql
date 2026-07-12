@@ -189,6 +189,75 @@ COPY (
 ) TO 'data/analysis/ffa_player_performance.csv' (HEADER, DELIMITER ',');
 
 COPY (
+  WITH per_round AS (
+    SELECT
+      round_number,
+      player_name,
+      count(*) AS round_matches,
+      sum(won::INTEGER) AS round_wins
+    FROM player_matches
+    WHERE player_count = 4
+    GROUP BY round_number, player_name
+  ),
+  rolling AS (
+    SELECT
+      round_number,
+      player_name,
+      round_matches,
+      round_wins,
+      sum(round_matches) OVER recent AS rolling_matches,
+      sum(round_wins) OVER recent AS rolling_wins,
+      round(100.0 * sum(round_wins) OVER recent / nullif(sum(round_matches) OVER recent, 0), 2)
+        AS rolling_win_rate_pct,
+      sum(round_matches) OVER history AS cumulative_matches,
+      sum(round_wins) OVER history AS cumulative_wins,
+      round(100.0 * sum(round_wins) OVER history / nullif(sum(round_matches) OVER history, 0), 2)
+        AS cumulative_win_rate_pct
+    FROM per_round
+    WINDOW
+      recent AS (
+        PARTITION BY player_name
+        ORDER BY round_number
+        ROWS BETWEEN 4 PRECEDING AND CURRENT ROW
+      ),
+      history AS (
+        PARTITION BY player_name
+        ORDER BY round_number
+        ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW
+      )
+  ),
+  rivals AS (
+    SELECT
+      *,
+      row_number() OVER (
+        PARTITION BY round_number
+        ORDER BY rolling_win_rate_pct DESC, cumulative_win_rate_pct DESC, player_name
+      ) AS rival_rank
+    FROM rolling
+    WHERE player_name <> 'odin free'
+  )
+  SELECT
+    ours.round_number,
+    ours.round_wins,
+    ours.round_matches,
+    ours.rolling_wins,
+    ours.rolling_matches,
+    ours.rolling_win_rate_pct AS odin_rolling_win_rate_pct,
+    ours.cumulative_wins,
+    ours.cumulative_matches,
+    ours.cumulative_win_rate_pct AS odin_cumulative_win_rate_pct,
+    rival.player_name AS best_rival_name,
+    rival.rolling_wins AS best_rival_rolling_wins,
+    rival.rolling_matches AS best_rival_rolling_matches,
+    rival.rolling_win_rate_pct AS best_rival_rolling_win_rate_pct,
+    round(ours.rolling_win_rate_pct - rival.rolling_win_rate_pct, 2) AS dominance_gap_pct
+  FROM rolling ours
+  JOIN rivals rival USING (round_number)
+  WHERE ours.player_name = 'odin free' AND rival.rival_rank = 1
+  ORDER BY ours.round_number
+) TO 'data/analysis/ffa_dominance_trend.csv' (HEADER, DELIMITER ',');
+
+COPY (
   SELECT
     map,
     player_name,
@@ -521,6 +590,27 @@ COPY (
     100 AS target_first_place_streak,
     (SELECT first_place_finishes FROM official_streak) AS first_place_finishes,
     (
+      SELECT wins
+      FROM read_csv_auto('data/analysis/ffa_player_performance.csv')
+      WHERE player_name = 'odin free'
+    ) AS current_ffa_wins,
+    (
+      SELECT matches
+      FROM read_csv_auto('data/analysis/ffa_player_performance.csv')
+      WHERE player_name = 'odin free'
+    ) AS current_ffa_matches,
+    (
+      SELECT win_rate_pct
+      FROM read_csv_auto('data/analysis/ffa_player_performance.csv')
+      WHERE player_name = 'odin free'
+    ) AS current_ffa_win_rate_pct,
+    99.0 AS target_ffa_win_rate_pct,
+    (
+      SELECT ceil(0.99 * matches)::BIGINT
+      FROM read_csv_auto('data/analysis/ffa_player_performance.csv')
+      WHERE player_name = 'odin free'
+    ) AS target_ffa_wins,
+    (
       SELECT coalesce(sum(failures), 0)
       FROM read_csv_auto('data/analysis/data_quality.csv')
     ) AS data_quality_failures
@@ -581,6 +671,12 @@ COPY (
   FROM read_csv_auto('data/analysis/ffa_player_performance.csv')
   ORDER BY wins DESC, mean_final_tiles DESC
 ) TO 'site/data/ffa-players.json' (FORMAT JSON, ARRAY true);
+
+COPY (
+  SELECT *
+  FROM read_csv_auto('data/analysis/ffa_dominance_trend.csv')
+  ORDER BY round_number
+) TO 'site/data/dominance-trend.json' (FORMAT JSON, ARRAY true);
 
 COPY (
   SELECT *

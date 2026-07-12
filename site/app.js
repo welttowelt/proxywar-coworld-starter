@@ -4,6 +4,7 @@ const DATA_FILES = {
   standings: "round-standings.json",
   ourResults: "our-results.json",
   ffaPlayers: "ffa-players.json",
+  dominanceTrend: "dominance-trend.json",
   mapPerformance: "map-performance.json",
   outcomeProfile: "outcome-profile.json",
   seatPerformance: "seat-performance.json",
@@ -149,7 +150,7 @@ function renderOverview(data) {
     ? `${formatDecimal(ourFfa.win_rate_pct)}%`
     : "--";
   byId("our-win-note").textContent = ourFfa.matches
-    ? `${formatInteger(ourFfa.wins)} wins / ${formatInteger(ourFfa.matches)} matches`
+    ? `${formatInteger(ourFfa.wins)} / ${formatInteger(ourFfa.matches)} outright; target ${formatInteger(snapshot.target_ffa_wins)} / ${formatInteger(snapshot.current_ffa_matches)}`
     : "Collected matches";
   byId("progression").textContent = snapshot.target_first_place_streak
     ? `${formatInteger(snapshot.current_first_place_streak)} / ${formatInteger(snapshot.target_first_place_streak)}`
@@ -374,6 +375,124 @@ function renderMapPerformance(data) {
   }).join("");
 }
 
+function renderDominanceTrend(data) {
+  const rows = [...data.dominanceTrend]
+    .sort((left, right) => asNumber(left.round_number) - asNumber(right.round_number));
+  const chart = byId("dominance-chart");
+  const readout = byId("dominance-readout");
+  const snapshot = data.snapshot[0] ?? {};
+
+  if (rows.length === 0) {
+    chart.innerHTML = "";
+    readout.textContent = "No four-player trend data is available.";
+    return;
+  }
+
+  const latest = rows.at(-1);
+  const previous = rows[Math.max(0, rows.length - 6)];
+  const change = asNumber(latest.odin_rolling_win_rate_pct) - asNumber(previous.odin_rolling_win_rate_pct);
+  const currentMatches = asNumber(snapshot.current_ffa_matches);
+  const currentWins = asNumber(snapshot.current_ffa_wins);
+  const targetWins = asNumber(snapshot.target_ffa_wins, Math.ceil(currentMatches * 0.99));
+
+  byId("dominance-window").textContent = `${currentWins}/${currentMatches}`;
+  byId("dominance-window-note").textContent = `${formatDecimal(snapshot.current_ffa_win_rate_pct)}% outright`;
+  byId("dominance-form").textContent = `${formatDecimal(latest.odin_rolling_win_rate_pct)}%`;
+  byId("dominance-form-note").textContent = `${latest.rolling_wins}/${latest.rolling_matches} over five rounds`;
+  byId("dominance-gap").textContent = `${change >= 0 ? "+" : ""}${formatDecimal(change)} pts`;
+  byId("dominance-gap-note").textContent = "vs five rounds ago";
+  byId("dominance-target").textContent = `${formatDecimal(snapshot.target_ffa_win_rate_pct, 0)}%`;
+  byId("dominance-target-note").textContent = `${targetWins}/${currentMatches} needed in this window`;
+
+  const compact = window.matchMedia("(max-width: 520px)").matches;
+  const width = compact ? 340 : 980;
+  const height = compact ? 300 : 350;
+  const margin = compact
+    ? { top: 24, right: 10, bottom: 38, left: 38 }
+    : { top: 26, right: 24, bottom: 42, left: 52 };
+  chart.setAttribute("viewBox", `0 0 ${width} ${height}`);
+  chart.style.aspectRatio = `${width} / ${height}`;
+  const plotWidth = width - margin.left - margin.right;
+  const plotHeight = height - margin.top - margin.bottom;
+  const x = (index) => margin.left + (rows.length === 1 ? plotWidth / 2 : plotWidth * index / (rows.length - 1));
+  const y = (value) => margin.top + plotHeight * (1 - Math.max(0, Math.min(100, asNumber(value))) / 100);
+  const linePath = (key) => rows.map((row, index) =>
+    `${index === 0 ? "M" : "L"}${x(index).toFixed(1)},${y(row[key]).toFixed(1)}`,
+  ).join(" ");
+  const areaPath = [
+    `M${x(0).toFixed(1)},${(margin.top + plotHeight).toFixed(1)}`,
+    ...rows.map((row, index) => `L${x(index).toFixed(1)},${y(row.odin_rolling_win_rate_pct).toFixed(1)}`),
+    `L${x(rows.length - 1).toFixed(1)},${(margin.top + plotHeight).toFixed(1)} Z`,
+  ].join(" ");
+  const yTicks = [0, 25, 50, 75, 99];
+  const xStep = Math.max(1, Math.ceil(rows.length / 6));
+  const hitWidth = plotWidth / Math.max(1, rows.length - 1);
+
+  chart.innerHTML = `
+    <g class="chart-grid">
+      ${yTicks.map((tick) => `
+        <line x1="${margin.left}" y1="${y(tick)}" x2="${width - margin.right}" y2="${y(tick)}"></line>
+        <text x="${margin.left - 12}" y="${y(tick) + 4}" text-anchor="end">${tick}%</text>
+      `).join("")}
+      ${rows.map((row, index) => (index % xStep === 0 || index === rows.length - 1) ? `
+        <text x="${x(index)}" y="${height - 13}" text-anchor="middle">R${escapeHtml(row.round_number)}</text>
+      ` : "").join("")}
+    </g>
+    <path class="chart-area" d="${areaPath}"></path>
+    <line class="chart-target" x1="${margin.left}" y1="${y(99)}" x2="${width - margin.right}" y2="${y(99)}"></line>
+    <path class="chart-rival-line" d="${linePath("best_rival_rolling_win_rate_pct")}"></path>
+    <path class="chart-odin-line" d="${linePath("odin_rolling_win_rate_pct")}"></path>
+    <g class="chart-points">
+      ${rows.map((row, index) => `
+        <circle class="chart-rival-point" cx="${x(index)}" cy="${y(row.best_rival_rolling_win_rate_pct)}" r="3"></circle>
+        <circle class="chart-odin-point" cx="${x(index)}" cy="${y(row.odin_rolling_win_rate_pct)}" r="4"></circle>
+      `).join("")}
+    </g>
+    <g class="chart-cursor" id="dominance-cursor">
+      <line x1="${x(rows.length - 1)}" y1="${margin.top}" x2="${x(rows.length - 1)}" y2="${margin.top + plotHeight}"></line>
+      <circle id="dominance-cursor-odin" cx="${x(rows.length - 1)}" cy="${y(latest.odin_rolling_win_rate_pct)}" r="7"></circle>
+      <circle id="dominance-cursor-rival" cx="${x(rows.length - 1)}" cy="${y(latest.best_rival_rolling_win_rate_pct)}" r="6"></circle>
+    </g>
+    <g class="chart-hit-zones">
+      ${rows.map((row, index) => `
+        <rect
+          data-dominance-index="${index}"
+          x="${Math.max(margin.left, x(index) - hitWidth / 2)}"
+          y="${margin.top}"
+          width="${index === 0 || index === rows.length - 1 ? hitWidth / 2 : hitWidth}"
+          height="${plotHeight}"
+          tabindex="0"
+          role="button"
+          aria-label="Round ${escapeHtml(row.round_number)}: Odin ${escapeHtml(formatDecimal(row.odin_rolling_win_rate_pct))} percent, best rival ${escapeHtml(formatDecimal(row.best_rival_rolling_win_rate_pct))} percent"
+        ></rect>
+      `).join("")}
+    </g>
+  `;
+
+  const setActiveRound = (index) => {
+    const row = rows[index];
+    const cursor = byId("dominance-cursor");
+    const cursorX = x(index);
+    const cursorLine = cursor.querySelector("line");
+    cursorLine.setAttribute("x1", cursorX);
+    cursorLine.setAttribute("x2", cursorX);
+    byId("dominance-cursor-odin").setAttribute("cx", cursorX);
+    byId("dominance-cursor-odin").setAttribute("cy", y(row.odin_rolling_win_rate_pct));
+    byId("dominance-cursor-rival").setAttribute("cx", cursorX);
+    byId("dominance-cursor-rival").setAttribute("cy", y(row.best_rival_rolling_win_rate_pct));
+    const gap = asNumber(row.dominance_gap_pct);
+    readout.textContent = `R${row.round_number} / odin ${row.rolling_wins}/${row.rolling_matches} (${formatDecimal(row.odin_rolling_win_rate_pct)}%) / ${row.best_rival_name} ${row.best_rival_rolling_wins}/${row.best_rival_rolling_matches} (${formatDecimal(row.best_rival_rolling_win_rate_pct)}%) / gap ${gap >= 0 ? "+" : ""}${formatDecimal(gap)} pts`;
+  };
+
+  chart.querySelectorAll("[data-dominance-index]").forEach((zone) => {
+    const activate = () => setActiveRound(asNumber(zone.dataset.dominanceIndex));
+    zone.onpointerenter = activate;
+    zone.onfocus = activate;
+  });
+  chart.onpointerleave = () => setActiveRound(rows.length - 1);
+  setActiveRound(rows.length - 1);
+}
+
 function renderSignals(data) {
   const winner = data.outcomeProfile.find(isWinnerRow) ?? {};
   const field = data.outcomeProfile.find((row) => !isWinnerRow(row)) ?? {};
@@ -471,6 +590,7 @@ async function refreshDashboard() {
     renderPlayerBars(data.ffaPlayers);
     renderOutcomeProfile(data.outcomeProfile);
     renderSeatBars(data.seatPerformance);
+    renderDominanceTrend(data);
     renderMapPerformance(data);
     renderSignals(data);
     renderDataLedger(data);

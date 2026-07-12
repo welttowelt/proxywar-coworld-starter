@@ -165,6 +165,53 @@
           </header>
 
           <div class="meta-grid">
+            <article class="panel dominance-panel">
+              <div class="panel-head">
+                <div>
+                  <p class="panel-label">Rolling pressure</p>
+                  <h3>Dominance over time</h3>
+                </div>
+                <span class="panel-meta">Five-round form / 99% target</span>
+              </div>
+              <div class="dominance-stats">
+                <div>
+                  <span>Full window</span>
+                  <strong id="dominance-window">--</strong>
+                  <small id="dominance-window-note">Outright wins</small>
+                </div>
+                <div>
+                  <span>Recent form</span>
+                  <strong id="dominance-form">--</strong>
+                  <small id="dominance-form-note">Five rounds</small>
+                </div>
+                <div>
+                  <span>Momentum</span>
+                  <strong id="dominance-gap">--</strong>
+                  <small id="dominance-gap-note">Five-round change</small>
+                </div>
+                <div>
+                  <span>Window target</span>
+                  <strong id="dominance-target">99%</strong>
+                  <small id="dominance-target-note">Required wins</small>
+                </div>
+              </div>
+              <div class="dominance-legend" aria-hidden="true">
+                <span><i data-series="odin"></i>odin rolling win rate</span>
+                <span><i data-series="rival"></i>best rival each window</span>
+                <span><i data-series="target"></i>99% target</span>
+              </div>
+              <div class="dominance-chart-shell">
+                <svg
+                  id="dominance-chart"
+                  viewBox="0 0 980 350"
+                  role="img"
+                  aria-label="Five-round rolling outright FFA win rate for Odin and the strongest rival"
+                  preserveAspectRatio="xMidYMid meet"
+                ></svg>
+              </div>
+              <p class="dominance-readout" id="dominance-readout" aria-live="polite">Loading trend.</p>
+            </article>
+
             <article class="panel field-panel">
               <div class="panel-head">
                 <div>
