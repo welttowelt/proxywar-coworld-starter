@@ -329,6 +329,21 @@ rejected actions. The candidate replays show it preserving favorable attacks
 across conflicting plan refreshes. v12 became the sole active champion after
 Round 200; the request IDs and replay hashes are recorded in `experiments/`.
 
+v13 (`1d8e42be-f732-4624-a72f-58ca6b1081af`) keeps legal attacks, expansion,
+boats, retreats, builds, and strikes ahead of race-prone alliance requests.
+Alliance requests remain available when no tactical move exists, and dominant
+players can still break an alliance to finish. All 34 tests pass. A local Europe
+run reached turn 17,400 with a 455,799-tile winner, 552 accepted decisions, zero
+holds, and zero rejected actions. Its only alliance request occurred when no
+tactical action was legal.
+
+A pinned hosted Asia seat-4 A/B reproduced the Round 200 failure. Both v12 and
+v13 won 2/2, but v12 again returned a disappearing alliance ID while nine attacks
+and 18 boats were legal, producing one fallback hold. v13 recorded zero holds,
+zero rejections, and zero alliance requests across its two wins. Hosted
+Qualifier Round 36 passed, and v13 became the sole champion after Round 201 had
+already locked v12.
+
 ## PUA/PIP operating loop
 
 1. Read the official result and every failed-seat replay before changing policy.
@@ -345,7 +360,7 @@ Round 200; the request IDs and replay hashes are recorded in `experiments/`.
 2. Require four of four declared wins, zero holds, and zero rejected decisions
    for a full RCI pass. Use map-specific mean-tile floors: Europe 200,000, Asia
    150,000, and Pangaea 60,000.
-3. Keep qualified and hosted-tested v12 as champion for Round 201. Do not pursue
-   spawn-selection changes because the runtime handles spawn outside the policy.
+3. Round 201 remains locked to hosted-tested v12. Use qualified v13 from Round
+   202 onward; do not pursue spawn changes because spawn runs outside the policy.
 4. Refresh after every completed round and reset the consecutive first-place
    counter after any official rank below 1.

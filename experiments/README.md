@@ -34,3 +34,29 @@ Claude plans vary.
 | v11 | `3b512e05-859a-40d3-9a45-9ad974d2fb7a` | win, 87,140 tiles | `34a9af2fc7861fcb6c915c8ff66eb4a5510d72caac86e53e0db02e7d1ae67b02` |
 | v12 | `68e95f1f-4987-4ca7-a28a-377a4662696b` | win, 85,795 tiles | `8797a7b1b1c328d36809f934bfc25923fc15dbeec6376005a8fc5deb6627229f` |
 | v12 | `1167f7a9-90db-475d-9bfb-93efec3ae8af` | win, 91,398 tiles | `6fbb5546614b7dad6a470b98ad756eaf877f16b0e52da5c27cf2c095cde77517` |
+
+## Asia seat-4 alliance-race A/B, 2026-07-12
+
+Goal: reproduce the Round 200 fallback hold and test whether keeping tactical
+moves ahead of alliance requests removes the simultaneous-resolution race.
+
+Both requests used `tournament-4p-asia` with Richard Higgins in slot 0, James
+Boggs in slot 1, Auri in slot 2, and our baseline or candidate in slot 3.
+
+| Policy | Experience request | Wins | Final tiles | Policy fallbacks | Holds | Cost |
+| --- | --- | ---: | --- | --- | ---: | ---: |
+| v12 | `xreq_dd739322-ef28-48c7-be1a-7f22d3210c2b` | 2/2 | 223,088; 214,487 | 24; 8 | 1 | $0.059173 |
+| v13 | `xreq_78a13fb9-e3de-4abd-96ba-469009dd3515` | 2/2 | 219,452; 216,450 | 13; 16 | 0 | $0.033436 |
+
+The v12 hold reproduced the Round 200 race at turn 2,200. v12 returned
+`alliance:r5o3pta1` while nine attacks and 18 boats were legal; the alliance ID
+disappeared during simultaneous resolution and the runtime substituted `HOLD`.
+v13 selected no alliance request in either episode and recorded zero holds and
+zero rejected actions. Hosted Qualifier Round 36 also completed successfully.
+
+| Policy | Episode | Result | Replay SHA-256 |
+| --- | --- | --- | --- |
+| v12 | `53592caa-a7a9-49c8-8358-ff775a17f6f0` | win, 223,088 tiles | `02a3a910e8e928a3bcdcf5de074eaa5f6d0160076c836a29bdfbed81dfe993bc` |
+| v12 | `f9d763e3-387c-4c5b-b786-109e75df7516` | win, 214,487 tiles; one hold | `8709ba7ad777fb20ef0223fc7b668e35f0ff68443fc728ec5fcdf1fcbfebefdd` |
+| v13 | `ecc7830b-b2fb-4912-8f1f-f90609c7e0ec` | win, 219,452 tiles | `de52c2b411336cce41f9b9204c03ef941eb0e2eacbf33ea4e66693556b80bcbe` |
+| v13 | `357ec50d-9cec-4bdf-87cf-69e4b665aede` | win, 216,450 tiles | `5ee3c736aae004bff87f86b3beb57878e318983e9f20b4a8cf81af1b3f43e074` |
