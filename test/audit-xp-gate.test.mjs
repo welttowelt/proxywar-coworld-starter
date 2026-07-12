@@ -272,6 +272,39 @@ test("parity-pulse gate parses and requires a productive 10 percent strike", () 
   assert.equal(report.passed, true);
 });
 
+test("leader-sever gate parses and requires an accepted alliance break", () => {
+  const fixture = replay("expand:terra-nullius:10");
+  const decisions = fixture.inlineRunArtifacts["decisions.jsonl"]
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line));
+  decisions[1] = {
+    ...decisions[1],
+    selectedActionKind: "break_alliance",
+    selectedLegalActionId: "break_alliance:auri",
+    selectedActionMetadata: { targetID: "auri", targetName: "Auri" },
+    reason:
+      "bedrock diagnostic || [n1dh0ggr:s3vr] " +
+      "mode=sever leader=Auri gap=0.100 ratio=1.070",
+  };
+  fixture.inlineRunArtifacts["decisions.jsonl"] =
+    `${decisions.map((decision) => JSON.stringify(decision)).join("\n")}\n`;
+
+  const audit = auditEpisodeReplay(episode(), fixture);
+  const report = buildGateReport(
+    { id: "xreq-leader-sever", status: "completed" },
+    [audit, audit, audit, audit],
+    4,
+    { mechanism: "leader-sever" },
+  );
+
+  assert.equal(audit.leader_sever_selections.length, 1);
+  assert.equal(report.leader_sever_selections, 4);
+  assert.equal(report.checks.leader_sever_mechanism_exercised, true);
+  assert.equal(report.checks.all_leader_severs_productive, true);
+  assert.equal(report.passed, true);
+});
+
 test("wire-veto gate requires an observed productive rerank", () => {
   const audits = Array.from({ length: 4 }, (_, index) => ({
     won: true,

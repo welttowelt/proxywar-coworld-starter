@@ -1,4 +1,5 @@
 export const PARITY_PULSE_MARKER = "[hrafn-s4r:r1ft]";
+export const LEADER_SEVER_MARKER = "[n1dh0ggr:s3vr]";
 
 const MIN_OWN_TILE_SHARE = 0.2;
 const MIN_LEADER_GAP = 0.08;
@@ -17,7 +18,9 @@ function actionTargetID(action) {
     return metadataTarget;
   }
   const parts = String(action?.id ?? "").split(":");
-  return parts[0] === "attack" ? parts[1] ?? null : null;
+  return ["attack", "break_alliance"].includes(parts[0])
+    ? parts[1] ?? null
+    : null;
 }
 
 function actionTroopPercent(action) {
@@ -43,7 +46,23 @@ function recentLeaderAttack(observation, leaderID) {
     );
 }
 
-export function applyParityPulse(input, decision) {
+function markedDecision(decision, action, marker, mode, leader, gap, ratio) {
+  return {
+    ...decision,
+    actionID: action.id,
+    actionIDs: undefined,
+    reason:
+      `${marker} mode=${mode} leader=${leader.name} ` +
+      `gap=${gap.toFixed(3)} ratio=${ratio.toFixed(3)} ` +
+      `replaced=${decision.actionID}; ${decision.reason}`,
+    metadata: {
+      ...decision.metadata,
+      leaderClamp: mode,
+    },
+  };
+}
+
+export function applyLeaderClamp(input, decision) {
   const observation = input?.observation;
   const ownState = observation?.ownState;
   if (!observation || !ownState?.isAlive) return decision;
@@ -72,38 +91,55 @@ export function applyParityPulse(input, decision) {
     leaderGap > MAX_LEADER_GAP ||
     relativeTroopRatio === null ||
     relativeTroopRatio < MIN_RELATIVE_TROOP_RATIO ||
-    leader.player.canAttack !== true ||
-    leader.player.isAllied === true ||
-    (observation.combat?.incomingAttackPlayerIDs ?? []).length > 0 ||
-    recentLeaderAttack(observation, leader.player.playerID)
+    (observation.combat?.incomingAttackPlayerIDs ?? []).length > 0
   ) {
     return decision;
   }
 
-  const selectedAction = (input.legalActions ?? []).find(
-    (action) => action.id === decision.actionID,
-  );
+  const legalActions = input.legalActions ?? [];
+  const selectedAction = legalActions.find((action) => action.id === decision.actionID);
   if (isHostileAttack(selectedAction)) return decision;
 
-  const pulse = (input.legalActions ?? []).find((action) =>
+  if (leader.player.isAllied === true) {
+    const sever = legalActions.find((action) =>
+      action.kind === "break_alliance" &&
+      actionTargetID(action) === leader.player.playerID &&
+      action.risk?.level !== "high"
+    );
+    return sever
+      ? markedDecision(
+          decision,
+          sever,
+          LEADER_SEVER_MARKER,
+          "sever",
+          leader.player,
+          leaderGap,
+          relativeTroopRatio,
+        )
+      : decision;
+  }
+
+  if (
+    leader.player.canAttack !== true ||
+    recentLeaderAttack(observation, leader.player.playerID)
+  ) {
+    return decision;
+  }
+  const pulse = legalActions.find((action) =>
     isHostileAttack(action) &&
     actionTargetID(action) === leader.player.playerID &&
     actionTroopPercent(action) === 10 &&
     action.risk?.level !== "high"
   );
-  if (!pulse) return decision;
-
-  return {
-    ...decision,
-    actionID: pulse.id,
-    actionIDs: undefined,
-    reason:
-      `${PARITY_PULSE_MARKER} leader=${leader.player.name} ` +
-      `gap=${leaderGap.toFixed(3)} ratio=${relativeTroopRatio.toFixed(3)} ` +
-      `replaced=${decision.actionID}; ${decision.reason}`,
-    metadata: {
-      ...decision.metadata,
-      parityPulse: true,
-    },
-  };
+  return pulse
+    ? markedDecision(
+        decision,
+        pulse,
+        PARITY_PULSE_MARKER,
+        "strike",
+        leader.player,
+        leaderGap,
+        relativeTroopRatio,
+      )
+    : decision;
 }

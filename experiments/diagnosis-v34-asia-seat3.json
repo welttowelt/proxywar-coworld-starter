@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "oli-codex-proxywar:v34",
+    "codename": "n1dh0ggr",
+    "parent_ref": "oli-codex-proxywar:v33",
+    "parent_policy_version_id": "21993011-6e01-4aad-b1ec-cc9217ca09db"
+  },
+  "matched_parent": {
+    "request_id": "xreq_2666b188-163f-470b-844b-c4a48bb46c8d",
+    "variant": "tournament-4p-asia",
+    "seat": 3,
+    "wins": 3,
+    "episodes": 4,
+    "final_tiles": [218588, 228082, 218310, 27546],
+    "holds": 8,
+    "rejections": 0,
+    "leader_severs": 0,
+    "audit": "experiments/audit-v33-hosted-asia-seat3.json"
+  },
+  "cleanup": {
+    "runtime_post_processors_before": 2,
+    "runtime_post_processors_after": 1,
+    "helper_lines_before": 281,
+    "helper_lines_after": 145,
+    "removed": "the 172-line wire-salvage ladder whose marker executed zero times in the hosted parent",
+    "behavioral_delta_count": 1
+  },
+  "failure": {
+    "episode_id": "e50160c9-8cf5-4982-aa6a-37e3319f799e",
+    "summary": "Odin allied with Auri at turn 2700 and preserved that alliance while Auri converted a modest lead into a runaway",
+    "alliance_turn": 2700,
+    "leader_gap_at_alliance": 0.04,
+    "final_tiles": 27546,
+    "winner": "Auri"
+  },
+  "current_parent_reach": [
+    {"turn": 3000, "own_tiles": 74440, "leader_tiles": 100815, "leader_gap": 0.10, "relative_troop_ratio": 1.066, "parent_action": "expand:terra-nullius:10", "candidate_action": "break_alliance:28k1hctz"},
+    {"turn": 3100, "own_tiles": 74440, "leader_tiles": 100815, "leader_gap": 0.10, "relative_troop_ratio": 0.986, "parent_action": "expand:terra-nullius:10", "candidate_action": "break_alliance:28k1hctz"},
+    {"turn": 4100, "own_tiles": 72610, "leader_tiles": 119737, "leader_gap": 0.18, "relative_troop_ratio": 0.976, "parent_action": "build:City:292294", "candidate_action": "break_alliance:28k1hctz"},
+    {"turn": 4500, "own_tiles": 72610, "leader_tiles": 126290, "leader_gap": 0.21, "relative_troop_ratio": 0.994, "parent_action": "expand:terra-nullius:10", "candidate_action": "break_alliance:28k1hctz"}
+  ],
+  "reach_distribution": {
+    "losing_parent_traces_with_reach": 1,
+    "winning_parent_traces_with_reach": 0,
+    "reachable_parent_decisions": 4
+  },
+  "mechanism": {
+    "marker": "[n1dh0ggr:s3vr]",
+    "rule": "replace a non-hostile action with a legal low-risk break from the allied tile leader when own share is at least 0.20, the leader gap is 0.08-0.22, own-to-leader troop ratio is at least 0.90, and no incoming attack is active",
+    "preserves_existing_hostile_attacks": true,
+    "preserves_v32_parity_strike": true
+  },
+  "local": {
+    "mode": "one game container plus four websocket policy containers; mock planner",
+    "variant": "tournament-4p-asia",
+    "winner_slot": 1,
+    "winner": "Auri",
+    "candidate_seat": 3,
+    "candidate_won": false,
+    "candidate_final_tiles": 0,
+    "turn_count": 11600,
+    "global_accepted_decisions": 431,
+    "candidate_decisions": 108,
+    "candidate_accepted_decisions": 108,
+    "candidate_holds": 3,
+    "candidate_rejections": 0,
+    "candidate_fallbacks": 0,
+    "leader_severs": 0,
+    "parity_pulses": 0,
+    "replay_sha256": "c24de5eacf937e314cc31211b5b35f8c6247b8009a8f6cb97ebeb20d9dc3fd03",
+    "image_sha256": "fba81e6f15ab342ad5f7d18b7d4a96ce375473bc2814a1bd4250ec58ddc5662a",
+    "verdict": "wire and runtime safe; no tactical evidence because the registered window did not occur"
+  },
+  "hosted_kill_criteria": {
+    "wins": "4/4",
+    "holds": 0,
+    "rejections": 0,
+    "minimum_leader_severs": 1,
+    "all_leader_severs_productive": true,
+    "planner_degradation": "no unexplained regression versus v33 parent"
+  }
+}

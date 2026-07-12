@@ -676,3 +676,29 @@ Auri's lead grew from 10 to 35 tile-share points. v33 is rejected, its dead
 fallback ladder is removed, and any next arm is limited to severing an allied
 leader inside the existing parity window. Full evidence is archived in
 `experiments/audit-v33-hosted-asia-seat3.json`.
+
+## Allied-leader sever candidate, 2026-07-12
+
+v34 / `n1dh0ggr` names v33 as its exact parent and has one behavioral delta.
+When the current tile leader is our ally inside the existing 0.08-0.22 parity
+window, and our troop ratio remains at least 0.90 with no incoming attack, a
+legal low-risk alliance break replaces a non-hostile order. Existing hostile
+attacks and the v32 parity strike stay unchanged. The marker is
+`[n1dh0ggr:s3vr]`.
+
+The rule has four current parent decisions, all in v33's only loss and none in
+its three wins. At turns 3,000, 3,100, 4,100, and 4,500, Auri led by 10-21
+tile-share points, Odin held 0.976-1.066 of Auri's troops, and
+`break_alliance:28k1hctz` was legal. The parent expanded or built instead. This
+proves reach and isolation, not the win counterfactual.
+
+The runtime was reduced before the trial. Two post-processors became one and
+the dead 172-line wire-salvage ladder was deleted, cutting helper code from 281
+to 145 lines. The full local four-container Asia run completed at turn 11,600
+with all 431 decisions accepted globally. Odin's 108 decisions had zero
+rejections and zero fallbacks, but Auri won, Odin selected three intentional
+holds, and neither registered clamp branch fired. Local evidence therefore
+proves transport safety only. Replay SHA-256 is
+`c24de5eacf937e314cc31211b5b35f8c6247b8009a8f6cb97ebeb20d9dc3fd03`.
+Current reach and the local record are archived in
+`experiments/diagnosis-v34-asia-seat3.json`.

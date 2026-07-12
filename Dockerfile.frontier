@@ -1,10 +1,9 @@
 FROM public.ecr.aws/q5f4m8t9/cogames@sha256:926265ab4e5ca749be3ac7df2696a0653f0aa2ba69448b11a60716c9b4dbbaab
 
-ARG POLICY_CODENAME=g4lga-v4rd
+ARG POLICY_CODENAME=n1dh0ggr
 ARG ECONOMY_BOOTSTRAP=1
 
-COPY scripts/keystone-parity-pulse.mjs /app/integration/src/keystone-parity-pulse.mjs
-COPY scripts/keystone-wire-salvage.mjs /app/integration/src/keystone-wire-salvage.mjs
+COPY scripts/keystone-leader-clamp.mjs /app/integration/src/keystone-leader-clamp.mjs
 COPY scripts/patch-keystone-latest-request.mjs /tmp/patch-keystone-latest-request.mjs
 RUN node /tmp/patch-keystone-latest-request.mjs /app/integration/src/keystone-player.ts \
     && rm /tmp/patch-keystone-latest-request.mjs

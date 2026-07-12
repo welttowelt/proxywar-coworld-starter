@@ -56,6 +56,19 @@ actions, and won none. The mechanism was visible; the strategy was worse. The
 Frontier line closes at v30. Exact v14 returns to the same roster as the control
 that should have stood there first.
 
+## the fable record
+
+Fable read the engine well enough to separate the pod executor from the
+server-built action menu and to confirm that request freshness was a real wire
+defect. Those findings stay because the replays support them.
+
+Its tactical map failed in the field. The recommended behind-and-falling arm
+became `skuld-v4kn` and went `0/4`. The reservation-veto line became
+`v4li-v3tr`, fired broadly, and went `0/4`. A later wire derivative reached
+`g4lga-v4rd` and left zero marks across four hosted episodes. Fable remains a
+useful forensic collaborator. Its tactical authority ends here, and no Fable
+arm remains in the active policy path.
+
 ## the rci law
 
 No candidate advances on source elegance. One delta, measured reach, independent
@@ -143,34 +156,16 @@ then ignored twenty-one chances to break the bond as Auri's lead widened from
 ten points to thirty-five. The next blade gets one task: sever the leader's bond
 while parity still permits a fight.
 
-## the reviewer lane
+## n1dh0ggr
 
-On Oli's word a second line opened beside the build lane: Claude reads source and
-replays, owns no seat, and may not touch league state. Its first pass verified the
-v14 baseline and all six candidate audits at e2b5f65, then killed an arm class
-before it burned episodes: pods run the executor in-process, but the server builds
-the legal-action menu — menu-side tunables are dead letters in a pod env.
+The dead guard is gone. Two policy layers became one, and the vanished-order
+ladder lost its place in the image. `n1dh0ggr` keeps the proven parity cut and
+adds one order: while an allied leader is still within reach, break the bond.
 
-When the hosted field broke v27, the reviewer lane traced repeated stale social
-and pressure IDs into HOLD substitutions. v28's request coalescing reduced the
-damage sharply but did not erase it, and the policy went 0/4. The transport repair
-stays. With action delivery improved and measured, the source-reviewed
-behind-and-falling pair becomes the next isolated arm.
-
-## the reservation filter
-
-The holds were never stale ids and never a race. The engine decides every seat in
-parallel on one menu, then validates in seat order against a menu re-filtered by
-earlier seats' same-turn diplomacy reservations. James Boggs validates first and
-acts diplomatically nearly every turn; our seat validates third. 111 of 111
-rejections were reservation strikes; 383 of 383 acceptances were unreserved.
-The pod played correctly on the information it had, 130 decisions running.
-
-Coalescing could not touch this — necessary, not sufficient. The smallest sound
-repair is a reappearance-veto at the wire: a submitted social id that returns in
-the next menu provably did not execute; veto it and let the executor re-rank.
-Estimated recovery, ninety of the hundred and eleven. The full anatomy and the
-v29 warning live in the reviewer lane's addendum.
+Only the lost parent field bears the mark's conditions. Four turns offered the
+break while Odin still held troop parity; none of the three winning fields did.
+The local mirror gave Auri the field and never invoked the mark. That is clean
+transport evidence, not merit. The hosted field alone can name a successor.
 
 ## the rival shifts
 

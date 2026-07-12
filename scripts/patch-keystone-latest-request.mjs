@@ -8,16 +8,14 @@ if (!target) {
 const source = await readFile(target, "utf8");
 const importAnchor =
   `import type { LlmProvider } from "../../src/server/agents/LlmProvider";`;
-const parityImport =
-  `import { applyParityPulse } from "./keystone-parity-pulse.mjs";`;
-const salvageImport =
-  `import { applyWireSalvage } from "./keystone-wire-salvage.mjs";`;
+const leaderClampImport =
+  `import { applyLeaderClamp } from "./keystone-leader-clamp.mjs";`;
 if (!source.includes(importAnchor)) {
   throw new Error("canonical keystone import anchor was not found");
 }
-const withParityImport = source.replace(
+const withLeaderClampImport = source.replace(
   importAnchor,
-  `${importAnchor}\n${parityImport}\n${salvageImport}`,
+  `${importAnchor}\n${leaderClampImport}`,
 );
 
 const oldBlock = `  // Serialize decision handling: a platform retry that overlaps an in-flight
@@ -51,8 +49,7 @@ const newBlock = `  // Keep shared brain state serialized, but coalesce overlapp
         try {
           const input = requestToBrainInput(current.request);
           let decision = await brain.decide(input);
-          decision = applyParityPulse(input, decision);
-          decision = applyWireSalvage(input, decision);
+          decision = applyLeaderClamp(input, decision);
           response = decisionToResponse(requestID, decision);
         } catch (error) {
           const messageText =
@@ -89,11 +86,11 @@ const newBlock = `  // Keep shared brain state serialized, but coalesce overlapp
 
   socket.on("message", (data: unknown) => {`;
 
-if (!withParityImport.includes(oldBlock)) {
+if (!withLeaderClampImport.includes(oldBlock)) {
   throw new Error("canonical keystone decision-loop anchor was not found");
 }
 
-const withDrain = withParityImport.replace(oldBlock, newBlock);
+const withDrain = withLeaderClampImport.replace(oldBlock, newBlock);
 const queueStart = `    decisionChain = decisionChain.then(async () => {`;
 const queueEnd = `      socket.send(JSON.stringify(response));
     });`;
