@@ -34,7 +34,7 @@ const MODELS = [
   "us.anthropic.claude-haiku-4-5-20251001-v1:0",
   "anthropic.claude-sonnet-4-5-20250929-v1:0",
 ].filter(Boolean);
-const CODENAME = process.env.POLICY_CODENAME || "v1drir-v0rn";
+const CODENAME = process.env.POLICY_CODENAME || "ygg-v0rn";
 
 let bedrock = null;
 try { bedrock = new AnthropicBedrock({ awsRegion: REGION }); } catch (e) { bedrock = null; }

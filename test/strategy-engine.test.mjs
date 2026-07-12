@@ -13,9 +13,18 @@ function action(id, kind, label = id, risk = lowRisk) {
   return { id, kind, label, risk };
 }
 
-function observation({ tileShare = 0.05, troopRatio = 0.8, rivals = [], incomingAttacks = [] } = {}) {
+function observation({
+  tileShare = 0.05,
+  troopRatio = 0.8,
+  rivals = [],
+  incomingAttacks = [],
+  profile = "",
+  combat = {},
+  tacticalAffordances = {},
+} = {}) {
   return {
     phase: "active",
+    profile,
     ownState: {
       tileShare,
       troopRatio,
@@ -24,6 +33,8 @@ function observation({ tileShare = 0.05, troopRatio = 0.8, rivals = [], incoming
       borderTiles: 100,
       incomingAttacks,
     },
+    combat,
+    tacticalAffordances,
     visiblePlayers: rivals.map((rival) => ({
       isAlive: true,
       sharesBorder: true,
@@ -50,6 +61,33 @@ test("opening neutral expansion overrides a boat-heavy plan", () => {
     preferKinds: ["boat", "boat", "hold"],
   });
   assert.equal(selected.id, "expand:terra-nullius:10");
+});
+
+test("a protective profile takes the recommended opening survival alliance", () => {
+  const alliance = {
+    ...action("alliance:james", "alliance_request", "Alliance with James Boggs"),
+    metadata: { recipientID: "james", relation: 0 },
+  };
+  const actions = [
+    action("expand:terra-nullius:10", "attack", "Expand into neutral land with 10% troops"),
+    alliance,
+  ];
+  const obs = observation({
+    profile: "defensive",
+    rivals: [{
+      id: "james",
+      name: "James Boggs",
+      tileShare: 0.12,
+      relativeTroopRatio: 1,
+    }],
+    tacticalAffordances: {
+      survivalAlliance: {
+        recommended: true,
+        bestAllyName: "James Boggs",
+      },
+    },
+  });
+  assert.equal(choose(actions, obs).id, alliance.id);
 });
 
 test("an opening counterattack outranks neutral expansion under active attack", () => {
@@ -621,16 +659,51 @@ test("a collapsing player retreats an active front before expanding", () => {
   assert.equal(choose(actions, obs, null, history).id, "retreat:attack-113");
 });
 
-test("a collapsing player uses one stable alliance before neutral expansion", () => {
+test("confirmed collapse retreats even after the incoming attack clears", () => {
+  const actions = [
+    action("retreat:attack-113", "retreat", "Retreat attack 113"),
+    action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%"),
+  ];
+  const history = [0.25, 0.23, 0.2, 0.18].map((tileShare, index) => ({
+    actionID: `attack:rival:${index}`,
+    kind: "attack",
+    targetName: "Rival",
+    tileShare,
+  }));
+  const obs = observation({
+    tileShare: 0.15,
+    troopRatio: 0.9,
+    rivals: [{ id: "rival", name: "Rival", tileShare: 0.3, relativeTroopRatio: 0.8 }],
+  });
+  assert.equal(choose(actions, obs, null, history).id, "retreat:attack-113");
+});
+
+test("a protective profile retreats at the first six-percent drawdown", () => {
+  const actions = [
+    action("retreat:attack-113", "retreat", "Retreat attack 113"),
+    action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%"),
+  ];
+  const history = [0.2, 0.2, 0.2].map((tileShare, index) => ({
+    actionID: `attack:rival:${index}`,
+    kind: "attack",
+    targetName: "Rival",
+    tileShare,
+  }));
+  const obs = observation({
+    tileShare: 0.187,
+    troopRatio: 0.9,
+    profile: "diplomatic",
+    rivals: [{ id: "rival", name: "Rival", tileShare: 0.3, relativeTroopRatio: 0.8 }],
+  });
+  assert.equal(choose(actions, obs, null, history).id, "retreat:attack-113");
+});
+
+test("collapse avoids an alliance race while a tactical action remains", () => {
   const stableAlliance = {
     ...action("alliance:rival", "alliance_request", "Alliance with Rival"),
     metadata: { recipientID: "rival", relation: 1 },
   };
-  const neutral = action(
-    "expand:terra-nullius:35",
-    "attack",
-    "Expand into Terra Nullius 35%",
-  );
+  const neutral = action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%");
   const history = Array.from({ length: 18 }, (_, index) => ({
     actionID: `attack:rival:${index}`,
     kind: "attack",
@@ -646,7 +719,7 @@ test("a collapsing player uses one stable alliance before neutral expansion", ()
       { id: "rival", name: "Rival", tileShare: 0.2, relativeTroopRatio: 0.9 },
     ],
   });
-  assert.equal(choose([neutral, stableAlliance], obs, null, history).id, stableAlliance.id);
+  assert.equal(choose([neutral, stableAlliance], obs, null, history).id, neutral.id);
 });
 
 test("collapse recovery never escalates neutral expansion above 10 percent", () => {
@@ -657,6 +730,23 @@ test("collapse recovery never escalates neutral expansion above 10 percent", () 
       `Expand into Terra Nullius ${percent}%`,
     )
   );
+  const history = [0.24, 0.22, 0.19, 0.17].map((tileShare, index) => ({
+    actionID: `expand:terra-nullius:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare,
+  }));
+  assert.equal(
+    choose(actions, observation({ tileShare: 0.14 }), null, history).id,
+    "expand:terra-nullius:10",
+  );
+});
+
+test("collapse skips high-risk economy builds", () => {
+  const actions = [
+    action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%"),
+    action("build:Factory:99", "build", "Build Factory", { level: "high" }),
+  ];
   const history = [0.24, 0.22, 0.19, 0.17].map((tileShare, index) => ({
     actionID: `expand:terra-nullius:${index}`,
     kind: "attack",

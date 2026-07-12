@@ -64,29 +64,35 @@
     {
       "version": "v17",
       "codename": "v1drir-v0rn",
-      "status": "candidate",
-      "mechanism": "survive pressured seats and convert the remaining leader"
+      "status": "rejected",
+      "mechanism": "late collapse guard rejected after losing its first two hosted gates"
     },
     {
       "version": "v18",
+      "codename": "ygg-v0rn",
+      "status": "candidate",
+      "mechanism": "bind profile-aware alliances before pressure and retreat on confirmed drawdown"
+    },
+    {
+      "version": "v19",
       "codename": "hrafn-t1de",
       "status": "reserved",
       "mechanism": "time naval conversion before neutral expansion stalls"
     },
     {
-      "version": "v19",
+      "version": "v20",
       "codename": "hug1nn-syn",
       "status": "reserved",
       "mechanism": "adapt target selection to opponent and seat history"
     },
     {
-      "version": "v20",
+      "version": "v21",
       "codename": "mun1nn-rune",
       "status": "reserved",
       "mechanism": "carry replay-derived memory into matchup policy"
     },
     {
-      "version": "v21",
+      "version": "v22",
       "codename": "draupn1r-l0ck",
       "status": "reserved",
       "mechanism": "promote only after reproducible map-seat gates"

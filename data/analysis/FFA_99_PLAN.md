@@ -2,8 +2,8 @@
 
 ## Decision
 
-Keep v14 (`b0lverk-h0gg`) as the official champion while v17
-(`v1drir-v0rn`) runs through controlled
+Keep v14 (`b0lverk-h0gg`) as the official champion while v18
+(`ygg-v0rn`) runs through controlled
 map-seat tests. Promote only after the candidate records zero outright misses
 in the targeted gate. The rolling-window goal is at least 99% outright episode
 wins, which currently requires a perfect window.
@@ -35,18 +35,27 @@ Every other observed v14 map-seat profile is 100%. Spawn selection is owned by
 the game runtime, so the policy can only improve post-spawn survival and
 conversion.
 
-## `v1drir-v0rn` mechanism
+## Rejected `v1drir-v0rn` probe
 
-1. Keep safe troop percentage ahead of anti-repeat novelty, preventing a safe
-   25% attack from being forced to 40%.
-2. Cap non-finishing rival attacks at 10% under incoming pressure.
-3. Retreat exposed fronts before restarting expansion during a collapse.
-4. Permit a stable survival alliance while collapsing, but reject transient
-   pending-request action IDs.
-5. Suppress high-percentage neutral expansion during collapse.
-6. Open a naval front on the remaining leader before late neutral farming.
-7. Bank for a Missile Silo after the core economy and use a legal nuke before
-   more expansion in a mature stalemate.
+v17 lost its first two Pangaea seat-2 hosted episodes, both to James Boggs.
+Replay inspection showed that its late survival alliance could race out of the
+legal action set, while its retreat rule failed once an incoming attack cleared
+between decision ticks. v17 cannot be promoted.
+
+## `ygg-v0rn` mechanism
+
+1. Read the runtime's defensive and diplomatic profiles instead of treating
+   every spawn as the same tactical position.
+2. Take the runtime-recommended stable survival alliance in the first two
+   active decisions, before pressure makes social action IDs volatile.
+3. Retreat defensive or diplomatic profiles at the first 6% drawdown and all
+   profiles after a confirmed 15% collapse, even when the incoming attack has
+   cleared during the current tick.
+4. Keep tactical moves ahead of late alliance requests so simultaneous
+   resolution cannot turn a disappearing social action into a hold.
+5. Suppress high-risk economy builds while defending or collapsing.
+6. Preserve the bounded troop, target-conversion, naval, and silo rules that
+   already passed under `b0lverk-h0gg`.
 
 ## Promotion gate
 
