@@ -440,3 +440,12 @@ zero holds, and zero rejected decisions. Its verified replay SHA-256 is
 Local Bedrock planning was unavailable on 212 decisions, so the pressure pulse
 executed zero times. This proves the exact image, selector, protocol, and replay
 path without making a competitive claim.
+
+The pinned hosted gate completed 0/4; Auri won every episode. v26 finished with
+0, 0, 2,293, and 2,491 tiles, including two eliminations. It attacked Auri four
+times while Auri attacked it 67 times. The tagged mechanism executed four times
+across two episodes, but anti-repeat raised the second pulse in each from 10% to
+25% at only 0.63 relative strength. In the other two episodes, continued
+eligible attacks on Richard prevented the fallback cadence from executing at
+all. v26 is rejected and exact v14 is restored. Full evidence is archived in
+`experiments/audit-v26-asia-seat3.json`.

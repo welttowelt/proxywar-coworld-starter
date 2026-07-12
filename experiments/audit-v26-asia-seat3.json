@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "experience_request_id": "xreq_fedf8f77-0290-490c-a32d-bb9bef6cb532",
+  "status": "completed",
+  "policy_version": 26,
+  "policy_version_id": "dfcf44ac-8233-4ab1-a76b-5ebcd68cc380",
+  "codename": "g4gnr4d-t4kt",
+  "map": "Asia",
+  "seat": 3,
+  "episodes": 4,
+  "wins": 0,
+  "win_rate_pct": 0,
+  "winner_counts": {"Auri": 4},
+  "final_tiles": [0, 0, 2293, 2491],
+  "average_final_tiles": 1196,
+  "eliminations": 2,
+  "decisions": 181,
+  "holds": 0,
+  "rejected": 0,
+  "fallbacks": 19,
+  "hostile_attacks": 56,
+  "hostile_commitments": {"10_pct": 17, "25_pct": 15, "40_pct": 24},
+  "policy_attack_targets": {"Richard Higgins": 52, "Auri": 4},
+  "opponent_attacks_on_policy": {"Auri": 67, "Richard Higgins": 23, "James Boggs": 6},
+  "pressure_pulses": [
+    {"episode_id": "85fd0c3d-f0bb-4180-94cb-5394a09d22fb", "turn": 2400, "troop_percent": 10, "relative_troop_ratio": 0.61, "accepted": true},
+    {"episode_id": "85fd0c3d-f0bb-4180-94cb-5394a09d22fb", "turn": 2600, "troop_percent": 25, "relative_troop_ratio": 0.63, "accepted": true},
+    {"episode_id": "eef48aa0-e2b6-4fb6-a37a-ca833020493a", "turn": 2400, "troop_percent": 10, "relative_troop_ratio": 0.61, "accepted": true},
+    {"episode_id": "eef48aa0-e2b6-4fb6-a37a-ca833020493a", "turn": 2600, "troop_percent": 25, "relative_troop_ratio": 0.63, "accepted": true}
+  ],
+  "diagnosis": {
+    "mechanism_executed": true,
+    "mechanism_outcome": "failed",
+    "primary_failure": "The cadence remained behind ordinary weak-target eligibility, so it was absent in two eliminations and began only after Auri already held a large troop advantage in the other two.",
+    "secondary_failure": "The anti-repeat pool changed the intended 10% pulse into a 25% attack on each second execution."
+  },
+  "checks": {
+    "completed_episode_floor": true,
+    "perfect_episode_wins": false,
+    "zero_holds": true,
+    "zero_rejected_decisions": true,
+    "pressure_pulse_mechanism_exercised": true,
+    "all_pressure_pulses_accepted": true
+  },
+  "passed": false,
+  "decision": "rejected",
+  "active_champion": "oli-codex-proxywar:v14",
+  "episode_audits": [
+    {"episode_id": "61daabdb-0b70-44f7-8022-1b7ae691fb84", "winner": "Auri", "final_tiles": 0, "cost_usd": 0.021444, "pressure_pulses": 0, "replay_sha256": "1a8807ec40d8777559d4c5492dcba3f11f4c6a0b5768aae5cc30ff7bc70ceb51"},
+    {"episode_id": "ee87020d-41b5-4a28-a487-8216d6234079", "winner": "Auri", "final_tiles": 0, "cost_usd": 0.024674, "pressure_pulses": 0, "replay_sha256": "cdaf84a9ba9c7498e701ba8318312afd54dcaf18c0f12add00bd3f6c3408d472"},
+    {"episode_id": "85fd0c3d-f0bb-4180-94cb-5394a09d22fb", "winner": "Auri", "final_tiles": 2293, "cost_usd": 0.018823, "pressure_pulses": 2, "replay_sha256": "faff30b4a3b9317d2389951c010cea2685282cba613bab115fd1dceca6cceeb6"},
+    {"episode_id": "eef48aa0-e2b6-4fb6-a37a-ca833020493a", "winner": "Auri", "final_tiles": 2491, "cost_usd": 0.021274, "pressure_pulses": 2, "replay_sha256": "66ab49ed4639a0729ac92b4dcf09daa70c78757c536771d6ae39839cf552cc12"}
+  ]
+}
