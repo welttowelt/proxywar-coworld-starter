@@ -63,7 +63,7 @@ test("opening neutral expansion overrides a boat-heavy plan", () => {
   assert.equal(selected.id, "expand:terra-nullius:10");
 });
 
-test("a protective profile takes the recommended opening survival alliance", () => {
+test("an exact tactical target takes the recommended opening survival alliance", () => {
   const alliance = {
     ...action("alliance:james", "alliance_request", "Alliance with James Boggs"),
     metadata: { recipientID: "james", relation: 0 },
@@ -73,21 +73,20 @@ test("a protective profile takes the recommended opening survival alliance", () 
     alliance,
   ];
   const obs = observation({
-    profile: "defensive",
-    rivals: [{
-      id: "james",
-      name: "James Boggs",
-      tileShare: 0.12,
-      relativeTroopRatio: 1,
-    }],
     tacticalAffordances: {
       survivalAlliance: {
         recommended: true,
+        bestAllyTargetID: "james",
         bestAllyName: "James Boggs",
       },
     },
   });
   assert.equal(choose(actions, obs).id, alliance.id);
+});
+
+test("request-envelope context restores an omitted runtime profile", () => {
+  const state = buildState(observation(), [], [], { profile: "defensive" });
+  assert.equal(state.profile, "defensive");
 });
 
 test("an opening counterattack outranks neutral expansion under active attack", () => {

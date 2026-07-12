@@ -135,3 +135,34 @@ candidate rule was removed from the source branch.
 | v14 | `f2544cfb-f790-445b-95c4-18b2471e4351` | win, 225,038 tiles | `c0487310a5072874c8509be7e50a7774bf10c1eb43d57131318b17b14e58a53f` |
 | v15 | `bde44a72-cbda-4cfa-861a-3e9764ff91c7` | loss, 4,048 tiles | `b1c90a5da4ba3c072b264aceb4376ef2bc0c654f45ebe6f08ab2834786c93529` |
 | v15 | `3bd8d9b7-a1a3-48e8-9028-4a581abe8dcf` | loss, 20,384 tiles | `9dbd003655fcfae06d6b28b07ca449d423d3edc50def8f52e06b0c46f0a7f853` |
+
+## Pangaea seat-2 survival probes, 2026-07-12
+
+Goal: repair the weakest recurring profile without replacing v14 until a
+candidate clears a same-roster gate. Both candidates used Pangaea seat 2 with
+James Boggs in slot 0, the candidate in slot 1, Auri v4 in slot 2, and Richard
+Higgins in slot 3.
+
+| Policy | Experience request | Wins | Final tiles | Holds | Rejected | Cost |
+| --- | --- | ---: | --- | ---: | ---: | ---: |
+| v17 / `v1drir-v0rn` | `xreq_fe4cd17a-ef22-4dea-8433-a0ed742075dc` | 0/4 | 264; 502; 0; 0 | 3 | 0 | $0.111916 |
+| v18 / `ygg-v0rn` | `xreq_6a3bfe64-78ba-465a-add7-d033a1c58e96` | 0/4 | 484; 0; 656; 7,068 | 0 | 0 | $0.076936 |
+| v14 baseline | `xreq_2fde5089-d10f-4e86-a623-dcd2c8a7a5b7` | 3/4 | not retained | not retained | not retained | not retained |
+
+v17's retreat improvement did not solve the opening. Three episodes eventually
+held once a late social action disappeared, and all four lost. v18 removed the
+holds but never selected an alliance action. Hosted source inspection confirmed
+that the profile can live in the request envelope, while the tactical
+recommendation exposes the exact ally target ID. v19 / `hrafn-syn` addresses
+those two wiring failures and remains a candidate only.
+
+| Policy | Episode | Result | Replay SHA-256 |
+| --- | --- | --- | --- |
+| v17 | `49db144b-e808-4931-adbd-95339c094b3d` | loss, 264 tiles; James Boggs won | `3f2c3e9fa8ac917aa0ec6e62f792fba94272c50173daa9df51666521367e690d` |
+| v17 | `c7edd934-6e62-4541-82ee-42bdc13beec6` | loss, 502 tiles; James Boggs won | `40c819b77ba25bf12a40c9ef50de1d785bb4364230fa5aa3cf754de4ff9986a5` |
+| v17 | `a0a61f58-6e10-4ebc-bd9a-e8c7e88ed0b1` | loss, 0 tiles; Richard Higgins won | `28c45f32ef56b843c5f8f13f880d9c3e1700e3f7140175e20132ed84559f6982` |
+| v17 | `f1c6a6f2-6deb-4d91-8a3b-95103db09d05` | loss, 0 tiles; James Boggs won | `1e1c238ed1d2a2c2e2d1a491bf9a7f093fcadbed36abc08deab443426cadefca` |
+| v18 | `12bd5b75-521d-471c-96c6-240813660bb4` | loss, 484 tiles; James Boggs won | `88034a8703ccc07d9732838dd10bbb3c77532f178576f6c7da6587bc57653253` |
+| v18 | `6a8bf08f-dfc1-4dbd-8192-230369761eed` | loss, 0 tiles; Auri won | `a15a388aec55ba3ddeec904d98e4992dc301f30adf9902aa1a895ad7db8c481f` |
+| v18 | `168f708c-5703-4f1f-8029-9596807d0ecb` | loss, 656 tiles; James Boggs won | `1a585d320868eb53cb0803798a36b5f251e73d3c5217e60b0c4f8c8371177291` |
+| v18 | `af68ae17-ef4c-45d8-a73e-faec2108b34c` | loss, 7,068 tiles; James Boggs won | `ed1c096e76cfc215d12ac6c3b0d3f0921bcbe1bc5fb2a8749e0ad9663ba40f72` |

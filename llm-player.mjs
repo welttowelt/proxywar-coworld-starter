@@ -34,7 +34,7 @@ const MODELS = [
   "us.anthropic.claude-haiku-4-5-20251001-v1:0",
   "anthropic.claude-sonnet-4-5-20250929-v1:0",
 ].filter(Boolean);
-const CODENAME = process.env.POLICY_CODENAME || "ygg-v0rn";
+const CODENAME = process.env.POLICY_CODENAME || "hrafn-syn";
 
 let bedrock = null;
 try { bedrock = new AnthropicBedrock({ awsRegion: REGION }); } catch (e) { bedrock = null; }
@@ -191,7 +191,9 @@ function handleMessage(activeSocket, data) {
   if (process.env.DEBUG_ACTIONS === "1" && history.length === 3) {
     console.log(`debug legal actions: ${JSON.stringify(actions)}`);
   }
-  const state = buildState(obs, actions, history);
+  const state = buildState(obs, actions, history, {
+    profile: message.request?.agent?.profile ?? message.agent?.profile,
+  });
 
   // Keep the plan fresh WITHOUT blocking — the answer below never waits on Bedrock.
   planDecisionAge += 1;

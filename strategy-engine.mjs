@@ -80,7 +80,7 @@ export function avoidActionIDs(history) {
   return [...new Set([...(streak >= 2 ? streakIDs : []), ...exactRepeats])];
 }
 
-export function buildState(observation, actions, history = []) {
+export function buildState(observation, actions, history = [], context = {}) {
   const own = observation?.ownState || {};
   const combat = observation?.combat || {};
   const tactical = observation?.tacticalAffordances || {};
@@ -117,7 +117,7 @@ export function buildState(observation, actions, history = []) {
   }));
   return {
     phase: clean(observation?.phase),
-    profile: clean(observation?.profile).toLowerCase(),
+    profile: (clean(observation?.profile) || clean(context?.profile)).toLowerCase(),
     decisionNumber: history.length,
     self,
     rivals,
@@ -134,6 +134,7 @@ export function buildState(observation, actions, history = []) {
       tactical?.transportTroopBanking?.incomingThreatRatio,
     ),
     survivalAllianceRecommended: tactical?.survivalAlliance?.recommended === true,
+    survivalAllianceTargetID: clean(tactical?.survivalAlliance?.bestAllyTargetID),
     survivalAllianceTargetName: clean(tactical?.survivalAlliance?.bestAllyName),
   };
 }
@@ -184,6 +185,17 @@ function stableAllianceRequests(actions) {
   return safeActions(actions, (action) =>
     action.kind === "alliance_request" && Number(action?.metadata?.relation) !== 2
   );
+}
+
+function preferredAllianceRequest(actions, targetID) {
+  const preferred = clean(targetID).toLowerCase();
+  if (!preferred) return null;
+  return stableAllianceRequests(actions).find((action) => {
+    const recipientID = clean(
+      action?.metadata?.recipientID ?? action?.metadata?.targetID,
+    ).toLowerCase();
+    return recipientID === preferred || clean(action?.id).toLowerCase() === `alliance:${preferred}`;
+  }) ?? null;
 }
 
 function bestAllianceRequest(actions, state, allowPending = false, preferredTargetName = null) {
@@ -557,16 +569,11 @@ export function chooseAction(actions, state, plan = null, history = []) {
     history,
     (entry) => entry.kind === "alliance_request" || entry.kind === "break_alliance",
   );
-  if (
-    protectiveProfile && state.survivalAllianceRecommended && activeDecisions <= 2 &&
-    sinceAllianceMove >= 18
-  ) {
-    const openingAlliance = bestAllianceRequest(
+  if (state.survivalAllianceRecommended && activeDecisions <= 2 && sinceAllianceMove >= 18) {
+    const openingAlliance = preferredAllianceRequest(
       actions,
-      state,
-      false,
-      state.survivalAllianceTargetName,
-    );
+      state.survivalAllianceTargetID,
+    ) ?? bestAllianceRequest(actions, state, false, state.survivalAllianceTargetName);
     if (openingAlliance) return openingAlliance;
   }
 
