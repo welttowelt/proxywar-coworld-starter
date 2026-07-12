@@ -714,3 +714,19 @@ break. Removing that filter exposes 16 exact parent decisions across three
 independent traces; every one names the allied tile leader and preserves the
 same share, troop-ratio, incoming-pressure, and non-hostile-parent gates. v34
 is rejected. The next arm removes only that impossible filter.
+
+## Authoritative leader-sever candidate, 2026-07-12
+
+v35 / `f3nr1r` names v34 as its exact parent and removes only the risk-level
+exclusion from the leader's legal `break_alliance` lookup. It adds no helper,
+fallback, or tunable. All share, gap, troop-ratio, incoming-pressure, and
+existing-hostile-action gates remain unchanged. The marker is
+`[f3nr1r:s3vr]`.
+
+The parent supplies 16 reachable decisions across three hosted traces, with
+leader gaps of 0.09-0.21 and own-to-Auri troop ratios of 0.945-1.289. The
+`break_alliance` ID is present in the current menu on every one. Unit and audit
+fixtures pass `65/65`, including the server-classified high-risk break. The
+full local episode was stopped and skipped on Oli's instruction; no local
+strategic claim is made. Evidence is archived in
+`experiments/diagnosis-v35-asia-seat3.json`.

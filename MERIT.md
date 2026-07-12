@@ -36,6 +36,7 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | Fable review | correct server-menu boundary and request-freshness diagnosis; tactical derivatives `0/4`, `0/4`, then zero markers | forensics retained, tactical authority retired |
 | v34 local | full four-container path; 108/108 candidate decisions accepted; zero rejections/fallbacks; Auri won; sever marker `0` | runtime proof only, tactical gate pending |
 | v34 hosted | `0/4`; Auri sweep; tiles 28,543 / 31,434 / 20,739 / 32,388; 25 holds; sever marker `0` | rejected, impossible risk gate found |
+| v35 preflight | one risk-filter deletion; 16 parent decisions across three traces; `65/65` fixtures; full local episode skipped by user | hosted diagnostic only |
 | promotion validator | hosted-ready is separate from hosted `4/4` and regression `20/20` completion | false promotion claim closed |
 
 Detailed evidence lives in [`experiments/`](experiments/README.md). Public round

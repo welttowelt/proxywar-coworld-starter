@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "oli-codex-proxywar:v35",
+    "codename": "f3nr1r",
+    "parent_ref": "oli-codex-proxywar:v34",
+    "parent_policy_version_id": "3ec8ae7b-60aa-4aeb-b880-fab781e9aa87"
+  },
+  "matched_parent": {
+    "request_id": "xreq_b8157cd6-8daa-4b9d-a4ce-10b5e7104f80",
+    "variant": "tournament-4p-asia",
+    "seat": 3,
+    "wins": 0,
+    "episodes": 4,
+    "final_tiles": [28543, 31434, 20739, 32388],
+    "holds": 25,
+    "rejections": 0,
+    "leader_severs": 0,
+    "audit": "experiments/audit-v34-hosted-asia-seat3.json"
+  },
+  "failure": {
+    "summary": "v34 required a low-risk alliance break even though the server classifies every legal break_alliance action as high risk",
+    "source": "/app/proxywar/src/server/agents/LegalActionBuilder.ts",
+    "source_behavior": "alliance.action === break maps to risk level high and score 0.7"
+  },
+  "current_parent_reach": {
+    "reachable_decisions": 16,
+    "independent_traces": 3,
+    "conditions": "all v34 gates except the impossible risk filter passed and break_alliance against the allied tile leader was legal",
+    "ratio_range": [0.945, 1.289],
+    "leader_gap_range": [0.09, 0.21]
+  },
+  "mechanism": {
+    "marker": "[f3nr1r:s3vr]",
+    "exact_delta": "remove only the risk-level exclusion from the legal break_alliance lookup",
+    "runtime_post_processors": 1,
+    "new_fallbacks": 0,
+    "new_tunables": 0,
+    "preserves_existing_hostile_attacks": true,
+    "preserves_parity_strike": true
+  },
+  "local": {
+    "full_episode": "skipped by user",
+    "unit_tests": 65,
+    "unit_tests_passed": 65,
+    "mechanism_fixture_reached": true,
+    "high_risk_break_fixture_accepted": true,
+    "image_sha256": "ab4de6d4204f0be45be6fb0d3557ae73cc814363a8f175ad2fd74a94554a2d0e"
+  },
+  "hosted_kill_criteria": {
+    "wins": "4/4",
+    "holds": 0,
+    "rejections": 0,
+    "minimum_leader_severs": 1,
+    "all_leader_severs_productive": true,
+    "planner_degradation": "no unexplained regression versus v34 parent"
+  }
+}

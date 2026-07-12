@@ -284,7 +284,7 @@ test("leader-sever gate parses and requires an accepted alliance break", () => {
     selectedLegalActionId: "break_alliance:auri",
     selectedActionMetadata: { targetID: "auri", targetName: "Auri" },
     reason:
-      "bedrock diagnostic || [n1dh0ggr:s3vr] " +
+      "bedrock diagnostic || [f3nr1r:s3vr] " +
       "mode=sever leader=Auri gap=0.100 ratio=1.070",
   };
   fixture.inlineRunArtifacts["decisions.jsonl"] =

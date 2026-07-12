@@ -1,5 +1,5 @@
 export const PARITY_PULSE_MARKER = "[hrafn-s4r:r1ft]";
-export const LEADER_SEVER_MARKER = "[n1dh0ggr:s3vr]";
+export const LEADER_SEVER_MARKER = "[f3nr1r:s3vr]";
 
 const MIN_OWN_TILE_SHARE = 0.2;
 const MIN_LEADER_GAP = 0.08;
@@ -103,8 +103,7 @@ export function applyLeaderClamp(input, decision) {
   if (leader.player.isAllied === true) {
     const sever = legalActions.find((action) =>
       action.kind === "break_alliance" &&
-      actionTargetID(action) === leader.player.playerID &&
-      action.risk?.level !== "high"
+      actionTargetID(action) === leader.player.playerID
     );
     return sever
       ? markedDecision(

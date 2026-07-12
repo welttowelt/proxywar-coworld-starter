@@ -172,6 +172,13 @@ Its own wording forbade it: every break is branded high risk by the field, while
 the guard admitted only a low-risk break. Sixteen legal cuts stood behind that
 contradiction. `n1dh0ggr` is denied; the impossible adjective is removed.
 
+## f3nr1r
+
+No new mechanism enters. `f3nr1r` removes one false condition and trusts the
+field's legal break as written. Sixteen parent turns stand behind it. The local
+mirror was dismissed; the hosted field receives the exact image without a
+borrowed tactic or a second guard.
+
 ## the rival shifts
 
 Auri stopped standing still. Versions seven and ten reached the field: seven

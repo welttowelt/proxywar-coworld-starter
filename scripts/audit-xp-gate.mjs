@@ -9,7 +9,7 @@ const COWORLD_PACKAGE = "coworld==0.1.28";
 const DEFAULT_PLAYER = "odin free";
 const PRESSURE_PULSE_TAG = "[g4gnr4d-t4kt:pulse]";
 const PARITY_PULSE_TAG = "[hrafn-s4r:r1ft]";
-const LEADER_SEVER_TAG = "[n1dh0ggr:s3vr]";
+const LEADER_SEVER_TAGS = ["[n1dh0ggr:s3vr]", "[f3nr1r:s3vr]"];
 const WIRE_SALVAGE_TAG = "[g4lga-v4rd:w1re]";
 const BANK_BUILD_TAG = "[h3l-v4kt:bank-build]";
 const ALLOWED_REPLAY_HOSTS = new Set(["softmax-public.s3.amazonaws.com"]);
@@ -161,7 +161,7 @@ export function auditEpisodeReplay(
         fallback: decision.fallbackUsed === true,
       });
     }
-    if (String(decision.reason ?? "").includes(LEADER_SEVER_TAG)) {
+    if (LEADER_SEVER_TAGS.some((tag) => String(decision.reason ?? "").includes(tag))) {
       leaderSeverSelections.push({
         turn: decision.turnNumber,
         action_id: decision.selectedLegalActionId ?? null,

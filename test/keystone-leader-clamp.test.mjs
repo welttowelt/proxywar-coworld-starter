@@ -44,7 +44,7 @@ function fixture({
     legalActions.push({
       id: "break_alliance:auri",
       kind: "break_alliance",
-      risk: { level: "low" },
+      risk: { level: "high" },
       metadata: { targetID: "auri", targetName: "Auri" },
     });
   }
@@ -100,7 +100,7 @@ test("leader clamp preserves the replay-proven parity strike", () => {
   assert.equal(result.metadata.leaderClamp, "strike");
 });
 
-test("leader clamp severs a parity-window alliance with the leader", () => {
+test("leader clamp severs the server-classified high-risk alliance with the leader", () => {
   const { input, decision } = fixture({ allied: true, ratio: 1.07 });
   const result = applyLeaderClamp(input, decision);
 
