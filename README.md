@@ -107,7 +107,7 @@ npm run dashboard:serve
 `npm run dashboard:update` is the guarded publish loop. It only runs from a clean
 worktree, refreshes the snapshot, commits changed datasets, pushes `main`, and deploys
 `site/` through GitHub Pages and attempts the production Netlify mirror. The local
-LaunchAgent runs this loop every 30 minutes while the machine is awake and skips any
+LaunchAgent runs this loop every five minutes while the machine is awake and skips any
 cycle that finds active worktree edits. A Netlify failure does not block GitHub Pages.
 
 Out of the box it already: reads your territory share, troops, gold, and each rival's
