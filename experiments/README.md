@@ -342,3 +342,19 @@ while Auri attacked v23 only five times. The three losses selected 0, 0, and 2
 attacks on Auri while receiving 13-14. v23 is rejected; the next candidate will
 govern commitment from the live reserve ratio rather than elapsed decisions.
 The complete evidence is in `experiments/audit-v23-asia-seat3.json`.
+
+## Asia seat-3 live reserve candidate, 2026-07-12
+
+v24 / `j4rn-l0k` starts from exact v14 and adds one feedback controller to
+opening hostile commitment. During the first 20 active decisions, own troop
+reserve below 0.75 restricts hostile attacks to 10%; reserve at or above 0.75
+permits 25%. The candidate-action pool enforces the limit even when v14's
+anti-repeat logic would otherwise force 40%. From decision 20 onward, exact v14
+commitment and finish behavior resumes.
+
+The mechanism targets the remaining v23 gap. A fixed 25% cap reduced Auri's
+first advantage from 1.66 to 1.31 but allowed own reserve to fall from 0.76 to
+0.59. The feedback floor should interrupt that decline and must put Auri below
+its observed 1.20 attack threshold. The hosted diagnostic is pinned in
+`experiments/gate-v24-asia-seat3.json`; v14 remains champion until 4/4 plus the
+separate 20/20 regression gate.
