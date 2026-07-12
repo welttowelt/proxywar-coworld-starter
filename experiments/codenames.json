@@ -106,8 +106,14 @@
     {
       "version": "v24",
       "codename": "j4rn-l0k",
-      "status": "candidate",
+      "status": "rejected",
       "mechanism": "govern opening commitments from the live troop reserve instead of elapsed decisions"
+    },
+    {
+      "version": "v25",
+      "codename": "j4rn-d0mr",
+      "status": "reserved",
+      "mechanism": "extend reserve feedback through midgame with three commitment bands"
     }
   ]
 }

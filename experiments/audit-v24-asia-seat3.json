@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "experience_request_id": "xreq_45044fe5-3f6d-46de-b470-8fb952176b5c",
+  "status": "completed",
+  "policy_version": 24,
+  "policy_version_id": "9a47631a-113b-4d2b-9075-74c712244983",
+  "map": "Asia",
+  "seat": 3,
+  "episodes": 4,
+  "wins": 3,
+  "win_rate_pct": 75,
+  "winner_counts": {
+    "odin free": 3,
+    "Auri": 1
+  },
+  "final_tiles": [225590, 222499, 224563, 2472],
+  "average_final_tiles": 168781,
+  "decisions": 293,
+  "holds": 0,
+  "rejected": 0,
+  "fallbacks": 31,
+  "opening_reserve_commitment_violations": 0,
+  "hostile_attacks": 141,
+  "attacks_on_auri": 97,
+  "auri_attacks_on_policy": 22,
+  "winning_episode_pressure": {
+    "policy_attacks_on_auri": [28, 27, 32],
+    "auri_attacks_on_policy": [1, 0, 1]
+  },
+  "losing_episode_pressure": {
+    "policy_attacks_on_auri": 10,
+    "auri_attacks_on_policy": 20,
+    "post_opening_40_pct_attacks": [
+      {"turn": 2400, "target": "Richard Higgins", "own_reserve": 0.77},
+      {"turn": 2500, "target": "Richard Higgins", "own_reserve": 0.59}
+    ],
+    "first_auri_attack": {"turn": 3200, "relative_troop_ratio": 1.3}
+  },
+  "checks": {
+    "completed_episode_floor": true,
+    "perfect_episode_wins": false,
+    "zero_holds": true,
+    "zero_rejected_decisions": true,
+    "opening_reserve_feedback_exercised": true,
+    "opening_reserve_feedback_invariant": true
+  },
+  "passed": false,
+  "decision": "rejected",
+  "active_champion": "oli-codex-proxywar:v14",
+  "episode_audits": [
+    {
+      "episode_request_id": "ereq_7708588d-806e-4ce3-9da4-b19d0b0f81e3",
+      "episode_id": "75ec6daf-5663-49b9-b05c-d0814ec64956",
+      "winner": "odin free",
+      "cost_usd": 0.048781,
+      "final_tiles": 225590,
+      "decisions": 67,
+      "fallbacks": 2,
+      "policy_attacks_on_auri": 28,
+      "auri_attacks_on_policy": 1,
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/e20433a8-6707-418a-a62d-0acd34bd9442.replay",
+      "replay_sha256": "89b199758c52f3f8d23c8aabfcaa25b0dce250f4f23748afa7bc2f3fceaf1506"
+    },
+    {
+      "episode_request_id": "ereq_14960a0e-7710-444c-bc45-31e2f9fa25ac",
+      "episode_id": "72ea23fa-85e4-4a9e-944f-1f6574cb5feb",
+      "winner": "odin free",
+      "cost_usd": 0.046231,
+      "final_tiles": 222499,
+      "decisions": 70,
+      "fallbacks": 9,
+      "policy_attacks_on_auri": 27,
+      "auri_attacks_on_policy": 0,
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/5e56d0f7-5578-4867-a95a-fb48acae9bea.replay",
+      "replay_sha256": "2c9f0b7d4e02b8177e898755831813fbc38e546cbb9478abcb196ef87a50ca70"
+    },
+    {
+      "episode_request_id": "ereq_4fcb771a-9b8d-45ca-99e0-9d6a569ddf13",
+      "episode_id": "5f06b903-f76d-47b8-8734-125270150189",
+      "winner": "odin free",
+      "cost_usd": 0.049631,
+      "final_tiles": 224563,
+      "decisions": 70,
+      "fallbacks": 19,
+      "policy_attacks_on_auri": 32,
+      "auri_attacks_on_policy": 1,
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/a832e17e-13cc-4c9b-ab40-26818acc659c.replay",
+      "replay_sha256": "acfc9d6fb074f0098b576318b89a09f6ea6c7c9f7f91b2821b636ef0db92bf94"
+    },
+    {
+      "episode_request_id": "ereq_030a72cc-4903-4e69-b01e-81ea3f2922cc",
+      "episode_id": "d95268cd-eff1-4dda-ab77-db1d14a9491f",
+      "winner": "Auri",
+      "cost_usd": 0.057111,
+      "final_tiles": 2472,
+      "decisions": 86,
+      "fallbacks": 1,
+      "policy_attacks_on_auri": 10,
+      "auri_attacks_on_policy": 20,
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/439b0223-d119-459f-828d-e3e5df8f899c.replay",
+      "replay_sha256": "b39e689347573bb4869da141c8d5af0e2a5acc500761c959619a305acb68a8e5"
+    }
+  ]
+}

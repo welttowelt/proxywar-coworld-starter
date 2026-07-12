@@ -122,13 +122,27 @@ and its opening commitment from 25% to 10%, but did not move below Auri's 1.20
 attack floor. In the win, v23 attacked Auri 14 times and received five attacks;
 the losses attacked Auri 0-2 times and received 13-14. v23 is rejected.
 
-## Next isolated mechanism
+## Rejected v24 mechanism
 
-v24 (`j4rn-l0k`) will replace the elapsed-decision lock with live reserve
+v24 (`j4rn-l0k`) replaced the elapsed-decision lock with live reserve
 feedback. During the opening, a hostile attack is capped at 10% whenever the
 own troop reserve ratio is below 0.75; 25% remains available at or above 0.75,
-and 40% remains locked. Post-opening v14 behavior stays unchanged. The gate
-must show Auri's first advantage below 1.20 as well as 4/4 wins.
+and 40% remains locked. Post-opening v14 behavior stayed unchanged. The gate
+required Auri's first advantage below 1.20 as well as 4/4 wins.
+
+The hosted gate finished 3/4 with three decisive 222k-226k tile wins. The
+opening controller removed Auri's turn-1,900 pressure in every replay. The one
+loss came after exact v14 behavior resumed: two 40% Richard attacks at turns
+2,400 and 2,500 dropped reserve to 0.59; Auri reached a 1.30 advantage at turn
+3,200 and attacked 20 times. v24 is rejected by the hard promotion gate.
+
+## Next isolated mechanism
+
+v25 (`j4rn-d0mr`) will preserve live reserve feedback through midgame. Hostile
+commitments use three bands: 10% below 0.75 reserve, at most 25% from 0.75 to
+0.89, and exact v14 escalation only at 0.90 or above. This removes the v24
+post-opening cliff while leaving target choice and full-bank finish pressure
+unchanged. Promotion still requires 4/4 and then 20/20 regression.
 
 ## Promotion gate
 

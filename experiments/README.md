@@ -367,3 +367,16 @@ verified replay SHA-256 is
 `468c5efb5954245e777e87e21c9126617b999f63fd067998bd8d0e1d6abd8a48`.
 Local Bedrock planning was unavailable for 248 decisions, so this proves the
 feedback invariant and protocol safety without a competitive claim.
+
+The hosted request `xreq_45044fe5-3f6d-46de-b470-8fb952176b5c` completed four
+episodes with zero holds and zero rejected decisions. v24 won three and Auri
+won one. v24 finished with 225,590, 222,499, 224,563, and 2,472 tiles. This is
+the strongest isolated candidate gate so far, but 3/4 still fails promotion.
+
+The opening feedback invariant held in all four and removed Auri's turn-1,900
+attack. In the three wins Auri attacked v24 only 0-1 times while v24 attacked
+Auri 27-32 times. The loss resumed v14's 40% commitments at turns 2,400 and
+2,500, dropped reserve to 0.59, then gave Auri a 1.30 advantage at turn 3,200.
+Auri attacked v24 20 times; v24 attacked Auri 10. v24 is rejected under the
+hard gate. The next mechanism extends reserve feedback into midgame. Full
+evidence is archived in `experiments/audit-v24-asia-seat3.json`.
