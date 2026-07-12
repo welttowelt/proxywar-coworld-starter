@@ -9,6 +9,7 @@ import { buildOfficialStreakState } from "./official-streak.mjs";
 const COWORLD_PACKAGE = "coworld==0.1.28";
 const DEFAULT_LEAGUE_ID = "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42";
 const TRACKED_PLAYER_NAME = "odin free";
+const SOURCE_FINGERPRINT_VERSION = 1;
 const ALLOWED_REPLAY_HOSTS = new Set(["softmax-public.s3.amazonaws.com"]);
 const SOCIAL_KINDS = new Set([
   "alliance_request", "alliance_extend", "break_alliance", "target_player",
@@ -26,6 +27,7 @@ function option(name, fallback) {
 
 const roundLimit = Number(option("rounds", "20"));
 const leagueID = option("league", DEFAULT_LEAGUE_ID);
+const forceRefresh = process.argv.includes("--force");
 if (!Number.isInteger(roundLimit) || roundLimit < 1 || roundLimit > 200) {
   throw new Error("--rounds must be an integer from 1 to 200");
 }
@@ -35,6 +37,7 @@ const cacheDir = path.join(root, "data", "cache", "replays");
 const stagingDir = path.join(root, "data", "staging");
 const processedDir = path.join(root, "data", "processed");
 const officialStreakPath = path.join(processedDir, "official_streak.json");
+const manifestPath = path.join(processedDir, "manifest.json");
 
 function coworldJson(args) {
   const result = spawnSync(
@@ -351,6 +354,22 @@ const membershipRows = membershipResponse.map((membership) => ({
   collected_at: collectedAt,
 }));
 
+const withoutCollectedAt = ({ collected_at: _collectedAt, ...row }) => row;
+const sourceFingerprint = sha256(Buffer.from(JSON.stringify({
+  version: SOURCE_FINGERPRINT_VERSION,
+  rounds: roundRows.map(withoutCollectedAt),
+  live_rounds: liveRoundRows.map(withoutCollectedAt),
+  leaderboard: leaderboardRows.map(withoutCollectedAt),
+  memberships: membershipRows
+    .map(withoutCollectedAt)
+    .sort((left, right) => left.membership_id.localeCompare(right.membership_id)),
+})));
+const priorManifest = await readJsonIfExists(manifestPath, {});
+if (!forceRefresh && priorManifest.source_fingerprint === sourceFingerprint) {
+  process.stdout.write("source snapshot unchanged\n");
+  process.exit(0);
+}
+
 const episodes = [];
 for (const round of selectedRounds) {
   const rows = coworldJson([
@@ -430,10 +449,11 @@ await writeFile(path.join(stagingDir, "episodes.ndjson"), ndjson(episodeRows));
 await writeFile(path.join(stagingDir, "participants.ndjson"), ndjson(participantRows));
 await writeFile(path.join(stagingDir, "decisions.ndjson"), ndjson(decisionRows));
 await writeFile(officialStreakPath, `${JSON.stringify(officialStreakState, null, 2)}\n`);
-await writeFile(path.join(processedDir, "manifest.json"), `${JSON.stringify({
+await writeFile(manifestPath, `${JSON.stringify({
   schema_version: 4,
   league_id: leagueID,
   collected_at: collectedAt,
+  source_fingerprint: sourceFingerprint,
   requested_round_count: roundLimit,
   first_round_number: selectedRounds[0].round_number,
   last_round_number: selectedRounds.at(-1).round_number,

@@ -17,6 +17,9 @@ node scripts/collect-proxywar-data.mjs --rounds 40
 npm run data:analyze
 ```
 
+Unchanged source state is a no-op. Pass `--force` when validating collector
+changes against the same rounds.
+
 Requirements: `uv`, the pinned `coworld==0.1.28` CLI login, Node.js 24+, and
 DuckDB 1.5+.
 
