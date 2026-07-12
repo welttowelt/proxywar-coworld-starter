@@ -67,6 +67,7 @@ export function auditEpisodeReplay(
   const openingAllianceOpportunities = [];
   const allianceSelections = [];
   const pressurePulseSelections = [];
+  const wireVetoSelections = [];
   for (const decision of decisions) {
     const isSpawn = decision.selectedActionKind === "spawn";
     const survival = decision.tacticalAffordances?.survivalAlliance ?? {};
@@ -104,6 +105,17 @@ export function auditEpisodeReplay(
         accepted: decision.result?.accepted ?? null,
       });
     }
+    const vetoMatch = String(decision.reason ?? "").match(/wireVeto=([^|]+)\s+\|\|/);
+    if (vetoMatch) {
+      wireVetoSelections.push({
+        turn: decision.turnNumber,
+        vetoed_action_ids: vetoMatch[1].split(",").map((id) => id.trim()).filter(Boolean),
+        selected_action_id: decision.selectedLegalActionId ?? null,
+        selected_action_kind: decision.selectedActionKind ?? null,
+        accepted: decision.result?.accepted ?? null,
+        fallback: decision.fallbackUsed === true,
+      });
+    }
     if (!isSpawn) activeDecisions += 1;
   }
 
@@ -127,6 +139,7 @@ export function auditEpisodeReplay(
     alliance_selections: allianceSelections,
     opening_alliance_opportunities: openingAllianceOpportunities,
     pressure_pulse_selections: pressurePulseSelections,
+    wire_veto_selections: wireVetoSelections,
   };
 }
 
@@ -144,6 +157,7 @@ export function buildGateReport(
   const selections = audits.flatMap((audit) => audit.alliance_selections);
   const openingSelections = selections.filter((selection) => selection.opening);
   const pressurePulses = audits.flatMap((audit) => audit.pressure_pulse_selections ?? []);
+  const wireVetoes = audits.flatMap((audit) => audit.wire_veto_selections ?? []);
   const aligned = opportunities.filter((opportunity) => opportunity.aligned).length;
   const mechanismExercised = openingSelections.length > 0;
   const mechanismPassed = mechanismExercised && aligned === opportunities.length;
@@ -158,6 +172,14 @@ export function buildGateReport(
     checks.pressure_pulse_mechanism_exercised = pressurePulses.length > 0;
     checks.all_pressure_pulses_accepted = pressurePulses.length > 0 &&
       pressurePulses.every((selection) => selection.accepted === true);
+  } else if (mechanism === "wire-veto") {
+    checks.wire_veto_mechanism_exercised = wireVetoes.length > 0;
+    checks.all_wire_veto_decisions_productive = wireVetoes.length > 0 &&
+      wireVetoes.every((selection) =>
+        selection.accepted === true &&
+        selection.fallback === false &&
+        selection.selected_action_kind !== "hold"
+      );
   } else {
     checks.opening_alliance_mechanism_exercised = mechanismExercised;
     checks.exact_opening_alliance_alignment = mechanismPassed;
@@ -182,6 +204,7 @@ export function buildGateReport(
     opening_alliance_opportunities: opportunities.length,
     opening_alliance_alignments: aligned,
     pressure_pulse_selections: pressurePulses.length,
+    wire_veto_selections: wireVetoes.length,
     checks,
     passed: Object.values(checks).every(Boolean),
     episode_audits: audits,
@@ -237,8 +260,8 @@ async function main() {
   if (!Number.isInteger(openingDecisionLimit) || openingDecisionLimit < 1) {
     throw new Error("--opening-decisions must be a positive integer");
   }
-  if (!new Set(["opening-alliance", "pressure-pulse"]).has(mechanism)) {
-    throw new Error("--mechanism must be opening-alliance or pressure-pulse");
+  if (!new Set(["opening-alliance", "pressure-pulse", "wire-veto"]).has(mechanism)) {
+    throw new Error("--mechanism must be opening-alliance, pressure-pulse, or wire-veto");
   }
   const request = coworldJson(["xp-request", "get", requestID], root);
   const episodes = coworldJson(["xp-request", "episodes", requestID], root);

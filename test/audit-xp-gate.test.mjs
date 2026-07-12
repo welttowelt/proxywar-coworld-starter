@@ -155,3 +155,36 @@ test("pressure-pulse gate requires an accepted tagged execution", () => {
   assert.equal(report.checks.all_pressure_pulses_accepted, true);
   assert.equal(report.passed, true);
 });
+
+test("wire-veto gate requires an observed productive rerank", () => {
+  const audits = Array.from({ length: 4 }, (_, index) => ({
+    won: true,
+    final_tiles: 220000 + index,
+    holds: 0,
+    rejected: 0,
+    fallbacks: 0,
+    alliance_selections: [],
+    opening_alliance_opportunities: [],
+    pressure_pulse_selections: [],
+    wire_veto_selections: index === 0
+      ? [{
+          turn: 1800,
+          vetoed_action_ids: ["alliance:james"],
+          selected_action_id: "attack:auri:10",
+          selected_action_kind: "attack",
+          accepted: true,
+          fallback: false,
+        }]
+      : [],
+  }));
+  const report = buildGateReport(
+    { id: "xreq-wire-veto", status: "completed" },
+    audits,
+    4,
+    { mechanism: "wire-veto" },
+  );
+  assert.equal(report.wire_veto_selections, 1);
+  assert.equal(report.checks.wire_veto_mechanism_exercised, true);
+  assert.equal(report.checks.all_wire_veto_decisions_productive, true);
+  assert.equal(report.passed, true);
+});

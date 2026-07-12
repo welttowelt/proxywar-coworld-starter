@@ -10,6 +10,7 @@
     "data:analyze": "duckdb < analytics/meta.sql",
     "data:refresh": "npm run data:collect && npm run data:analyze && npm run rci:report",
     "gate:audit": "node scripts/audit-xp-gate.mjs",
+    "experiment:preflight": "node scripts/validate-experiment-preflight.mjs",
     "rci:report": "node scripts/rci-report.mjs",
     "rci:gate": "node scripts/rci-report.mjs --strict",
     "dashboard:serve": "npx --yes serve site --listen 4173",

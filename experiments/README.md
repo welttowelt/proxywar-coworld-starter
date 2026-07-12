@@ -509,3 +509,12 @@ the strike credibility floor correctly blocked a forced feed. v29 is rejected.
 The next arm follows the stronger reviewer finding: v30 temporarily vetoes a
 one-shot social action when the same ID reappears in the next request, proving
 the prior attempt failed under same-turn seat-order reservation.
+
+v30 / `v4li-v3tr` exercised the veto in all four hosted episodes but went 0/4
+in `xreq_eb65b6b1-2de1-4a66-b8e4-978c636edcca`. It marked 230 decisions, 211 of
+which reranked to accepted non-hold actions, but broad recurring communication
+IDs remained vetoed across long windows and 19 decisions still fell back. Final
+tiles were 1,859; 23,211; 1,264; and 27,140. The mechanism was observable and
+active but strategically negative. v30 is rejected and the Frontier branch is
+closed until exact v14 completes a matched current-roster baseline. The revised
+gate is documented in `experiments/PROTOCOL.md`.

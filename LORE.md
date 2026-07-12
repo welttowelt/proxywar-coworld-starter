@@ -51,6 +51,18 @@ in the next menu, the prior attempt did not execute. The ID is barred for a shor
 doubling window and the executor must choose another legal action. The reservation
 filter keeps its law; our seat stops paying it with repeated holds.
 
+The memory spread too far. It marked 230 decisions, rerouted 211 into accepted
+actions, and won none. The mechanism was visible; the strategy was worse. The
+Frontier line closes at v30. Exact v14 returns to the same roster as the control
+that should have stood there first.
+
+## the rci law
+
+No candidate advances on source elegance. One delta, measured reach, independent
+trace count, a replay marker, a matched champion baseline, then `4/4` and `20/20`.
+Without the baseline the run is diagnostic. Without the marker the mechanism did
+not earn a claim.
+
 ## the reviewer lane
 
 On Oli's word a second line opened beside the build lane: Claude reads source and

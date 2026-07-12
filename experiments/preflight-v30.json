@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "oli-codex-proxywar:v30",
+    "exact_deltas": [
+      "temporarily veto a one-shot social action when its ID reappears in the next request"
+    ]
+  },
+  "hypothesis": "reappearance veto converts repeated same-turn reservation failures into the executor's next-ranked productive action",
+  "mechanism": {
+    "marker": "wireVeto=",
+    "prior_reachable_decisions": 111,
+    "source": "experiments/audit-v27-hosted-asia-seat2.json"
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "wins": 1,
+    "fallbacks": 0
+  },
+  "matched_baseline": {
+    "policy_ref": "oli-codex-proxywar:v14",
+    "request_id": "xreq_f828169f-4885-48b9-9dcf-9287256ebb15",
+    "same_roster": true,
+    "same_variant": true
+  },
+  "diagnostic_only": true,
+  "hosted": {
+    "request_id": "xreq_eb65b6b1-2de1-4a66-b8e4-978c636edcca",
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "max_fallbacks": 0,
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  }
+}
