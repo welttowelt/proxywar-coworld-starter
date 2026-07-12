@@ -40,7 +40,9 @@ ${canonicalAnchor}
   assert.match(patched, /discarded superseded decision response/);
   assert.match(patched, /while \(pendingDecision !== null && !sawFinal\)/);
   assert.match(patched, /import \{ applyParityPulse \}/);
+  assert.match(patched, /import \{ applyWireSalvage \}/);
   assert.match(patched, /decision = applyParityPulse\(input, decision\)/);
+  assert.match(patched, /decision = applyWireSalvage\(input, decision\)/);
   assert.doesNotMatch(patched, /oneShotSocialKinds/);
   assert.doesNotMatch(patched, /wireVeto=/);
 });

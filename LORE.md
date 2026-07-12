@@ -122,6 +122,17 @@ twenty-two points, the mark went silent, and three more hulls left while Odin
 still held the troop edge. Auri took that shore. Eight vanished social orders
 also left empty turns across the gate. `hrafn-s4r` earns direction, not a seat.
 
+## g4lga-v4rd
+
+Eight orders named doors that were no longer there. The field still offered
+steel, retreat, stone, and sea; the wire answered with silence. `g4lga-v4rd`
+guards only that boundary. A valid order passes unchanged. A vanished order is
+bound to a live, non-social command, and the replacement leaves its own mark.
+
+The first lost turn is measured: Odin held 1.137 of Auri's force and a ten-point
+cut was legal. The missing pact became HOLD. Under this mark it becomes the
+cut. No saga is claimed before the hosted field answers.
+
 ## the reviewer lane
 
 On Oli's word a second line opened beside the build lane: Claude reads source and

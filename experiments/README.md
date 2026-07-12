@@ -636,3 +636,29 @@ In the losing replay, four pulses held Auri at ratios from 1.00 to 1.20, but the
 three neutral boats while still holding a 1.17-1.27 troop edge; Auri converted
 the gap and won. v32 is rejected and v14 remains the sole league membership.
 Full evidence is in `experiments/audit-v32-hosted-asia-seat3.json`.
+
+## Current-menu wire salvage candidate, 2026-07-12
+
+v33 / `g4lga-v4rd` names v32 as its exact parent and changes only invalid wire
+choices. All eight v32 holds returned an action ID absent from the current legal
+menu; every one still exposed productive attacks, retreats, boats, or builds.
+Every legal v32 choice remains untouched.
+
+The salvage order first keeps a productive legal batch alternative, then uses a
+credible 10% leader attack, an active-pressure retreat, a boat retreat, a safe
+economy build, or the smallest neutral expansion. One-shot social actions are
+not fallback candidates. Hold remains possible only when the current menu has
+no productive action. The marker is `[g4lga-v4rd:w1re]`.
+
+The losing v32 trace proves tactical reach at turn 4,600. The unavailable Auri
+alliance became HOLD while a 10% Auri attack was legal; snapshot troops were
+1,934,623 vs 1,701,152, a 1.137 own-to-Auri ratio. v33 would select that attack.
+This does not prove the win counterfactual.
+
+Canonical local self-play completed at turn 11,000 with 407 accepted decisions,
+zero holds, zero rejections, and zero degradation. No unknown action occurred,
+so the local trace proves runtime safety only. Replay SHA-256 is
+`4335ba620b766a678c3894638c0bcafa891289059549363b0548a0c3d7866b73`.
+The diagnosis and preflight are archived in
+`experiments/diagnosis-v33-asia-seat3.json` and
+`experiments/preflight-v33.json`.

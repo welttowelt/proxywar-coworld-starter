@@ -304,3 +304,36 @@ test("wire-veto gate requires an observed productive rerank", () => {
   assert.equal(report.checks.all_wire_veto_decisions_productive, true);
   assert.equal(report.passed, true);
 });
+
+test("wire-salvage gate requires an accepted productive replacement", () => {
+  const fixture = replay("expand:terra-nullius:10");
+  const decisions = fixture.inlineRunArtifacts["decisions.jsonl"]
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line));
+  decisions[1] = {
+    ...decisions[1],
+    selectedActionKind: "build",
+    selectedLegalActionId: "build:City:10",
+    selectedActionMetadata: { unit: "City" },
+    reason:
+      "bedrock diagnostic || [g4lga-v4rd:w1re] " +
+      "unknown=alliance:missing replacement=build:City:10; parent",
+  };
+  fixture.inlineRunArtifacts["decisions.jsonl"] =
+    `${decisions.map((decision) => JSON.stringify(decision)).join("\n")}\n`;
+
+  const audit = auditEpisodeReplay(episode(), fixture);
+  const report = buildGateReport(
+    { id: "xreq-wire-salvage", status: "completed" },
+    [audit, audit, audit, audit],
+    4,
+    { mechanism: "wire-salvage" },
+  );
+
+  assert.equal(audit.wire_salvage_selections.length, 1);
+  assert.equal(report.wire_salvage_selections, 4);
+  assert.equal(report.checks.wire_salvage_mechanism_exercised, true);
+  assert.equal(report.checks.all_wire_salvages_productive, true);
+  assert.equal(report.passed, true);
+});

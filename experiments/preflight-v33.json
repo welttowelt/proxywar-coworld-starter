@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "oli-codex-proxywar:v33",
+    "policy_version_id": "21993011-6e01-4aad-b1ec-cc9217ca09db",
+    "parent_ref": "oli-codex-proxywar:v32",
+    "exact_deltas": [
+      "when and only when the parent returns an action ID absent from the current legal menu, replace it with a current productive action using the registered non-social fallback order"
+    ]
+  },
+  "hypothesis": "current-menu salvage removes all eight unknown-action holds while preserving every legal v32 choice; the losing trace's first salvage becomes a legal 10 percent Auri attack at a measured 1.137 troop ratio",
+  "mechanism": {
+    "marker": "[g4lga-v4rd:w1re]",
+    "prior_reachable_decisions": 8,
+    "source": "experiments/diagnosis-v33-asia-seat3.json"
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "wins": 1,
+    "self_play": true,
+    "accepted_decisions": 407,
+    "holds": 0,
+    "rejections": 0,
+    "planner_degraded_decisions": 0,
+    "mechanism_reached": false,
+    "replay_sha256": "4335ba620b766a678c3894638c0bcafa891289059549363b0548a0c3d7866b73"
+  },
+  "matched_baseline": {
+    "policy_ref": "oli-codex-proxywar:v32",
+    "request_id": "xreq_67cf6f10-9400-4e7e-ae1a-28c1fc81d280",
+    "same_roster": true,
+    "same_variant": true
+  },
+  "champion_control": {
+    "policy_ref": "oli-codex-proxywar:v14",
+    "request_id": "xreq_f828169f-4885-48b9-9dcf-9287256ebb15",
+    "wins": 0,
+    "episodes": 4
+  },
+  "diagnostic_only": false,
+  "hosted": {
+    "request_id": "xreq_2666b188-163f-470b-844b-c4a48bb46c8d",
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  },
+  "verdict": "pending hosted gate"
+}

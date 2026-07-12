@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "oli-codex-proxywar:v33",
+    "codename": "g4lga-v4rd",
+    "parent_ref": "oli-codex-proxywar:v32",
+    "parent_policy_version_id": "58412fa2-36a1-488d-b10e-f93326898771"
+  },
+  "matched_parent": {
+    "request_id": "xreq_67cf6f10-9400-4e7e-ae1a-28c1fc81d280",
+    "variant": "tournament-4p-asia",
+    "seat": 3,
+    "wins": 3,
+    "episodes": 4,
+    "final_tiles": [29583, 219622, 213955, 213995],
+    "holds": 8,
+    "rejections": 0,
+    "planner_degraded_decisions": 11,
+    "parity_pulses": 15,
+    "audit": "experiments/audit-v32-hosted-asia-seat3.json"
+  },
+  "failure": {
+    "summary": "all eight v32 holds came from a brain action ID absent from the current legal menu",
+    "unknown_action_counts": {
+      "alliance_request_auri": 5,
+      "target_auri": 2,
+      "alliance_request_james": 1
+    },
+    "intent_rejections": 0,
+    "productive_legal_menu_on_every_hold": true
+  },
+  "current_parent_reach": [
+    {"episode_id": "afa5c55c-20b2-4661-b92f-8e5fddd0a586", "turn": 4600, "unknown_kind": "alliance_request", "productive_kinds": ["boat_retreat", "attack", "boat", "build", "warship", "upgrade_structure"]},
+    {"episode_id": "afa5c55c-20b2-4661-b92f-8e5fddd0a586", "turn": 5000, "unknown_kind": "alliance_request", "productive_kinds": ["boat_retreat", "attack", "boat", "build", "warship", "upgrade_structure"]},
+    {"episode_id": "a3cde994-12c4-4a98-9ad3-b1ac37cfb392", "turn": 4100, "unknown_kind": "target_player", "productive_kinds": ["boat_retreat", "attack", "alliance_request"]},
+    {"episode_id": "90c796ab-b486-4249-b98b-578eda3a4c06", "turn": 4000, "unknown_kind": "alliance_request", "productive_kinds": ["retreat", "attack", "boat", "alliance_request"]},
+    {"episode_id": "90c796ab-b486-4249-b98b-578eda3a4c06", "turn": 8300, "unknown_kind": "target_player", "productive_kinds": ["boat_retreat", "attack", "boat", "build", "warship", "upgrade_structure"]},
+    {"episode_id": "90c796ab-b486-4249-b98b-578eda3a4c06", "turn": 9200, "unknown_kind": "alliance_request", "productive_kinds": ["attack", "boat", "build", "warship"]},
+    {"episode_id": "90c796ab-b486-4249-b98b-578eda3a4c06", "turn": 9900, "unknown_kind": "alliance_request", "productive_kinds": ["attack", "boat", "build", "warship"]},
+    {"episode_id": "b924face-fb12-4299-a440-fa10d1e83041", "turn": 5700, "unknown_kind": "alliance_request", "productive_kinds": ["retreat", "attack", "boat", "build", "warship", "upgrade_structure"]}
+  ],
+  "independent_parent_traces_with_reach": 4,
+  "mechanism": {
+    "marker": "[g4lga-v4rd:w1re]",
+    "scope": "only decisions whose selected action ID is absent from the current legal menu",
+    "fallback_order": [
+      "known productive batch action",
+      "credible 10 percent leader pressure",
+      "land retreat under incoming pressure",
+      "boat retreat",
+      "safe economy build",
+      "small neutral land expansion",
+      "small neutral boat",
+      "safe upgrade or unit action",
+      "hold only when no productive current action exists"
+    ],
+    "preserve_every_legal_parent_action": true,
+    "exclude_one_shot_social_fallbacks": true
+  },
+  "losing_trace_salvage": {
+    "episode_id": "afa5c55c-20b2-4661-b92f-8e5fddd0a586",
+    "turn": 4600,
+    "parent_result": "unknown alliance ID became hold",
+    "own_troops": 1934623,
+    "auri_troops": 1701152,
+    "relative_troop_ratio": 1.137,
+    "own_tiles": 86313,
+    "auri_tiles": 153503,
+    "leader_gap": 0.263,
+    "salvage": "legal 10 percent attack on Auri",
+    "limit": "the snapshot proves reach and action legality, not the win counterfactual"
+  },
+  "local": {
+    "mode": "canonical local Claude mode",
+    "self_play": true,
+    "variant": "tournament-4p-asia",
+    "winner_slot": 0,
+    "turn_count": 11000,
+    "accepted_decisions": 407,
+    "holds": 0,
+    "rejections": 0,
+    "planner_degraded_decisions": 0,
+    "wire_salvages": 0,
+    "replay_sha256": "4335ba620b766a678c3894638c0bcafa891289059549363b0548a0c3d7866b73",
+    "verdict": "runtime and replay safe; self-play did not produce an unknown action ID"
+  },
+  "hosted_kill_criteria": {
+    "wins": "4/4",
+    "holds": 0,
+    "rejections": 0,
+    "minimum_wire_salvages": 1,
+    "all_wire_salvages_productive": true,
+    "planner_degradation": "no unexplained regression versus v32 parent"
+  }
+}

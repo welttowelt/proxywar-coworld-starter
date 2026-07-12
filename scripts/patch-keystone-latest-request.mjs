@@ -10,12 +10,14 @@ const importAnchor =
   `import type { LlmProvider } from "../../src/server/agents/LlmProvider";`;
 const parityImport =
   `import { applyParityPulse } from "./keystone-parity-pulse.mjs";`;
+const salvageImport =
+  `import { applyWireSalvage } from "./keystone-wire-salvage.mjs";`;
 if (!source.includes(importAnchor)) {
   throw new Error("canonical keystone import anchor was not found");
 }
 const withParityImport = source.replace(
   importAnchor,
-  `${importAnchor}\n${parityImport}`,
+  `${importAnchor}\n${parityImport}\n${salvageImport}`,
 );
 
 const oldBlock = `  // Serialize decision handling: a platform retry that overlaps an in-flight
@@ -50,6 +52,7 @@ const newBlock = `  // Keep shared brain state serialized, but coalesce overlapp
           const input = requestToBrainInput(current.request);
           let decision = await brain.decide(input);
           decision = applyParityPulse(input, decision);
+          decision = applyWireSalvage(input, decision);
           response = decisionToResponse(requestID, decision);
         } catch (error) {
           const messageText =

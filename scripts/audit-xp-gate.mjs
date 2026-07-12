@@ -9,6 +9,7 @@ const COWORLD_PACKAGE = "coworld==0.1.28";
 const DEFAULT_PLAYER = "odin free";
 const PRESSURE_PULSE_TAG = "[g4gnr4d-t4kt:pulse]";
 const PARITY_PULSE_TAG = "[hrafn-s4r:r1ft]";
+const WIRE_SALVAGE_TAG = "[g4lga-v4rd:w1re]";
 const BANK_BUILD_TAG = "[h3l-v4kt:bank-build]";
 const ALLOWED_REPLAY_HOSTS = new Set(["softmax-public.s3.amazonaws.com"]);
 const MAX_REPLAY_BYTES = 64 * 1024 * 1024;
@@ -74,6 +75,7 @@ export function auditEpisodeReplay(
   const bankBuildSelections = [];
   const pressurePulseSelections = [];
   const parityPulseSelections = [];
+  const wireSalvageSelections = [];
   const wireVetoSelections = [];
   for (const decision of decisions) {
     const isSpawn = decision.selectedActionKind === "spawn";
@@ -157,6 +159,20 @@ export function auditEpisodeReplay(
         fallback: decision.fallbackUsed === true,
       });
     }
+    const salvageMatch = String(decision.reason ?? "").match(
+      /\[g4lga-v4rd:w1re\]\s+unknown=([^\s]+)\s+replacement=([^;]+);/,
+    );
+    if (salvageMatch) {
+      wireSalvageSelections.push({
+        turn: decision.turnNumber,
+        unknown_action_id: salvageMatch[1],
+        replacement_action_id: salvageMatch[2],
+        selected_action_id: decision.selectedLegalActionId ?? null,
+        selected_action_kind: decision.selectedActionKind ?? null,
+        accepted: decision.result?.accepted ?? null,
+        fallback: decision.fallbackUsed === true,
+      });
+    }
     if (String(decision.reason ?? "").startsWith(BANK_BUILD_TAG)) {
       bankBuildSelections.push({
         turn: decision.turnNumber,
@@ -209,6 +225,7 @@ export function auditEpisodeReplay(
     bank_build_selections: bankBuildSelections,
     pressure_pulse_selections: pressurePulseSelections,
     parity_pulse_selections: parityPulseSelections,
+    wire_salvage_selections: wireSalvageSelections,
     wire_veto_selections: wireVetoSelections,
   };
 }
@@ -232,6 +249,7 @@ export function buildGateReport(
   const bankBuildSelections = audits.flatMap((audit) => audit.bank_build_selections ?? []);
   const pressurePulses = audits.flatMap((audit) => audit.pressure_pulse_selections ?? []);
   const parityPulses = audits.flatMap((audit) => audit.parity_pulse_selections ?? []);
+  const wireSalvages = audits.flatMap((audit) => audit.wire_salvage_selections ?? []);
   const wireVetoes = audits.flatMap((audit) => audit.wire_veto_selections ?? []);
   const aligned = opportunities.filter((opportunity) => opportunity.aligned).length;
   const mechanismExercised = openingSelections.length > 0;
@@ -269,6 +287,14 @@ export function buildGateReport(
         selection.troop_percent === 10 &&
         selection.target_name !== null
       );
+  } else if (mechanism === "wire-salvage") {
+    checks.wire_salvage_mechanism_exercised = wireSalvages.length > 0;
+    checks.all_wire_salvages_productive = wireSalvages.length > 0 &&
+      wireSalvages.every((selection) =>
+        selection.accepted === true &&
+        selection.selected_action_kind !== "hold" &&
+        selection.selected_action_id === selection.replacement_action_id
+      );
   } else if (mechanism === "wire-veto") {
     checks.wire_veto_mechanism_exercised = wireVetoes.length > 0;
     checks.all_wire_veto_decisions_productive = wireVetoes.length > 0 &&
@@ -305,6 +331,7 @@ export function buildGateReport(
     bank_build_selections: bankBuildSelections.length,
     pressure_pulse_selections: pressurePulses.length,
     parity_pulse_selections: parityPulses.length,
+    wire_salvage_selections: wireSalvages.length,
     wire_veto_selections: wireVetoes.length,
     checks,
     passed: Object.values(checks).every(Boolean),
@@ -363,11 +390,11 @@ async function main() {
   }
   if (!new Set([
     "bank-build", "opening-alliance", "opening-reserve", "parity-pulse",
-    "pressure-pulse", "wire-veto",
+    "pressure-pulse", "wire-salvage", "wire-veto",
   ]).has(mechanism)) {
     throw new Error(
       "--mechanism must be bank-build, opening-alliance, opening-reserve, " +
-      "parity-pulse, pressure-pulse, or wire-veto",
+      "parity-pulse, pressure-pulse, wire-salvage, or wire-veto",
     );
   }
   const request = coworldJson(["xp-request", "get", requestID], root);
