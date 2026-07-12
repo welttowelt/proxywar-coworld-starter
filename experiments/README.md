@@ -572,3 +572,12 @@ alliance or target ID disappearing before validation when only embargo-all,
 delete-unit, and hold remained; the runtime substituted hold. v31 is rejected,
 exact v14 source is restored, and the sole league membership stays on v14.
 Full evidence is archived in `experiments/audit-v31-hosted-asia-seat3.json`.
+
+RCI also killed the immediate follow-up before upload. A 25% efficient finish
+would have covered Richard's full troop count in all four old v24 episodes and
+preserved about 149,000 troops each time. In the four current v31 episodes, the
+same turn left Richard at 4-8% land and only 1.62-3.19 times weaker; 25% covered
+the target's troop count zero times. Because v31's own marker never fired, these
+episodes are v24-equivalent behavior and bring the combined parent result to
+4/8. The arm had stale reach and was not uploaded. Evidence is archived in
+`experiments/no-go-v32-lean-finish.json`.

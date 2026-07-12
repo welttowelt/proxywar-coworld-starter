@@ -16,7 +16,9 @@ reaching promotion gates.
 ## corrected gate
 
 1. Name the exact parent policy and isolate exactly one candidate delta from it.
-2. Prove at least one reachable historical decision before upload.
+2. Prove at least one reachable decision in the latest matched parent sample
+   before upload. Older favorable traces may support the mechanism but cannot
+   supply reach by themselves.
 3. Report local runs and independent strategic traces separately.
 4. Register a replay-visible mechanism marker and its parser before the hosted
    request starts.

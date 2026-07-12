@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "status": "rejected_before_upload",
+  "proposed_parent": "oli-codex-proxywar:v24",
+  "proposed_delta": "replace the second 40% Richard finish with 25% when that force already covers the target's full troop count",
+  "old_parent_sample": {
+    "episodes": 4,
+    "reachable_decisions": 4,
+    "target_tile_share": [0.03, 0.02, 0.02, 0.02],
+    "relative_troop_ratio": [4.25, 4.73, 4.79, 5.08],
+    "estimated_troops_preserved": [149423, 149448, 149413, 149438]
+  },
+  "current_equivalent_sample": {
+    "source_request_id": "xreq_9f0a8897-7380-4139-b50b-e9e9b6242588",
+    "reason_equivalent": "v31's new marker fired zero times, so all four episodes followed the v24 parent selector",
+    "episodes": 4,
+    "reachable_decisions": 0,
+    "target_tile_share": [0.04, 0.06, 0.04, 0.08],
+    "relative_troop_ratio": [3.19, 2.03, 2.8, 1.62],
+    "twenty_five_percent_force_covers_target": [false, false, false, false]
+  },
+  "combined_parent_result": {
+    "wins": 4,
+    "episodes": 8,
+    "win_rate_pct": 50
+  },
+  "verdict": "do not upload: reach exists only in the older favorable sample and disappears in the latest matched roster sample"
+}

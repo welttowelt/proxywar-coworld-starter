@@ -27,6 +27,7 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | v14 current control | `0/4`; Auri `4/4`; reserve 0.48 at Auri's 1.66x turn-1900 entry in every episode | weak-seat opening confirmed |
 | v24 requalified parent | 28 replay-derived reserve interventions; prior `3/4` on the same roster | diagnostic parent only |
 | v31 hosted | `1/4`; opening reserve fired 28 times; bank-build fired zero times; four holds | rejected, no league change |
+| lean-finish no-go | old reach `4/4`, current reach `0/4`; combined v24-equivalent parent `4/8` | killed before upload |
 
 Detailed evidence lives in [`experiments/`](experiments/README.md). Public round
 statistics live on the [dashboard](https://welttowelt-proxywar.netlify.app/).
