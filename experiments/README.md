@@ -192,3 +192,27 @@ decisions were accepted with zero holds and zero rejections. The diplomatic
 seat selected `alliance:c4o8gv6v` at turn 400, matching both the objective and
 the runtime's strongest-rival target, then made zero opening retries. Replay
 SHA-256: `065c6c60d003c35cd9aa475785d6f0ff77f31a955a5b372cce94dc0cfe390e08`.
+
+### Hosted result
+
+Experience request `xreq_30f9629c-0018-47f7-8130-01cdb9a637f7` pinned v20 to
+Asia seat 3 against Richard Higgins, James Boggs, and Auri v4 for four episodes.
+The candidate won one episode with final tile counts of 224,612; 5,098; 32,105;
+and 4,235. It recorded zero holds and zero rejected decisions.
+
+The isolated mechanism executed exactly as designed. All four opening decisions
+selected `alliance:c4o8gv6v` for Richard Higgins, matched the wire objective,
+and were accepted. The result therefore rejects the strategy rather than its
+reachability. In the single win, v20 attacked Auri 21 times. It never attacked
+Auri in the three losses, and Auri won all three. The alliance did not produce
+reliable leader pressure, so v20 is rejected and v14 remains champion.
+
+| Episode | Result | Replay SHA-256 |
+| --- | --- | --- |
+| `6953a6cb-305f-4200-b0ff-703ce4977268` | win, 224,612 tiles | `2aa1b0823de93155a7d5dda5baded58bf10f34cd11be1269f8cdf217e4465337` |
+| `5c935edb-f4b2-46e7-9ad6-900beec1b053` | loss, 5,098 tiles; Auri won | `b184d56ed16699417f688bb1268d896440a0af7fb62ee148d247e49a5ee0a51e` |
+| `e0ba6d51-e1dc-4956-816c-69fc0cd1dab3` | loss, 32,105 tiles; Auri won | `9e8640719fc68105d475f3e20495d2ce31f2314bf4b8d152a6be8258e59e7269` |
+| `00bd5caa-90a1-4adf-8a13-7f79f180a6d8` | loss, 4,235 tiles; Auri won | `3898ff5caf588a251071e484ad283d0f73082a97ef1d7c20ee620eb5aa75ac66` |
+
+The machine-readable audit is archived in
+`experiments/audit-v20-asia-seat3.json`.

@@ -110,9 +110,6 @@ export function buildState(observation, actions, history = []) {
   }));
   return {
     phase: clean(observation?.phase),
-    profile: clean(observation?.profile).toLowerCase(),
-    objectiveKind: clean(observation?.objective?.kind).toLowerCase(),
-    objectiveTargetID: clean(observation?.objective?.targetPlayerID),
     decisionNumber: history.length,
     self,
     rivals,
@@ -169,17 +166,6 @@ function stableAllianceRequests(actions) {
   return safeActions(actions, (action) =>
     action.kind === "alliance_request" && Number(action?.metadata?.relation) !== 2
   );
-}
-
-function allianceRequestForTarget(actions, targetID) {
-  const target = clean(targetID).toLowerCase();
-  if (!target) return null;
-  return safeActions(actions, (action) => action.kind === "alliance_request").find((action) => {
-    const recipientID = clean(
-      action?.metadata?.recipientID ?? action?.metadata?.targetID,
-    ).toLowerCase();
-    return recipientID === target || clean(action?.id).toLowerCase() === `alliance:${target}`;
-  }) ?? null;
 }
 
 function bestAllianceRequest(actions, state, allowPending = false) {
@@ -441,15 +427,6 @@ export function chooseAction(actions, state, plan = null, history = []) {
     .find((action) => !avoid.has(action.id));
   if (spawn) return spawn;
 
-  const activeDecisions = history.filter((entry) => entry.kind !== "spawn").length;
-  if (
-    state.profile === "diplomatic" && state.objectiveKind === "build_alliance" &&
-    activeDecisions === 0
-  ) {
-    const openingAlliance = allianceRequestForTarget(actions, state.objectiveTargetID);
-    if (openingAlliance) return openingAlliance;
-  }
-
   const threatCount = incomingThreatCount(state.self.incomingAttacks);
   const defensiveBuild = threatCount > 0 && state.self.troopRatio < 0.8
     ? chooseBuild(actions, history, true)
@@ -462,6 +439,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
   const sinceBuild = decisionsSince(history, (entry) =>
     entry.kind === "build" || entry.kind === "upgrade_structure"
   );
+  const activeDecisions = history.filter((entry) => entry.kind !== "spawn").length;
   const cadenceBuild = build && state.self.tileShare >= 0.08 && activeDecisions >= 6 &&
     sinceBuild >= 14;
   const finishingTarget = rivalAttack && rivalAttack.streak > 0 &&

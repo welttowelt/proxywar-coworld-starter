@@ -34,7 +34,6 @@ const MODELS = [
   "us.anthropic.claude-haiku-4-5-20251001-v1:0",
   "anthropic.claude-sonnet-4-5-20250929-v1:0",
 ].filter(Boolean);
-const CODENAME = process.env.POLICY_CODENAME || "v1g-e1dr";
 
 let bedrock = null;
 try { bedrock = new AnthropicBedrock({ awsRegion: REGION }); } catch (e) { bedrock = null; }
@@ -200,12 +199,12 @@ function handleMessage(activeSocket, data) {
   if (plan !== null) {
     const focus = plan.target ? `${plan.focus} -> ${plan.target}` : plan.focus;
     reason = degraded
-      ? `${CODENAME} PLAN(${focus}; stale, refresh failed: ${lastPlanError}): ${chosen.kind}`
-      : `${CODENAME} PLAN(${focus}) via ${plan.model}: ${chosen.kind} — ${plan.reason}`;
+      ? `PLAN(${focus}; stale, refresh failed: ${lastPlanError}): ${chosen.kind}`
+      : `PLAN(${focus}) via ${plan.model}: ${chosen.kind} — ${plan.reason}`;
   } else {
     reason = degraded
-      ? `${CODENAME} BOOTSTRAP RULE (plan refresh failed: ${lastPlanError}): ${chosen.kind}`
-      : `${CODENAME} BOOTSTRAP RULE (first plan in flight): ${chosen.kind}`;
+      ? `BOOTSTRAP RULE (plan refresh failed: ${lastPlanError}): ${chosen.kind}`
+      : `BOOTSTRAP RULE (first plan in flight): ${chosen.kind}`;
   }
 
   recordDecision(history, chosen, state);
@@ -241,7 +240,7 @@ function connect() {
   socket = activeSocket;
   activeSocket.on("open", () => {
     reconnectAttempt = 0;
-    console.log(`connected to match (codename=${CODENAME}, region=${REGION}, models=${MODELS.length})`);
+    console.log(`connected to match (region=${REGION}, models=${MODELS.length})`);
   });
   activeSocket.on("message", (data) => handleMessage(activeSocket, data));
   activeSocket.on("close", (code, reason) => {

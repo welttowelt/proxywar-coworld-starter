@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "experience_request_id": "xreq_30f9629c-0018-47f7-8130-01cdb9a637f7",
+  "status": "completed",
+  "policy_version": 20,
+  "policy_version_id": "c6dce03f-8cad-40ad-8892-fb99a20d1a97",
+  "opening_decision_limit": 1,
+  "episodes": 4,
+  "wins": 1,
+  "win_rate_pct": 25,
+  "final_tiles": [
+    224612,
+    5098,
+    32105,
+    4235
+  ],
+  "holds": 0,
+  "rejected": 0,
+  "fallbacks": 174,
+  "alliance_selections": 4,
+  "opening_alliance_selections": 4,
+  "opening_alliance_opportunities": 4,
+  "opening_alliance_alignments": 4,
+  "checks": {
+    "completed_episode_floor": true,
+    "perfect_episode_wins": false,
+    "zero_holds": true,
+    "zero_rejected_decisions": true,
+    "opening_alliance_mechanism_exercised": true,
+    "exact_opening_alliance_alignment": true
+  },
+  "passed": false,
+  "episode_audits": [
+    {
+      "episode_request_id": "ereq_317aa9cb-6970-4ab2-aff2-8b386f9eff04",
+      "episode_id": "6953a6cb-305f-4200-b0ff-703ce4977268",
+      "map": "Asia",
+      "seat": 3,
+      "policy_version": 20,
+      "policy_version_id": "c6dce03f-8cad-40ad-8892-fb99a20d1a97",
+      "won": true,
+      "score": 1,
+      "final_tiles": 224612,
+      "is_alive": true,
+      "decisions": 72,
+      "opening_decision_limit": 1,
+      "holds": 0,
+      "rejected": 0,
+      "fallbacks": 54,
+      "profiles": ["diplomatic"],
+      "alliance_selections": [
+        {
+          "turn": 400,
+          "action_id": "alliance:c4o8gv6v",
+          "accepted": true,
+          "opening": true
+        }
+      ],
+      "opening_alliance_opportunities": [
+        {
+          "turn": 400,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "alliance:c4o8gv6v",
+          "aligned": true
+        }
+      ],
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/a2462c7e-f2e4-4646-a62c-4e4f2e92fbd2.replay",
+      "replay_sha256": "2aa1b0823de93155a7d5dda5baded58bf10f34cd11be1269f8cdf217e4465337",
+      "replay_path": "data/cache/replays/6953a6cb-305f-4200-b0ff-703ce4977268.replay"
+    },
+    {
+      "episode_request_id": "ereq_2642cc5b-85e8-4fc4-80ea-99c29c0290ee",
+      "episode_id": "5c935edb-f4b2-46e7-9ad6-900beec1b053",
+      "map": "Asia",
+      "seat": 3,
+      "policy_version": 20,
+      "policy_version_id": "c6dce03f-8cad-40ad-8892-fb99a20d1a97",
+      "won": false,
+      "score": 0,
+      "final_tiles": 5098,
+      "is_alive": true,
+      "decisions": 55,
+      "opening_decision_limit": 1,
+      "holds": 0,
+      "rejected": 0,
+      "fallbacks": 42,
+      "profiles": ["diplomatic"],
+      "alliance_selections": [
+        {
+          "turn": 400,
+          "action_id": "alliance:c4o8gv6v",
+          "accepted": true,
+          "opening": true
+        }
+      ],
+      "opening_alliance_opportunities": [
+        {
+          "turn": 400,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "alliance:c4o8gv6v",
+          "aligned": true
+        }
+      ],
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/9c156cd8-913e-49dc-9cf5-3abefeb52724.replay",
+      "replay_sha256": "b184d56ed16699417f688bb1268d896440a0af7fb62ee148d247e49a5ee0a51e",
+      "replay_path": "data/cache/replays/5c935edb-f4b2-46e7-9ad6-900beec1b053.replay"
+    },
+    {
+      "episode_request_id": "ereq_79c4eea2-da30-4606-a63e-2342be009b70",
+      "episode_id": "e0ba6d51-e1dc-4956-816c-69fc0cd1dab3",
+      "map": "Asia",
+      "seat": 3,
+      "policy_version": 20,
+      "policy_version_id": "c6dce03f-8cad-40ad-8892-fb99a20d1a97",
+      "won": false,
+      "score": 0,
+      "final_tiles": 32105,
+      "is_alive": true,
+      "decisions": 51,
+      "opening_decision_limit": 1,
+      "holds": 0,
+      "rejected": 0,
+      "fallbacks": 41,
+      "profiles": ["diplomatic"],
+      "alliance_selections": [
+        {
+          "turn": 400,
+          "action_id": "alliance:c4o8gv6v",
+          "accepted": true,
+          "opening": true
+        }
+      ],
+      "opening_alliance_opportunities": [
+        {
+          "turn": 400,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "alliance:c4o8gv6v",
+          "aligned": true
+        }
+      ],
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/e745892b-6382-432b-8a4d-78ff652e6edf.replay",
+      "replay_sha256": "9e8640719fc68105d475f3e20495d2ce31f2314bf4b8d152a6be8258e59e7269",
+      "replay_path": "data/cache/replays/e0ba6d51-e1dc-4956-816c-69fc0cd1dab3.replay"
+    },
+    {
+      "episode_request_id": "ereq_96bd6a9d-4e0e-476f-a1dd-6983efa28547",
+      "episode_id": "00bd5caa-90a1-4adf-8a13-7f79f180a6d8",
+      "map": "Asia",
+      "seat": 3,
+      "policy_version": 20,
+      "policy_version_id": "c6dce03f-8cad-40ad-8892-fb99a20d1a97",
+      "won": false,
+      "score": 0,
+      "final_tiles": 4235,
+      "is_alive": true,
+      "decisions": 48,
+      "opening_decision_limit": 1,
+      "holds": 0,
+      "rejected": 0,
+      "fallbacks": 37,
+      "profiles": ["diplomatic"],
+      "alliance_selections": [
+        {
+          "turn": 400,
+          "action_id": "alliance:c4o8gv6v",
+          "accepted": true,
+          "opening": true
+        }
+      ],
+      "opening_alliance_opportunities": [
+        {
+          "turn": 400,
+          "profile": "diplomatic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "alliance:c4o8gv6v",
+          "aligned": true
+        }
+      ],
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/e1bdefbc-0be2-4420-962f-bcad97542630.replay",
+      "replay_sha256": "3898ff5caf588a251071e484ad283d0f73082a97ef1d7c20ee620eb5aa75ac66",
+      "replay_path": "data/cache/replays/00bd5caa-90a1-4adf-8a13-7f79f180a6d8.replay"
+    }
+  ]
+}

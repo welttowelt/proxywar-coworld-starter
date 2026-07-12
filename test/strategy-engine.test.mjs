@@ -61,7 +61,7 @@ test("opening neutral expansion overrides a boat-heavy plan", () => {
   assert.equal(selected.id, "expand:terra-nullius:10");
 });
 
-test("a diplomatic opening follows the exact build-alliance objective once", () => {
+test("a diplomatic opening objective does not override reliable expansion", () => {
   const alliance = {
     ...action("alliance:richard", "alliance_request", "Untrusted rival label"),
     metadata: { recipientID: "richard", relation: 2 },
@@ -76,46 +76,7 @@ test("a diplomatic opening follows the exact build-alliance objective once", () 
     objective: { kind: "build_alliance", targetPlayerID: "richard" },
     rivals: [{ id: "richard", name: "Richard Higgins", tileShare: 0 }],
   });
-
-  assert.equal(choose([neutral, alliance], obs).id, alliance.id);
-  const history = [{ actionID: neutral.id, kind: "attack", neutral: true, tileShare: 0 }];
-  assert.equal(choose([neutral, alliance], obs, null, history).id, neutral.id);
-});
-
-test("the opening alliance rule does not alter a defensive profile", () => {
-  const alliance = {
-    ...action("alliance:richard", "alliance_request", "Alliance with Richard"),
-    metadata: { recipientID: "richard", relation: 0 },
-  };
-  const neutral = action(
-    "expand:terra-nullius:10",
-    "attack",
-    "Expand into neutral land with 10% troops",
-  );
-  const obs = observation({
-    profile: "defensive",
-    objective: { kind: "build_alliance", targetPlayerID: "richard" },
-    rivals: [{ id: "richard", name: "Richard Higgins", tileShare: 0 }],
-  });
   assert.equal(choose([neutral, alliance], obs).id, neutral.id);
-});
-
-test("the opening alliance requires the objective target to be legal", () => {
-  const wrongAlliance = {
-    ...action("alliance:auri", "alliance_request", "Alliance with Auri"),
-    metadata: { recipientID: "auri", relation: 0 },
-  };
-  const neutral = action(
-    "expand:terra-nullius:10",
-    "attack",
-    "Expand into neutral land with 10% troops",
-  );
-  const obs = observation({
-    profile: "diplomatic",
-    objective: { kind: "build_alliance", targetPlayerID: "richard" },
-    rivals: [{ id: "auri", name: "Auri", tileShare: 0 }],
-  });
-  assert.equal(choose([neutral, wrongAlliance], obs).id, neutral.id);
 });
 
 test("an opening counterattack outranks neutral expansion under active attack", () => {
