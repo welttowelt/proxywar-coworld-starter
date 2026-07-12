@@ -1,23 +1,23 @@
 # Proxy War meta report
 
-Snapshot collected 2026-07-11 after Competition Round 197. The source window
-covers rounds 178-197, 75 episodes, 276 participant seats, and 27,545 agent
+Snapshot collected 2026-07-11 after Competition Round 198. The source window
+covers rounds 179-198, 75 episodes, 284 participant seats, and 28,143 agent
 decisions. All 12 ingestion quality checks pass with zero failures.
 
-Round 197 extended the verified consecutive first-place streak to 11 of the
+Round 198 extended the verified consecutive first-place streak to 12 of the
 100-round target.
 
 ## Current four-player field
 
-Rounds 181-197 use the current four-player FFA format. The 63 available episodes
+Rounds 181-198 use the current four-player FFA format. The 67 available episodes
 produce this table:
 
 | Player | Matches | Wins | Win rate | Mean final tiles | Rival attacks | Holds |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| odin free | 63 | 36 | 57.14% | 150,697.0 | 1,247 | 134 |
-| Auri | 63 | 10 | 15.87% | 62,147.7 | 894 | 203 |
-| James Boggs | 63 | 7 | 11.11% | 28,941.2 | 464 | 67 |
-| Richard Higgins | 63 | 0 | 0.00% | 11,261.1 | 331 | 9 |
+| odin free | 67 | 39 | 58.21% | 162,246.7 | 1,330 | 134 |
+| Auri | 67 | 10 | 14.93% | 64,349.6 | 939 | 254 |
+| James Boggs | 67 | 7 | 10.45% | 27,475.5 | 530 | 108 |
+| Richard Higgins | 67 | 0 | 0.00% | 10,912.8 | 367 | 15 |
 
 The aggregate holds column includes the broken v4 round and 51 Round 189 actions
 selected by the game's fallback brain after the v6 container disconnected. v6's
@@ -46,6 +46,7 @@ resolution. The dataset has zero rejected decisions.
 | 195 | v8 | 1 | 2/4 | 265,029.3 | 0 |
 | 196 | v8 | 1 | 3/4 | 66,477.8 | 0 |
 | 197 | v9 | 1 | 3/4 | 168,315.3 | 1 |
+| 198 | v9 | 1 | 3/4 | 344,155.3 | 0 |
 
 v4 misclassified the new structured neutral-land action and held instead of
 expanding. v5 fixed the classifier and recovered immediately from every seat.
@@ -146,6 +147,16 @@ relation-2 pending request disappeared during simultaneous turn resolution at
 turn 2,200 and the game replaced it with a hold despite productive tactical
 actions. The round had zero rejected decisions. The 0.75 score and first place
 extended the streak to 11.
+
+Round 198 returned to Europe. v9 won seats 1, 2, and 4 with 455,479, 465,025,
+and 456,117 final tiles. The seat-3 loss peaked at 58,267 tiles and was
+eliminated by turn 4,100 after 15 attacks from Richard Higgins and 10 from Auri;
+the episode itself continued to the 30,400-turn cap. A relation-2 pending request
+to James Boggs was accepted at turn 2,700, and James subsequently donated troops
+to v9, showing that pending requests can be useful despite the race during
+simultaneous turn execution. Across 571 decisions, v9 recorded zero holds, zero
+rejected actions, and 12 planner fallbacks. The 0.75 score and first place
+extended the streak to 12.
 
 ## Winning action profile
 
@@ -257,15 +268,21 @@ fallback mode because the local Coworld Bedrock path requires an absent `aws`
 binary; hosted qualification exercised the normal Bedrock container path. v9
 won three of four Asia seats in Round 197 and took official first place.
 
-v10 (`db62655d-f184-450f-b07d-d0cf1608a2b3`) excludes relation-2 pending
-alliance actions because they can disappear before simultaneous turn execution.
-It prefers a stable request and uses stable alliance or target pressure instead
-of holding when an isolated seat has no tactical action. All 32 tests pass. Its
-final four-seat local Asia run produced a 223,763-tile winner at turn 7,600 with
-251 accepted decisions, zero holds, zero rejected actions, and zero selected
-pending requests. Hosted qualifier Round 30 completed successfully and promoted
-v10 before Round 198 ended; Round 198 had already locked v9, so v10 begins field
-play in Round 199.
+v10 (`db62655d-f184-450f-b07d-d0cf1608a2b3`) initially excluded relation-2
+pending alliance actions after the Round 197 race. It also added stable alliance
+or target pressure when an isolated seat has no tactical action. Its four-seat
+local Asia run produced a 223,763-tile winner at turn 7,600 with 251 accepted
+decisions, zero holds, and zero rejected actions. Hosted qualifier Round 30
+completed successfully and promoted v10 after Round 198 had already locked v9.
+
+Round 198 inverted the blanket exclusion hypothesis: v9's relation-2 request to
+James was accepted and generated later troop donations. v11
+(`83469663-89e5-46b0-8d6f-38f7dc4e806f`) therefore prefers stable requests but
+allows a pending-only request inside the active survival gate; no-pressure
+last-resort selection still excludes pending requests. All 32 tests pass. Its
+four-seat local Pangaea run produced a 90,000-tile winner at turn 8,500 with 268
+accepted decisions, zero holds, and zero rejected actions. Hosted qualifier
+Round 32 completed successfully, promoted v11, and locked it into Round 199.
 
 ## PUA/PIP operating loop
 
@@ -283,7 +300,7 @@ play in Round 199.
 2. Require four of four declared wins, zero holds, and zero rejected decisions
    for a full RCI pass. Use map-specific mean-tile floors: Europe 200,000, Asia
    150,000, and Pangaea 60,000.
-3. Keep qualified v10 as champion for Round 199. Round 198 remains an explicit
-   v9 field result because entrants were locked before the promotion completed.
+3. Keep qualified v11 as champion for Round 199 and evaluate the conditional
+   pending-request path from its replay before another policy change.
 4. Refresh after every completed round and reset the consecutive first-place
    counter after any official rank below 1.
