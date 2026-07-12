@@ -1,0 +1,24 @@
+{
+  "coworld_id": "cow_e1bcda38-8d9f-491b-bf9c-3703ccbbf36f",
+  "variant_id": "tournament-4p-asia",
+  "roster": [
+    {
+      "player": { "policy_ref": "proxywar-starter-b:v1" },
+      "slot": 0
+    },
+    {
+      "player": { "policy_ref": "jamesboggs-warlord:v1" },
+      "slot": 1
+    },
+    {
+      "player": { "policy_ref": "proxywar-keystone:v4" },
+      "slot": 2
+    },
+    {
+      "player": { "policy_ref": "oli-codex-proxywar:v12" },
+      "slot": 3
+    }
+  ],
+  "num_episodes": 2,
+  "notes": "Target100 Asia seat-4 A/B baseline: v12, fixed Round 200 loss roster"
+}
