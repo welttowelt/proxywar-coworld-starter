@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "experience_request_id": "xreq_5040f5aa-83bd-4bb6-a4c3-c9e7ac2dbf2d",
+  "status": "completed",
+  "policy_version": 25,
+  "policy_version_id": "1a8ff066-b15e-43da-9d06-338ce0b7db1d",
+  "map": "Asia",
+  "seat": 3,
+  "episodes": 4,
+  "wins": 0,
+  "win_rate_pct": 0,
+  "winner_counts": {
+    "Auri": 3,
+    "James Boggs": 1
+  },
+  "final_tiles": [2457, 2491, 2360, 1358],
+  "average_final_tiles": 2166.5,
+  "decisions": 356,
+  "holds": 5,
+  "rejected": 0,
+  "fallbacks": 67,
+  "hostile_attacks": 63,
+  "hostile_commitments": {
+    "10_pct": 44,
+    "25_pct": 19,
+    "40_pct": 0
+  },
+  "reserve_bands": {
+    "below_0_75": 34,
+    "from_0_75_to_0_89": 24,
+    "at_or_above_0_90": 5
+  },
+  "reserve_commitment_violations": 0,
+  "policy_attack_targets": {
+    "Richard Higgins": 52,
+    "Auri": 9,
+    "James Boggs": 2
+  },
+  "auri_attacks_on_policy": 52,
+  "diagnosis": {
+    "name": "weak-target trap",
+    "v24_winning_policy_attacks_on_auri": [28, 27, 32],
+    "v25_policy_attacks_on_auri": [5, 2, 1, 1],
+    "v25_auri_attacks_on_policy": [15, 9, 14, 14],
+    "v24_richard_finish_sequence": [
+      {"turn": 2400, "troop_percent": 40},
+      {"turn": 2500, "troop_percent": 40}
+    ],
+    "v25_replacement_sequence": [
+      {"turn": 2400, "troop_percent": 25},
+      {"turn": 2500, "troop_percent": 10},
+      {"turn": 2600, "troop_percent": 10}
+    ],
+    "conclusion": "Continuous reserve caps suppressed the decisive Richard finish, prolonged target continuity, and removed the Auri conversion window."
+  },
+  "checks": {
+    "completed_episode_floor": true,
+    "perfect_episode_wins": false,
+    "zero_holds": false,
+    "zero_rejected_decisions": true,
+    "continuous_reserve_feedback_exercised": true,
+    "continuous_reserve_feedback_invariant": true
+  },
+  "passed": false,
+  "decision": "rejected",
+  "active_champion": "oli-codex-proxywar:v14",
+  "episode_audits": [
+    {
+      "episode_request_id": "ereq_63e84468-74bb-4a57-9ec6-3560219cd5db",
+      "episode_id": "aec40e40-3797-4fb4-9544-e83a99fc0945",
+      "winner": "Auri",
+      "cost_usd": 0.031408,
+      "final_tiles": 2457,
+      "decisions": 80,
+      "holds": 0,
+      "fallbacks": 1,
+      "hostile_attacks": 17,
+      "policy_attacks_on_auri": 5,
+      "auri_attacks_on_policy": 15,
+      "first_auri_attack": {"turn": 3400, "relative_troop_ratio": 1.25},
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/4d85f91e-6b90-449b-bb8b-d3da8b5ec1c3.replay",
+      "replay_sha256": "04a58bfb22ad05a3640f736ebe1c5cc6ab53bccc8c09d008dd202f4db25022e8"
+    },
+    {
+      "episode_request_id": "ereq_f9074774-42d8-43fe-b735-6b72f58b58f3",
+      "episode_id": "58632c7f-9962-472a-ac82-7dc7c50e6815",
+      "winner": "James Boggs",
+      "cost_usd": 0.032258,
+      "final_tiles": 2491,
+      "decisions": 83,
+      "holds": 1,
+      "fallbacks": 13,
+      "hostile_attacks": 16,
+      "policy_attacks_on_auri": 2,
+      "auri_attacks_on_policy": 9,
+      "first_auri_attack": {"turn": 3300, "relative_troop_ratio": 1.32},
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/9e2a1cfa-b310-4b5e-90a5-22a5d281aaa5.replay",
+      "replay_sha256": "0cc7bda5f338836c706c5d389e8d0fee170f6b6e7cd7f280dde2639f80417b08"
+    },
+    {
+      "episode_request_id": "ereq_c08cf153-e385-4d0e-92ac-9e211cd7a448",
+      "episode_id": "a0519740-30be-4df6-a356-60f4206cc698",
+      "winner": "Auri",
+      "cost_usd": 0.033788,
+      "final_tiles": 2360,
+      "decisions": 94,
+      "holds": 2,
+      "fallbacks": 12,
+      "hostile_attacks": 15,
+      "policy_attacks_on_auri": 1,
+      "auri_attacks_on_policy": 14,
+      "first_auri_attack": {"turn": 3200, "relative_troop_ratio": 1.25},
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/56696ac7-b3d4-483d-b3c9-d13dc2e66e0e.replay",
+      "replay_sha256": "b01645180a8d5064e858110d371bbaebd692a10dfd8bdc72397a0abbe83601de"
+    },
+    {
+      "episode_request_id": "ereq_cfa02e60-5a67-4128-9eff-dc9c40b4a904",
+      "episode_id": "99e51675-2279-493e-82c7-f8d53ce534ae",
+      "winner": "Auri",
+      "cost_usd": 0.023026,
+      "final_tiles": 1358,
+      "decisions": 99,
+      "holds": 2,
+      "fallbacks": 41,
+      "hostile_attacks": 15,
+      "policy_attacks_on_auri": 1,
+      "auri_attacks_on_policy": 14,
+      "first_auri_attack": {"turn": 3300, "relative_troop_ratio": 1.47},
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/af5fa154-74c9-4b92-bb08-f39ee253b02a.replay",
+      "replay_sha256": "3dcb38e7b5a3ccaea79b41da16c1c5ac3f0ea1dce88fc3c8de0f10807507ea8c"
+    }
+  ]
+}

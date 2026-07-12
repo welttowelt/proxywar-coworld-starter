@@ -302,16 +302,8 @@ function chooseRivalAttack(actions, state, plan, history, avoid) {
   let desiredPercent = 10;
   if (streak >= 1 && best.rival.relativeTroopRatio >= 1.1) desiredPercent = 25;
   if (streak >= 2 && best.rival.relativeTroopRatio >= 1.5) desiredPercent = 40;
-  const commitmentLimit = state.self.troopRatio < 0.75
-    ? 10
-    : state.self.troopRatio < 0.9 ? 25 : 40;
-  desiredPercent = Math.min(desiredPercent, commitmentLimit);
-  const commitmentActions = best.actions.filter((action) => {
-    const percent = actionPercent(action);
-    return percent === null || percent <= commitmentLimit;
-  });
   return {
-    action: pickPercent(commitmentActions, desiredPercent, avoid),
+    action: pickPercent(best.actions, desiredPercent, avoid),
     rival: best.rival,
     streak,
   };

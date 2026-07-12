@@ -402,3 +402,13 @@ verified replay SHA-256 is
 `687b008a6dd68bc62845cc648f86d19ad17e38ebd28fc3c312a375325fc47c5a`.
 Local Bedrock planning was unavailable for 256 decisions, so this proves the
 continuous reserve invariant and protocol safety without a competitive claim.
+
+The pinned hosted gate completed 0/4. Auri won three episodes and James won
+one; v25 averaged 2,166.5 final tiles and never produced a 40% hostile attack.
+Across the four replays, v25 attacked Richard 52 times but Auri only nine times,
+while Auri attacked v25 52 times. By comparison, the three v24 wins cleared
+Richard with 40% attacks at turns 2,400 and 2,500, then attacked Auri 27-32
+times. The continuous cap prevented that target finish, prolonged the weak
+target lock, and surrendered the leader-pressure window. v25 is rejected and
+exact v14 is restored. Full evidence is archived in
+`experiments/audit-v25-asia-seat3.json`.
