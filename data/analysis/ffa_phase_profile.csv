@@ -1,25 +1,25 @@
 player_name,policy_version,won,phase,decisions,rival_attack_rate_pct,neutral_attack_rate_pct,build_rate_pct,social_rate_pct,hold_rate_pct,mean_attack_ratio,mean_attack_percent
-Auri,4,true,opening,100,0.0,32.0,20.0,0.0,0.0,,
-Auri,4,true,conversion,150,35.33,28.67,0.0,3.33,1.33,1.47,19.6
-Auri,4,true,finish,288,70.83,16.32,3.47,2.43,0.0,2.03,24.5
-Auri,4,false,opening,690,0.0,13.91,20.0,0.0,0.14,,
-Auri,4,false,conversion,1028,29.57,36.87,4.47,1.65,0.58,1.79,21.0
-Auri,4,false,finish,5383,8.14,48.88,6.11,6.17,4.89,2.54,22.9
-James Boggs,1,true,opening,10,10.0,20.0,20.0,0.0,0.0,1.68,25.0
-James Boggs,1,true,conversion,15,33.33,20.0,13.33,33.33,0.0,1.53,16.0
-James Boggs,1,true,finish,19,31.58,21.05,5.26,26.32,0.0,1.35,20.0
-James Boggs,1,false,opening,780,2.18,22.05,18.97,20.0,0.0,1.67,20.6
-James Boggs,1,false,conversion,1050,19.71,17.33,13.05,37.62,0.19,1.51,14.3
-James Boggs,1,false,finish,3762,8.98,13.4,8.83,41.63,2.5,1.28,13.9
-Richard Higgins,1,false,opening,790,3.92,66.08,0.0,0.0,0.0,1.09,10.0
-Richard Higgins,1,false,conversion,1076,5.67,86.34,5.76,0.0,0.0,1.45,10.0
-Richard Higgins,1,false,finish,2949,14.85,61.78,7.49,6.75,1.22,1.85,10.0
-odin free,8,true,opening,80,0.0,66.25,3.75,0.0,0.0,,
-odin free,8,true,conversion,120,55.0,37.5,5.83,0.0,0.0,1.98,23.9
-odin free,8,true,finish,565,34.51,23.36,8.85,0.0,0.0,3.28,23.8
-odin free,8,false,opening,40,0.0,67.5,2.5,0.0,0.0,,
-odin free,8,false,conversion,60,41.67,40.0,16.67,0.0,0.0,1.63,23.2
-odin free,8,false,finish,638,2.19,28.68,5.02,0.0,0.0,2.65,23.9
+Auri,4,true,opening,100,0.0,28.0,20.0,0.0,0.0,,
+Auri,4,true,conversion,150,32.67,29.33,0.0,4.67,1.33,1.49,18.9
+Auri,4,true,finish,266,67.67,19.55,3.76,2.63,0.0,2.03,24.6
+Auri,4,false,opening,690,0.0,13.48,20.0,0.0,0.14,,
+Auri,4,false,conversion,1028,29.57,36.87,4.28,1.75,0.58,1.94,20.9
+Auri,4,false,finish,5369,8.14,49.23,6.11,6.07,4.9,2.55,22.9
+James Boggs,1,true,opening,20,10.0,20.0,20.0,0.0,0.0,1.68,25.0
+James Boggs,1,true,conversion,30,43.33,16.67,16.67,23.33,0.0,1.54,14.6
+James Boggs,1,true,finish,39,35.9,20.51,7.69,23.08,0.0,1.44,19.6
+James Boggs,1,false,opening,770,2.34,21.69,18.96,20.0,0.0,1.68,20.8
+James Boggs,1,false,conversion,1032,19.96,17.25,13.18,37.21,0.19,1.52,14.3
+James Boggs,1,false,finish,3742,8.77,13.36,8.79,41.77,2.54,1.27,13.9
+Richard Higgins,1,false,opening,790,4.18,65.82,0.0,0.0,0.0,1.09,10.0
+Richard Higgins,1,false,conversion,1058,5.58,86.01,6.14,0.0,0.0,1.46,10.0
+Richard Higgins,1,false,finish,2835,13.86,62.68,7.44,7.02,1.27,1.9,10.0
+odin free,8,true,opening,50,0.0,64.0,6.0,0.0,0.0,,
+odin free,8,true,conversion,75,53.33,38.67,5.33,0.0,0.0,2.36,23.5
+odin free,8,true,finish,485,26.6,25.98,8.66,0.0,0.0,3.95,23.1
+odin free,8,false,opening,30,0.0,66.67,3.33,0.0,0.0,,
+odin free,8,false,conversion,45,33.33,46.67,17.78,0.0,0.0,1.85,22.0
+odin free,8,false,finish,601,2.0,27.95,4.83,0.0,0.0,2.41,23.8
 odin free,9,true,opening,60,0.0,70.0,0.0,0.0,0.0,,
 odin free,9,true,conversion,90,34.44,53.33,7.78,1.11,0.0,1.46,24.5
 odin free,9,true,finish,540,26.85,38.89,6.67,0.0,0.0,2.54,25.0
@@ -44,9 +44,9 @@ odin free,13,true,finish,379,38.26,33.77,7.92,0.0,0.0,2.74,26.9
 odin free,13,false,opening,50,0.0,66.0,4.0,0.0,0.0,,
 odin free,13,false,conversion,75,40.0,44.0,12.0,0.0,0.0,1.69,25.5
 odin free,13,false,finish,628,3.82,46.97,5.41,0.0,0.0,2.65,21.3
-odin free,14,true,opening,280,0.0,66.43,3.57,0.0,0.0,,
-odin free,14,true,conversion,420,52.62,39.52,7.14,0.0,0.0,1.68,24.0
-odin free,14,true,finish,1897,30.36,31.89,6.75,0.0,0.0,2.87,25.9
-odin free,14,false,opening,70,0.0,68.57,1.43,0.0,0.0,,
-odin free,14,false,conversion,105,39.05,43.81,16.19,0.0,0.0,1.51,22.8
-odin free,14,false,finish,650,11.69,36.92,4.92,0.0,0.0,1.96,22.6
+odin free,14,true,opening,300,0.0,66.0,4.0,0.0,0.0,,
+odin free,14,true,conversion,450,54.0,38.22,7.11,0.0,0.0,1.68,24.0
+odin free,14,true,finish,1943,30.62,31.86,6.74,0.0,0.0,2.87,26.0
+odin free,14,false,opening,90,0.0,66.67,3.33,0.0,0.0,,
+odin free,14,false,conversion,135,41.48,43.7,14.07,0.0,0.0,2.29,23.4
+odin free,14,false,finish,676,11.83,38.17,5.18,0.0,0.0,1.94,22.6
