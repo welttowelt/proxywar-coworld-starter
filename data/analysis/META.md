@@ -1,23 +1,23 @@
 # Proxy War meta report
 
-Snapshot collected 2026-07-12 after Competition Round 204. The source window
-covers rounds 185-204, 80 episodes, 320 participant seats, and 27,967 agent
+Snapshot collected 2026-07-12 after Competition Round 205. The source window
+covers rounds 186-205, 80 episodes, 320 participant seats, and 27,991 agent
 decisions. All 12 ingestion quality checks pass with zero failures.
 
-Round 204 extended the verified consecutive first-place streak to 18 of the
+Round 205 extended the verified consecutive first-place streak to 19 of the
 100-round target.
 
 ## Current four-player field
 
-Rounds 185-204 use the current four-player FFA format. The 80 available episodes
+Rounds 186-205 use the current four-player FFA format. The 80 available episodes
 produce this table:
 
 | Player | Matches | Wins | Win rate | Mean final tiles | Rival attacks | Holds |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| odin free | 80 | 52 | 65.00% | 182,979.6 | 1,783 | 67 |
-| Auri | 80 | 11 | 13.75% | 66,729.8 | 1,053 | 287 |
-| James Boggs | 80 | 5 | 6.25% | 24,459.7 | 588 | 102 |
-| Richard Higgins | 80 | 0 | 0.00% | 11,827.8 | 513 | 17 |
+| odin free | 80 | 52 | 65.00% | 176,256.2 | 1,753 | 67 |
+| Auri | 80 | 11 | 13.75% | 66,228.6 | 1,033 | 290 |
+| James Boggs | 80 | 5 | 6.25% | 24,224.8 | 589 | 105 |
+| Richard Higgins | 80 | 0 | 0.00% | 11,744.8 | 507 | 17 |
 
 The aggregate holds column includes 51 Round 189 actions selected by the game's
 fallback brain after the v6 container disconnected. v6's own selector recorded
@@ -57,6 +57,7 @@ could no longer resolve it and substituted `HOLD`.
 | 202 | v13 | 1 | 2/4 | 44,533.5 | 0 |
 | 203 | v13 | 1 | 3/4 | 163,962.8 | 0 |
 | 204 | v13 | 1 | 2/4* | 359,584.3 | 0 |
+| 205 | v14 | 1 | 4/4 | 83,641.8 | 0 |
 
 v4 misclassified the new structured neutral-land action and held instead of
 expanding. v5 fixed the classifier and recovered immediately from every seat.
@@ -269,21 +270,36 @@ and one Richard attack. Both remained alive through the cap. The strict RCI gate
 fails only the four-of-four declared-winner check, while official first place
 extends the streak to 18.
 
+Round 205 used Pangaea for v14's first official field test. v14 swept all four
+seats with 84,267, 84,467, 83,426, and 82,407 final tiles. The historically
+weak seat 2 won after 49 land attacks, 20 boats, and six builds, improving on
+the 12,095, 624, 14,322, and 1,088 results from earlier Pangaea rounds in that
+seat. The other three seats also declared outright winners rather than relying
+on timeout territory scoring.
+
+Across 257 decisions, v14 used 90 rival attacks, 69 neutral-land attacks, 36
+boats, and 20 builds. All 245 post-spawn decisions remained under external
+policy control. The round recorded zero holds, zero rejected actions, zero
+timeouts, and zero socket disconnects; 42 planner fallbacks stayed inside the
+deterministic selector. This is the first four-of-four field sweep since Round
+185 and passes every strict RCI check. The 1.00 score and first place extend the
+official streak to 19.
+
 ## Winning action profile
 
-Four-player winners use 31.47 rival attacks per 100 decisions versus 9.39 for
-non-winners, a 3.35x difference. Winners also allocate fewer decisions to
+Four-player winners use 30.73 rival attacks per 100 decisions versus 9.29 for
+non-winners, a 3.31x difference. Winners also allocate fewer decisions to
 neutral expansion, social actions, and holds while using more neutral boats.
 
 | Actions per 100 decisions | Winners | Non-winners |
 | --- | ---: | ---: |
-| Rival attacks | 31.47 | 9.39 |
-| Neutral attacks | 34.17 | 46.62 |
-| Neutral boats | 19.23 | 13.10 |
-| Naval invasions | 1.40 | 0.81 |
-| Builds | 8.06 | 8.00 |
-| Social actions | 1.92 | 12.36 |
-| Holds | 0.03 | 2.14 |
+| Rival attacks | 30.73 | 9.29 |
+| Neutral attacks | 34.06 | 46.37 |
+| Neutral boats | 19.67 | 13.16 |
+| Naval invasions | 1.89 | 0.91 |
+| Builds | 8.03 | 7.99 |
+| Social actions | 1.91 | 12.52 |
+| Holds | 0.03 | 2.17 |
 
 v5 was more decisive than the pooled winner profile in Round 185. Across those
 four wins, 56.9% of decisions attacked rivals and 28.4% expanded into neutral
@@ -319,12 +335,12 @@ from suggestions that consume winning tempo.
 
 | Recommendation | Winners | Non-winners | v5 R185 | v5 R186 | v5 R187 | v5 R188 |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| Opening tempo | 94.93% | 66.47% | 100.00% | 98.39% | 100.00% | 100.00% |
-| Frontier conversion | 72.51% | 63.46% | 85.71% | 85.71% | 51.56% | 79.01% |
-| Economy cadence | 14.78% | 14.54% | 10.34% | 4.75% | 7.99% | 13.74% |
-| Naval control | 26.06% | 15.04% | 0.95% | 0.00% | 5.03% | 0.00% |
-| Diplomacy pressure | 0.93% | 3.99% | 0.00% | 0.00% | 0.00% | 0.00% |
-| Transport banking | 46.54% | 16.31% | 0.00% | 0.00% | 5.18% | 0.00% |
+| Opening tempo | 94.81% | 66.20% | 100.00% | 98.39% | 100.00% | 100.00% |
+| Frontier conversion | 71.23% | 63.18% | 85.71% | 85.71% | 51.56% | 79.01% |
+| Economy cadence | 15.23% | 14.62% | 10.34% | 4.75% | 7.99% | 13.74% |
+| Naval control | 26.91% | 15.17% | 0.95% | 0.00% | 5.03% | 0.00% |
+| Diplomacy pressure | 0.93% | 4.05% | 0.00% | 0.00% | 0.00% | 0.00% |
+| Transport banking | 46.98% | 16.40% | 0.00% | 0.00% | 5.18% | 0.00% |
 
 Opening tempo remains the strongest positive signal, but tactical adherence alone did
 not detect the Europe plateau. Keep neutral land first while it increases tile share,
@@ -441,8 +457,8 @@ already locked v12.
 2. Require four of four declared wins, zero holds, and zero rejected decisions
    for a full RCI pass. Use map-specific mean-tile floors: Europe 200,000, Asia
    150,000, and Pangaea 60,000.
-3. Round 204 remains locked to v13. Use qualified v14 as the sole champion from
-   Round 205 onward after its 2/2 reliability retry completed without timeout,
-   disconnect, hold, or rejection.
+3. Keep qualified v14 as the sole champion after its 2/2 reliability retry and
+   4/4 first official field sweep completed without timeout, disconnect, hold,
+   or rejection.
 4. Refresh after every completed round and reset the consecutive first-place
    counter after any official rank below 1.
