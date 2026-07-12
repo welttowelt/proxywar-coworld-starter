@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "oli-codex-proxywar:v34",
+    "policy_version_id": "3ec8ae7b-60aa-4aeb-b880-fab781e9aa87",
+    "parent_ref": "oli-codex-proxywar:v33",
+    "exact_deltas": [
+      "replace a non-hostile parent action with a legal low-risk break from the allied tile leader when own share is at least 0.20, the leader gap is 0.08-0.22, own-to-leader troop ratio is at least 0.90, and no incoming attack is active"
+    ]
+  },
+  "hypothesis": "severing Auri at the first measured parity-window opportunity removes the protected-runaway failure without changing any of the three parent winning traces",
+  "mechanism": {
+    "marker": "[n1dh0ggr:s3vr]",
+    "prior_reachable_decisions": 4,
+    "source": "experiments/diagnosis-v34-asia-seat3.json"
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "wins": 0,
+    "self_play": true,
+    "accepted_decisions": 108,
+    "holds": 3,
+    "rejections": 0,
+    "planner_degraded_decisions": 0,
+    "mechanism_reached": false,
+    "replay_sha256": "c24de5eacf937e314cc31211b5b35f8c6247b8009a8f6cb97ebeb20d9dc3fd03"
+  },
+  "matched_baseline": {
+    "policy_ref": "oli-codex-proxywar:v33",
+    "request_id": "xreq_2666b188-163f-470b-844b-c4a48bb46c8d",
+    "same_roster": true,
+    "same_variant": true
+  },
+  "champion_control": {
+    "policy_ref": "oli-codex-proxywar:v14",
+    "request_id": "xreq_f828169f-4885-48b9-9dcf-9287256ebb15",
+    "wins": 0,
+    "episodes": 4
+  },
+  "diagnostic_only": false,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  },
+  "verdict": "ready for hosted diagnostic; local runtime passed but the registered branch was not reached"
+}
