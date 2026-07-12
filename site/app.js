@@ -186,6 +186,68 @@ function renderOverview(data) {
     : `${formatInteger(snapshot.data_quality_failures)} validation failures`;
 }
 
+function renderLeaderboard(data) {
+  const rows = [...data.leaderboard]
+    .filter((row) => asNumber(row.rank) > 0)
+    .sort((left, right) => asNumber(left.rank) - asNumber(right.rank));
+  const champion = data.memberships.find((membership) => membership.is_champion === true);
+  const newestAuri = newestChallengerMembership(data);
+  const latestStandingByPlayer = new Map();
+
+  [...data.standings]
+    .sort((left, right) => asNumber(right.round_number) - asNumber(left.round_number))
+    .forEach((standing) => {
+      if (!latestStandingByPlayer.has(standing.player_name)) {
+        latestStandingByPlayer.set(standing.player_name, standing);
+      }
+    });
+
+  const policyForPlayer = (playerName) => {
+    if (playerName === OUR_PLAYER && champion) {
+      return champion.policy_label ?? `${champion.policy_name}:v${champion.policy_version}`;
+    }
+    const standing = latestStandingByPlayer.get(playerName);
+    if (!standing) return "Policy unavailable";
+    const version = playerName === "Auri" && newestAuri
+      ? newestAuri.policy_version
+      : standing.policy_version;
+    return `${standing.policy_name}:v${version}`;
+  };
+
+  const ourRow = rows.find((row) => row.player_name === OUR_PLAYER) ?? {};
+  const ourRows = rows.filter((row) => row.player_name === OUR_PLAYER);
+  byId("leaderboard-rank").textContent = ourRow.rank ? `#${ourRow.rank}` : "#--";
+  byId("leaderboard-score").textContent = ourRow.score !== undefined
+    ? formatDecimal(ourRow.score, 2)
+    : "--";
+  byId("leaderboard-player").textContent = ourRow.player_name ?? OUR_PLAYER;
+  byId("leaderboard-policy").textContent = policyForPlayer(OUR_PLAYER);
+  byId("leaderboard-division").textContent = champion?.division_name ?? "Competition";
+  byId("leaderboard-control").textContent = `${ourRows.length}/${rows.length} listed rows`;
+  byId("leaderboard-active").textContent = `${rows.length} active players`;
+
+  byId("leaderboard-body").innerHTML = rows.map((row) => {
+    const ours = row.player_name === OUR_PLAYER;
+    const policy = policyForPlayer(row.player_name);
+    return `
+      <tr data-player="${ours ? "ours" : "field"}">
+        <td class="leaderboard-position">${escapeHtml(row.rank)}</td>
+        <td>
+          <div class="leaderboard-entry">
+            <span>
+              <strong>${escapeHtml(row.player_name)}</strong>
+              ${ours ? '<b class="you-badge">You</b>' : ""}
+            </span>
+            <small title="${escapeHtml(policy)}">${escapeHtml(policy)}</small>
+          </div>
+        </td>
+        <td>${escapeHtml(formatInteger(row.rounds_played))}</td>
+        <td class="leaderboard-score">${escapeHtml(formatDecimal(row.score, 2))}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
 function renderPlacementTrail(results) {
   const ordered = [...results].sort(
     (left, right) => asNumber(left.round_number) - asNumber(right.round_number),
@@ -649,6 +711,7 @@ async function refreshDashboard() {
     const data = await loadData();
     setPolicyCodenames(data.policyCodenames);
     renderOverview(data);
+    renderLeaderboard(data);
     renderPlacementTrail(data.ourResults);
     renderLiveRound(data);
     renderStandings(data);

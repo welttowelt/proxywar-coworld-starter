@@ -275,6 +275,185 @@ th {
   text-transform: none;
 }
 
+.leaderboard-layout {
+  display: grid;
+  grid-template-columns: minmax(280px, 4fr) minmax(0, 8fr);
+  gap: 16px;
+}
+
+.leaderboard-performance {
+  min-width: 0;
+  padding: 22px;
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--accent);
+  background: var(--surface);
+}
+
+.leaderboard-rank-line {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 24px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+
+.leaderboard-rank-line > strong {
+  font-size: 5rem;
+  line-height: 0.8;
+}
+
+.leaderboard-rank-line > div {
+  display: grid;
+  justify-items: end;
+  gap: 2px;
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.leaderboard-rank-line b {
+  color: var(--accent);
+  font-size: 1.5rem;
+  line-height: 1;
+}
+
+.leaderboard-player {
+  margin: 22px 0 0;
+  font-size: 1.35rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.leaderboard-policy {
+  margin: 4px 0 0;
+  color: var(--body);
+  overflow-wrap: anywhere;
+}
+
+.leaderboard-facts {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 24px 0 0;
+  border-top: 1px solid var(--line);
+}
+
+.leaderboard-facts div {
+  min-width: 0;
+  padding: 13px 12px 0 0;
+}
+
+.leaderboard-facts div + div {
+  padding-left: 12px;
+  border-left: 1px solid var(--line);
+}
+
+.leaderboard-facts dt,
+.leaderboard-facts dd {
+  margin: 0;
+}
+
+.leaderboard-facts dt {
+  color: var(--muted);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+.leaderboard-facts dd {
+  margin-top: 5px;
+  color: var(--text);
+  font-weight: 700;
+  overflow-wrap: anywhere;
+}
+
+.leaderboard-table-panel {
+  margin-top: 0;
+}
+
+.leaderboard-scroll {
+  max-height: 520px;
+}
+
+.leaderboard-table {
+  min-width: 560px;
+}
+
+.leaderboard-table th:nth-child(1),
+.leaderboard-table td:nth-child(1) {
+  width: 10%;
+}
+
+.leaderboard-table th:nth-child(2),
+.leaderboard-table td:nth-child(2) {
+  width: 58%;
+}
+
+.leaderboard-table th:nth-child(3),
+.leaderboard-table td:nth-child(3) {
+  width: 14%;
+}
+
+.leaderboard-table th:nth-child(4),
+.leaderboard-table td:nth-child(4) {
+  width: 18%;
+  text-align: right;
+}
+
+.leaderboard-table tbody tr[data-player="ours"] {
+  background: var(--accent-soft);
+}
+
+.leaderboard-position,
+.leaderboard-score {
+  color: var(--text);
+  font-weight: 700;
+}
+
+.leaderboard-table tbody tr:first-child .leaderboard-position,
+.leaderboard-table tbody tr:first-child .leaderboard-score {
+  color: var(--accent);
+}
+
+.leaderboard-entry {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.leaderboard-entry > span {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.leaderboard-entry strong {
+  color: var(--text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.leaderboard-entry small {
+  color: var(--muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.you-badge {
+  flex: 0 0 auto;
+  padding: 2px 6px;
+  border: 1px solid var(--separator);
+  border-radius: 3px;
+  background: var(--panel);
+  color: var(--body);
+  font-size: 0.62rem;
+  line-height: 1.3;
+  text-transform: uppercase;
+}
+
 .section {
   padding: 50px 0 56px;
   border-bottom: 1px solid var(--line);
@@ -1287,6 +1466,10 @@ tbody tr[data-player="ours"] td:first-child {
     grid-template-columns: 1fr;
   }
 
+  .leaderboard-layout {
+    grid-template-columns: 1fr;
+  }
+
   .dominance-stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
@@ -1350,6 +1533,36 @@ tbody tr[data-player="ours"] td:first-child {
 
   .kpi strong {
     min-height: 0;
+  }
+
+  .leaderboard-table {
+    min-width: 0;
+  }
+
+  .leaderboard-table th,
+  .leaderboard-table td {
+    padding-right: 10px;
+    padding-left: 10px;
+  }
+
+  .leaderboard-table th:nth-child(1),
+  .leaderboard-table td:nth-child(1) {
+    width: 12%;
+  }
+
+  .leaderboard-table th:nth-child(2),
+  .leaderboard-table td:nth-child(2) {
+    width: 62%;
+  }
+
+  .leaderboard-table th:nth-child(3),
+  .leaderboard-table td:nth-child(3) {
+    display: none;
+  }
+
+  .leaderboard-table th:nth-child(4),
+  .leaderboard-table td:nth-child(4) {
+    width: 26%;
   }
 
   .placement-row {

@@ -25,6 +25,7 @@
         <a class="brand" href="#overview">WELTTOWELT / OD1N</a>
         <nav class="site-nav" aria-label="Dashboard sections">
           <a href="#overview">Overview</a>
+          <a href="#leaderboard">Leaderboard</a>
           <a href="#results">Rounds</a>
           <a href="#meta">Meta</a>
           <a href="#data">Data</a>
@@ -84,9 +85,64 @@
           </article>
         </section>
 
+        <section class="section leaderboard-section" id="leaderboard">
+          <header class="section-head">
+            <p class="section-index">01 / competition control</p>
+            <h2>Control of the board.</h2>
+          </header>
+
+          <div class="leaderboard-layout">
+            <article class="leaderboard-performance" aria-labelledby="performance-title">
+              <p class="panel-label" id="performance-title">Your performance</p>
+              <div class="leaderboard-rank-line">
+                <strong id="leaderboard-rank">#--</strong>
+                <div>
+                  <span>Score</span>
+                  <b id="leaderboard-score">--</b>
+                </div>
+              </div>
+              <p class="leaderboard-player" id="leaderboard-player">odin free</p>
+              <p class="leaderboard-policy" id="leaderboard-policy">Policy pending</p>
+              <dl class="leaderboard-facts">
+                <div>
+                  <dt>Division</dt>
+                  <dd id="leaderboard-division">Competition</dd>
+                </div>
+                <div>
+                  <dt>Board control</dt>
+                  <dd id="leaderboard-control">--</dd>
+                </div>
+              </dl>
+            </article>
+
+            <div class="table-panel leaderboard-table-panel">
+              <div class="table-toolbar">
+                <div>
+                  <p class="panel-label">Leaderboard</p>
+                  <h3>Live standings</h3>
+                </div>
+                <span class="panel-meta" id="leaderboard-active">-- active players</span>
+              </div>
+              <div class="table-scroll leaderboard-scroll">
+                <table class="leaderboard-table">
+                  <thead>
+                    <tr>
+                      <th scope="col">#</th>
+                      <th scope="col">Player</th>
+                      <th scope="col">Rounds</th>
+                      <th scope="col">Score</th>
+                    </tr>
+                  </thead>
+                  <tbody id="leaderboard-body"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section class="section" id="results">
           <header class="section-head">
-            <p class="section-index">01 / round results</p>
+            <p class="section-index">02 / round results</p>
             <h2>Official round ledger.</h2>
           </header>
 
@@ -160,7 +216,7 @@
 
         <section class="section" id="meta">
           <header class="section-head">
-            <p class="section-index">02 / competitive meta</p>
+            <p class="section-index">03 / competitive meta</p>
             <h2>What wins in four-player FFA.</h2>
           </header>
 
@@ -274,7 +330,7 @@
 
         <section class="section data-section" id="data">
           <header class="section-head">
-            <p class="section-index">03 / data ledger</p>
+            <p class="section-index">04 / data ledger</p>
             <h2>Replay-backed and auditable.</h2>
           </header>
 
@@ -299,6 +355,11 @@
             </dl>
             <div class="data-links">
               <a
+                href="https://github.com/0xNad/proxywar-coworld-starter"
+                target="_blank"
+                rel="noreferrer"
+              >Original Proxy War starter <span aria-hidden="true">&#8599;</span></a>
+              <a
                 href="https://github.com/welttowelt/proxywar-coworld-starter/tree/main/data"
                 target="_blank"
                 rel="noreferrer"
@@ -308,6 +369,11 @@
                 target="_blank"
                 rel="noreferrer"
               >Softmax Observatory <span aria-hidden="true">&#8599;</span></a>
+              <a
+                href="https://x.com/softmaxresearch"
+                target="_blank"
+                rel="noreferrer"
+              >Softmax Research <span aria-hidden="true">&#8599;</span></a>
             </div>
           </div>
         </section>
