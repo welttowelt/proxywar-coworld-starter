@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "candidate": "oli-codex-proxywar:v22",
+  "codename": "gr1mnir-vard",
+  "map": "Asia",
+  "status": "completed",
+  "winner_slot": 0,
+  "turn_count": 5700,
+  "decisions": 224,
+  "accepted_decisions": 224,
+  "holds": 0,
+  "rejected_decisions": 0,
+  "parse_failures": 0,
+  "fallbacks": 212,
+  "replay_verified": true,
+  "replay_sha256": "60a16b6bf7adf95c7025103651f136728552cc7ed73ee2bc09316aa9d6ccdb29",
+  "conclusion": {
+    "protocol_safe": true,
+    "selector_safe": true,
+    "mechanism_reached": false,
+    "competitive_claim": false,
+    "required_next_evidence": "hosted Asia seat-3 replay where Claude targets Auri, incoming pressure is active, and the buffer-preservation branch executes"
+  }
+}

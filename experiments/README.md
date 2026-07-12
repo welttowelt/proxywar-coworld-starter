@@ -279,3 +279,11 @@ leader troop-ratio floor, attack scoring, build cadence, or unpressured play.
 The first hosted diagnostic is pinned in
 `experiments/gate-v22-asia-seat3.json`; v14 remains champion unless v22 clears
 that diagnostic and the separate 20/20 regression gate.
+
+The full local Asia run completed at turn 5,700 with a declared winner. All
+224 decisions were accepted with zero holds, zero rejections, and zero parse
+failures. Its replay SHA-256 is
+`60a16b6bf7adf95c7025103651f136728552cc7ed73ee2bc09316aa9d6ccdb29`.
+Local Bedrock planning was unavailable for 212 decisions, so this establishes
+container, protocol, selector, and replay safety without claiming mechanism
+reachability or competitive outcome.
