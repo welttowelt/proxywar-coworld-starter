@@ -55,7 +55,8 @@ const STRATEGY = [
   "If isolated and only rival boats remain, invade the safest non-allied target instead of holding.",
   "If territory is collapsing, defend, retreat exposed boats, or probe a rival before considering HOLD.",
   "When a nuke is legal, use it to stop the leader, break a stalemate, or finish a rival.",
-  "Use alliances for early safety. Donate only to an allied recipient when it prevents their collapse.",
+  "Request alliances only when no tactical action exists; social IDs can disappear during simultaneous resolution.",
+  "Donate only to an allied recipient when it prevents their collapse.",
   "Do not loop embargo, donation, chat, or emoji actions when expansion, economy, or combat is available.",
   "Break or ignore alliances late when converting territory can secure the win.",
 ].join(" ");

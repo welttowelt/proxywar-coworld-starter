@@ -169,7 +169,7 @@ test("sustained territory collapse inserts an emergency build", () => {
   );
 });
 
-test("midgame pressure prefers a stable survival alliance over a pending request", () => {
+test("midgame pressure keeps a reliable tactical action over alliance requests", () => {
   const allianceWithLeader = {
     ...action("alliance:leader", "alliance_request", "Alliance with Leader"),
     metadata: { recipientID: "leader", relation: 1 },
@@ -196,11 +196,11 @@ test("midgame pressure prefers a stable survival alliance over a pending request
   });
   assert.equal(
     choose([land, allianceWithLeader, pendingAlliance], obs, null, history).id,
-    allianceWithLeader.id,
+    land.id,
   );
 });
 
-test("active survival pressure can accept a pending-only alliance", () => {
+test("active survival pressure keeps a reliable tactic over a pending alliance", () => {
   const pendingAlliance = {
     ...action("alliance:requester", "alliance_request", "Alliance with Requester"),
     metadata: { recipientID: "requester", relation: 2 },
@@ -221,7 +221,7 @@ test("active survival pressure can accept a pending-only alliance", () => {
       { id: "requester", name: "Requester", tileShare: 0.12, relativeTroopRatio: 1.1 },
     ],
   });
-  assert.equal(choose([land, pendingAlliance], obs, null, history).id, pendingAlliance.id);
+  assert.equal(choose([land, pendingAlliance], obs, null, history).id, land.id);
 });
 
 test("an isolated player uses a stable alliance instead of holding", () => {
@@ -528,6 +528,14 @@ test("an exposed transport retreats instead of holding", () => {
     action("hold", "hold", "Hold"),
   ];
   assert.equal(choose(actions, observation()).id, "boat_retreat:113");
+});
+
+test("a legal land retreat is used instead of holding", () => {
+  const actions = [
+    action("retreat:attack-113", "retreat", "Retreat attack 113"),
+    action("hold", "hold", "Hold"),
+  ];
+  assert.equal(choose(actions, observation()).id, "retreat:attack-113");
 });
 
 test("a low-commitment counterattack beats hold as the last tactical option", () => {

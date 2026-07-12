@@ -5,7 +5,7 @@ const SOCIAL_KINDS = new Set([
 ]);
 
 export const PLAN_KINDS = [
-  "spawn", "attack", "nuke", "build", "upgrade_structure", "boat", "boat_retreat",
+  "spawn", "attack", "nuke", "build", "upgrade_structure", "boat", "boat_retreat", "retreat",
   "warship", "move_warship", "alliance_request", "alliance_extend", "break_alliance",
   "target_player", "embargo", "embargo_all", "embargo_stop", "donate_gold",
   "donate_troops", "quick_chat", "emoji", "hold",
@@ -214,6 +214,16 @@ function safeActions(actions, predicate = () => true) {
   const matching = actions.filter(predicate);
   const safe = matching.filter((action) => action.risk?.level !== "high");
   return safe.length > 0 ? safe : matching;
+}
+
+function hasReliableTacticalAction(actions) {
+  return actions.some((action) => {
+    if (action.kind === "build") return !actionText(action).includes("defense post");
+    return [
+      "attack", "boat", "boat_retreat", "retreat", "nuke", "upgrade_structure",
+      "warship", "move_warship",
+    ].includes(action.kind);
+  });
 }
 
 function pickPercent(candidates, desiredPercent, avoid) {
@@ -446,7 +456,12 @@ export function chooseAction(actions, state, plan = null, history = []) {
     collapsing,
     activeDecisions,
   );
-  if (allianceMove && !finishingTarget) return allianceMove;
+  if (
+    allianceMove && !finishingTarget &&
+    (allianceMove.kind === "break_alliance" || !hasReliableTacticalAction(actions))
+  ) {
+    return allianceMove;
+  }
 
   if (neutralExpansionStalled(state, history)) {
     const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
@@ -482,7 +497,10 @@ export function chooseAction(actions, state, plan = null, history = []) {
 
   // Holding while legal tactical actions remain turns a weak position into a certain loss.
   if (build) return build;
-  const retreat = safeActions(actions, (action) => action.kind === "boat_retreat")[0];
+  const retreat = safeActions(
+    actions,
+    (action) => action.kind === "boat_retreat" || action.kind === "retreat",
+  )[0];
   if (retreat) return retreat;
   const emergencyAttacks = safeActions(actions, (action) => {
     if (action.kind !== "attack" || isNeutralExpansion(action)) return false;
