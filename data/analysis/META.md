@@ -224,8 +224,16 @@ tiles from 7,554 to 14,020 in the loss and from 88,348 to 89,765 in the win. Its
 loss used 26 rival attacks and 16 boats versus v13's 13 attacks and 27 boats, so
 the tactical reorder executed. At turn 6,300, however, the v14 player timed out
 and never reconnected; the game's generic fallback produced 57 holds. No policy
-logs were available to classify the timeout. v14 remains benched, and v13 stays
-champion.
+logs were available to classify the timeout. v14 remained benched pending a
+reliability retry, and v13 stayed champion through the Round 204 entrant lock.
+
+A same-roster v14 reliability retry after Round 203 won 2/2 with 90,409 and
+83,616 final tiles. Across 169 v14 decisions, both episodes recorded zero holds,
+zero rejected actions, zero timeouts, and zero socket disconnects. The retry
+cleared the first request's unclassified reliability blocker. Round 204 locked
+v13 in its entrant list at 02:30:20 UTC; v14 was promoted immediately afterward
+and verified as the sole active champion for subsequent rounds. Request IDs,
+costs, replay hashes, and action counts are recorded in `experiments/`.
 
 Round 203 used Asia. v13 won seats 1, 2, and 4 with 213,968, 223,297, and
 215,679 final tiles. Auri won seat 3 after v13 peaked at 62,924 and finished
@@ -417,7 +425,8 @@ already locked v12.
 2. Require four of four declared wins, zero holds, and zero rejected decisions
    for a full RCI pass. Use map-specific mean-tile floors: Europe 200,000, Asia
    150,000, and Pangaea 60,000.
-3. Keep qualified v13 as champion. Do not promote v14 until a hosted reliability
-   retry completes without timeout, disconnect, hold, or rejection.
+3. Round 204 remains locked to v13. Use qualified v14 as the sole champion from
+   Round 205 onward after its 2/2 reliability retry completed without timeout,
+   disconnect, hold, or rejection.
 4. Refresh after every completed round and reset the consecutive first-place
    counter after any official rank below 1.

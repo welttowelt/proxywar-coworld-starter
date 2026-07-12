@@ -104,6 +104,7 @@ fallback brain. The total hosted cost was $0.031653.
 | `ba381abc-f0bd-478a-9a26-a1204218095a` | win, 90,409 tiles | `f628352858f4743c95f71101694ea1c967b2ab991a596b73dba71426217ecded` |
 | `2a4293c7-8bce-4cd0-935d-a2882dd5fec4` | win, 83,616 tiles | `f64886f226e26c8d9020e4ad52a8e35d6f76edb8272e131c35e9d27152dec1b4` |
 
-The retry clears the reliability blocker from the first v14 request. Promotion
-still waits for the already-qualified candidate to be activated outside an
-official entrant-lock window.
+The retry cleared the reliability blocker from the first v14 request. Round 204
+locked v13 in its entrant list at 02:30:20 UTC. v14 was then promoted through
+the league champion endpoint and verified as the sole active champion, leaving
+the running Round 204 roster unchanged.
