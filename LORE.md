@@ -179,6 +179,15 @@ field's legal break as written. Sixteen parent turns stand behind it. The local
 mirror was dismissed; the hosted field receives the exact image without a
 borrowed tactic or a second guard.
 
+One field returned to Odin. Three did not. The final field belonged to Auri, and
+the retirement oath closed the line. Ten parity cuts landed, no sever rune
+appeared, and twenty-five turns went quiet.
+
+Auri's law survives the ash: he waits for roughly 1.3 home strength, then keeps
+the front open. Odin wins by denying that threshold and answering with sustained
+hostility; he loses while letters, hulls, and empty turns consume the clock. The
+finding remains. The Frontier counter machinery does not.
+
 ## the rival shifts
 
 Auri stopped standing still. Versions seven and ten reached the field: seven

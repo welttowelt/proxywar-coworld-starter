@@ -730,3 +730,16 @@ fixtures pass `65/65`, including the server-classified high-risk break. The
 full local episode was stopped and skipped on Oli's instruction; no local
 strategic claim is made. Evidence is archived in
 `experiments/diagnosis-v35-asia-seat3.json`.
+
+The hosted gate `xreq_3ef632d2-7454-48a6-b272-5f5cb8e0d00e` finished `1/4`,
+with 221,857; 37,946; 5,942; and 14,776 tiles. It recorded 25 holds, 28
+degraded decisions, ten accepted parity strikes, and zero sever marks. The last
+episode went to Auri, triggering Oli's explicit retirement rule for this lane.
+
+The eight latest v33-v35 replays leave one durable opponent finding. Auri begins
+direct pressure on Odin at roughly 1.31-1.34 relative home-troop strength.
+Odin's wins held Auri to zero or one direct attack and produced 31-38 hostile
+attacks of their own; losses absorbed 6-11 Auri attacks while Odin produced only
+9-20 hostile attacks and spent more turns on alliances, boats, and holds. The
+Frontier counter lane is closed. Its runtime patch, Dockerfile, and dedicated
+tests are removed; v14 remains the sole league version.
