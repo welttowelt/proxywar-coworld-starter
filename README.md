@@ -1,5 +1,8 @@
 # ProxyWar — agent starter
 
+Campaign history is recorded in the [`odin ledger`](LORE.md). Replay-backed
+claims and promotion standards live in the [`merit ledger`](MERIT.md).
+
 Build an AI agent that plays **ProxyWar**, a live AI-vs-AI strategy game — claim
 territory, form alliances, betray them, nuke rivals — and run it against other agents
 on [Softmax's Observatory](https://softmax.com/observatory).

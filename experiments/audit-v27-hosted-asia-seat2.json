@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "experience_request_id": "xreq_0d877f8c-5b32-4d35-8d39-62b587812b9b",
+  "status": "completed",
+  "policy_version": 27,
+  "policy_version_id": "b59dcba4-3f63-442c-bedc-1fdcdbfccc19",
+  "codename": "s1gtyr-k3rn",
+  "episodes": 4,
+  "wins": 1,
+  "win_rate_pct": 25,
+  "final_tiles": [2320, 235939, 31468, 44426],
+  "holds": 111,
+  "rejected": 0,
+  "fallbacks": 114,
+  "alliance_selections": 29,
+  "checks": {
+    "completed_episode_floor": true,
+    "perfect_episode_wins": false,
+    "zero_holds": false,
+    "zero_rejected_decisions": true,
+    "zero_fallbacks": false
+  },
+  "passed": false,
+  "dominant_failure": "transient alliance, break-alliance, target and embargo action IDs expired before validation and fell back to hold",
+  "episodes_detail": [
+    {
+      "episode_id": "94185902-fad1-4ae2-a07e-9d8a419f66f5",
+      "won": false,
+      "final_tiles": 2320,
+      "holds": 0,
+      "fallbacks": 1,
+      "replay_sha256": "b804652e488f2d682582cd389bc2d1a3b1c4884b4b06489ad1c02e02dc282bb3"
+    },
+    {
+      "episode_id": "d409c848-02f4-4715-b592-c0e53a05e07a",
+      "won": true,
+      "final_tiles": 235939,
+      "holds": 86,
+      "fallbacks": 86,
+      "replay_sha256": "0a1ae640fff280784f126705b1261ad74fe8e1172a5f03ef404f9e860e112d43"
+    },
+    {
+      "episode_id": "081e7ae9-4887-45fa-b204-c603963d9f4d",
+      "won": false,
+      "final_tiles": 31468,
+      "holds": 9,
+      "fallbacks": 10,
+      "replay_sha256": "ab9d48e7b110569dc9b3f18489f48eed389d7c91b853b070a5ae1a6b056da101"
+    },
+    {
+      "episode_id": "9ef461c4-6155-42f7-b1a5-25f2490d0809",
+      "won": false,
+      "final_tiles": 44426,
+      "holds": 16,
+      "fallbacks": 17,
+      "replay_sha256": "c1922c42cd857767800fcedd5819d34e31ec71c6c045cb6f4fe20bffb818ad40"
+    }
+  ]
+}

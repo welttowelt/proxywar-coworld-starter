@@ -481,3 +481,13 @@ trace across the four candidate seeds, so this is a reproducible local mechanism
 gate rather than four independent strategic trials. Evidence is archived in
 `experiments/audit-v27-local-asia-seat2.json`; league promotion remains barred
 until a hosted live-roster gate passes.
+
+The hosted gate `xreq_0d877f8c-5b32-4d35-8d39-62b587812b9b` rejected v27. It
+won 1/4 against James, Auri v5, and Richard, with final tiles of 2,320; 235,939;
+31,468; and 44,426. The economy mechanism transferred: City landed at turn 400
+in every replay and Factory at turn 900 or 1000. Execution integrity did not.
+Transient alliance, break-alliance, target, and embargo selections repeatedly
+expired before validation, causing 114 fallbacks and 111 holds. v28 therefore
+changes request freshness only; behind-and-falling threshold tuning remains
+deferred. Full evidence is archived in
+`experiments/audit-v27-hosted-asia-seat2.json`.

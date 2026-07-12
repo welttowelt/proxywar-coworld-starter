@@ -124,8 +124,14 @@
     {
       "version": "v27",
       "codename": "s1gtyr-k3rn",
-      "status": "candidate",
+      "status": "rejected",
       "mechanism": "run the canonical Frontier executor with pre-city economy bootstrap"
+    },
+    {
+      "version": "v28",
+      "codename": "v4rdr-v4kt",
+      "status": "candidate",
+      "mechanism": "coalesce overlapping policy retries so stale actions cannot decay into holds"
     }
   ]
 }
