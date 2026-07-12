@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "candidate": "oli-codex-proxywar:v23",
+  "codename": "v1g-l0k",
+  "map": "Asia",
+  "status": "completed",
+  "winner_slot": 3,
+  "turn_count": 6600,
+  "decisions": 260,
+  "accepted_decisions": 260,
+  "holds": 0,
+  "rejected_decisions": 0,
+  "parse_failures": 0,
+  "fallbacks": 248,
+  "opening_hostile_actions_observed": true,
+  "opening_commitments_above_25_pct": 0,
+  "replay_verified": true,
+  "replay_sha256": "4ee98ba182a1bfa8c38ea1fa69e84d736932bd0c04f6ee1dcd2adb3d8869af94",
+  "conclusion": {
+    "protocol_safe": true,
+    "selector_safe": true,
+    "mechanism_reached": true,
+    "commitment_invariant_passed": true,
+    "competitive_claim": false,
+    "required_next_evidence": "hosted Asia seat-3 replay against Auri v5 with 4/4 wins and zero opening commitments above 25%"
+  }
+}

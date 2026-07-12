@@ -320,3 +320,11 @@ ratio from 0.70 toward 0.43 before Auri's first attack. Auri used no opening 40%
 attacks and began pressure at turn 1,900 with a 1.66 relative troop advantage.
 The hosted diagnostic is pinned in `experiments/gate-v23-asia-seat3.json`; v14
 remains champion unless v23 clears 4/4 plus the separate 20/20 regression gate.
+
+The full local Asia run completed at turn 6,600 with 260 accepted decisions,
+zero holds, zero rejections, and zero parse failures. Every seat exercised
+hostile target continuity during active decisions 11-19, and no opening attack
+exceeded 25%. Its verified replay SHA-256 is
+`4ee98ba182a1bfa8c38ea1fa69e84d736932bd0c04f6ee1dcd2adb3d8869af94`.
+Local Bedrock planning was unavailable for 248 decisions, so this proves the
+deterministic commitment invariant and protocol safety, not competitive outcome.
