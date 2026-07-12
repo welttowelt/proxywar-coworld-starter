@@ -1,8 +1,4 @@
 round_number,player_count,player_name,policy_version,matches,wins,win_rate_pct,mean_final_tiles,rival_attacks,neutral_boats,builds,social_actions
-198,4,odin free,9,4,3,75.0,344155.3,83,150,38,2
-198,4,Auri,4,4,0,0.0,99030.8,45,88,45,53
-198,4,Richard Higgins,1,4,0,0.0,5426.8,36,17,25,23
-198,4,James Boggs,1,4,0,0.0,4391.0,66,53,23,270
 199,4,odin free,11,4,3,75.0,68545.0,64,24,16,1
 199,4,Auri,4,4,1,25.0,20900.8,45,34,18,4
 199,4,Richard Higgins,1,4,0,0.0,7560.5,19,0,2,0
@@ -79,3 +75,7 @@ round_number,player_count,player_name,policy_version,matches,wins,win_rate_pct,m
 217,4,Auri,4,4,1,25.0,28182.8,32,32,20,17
 217,4,James Boggs,1,4,1,25.0,23224.3,21,34,34,48
 217,4,Richard Higgins,1,4,0,0.0,0.0,5,0,8,0
+218,4,odin free,14,4,3,75.0,165152.3,105,16,17,0
+218,4,Auri,4,4,1,25.0,64832.5,63,40,15,2
+218,4,Richard Higgins,1,4,0,0.0,9406.8,22,10,16,0
+218,4,James Boggs,1,4,0,0.0,8335.0,24,19,27,30
