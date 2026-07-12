@@ -45,10 +45,15 @@ fi
 
 git commit -m "Refresh Proxy War dashboard data"
 retry git push origin main
-if ! npx --yes netlify deploy \
-  --prod \
-  --dir site \
-  --site a18dda9f-1550-440f-a7bc-40deaa7c2e8a \
-  --message "Automated Proxy War dashboard refresh"; then
-  printf '%s\n' "Netlify deploy failed; GitHub Pages will publish the pushed site snapshot" >&2
+
+if [[ "${PROXYWAR_DEPLOY_NETLIFY:-0}" == "1" ]]; then
+  if ! npx --yes netlify deploy \
+    --prod \
+    --dir site \
+    --site a18dda9f-1550-440f-a7bc-40deaa7c2e8a \
+    --message "Automated Proxy War dashboard refresh"; then
+    printf '%s\n' "Netlify deploy failed; GitHub Pages will publish the pushed site snapshot" >&2
+  fi
+else
+  printf '%s\n' "Netlify entrypoint redirects to GitHub Pages; skipping credit-based deploy"
 fi

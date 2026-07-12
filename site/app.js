@@ -14,6 +14,7 @@ const DATA_FILES = {
 };
 
 const OUR_PLAYER = "odin free";
+const AUTO_REFRESH_MS = 60_000;
 const numberFormat = new Intl.NumberFormat("en-CH");
 const dateFormat = new Intl.DateTimeFormat("en-CH", {
   day: "2-digit",
@@ -250,7 +251,9 @@ function renderStandings(data) {
     body.innerHTML = tableRows(rows);
   };
 
-  tabs.forEach((tab) => tab.addEventListener("click", () => setView(tab.dataset.view)));
+  tabs.forEach((tab) => {
+    tab.onclick = () => setView(tab.dataset.view);
+  });
   setView("ours");
 }
 
@@ -434,7 +437,13 @@ function renderDataLedger(data) {
   byId("footer-snapshot").textContent = `Updated ${formatDate(snapshot.collected_at)}`;
 }
 
-async function main() {
+let refreshInFlight = false;
+let hasRendered = false;
+
+async function refreshDashboard() {
+  if (refreshInFlight) return;
+  refreshInFlight = true;
+
   try {
     const data = await loadData();
     renderOverview(data);
@@ -447,13 +456,24 @@ async function main() {
     renderMapPerformance(data);
     renderSignals(data);
     renderDataLedger(data);
+    byId("fatal-state").hidden = true;
+    hasRendered = true;
   } catch (error) {
     console.error(error);
-    byId("fatal-state").hidden = false;
-    const headerState = byId("header-state");
-    headerState.dataset.status = "failed";
-    headerState.lastElementChild.textContent = "Snapshot unavailable";
+    if (!hasRendered) {
+      byId("fatal-state").hidden = false;
+      const headerState = byId("header-state");
+      headerState.dataset.status = "failed";
+      headerState.lastElementChild.textContent = "Snapshot unavailable";
+    }
+  } finally {
+    refreshInFlight = false;
   }
 }
 
-main();
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) void refreshDashboard();
+});
+
+void refreshDashboard();
+setInterval(() => void refreshDashboard(), AUTO_REFRESH_MS);

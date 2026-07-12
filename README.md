@@ -97,7 +97,7 @@ by the frontend:
 
 **Public dashboard:** [GitHub Pages](https://welttowelt.github.io/proxywar-coworld-starter/)
 
-**Netlify mirror:** [welttowelt-proxywar.netlify.app](https://welttowelt-proxywar.netlify.app)
+**Netlify entrypoint:** [welttowelt-proxywar.netlify.app](https://welttowelt-proxywar.netlify.app)
 
 ```bash
 npm run data:refresh
@@ -105,10 +105,12 @@ npm run dashboard:serve
 ```
 
 `npm run dashboard:update` is the guarded publish loop. It only runs from a clean
-worktree, refreshes the snapshot, commits changed datasets, pushes `main`, and deploys
-`site/` through GitHub Pages and attempts the production Netlify mirror. The local
-LaunchAgent runs this loop every five minutes while the machine is awake and skips any
-cycle that finds active worktree edits. A Netlify failure does not block GitHub Pages.
+worktree, refreshes the snapshot, commits changed datasets, and pushes `main`. GitHub
+Pages publishes the changed `site/` files, and the Netlify entrypoint redirects there
+without consuming deploy credits. The local LaunchAgent runs this loop every five
+minutes while the machine is awake and skips any cycle that finds active worktree
+edits. Open dashboard tabs poll for fresh data every minute and refresh when they regain
+focus. Set `PROXYWAR_DEPLOY_NETLIFY=1` only for an intentional direct Netlify deploy.
 
 Out of the box it already: reads your territory share, troops, gold, and each rival's
 relative strength / who borders you / who's allied; uses the model's focus and named
