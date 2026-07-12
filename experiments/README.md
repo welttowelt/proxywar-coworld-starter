@@ -60,3 +60,30 @@ zero rejected actions. Hosted Qualifier Round 36 also completed successfully.
 | v12 | `f9d763e3-387c-4c5b-b786-109e75df7516` | win, 214,487 tiles; one hold | `8709ba7ad777fb20ef0223fc7b668e35f0ff68443fc728ec5fcdf1fcbfebefdd` |
 | v13 | `ecc7830b-b2fb-4912-8f1f-f90609c7e0ec` | win, 219,452 tiles | `de52c2b411336cce41f9b9204c03ef941eb0e2eacbf33ea4e66693556b80bcbe` |
 | v13 | `357ec50d-9cec-4bdf-87cf-69e4b665aede` | win, 216,450 tiles | `5ee3c736aae004bff87f86b3beb57878e318983e9f20b4a8cf81af1b3f43e074` |
+
+## Pangaea seat-4 conversion A/B, 2026-07-12
+
+Goal: test whether a favorable rival conversion should outrank the escape-boat
+branch after neutral expansion stalls.
+
+Both requests used `tournament-4p-pangaea` with Auri in slot 0, Richard Higgins
+in slot 1, James Boggs in slot 2, and our baseline or candidate in slot 3.
+
+| Policy | Experience request | Wins | Final tiles | Holds | Cost |
+| --- | --- | ---: | --- | ---: | ---: |
+| v13 | `xreq_faf27e95-c5d2-4102-9989-aeb0b85f4186` | 1/2 | 7,554; 88,348 | 0 | $0.041531 |
+| v14 | `xreq_4b18ca01-e3fd-4eee-88d8-629ad2b3f4ae` | 1/2 | 14,020; 89,765 | 57* | $0.041255 |
+
+The tactical branch moved in the intended direction. The v14 loss made 26 rival
+attacks and 16 boat moves; the v13 loss made 13 rival attacks and 27 boat moves.
+At turn 6,300, v14's external player timed out and did not reconnect. All 57
+holds occurred afterward under the game's generic opportunistic fallback, not
+under v14's selector. No policy logs were available, so the timeout remains
+unclassified and v14 failed the promotion gate.
+
+| Policy | Episode | Result | Replay SHA-256 |
+| --- | --- | --- | --- |
+| v13 | `99c87834-b30f-4948-8e6f-b3421cbbef21` | loss, 7,554 tiles | `3f4ceb88c8d622717f67c95ad8ce873834b009e9b3f8f3d56bb93ced571d2efb` |
+| v13 | `552cbdba-4bf3-4e78-91b4-6b0a2860dced` | win, 88,348 tiles | `3756d712fc2fd52710f7061ee155eeccc52fdc56ea9c2b7141377057b6639f59` |
+| v14 | `f0342f5c-4f67-40a9-803b-c16da9faaa24` | loss, 14,020 tiles; timeout | `ed20969b4f92f87ab5ba6eeff4c7d2bf915ddeaf2a6c6fcaf6d6113a357490ec` |
+| v14 | `200241b8-1b07-4287-ab6a-8b086b73f617` | win, 89,765 tiles | `0ef083754d1ba9b262a701ea266063d7fd7ea85700bfdca15eb3e0809dbfccc0` |

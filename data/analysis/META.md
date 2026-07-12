@@ -1,23 +1,23 @@
 # Proxy War meta report
 
-Snapshot collected 2026-07-12 after Competition Round 201. The source window
-covers rounds 182-201, 75 episodes, 300 participant seats, and 26,546 agent
+Snapshot collected 2026-07-12 after Competition Round 202. The source window
+covers rounds 183-202, 77 episodes, 308 participant seats, and 26,683 agent
 decisions. All 12 ingestion quality checks pass with zero failures.
 
-Round 201 extended the verified consecutive first-place streak to 15 of the
+Round 202 extended the verified consecutive first-place streak to 16 of the
 100-round target.
 
 ## Current four-player field
 
-Rounds 182-201 use the current four-player FFA format. The 75 available episodes
+Rounds 183-202 use the current four-player FFA format. The 77 available episodes
 produce this table:
 
 | Player | Matches | Wins | Win rate | Mean final tiles | Rival attacks | Holds |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
-| odin free | 75 | 47 | 62.67% | 174,446.8 | 1,569 | 129 |
-| Auri | 75 | 11 | 14.67% | 64,965.7 | 1,025 | 288 |
-| James Boggs | 75 | 5 | 6.67% | 25,714.6 | 548 | 104 |
-| Richard Higgins | 75 | 0 | 0.00% | 12,073.1 | 455 | 14 |
+| odin free | 77 | 48 | 62.34% | 168,909.5 | 1,601 | 129 |
+| Auri | 77 | 11 | 14.29% | 61,480.3 | 1,000 | 291 |
+| James Boggs | 77 | 6 | 7.79% | 26,265.2 | 541 | 103 |
+| Richard Higgins | 77 | 0 | 0.00% | 11,678.6 | 461 | 14 |
 
 The aggregate holds column includes the broken v4 round and 51 Round 189 actions
 selected by the game's fallback brain after the v6 container disconnected. v6's
@@ -54,6 +54,7 @@ could no longer resolve it and substituted `HOLD`.
 | 199 | v11 | 1 | 3/4 | 68,545.0 | 0 |
 | 200 | v11 | 1 | 3/4 | 164,912.3 | 1 |
 | 201 | v12 | 1 | 3/4 | 344,314.3 | 0 |
+| 202 | v13 | 1 | 2/4 | 44,533.5 | 0 |
 
 v4 misclassified the new structured neutral-land action and held instead of
 expanding. v5 fixed the classifier and recovered immediately from every seat.
@@ -202,6 +203,28 @@ The lost seat requested an alliance with Auri at turn 2,400 while rival and
 neutral attacks remained legal. Auri continued attacking through turn 3,900.
 v13 would keep a tactical action ahead of that request, reinforcing the separate
 hosted A/B result without claiming the request alone caused the elimination.
+
+Round 202 used Pangaea for v13's first field test. v13 won seats 1 and 3 with
+86,828 and 84,484 final tiles. James Boggs won seat 2, where v13 peaked at
+17,824 and finished with 1,088 after seven James attacks, three Auri attacks,
+and one Richard Higgins attack. Auri won seat 4, where v13 peaked at 33,333 and
+finished with 5,734 after 12 Auri attacks. Across 208 decisions, v13 recorded
+zero holds, zero rejected actions, and zero alliance requests. Its 0.50 score
+was a clear first place and extended the streak to 16.
+
+Both losses exposed favorable rival attacks while stalled neutral expansion was
+forcing escape boats. v14 (`ff03ffe7-4b94-4070-9602-ecfe1db05394`) moves a
+valid rival conversion ahead of that boat branch. All 35 tests pass. A local
+Pangaea run preserved a winner and zero holds while moving the weak defensive
+seat from 12,211 to 14,045 tiles.
+
+The pinned hosted seat-4 A/B split 1/2 for both v13 and v14. v14 raised final
+tiles from 7,554 to 14,020 in the loss and from 88,348 to 89,765 in the win. Its
+loss used 26 rival attacks and 16 boats versus v13's 13 attacks and 27 boats, so
+the tactical reorder executed. At turn 6,300, however, the v14 player timed out
+and never reconnected; the game's generic fallback produced 57 holds. No policy
+logs were available to classify the timeout. v14 remains benched, and v13 stays
+champion for Round 203.
 
 ## Winning action profile
 
@@ -374,7 +397,7 @@ already locked v12.
 2. Require four of four declared wins, zero holds, and zero rejected decisions
    for a full RCI pass. Use map-specific mean-tile floors: Europe 200,000, Asia
    150,000, and Pangaea 60,000.
-3. Use qualified and hosted-tested v13 from Round 202 onward; do not pursue spawn
-   changes because spawn runs outside the policy.
+3. Keep qualified v13 as champion. Do not promote v14 until a hosted reliability
+   retry completes without timeout, disconnect, hold, or rejection.
 4. Refresh after every completed round and reset the consecutive first-place
    counter after any official rank below 1.
