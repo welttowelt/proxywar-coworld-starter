@@ -40,6 +40,17 @@ bordering rival at 1.3 times our share can arm the behind-and-falling strike, an
 escape banking ends after one cycle. It must turn a shrinking seat into pressure
 without feeding the leader.
 
+The gate answered without ambiguity: 0/4. The earlier threshold opened almost no
+credible strike window; Auri still held the troop edge wherever the new band
+appeared. `skuld-v4kn` was recorded and denied.
+
+## v4li-v3tr
+
+v30 remembers failed diplomacy at the wire. When a one-shot social action returns
+in the next menu, the prior attempt did not execute. The ID is barred for a short,
+doubling window and the executor must choose another legal action. The reservation
+filter keeps its law; our seat stops paying it with repeated holds.
+
 ## the reviewer lane
 
 On Oli's word a second line opened beside the build lane: Claude reads source and
@@ -53,6 +64,21 @@ and pressure IDs into HOLD substitutions. v28's request coalescing reduced the
 damage sharply but did not erase it, and the policy went 0/4. The transport repair
 stays. With action delivery improved and measured, the source-reviewed
 behind-and-falling pair becomes the next isolated arm.
+
+## the reservation filter
+
+The holds were never stale ids and never a race. The engine decides every seat in
+parallel on one menu, then validates in seat order against a menu re-filtered by
+earlier seats' same-turn diplomacy reservations. James Boggs validates first and
+acts diplomatically nearly every turn; our seat validates third. 111 of 111
+rejections were reservation strikes; 383 of 383 acceptances were unreserved.
+The pod played correctly on the information it had, 130 decisions running.
+
+Coalescing could not touch this — necessary, not sufficient. The smallest sound
+repair is a reappearance-veto at the wire: a submitted social id that returns in
+the next menu provably did not execute; veto it and let the executor re-rank.
+Estimated recovery, ninety of the hundred and eleven. The full anatomy and the
+v29 warning live in the reviewer lane's addendum.
 
 ## standing law
 

@@ -136,8 +136,14 @@
     {
       "version": "v29",
       "codename": "skuld-v4kn",
-      "status": "candidate",
+      "status": "rejected",
       "mechanism": "arm the behind-and-falling strike earlier and cap escape banking after one cycle"
+    },
+    {
+      "version": "v30",
+      "codename": "v4li-v3tr",
+      "status": "candidate",
+      "mechanism": "veto one-shot social actions that reappear after same-turn reservation failure"
     }
   ]
 }

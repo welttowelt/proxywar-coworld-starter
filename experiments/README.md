@@ -500,3 +500,12 @@ real execution defect. It nevertheless went 0/4 with final tiles of 2,279;
 v28 is rejected as a policy. v29 applies the source-reviewed behind-and-falling
 pair: rival dominance 1.3 instead of 1.5 and escape-bank cap one cycle instead
 of two. Evidence is archived in `experiments/audit-v28-hosted-asia-seat2.json`.
+
+v29 / `skuld-v4kn` went 0/4 in
+`xreq_6b2f20e2-7709-4ae5-9ef3-ca4a96308136`, with final tiles of 43,716; 2,041;
+37,021; and 22,619. Replay reconstruction confirmed the lower dominance band had
+little reach: when it armed, Auri still held a sub-1.0 troop ratio against us, so
+the strike credibility floor correctly blocked a forced feed. v29 is rejected.
+The next arm follows the stronger reviewer finding: v30 temporarily vetoes a
+one-shot social action when the same ID reappears in the next request, proving
+the prior attempt failed under same-turn seat-order reservation.

@@ -35,4 +35,8 @@ test("keystone patch replaces the stale FIFO with latest-request coalescing", ()
   assert.match(patched, /pendingDecision = message/);
   assert.match(patched, /discarded superseded decision response/);
   assert.match(patched, /while \(pendingDecision !== null && !sawFinal\)/);
+  assert.match(patched, /oneShotSocialKinds/);
+  assert.match(patched, /vetoRemaining\.has\(action\.id\)/);
+  assert.match(patched, /wireVeto=/);
+  assert.match(patched, /wire guard replaced unknown action ids/);
 });
