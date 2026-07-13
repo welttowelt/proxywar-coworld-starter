@@ -2,7 +2,7 @@
   "schema_version": 1,
   "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
   "player_name": "odin free",
-  "collected_at": "2026-07-13T06:15:57.326Z",
+  "collected_at": "2026-07-13T06:30:45.780Z",
   "last_round_number": 259,
   "boundary_round_number": 258,
   "current_first_place_streak": 1,
@@ -24,7 +24,7 @@
       "ranked_score_count": 3,
       "seed_order": 2,
       "created_at": "2026-07-13T05:57:45.448Z",
-      "collected_at": "2026-07-13T06:15:57.326Z"
+      "collected_at": "2026-07-13T06:30:45.780Z"
     },
     {
       "round_id": "round_ba721b86-ab1f-4b3a-8143-1af886e1143a",
@@ -42,7 +42,7 @@
       "ranked_score_count": 3,
       "seed_order": 2,
       "created_at": "2026-07-13T06:14:24.969Z",
-      "collected_at": "2026-07-13T06:15:57.326Z"
+      "collected_at": "2026-07-13T06:30:45.780Z"
     }
   ]
 }
