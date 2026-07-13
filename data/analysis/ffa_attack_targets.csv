@@ -1,31 +1,31 @@
 attacker,target_name,rival_attacks,mean_relative_troop_ratio,median_relative_troop_ratio,mean_troop_percent
-Auri,odin free,152,2.0,1.52,28.7
-Auri,daveey,128,2.14,1.35,26.5
-Auri,James Boggs,91,2.95,1.63,28.6
-Auri,RelhAlpha,67,1.68,1.25,30.1
-Auri,Richard Higgins,65,2.46,1.42,27.3
-James Boggs,odin free,544,2.04,1.54,16.3
-James Boggs,daveey,135,1.47,1.41,14.8
-James Boggs,Auri,96,2.0,1.22,12.5
-James Boggs,Richard Higgins,88,2.88,1.19,16.1
-James Boggs,RelhAlpha,38,1.18,0.68,17.5
-RelhAlpha,daveey,154,0.87,0.85,22.4
-RelhAlpha,Auri,149,1.28,1.19,22.9
-RelhAlpha,odin free,142,0.99,1.02,23.1
-RelhAlpha,James Boggs,79,1.98,0.86,20.8
-RelhAlpha,Richard Higgins,40,0.86,0.55,20.1
-Richard Higgins,odin free,268,0.89,0.75,22.6
-Richard Higgins,James Boggs,196,1.11,0.93,21.6
-Richard Higgins,daveey,61,1.62,1.18,23.0
-Richard Higgins,Auri,56,0.66,0.71,22.1
-Richard Higgins,RelhAlpha,56,0.79,0.65,21.5
-daveey,James Boggs,404,3.46,1.89,30.5
-daveey,odin free,322,3.01,1.5,25.7
-daveey,Auri,177,49.09,1.75,26.9
-daveey,RelhAlpha,92,2.69,1.69,24.5
-daveey,Richard Higgins,26,1.86,1.57,22.1
-odin free,James Boggs,531,3.9,1.64,21.5
-odin free,Richard Higgins,396,2.63,1.48,25.8
-odin free,daveey,380,1.86,1.38,21.6
-odin free,Auri,236,2.46,1.32,24.5
-odin free,RelhAlpha,198,2.21,1.17,25.3
+Auri,daveey,174,1.87,1.27,26.6
+Auri,odin free,134,1.98,1.4,28.9
+Auri,James Boggs,78,3.19,1.69,29.0
+Auri,RelhAlpha,66,1.69,1.25,30.5
+Auri,Richard Higgins,64,2.36,1.41,27.1
+James Boggs,odin free,501,2.1,1.58,16.1
+James Boggs,daveey,127,1.42,1.34,14.1
+James Boggs,Auri,94,2.03,1.23,12.6
+James Boggs,Richard Higgins,85,2.76,1.18,15.6
+James Boggs,RelhAlpha,42,0.85,0.51,16.4
+RelhAlpha,Auri,156,1.42,1.21,22.9
+RelhAlpha,daveey,155,0.92,0.88,22.5
+RelhAlpha,odin free,150,1.02,1.05,23.3
+RelhAlpha,James Boggs,50,1.72,1.18,20.2
+RelhAlpha,Richard Higgins,31,0.97,0.55,20.2
+Richard Higgins,odin free,249,0.93,0.79,22.3
+Richard Higgins,James Boggs,193,1.14,0.93,21.7
+Richard Higgins,daveey,72,1.6,1.25,23.1
+Richard Higgins,RelhAlpha,64,0.76,0.65,21.5
+Richard Higgins,Auri,54,0.68,0.73,22.5
+daveey,James Boggs,400,3.39,1.87,30.2
+daveey,odin free,331,3.02,1.49,25.8
+daveey,Auri,203,42.96,1.61,26.6
+daveey,RelhAlpha,95,2.61,1.62,24.5
+daveey,Richard Higgins,30,1.73,1.54,22.0
+odin free,James Boggs,506,4.47,1.56,22.1
+odin free,Richard Higgins,366,2.67,1.47,25.9
+odin free,daveey,357,1.88,1.38,21.6
+odin free,Auri,219,2.36,1.3,24.4
+odin free,RelhAlpha,201,2.12,1.14,24.9
