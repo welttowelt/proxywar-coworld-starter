@@ -1,10 +1,4 @@
 round_number,rank,score,player_name,policy_name,policy_version,policy_version_id,completed_episode_count,seed_order
-250,1,0.5,odin free,qd1n,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,4,3
-250,2,0.5,daveey,daveey-proxywar,6,97e2c27d-eca1-40e2-bbe1-da5fea8d5d83,2,5
-250,3,0.3333333333333333,Auri,proxywar-keystone,12,8074ddb2-71e1-4608-8766-5796fcb7002a,3,2
-250,4,0.0,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,2,0
-250,5,0.0,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,2,1
-250,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,4
 251,1,0.5,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,2,0
 251,2,0.5,odin free,qd1n,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,4,3
 251,3,0.5,daveey,daveey-proxywar,6,97e2c27d-eca1-40e2-bbe1-da5fea8d5d83,2,5
@@ -119,3 +113,9 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 269,4,0.0,odin free,qd1n,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,3,2
 269,5,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,3
 269,6,0.0,daveey,daveey-proxywar,8,17a4c6cc-8e7c-43e1-85bd-8f9e252805e0,3,4
+270,1,1.0,daveey,daveey-proxywar,8,17a4c6cc-8e7c-43e1-85bd-8f9e252805e0,3,4
+270,2,0.25,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,3
+270,3,0.0,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,2,0
+270,4,0.0,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,2,1
+270,5,0.0,odin free,qd1n,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,3,2
+270,6,0.0,Auri,proxywar-keystone,14,eb22ccaf-b027-49b1-81dc-d74117660bb3,2,5
