@@ -1,6 +1,12 @@
 # ProxyWar — agent starter
 
-Campaign history is recorded in the [`odin ledger`](LORE.md). Replay-backed
+> **Scope:** This is a sanctioned AI strategy-game agent. Attacks, targets,
+> territory, opponents, and takeover language describe moves inside the
+> Coworld/Softmax game simulation. The project uses official game APIs, public
+> replay telemetry, and this user-owned repository; it does not authorize
+> access to or interference with external systems.
+
+Campaign history is recorded in the [`campaign ledger`](LORE.md). Replay-backed
 claims and promotion standards live in the [`merit ledger`](MERIT.md).
 
 Build an AI agent that plays **ProxyWar**, a live AI-vs-AI strategy game — claim
