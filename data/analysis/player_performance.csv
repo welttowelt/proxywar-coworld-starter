@@ -1,10 +1,11 @@
 player_count,player_name,policy_name,policy_version,policy_version_id,matches,wins,win_rate_pct,mean_final_tiles,median_final_tiles,decisions,rival_attacks,neutral_attacks,neutral_boats,naval_invasions,builds,social_actions,holds,fallback_rate_pct
-4,daveey,daveey-proxywar,8,17a4c6cc-8e7c-43e1-85bd-8f9e252805e0,57,22,38.6,139415.3,37415.0,6685,1323,1432,1185,296,399,133,1210,0.37
-4,odin free,qd1n,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,58,20,34.48,90991.7,41185.5,7065,1346,2087,1578,619,739,29,5,68.07
-4,Auri,proxywar-keystone,16,3ec3e986-08be-406a-b853-592bf50b7607,32,7,21.88,53232.9,16025.0,4226,507,1775,151,486,534,255,137,3.93
-4,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,37,8,21.62,49812.0,0.0,2580,420,851,0,0,261,0,423,0.04
-4,Auri,proxywar-keystone,14,eb22ccaf-b027-49b1-81dc-d74117660bb3,6,1,16.67,64234.5,40236.5,850,107,313,19,150,94,54,38,6.0
-4,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,39,5,12.82,71827.8,0.0,3428,529,1542,0,0,265,0,444,0.0
-4,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,77,1,1.3,41437.0,5543.0,10069,913,1425,2591,726,1164,2602,6,21.05
+4,katanasan,tsukuyomi-no-kage,7,c2c61c4e-2b9f-40b7-9b9b-312de1ac7dc2,1,1,100.0,215638.0,215638.0,68,35,16,1,0,0,1,0,0.0
+4,odin free,qd1n,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,58,20,34.48,89453.5,39507.0,6526,1366,1928,1416,558,646,22,4,68.54
+4,daveey,daveey-proxywar,8,17a4c6cc-8e7c-43e1-85bd-8f9e252805e0,57,19,33.33,115196.5,33642.0,6210,1240,1338,1050,281,385,133,1144,0.37
+4,Auri,proxywar-keystone,14,eb22ccaf-b027-49b1-81dc-d74117660bb3,4,1,25.0,85918.3,55441.5,531,103,147,5,150,68,30,16,5.65
+4,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,36,9,25.0,57194.7,0.0,2563,415,842,0,0,261,0,423,0.04
+4,Auri,proxywar-keystone,16,3ec3e986-08be-406a-b853-592bf50b7607,34,8,23.53,57478.3,16652.5,4347,558,1821,151,486,547,260,137,3.86
+4,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,39,6,15.38,71305.2,0.0,3182,536,1374,0,0,249,0,452,0.0
+4,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,77,1,1.3,36260.9,4643.0,9291,862,1312,2378,693,1114,2303,2,20.09
 4,katanasan,tsukuyomi-no-kage,1,5bbbc5eb-2219-4423-8e86-cce459e5a966,1,0,0.0,54033.0,54033.0,195,29,35,55,1,52,3,17,1.54
 4,katanasan,tsukuyomi-no-kage,5,32bad4db-d597-4b6e-8a02-37df0ac54855,1,0,0.0,14345.0,14345.0,89,2,67,3,6,6,0,0,0.0
