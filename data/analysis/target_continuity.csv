@@ -1,14 +1,14 @@
 player_name,policy_version,won,rival_attacks,target_switches,switch_rate_pct,mean_attack_ratio,mean_attack_percent
-daveey,8,true,657,154,24.21,3.25,25.8
-odin free,2,true,560,84,15.5,4.48,25.2
+daveey,8,true,661,155,24.22,3.32,25.8
+odin free,2,true,606,88,15.02,4.33,25.3
 Auri,16,true,189,24,13.11,4.08,27.5
-RelhAlpha,1,true,171,12,7.45,1.67,22.3
-Richard Higgins,1,true,125,6,5.04,1.92,23.0
+RelhAlpha,1,true,137,10,7.75,1.62,22.4
+Richard Higgins,1,true,108,5,4.85,1.96,22.8
 Auri,14,true,79,4,5.19,1.37,29.9
-James Boggs,1,false,886,158,19.48,1.87,16.2
-odin free,2,false,676,101,15.86,2.4,22.9
-daveey,8,false,648,141,23.04,2.5,24.8
-Richard Higgins,1,false,427,25,6.35,0.91,22.0
-Auri,16,false,220,39,19.21,2.48,26.3
-RelhAlpha,1,false,219,13,6.7,0.68,20.4
-Auri,14,false,132,18,14.88,2.05,26.1
+James Boggs,1,false,877,154,19.2,1.88,16.2
+odin free,2,false,631,94,15.82,2.47,22.8
+daveey,8,false,626,132,22.37,2.58,24.8
+Richard Higgins,1,false,422,23,5.93,0.92,22.1
+Auri,16,false,250,43,18.53,2.7,25.9
+RelhAlpha,1,false,248,13,5.88,0.7,20.8
+Auri,14,false,98,13,14.61,2.13,26.4

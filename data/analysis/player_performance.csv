@@ -1,8 +1,8 @@
 player_count,player_name,policy_name,policy_version,policy_version_id,matches,wins,win_rate_pct,mean_final_tiles,median_final_tiles,decisions,rival_attacks,neutral_attacks,neutral_boats,naval_invasions,builds,social_actions,holds,fallback_rate_pct
-4,daveey,daveey-proxywar,8,17a4c6cc-8e7c-43e1-85bd-8f9e252805e0,57,21,36.84,135998.2,40390.0,6960,1305,1442,1219,428,423,139,1194,0.42
-4,odin free,qd1n,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,58,18,31.03,81624.2,37799.0,7077,1236,2062,1612,652,738,27,3,68.66
-4,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,39,10,25.64,58270.8,0.0,2689,390,934,0,0,264,0,436,0.04
-4,Auri,proxywar-keystone,16,3ec3e986-08be-406a-b853-592bf50b7607,24,6,25.0,63175.0,16974.0,3357,409,1434,124,354,422,190,78,3.75
-4,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,39,6,15.38,77368.1,0.0,3475,552,1535,0,0,268,0,478,0.0
-4,Auri,proxywar-keystone,14,eb22ccaf-b027-49b1-81dc-d74117660bb3,14,2,14.29,48175.6,19416.5,1560,211,643,79,155,158,115,48,4.1
-4,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,77,0,0.0,50298.8,4643.0,10156,886,1465,2458,815,1108,2719,6,21.93
+4,daveey,daveey-proxywar,8,17a4c6cc-8e7c-43e1-85bd-8f9e252805e0,57,21,36.84,133701.2,40390.0,7079,1287,1447,1236,436,438,145,1275,0.45
+4,odin free,qd1n,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,58,20,34.48,83500.1,39601.0,7103,1237,2055,1630,666,738,27,3,68.15
+4,Auri,proxywar-keystone,16,3ec3e986-08be-406a-b853-592bf50b7607,26,6,23.08,61712.4,16974.0,3722,439,1528,133,470,480,219,91,3.6
+4,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,39,8,20.51,47957.1,0.0,2886,385,932,0,0,267,0,521,0.03
+4,Auri,proxywar-keystone,14,eb22ccaf-b027-49b1-81dc-d74117660bb3,12,2,16.67,53008.6,19416.5,1437,177,605,54,155,143,111,47,4.31
+4,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,39,5,12.82,71617.9,0.0,3439,530,1524,0,0,268,0,476,0.0
+4,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,77,0,0.0,50016.3,4643.0,10287,877,1467,2542,833,1133,2730,6,21.65
