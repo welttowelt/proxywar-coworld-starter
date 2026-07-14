@@ -1,32 +1,30 @@
 attacker,target_name,rival_attacks,mean_relative_troop_ratio,median_relative_troop_ratio,mean_troop_percent
-Auri,odin free,270,1.69,1.15,30.7
-Auri,James Boggs,255,3.89,2.2,28.1
-Auri,daveey,153,2.46,1.58,28.2
-Auri,katanasan,150,2.7,1.23,29.6
-Auri,Richard Higgins,62,5.97,1.84,27.9
-James Boggs,odin free,456,1.91,1.47,15.3
-James Boggs,Auri,203,2.59,1.38,16.8
-James Boggs,Richard Higgins,168,2.09,1.49,17.1
-James Boggs,daveey,110,3.17,1.44,16.5
-James Boggs,katanasan,69,1.28,1.14,13.5
-James Boggs,RelhAlpha,9,4.5,1.74,26.7
-RelhAlpha,odin free,121,0.94,1.06,21.5
-RelhAlpha,James Boggs,9,0.43,0.57,11.7
-Richard Higgins,James Boggs,282,0.85,0.72,22.0
-Richard Higgins,odin free,178,0.88,0.61,21.0
-Richard Higgins,Auri,89,0.76,0.76,22.3
-Richard Higgins,RelhAlpha,42,0.55,0.61,21.4
-Richard Higgins,daveey,3,0.71,0.68,15.0
-daveey,Auri,322,3.92,1.64,25.5
-daveey,James Boggs,248,4.27,2.07,29.2
-daveey,odin free,183,2.48,1.91,27.5
-daveey,katanasan,157,2.13,1.55,22.3
-daveey,Richard Higgins,3,1.48,1.48,20.0
-katanasan,Auri,156,1.86,1.37,27.7
-katanasan,daveey,87,2.31,1.26,30.2
-katanasan,James Boggs,73,2.3,1.7,30.1
-odin free,Auri,720,1.74,1.48,21.8
-odin free,James Boggs,421,2.73,1.72,24.1
-odin free,Richard Higgins,308,4.07,1.68,27.0
-odin free,RelhAlpha,167,1.82,1.13,25.3
-odin free,daveey,165,2.53,1.54,20.8
+Auri,odin free,301,1.63,1.13,31.0
+Auri,James Boggs,267,3.84,2.2,27.9
+Auri,katanasan,158,2.62,1.19,29.6
+Auri,daveey,149,2.49,1.58,28.3
+Auri,Richard Higgins,65,5.79,1.84,28.5
+James Boggs,odin free,403,1.75,1.41,15.2
+James Boggs,Auri,210,2.5,1.38,16.8
+James Boggs,Richard Higgins,144,2.18,1.51,17.0
+James Boggs,daveey,100,3.37,1.49,17.1
+James Boggs,katanasan,76,1.33,1.29,14.5
+James Boggs,RelhAlpha,10,4.23,1.74,26.5
+RelhAlpha,odin free,134,0.97,1.08,21.9
+RelhAlpha,James Boggs,10,0.45,0.57,11.5
+Richard Higgins,James Boggs,239,0.84,0.69,22.0
+Richard Higgins,odin free,177,0.88,0.61,20.9
+Richard Higgins,Auri,97,0.77,0.77,22.2
+Richard Higgins,RelhAlpha,49,0.54,0.59,21.6
+daveey,Auri,317,3.44,1.61,25.2
+daveey,James Boggs,217,4.22,2.02,29.4
+daveey,odin free,180,2.37,1.84,26.9
+daveey,katanasan,149,2.0,1.55,22.2
+katanasan,Auri,159,1.84,1.37,27.5
+katanasan,daveey,85,2.34,1.26,30.5
+katanasan,James Boggs,71,2.33,1.72,30.3
+odin free,Auri,764,1.76,1.45,21.8
+odin free,James Boggs,414,2.52,1.69,24.5
+odin free,Richard Higgins,310,3.95,1.68,27.0
+odin free,RelhAlpha,172,1.62,1.11,24.5
+odin free,daveey,127,2.69,1.5,20.7
