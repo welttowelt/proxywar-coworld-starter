@@ -1,12 +1,11 @@
 map,player_name,policy_version,matches,declared_wins,episode_points,point_rate_pct,mean_final_tiles,rival_attacks_per_100_decisions,neutral_attacks_per_100_decisions,neutral_boats_per_100_decisions,holds
-Asia,Auri,16,15,6,6,40.0,97228.3,36.96,36.96,2.17,20
-Asia,James Boggs,1,20,0,0,0.0,3921.6,15.57,16.39,20.9,0
-Asia,RelhAlpha,1,5,4,4,80.0,178992.8,30.23,47.18,0.0,0
-Asia,Richard Higgins,1,10,0,0,0.0,0.0,45.71,25.36,0.0,0
-Asia,daveey,9,10,4,4,40.0,102249.2,34.26,23.43,9.37,135
-Asia,katanasan,28,1,0,0,0.0,9680.0,26.19,26.19,9.52,0
+Asia,Auri,16,12,5,5,41.67,103485.5,38.03,35.61,2.28,17
+Asia,James Boggs,1,16,0,0,0.0,1483.5,15.75,16.42,18.98,0
+Asia,RelhAlpha,1,4,3,3,75.0,169872.5,30.2,46.94,0.0,0
+Asia,Richard Higgins,1,8,0,0,0.0,0.0,45.81,25.11,0.0,0
+Asia,daveey,9,8,2,2,25.0,73225.0,31.1,23.87,9.22,122
 Asia,katanasan,31,4,2,2,50.0,119260.0,36.58,19.46,18.68,0
-Asia,odin free,2,15,4,4,26.67,75745.1,52.07,25.93,7.33,0
+Asia,odin free,2,12,4,4,33.33,88789.2,52.38,25.61,7.59,0
 Europe,Auri,16,15,1,4,26.67,108810.7,7.07,51.86,4.79,21
 Europe,James Boggs,1,20,0,6,30.0,128083.5,9.26,17.34,24.8,2
 Europe,RelhAlpha,1,5,0,0,0.0,0.0,17.39,56.52,0.0,0
