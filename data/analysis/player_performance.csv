@@ -1,16 +1,17 @@
 player_count,player_name,policy_name,policy_version,policy_version_id,matches,wins,win_rate_pct,mean_final_tiles,median_final_tiles,decisions,rival_attacks,neutral_attacks,neutral_boats,naval_invasions,builds,social_actions,holds,fallback_rate_pct
 4,katanasan,tsukuyomi-no-kage,7,c2c61c4e-2b9f-40b7-9b9b-312de1ac7dc2,1,1,100.0,215638.0,215638.0,68,35,16,1,0,0,1,0,0.0
-4,odin free,qd1n,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,59,24,40.68,117311.3,82650.0,7614,1729,2053,1736,786,669,47,7,69.86
 4,katanasan,tsukuyomi-no-kage,10,899e7ad0-545c-4af8-85d7-b25381503452,5,2,40.0,62998.4,11415.0,368,49,123,17,17,29,89,11,2.99
-4,daveey,daveey-proxywar,8,17a4c6cc-8e7c-43e1-85bd-8f9e252805e0,47,16,34.04,128469.0,18161.0,5444,1005,1156,1016,242,345,122,1059,0.4
-4,daveey,daveey-proxywar,9,167eba3a-dc9d-474a-95dc-1fc6dda54b86,7,2,28.57,81945.6,16046.0,864,105,183,169,33,52,27,188,0.69
-4,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,29,8,27.59,61276.7,0.0,1522,313,637,0,0,176,0,171,0.07
-4,Auri,proxywar-keystone,16,3ec3e986-08be-406a-b853-592bf50b7607,43,9,20.93,51932.0,11391.0,5083,643,2111,233,488,509,430,208,3.95
-4,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,40,4,10.0,62616.1,0.0,3138,560,1435,0,0,269,0,334,0.0
-4,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,79,1,1.27,45621.9,5094.0,9498,953,1384,2640,379,1108,2464,5,31.06
+4,odin free,qd1n,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,60,23,38.33,108760.4,61925.5,7277,1725,2032,1602,635,647,47,7,70.88
+4,daveey,daveey-proxywar,8,17a4c6cc-8e7c-43e1-85bd-8f9e252805e0,45,15,33.33,123965.2,18161.0,5027,965,1069,910,229,314,116,973,0.4
+4,daveey,daveey-proxywar,9,167eba3a-dc9d-474a-95dc-1fc6dda54b86,9,3,33.33,93866.1,37037.0,977,147,216,180,33,60,27,201,0.61
+4,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,28,9,32.14,71056.6,0.0,1502,311,621,0,0,177,0,171,0.07
+4,Auri,proxywar-keystone,16,3ec3e986-08be-406a-b853-592bf50b7607,45,11,24.44,58038.9,11391.0,5021,702,2042,219,485,521,420,188,3.6
+4,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,40,4,10.0,56777.5,0.0,2862,550,1341,0,0,262,0,219,0.0
+4,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,80,1,1.25,39024.6,2106.5,8896,935,1324,2451,306,1069,2278,5,30.49
 4,katanasan,tsukuyomi-no-kage,1,5bbbc5eb-2219-4423-8e86-cce459e5a966,1,0,0.0,54033.0,54033.0,195,29,35,55,1,52,3,17,1.54
 4,katanasan,tsukuyomi-no-kage,5,32bad4db-d597-4b6e-8a02-37df0ac54855,1,0,0.0,14345.0,14345.0,89,2,67,3,6,6,0,0,0.0
 4,katanasan,tsukuyomi-no-kage,15,1efbdd4c-08c6-4ed7-8742-6c195275fff6,1,0,0.0,12355.0,12355.0,49,0,22,7,2,4,9,2,4.08
+4,katanasan,tsukuyomi-no-kage,16,296a06df-8ecb-4733-a4e0-33a0e7ef28e0,1,0,0.0,5211.0,5211.0,74,9,7,27,0,8,17,2,2.7
 4,katanasan,tsukuyomi-no-kage,13,b9a1b586-d983-4086-a685-82472b2f384d,1,0,0.0,2253.0,2253.0,57,9,13,13,0,6,7,1,1.75
 4,katanasan,tsukuyomi-no-kage,14,d67d69c2-1670-4984-b1b2-b5a01657849b,1,0,0.0,0.0,0.0,43,11,21,0,0,1,3,0,0.0
 4,katanasan,tsukuyomi-no-kage,8,d80d9aa9-d53f-4c75-8802-f1d398a5f83f,1,0,0.0,0.0,0.0,42,7,30,0,0,0,0,0,0.0
