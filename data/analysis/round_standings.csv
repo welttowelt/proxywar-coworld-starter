@@ -1,11 +1,4 @@
 round_number,rank,score,player_name,policy_name,policy_version,policy_version_id,completed_episode_count,seed_order
-319,1,0.6666666666666666,odin free,qd1n,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,3,2
-319,2,0.5,daveey,daveey-proxywar,9,167eba3a-dc9d-474a-95dc-1fc6dda54b86,2,5
-319,3,0.3333333333333333,Auri,proxywar-keystone,16,3ec3e986-08be-406a-b853-592bf50b7607,3,4
-319,4,0.0,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,1,0
-319,5,0.0,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,2,1
-319,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,3
-319,7,0.0,katanasan,tsukuyomi-no-kage,31,f960157f-65de-43fd-990a-20646205287f,1,6
 320,1,1.0,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,1,0
 320,2,0.5,daveey,daveey-proxywar,9,167eba3a-dc9d-474a-95dc-1fc6dda54b86,2,5
 320,3,0.3333333333333333,odin free,qd1n,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,3,2
@@ -150,3 +143,11 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 338,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,4
 338,7,0.0,Auri,proxywar-keystone,16,3ec3e986-08be-406a-b853-592bf50b7607,4,5
 338,8,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,6
+339,1,1.0,odin free,qd1n,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,3,3
+339,2,0.0,Gaijin-01,Eva-00,9,464e1459-0c01-49a3-9d7f-659dfe59ecd2,3,0
+339,3,0.0,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,3,1
+339,4,0.0,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,3,2
+339,5,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,4
+339,6,0.0,Auri,proxywar-keystone,16,3ec3e986-08be-406a-b853-592bf50b7607,3,5
+339,7,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,3,6
+339,8,0.0,daveey,daveey-proxywar,10,15264470-111c-4c4f-8df4-0932457a9138,3,7
