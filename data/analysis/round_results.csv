@@ -1,11 +1,4 @@
 round_number,player_count,player_name,policy_version,matches,wins,win_rate_pct,mean_final_tiles,rival_attacks,neutral_boats,builds,social_actions
-304,4,odin free,2,3,2,66.67,59798.0,51,62,17,0
-304,4,daveey,9,2,1,50.0,46542.5,43,17,9,3
-304,4,Auri,16,3,1,33.33,35401.3,24,10,14,10
-304,4,katanasan,23,1,0,0.0,18756.0,2,25,8,0
-304,4,James Boggs,1,4,0,0.0,2851.3,18,55,27,33
-304,4,RelhAlpha,1,1,0,0.0,0.0,5,0,4,0
-304,4,Richard Higgins,1,2,0,0.0,0.0,13,0,9,0
 305,4,Auri,16,3,2,66.67,158036.7,51,0,15,1
 305,4,RelhAlpha,1,1,1,100.0,215340.0,12,0,9,0
 305,4,daveey,9,2,1,50.0,108101.0,38,8,7,3
@@ -139,3 +132,10 @@ round_number,player_count,player_name,policy_version,matches,wins,win_rate_pct,m
 323,4,daveey,9,2,0,0.0,20371.0,47,21,12,5
 323,4,James Boggs,1,4,0,0.0,1297.3,32,32,37,63
 323,4,Richard Higgins,1,2,0,0.0,0.0,24,0,8,0
+324,4,daveey,9,2,1,50.0,238199.0,33,104,27,6
+324,4,Auri,16,3,1,33.33,186139.3,41,52,32,25
+324,4,odin free,2,3,1,33.33,166025.3,83,183,36,0
+324,4,James Boggs,1,4,0,0.0,121294.0,52,212,72,75
+324,4,Richard Higgins,1,2,0,0.0,102329.0,34,0,28,0
+324,4,RelhAlpha,1,1,0,0.0,0.0,10,0,6,0
+324,4,katanasan,31,1,0,0.0,0.0,11,0,9,0
