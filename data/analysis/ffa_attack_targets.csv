@@ -1,30 +1,30 @@
 attacker,target_name,rival_attacks,mean_relative_troop_ratio,median_relative_troop_ratio,mean_troop_percent
-Auri,odin free,288,1.5,1.11,31.4
-Auri,James Boggs,269,3.79,2.03,28.5
-Auri,katanasan,169,2.33,1.14,28.5
-Auri,daveey,130,3.5,1.63,30.7
+Auri,odin free,292,1.46,1.1,31.7
+Auri,James Boggs,265,3.65,2.0,28.3
+Auri,katanasan,178,2.29,1.15,28.3
+Auri,daveey,128,3.53,1.65,30.9
 Auri,Richard Higgins,52,4.32,1.69,29.0
-James Boggs,odin free,398,1.79,1.39,14.8
-James Boggs,Auri,195,1.99,1.36,16.7
-James Boggs,Richard Higgins,138,1.98,1.28,15.9
-James Boggs,daveey,82,1.84,1.33,16.8
+James Boggs,odin free,469,1.78,1.39,13.9
+James Boggs,Auri,199,1.98,1.36,16.4
+James Boggs,Richard Higgins,147,1.87,1.25,15.2
 James Boggs,katanasan,78,1.42,1.33,15.2
+James Boggs,daveey,75,2.0,1.47,17.0
 James Boggs,RelhAlpha,10,4.23,1.74,26.5
-RelhAlpha,odin free,142,0.96,1.07,22.1
+RelhAlpha,odin free,139,0.96,1.07,22.0
 RelhAlpha,James Boggs,10,0.45,0.57,11.5
-Richard Higgins,James Boggs,231,1.05,0.8,21.8
-Richard Higgins,odin free,189,1.06,0.62,20.9
+Richard Higgins,James Boggs,238,1.14,0.81,21.7
+Richard Higgins,odin free,199,1.08,0.63,20.6
 Richard Higgins,Auri,90,0.77,0.77,23.0
 Richard Higgins,RelhAlpha,53,0.54,0.58,21.6
-daveey,Auri,296,3.67,1.63,24.9
-daveey,James Boggs,219,4.13,1.98,29.5
-daveey,odin free,162,2.92,1.9,27.1
-daveey,katanasan,147,2.1,1.53,22.3
+daveey,Auri,292,3.62,1.63,24.7
+daveey,James Boggs,210,3.96,1.96,29.4
+daveey,odin free,170,3.03,1.95,27.3
+daveey,katanasan,142,2.09,1.51,22.1
 katanasan,Auri,148,1.97,1.45,27.2
-katanasan,daveey,83,2.13,1.26,30.8
-katanasan,James Boggs,72,3.31,2.44,32.1
-odin free,Auri,725,1.65,1.41,22.1
-odin free,James Boggs,383,2.42,1.65,24.3
-odin free,Richard Higgins,319,3.47,1.58,25.7
-odin free,RelhAlpha,179,1.6,1.11,24.7
+katanasan,daveey,94,2.06,1.29,30.6
+katanasan,James Boggs,77,3.26,2.45,32.6
+odin free,Auri,742,1.68,1.4,22.3
+odin free,James Boggs,392,2.36,1.63,23.9
+odin free,Richard Higgins,315,3.51,1.58,25.5
+odin free,RelhAlpha,177,1.59,1.11,24.3
 odin free,daveey,78,2.71,1.54,20.8
