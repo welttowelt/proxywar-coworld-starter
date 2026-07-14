@@ -1,5 +1,4 @@
 round_number,rank,score,policy_version,policy_version_id,matches,wins,win_rate_pct,mean_final_tiles,decisions,rival_attacks,neutral_attacks,neutral_boats,builds,social_actions,holds,fallbacks
-318,2,0.3333333333333333,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,3,1,33.33,189186.3,681,80,134,232,37,10,3,523
 319,1,0.6666666666666666,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,3,2,66.67,56325.3,192,61,45,35,15,2,0,89
 320,3,0.3333333333333333,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,3,1,33.33,85780.3,191,101,48,11,16,3,0,147
 321,6,0.0,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,3,0,0.0,80945.3,642,71,226,151,80,0,0,427
@@ -19,3 +18,4 @@ round_number,rank,score,policy_version,policy_version_id,matches,wins,win_rate_p
 335,1,0.6666666666666666,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,3,2,66.67,363704.3,901,230,120,126,102,1,0,800
 336,6,0.0,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,4,0,0.0,84073.5,413,118,137,97,40,0,0,316
 337,1,0.5,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,4,2,50.0,185777.3,451,174,78,53,52,4,0,385
+338,2,0.25,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,4,0,0.0,105176.3,1522,166,125,436,132,3,0,1412
