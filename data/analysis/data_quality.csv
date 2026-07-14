@@ -3,11 +3,11 @@ duplicate_round_ids,0,20
 duplicate_episode_ids,0,80
 duplicate_round_standing_grain,0,140
 round_standing_count_mismatch,0,140
-duplicate_leaderboard_ranks,0,7
+duplicate_leaderboard_ranks,0,6
 duplicate_participant_grain,0,320
-duplicate_decision_sequence,0,31673
-decisions_without_participant,0,31673
+duplicate_decision_sequence,0,33891
+decisions_without_participant,0,33891
 participants_without_final_tiles,0,320
-rejected_decisions,0,31673
+rejected_decisions,0,33891
 participant_count_mismatch,0,320
-decisions_without_episode,0,31673
+decisions_without_episode,0,33891
