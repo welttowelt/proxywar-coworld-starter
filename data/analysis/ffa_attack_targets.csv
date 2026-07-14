@@ -1,30 +1,30 @@
 attacker,target_name,rival_attacks,mean_relative_troop_ratio,median_relative_troop_ratio,mean_troop_percent
-Auri,James Boggs,192,3.61,1.87,27.7
-Auri,odin free,183,1.84,1.13,31.3
-Auri,katanasan,105,1.7,1.17,27.3
-Auri,daveey,93,3.36,1.77,29.0
+Auri,odin free,173,1.86,1.13,31.8
+Auri,James Boggs,170,3.64,1.9,27.1
+Auri,katanasan,78,1.83,1.09,26.7
+Auri,daveey,77,3.72,2.01,27.5
 Auri,Richard Higgins,29,4.76,1.85,28.1
-James Boggs,odin free,239,1.73,1.39,13.2
-James Boggs,Auri,103,1.12,1.22,15.4
-James Boggs,Richard Higgins,79,1.6,1.17,13.6
-James Boggs,katanasan,38,1.36,1.27,15.9
-James Boggs,daveey,25,1.14,1.18,12.4
+James Boggs,odin free,228,1.55,1.38,13.0
+James Boggs,Auri,89,1.2,1.35,15.6
+James Boggs,Richard Higgins,69,1.67,1.23,13.3
+James Boggs,katanasan,37,1.39,1.28,16.1
+James Boggs,daveey,21,1.16,1.18,12.1
 James Boggs,RelhAlpha,4,1.74,1.74,25.0
-RelhAlpha,odin free,111,0.85,0.86,22.4
+RelhAlpha,odin free,106,0.86,0.87,22.5
 RelhAlpha,James Boggs,4,0.57,0.57,10.0
-Richard Higgins,odin free,118,1.02,0.7,20.6
-Richard Higgins,James Boggs,108,1.28,0.99,20.4
+Richard Higgins,odin free,98,1.01,0.63,20.3
+Richard Higgins,James Boggs,86,1.14,0.85,22.0
 Richard Higgins,Auri,50,0.73,0.72,22.9
 Richard Higgins,RelhAlpha,30,0.55,0.57,21.5
-daveey,Auri,120,2.67,1.54,22.5
-daveey,James Boggs,120,4.1,2.47,30.3
+daveey,Auri,113,2.78,1.56,22.6
+daveey,James Boggs,111,4.17,2.47,30.7
 daveey,katanasan,82,1.5,1.28,22.4
 daveey,odin free,80,3.89,2.17,29.3
-katanasan,Auri,91,2.14,1.41,29.5
+katanasan,Auri,86,2.21,1.45,28.8
 katanasan,daveey,76,1.95,1.27,32.7
-katanasan,James Boggs,51,4.45,2.75,37.1
-odin free,Auri,511,1.59,1.48,22.1
-odin free,Richard Higgins,236,2.35,1.34,23.0
-odin free,James Boggs,231,2.77,1.68,23.0
-odin free,RelhAlpha,145,1.66,1.19,25.4
+katanasan,James Boggs,44,4.34,2.58,36.9
+odin free,Auri,396,1.56,1.37,22.6
+odin free,Richard Higgins,230,2.37,1.34,22.8
+odin free,James Boggs,219,2.76,1.69,22.7
+odin free,RelhAlpha,136,1.66,1.19,25.1
 odin free,daveey,22,2.54,1.4,21.6
