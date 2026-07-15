@@ -218,3 +218,24 @@ wire accepted every order, and no hold appeared, but the field did not prove a
 strategic edge. The planner did prove a smaller wound: ten failed refreshes
 against seventeen for the parent across the mirrored pair. Qd1n rci-1 stays in
 the workshop. The live `qd1n:v2` seat is unchanged.
+
+## qd1n rci-2
+
+Eight fresh paths showed a waste the scoreboard hid. Qd1n cut katanasan
+forty-six times; katanasan returned no cut. In the clearest lost path Auri
+struck qd1n twenty-one times and took the field while qd1n ignored Auri and
+sent sixteen attacks into the quiet rival.
+
+The new law is reciprocal, not sentimental. Katanasan is spared while his hand
+stays clean. One incoming attack ends the restraint immediately, and thirty-five
+percent control opens the finish. If an alliance is already the survival move,
+the quiet partner receives the first request. No tribute follows. Recorded
+aggressors rise in both land and naval target order, so pressure follows the
+attacker instead of a convenient bystander.
+
+The current eight-player Pangaea mirror split one to one. Seat three won both
+fields, first under the parent and then under the candidate; all 1,442 orders
+were accepted, and each image inherited one hold from that same seat pattern.
+Generic local names kept the reciprocal branch out of the replay, so the pair
+proves regression safety only. Qd1n rci-2 remains in the workshop. The live
+`qd1n:v2` submission is unchanged.

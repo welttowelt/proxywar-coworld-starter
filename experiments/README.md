@@ -730,3 +730,26 @@ fixtures pass `65/65`, including the server-classified high-risk break. The
 full local episode was stopped and skipped on Oli's instruction; no local
 strategic claim is made. Evidence is archived in
 `experiments/diagnosis-v35-asia-seat3.json`.
+
+## Qd1n reciprocal-targeting RCI, 2026-07-15
+
+Rounds 366 and 367 supplied eight current-version replays. Across them qd1n
+attacked katanasan 46 times while katanasan attacked qd1n zero times. The
+clearest Pangaea loss sharpened the error: Auri attacked qd1n 21 times and won,
+while qd1n attacked Auri zero times and katanasan 16 times.
+
+Rci-2 adds conditional reciprocal restraint for katanasan, immediate revocation
+after any incoming attack, a 35% finishing release, peaceful-partner preference
+when an alliance is already the survival action, and bounded retaliation weight
+for land and naval targets. It changes no public game text and makes no blind
+donation.
+
+The focused strategy suite passed `47/47`; the full suite passed `81/81`; the
+container build and module smoke passed. Two mirrored current `0.1.8`
+eight-player Pangaea runs both ended at turn 10,800 with seat three winning.
+The parent won the first and the candidate won the inverted roster. All 1,442
+decisions were accepted with zero rejections; each image recorded one hold
+across the pair. The official local roster uses generic names, so the named
+reciprocal branch could not fire. This is regression evidence, not promotion
+evidence. The machine-readable record is
+`experiments/diagnosis-qd1n-reciprocal-rci-20260715.json`.

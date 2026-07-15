@@ -4,6 +4,10 @@ const SOCIAL_KINDS = new Set([
   "quick_chat", "emoji",
 ]);
 
+// Publicly declared reciprocal partner. Neutrality is conditional: any observed
+// incoming attack revokes it, and late dominance still permits a clean finish.
+const RECIPROCAL_RIVALS = new Set(["katanasan"]);
+
 export const PLAN_KINDS = [
   "spawn", "attack", "nuke", "build", "upgrade_structure", "boat", "boat_retreat", "retreat",
   "warship", "move_warship", "alliance_request", "alliance_extend", "break_alliance",
@@ -199,10 +203,19 @@ function recentHostility(state, history, rival, window = 24) {
   return current + history.slice(-window).filter((entry) => rivalWasIncoming(entry, rival)).length;
 }
 
+function isReciprocalRival(rival) {
+  return RECIPROCAL_RIVALS.has(rival.name.toLowerCase());
+}
+
+function reciprocalTrustIntact(state, history, rival) {
+  return isReciprocalRival(rival) && recentHostility(state, history, rival, history.length) === 0;
+}
+
 function rivalIsProtected(state, history, rival) {
   if (rival.isAllied) return true;
-  if (state.self.tileShare >= 0.45) return false;
+  if (state.self.tileShare >= 0.35) return false;
   if ((state.self.incomingAttackerIDs || []).includes(rival.id.toLowerCase())) return false;
+  if (reciprocalTrustIntact(state, history, rival)) return true;
 
   for (let index = history.length - 1; index >= Math.max(0, history.length - 24); index--) {
     const entry = history[index];
@@ -233,13 +246,15 @@ function bestAllianceRequest(actions, state, history, allowPending = false) {
     .map((candidate) => ({
       ...candidate,
       hostility: recentHostility(state, history, candidate.rival),
+      reciprocal: reciprocalTrustIntact(state, history, candidate.rival),
     }));
   const peaceful = ranked.filter((candidate) => candidate.hostility === 0);
   return (peaceful.length > 0 ? peaceful : ranked)
     .sort((left, right) => {
       const leftPending = Number(left.action?.metadata?.relation) === 2 ? 1 : 0;
       const rightPending = Number(right.action?.metadata?.relation) === 2 ? 1 : 0;
-      return leftPending - rightPending || left.hostility - right.hostility ||
+      return leftPending - rightPending || Number(right.reciprocal) - Number(left.reciprocal) ||
+        left.hostility - right.hostility ||
         right.rival.tileShare - left.rival.tileShare;
     })[0]?.action ?? null;
 }
@@ -332,8 +347,9 @@ function attackScore(rival, state, plan, history) {
   const leaderPressure = isTopRival ? 0.6 : 0;
   const finishBonus = recentTarget > 0 ? 0.9 : 0;
   const weakTargetBonus = rival.tileShare <= 0.12 && ratio >= 1.3 ? 0.4 : 0;
+  const retaliationBonus = Math.min(recentHostility(state, history, rival), 4) * 0.35;
   return vulnerability + landValue + leaderPressure + finishBonus + weakTargetBonus +
-    (planTarget ? 0.25 : 0);
+    retaliationBonus + (planTarget ? 0.25 : 0);
 }
 
 function chooseRivalAttack(actions, state, plan, history, avoid) {
@@ -472,6 +488,7 @@ function chooseBoat(
     Number.isFinite(rival.relativeTroopRatio) &&
       rival.relativeTroopRatio >= (forceConversion ? 1.0 : 1.15)
   ).sort((left, right) =>
+    recentHostility(state, history, right.rival) - recentHostility(state, history, left.rival) ||
     recentBoatTargetCount(history, left.rival) - recentBoatTargetCount(history, right.rival) ||
     right.rival.relativeTroopRatio - left.rival.relativeTroopRatio ||
     right.rival.tileShare - left.rival.tileShare
