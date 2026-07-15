@@ -40,11 +40,14 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | promotion validator | hosted-ready is separate from hosted `4/4` and regression `20/20` completion | false promotion claim closed |
 | qd1n rci-1 local | `75/75` tests; four Pangaea runs; mirrored score `1-1`; 1,226/1,226 accepted; zero holds/rejections; eight conversion marks; planner failures `17->10` in mirrored seats | operational gain only; no upload or league change |
 | qd1n rci-2 local | rounds 366-367: qd1n attacked nonhostile katanasan `46` times and received `0`; `81/81` tests; two current `0.1.8` 8P Pangaea mirrors; score `1-1`; `1,442/1,442` accepted; one hold per image; zero rejections; named branch absent under generic local names | bounded workshop candidate; no upload or league change |
+| qd1n rci-3 local | round 373: 107 boats into Richard at 0.27-0.46 after conversion stalled; historical wins had `0/464` invasions below 0.50; `85/85` tests; paired Pangaea score `1-1`; `1,371/1,371` accepted; candidate `0` versus parent `5` sub-0.50 invasions | no-feed mechanism passed; no seat-independent win lift |
+| qd1n v76 live | linux/amd64 image matched commit `f9d50fe`; submission `sub_bbface4c-2afc-4170-b3af-0f7540bbf563`; qualification passed; membership `lpm_807274c0-0f71-4c13-8990-3dc932a9f7e5` champion and v2 benched | operator-directed live promotion; standard `4/4` and `20/20` gates not completed |
 
 Detailed evidence lives in [`experiments/`](experiments/README.md). Public round
 statistics live on the [dashboard](https://welttowelt-proxywar.netlify.app/).
 
-Live truth after this audit: qd1n remains overall rank one at `44.2862`. Rounds
-368-372 finished `5, 4, 1, 1, 1`, so the active first-place streak is `3/1000`.
-Round 373 is running. The only live policy remains `qd1n:v2`, submitted on July
-12; this candidate has not been uploaded or submitted.
+Live truth after this audit: qd1n remains overall rank one at `44.6476`. Rounds
+373-375 finished `3, 2, 2`, so the active first-place streak is `0/1000`.
+`qd1n:v76` is champion and `qd1n:v2` is benched. Round 376 sealed its roster one
+minute before v76 qualified and therefore still uses v2; v76 can first enter
+round 377. The live promotion does not satisfy the sustained-win target.

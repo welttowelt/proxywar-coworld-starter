@@ -1,0 +1,222 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "name": "qd1n-nofeed-rci3",
+    "source_parent_commit": "c8b3720",
+    "source_commit": "f9d50fe",
+    "live_predecessor_ref": "qd1n:v2",
+    "live_predecessor_policy_version_id": "a257d3f5-f374-4a2a-a3f3-af41485cbfbf",
+    "local_test_image": "proxywar-agent-llm:qd1n-nofeed-rci3",
+    "local_test_image_id": "sha256:4ff301b352a0de8da817abfd691a083f5786df2244cb3ef0fa79a5634b9a2f18",
+    "hosted_image": "proxywar-agent-llm:qd1n-nofeed-rci3-amd64",
+    "hosted_image_id": "sha256:fde0154001f8178677e919989fa4fde8ee475d223460c870ea652aee971aaf7d",
+    "uploaded_policy_ref": "qd1n:v76",
+    "uploaded_policy_version_id": "cdebca35-fca0-4470-8d7f-676f0861a782",
+    "submission_id": "sub_bbface4c-2afc-4170-b3af-0f7540bbf563",
+    "membership_id": "lpm_807274c0-0f71-4c13-8990-3dc932a9f7e5",
+    "uploaded": true,
+    "submitted": true,
+    "champion": true
+  },
+  "replay_diagnosis": {
+    "round_373_pangaea_loss": {
+      "winner": "Richard Higgins",
+      "qd1n_tiles": 135564,
+      "winner_tiles": 284542,
+      "qd1n_decisions": 403,
+      "qd1n_boats": 182,
+      "qd1n_boats_to_winner": 107,
+      "winner_boat_ratio_average": 0.376,
+      "winner_boat_ratio_range": [
+        0.27,
+        0.46
+      ],
+      "winner_land_attacks": 2,
+      "territory_plateau_after_turn": 28900,
+      "post_plateau_decisions": 115,
+      "post_plateau_boats": 88,
+      "qd1n_attacks_or_boats_on_katanasan": 36,
+      "katanasan_attacks_on_qd1n": 0,
+      "failure": "qd1n repeatedly fed a stronger naval target after territory stopped converting"
+    },
+    "historical_invasion_split": {
+      "round_window": "348-367",
+      "qd1n_episodes": 80,
+      "winning_episode_naval_invasions": 464,
+      "winning_episode_invasions_below_half_ratio": 0,
+      "losing_episode_invasions_below_half_ratio": 168
+    },
+    "round_375_asia_refresh": {
+      "round_rank": 2,
+      "round_score": 0.3333333333333333,
+      "best_score_tied": true,
+      "qd1n_episode_wins": 1,
+      "qd1n_episodes": 3,
+      "qd1n_attacks_on_katanasan": 42,
+      "katanasan_attacks_on_qd1n": 0,
+      "relhalpha_loss": {
+        "qd1n_attacks_on_katanasan": 28,
+        "qd1n_attacks_on_relhalpha": 2,
+        "relhalpha_attacks_on_qd1n": 23
+      },
+      "finding": "the latest Asia field independently reproduced the nonreciprocal target leak fixed by rci2"
+    }
+  },
+  "mechanisms": {
+    "desperate_invasion_floor": {
+      "minimum_relative_troop_ratio": 0.5,
+      "scope": "only desperate rival invasions after reliable expansion, attack, build, and utility actions are unavailable"
+    },
+    "utility_precedence": {
+      "rule": "nuke, upgrade, warship, and warship movement precede a merely desperate naval invasion"
+    },
+    "same_target_cooldown": {
+      "trigger": "at least six boats to the same rival in the last ten decisions with no more than 0.2 percentage points of territory growth",
+      "release": "the target returns after the ten-decision window changes or territory growth proves productive"
+    },
+    "preserved_pressure": {
+      "regular_favorable_ratio": 1.15,
+      "forced_conversion_ratio": 1.0,
+      "productive_same_target_invasions": "preserved",
+      "emergency_land_attack": "preserved"
+    },
+    "reciprocal_targeting_from_rci2": {
+      "partner": "katanasan",
+      "protection_ends_on": [
+        "observed incoming attack",
+        "qd1n reaches 35 percent territory"
+      ],
+      "blind_donation": false
+    },
+    "public_game_text": {
+      "format": "short lowercase leetspeak action codes",
+      "changed": false
+    }
+  },
+  "verification": {
+    "tests": {
+      "full_passed": 85,
+      "failed": 0,
+      "new_nofeed_cases": 4,
+      "diff_check": "passed"
+    },
+    "container": {
+      "initial_upload_attempt": "correctly rejected because the local test image was linux/arm64",
+      "hosted_rebuild_platform": "linux/amd64",
+      "hosted_module_smoke": "passed",
+      "runtime_file_hashes_match_commit": true
+    },
+    "mirrored_8p_pangaea": {
+      "match_a": {
+        "seat_images": [
+          "candidate",
+          "parent",
+          "candidate",
+          "parent",
+          "candidate",
+          "parent",
+          "candidate",
+          "parent"
+        ],
+        "winner_slot": 3,
+        "winner_image": "parent",
+        "turns": 10600,
+        "decisions": 743,
+        "accepted": 743,
+        "rejections": 0,
+        "candidate_holds": 0,
+        "parent_holds": 1,
+        "candidate_attacks": 148,
+        "parent_attacks": 120,
+        "candidate_boats": 94,
+        "parent_boats": 123,
+        "candidate_low_ratio_rival_boats": 0,
+        "parent_low_ratio_rival_boats": 3,
+        "parent_low_ratio_values": [
+          0.4,
+          0.17,
+          0.2
+        ],
+        "replay_sha256": "f3242eb9f4a221d3e334f3d9857a1f5c7300ed3dbe6a6eac109f200f3aa7973a"
+      },
+      "match_b": {
+        "seat_images": [
+          "parent",
+          "candidate",
+          "parent",
+          "candidate",
+          "parent",
+          "candidate",
+          "parent",
+          "candidate"
+        ],
+        "winner_slot": 3,
+        "winner_image": "candidate",
+        "turns": 8200,
+        "decisions": 628,
+        "accepted": 628,
+        "rejections": 0,
+        "candidate_holds": 2,
+        "parent_holds": 0,
+        "candidate_attacks": 106,
+        "parent_attacks": 145,
+        "candidate_boats": 94,
+        "parent_boats": 81,
+        "candidate_low_ratio_rival_boats": 0,
+        "parent_low_ratio_rival_boats": 2,
+        "parent_low_ratio_values": [
+          0.18,
+          0.27
+        ],
+        "replay_sha256": "cc59b2d356438f7daf5f2d0af176279f4d8398686cc6682fe77d993195eeb937"
+      },
+      "paired_totals": {
+        "candidate_wins": 1,
+        "parent_wins": 1,
+        "candidate_decisions": 683,
+        "parent_decisions": 688,
+        "candidate_accepted": 683,
+        "parent_accepted": 688,
+        "candidate_rejections": 0,
+        "parent_rejections": 0,
+        "candidate_holds": 2,
+        "parent_holds": 1,
+        "candidate_attacks": 254,
+        "parent_attacks": 265,
+        "candidate_boats": 188,
+        "parent_boats": 204,
+        "candidate_rival_boats": 62,
+        "parent_rival_boats": 78,
+        "candidate_low_ratio_rival_boats": 0,
+        "parent_low_ratio_rival_boats": 5,
+        "candidate_utility_actions": 46,
+        "parent_utility_actions": 25,
+        "summary": "seat 3 won both mirrors; the candidate removed every sub-half invasion without establishing a seat-independent win advantage"
+      }
+    }
+  },
+  "live_state_after_submission": {
+    "checked_at": "2026-07-15T19:41:04Z",
+    "overall_rank": 1,
+    "overall_score": 44.647630900709984,
+    "current_first_place_streak": 0,
+    "target_first_place_streak": 1000,
+    "latest_completed_round": 375,
+    "latest_completed_round_rank": 2,
+    "running_round": 376,
+    "running_round_policy_ref": "qd1n:v2",
+    "first_possible_qd1n_v76_round": 377,
+    "active_policy_ref": "qd1n:v76",
+    "predecessor_status": "benched"
+  },
+  "rci_verdict": {
+    "diagnosis": "keep: two independently replay-backed targeting leaks",
+    "implementation": "keep: bounded no-feed controls preserve favorable and productive pressure",
+    "runtime": "passed",
+    "local_direction": "the paired mirror reached the no-feed mechanism and split 1-1, so it did not establish a seat-independent win-rate advantage",
+    "standard_promotion_gate": "not completed: no pinned hosted 4/4 or 20/20 regression was run",
+    "operator_override": "the user explicitly required a real live update after confirming the champion page still showed qd1n:v2",
+    "league_action": "qd1n:v76 submitted with auto_champion=always and verified as champion",
+    "goal_achievement": "not achieved: the official first-place streak remains 0/1000"
+  }
+}

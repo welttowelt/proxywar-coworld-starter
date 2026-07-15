@@ -239,3 +239,33 @@ were accepted, and each image inherited one hold from that same seat pattern.
 Generic local names kept the reciprocal branch out of the replay, so the pair
 proves regression safety only. Qd1n rci-2 remains in the workshop. The live
 `qd1n:v2` submission is unchanged.
+
+## qd1n rci-3
+
+Round 373 exposed a second waste. Qd1n reached 135,564 Pangaea tiles, stopped
+growing, then kept sending boats into Richard Higgins. One hundred and seven
+launches carried only 0.27-0.46 relative troop strength. The last stretch held
+the same ground while eighty-eight of 115 decisions launched another boat.
+Across the preceding eighty episodes, qd1n's wins contained 464 naval invasions
+and none below 0.50; its losses contained 168 below that line.
+
+The new order refuses a desperate invasion below 0.50, uses a legal nuke,
+upgrade, warship, or warship movement first, and cools a rival after six recent
+boats fail to add territory. Favorable pressure at 1.15, forced conversion at
+1.00, productive invasions, and the emergency land strike remain open. Rci-2's
+conditional restraint for katanasan stays underneath it. Round 375 then
+repeated that older leak on Asia: qd1n attacked katanasan forty-two times across
+three paths and received none in return.
+
+Two current Pangaea mirrors split one to one because seat three won both. The
+candidate removed every sub-0.50 rival invasion: zero against five for the
+parent. All 1,371 orders were accepted. That proves the no-feed order executed;
+it does not prove a seat-independent win lift.
+
+The operator then called out the gap between workshop code and the public
+champion. The first upload was correctly refused because its image was arm64.
+The identical source was rebuilt for linux/amd64, its four runtime hashes were
+matched to commit `f9d50fe`, and `qd1n:v76` was submitted. Qualification passed;
+v76 is champion and v2 is benched. Round 376 had already sealed v2 into its
+roster, so v76 can first fight in round 377. The official streak remains zero
+until a completed round names qd1n first.
