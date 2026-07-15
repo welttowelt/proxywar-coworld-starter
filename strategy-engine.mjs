@@ -30,6 +30,32 @@ function playerID(player) {
   );
 }
 
+function incomingAttackerIDs(value) {
+  const ids = new Set();
+  const visit = (entry) => {
+    if (Array.isArray(entry)) {
+      entry.forEach(visit);
+      return;
+    }
+    if (!entry || typeof entry !== "object") return;
+    const direct = entry.attackerID ?? entry.attackerId ?? entry.sourcePlayerID ??
+      entry.sourcePlayerId ?? entry.sourceID ?? entry.sourceId;
+    if (direct !== undefined && direct !== null) ids.add(clean(direct).toLowerCase());
+    if (direct === undefined) {
+      for (const [key, nested] of Object.entries(entry)) {
+        if (!["count", "total", "length", "amount"].includes(key.toLowerCase())) {
+          if (nested && typeof nested === "object") visit(nested);
+          else if (typeof nested === "number" || typeof nested === "boolean") {
+            ids.add(clean(key).toLowerCase());
+          }
+        }
+      }
+    }
+  };
+  visit(value);
+  return [...ids].filter(Boolean);
+}
+
 export function actionText(action) {
   return `${action?.id ?? ""} ${action?.label ?? ""}`.toLowerCase();
 }
@@ -89,6 +115,7 @@ export function buildState(observation, actions, history = []) {
     gold: own.gold,
     borderTiles: finiteNumber(own.borderTiles),
     incomingAttacks: own.incomingAttacks,
+    incomingAttackerIDs: incomingAttackerIDs(own.incomingAttacks),
   };
   const rivals = (observation?.visiblePlayers || [])
     .filter((player) => player && player.isAlive)
@@ -160,6 +187,34 @@ function incomingThreatCount(value) {
   return value ? 1 : 0;
 }
 
+function rivalWasIncoming(entry, rival) {
+  const id = rival.id.toLowerCase();
+  const name = rival.name.toLowerCase();
+  return (entry?.incomingAttackerIDs || []).includes(id) ||
+    (entry?.incomingAttackerNames || []).some((candidate) => candidate.toLowerCase() === name);
+}
+
+function recentHostility(state, history, rival, window = 24) {
+  const current = (state.self.incomingAttackerIDs || []).includes(rival.id.toLowerCase()) ? 1 : 0;
+  return current + history.slice(-window).filter((entry) => rivalWasIncoming(entry, rival)).length;
+}
+
+function rivalIsProtected(state, history, rival) {
+  if (rival.isAllied) return true;
+  if (state.self.tileShare >= 0.45) return false;
+  if ((state.self.incomingAttackerIDs || []).includes(rival.id.toLowerCase())) return false;
+
+  for (let index = history.length - 1; index >= Math.max(0, history.length - 24); index--) {
+    const entry = history[index];
+    const requested = entry.kind === "alliance_request" && (
+      entry.targetID === rival.id.toLowerCase() || targetName(entry) === rival.name.toLowerCase()
+    );
+    if (!requested) continue;
+    return !history.slice(index + 1).some((later) => rivalWasIncoming(later, rival));
+  }
+  return false;
+}
+
 function stableAllianceRequests(actions) {
   // Relation 2 is a transient pending-request action. It can disappear while the
   // simultaneous turn is resolving, which makes the game replace it with HOLD.
@@ -168,17 +223,24 @@ function stableAllianceRequests(actions) {
   );
 }
 
-function bestAllianceRequest(actions, state, allowPending = false) {
+function bestAllianceRequest(actions, state, history, allowPending = false) {
   const candidates = allowPending
     ? safeActions(actions, (action) => action.kind === "alliance_request")
     : stableAllianceRequests(actions);
-  return candidates
+  const ranked = candidates
     .map((action) => ({ action, rival: rivalForAction(action, state) }))
     .filter(({ rival }) => rival && !rival.isAllied)
+    .map((candidate) => ({
+      ...candidate,
+      hostility: recentHostility(state, history, candidate.rival),
+    }));
+  const peaceful = ranked.filter((candidate) => candidate.hostility === 0);
+  return (peaceful.length > 0 ? peaceful : ranked)
     .sort((left, right) => {
       const leftPending = Number(left.action?.metadata?.relation) === 2 ? 1 : 0;
       const rightPending = Number(right.action?.metadata?.relation) === 2 ? 1 : 0;
-      return leftPending - rightPending || right.rival.tileShare - left.rival.tileShare;
+      return leftPending - rightPending || left.hostility - right.hostility ||
+        right.rival.tileShare - left.rival.tileShare;
     })[0]?.action ?? null;
 }
 
@@ -207,7 +269,7 @@ function chooseAllianceMove(actions, state, history, threatCount, collapsing, ac
     return null;
   }
 
-  return bestAllianceRequest(actions, state, true);
+  return bestAllianceRequest(actions, state, history, true);
 }
 
 function safeActions(actions, predicate = () => true) {
@@ -280,7 +342,7 @@ function chooseRivalAttack(actions, state, plan, history, avoid) {
     candidate.kind === "attack" && !isNeutralExpansion(candidate)
   )) {
     const rival = rivalForAction(action, state);
-    if (!rival || rival.isAllied) continue;
+    if (!rival || rivalIsProtected(state, history, rival)) continue;
     if (!grouped.has(rival.name)) grouped.set(rival.name, { rival, actions: [] });
     grouped.get(rival.name).actions.push(action);
   }
@@ -342,6 +404,20 @@ export function territoryCollapsing(state, history) {
   return recentPeak - currentShare >= meaningfulDrop;
 }
 
+export function boatConversionStalled(state, history) {
+  const currentShare = finiteNumber(state?.self?.tileShare, NaN);
+  if (!Number.isFinite(currentShare) || currentShare < 0.02) return false;
+  const recent = history.slice(-10);
+  if (recent.length < 8 || recent.filter((entry) => entry.kind === "boat").length < 6) {
+    return false;
+  }
+  const shares = recent
+    .map((entry) => finiteNumber(entry?.tileShare, NaN))
+    .filter(Number.isFinite);
+  if (shares.length < 6) return false;
+  return currentShare <= shares[0] + 0.002;
+}
+
 function builtUnits(history) {
   return history
     .filter((entry) => entry.kind === "build")
@@ -369,22 +445,44 @@ function chooseBuild(actions, history, defend = false) {
   return candidates[0];
 }
 
-function chooseBoat(actions, state, history, avoid, allowDesperateInvasion = false) {
+function recentBoatTargetCount(history, rival) {
+  const name = rival.name.toLowerCase();
+  return history.slice(-8).filter((entry) =>
+    entry.kind === "boat" && targetName(entry) === name
+  ).length;
+}
+
+function chooseBoat(
+  actions,
+  state,
+  history,
+  avoid,
+  allowDesperateInvasion = false,
+  forceConversion = false,
+) {
   const candidates = safeActions(actions, (action) => action.kind === "boat");
   if (candidates.length === 0) return null;
 
   const invasionOptions = candidates.map((action) => {
     if (isNeutralBoat(action)) return false;
     const rival = rivalForAction(action, state);
-    return rival && !rival.isAllied ? { action, rival } : null;
+    return rival && !rivalIsProtected(state, history, rival) ? { action, rival } : null;
   }).filter(Boolean);
   const favorableInvasions = invasionOptions.filter(({ rival }) =>
-    Number.isFinite(rival.relativeTroopRatio) && rival.relativeTroopRatio >= 1.15
+    Number.isFinite(rival.relativeTroopRatio) &&
+      rival.relativeTroopRatio >= (forceConversion ? 1.0 : 1.15)
+  ).sort((left, right) =>
+    recentBoatTargetCount(history, left.rival) - recentBoatTargetCount(history, right.rival) ||
+    right.rival.relativeTroopRatio - left.rival.relativeTroopRatio ||
+    right.rival.tileShare - left.rival.tileShare
   );
   const neutral = candidates.filter(isNeutralBoat);
   let pool = neutral;
-  if (state.self.tileShare >= 0.15 && favorableInvasions.length > 0) {
-    pool = favorableInvasions.map(({ action }) => action);
+  if ((forceConversion || state.self.tileShare >= 0.15) && favorableInvasions.length > 0) {
+    const target = favorableInvasions[0].rival.name;
+    pool = favorableInvasions
+      .filter(({ rival }) => rival.name === target)
+      .map(({ action }) => action);
   } else if (neutral.length === 0 && allowDesperateInvasion && invasionOptions.length > 0) {
     const bestRatio = Math.max(...invasionOptions.map(({ rival }) =>
       Number.isFinite(rival.relativeTroopRatio) ? rival.relativeTroopRatio : -Infinity
@@ -463,6 +561,17 @@ export function chooseAction(actions, state, plan = null, history = []) {
     return allianceMove;
   }
 
+  const conversionReady = decisionsSince(
+    history,
+    (entry) => entry.policyMarker === "cv1",
+  ) >= 6;
+  if (!collapsing && conversionReady && boatConversionStalled(state, history)) {
+    const conversion = rivalAttack?.action || chooseUtility(actions, plan, history) ||
+      (sinceBuild >= 3 ? build : null) ||
+      chooseBoat(actions, state, history, avoid, false, true);
+    if (conversion) return { ...conversion, policyMarker: "cv1" };
+  }
+
   if (neutralExpansionStalled(state, history)) {
     if (rivalAttack?.action) return rivalAttack.action;
     const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
@@ -506,16 +615,16 @@ export function chooseAction(actions, state, plan = null, history = []) {
   const emergencyAttacks = safeActions(actions, (action) => {
     if (action.kind !== "attack" || isNeutralExpansion(action)) return false;
     const rival = rivalForAction(action, state);
-    return rival && !rival.isAllied;
+    return rival && !rivalIsProtected(state, history, rival);
   });
   const emergencyAttack = pickPercent(emergencyAttacks, 10, avoid);
   if (emergencyAttack) return emergencyAttack;
 
-  const survivalAlliance = bestAllianceRequest(actions, state);
+  const survivalAlliance = bestAllianceRequest(actions, state, history);
   if (survivalAlliance) return survivalAlliance;
   const pressure = safeActions(actions, (action) => action.kind === "target_player")
     .map((action) => ({ action, rival: rivalForAction(action, state) }))
-    .filter(({ rival }) => rival && !rival.isAllied)
+    .filter(({ rival }) => rival && !rivalIsProtected(state, history, rival))
     .sort((left, right) => right.rival.tileShare - left.rival.tileShare)[0]?.action;
   if (pressure) return pressure;
 
@@ -524,12 +633,20 @@ export function chooseAction(actions, state, plan = null, history = []) {
 
 export function recordDecision(history, action, state) {
   const rival = rivalForAction(action, state);
+  const incomingAttackerIDs = state.self.incomingAttackerIDs || [];
+  const incomingAttackerNames = state.rivals
+    .filter((candidate) => incomingAttackerIDs.includes(candidate.id.toLowerCase()))
+    .map((candidate) => candidate.name);
   history.push({
     actionID: action.id,
     kind: action.kind,
     neutral: isNeutralExpansion(action) || isNeutralBoat(action),
     targetName: rival?.name ?? null,
+    targetID: rival?.id?.toLowerCase() ?? null,
     tileShare: state.self.tileShare,
+    incomingAttackerIDs,
+    incomingAttackerNames,
+    policyMarker: action.policyMarker ?? null,
   });
   if (history.length > 320) history.shift();
 }

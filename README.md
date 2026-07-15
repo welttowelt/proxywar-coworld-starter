@@ -53,7 +53,9 @@ The policy is split into two layers:
   limits, and the final legal move selection.
 
 That's your agent. Re-run `bash launch.sh my-agent` to push a new version.
-(`PLAN_EVERY` sets how often the plan refreshes; default every 3 decisions.)
+(`PLAN_EVERY` sets how often the plan refreshes; default every 8 decisions. Timeout
+failures back off exponentially, while daily-quota failures pause refreshes for 15
+minutes and leave the deterministic engine in control.)
 
 Run `npm test` before uploading. The suite covers the pure strategy engine and the
 actual WebSocket player process.

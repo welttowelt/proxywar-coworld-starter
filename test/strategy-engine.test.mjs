@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  boatConversionStalled,
   buildState,
   chooseAction,
   recordDecision,
@@ -47,6 +48,148 @@ function choose(actions, obs, plan = null, history = []) {
   const state = buildState(obs, actions, history);
   return chooseAction(actions, state, plan, history);
 }
+
+test("a flat boat loop triggers one bounded conversion interrupt", () => {
+  const boat = action("boat:terra:8", "boat", "Boat to Terra Nullius 8%");
+  const upgrade = action("upgrade:port:1", "upgrade_structure", "Upgrade Port");
+  const history = Array.from({ length: 8 }, (_, index) => ({
+    actionID: index < 6 ? `boat:terra:${index}` : `emoji:${index}`,
+    kind: index < 6 ? "boat" : "emoji",
+    neutral: index < 6,
+    tileShare: 0.08,
+  }));
+  const state = buildState(observation({ tileShare: 0.08 }), [boat, upgrade], history);
+  assert.equal(boatConversionStalled(state, history), true);
+  const selected = chooseAction([boat, upgrade], state, null, history);
+  assert.equal(selected.id, upgrade.id);
+  assert.equal(selected.policyMarker, "cv1");
+});
+
+test("conversion interrupt cools down and falls through to parent boat behavior", () => {
+  const boat = action("boat:terra:8", "boat", "Boat to Terra Nullius 8%");
+  const upgrade = action("upgrade:port:1", "upgrade_structure", "Upgrade Port");
+  const history = [
+    ...Array.from({ length: 8 }, (_, index) => ({
+      actionID: `boat:terra:${index}`,
+      kind: "boat",
+      neutral: true,
+      tileShare: 0.08,
+    })),
+    { actionID: "upgrade:port:0", kind: "upgrade_structure", tileShare: 0.08, policyMarker: "cv1" },
+  ];
+  const selected = choose([boat, upgrade], observation({ tileShare: 0.08 }), null, history);
+  assert.equal(selected.id, boat.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("productive boat growth does not trigger conversion mode", () => {
+  const history = Array.from({ length: 8 }, (_, index) => ({
+    actionID: `boat:terra:${index}`,
+    kind: "boat",
+    neutral: true,
+    tileShare: 0.04 + index * 0.004,
+  }));
+  const state = buildState(observation({ tileShare: 0.08 }), [], history);
+  assert.equal(boatConversionStalled(state, history), false);
+});
+
+test("alliance selection rejects a recent attacker when a peaceful rival is legal", () => {
+  const attackerAlliance = {
+    ...action("alliance:attacker", "alliance_request", "Alliance with Attacker"),
+    metadata: { recipientID: "attacker", relation: 1 },
+  };
+  const peacefulAlliance = {
+    ...action("alliance:peaceful", "alliance_request", "Alliance with Peaceful"),
+    metadata: { recipientID: "peaceful", relation: 1 },
+  };
+  const history = [{
+    actionID: "build:city:1",
+    kind: "build",
+    tileShare: 0.08,
+    incomingAttackerIDs: ["attacker"],
+    incomingAttackerNames: ["Attacker"],
+  }];
+  const obs = observation({
+    tileShare: 0.08,
+    rivals: [
+      { id: "attacker", name: "Attacker", tileShare: 0.3, relativeTroopRatio: 1.2 },
+      { id: "peaceful", name: "Peaceful", tileShare: 0.12, relativeTroopRatio: 1.1 },
+    ],
+  });
+  assert.equal(choose([attackerAlliance, peacefulAlliance], obs, null, history).id, peacefulAlliance.id);
+});
+
+test("a fresh alliance request protects the target from our attacks", () => {
+  const history = [{
+    actionID: "alliance:friend",
+    kind: "alliance_request",
+    targetID: "friend",
+    targetName: "Friend",
+    tileShare: 0.2,
+    incomingAttackerIDs: [],
+  }];
+  const friendAttack = action("attack:friend:10", "attack", "Attack Friend 10%");
+  const foeAttack = action("attack:foe:10", "attack", "Attack Foe 10%");
+  const obs = observation({
+    tileShare: 0.2,
+    rivals: [
+      { id: "friend", name: "Friend", tileShare: 0.25, relativeTroopRatio: 2 },
+      { id: "foe", name: "Foe", tileShare: 0.1, relativeTroopRatio: 1.1 },
+    ],
+  });
+  assert.equal(choose([friendAttack, foeAttack], obs, null, history).id, foeAttack.id);
+});
+
+test("an incoming attack revokes soft alliance protection", () => {
+  const history = [
+    {
+      actionID: "alliance:friend",
+      kind: "alliance_request",
+      targetID: "friend",
+      targetName: "Friend",
+      tileShare: 0.2,
+      incomingAttackerIDs: [],
+    },
+    {
+      actionID: "build:city:1",
+      kind: "build",
+      tileShare: 0.2,
+      incomingAttackerIDs: ["friend"],
+      incomingAttackerNames: ["Friend"],
+    },
+  ];
+  const friendAttack = action("attack:friend:10", "attack", "Attack Friend 10%");
+  const obs = observation({
+    tileShare: 0.2,
+    rivals: [{ id: "friend", name: "Friend", tileShare: 0.1, relativeTroopRatio: 1.2 }],
+  });
+  assert.equal(choose([friendAttack], obs, null, history).id, friendAttack.id);
+});
+
+test("naval pressure rotates away from an overused rival", () => {
+  const alphaBoat = {
+    ...action("boat:alpha:8", "boat", "Boat to Alpha 8%"),
+    metadata: { targetID: "alpha", troopPercent: 8 },
+  };
+  const betaBoat = {
+    ...action("boat:beta:8", "boat", "Boat to Beta 8%"),
+    metadata: { targetID: "beta", troopPercent: 8 },
+  };
+  const history = Array.from({ length: 3 }, (_, index) => ({
+    actionID: `boat:alpha:${index}`,
+    kind: "boat",
+    targetName: "Alpha",
+    tileShare: 0.2,
+  }));
+  const obs = observation({
+    tileShare: 0.2,
+    rivals: [
+      { id: "alpha", name: "Alpha", tileShare: 0.1, relativeTroopRatio: 1.3 },
+      { id: "beta", name: "Beta", tileShare: 0.1, relativeTroopRatio: 1.3 },
+    ],
+  });
+  assert.equal(choose([alphaBoat, betaBoat], obs, null, history).id, betaBoat.id);
+});
 
 test("opening neutral expansion overrides a boat-heavy plan", () => {
   const actions = [

@@ -38,6 +38,7 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | v34 hosted | `0/4`; Auri sweep; tiles 28,543 / 31,434 / 20,739 / 32,388; 25 holds; sever marker `0` | rejected, impossible risk gate found |
 | v35 preflight | one risk-filter deletion; 16 parent decisions across three traces; `65/65` fixtures; full local episode skipped by user | hosted diagnostic only |
 | promotion validator | hosted-ready is separate from hosted `4/4` and regression `20/20` completion | false promotion claim closed |
+| qd1n rci-1 local | `75/75` tests; four Pangaea runs; mirrored score `1-1`; 1,226/1,226 accepted; zero holds/rejections; eight conversion marks; planner failures `17->10` in mirrored seats | operational gain only; no upload or league change |
 
 Detailed evidence lives in [`experiments/`](experiments/README.md). Public round
 statistics live on the [dashboard](https://welttowelt-proxywar.netlify.app/).

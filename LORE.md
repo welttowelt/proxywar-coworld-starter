@@ -195,3 +195,26 @@ already retired.
 Whenever a result changes policy direction, exposes a mechanism, establishes a
 rival shift, earns a promotion, or kills a candidate, update this chronicle and
 the merit ledger in the same checkpoint commit.
+
+## qd1n rci-1
+
+Round 364 exposed a broken compass, not an empty arsenal. Qd1n survived four
+Pangaea seats but converted none of them: 699 decisions carried 361 planner
+timeouts, 145 daily-quota refusals, and long boat chains. The same replay showed
+why a named pact was weak. James struck qd1n while qd1n asked for his hand;
+katanasan spared qd1n while qd1n still sent steel his way.
+
+The new mark keeps no standing mode. After six flat boat decisions it may change
+one order, then must cool for six decisions and fall back to the old law if no
+productive order is legal. Alliance requests now favor rivals with no observed
+incoming attacks, and a fresh request protects its target until that rival
+attacks or qd1n reaches the late finish. Planner failures now retreat on an
+exponential clock; a daily quota refusal closes the planner door for fifteen
+minutes instead of knocking again every thirty seconds.
+
+The local Pangaea mirror split the crown one to one. Slot two won both mirrored
+fields, once under the parent and once under the candidate. The mark fired, the
+wire accepted every order, and no hold appeared, but the field did not prove a
+strategic edge. The planner did prove a smaller wound: ten failed refreshes
+against seventeen for the parent across the mirrored pair. Qd1n rci-1 stays in
+the workshop. The live `qd1n:v2` seat is unchanged.
