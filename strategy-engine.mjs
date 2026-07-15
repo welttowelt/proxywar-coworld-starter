@@ -7,6 +7,7 @@ const SOCIAL_KINDS = new Set([
 // Publicly declared reciprocal partner. Neutrality is conditional: any observed
 // incoming attack revokes it, and late dominance still permits a clean finish.
 const RECIPROCAL_RIVALS = new Set(["katanasan"]);
+const MIN_DESPERATE_INVASION_RATIO = 0.5;
 
 export const PLAN_KINDS = [
   "spawn", "attack", "nuke", "build", "upgrade_structure", "boat", "boat_retreat", "retreat",
@@ -468,6 +469,21 @@ function recentBoatTargetCount(history, rival) {
   ).length;
 }
 
+function boatTargetStalled(state, history, rival) {
+  const currentShare = finiteNumber(state?.self?.tileShare, NaN);
+  if (!Number.isFinite(currentShare)) return false;
+  const recent = history.slice(-10);
+  if (recent.filter((entry) =>
+    entry.kind === "boat" && targetName(entry) === rival.name.toLowerCase()
+  ).length < 6) {
+    return false;
+  }
+  const baseline = recent
+    .map((entry) => finiteNumber(entry?.tileShare, NaN))
+    .find(Number.isFinite);
+  return Number.isFinite(baseline) && currentShare <= baseline + 0.002;
+}
+
 function chooseBoat(
   actions,
   state,
@@ -482,7 +498,8 @@ function chooseBoat(
   const invasionOptions = candidates.map((action) => {
     if (isNeutralBoat(action)) return false;
     const rival = rivalForAction(action, state);
-    return rival && !rivalIsProtected(state, history, rival) ? { action, rival } : null;
+    return rival && !rivalIsProtected(state, history, rival) &&
+      !boatTargetStalled(state, history, rival) ? { action, rival } : null;
   }).filter(Boolean);
   const favorableInvasions = invasionOptions.filter(({ rival }) =>
     Number.isFinite(rival.relativeTroopRatio) &&
@@ -501,11 +518,17 @@ function chooseBoat(
       .filter(({ rival }) => rival.name === target)
       .map(({ action }) => action);
   } else if (neutral.length === 0 && allowDesperateInvasion && invasionOptions.length > 0) {
-    const bestRatio = Math.max(...invasionOptions.map(({ rival }) =>
-      Number.isFinite(rival.relativeTroopRatio) ? rival.relativeTroopRatio : -Infinity
-    ));
-    pool = invasionOptions
-      .filter(({ rival }) => !Number.isFinite(bestRatio) || rival.relativeTroopRatio === bestRatio)
+    const viable = invasionOptions.filter(({ rival }) =>
+      Number.isFinite(rival.relativeTroopRatio) &&
+      rival.relativeTroopRatio >= MIN_DESPERATE_INVASION_RATIO
+    );
+    const target = [...viable].sort((left, right) =>
+      recentBoatTargetCount(history, left.rival) - recentBoatTargetCount(history, right.rival) ||
+      right.rival.relativeTroopRatio - left.rival.relativeTroopRatio ||
+      right.rival.tileShare - left.rival.tileShare
+    )[0]?.rival.name;
+    pool = viable
+      .filter(({ rival }) => rival.name === target)
       .map(({ action }) => action);
   }
   if (pool.length === 0) return null;
@@ -608,12 +631,17 @@ export function chooseAction(actions, state, plan = null, history = []) {
 
   const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
   if (boatStreak >= 2 && build) return build;
-  const desperateInvasion = !neutralAttack && !rivalAttack?.action && !build;
-  const boat = chooseBoat(actions, state, history, avoid, desperateInvasion);
+  const boat = chooseBoat(actions, state, history, avoid);
   if (boat) return boat;
 
   const utility = chooseUtility(actions, plan, history);
   if (utility) return utility;
+
+  const desperateInvasion = !neutralAttack && !rivalAttack?.action && !build;
+  if (desperateInvasion) {
+    const desperateBoat = chooseBoat(actions, state, history, avoid, true);
+    if (desperateBoat) return desperateBoat;
+  }
 
   const donation = safeActions(actions, (action) => {
     if (action.kind !== "donate_gold" && action.kind !== "donate_troops") return false;
