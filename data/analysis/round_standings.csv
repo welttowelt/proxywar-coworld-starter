@@ -1,12 +1,4 @@
 round_number,rank,score,player_name,policy_name,policy_version,policy_version_id,completed_episode_count,seed_order
-369,1,0.75,daveey,daveey-proxywar,10,15264470-111c-4c4f-8df4-0932457a9138,4,5
-369,2,0.25,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,4,0
-369,3,0.0,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,4,1
-369,4,0.0,odin free,qd1n,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,4,2
-369,5,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,3
-369,6,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
-369,7,0.0,Gaijin-01,Eva-00-v22,2,2cc856f0-bbe9-441c-a6ae-43ed62ef8d4c,4,6
-369,8,0.0,Auri,proxywar-keystone,39,f8a5554f-5cab-4fb5-a5d6-ed9b00b13326,4,7
 370,1,0.5,odin free,qd1n,2,a257d3f5-f374-4a2a-a3f3-af41485cbfbf,4,2
 370,2,0.25,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,4,0
 370,3,0.25,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,4,1
@@ -173,3 +165,12 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 390,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
 390,8,0.0,Gaijin-01,Eva-00-v28,1,54fa6cf4-da5e-4c32-a8a8-d379679beae4,4,6
 390,9,0.0,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,3,8
+391,1,0.5,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
+391,2,0.25,daveey,daveey-proxywar,13,8faa1ac2-1873-4c9d-b74b-96c7325dc462,4,6
+391,3,0.25,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,4,7
+391,4,0.0,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,3,0
+391,5,0.0,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,3,1
+391,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
+391,7,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
+391,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
+391,9,0.0,Gaijin-01,Eva-00-v29,1,ad9d889f-3547-47ea-9195-0f52ae02abcc,3,8
