@@ -2,11 +2,11 @@
   "schema_version": 1,
   "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
   "player_name": "odin free",
-  "collected_at": "2026-07-16T11:48:32.504Z",
-  "last_round_number": 401,
+  "collected_at": "2026-07-16T12:03:35.735Z",
+  "last_round_number": 402,
   "boundary_round_number": 401,
-  "current_first_place_streak": 0,
-  "first_place_finishes": 0,
+  "current_first_place_streak": 1,
+  "first_place_finishes": 1,
   "rounds": [
     {
       "round_id": "round_3d406534-1ecc-4f84-92a5-4d23297e408d",
@@ -24,7 +24,25 @@
       "ranked_score_count": 4,
       "seed_order": 6,
       "created_at": "2026-07-16T11:43:02.338Z",
-      "collected_at": "2026-07-16T11:48:32.504Z"
+      "collected_at": "2026-07-16T12:03:35.735Z"
+    },
+    {
+      "round_id": "round_8e5b7461-d2aa-4b1f-bd21-c87d8804109a",
+      "round_number": 402,
+      "rank": 1,
+      "score": 0.75,
+      "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+      "player_name": "odin free",
+      "policy_id": "7e3f18e1-89f9-42c3-b139-8bddf8b1c82e",
+      "policy_name": "qd1n",
+      "policy_version": 76,
+      "policy_version_id": "cdebca35-fca0-4470-8d7f-676f0861a782",
+      "policy_label": "qd1n:v76",
+      "completed_episode_count": 4,
+      "ranked_score_count": 4,
+      "seed_order": 6,
+      "created_at": "2026-07-16T11:57:04.606Z",
+      "collected_at": "2026-07-16T12:03:35.735Z"
     }
   ]
 }
