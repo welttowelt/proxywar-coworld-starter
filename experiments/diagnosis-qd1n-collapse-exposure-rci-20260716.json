@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "name": "qd1n-collapse-exposure-rci6",
+    "codename": "skj0ld-k4p",
+    "live_predecessor_ref": "qd1n:v77",
+    "source_parent_commit": "2fe750177ed37ba102bb6e197220b74c2dd5c9fe",
+    "source_commit": "e320ba96d0ef04085262acb2e78fd3766a00a7a1",
+    "final_test_image": "proxywar-agent-llm:qd1n-rci6-collapse-cap-final",
+    "final_test_image_id": "sha256:32fd5191e6c60f27b5aafa3178493c4f04d41d5372804d73408dc8062dd0d814",
+    "platform": "linux/amd64",
+    "uploaded": false,
+    "submitted": false
+  },
+  "live_snapshot": {
+    "completed_round": 417,
+    "recent_rounds": [
+      { "round": 414, "rank": 9, "wins": 0, "appearances": 3 },
+      { "round": 415, "rank": 2, "wins": 1, "appearances": 3 },
+      { "round": 416, "rank": 9, "wins": 0, "appearances": 3 },
+      { "round": 417, "rank": 9, "wins": 0, "appearances": 3 }
+    ],
+    "rolling_episode_wins": 19,
+    "rolling_episodes": 72,
+    "rolling_win_rate_pct": 26.39,
+    "current_first_place_streak": 0,
+    "target_first_place_streak": 1000,
+    "overall_rank": 1,
+    "overall_score": 45.13060676689005,
+    "running_round": 418,
+    "running_round_entrants": 11,
+    "champion_ref": "qd1n:v77"
+  },
+  "replay_diagnosis": {
+    "window": "completed rounds 398-417",
+    "collapse_proxy": "tiles before the current decision are at least 15 percent below the maximum of the preceding eight decisions",
+    "neutral_35_during_collapse": {
+      "losing_actions": 57,
+      "losing_episodes": 19,
+      "winning_actions": 0
+    },
+    "winning_collapse_neutral_actions": {
+      "total": 6,
+      "troop_percent_10": 4,
+      "troop_percent_20": 2,
+      "troop_percent_35": 0
+    },
+    "round_417_asia_seat_5": {
+      "won": false,
+      "final_tiles": 6931,
+      "max_tiles": 97848,
+      "neutral_attacks": 39,
+      "neutral_boats": 31,
+      "collapse_neutral_35_actions": 8
+    },
+    "round_416_and_417": {
+      "wins": 0,
+      "appearances": 6,
+      "round_416_winner": "daveey",
+      "round_416_winner_wins": 4,
+      "round_417_winner": "katanasan",
+      "round_417_winner_wins": 2
+    }
+  },
+  "rci": {
+    "problem": "The normal neutral expansion cadence can commit 35 percent while qd1n is already losing territory, increasing exposure during an active collapse.",
+    "rejected_first_rewrite": {
+      "change": "Prioritize one stable survival alliance during collapse and incoming pressure.",
+      "mechanism_marker": "sv1",
+      "matched_pangaea_reach": 4,
+      "candidate_side_wins": 0,
+      "parent_side_wins": 1,
+      "winner_slot": 3,
+      "turn_count": 8000,
+      "winner_tiles": 389983,
+      "accepted_decisions": 602,
+      "rejected_decisions": 0,
+      "candidate_holds": 4,
+      "parent_holds": 5,
+      "replay_sha256": "79b578bcff7cbfde35531d625b809f28a1bde4871d2fdf0623c8f0b5e4818396",
+      "verdict": "rejected because the branch reached every candidate seat but did not beat the parent"
+    },
+    "smallest_fix": "Keep the normal expansion cadence, but cap a neutral attack at 20 percent while the existing territory-collapse detector is active.",
+    "mechanism_marker": "cp1",
+    "preserved_boundaries": [
+      "Normal growth still escalates from 10 to 10 to 20 to 35 percent.",
+      "Rival attacks, finishing pressure, builds, alliances, boats, and utility selection are unchanged.",
+      "The cap does not fire unless the existing collapse detector and a 35 percent cadence step coincide."
+    ]
+  },
+  "verification": {
+    "unit_tests": { "passed": 82, "failed": 0 },
+    "syntax_and_diff_check": "passed",
+    "final_container": {
+      "platform": "linux/amd64",
+      "image_id": "sha256:32fd5191e6c60f27b5aafa3178493c4f04d41d5372804d73408dc8062dd0d814"
+    },
+    "current_package_qualifier": {
+      "coworld_id": "cow_15c39dab-eac1-4284-bf3e-bd723d4c2755",
+      "game_version": "0.1.8",
+      "coworld_cli_version": "0.1.30",
+      "decisions": 34,
+      "accepted": 34,
+      "rejected": 0,
+      "verified_replay_sha256": "2ffa20657badf27ced3e0c4a9fba8913dea5a81cdfdb85ce486c756c5a9056a5"
+    },
+    "matched_pangaea": {
+      "candidate_slots": [0, 2, 4, 6],
+      "parent_slots": [1, 3, 5, 7],
+      "mechanism_reach": 0,
+      "candidate_side_wins": 0,
+      "parent_side_wins": 1,
+      "winner_slot": 3,
+      "turn_count": 8500,
+      "winner_tiles": 358927,
+      "decisions": 645,
+      "accepted": 645,
+      "rejected": 0,
+      "replay_sha256": "9e8e2d986d4bc1612dfb1e4537ac04701380e2c07d9a287fd5c73929bacf50e0",
+      "verdict": "runtime passed, but cp1 had zero reach and the exact parent outcome remained unchanged"
+    }
+  },
+  "rci_verdict": {
+    "diagnosis": "confirmed in hosted replay history",
+    "implementation": "unit, production-architecture container, and qualifier checks passed",
+    "matched_reach": "failed",
+    "four_of_four": "failed after the parent won the first matched episode",
+    "twenty_of_twenty": "not started",
+    "league_action": "none; qd1n:v77 remains champion and no v78 was uploaded or submitted",
+    "sustained_win_goal_achieved": false
+  }
+}

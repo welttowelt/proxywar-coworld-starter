@@ -170,6 +170,28 @@ This candidate is locally gated only. Qd1n:v77 remains the live champion after
 round 411 rank one and round 412 rank two. Do not replace it until hosted `4/4`
 and separate `20/20` regression gates complete.
 
+## Qd1n collapse-exposure candidate
+
+Rounds 414-417 placed `9, 2, 9, 9`; rounds 416 and 417 supplied zero wins from
+six appearances. Replay inspection rejected an alliance-first response. The
+game recommended a survival alliance throughout one collapse, and the rewrite
+executed four `sv1` requests in the matched field, but a parent seat still won.
+
+The corrected diagnosis is commitment size after territory has already fallen
+at least fifteen percent from its recent eight-decision peak. Across rounds
+398-417, qd1n losing episodes selected 57 neutral 35% attacks in that proxy
+state across nineteen episodes. Winning episodes selected six neutral attacks
+there: four at 10% and two at 20%, with none at 35%. Round 417 Asia seat five
+alone contained eight of the losing 35% actions.
+
+Rci-6 preserves the normal `10, 10, 20, 35` expansion cadence and caps only a
+detected-collapse neutral attack at 20%. A reached cap emits `cp1`. The exact
+current-package qualifier accepted `34/34` decisions. In the alternating-seat
+Pangaea replay, `cp1` had zero reach and the parent again won slot three at turn
+8,500 with 358,927 tiles; all `645/645` decisions were accepted. This is a
+bounded source correction, not promotion evidence. Keep v77 live until a
+current matched sample reaches `cp1` and clears `4/4` plus `20/20`.
+
 ## Promotion gate
 
 First run a four-episode diagnostic on the exact Round 221 Asia seat-3 roster.

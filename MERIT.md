@@ -4,7 +4,7 @@
 
 | Policy | State | Evidence |
 | --- | --- | --- |
-| `qd1n:v77` | champion | membership `lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b`; rounds 411-412 placed first, then second |
+| `qd1n:v77` | champion | membership `lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b`; rounds 414-417 placed `9, 2, 9, 9` |
 | `qd1n:v76` | benched | membership `lpm_807274c0-0f71-4c13-8990-3dc932a9f7e5`; round 410 finished official first |
 | `qd1n:v2` | benched | membership `lpm_fb9d79c9-0eb7-4a96-8bea-cf8122fd81bf` |
 | `oli-codex-proxywar:v14` | retired | membership benched after Qd1n promotion |
@@ -56,6 +56,7 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | qd1n rci-4 local | World seat four went `0/6` with 1,219 neutral boats and zero naval invasions; red-green boundary regression; `87/87` tests; alternating-seat World mirror candidate `1`, parent `0`; all `1,040/1,040` decisions accepted; candidate one hold, parent two | low-share diagnosis and runtime passed; winning seat did not reach branch; hosted promotion gate incomplete |
 | qd1n v77 live | linux/amd64 upload `c0213724-8fb6-40d3-97da-fd1b080971f7`; submission `sub_e94102ad-0853-4166-bfe8-7519403ec569`; crash qualification passed; membership `lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b` in Competition; v77 sole qd1n champion and v76 benched | operator-directed relaunch completed; standard `4/4` and `20/20` strategic gates not completed |
 | qd1n rci-5 local | rounds 391-410: `110` target marks in `12` losses and zero winning episodes; official engine applies `-40` target relation per mark; first rewrite rejected for spreading `10` marks over more rivals; corrected exact mirror cut marks `10->3`, holds `2->9`, with the same winner, turn, and tiles; `81/81` tests; `645/645` accepted | mechanism and runtime passed; no local win lift, no upload, no league change |
+| qd1n rci-6 local | rounds 398-417: collapse-proxy positions used `57` neutral 35% attacks across `19` losses and zero across wins; an alliance-first rewrite fired `sv1` four times but lost to the parent; corrected `cp1` cap passed `82/82` tests and an exact linux/amd64 `34/34` qualifier; matched Pangaea had `cp1=0`, `645/645` accepted, and the parent won slot three with the prior exact turn and tiles | bounded source correction retained; reach and `4/4` failed, so no upload or league change |
 
 Detailed evidence lives in [`experiments/`](experiments/README.md). Public round
 statistics live on the [dashboard](https://welttowelt.github.io/proxywar-coworld-starter/).
@@ -82,3 +83,11 @@ episodes was a win. V77 then placed first in round 411 with one win across three
 completed appearances and second in round 412 with one of three. The official
 first-place streak is `0/1000`; round 413 is running. The corrected rci-5 source
 is committed and locally gated only; it has not been uploaded or submitted.
+
+Rounds 414-417 placed `9, 2, 9, 9`, with one episode win across twelve qd1n
+appearances. Rounds 416 and 417 were consecutive `0/3` results. The refreshed
+twenty-round window is `19/72` episode wins (`26.39%`), the official first-place
+streak is `0/1000`, and round 418 is running with eleven entrants. Qd1n remains
+overall rank one at `45.1306`, but that historical score does not clear the
+current conversion failure. Rci-6 is committed locally at `e320ba9`; no v78 was
+uploaded or submitted.
