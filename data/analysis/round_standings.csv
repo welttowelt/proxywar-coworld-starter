@@ -7,7 +7,7 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 384,6,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,2,4
 384,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,2,5
 384,8,0.0,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,2,7
-384,9,0.0,Gaijin-01,Eva-00-v27,1,ec3de252-e641-4584-b92d-6d302b1e0a9f,2,8
+384,9,0.0,Sefirot,Eva-00-v27,1,ec3de252-e641-4584-b92d-6d302b1e0a9f,2,8
 385,1,0.5,daveey,daveey-proxywar,13,8faa1ac2-1873-4c9d-b74b-96c7325dc462,4,6
 385,2,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
 385,3,0.25,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,4,7
@@ -16,7 +16,7 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 385,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
 385,7,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
 385,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-385,9,0.0,Gaijin-01,Eva-00-v27,1,ec3de252-e641-4584-b92d-6d302b1e0a9f,3,8
+385,9,0.0,Sefirot,Eva-00-v27,1,ec3de252-e641-4584-b92d-6d302b1e0a9f,3,8
 386,1,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
 386,2,0.25,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
 386,3,0.25,daveey,daveey-proxywar,13,8faa1ac2-1873-4c9d-b74b-96c7325dc462,4,6
@@ -25,7 +25,7 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 386,6,0.0,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,3,1
 386,7,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
 386,8,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
-386,9,0.0,Gaijin-01,Eva-00-v27,1,ec3de252-e641-4584-b92d-6d302b1e0a9f,3,8
+386,9,0.0,Sefirot,Eva-00-v27,1,ec3de252-e641-4584-b92d-6d302b1e0a9f,3,8
 387,1,0.75,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,4,7
 387,2,0.25,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
 387,3,0.0,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,3,0
@@ -34,7 +34,7 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 387,6,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
 387,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
 387,8,0.0,daveey,daveey-proxywar,13,8faa1ac2-1873-4c9d-b74b-96c7325dc462,4,6
-387,9,0.0,Gaijin-01,Eva-00-v27,1,ec3de252-e641-4584-b92d-6d302b1e0a9f,3,8
+387,9,0.0,Sefirot,Eva-00-v27,1,ec3de252-e641-4584-b92d-6d302b1e0a9f,3,8
 388,1,0.5,daveey,daveey-proxywar,13,8faa1ac2-1873-4c9d-b74b-96c7325dc462,4,6
 388,2,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
 388,3,0.25,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,4,7
@@ -43,10 +43,10 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 388,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
 388,7,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
 388,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-388,9,0.0,Gaijin-01,Eva-00-v27,1,ec3de252-e641-4584-b92d-6d302b1e0a9f,3,8
+388,9,0.0,Sefirot,Eva-00-v27,1,ec3de252-e641-4584-b92d-6d302b1e0a9f,3,8
 389,1,0.5,daveey,daveey-proxywar,13,8faa1ac2-1873-4c9d-b74b-96c7325dc462,4,7
 389,2,0.25,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-389,3,0.25,Gaijin-01,Eva-00-v28,1,54fa6cf4-da5e-4c32-a8a8-d379679beae4,4,6
+389,3,0.25,Sefirot,Eva-00-v28,1,54fa6cf4-da5e-4c32-a8a8-d379679beae4,4,6
 389,4,0.0,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,3,0
 389,5,0.0,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,3,1
 389,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
@@ -60,7 +60,7 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 390,5,0.0,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,3,1
 390,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
 390,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-390,8,0.0,Gaijin-01,Eva-00-v28,1,54fa6cf4-da5e-4c32-a8a8-d379679beae4,4,6
+390,8,0.0,Sefirot,Eva-00-v28,1,54fa6cf4-da5e-4c32-a8a8-d379679beae4,4,6
 390,9,0.0,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,3,8
 391,1,0.5,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
 391,2,0.25,daveey,daveey-proxywar,13,8faa1ac2-1873-4c9d-b74b-96c7325dc462,4,6
@@ -70,7 +70,7 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 391,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
 391,7,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
 391,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-391,9,0.0,Gaijin-01,Eva-00-v29,1,ad9d889f-3547-47ea-9195-0f52ae02abcc,3,8
+391,9,0.0,Sefirot,Eva-00-v29,1,ad9d889f-3547-47ea-9195-0f52ae02abcc,3,8
 392,1,0.6666666666666666,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,3,3
 392,2,0.3333333333333333,daveey,daveey-proxywar,13,8faa1ac2-1873-4c9d-b74b-96c7325dc462,3,6
 392,3,0.0,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,2,0
@@ -79,7 +79,7 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 392,6,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,3,4
 392,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,3,5
 392,8,0.0,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,3,7
-392,9,0.0,Gaijin-01,Eva-00-v31,1,4ab54a93-d9f4-406d-bf8c-676cf6f705b0,2,8
+392,9,0.0,Sefirot,Eva-00-v31,1,4ab54a93-d9f4-406d-bf8c-676cf6f705b0,2,8
 393,1,0.75,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,4,6
 393,2,0.25,daveey,daveey-proxywar,16,641f9432-6d62-4520-9afb-89e3083d7ff1,4,7
 393,3,0.0,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,4,0
@@ -104,7 +104,7 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 395,6,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
 395,7,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
 395,8,0.0,daveey,daveey-proxywar,16,641f9432-6d62-4520-9afb-89e3083d7ff1,4,7
-395,9,0.0,Gaijin-01,Gaijin-01-Eva-v32,1,1f78dd59-8633-4aa8-b4a1-3ad7eca7b4fb,3,8
+395,9,0.0,Sefirot,Gaijin-01-Eva-v32,1,1f78dd59-8633-4aa8-b4a1-3ad7eca7b4fb,3,8
 396,1,0.5,daveey,daveey-proxywar,16,641f9432-6d62-4520-9afb-89e3083d7ff1,4,7
 396,2,0.25,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
 396,3,0.25,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,4,6
@@ -113,7 +113,7 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 396,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
 396,7,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
 396,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-396,9,0.0,Gaijin-01,Gaijin-01-Eva-v32,1,1f78dd59-8633-4aa8-b4a1-3ad7eca7b4fb,3,8
+396,9,0.0,Sefirot,Gaijin-01-Eva-v32,1,1f78dd59-8633-4aa8-b4a1-3ad7eca7b4fb,3,8
 397,1,0.5,daveey,daveey-proxywar,16,641f9432-6d62-4520-9afb-89e3083d7ff1,4,7
 397,2,0.3333333333333333,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,3,0
 397,3,0.3333333333333333,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,3,1
@@ -122,7 +122,7 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 397,6,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
 397,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
 397,8,0.0,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,4,6
-397,9,0.0,Gaijin-01,Gaijin-01-Eva-v33,1,97daf23b-2559-4757-8983-764d00536dee,3,8
+397,9,0.0,Sefirot,Gaijin-01-Eva-v33,1,97daf23b-2559-4757-8983-764d00536dee,3,8
 398,1,0.5,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,4,6
 398,2,0.3333333333333333,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
 398,3,0.25,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
@@ -131,7 +131,7 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 398,6,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
 398,7,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
 398,8,0.0,daveey,daveey-proxywar,16,641f9432-6d62-4520-9afb-89e3083d7ff1,4,7
-398,9,0.0,Gaijin-01,Gaijin-01-Eva-v33,1,97daf23b-2559-4757-8983-764d00536dee,3,8
+398,9,0.0,Sefirot,Gaijin-01-Eva-v33,1,97daf23b-2559-4757-8983-764d00536dee,3,8
 399,1,0.3333333333333333,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,3,0
 399,2,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
 399,3,0.25,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
@@ -140,9 +140,9 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 399,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
 399,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
 399,8,0.0,daveey,daveey-proxywar,16,641f9432-6d62-4520-9afb-89e3083d7ff1,4,7
-399,9,0.0,Gaijin-01,Gaijin-01,1,05204830-0bb9-4cf1-a345-35a40d48a7f1,3,8
+399,9,0.0,Sefirot,Gaijin-01,1,05204830-0bb9-4cf1-a345-35a40d48a7f1,3,8
 400,1,0.3333333333333333,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,3,1
-400,2,0.3333333333333333,Gaijin-01,Gaijin-01,1,05204830-0bb9-4cf1-a345-35a40d48a7f1,3,8
+400,2,0.3333333333333333,Sefirot,Gaijin-01,1,05204830-0bb9-4cf1-a345-35a40d48a7f1,3,8
 400,3,0.25,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,4,6
 400,4,0.25,daveey,daveey-proxywar,17,ad80815e-0521-4e85-bb1e-53881de09e38,4,7
 400,5,0.0,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,3,0
@@ -158,7 +158,7 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 401,6,0.0,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,3,1
 401,7,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
 401,8,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
-401,9,0.0,Gaijin-01,Gaijin-01,1,05204830-0bb9-4cf1-a345-35a40d48a7f1,3,8
+401,9,0.0,Sefirot,Gaijin-01,1,05204830-0bb9-4cf1-a345-35a40d48a7f1,3,8
 402,1,0.75,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,4,6
 402,2,0.25,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
 402,3,0.0,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,3,0
@@ -167,7 +167,7 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 402,6,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
 402,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
 402,8,0.0,daveey,daveey-proxywar,17,ad80815e-0521-4e85-bb1e-53881de09e38,4,7
-402,9,0.0,Gaijin-01,Gaijin-01-v2,1,e8d284c9-117c-4199-91f1-acde5f7e067a,3,8
+402,9,0.0,Sefirot,Gaijin-01-v2,1,e8d284c9-117c-4199-91f1-acde5f7e067a,3,8
 403,1,0.5,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,4,6
 403,2,0.3333333333333333,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,3,0
 403,3,0.3333333333333333,daveey,daveey-proxywar,18,539e1ab1-23ae-4ba6-b4ae-77339d45503d,3,8
@@ -176,4 +176,4 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 403,6,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
 403,7,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
 403,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-403,9,0.0,Gaijin-01,Gaijin-01-v2,1,e8d284c9-117c-4199-91f1-acde5f7e067a,4,7
+403,9,0.0,Sefirot,Gaijin-01-v2,1,e8d284c9-117c-4199-91f1-acde5f7e067a,4,7

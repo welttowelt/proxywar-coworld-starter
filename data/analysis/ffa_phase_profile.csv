@@ -1,16 +1,10 @@
 player_name,policy_version,won,phase,decisions,rival_attack_rate_pct,neutral_attack_rate_pct,build_rate_pct,social_rate_pct,hold_rate_pct,mean_attack_ratio,mean_attack_percent
 Auri,42,true,opening,100,0.0,60.0,10.0,0.0,0.0,,
-Auri,42,true,conversion,150,13.33,72.67,8.0,0.0,0.0,2.35,30.3
+Auri,42,true,conversion,150,13.33,72.67,8.0,0.0,0.0,2.36,30.3
 Auri,42,true,finish,1118,34.88,16.55,10.38,2.42,0.27,4.01,31.9
 Auri,42,false,opening,670,0.15,64.48,5.37,0.0,0.0,1.33,40.0
 Auri,42,false,conversion,1005,12.94,66.57,13.13,0.5,0.3,2.11,26.3
 Auri,42,false,finish,9992,13.22,18.82,12.62,10.57,1.03,2.84,29.0
-Gaijin-01,1,true,opening,10,20.0,40.0,10.0,0.0,0.0,1.1,10.0
-Gaijin-01,1,true,conversion,15,33.33,53.33,13.33,0.0,0.0,1.18,28.0
-Gaijin-01,1,true,finish,48,70.83,0.0,18.75,0.0,0.0,2.49,22.8
-Gaijin-01,1,false,opening,540,9.81,53.89,5.56,0.0,0.0,1.04,12.0
-Gaijin-01,1,false,conversion,717,50.77,21.34,9.76,1.39,0.28,0.92,13.2
-Gaijin-01,1,false,finish,4043,18.28,13.48,14.67,21.2,1.98,2.04,13.3
 James Boggs,1,true,opening,10,0.0,40.0,20.0,0.0,0.0,,
 James Boggs,1,true,conversion,15,0.0,26.67,0.0,0.0,0.0,,
 James Boggs,1,true,finish,119,10.92,10.92,8.4,12.61,0.0,5.26,10.0
@@ -26,6 +20,12 @@ RelhAlpha,1,false,finish,4715,27.06,6.11,12.03,0.0,10.35,1.18,21.6
 Richard Higgins,1,false,opening,610,0.0,69.84,0.16,0.0,0.0,,
 Richard Higgins,1,false,conversion,899,11.57,47.5,12.01,0.11,26.47,1.0,17.4
 Richard Higgins,1,false,finish,4923,24.17,6.09,11.64,0.02,10.1,1.03,21.8
+Sefirot,1,true,opening,10,20.0,40.0,10.0,0.0,0.0,1.1,10.0
+Sefirot,1,true,conversion,15,33.33,53.33,13.33,0.0,0.0,1.18,28.0
+Sefirot,1,true,finish,48,70.83,0.0,18.75,0.0,0.0,2.49,22.8
+Sefirot,1,false,opening,540,9.81,53.89,5.56,0.0,0.0,1.04,12.0
+Sefirot,1,false,conversion,717,50.77,21.34,9.76,1.39,0.28,0.92,13.2
+Sefirot,1,false,finish,4043,18.28,13.48,14.67,21.2,1.98,2.04,13.3
 daveey,13,true,opening,90,4.44,57.78,7.78,0.0,0.0,1.31,40.0
 daveey,13,true,conversion,135,23.7,56.3,8.89,2.22,0.0,1.65,24.1
 daveey,13,true,finish,894,51.12,9.73,4.25,2.35,4.25,3.73,30.0
