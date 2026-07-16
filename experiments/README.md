@@ -836,3 +836,26 @@ membership `lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b` to Competition. V77 is
 the sole qd1n champion and v76 is benched. The operator explicitly ordered this
 relaunch before the standard hosted `4/4` and `20/20` strategic gates were
 complete.
+
+## Qd1n early-conversion RCI rejection, 2026-07-16
+
+Rounds 411-418 gave qd1n `5/24` wins (`20.8%`) while daveey recorded `11/31`
+(`35.5%`). Replay telemetry exposed 100 points in eleven losing episodes where
+qd1n selected neutral land even though the official conversion affordance
+recommended a rival, exposed an executor-ready action at at least `1.30x`
+troops, and qd1n held 5-15 percent of the map. Winning episodes contained only
+three such points.
+
+Rci-7 tested the narrow causal claim. Between five and twelve percent land, it
+placed a ten-percent rival probe ahead of neutral land at `1.30x` or better and
+tagged the order `cv2`. The candidate passed `83/83` tests and a current-package
+qualifier with `34/34` accepted orders.
+
+The alternating-seat eight-player Pangaea gate reached `cv2` twelve times and
+accepted all `660/660` orders, so reach and execution were not ambiguous. The
+candidate won no seat. Parent slot eight won at turn 12,400 with 377,432 tiles;
+the best surviving candidate held 42,903. RCI therefore rejected the causal
+claim: ratio alone is not enough to choose the conversion target. The selector
+and its test were removed, v77 was restored, and no image was uploaded or
+submitted. The full record is
+`experiments/diagnosis-qd1n-early-conversion-rci-20260716.json`.

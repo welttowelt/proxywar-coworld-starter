@@ -1,0 +1,220 @@
+{
+  "surface": "report",
+  "manifest": {
+    "version": 1,
+    "surface": "report",
+    "title": "Qd1n RCI: Early Conversion Was the Wrong Lever",
+    "description": "Replay-backed diagnosis and rejected matched-gate experiment for qd1n:v77.",
+    "generatedAt": "2026-07-16T21:07:36Z",
+    "cards": [
+      {
+        "id": "window_card",
+        "description": "League window through completed round 418.",
+        "dataset": "summary",
+        "sourceId": "live_window_sql",
+        "metrics": [
+          { "label": "Qd1n win rate", "field": "qd1n_win_rate", "format": "percent" },
+          { "label": "Daveey win rate", "field": "daveey_win_rate", "format": "percent" },
+          { "label": "First-place streak", "field": "first_place_streak", "format": "number" }
+        ]
+      }
+    ],
+    "charts": [
+      {
+        "id": "win_rate_chart",
+        "title": "Episode win rate, rounds 411-418",
+        "subtitle": "Daveey led qd1n by 14.7 percentage points in the completed window.",
+        "headerMarkdown": "Qd1n won **5 of 24** appearances; daveey won **11 of 31**.",
+        "question": "Which recurring players converted current appearances into wins?",
+        "rationale": "A bar chart ranks the five players with at least one win in the window.",
+        "type": "bar",
+        "dataset": "player_win_rates",
+        "sourceId": "live_window_sql",
+        "valueFormat": "percent",
+        "encodings": {
+          "x": { "field": "player", "type": "nominal", "label": "Player" },
+          "y": { "field": "win_rate", "type": "quantitative", "label": "Win rate", "format": "percent" },
+          "tooltip": [
+            { "field": "wins", "type": "quantitative", "label": "Wins", "format": "number" },
+            { "field": "appearances", "type": "quantitative", "label": "Appearances", "format": "number" },
+            { "field": "mean_final_tiles", "type": "quantitative", "label": "Mean final tiles", "format": "number" }
+          ]
+        },
+        "maxRows": 5
+      }
+    ],
+    "tables": [
+      {
+        "id": "conversion_signal_table",
+        "title": "The replay signal was strong but not causal",
+        "subtitle": "Skipped favorable conversion windows under the fixed diagnostic definition.",
+        "dataset": "conversion_signal",
+        "sourceId": "replay_analysis",
+        "source": {
+          "id": "replay_analysis",
+          "label": "Replay-audited conversion-window aggregate",
+          "path": "data/cache/replays/*.replay",
+          "query": {
+            "engine": "duckdb",
+            "sql": "SELECT * FROM (VALUES ('Loss', 19, 11, 100, 5.26), ('Win', 5, 2, 3, 0.60)) AS t(outcome, episodes, episodes_with_signal, skipped_windows, windows_per_episode)",
+            "description": "Materializes the reviewed aggregate produced by parsing official inline decisions.jsonl under the fixed conversion-window definition."
+          }
+        },
+        "defaultSort": { "field": "skipped_windows", "direction": "desc" },
+        "columns": [
+          { "field": "outcome", "label": "Episode outcome", "type": "text" },
+          { "field": "episodes", "label": "Episodes", "format": "number" },
+          { "field": "episodes_with_signal", "label": "Episodes with signal", "format": "number" },
+          { "field": "skipped_windows", "label": "Skipped windows", "format": "number" },
+          { "field": "windows_per_episode", "label": "Windows / episode", "format": "number" }
+        ]
+      },
+      {
+        "id": "matched_gate_table",
+        "title": "Direct reach did not produce a candidate win",
+        "subtitle": "Alternating-seat eight-player Pangaea, candidate versus exact parent.",
+        "dataset": "matched_gate",
+        "sourceId": "matched_replay",
+        "source": {
+          "id": "matched_replay",
+          "label": "Matched-replay seat aggregate",
+          "path": "output/rci7-early-conversion-pangaea-b/replay",
+          "query": {
+            "engine": "duckdb",
+            "sql": "SELECT * FROM (VALUES ('cv2 candidate', '0, 2, 4, 6', 0, 12, 42903), ('v77 parent', '1, 3, 5, 7', 1, 0, 377432)) AS t(arm, seats, wins, cv2_executions, best_final_tiles)",
+            "description": "Materializes the reviewed candidate-versus-parent aggregate parsed from results and inline decisions.jsonl."
+          }
+        },
+        "defaultSort": { "field": "wins", "direction": "desc" },
+        "columns": [
+          { "field": "arm", "label": "Arm", "type": "text" },
+          { "field": "seats", "label": "Seats", "type": "text" },
+          { "field": "wins", "label": "Wins", "format": "number" },
+          { "field": "cv2_executions", "label": "cv2 executions", "format": "number" },
+          { "field": "best_final_tiles", "label": "Best final tiles", "format": "number" }
+        ]
+      }
+    ],
+    "sources": [
+      { "id": "live_window_sql", "label": "Processed league participants through round 418", "path": "data/processed/participants.parquet" },
+      { "id": "replay_analysis", "label": "Official replay decision telemetry for rounds 411-418", "path": "data/cache/replays/*.replay" },
+      { "id": "matched_replay", "label": "Local current-package matched Pangaea replay", "path": "output/rci7-early-conversion-pangaea-b/replay" },
+      { "id": "alphastar_paper", "label": "AlphaStar league training paper", "href": "https://www.nature.com/articles/s41586-019-1724-z" },
+      { "id": "psro_paper", "label": "Policy-Space Response Oracles paper", "href": "https://papers.neurips.cc/paper_files/paper/2017/hash/3323fe11e9595c09af38fe67567a9394-Abstract.html" }
+    ],
+    "blocks": [
+      { "id": "title", "type": "markdown", "body": "# Qd1n RCI: Early Conversion Was the Wrong Lever" },
+      {
+        "id": "executive_summary",
+        "type": "markdown",
+        "body": "## Executive summary\n\n- **Qd1n did not improve in the measured window.** It won 5 of 24 appearances (20.8%) in rounds 411-418, versus daveey at 11 of 31 (35.5%). The first-place streak was 0/1000 at the round-418 checkpoint.\n- **The replay correlation was real.** Losing episodes contained 100 skipped favorable-conversion windows; wins contained three.\n- **The causal test failed.** The `cv2` candidate executed twelve accepted early probes, but the exact parent won the matched replay. The branch was removed; no upload or submission followed."
+      },
+      { "id": "metrics", "type": "metric-strip", "cardIds": ["window_card"] },
+      {
+        "id": "current_gap",
+        "type": "markdown",
+        "body": "## Current performance gap\n\nDaveey's lead was not a small-sample tie: 35.5% versus qd1n's 20.8%, a 14.7 percentage-point gap. Daveey also averaged 231,689 final tiles against qd1n's 126,891. This is descriptive evidence for the completed window, not a stable estimate of future strength."
+      },
+      { "id": "win_rate_chart_block", "type": "chart", "chartId": "win_rate_chart" },
+      {
+        "id": "signal_narrative",
+        "type": "markdown",
+        "body": "## What the RCI isolated\n\nThe source review found a concrete ordering issue: below 12% land, neutral expansion returned before an already-computed favorable rival attack. The diagnostic counted a skipped window only when the official `frontierConversionTiming` affordance recommended conversion, exposed an executor-ready hostile action at 1.30x troops or better, and qd1n held 5-15% of the map."
+      },
+      { "id": "conversion_signal_block", "type": "table", "tableId": "conversion_signal_table" },
+      {
+        "id": "experiment_narrative",
+        "type": "markdown",
+        "body": "## Why the candidate was rejected\n\n`cv2` moved a 10% rival probe ahead of neutral farming at 5-12% land and 1.30x relative troops. It passed 83 unit tests and a 34/34 accepted qualifier. In the matched Pangaea replay it fired twelve times, all 660 decisions were accepted, and the candidate still produced no winner. Parent seat eight won with 377,432 tiles; the best candidate survivor held 42,903. Ratio alone omitted target exposure, counterattack topology, economy timing, and seat effects."
+      },
+      { "id": "matched_gate_block", "type": "table", "tableId": "matched_gate_table" },
+      {
+        "id": "recommendations",
+        "type": "markdown",
+        "body": "## Recommended next loop\n\n1. **Keep a policy population.** Preserve v77 as the main arm and create separate leader-pressure, retaliation, economy-first, and bounded-conversion exploiters. AlphaStar used a diverse league of adapting strategies and counter-strategies rather than one permanently edited script.\n2. **Build an empirical payoff matrix.** Evaluate each arm against mixtures of current opponents, maps, and seat profiles. PSRO adds approximate best responses to a policy population and derives a meta-strategy from measured payoffs.\n3. **Retain exploration.** Sample every qualified arm with a nonzero floor during local gates so opponents cannot overfit to a single deterministic composition and a short hot streak cannot erase useful counters.\n4. **Improve target features before another conversion edit.** Add incoming aggression, shared-frontier exposure, target tile value, third-party pressure, economy readiness, and post-attack reserve.\n5. **Keep the existing promotion bar.** Require direct marker reach, a matched parent advantage, 4/4 hosted wins, then 20/20 regression."
+      },
+      {
+        "id": "further_questions",
+        "type": "markdown",
+        "body": "## Further questions\n\n- Which target features best separate the three winning conversion skips from the 100 losing ones?\n- Does a retaliatory arm beat daveey without feeding Auri or docxology?\n- How much policy randomization can be added while keeping public action text and alliance behavior coherent?\n- Can mirrored seeds and inverted seats reduce the large positional effect seen in local gates?"
+      },
+      {
+        "id": "caveats",
+        "type": "markdown",
+        "body": "## Caveats\n\nThe league comparison covers eight completed rounds and unequal appearance counts. The skipped-window analysis is observational and depends on a fixed threshold definition. The matched gate is one long replay, so it is decisive for rejecting promotion, not sufficient to rank every possible conversion rule. No claim toward the 1000-first-place target is earned."
+      }
+    ]
+  },
+  "snapshot": {
+    "version": 1,
+    "generatedAt": "2026-07-16T21:07:36Z",
+    "status": "ready",
+    "datasets": {
+      "summary": [
+        { "qd1n_win_rate": 0.2083, "daveey_win_rate": 0.3548, "first_place_streak": 0 }
+      ],
+      "player_win_rates": [
+        { "player": "daveey", "appearances": 31, "wins": 11, "win_rate": 0.3548, "mean_final_tiles": 231689 },
+        { "player": "Auri", "appearances": 31, "wins": 7, "win_rate": 0.2258, "mean_final_tiles": 136438 },
+        { "player": "qd1n", "appearances": 24, "wins": 5, "win_rate": 0.2083, "mean_final_tiles": 126891 },
+        { "player": "katanasan", "appearances": 28, "wins": 5, "win_rate": 0.1786, "mean_final_tiles": 180881 },
+        { "player": "RelhAlpha", "appearances": 14, "wins": 1, "win_rate": 0.0714, "mean_final_tiles": 87689 }
+      ],
+      "conversion_signal": [
+        { "outcome": "Loss", "episodes": 19, "episodes_with_signal": 11, "skipped_windows": 100, "windows_per_episode": 5.26 },
+        { "outcome": "Win", "episodes": 5, "episodes_with_signal": 2, "skipped_windows": 3, "windows_per_episode": 0.6 }
+      ],
+      "matched_gate": [
+        { "arm": "cv2 candidate", "seats": "0, 2, 4, 6", "wins": 0, "cv2_executions": 12, "best_final_tiles": 42903 },
+        { "arm": "v77 parent", "seats": "1, 3, 5, 7", "wins": 1, "cv2_executions": 0, "best_final_tiles": 377432 }
+      ]
+    }
+  },
+  "sources": [
+    {
+      "id": "live_window_sql",
+      "query": {
+        "engine": "duckdb",
+        "sql": "WITH p AS (SELECT p.player_name, p.won, p.final_tiles FROM 'data/processed/participants.parquet' p JOIN 'data/processed/rounds.parquet' r USING (round_id) WHERE r.round_number BETWEEN 411 AND 418 AND NOT p.is_filler) SELECT player_name, count(*) appearances, sum(won::INT) wins, 1.0*sum(won::INT)/count(*) win_rate, avg(final_tiles) mean_final_tiles FROM p GROUP BY 1 ORDER BY win_rate DESC, wins DESC, appearances DESC",
+        "description": "Reproduces current player appearance, win-rate, and territory metrics for completed rounds 411-418.",
+        "executed_at": "2026-07-16T21:07:36Z"
+      }
+    },
+    {
+      "id": "replay_analysis",
+      "query": {
+        "language": "javascript",
+        "query": "Count qd1n decisions selecting neutral land where frontierConversionTiming.recommended=true, executorReady=true, bestExecutorReadyRelativeTroopRatio>=1.30, and ownTileShare is between 0.05 and 0.15; group by episode winner.",
+        "description": "Parses official inline decisions.jsonl from the collected round 411-418 replay cache.",
+        "executed_at": "2026-07-16T20:45:00Z"
+      }
+    },
+    {
+      "id": "matched_replay",
+      "query": {
+        "language": "javascript",
+        "query": "Parse results and inline decisions.jsonl; aggregate cv2 reasons, accepted results, wins, and final tiles by alternating candidate and parent seats.",
+        "description": "Audits direct branch reach and outcome in the exact current-package matched Pangaea replay.",
+        "executed_at": "2026-07-16T21:07:36Z"
+      }
+    },
+    {
+      "id": "alphastar_paper",
+      "query": {
+        "url": "https://www.nature.com/articles/s41586-019-1724-z",
+        "description": "Primary paper supporting diverse league training with adapting strategies and counter-strategies."
+      }
+    },
+    {
+      "id": "psro_paper",
+      "query": {
+        "url": "https://papers.neurips.cc/paper_files/paper/2017/hash/3323fe11e9595c09af38fe67567a9394-Abstract.html",
+        "description": "Primary paper defining policy-space response oracles and empirical meta-strategy updates."
+      }
+    }
+  ],
+  "package_info": {
+    "originUrl": "artifact://proxywar/qd1n-rci7-early-conversion",
+    "controls": { "edit": false, "refresh": false }
+  }
+}

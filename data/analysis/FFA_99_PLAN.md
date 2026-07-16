@@ -212,3 +212,20 @@ version.
 If the candidate misses any profile, keep v14 champion and assign the next
 codename only after the mechanism changes. Reserved release names live in
 `experiments/codenames.json`.
+
+## Qd1n policy-population candidate
+
+The rci-7 ratio-only conversion hypothesis is closed. It reached `cv2` twelve
+times in a matched eight-seat Pangaea replay, but the candidate won no seat and
+parent slot eight won with 377,432 tiles. A strong observational split—100
+skipped conversion windows in losses against three in wins—did not identify a
+safe target rule by itself.
+
+The next loop should follow a small policy-space response-oracle design. Keep
+v77 as the main policy and evaluate separate, interpretable exploiters for
+leader pressure, retaliatory counterplay, economy-first growth, and bounded
+conversion. Build an empirical payoff matrix across current opponents, maps,
+and seat profiles. Sample policy arms with nonzero exploration so a short hot
+streak cannot collapse the population into one predictable script. Promotion
+still requires direct branch reach, a matched parent win advantage, `4/4`, and
+the independent `20/20` gate.

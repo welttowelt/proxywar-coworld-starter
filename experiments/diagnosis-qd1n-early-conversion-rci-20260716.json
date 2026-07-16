@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-16T21:07:36Z",
+  "policy": "qd1n:v77",
+  "candidate": "qd1n-rci7-early-conversion",
+  "status": "rejected",
+  "remote_state_changed": false,
+  "diagnosis": {
+    "window": {
+      "rounds": [411, 418],
+      "qd1n_appearances": 24,
+      "qd1n_wins": 5,
+      "qd1n_win_rate": 0.2083,
+      "daveey_appearances": 31,
+      "daveey_wins": 11,
+      "daveey_win_rate": 0.3548
+    },
+    "observed_pattern": {
+      "losing_episodes": 19,
+      "losing_episodes_with_skipped_favorable_conversion": 11,
+      "skipped_favorable_conversion_windows_in_losses": 100,
+      "winning_episodes": 5,
+      "winning_episodes_with_skipped_favorable_conversion": 2,
+      "skipped_favorable_conversion_windows_in_wins": 3,
+      "window_definition": "neutral land selected while frontierConversionTiming recommended conversion, an executor-ready rival action existed at >=1.30 relative troop ratio, and own tile share was 5-15 percent"
+    },
+    "critique": "The observational association was strong, but it did not establish that an immediate ratio-only probe caused later wins. It omitted target exposure, counterattack topology, economy timing, and seat effects."
+  },
+  "candidate_change": {
+    "description": "At 5-12 percent tile share, select a 10 percent rival attack before neutral land when the best available rival ratio is at least 1.30.",
+    "marker": "cv2",
+    "scope": "one selector ordering branch and one regression test",
+    "restored_after_gate": true
+  },
+  "verification": {
+    "unit_tests": {
+      "passed": 83,
+      "failed": 0,
+      "post_restore_parent_tests_passed": 82
+    },
+    "qualifier": {
+      "variant": "qualifier",
+      "accepted_decisions": 34,
+      "decision_count": 34,
+      "winner_slot": null,
+      "scores": [0.49589260669204566, 0.5041073933079543],
+      "replay_sha256": "30f53bf9ce94211d9849dec0bc6de21a86ca1070134164c3d50074413ba30cd4"
+    },
+    "matched_gate": {
+      "variant": "tournament-8p-pangaea",
+      "candidate_slots": [0, 2, 4, 6],
+      "parent_slots": [1, 3, 5, 7],
+      "winner_slot": 7,
+      "winner_arm": "parent",
+      "turn_count": 12400,
+      "accepted_decisions": 660,
+      "decision_count": 660,
+      "candidate_cv2_executions": 12,
+      "candidate_wins": 0,
+      "parent_wins": 1,
+      "best_surviving_candidate_slot": 2,
+      "best_surviving_candidate_tiles": 42903,
+      "winning_parent_tiles": 377432,
+      "replay_sha256": "833155d295d9141fcd32789f48fc54bb97d5a870ff5a10611f343c6cb8b3fdaf"
+    },
+    "candidate_image": {
+      "tag": "proxywar-agent-llm:qd1n-rci7-early-conversion-arm64",
+      "image_id": "sha256:c7154b7dfde7a82268540c22bd32f95396b0234a94a3e341708646a2d82276b9",
+      "architecture": "arm64"
+    },
+    "parent_image": {
+      "tag": "proxywar-agent-llm:qd1n-rci6-collapse-cap-arm64",
+      "image_id": "sha256:7031d44bb464e2d810fff6fa9a473afd44aed5280b8f587ed7d2335d82b5c1cf",
+      "architecture": "arm64"
+    }
+  },
+  "verdict": {
+    "promotion_gate": "failed",
+    "reason": "The parent won the matched replay despite direct candidate reach and accepted cv2 actions.",
+    "source_action": "candidate selector and test removed; exact v77 parent restored",
+    "upload": false,
+    "submission": false,
+    "league_change": false,
+    "next_hypothesis": "Use a policy population and empirical payoff matrix. Add target-quality and retaliation-risk features before testing another conversion rule."
+  }
+}

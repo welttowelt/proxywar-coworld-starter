@@ -57,6 +57,7 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | qd1n v77 live | linux/amd64 upload `c0213724-8fb6-40d3-97da-fd1b080971f7`; submission `sub_e94102ad-0853-4166-bfe8-7519403ec569`; crash qualification passed; membership `lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b` in Competition; v77 sole qd1n champion and v76 benched | operator-directed relaunch completed; standard `4/4` and `20/20` strategic gates not completed |
 | qd1n rci-5 local | rounds 391-410: `110` target marks in `12` losses and zero winning episodes; official engine applies `-40` target relation per mark; first rewrite rejected for spreading `10` marks over more rivals; corrected exact mirror cut marks `10->3`, holds `2->9`, with the same winner, turn, and tiles; `81/81` tests; `645/645` accepted | mechanism and runtime passed; no local win lift, no upload, no league change |
 | qd1n rci-6 local | rounds 398-417: collapse-proxy positions used `57` neutral 35% attacks across `19` losses and zero across wins; an alliance-first rewrite fired `sv1` four times but lost to the parent; corrected `cp1` cap passed `82/82` tests and an exact linux/amd64 `34/34` qualifier; matched Pangaea had `cp1=0`, `645/645` accepted, and the parent won slot three with the prior exact turn and tiles | bounded source correction retained; reach and `4/4` failed, so no upload or league change |
+| qd1n rci-7 local | rounds 411-418: `5/24` wins versus daveey `11/31`; loss replays contained `100` skipped favorable conversion windows versus `3` in wins; ratio-only `cv2` passed `83/83` tests and `34/34` qualifier orders; matched Pangaea reached `cv2` twelve times with `660/660` accepted, but parent slot eight won 377,432 tiles and the best candidate survivor held 42,903 | hypothesis rejected; source restored, no upload, no submission, no league change |
 
 Detailed evidence lives in [`experiments/`](experiments/README.md). Public round
 statistics live on the [dashboard](https://welttowelt.github.io/proxywar-coworld-starter/).
@@ -91,3 +92,9 @@ streak is `0/1000`, and round 418 is running with eleven entrants. Qd1n remains
 overall rank one at `45.1306`, but that historical score does not clear the
 current conversion failure. Rci-6 is committed locally at `e320ba9`; no v78 was
 uploaded or submitted.
+
+Rci-7 tested whether an early `1.30x` rival probe should interrupt neutral
+farming. The matched Pangaea gate reached the branch twelve times, but the
+parent won and the candidate produced no winner. The candidate was removed and
+v77 remains the exact live source. No v78 exists; the streak remains `0/1000`
+at the round-418 checkpoint.

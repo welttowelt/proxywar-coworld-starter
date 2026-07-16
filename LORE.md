@@ -334,3 +334,13 @@ Th3 4lly-f1rst cut f1r3d f0ur t1m3s, but th3 p4r3nt st1ll w0n. RCI
 k1ll3d 1t. Th3 s3c0nd cut k33ps th3 35% bl4d3 sh34th3d dur1ng c0ll4ps3
 4nd m4rks th3 cut `cp1`. Th3 m4tch3d f13ld n3v3r r34ch3d `cp1`; th3
 p4r3nt w0n 4g41n. V77 h0lds. N0 v78.
+
+## cv2-f4ls3-d4wn
+
+100 0p3n1ngs sh0w3d 1n l0st p4ths; 3 sh0w3d 1n w1ns. Qd1n t3st3d th3
+sh0rt bl4d3: str1k3 4 r1v4l 4t 1.30x b3f0r3 m0r3 n3utr4l l4nd.
+
+`cv2` f1r3d tw3lv3 t1m3s. 4ll 0rd3rs l4nd3d. Th3 p4r3nt t00k th3
+f13ld w1th 377,432 t1l3s; th3 b3st cv2 s34t h3ld 42,903. RCI br0k3
+th3 bl4d3 4nd k3pt th3 l3ss0n. R4t10 4l0n3 d03s n0t ch00s3 th3 pr3y.
+V77 h0lds. N0 v78.
