@@ -1,13 +1,4 @@
 round_number,rank,score,player_name,policy_name,policy_version,policy_version_id,completed_episode_count,seed_order
-384,1,0.5,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,2,3
-384,2,0.5,daveey,daveey-proxywar,13,8faa1ac2-1873-4c9d-b74b-96c7325dc462,2,6
-384,3,0.0,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,1,0
-384,4,0.0,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,2,1
-384,5,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,1,2
-384,6,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,2,4
-384,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,2,5
-384,8,0.0,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,2,7
-384,9,0.0,Sefirot,Eva-00-v27,1,ec3de252-e641-4584-b92d-6d302b1e0a9f,2,8
 385,1,0.5,daveey,daveey-proxywar,13,8faa1ac2-1873-4c9d-b74b-96c7325dc462,4,6
 385,2,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
 385,3,0.25,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,4,7
@@ -177,3 +168,12 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 403,7,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
 403,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
 403,9,0.0,Sefirot,Gaijin-01-v2,1,e8d284c9-117c-4199-91f1-acde5f7e067a,4,7
+404,1,0.3333333333333333,daveey,daveey-proxywar,18,539e1ab1-23ae-4ba6-b4ae-77339d45503d,3,8
+404,2,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
+404,3,0.25,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
+404,4,0.25,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,4,6
+404,5,0.0,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,3,0
+404,6,0.0,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,3,1
+404,7,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
+404,8,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
+404,9,0.0,Sefirot,Gaijin-01-v2,1,e8d284c9-117c-4199-91f1-acde5f7e067a,4,7
