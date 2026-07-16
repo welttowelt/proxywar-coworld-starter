@@ -1,13 +1,4 @@
 round_number,rank,score,player_name,policy_name,policy_version,policy_version_id,completed_episode_count,seed_order
-385,1,0.5,daveey,daveey-proxywar,13,8faa1ac2-1873-4c9d-b74b-96c7325dc462,4,6
-385,2,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
-385,3,0.25,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,4,7
-385,4,0.0,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,3,0
-385,5,0.0,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,3,1
-385,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
-385,7,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
-385,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-385,9,0.0,Sefirot,Eva-00-v27,1,ec3de252-e641-4584-b92d-6d302b1e0a9f,3,8
 386,1,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
 386,2,0.25,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
 386,3,0.25,daveey,daveey-proxywar,13,8faa1ac2-1873-4c9d-b74b-96c7325dc462,4,6
@@ -177,3 +168,12 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 404,7,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
 404,8,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
 404,9,0.0,Sefirot,Gaijin-01-v2,1,e8d284c9-117c-4199-91f1-acde5f7e067a,4,7
+405,1,0.3333333333333333,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,3,1
+405,2,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
+405,3,0.25,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
+405,4,0.25,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,4,6
+405,5,0.0,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,3,0
+405,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
+405,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
+405,8,0.0,daveey,daveey-proxywar,18,539e1ab1-23ae-4ba6-b4ae-77339d45503d,4,7
+405,9,0.0,Sefirot,Eva-00,21,c0526637-c3fd-4123-88df-8950cca9700d,3,8
