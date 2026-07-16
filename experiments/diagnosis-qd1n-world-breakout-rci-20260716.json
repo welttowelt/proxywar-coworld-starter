@@ -8,10 +8,12 @@
     "source_commit": "b0c205c9ca324725d1ef17c66887f160068e7ffa",
     "local_test_image": "proxywar-agent-llm:qd1n-rci4-world-breakout",
     "local_test_image_id": "sha256:0f506489ecccfeb4df6b00f8f8e8b16422c7afac5eb689a3934828eeedef283c",
-    "uploaded_policy_ref": null,
-    "uploaded_policy_id": null,
-    "submission_id": null,
-    "membership_id": null
+    "hosted_image_id": "sha256:36d5b2c411f39158a7485c85670adecb17a60bb2e331c8468d41a5c1b7754741",
+    "hosted_image_platform": "linux/amd64",
+    "uploaded_policy_ref": "qd1n:v77",
+    "uploaded_policy_id": "c0213724-8fb6-40d3-97da-fd1b080971f7",
+    "submission_id": "sub_e94102ad-0853-4166-bfe8-7519403ec569",
+    "membership_id": "lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b"
   },
   "live_snapshot_before": {
     "completed_round": 407,
@@ -128,6 +130,9 @@
     "local_direction": "candidate won the alternating-seat mirror, with the branch reached only by a non-winning candidate seat",
     "standard_promotion_gate": "not completed: no hosted 4/4 or 20/20 regression",
     "operator_override": "The operator explicitly required a live relaunch.",
-    "league_action": "pending"
+    "league_action": "qd1n:v77 qualified and became the sole qd1n champion in Competition; qd1n:v76 is benched",
+    "qualification_completed": true,
+    "champion_verified": true,
+    "sustained_win_goal_achieved": false
   }
 }

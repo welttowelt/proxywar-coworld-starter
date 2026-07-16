@@ -815,3 +815,11 @@ The verified replay hash is
 `abc0a9c170e091911e685f71f601e2d2ead9519cff9499fca5930257d51d57cb`.
 Machine-readable evidence is in
 `experiments/diagnosis-qd1n-world-breakout-rci-20260716.json`.
+
+The exact committed source was rebuilt for linux/amd64 and uploaded as
+`qd1n:v77` (`c0213724-8fb6-40d3-97da-fd1b080971f7`). Submission
+`sub_e94102ad-0853-4166-bfe8-7519403ec569` passed qualification and promoted
+membership `lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b` to Competition. V77 is
+the sole qd1n champion and v76 is benched. The operator explicitly ordered this
+relaunch before the standard hosted `4/4` and `20/20` strategic gates were
+complete.

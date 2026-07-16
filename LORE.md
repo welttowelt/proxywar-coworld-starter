@@ -291,3 +291,11 @@ flat sequences with attacks, builds, and retreats. The winning seat did not
 reach the branch, so the mirror proves runtime safety and direction, not a
 seat-independent win lift. The operator has ordered a live relaunch; the
 standard hosted `4/4` and `20/20` gates remain incomplete.
+
+The committed source was rebuilt for linux/amd64 and uploaded as `qd1n:v77`,
+mark `br1m-r1ft`. Submission
+`sub_e94102ad-0853-4166-bfe8-7519403ec569` passed the crash qualifier and placed
+membership `lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b` into Competition. V77 is
+the sole qd1n champion; v76 is benched. This live promotion follows the
+operator's explicit relaunch order and does not erase the incomplete strategic
+gate or the `1000`-win target.

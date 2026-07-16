@@ -178,13 +178,13 @@
     {
       "version": "v76",
       "codename": "n0feed-rci3",
-      "status": "champion",
+      "status": "benched",
       "mechanism": "refuse low-ratio rival naval invasions and convert stalled pressure into utility"
     },
     {
-      "version": "next",
+      "version": "v77",
       "codename": "br1m-r1ft",
-      "status": "testing",
+      "status": "champion",
       "mechanism": "arm stalled-boat conversion below two percent territory"
     }
   ]

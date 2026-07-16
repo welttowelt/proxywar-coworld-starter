@@ -43,6 +43,7 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | qd1n rci-3 local | round 373: 107 boats into Richard at 0.27-0.46 after conversion stalled; historical wins had `0/464` invasions below 0.50; `85/85` tests; paired Pangaea score `1-1`; `1,371/1,371` accepted; candidate `0` versus parent `5` sub-0.50 invasions | no-feed mechanism passed; no seat-independent win lift |
 | qd1n v76 live | linux/amd64 image matched commit `f9d50fe`; submission `sub_bbface4c-2afc-4170-b3af-0f7540bbf563`; qualification passed; membership `lpm_807274c0-0f71-4c13-8990-3dc932a9f7e5` champion and v2 benched | operator-directed live promotion; standard `4/4` and `20/20` gates not completed |
 | qd1n rci-4 local | World seat four went `0/6` with 1,219 neutral boats and zero naval invasions; red-green boundary regression; `87/87` tests; alternating-seat World mirror candidate `1`, parent `0`; all `1,040/1,040` decisions accepted; candidate one hold, parent two | low-share diagnosis and runtime passed; winning seat did not reach branch; hosted promotion gate incomplete |
+| qd1n v77 live | linux/amd64 upload `c0213724-8fb6-40d3-97da-fd1b080971f7`; submission `sub_e94102ad-0853-4166-bfe8-7519403ec569`; crash qualification passed; membership `lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b` in Competition; v77 sole qd1n champion and v76 benched | operator-directed relaunch completed; standard `4/4` and `20/20` strategic gates not completed |
 
 Detailed evidence lives in [`experiments/`](experiments/README.md). Public round
 statistics live on the [dashboard](https://welttowelt-proxywar.netlify.app/).
@@ -57,3 +58,9 @@ Round 407 is the pre-rci-4 checkpoint. Qd1n remains overall rank one at
 `45.1306`, with `22/77` episode wins and a current first-place streak of
 `1/1000`. `qd1n:v76` is still champion pending the operator-directed rci-4
 relaunch. The standard hosted `4/4` and `20/20` gates are not complete.
+
+The rci-4 relaunch is complete. `qd1n:v77` is the sole qd1n champion in
+Competition under membership `lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b`;
+`qd1n:v76` is benched. Qualification proves the image starts and plays. It does
+not supply the missing hosted strategic gate, and the `1000`-win goal remains
+open.
