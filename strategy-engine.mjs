@@ -8,6 +8,7 @@ const SOCIAL_KINDS = new Set([
 // incoming attack revokes it, and late dominance still permits a clean finish.
 const RECIPROCAL_RIVALS = new Set(["katanasan"]);
 const MIN_DESPERATE_INVASION_RATIO = 0.5;
+const MIN_CONVERSION_TILE_SHARE = 0.002;
 
 export const PLAN_KINDS = [
   "spawn", "attack", "nuke", "build", "upgrade_structure", "boat", "boat_retreat", "retreat",
@@ -423,7 +424,7 @@ export function territoryCollapsing(state, history) {
 
 export function boatConversionStalled(state, history) {
   const currentShare = finiteNumber(state?.self?.tileShare, NaN);
-  if (!Number.isFinite(currentShare) || currentShare < 0.02) return false;
+  if (!Number.isFinite(currentShare) || currentShare < MIN_CONVERSION_TILE_SHARE) return false;
   const recent = history.slice(-10);
   if (recent.length < 8 || recent.filter((entry) => entry.kind === "boat").length < 6) {
     return false;

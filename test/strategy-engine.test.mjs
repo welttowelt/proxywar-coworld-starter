@@ -65,6 +65,37 @@ test("a flat boat loop triggers one bounded conversion interrupt", () => {
   assert.equal(selected.policyMarker, "cv1");
 });
 
+test("a stranded sub-two-percent seat can enter conversion mode", () => {
+  const boat = action("boat:terra:8", "boat", "Boat to Terra Nullius 8%");
+  const upgrade = action("upgrade:port:1", "upgrade_structure", "Upgrade Port");
+  const history = Array.from({ length: 8 }, (_, index) => ({
+    actionID: index < 6 ? `boat:terra:${index}` : `emoji:${index}`,
+    kind: index < 6 ? "boat" : "emoji",
+    neutral: index < 6,
+    tileShare: 0.00646,
+  }));
+  const state = buildState(
+    observation({ tileShare: 0.00646 }),
+    [boat, upgrade],
+    history,
+  );
+  assert.equal(boatConversionStalled(state, history), true);
+  const selected = chooseAction([boat, upgrade], state, null, history);
+  assert.equal(selected.id, upgrade.id);
+  assert.equal(selected.policyMarker, "cv1");
+});
+
+test("a near-eliminated seat keeps its last neutral escape route", () => {
+  const history = Array.from({ length: 8 }, (_, index) => ({
+    actionID: `boat:terra:${index}`,
+    kind: "boat",
+    neutral: true,
+    tileShare: 0.0019,
+  }));
+  const state = buildState(observation({ tileShare: 0.0019 }), [], history);
+  assert.equal(boatConversionStalled(state, history), false);
+});
+
 test("conversion interrupt cools down and falls through to parent boat behavior", () => {
   const boat = action("boat:terra:8", "boat", "Boat to Terra Nullius 8%");
   const upgrade = action("upgrade:port:1", "upgrade_structure", "Upgrade Port");
