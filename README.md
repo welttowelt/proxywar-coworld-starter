@@ -96,7 +96,7 @@ and automated quality checks. The 600+ MB replay cache stays local and is ignore
 Git.
 
 Use the FFA tables for current policy decisions. Rounds 163-180 in the initial snapshot
-are head-to-head, while rounds 181 onward use four-player FFA.
+are head-to-head; later tournament rounds use FFA lobbies of four or more players.
 
 ## Results dashboard
 

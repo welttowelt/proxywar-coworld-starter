@@ -12,6 +12,8 @@ const TRACKED_PLAYER_NAME = "odin free";
 const CHALLENGER_PLAYER_NAME = "Auri";
 const SOURCE_FINGERPRINT_VERSION = 1;
 const ALLOWED_REPLAY_HOSTS = new Set(["softmax-public.s3.amazonaws.com"]);
+const MAX_REPLAY_BYTES = 128 * 1024 * 1024;
+const REPLAY_DOWNLOAD_CONCURRENCY = 4;
 const SOCIAL_KINDS = new Set([
   "alliance_request", "alliance_extend", "break_alliance", "target_player",
   "embargo", "embargo_all", "embargo_stop", "donate_gold", "donate_troops",
@@ -78,12 +80,12 @@ async function downloadReplay(url, attempts = 5) {
       const response = await fetch(url, { signal: AbortSignal.timeout(120000) });
       if (!response.ok) throw new Error(`replay download failed (${response.status}): ${url}`);
       const declaredLength = Number(response.headers.get("content-length"));
-      if (Number.isFinite(declaredLength) && declaredLength > 64 * 1024 * 1024) {
-        throw new Error(`replay exceeds 64 MiB limit: ${url}`);
+      if (Number.isFinite(declaredLength) && declaredLength > MAX_REPLAY_BYTES) {
+        throw new Error(`replay exceeds 128 MiB limit: ${url}`);
       }
       const buffer = Buffer.from(await response.arrayBuffer());
-      if (buffer.length > 64 * 1024 * 1024) {
-        throw new Error(`replay exceeds 64 MiB limit: ${url}`);
+      if (buffer.length > MAX_REPLAY_BYTES) {
+        throw new Error(`replay exceeds 128 MiB limit: ${url}`);
       }
       return buffer;
     } catch (error) {
@@ -110,6 +112,20 @@ async function replayBytes(url, destination) {
   const buffer = await downloadReplay(url);
   await writeFile(destination, buffer);
   return { bytes: buffer, cached: false };
+}
+
+async function mapWithConcurrency(items, limit, operation) {
+  const results = new Array(items.length);
+  let nextIndex = 0;
+  async function worker() {
+    while (nextIndex < items.length) {
+      const index = nextIndex++;
+      results[index] = await operation(items[index], index);
+    }
+  }
+  const workerCount = Math.min(limit, items.length);
+  await Promise.all(Array.from({ length: workerCount }, () => worker()));
+  return results;
 }
 
 async function readJsonIfExists(filePath, fallback) {
@@ -425,6 +441,13 @@ const episodeRows = [];
 const participantRows = [];
 const decisionRows = [];
 const replayManifest = [];
+await mapWithConcurrency(episodes, REPLAY_DOWNLOAD_CONCURRENCY, async (episode) => {
+  const destination = path.join(cacheDir, `${episode.episode_id}.replay`);
+  const { bytes, cached } = await replayBytes(episode.replay_url, destination);
+  if (!cached) {
+    process.stdout.write(`  downloaded ${episode.episode_id}: ${bytes.length} bytes\n`);
+  }
+});
 for (const episode of episodes) {
   const destination = path.join(cacheDir, `${episode.episode_id}.replay`);
   const { bytes, cached } = await replayBytes(episode.replay_url, destination);

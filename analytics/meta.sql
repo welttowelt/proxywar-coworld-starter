@@ -189,7 +189,7 @@ COPY (
     sum(social_actions) AS social_actions,
     sum(holds) AS holds
   FROM player_matches
-  WHERE player_count = 4
+  WHERE player_count >= 4
   GROUP BY player_name
   ORDER BY wins DESC, mean_final_tiles DESC
 ) TO 'data/analysis/ffa_player_performance.csv' (HEADER, DELIMITER ',');
@@ -202,7 +202,7 @@ COPY (
       count(*) AS round_matches,
       sum(won::INTEGER) AS round_wins
     FROM player_matches
-    WHERE player_count = 4
+    WHERE player_count >= 4
     GROUP BY round_number, player_name
   ),
   rolling AS (
@@ -278,7 +278,7 @@ COPY (
     round(100.0 * sum(neutral_boats) / nullif(sum(decisions), 0), 2) AS neutral_boats_per_100_decisions,
     sum(holds) AS holds
   FROM player_matches
-  WHERE player_count = 4 AND map IS NOT NULL
+  WHERE player_count >= 4 AND map IS NOT NULL
   GROUP BY map, player_name, policy_version
   ORDER BY map, player_name, policy_version
 ) TO 'data/analysis/map_policy_performance.csv' (HEADER, DELIMITER ',');
@@ -296,7 +296,7 @@ COPY (
     round(100.0 * sum(social_actions) / nullif(sum(decisions), 0), 2) AS social_per_100_decisions,
     round(100.0 * sum(holds) / nullif(sum(decisions), 0), 2) AS holds_per_100_decisions
   FROM player_matches
-  WHERE player_count = 4
+  WHERE player_count >= 4
   GROUP BY won
   ORDER BY won DESC
 ) TO 'data/analysis/ffa_action_profile_by_outcome.csv' (HEADER, DELIMITER ',');
@@ -311,7 +311,7 @@ COPY (
     round(avg(d.troop_percent), 1) AS mean_troop_percent
   FROM decisions d
   JOIN episodes e USING (episode_id, round_id)
-  WHERE e.player_count = 4 AND d.is_rival_attack AND d.target_name IS NOT NULL
+  WHERE e.player_count >= 4 AND d.is_rival_attack AND d.target_name IS NOT NULL
   GROUP BY d.player_name, d.target_name
   ORDER BY d.player_name, rival_attacks DESC, d.target_name
 ) TO 'data/analysis/ffa_attack_targets.csv' (HEADER, DELIMITER ',');
@@ -375,7 +375,7 @@ COPY (
     FROM decisions d
     JOIN episodes e USING (episode_id, round_id)
     JOIN participants p USING (episode_id, round_id, participant_position)
-    WHERE e.player_count = 4
+    WHERE e.player_count >= 4
   )
   SELECT
     player_name,
@@ -419,7 +419,7 @@ COPY (
     FROM decisions d
     JOIN episodes e USING (episode_id, round_id)
     JOIN participants p USING (episode_id, round_id, participant_position)
-    WHERE e.player_count = 4 AND d.is_rival_attack
+    WHERE e.player_count >= 4 AND d.is_rival_attack
   )
   SELECT
     player_name,
@@ -445,7 +445,7 @@ COPY (
     FROM decisions d
     JOIN episodes e USING (episode_id, round_id)
     JOIN participants p USING (episode_id, round_id, participant_position)
-    WHERE e.player_count = 4
+    WHERE e.player_count >= 4
   ), tactical AS (
     SELECT player_name, policy_version, won, 'opening_tempo' AS tactic,
       count(*) FILTER (WHERE opening_tempo_recommended) AS recommendations,
@@ -596,25 +596,25 @@ COPY (
     1000 AS target_first_place_streak,
     (SELECT first_place_finishes FROM official_streak) AS first_place_finishes,
     (
-      SELECT wins
-      FROM read_csv_auto('data/analysis/ffa_player_performance.csv')
-      WHERE player_name = 'odin free'
+      SELECT coalesce(sum(won::INTEGER), 0)
+      FROM player_matches
+      WHERE player_name = 'odin free' AND player_count >= 4
     ) AS current_ffa_wins,
     (
-      SELECT matches
-      FROM read_csv_auto('data/analysis/ffa_player_performance.csv')
-      WHERE player_name = 'odin free'
+      SELECT count(*)
+      FROM player_matches
+      WHERE player_name = 'odin free' AND player_count >= 4
     ) AS current_ffa_matches,
     (
-      SELECT win_rate_pct
-      FROM read_csv_auto('data/analysis/ffa_player_performance.csv')
-      WHERE player_name = 'odin free'
+      SELECT coalesce(round(100.0 * avg(won::INTEGER), 2), 0)
+      FROM player_matches
+      WHERE player_name = 'odin free' AND player_count >= 4
     ) AS current_ffa_win_rate_pct,
     99.0 AS target_ffa_win_rate_pct,
     (
-      SELECT ceil(0.99 * matches)::BIGINT
-      FROM read_csv_auto('data/analysis/ffa_player_performance.csv')
-      WHERE player_name = 'odin free'
+      SELECT ceil(0.99 * count(*))::BIGINT
+      FROM player_matches
+      WHERE player_name = 'odin free' AND player_count >= 4
     ) AS target_ffa_wins,
     (
       SELECT coalesce(sum(failures), 0)
@@ -708,7 +708,7 @@ COPY (
 COPY (
   SELECT *
   FROM read_csv_auto('data/analysis/seat_performance.csv')
-  WHERE player_count = 4
+  WHERE player_count >= 4
   ORDER BY participant_position
 ) TO 'site/data/seat-performance.json' (FORMAT JSON, ARRAY true);
 
