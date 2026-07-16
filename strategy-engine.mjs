@@ -230,6 +230,25 @@ function rivalIsProtected(state, history, rival) {
   return false;
 }
 
+function pressureMarker(state, history, rival) {
+  let lastPressure = -1;
+  for (let index = history.length - 1; index >= 0; index--) {
+    const entry = history[index];
+    const sameTarget = entry.kind === "target_player" && (
+      entry.targetID === rival.id.toLowerCase() || targetName(entry) === rival.name.toLowerCase()
+    );
+    if (sameTarget) {
+      lastPressure = index;
+      break;
+    }
+  }
+  if (lastPressure === -1) return "fr1";
+
+  const freshHostility = (state.self.incomingAttackerIDs || []).includes(rival.id.toLowerCase()) ||
+    history.slice(lastPressure + 1).some((entry) => rivalWasIncoming(entry, rival));
+  return freshHostility ? "rt1" : null;
+}
+
 function stableAllianceRequests(actions) {
   // Relation 2 is a transient pending-request action. It can disappear while the
   // simultaneous turn is resolving, which makes the game replace it with HOLD.
@@ -671,8 +690,18 @@ export function chooseAction(actions, state, plan = null, history = []) {
   const pressure = safeActions(actions, (action) => action.kind === "target_player")
     .map((action) => ({ action, rival: rivalForAction(action, state) }))
     .filter(({ rival }) => rival && !rivalIsProtected(state, history, rival))
-    .sort((left, right) => right.rival.tileShare - left.rival.tileShare)[0]?.action;
-  if (pressure) return pressure;
+    .map((candidate) => ({
+      ...candidate,
+      marker: pressureMarker(state, history, candidate.rival),
+      hostility: recentHostility(state, history, candidate.rival),
+    }))
+    .filter(({ marker }) => marker !== null)
+    .sort((left, right) =>
+      Number(right.marker === "rt1") - Number(left.marker === "rt1") ||
+      right.hostility - left.hostility ||
+      right.rival.tileShare - left.rival.tileShare
+    )[0];
+  if (pressure) return { ...pressure.action, policyMarker: pressure.marker };
 
   return actions.find((action) => action.kind === "hold") ?? actions[0];
 }

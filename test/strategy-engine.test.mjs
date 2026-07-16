@@ -593,7 +593,83 @@ test("an isolated player pressures a rival instead of using a pending alliance",
       { id: "other", name: "Other", tileShare: 0.2, relativeTroopRatio: 0.2 },
     ],
   });
-  assert.equal(choose([pendingAlliance, targetLeader, hold], obs).id, targetLeader.id);
+  const selected = choose([pendingAlliance, targetLeader, hold], obs);
+  assert.equal(selected.id, targetLeader.id);
+  assert.equal(selected.policyMarker, "fr1");
+});
+
+test("pressure marks each nonhostile rival once instead of saturating relations", () => {
+  const targetLeader = {
+    ...action("target:leader", "target_player", "Target Leader"),
+    metadata: { targetID: "leader" },
+  };
+  const targetOther = {
+    ...action("target:other", "target_player", "Target Other"),
+    metadata: { targetID: "other" },
+  };
+  const hold = action("hold", "hold", "Hold");
+  const obs = observation({
+    tileShare: 0.01,
+    troopRatio: 0.98,
+    rivals: [
+      { id: "leader", name: "Leader", tileShare: 0.7, relativeTroopRatio: 0.1 },
+      { id: "other", name: "Other", tileShare: 0.2, relativeTroopRatio: 0.2 },
+    ],
+  });
+  const leaderMarked = [{
+    actionID: targetLeader.id,
+    kind: "target_player",
+    targetID: "leader",
+    targetName: "Leader",
+    incomingAttackerIDs: [],
+    incomingAttackerNames: [],
+  }];
+
+  const rotated = choose([targetLeader, targetOther, hold], obs, null, leaderMarked);
+  assert.equal(rotated.id, targetOther.id);
+  assert.equal(rotated.policyMarker, "fr1");
+
+  const bothMarked = [...leaderMarked, {
+    actionID: targetOther.id,
+    kind: "target_player",
+    targetID: "other",
+    targetName: "Other",
+    incomingAttackerIDs: [],
+    incomingAttackerNames: [],
+  }];
+  assert.equal(choose([targetLeader, targetOther, hold], obs, null, bothMarked).id, hold.id);
+});
+
+test("fresh retaliation permits a second pressure mark", () => {
+  const targetLeader = {
+    ...action("target:leader", "target_player", "Target Leader"),
+    metadata: { targetID: "leader" },
+  };
+  const hold = action("hold", "hold", "Hold");
+  const history = [{
+    actionID: targetLeader.id,
+    kind: "target_player",
+    targetID: "leader",
+    targetName: "Leader",
+    incomingAttackerIDs: [],
+    incomingAttackerNames: [],
+  }, {
+    actionID: "hold",
+    kind: "hold",
+    incomingAttackerIDs: ["leader"],
+    incomingAttackerNames: ["Leader"],
+  }];
+  const obs = observation({
+    tileShare: 0.01,
+    troopRatio: 0.98,
+    rivals: [
+      { id: "leader", name: "Leader", tileShare: 0.7, relativeTroopRatio: 0.1 },
+    ],
+  });
+
+  const selected = choose([targetLeader, hold], obs, null, history);
+  assert.equal(selected.id, targetLeader.id);
+  assert.equal(selected.policyMarker, "rt1");
 });
 
 test("survival alliance does not consume tempo without incoming pressure", () => {
