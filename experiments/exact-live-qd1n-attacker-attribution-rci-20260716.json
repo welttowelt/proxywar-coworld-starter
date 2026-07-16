@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-16T23:05:18Z",
+  "candidate": "qd1n-v77-plus-attacker-attribution",
+  "verdict": "EXACT_PARENT_PASS_NO_SUBMIT",
+  "remote_state_changed": false,
+  "source_isolation": {
+    "parent_commit": "b0c205c9ca324725d1ef17c66887f160068e7ffa",
+    "parent_policy": "qd1n:v77",
+    "runtime_diff_files": ["strategy-engine.mjs"],
+    "test_diff_files": ["test/strategy-engine.test.mjs"],
+    "mechanism": "restore current-protocol incoming attacker IDs to the existing hostility model",
+    "marker": "ia1"
+  },
+  "images": {
+    "candidate": {
+      "tag": "proxywar-agent-llm:qd1n-v77-ia1-arm64",
+      "image_id": "sha256:ab6240a53ba805c56999f8d994cf24f427b7374c4650dbc30cd85eb5426f0045",
+      "architecture": "arm64"
+    },
+    "exact_live_parent": {
+      "tag": "proxywar-agent-llm:latest",
+      "image_id": "sha256:36d5b2c411f39158a7485c85670adecb17a60bb2e331c8468d41a5c1b7754741",
+      "architecture": "amd64"
+    }
+  },
+  "verification": {
+    "unit_tests": {"passed": 89, "failed": 0},
+    "qualifier": {
+      "variant": "qualifier",
+      "decisions": 34,
+      "accepted": 34,
+      "rejected": 0,
+      "holds": 0,
+      "replay_sha256": "244029c0cc7984959e357383de043b3c534b9e25815ee50ac0d8560f419944e5"
+    },
+    "matched_asia": {
+      "variant": "tournament-8p-asia",
+      "orientations": 2,
+      "candidate_wins": 2,
+      "parent_wins": 0,
+      "candidate_marker_executions": 10,
+      "candidate_branch_reach_seats": 5,
+      "decisions": 905,
+      "accepted": 905,
+      "rejected": 0,
+      "holds": 0,
+      "candidate_mean_final_tiles": 240029,
+      "parent_mean_final_tiles": 2379.75,
+      "orientation_a": {
+        "candidate_slots": [0, 2, 4, 6],
+        "parent_slots": [1, 3, 5, 7],
+        "winner_slot": 6,
+        "winner_arm": "candidate",
+        "winner_tiles": 873409,
+        "turn_count": 7400,
+        "marker_executions": 9,
+        "marker_reach_candidate_seats": 4,
+        "replay_sha256": "ed00734f6792839e7ba335239fcd1e96a1454eb76897b826a45600b02fa6fa22"
+      },
+      "orientation_b": {
+        "candidate_slots": [1, 3, 5, 7],
+        "parent_slots": [0, 2, 4, 6],
+        "winner_slot": 7,
+        "winner_arm": "candidate",
+        "winner_tiles": 909275,
+        "turn_count": 7500,
+        "marker_executions": 1,
+        "marker_reach_candidate_seats": 1,
+        "replay_sha256": "9cd151bae302ca2e0a2053709b8b704223b9dd4007e951638bf1a82b29a4fd37"
+      }
+    }
+  },
+  "gates": {
+    "mechanism_reached": true,
+    "exact_live_parent_matched_advantage": true,
+    "zero_rejected": true,
+    "zero_holds": true,
+    "world_pangaea_mirrors": false,
+    "diagnostic_4_of_4": false,
+    "regression_20_of_20": false,
+    "promotion_eligible": false
+  },
+  "next_test": "Run matched World and Pangaea cells, then the full four-diagnostic and twenty-regression gates before upload or submission."
+}

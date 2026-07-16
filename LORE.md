@@ -361,3 +361,9 @@ took none. Every one of 1,082 orders landed, with no hold and no rejection.
 This is the strongest local direction since Qd1n entered the field, but it is
 not yet a live succession. The hosted four and the twenty-map regression still
 guard the gate. V77 remains champion; no v78 exists.
+
+The next mirror stripped away every later workshop change and placed only the
+restored names on top of exact v77. Qd1n took both seat directions again, at
+873,409 and 909,275 tiles. Ten named answers crossed five candidate seats; 905
+orders landed without a hold or rejection. Asia now favors the repaired sight,
+but World, Pangaea, the four, and the twenty still bar the succession.

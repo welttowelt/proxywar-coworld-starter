@@ -893,3 +893,14 @@ no policy was submitted, and qd1n:v77 remains the sole live champion. Evidence:
 `experiments/diagnosis-qd1n-attacker-attribution-rci-20260716.json`,
 `experiments/ledger-qd1n-attacker-attribution-rci-20260716.ndjson`, and
 `experiments/payoff-qd1n-attacker-attribution-rci-20260716.json`.
+
+An exact-parent follow-up rebuilt only the attacker-attribution diff on deployed
+v77 commit `b0c205c`. The isolated candidate passed `89/89` tests and a `34/34`
+qualifier, then defeated the exact local v77 image in both seat-swapped Asia
+orientations. It won slots six and seven with 873,409 and 909,275 tiles.
+`ia1` executed ten times across five candidate seats; all `905/905` decisions
+were accepted with zero holds and zero rejections. Candidate mean final
+territory was 240,029 versus 2,379.75 for v77. This closes the exact-parent
+Asia gate only. World/Pangaea and the full `4/4` plus `20/20` gates remain open,
+so no image was uploaded or submitted. Exact evidence is in
+`experiments/exact-live-qd1n-attacker-attribution-rci-20260716.json`.

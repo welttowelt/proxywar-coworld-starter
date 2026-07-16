@@ -3,7 +3,7 @@
   "recorded_at": "2026-07-16T22:24:46Z",
   "policy": "qd1n:v77",
   "candidate": "qd1n-rci8-attacker-attribution",
-  "status": "promising_local_no_submit",
+  "status": "exact_live_parent_pass_no_submit",
   "remote_state_changed": false,
   "live_checkpoint": {
     "completed_round": 420,
@@ -70,7 +70,7 @@
     "description": "Merge attacker IDs from combat.incomingAttackPlayerIDs, visible-player incomingAttack flags, and legacy structured incomingAttacks values; retain the numeric count for threat cadence.",
     "marker": "ia1",
     "marker_meaning": "the selected rival attack targets a currently attributed incoming attacker",
-    "scope": "one protocol adapter path, one observability marker, and one regression test",
+    "scope": "one protocol adapter path, one observability marker, and two regression tests",
     "public_text": "existing short leetspeak reason with :ia1 suffix"
   },
   "verification": {
@@ -99,6 +99,22 @@
       "rejected_decisions": 0,
       "holds": 0,
       "replay_sha256": "5c0eab606e4f7029d2ec04d0e3464dd468c7f349c93e0db74f0b4779c841f12e"
+    },
+    "exact_live_parent_isolation": {
+      "evidence_path": "experiments/exact-live-qd1n-attacker-attribution-rci-20260716.json",
+      "source_parent_commit": "b0c205c9ca324725d1ef17c66887f160068e7ffa",
+      "unit_tests": { "passed": 89, "failed": 0 },
+      "candidate_image_id": "sha256:ab6240a53ba805c56999f8d994cf24f427b7374c4650dbc30cd85eb5426f0045",
+      "exact_live_image_id": "sha256:36d5b2c411f39158a7485c85670adecb17a60bb2e331c8468d41a5c1b7754741",
+      "orientations": 2,
+      "candidate_wins": 2,
+      "parent_wins": 0,
+      "candidate_marker_executions": 10,
+      "accepted_decisions": 905,
+      "rejected_decisions": 0,
+      "holds": 0,
+      "candidate_mean_final_tiles": 240029,
+      "parent_mean_final_tiles": 2379.75
     },
     "matched_asia": {
       "variant": "tournament-8p-asia",
@@ -146,6 +162,7 @@
   },
   "promotion_gates": {
     "mechanism_reached": true,
+    "exact_live_parent_matched_advantage": true,
     "zero_rejected": true,
     "zero_holds": true,
     "matched_advantage": true,
@@ -155,11 +172,11 @@
   },
   "verdict": {
     "result": "NO_SUBMIT",
-    "reason": "The candidate has a clean two-orientation local Asia advantage, but the hosted 4/4 and 20/20 map-and-seat gates are still open.",
+    "reason": "The candidate has clean two-orientation Asia advantages against both the workshop parent and an attribution-only exact-live-v77 parent, but World/Pangaea and the hosted 4/4 plus 20/20 map-and-seat gates are still open.",
     "source_action": "retain the implementation as the leading workshop arm",
     "upload": false,
     "submission": false,
     "league_change": false,
-    "next_test": "Run the candidate against the exact live-v77 parent and then World/Pangaea mirrored cells before any production-architecture upload."
+    "next_test": "Run World/Pangaea mirrored cells against exact live v77, then the full 4/4 and 20/20 gates before any production-architecture upload."
   }
 }
