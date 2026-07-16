@@ -417,11 +417,19 @@ function chooseRivalAttack(actions, state, plan, history, avoid) {
   };
 }
 
-function chooseNeutralAttack(actions, history, avoid) {
+function chooseNeutralAttack(actions, history, avoid, maxPercent = 35) {
   const candidates = safeActions(actions, isNeutralExpansion);
   const streak = consecutive(history, (entry) => entry.neutral === true && entry.kind === "attack");
   const cadence = [10, 10, 20, 35];
-  return pickPercent(candidates, cadence[Math.min(streak, cadence.length - 1)], avoid);
+  const uncappedPercent = cadence[Math.min(streak, cadence.length - 1)];
+  const desiredPercent = Math.min(
+    uncappedPercent,
+    maxPercent,
+  );
+  const selected = pickPercent(candidates, desiredPercent, avoid);
+  return selected && uncappedPercent > maxPercent
+    ? { ...selected, policyMarker: "cp1" }
+    : selected;
 }
 
 export function neutralExpansionStalled(state, history) {
@@ -601,7 +609,13 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (defensiveBuild) return defensiveBuild;
 
   const rivalAttack = chooseRivalAttack(actions, state, plan, history, avoid);
-  const neutralAttack = chooseNeutralAttack(actions, history, avoid);
+  const collapsing = territoryCollapsing(state, history);
+  const neutralAttack = chooseNeutralAttack(
+    actions,
+    history,
+    avoid,
+    collapsing ? 20 : 35,
+  );
   const build = chooseBuild(actions, history);
   const sinceBuild = decisionsSince(history, (entry) =>
     entry.kind === "build" || entry.kind === "upgrade_structure"
@@ -611,8 +625,6 @@ export function chooseAction(actions, state, plan = null, history = []) {
     sinceBuild >= 14;
   const finishingTarget = rivalAttack && rivalAttack.streak > 0 &&
     rivalAttack.rival.relativeTroopRatio >= 1.5;
-  const collapsing = territoryCollapsing(state, history);
-
   if (collapsing && build && sinceBuild >= 3 && !finishingTarget) return build;
 
   const allianceMove = chooseAllianceMove(

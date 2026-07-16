@@ -499,6 +499,27 @@ test("sustained territory collapse inserts an emergency build", () => {
   );
 });
 
+test("territory collapse caps neutral expansion at twenty percent", () => {
+  const actions = [10, 20, 35].map((percent) => ({
+    ...action(
+      `expand:terra-nullius:${percent}`,
+      "attack",
+      `Expand into Terra Nullius ${percent}%`,
+    ),
+    metadata: { expansion: true, troopPercent: percent },
+  }));
+  const history = [0.2, 0.18, 0.16].map((tileShare, index) => ({
+    actionID: `expand:terra-nullius:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare,
+  }));
+
+  const selected = choose(actions, observation({ tileShare: 0.14 }), null, history);
+  assert.equal(selected.id, "expand:terra-nullius:20");
+  assert.equal(selected.policyMarker, "cp1");
+});
+
 test("midgame pressure keeps a reliable tactical action over alliance requests", () => {
   const allianceWithLeader = {
     ...action("alliance:leader", "alliance_request", "Alliance with Leader"),
