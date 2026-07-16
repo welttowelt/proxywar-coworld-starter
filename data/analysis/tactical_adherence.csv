@@ -1,12 +1,11 @@
 player_name,policy_version,won,tactic,recommendations,aligned,adherence_rate_pct
-Auri,42,true,diplomacy_pressure,1331,27,2.03
-Auri,42,true,economy_cadence,669,125,18.68
-Auri,42,true,finish_pressure,3,3,100.0
-Auri,42,true,frontier_conversion,511,315,61.64
-Auri,42,true,naval_control,1299,343,26.4
-Auri,42,true,opening_tempo,100,81,81.0
-Auri,42,true,strike_targeting,499,28,5.61
-Auri,42,true,transport_banking,513,202,39.38
+Auri,42,true,diplomacy_pressure,1083,11,1.02
+Auri,42,true,economy_cadence,484,76,15.7
+Auri,42,true,frontier_conversion,415,267,64.34
+Auri,42,true,naval_control,1028,231,22.47
+Auri,42,true,opening_tempo,75,67,89.33
+Auri,42,true,strike_targeting,345,17,4.93
+Auri,42,true,transport_banking,399,137,34.34
 James Boggs,1,true,diplomacy_pressure,119,4,3.36
 James Boggs,1,true,economy_cadence,12,11,91.67
 James Boggs,1,true,finish_pressure,2,2,100.0
@@ -56,13 +55,14 @@ daveey,17,true,naval_control,263,64,24.33
 daveey,17,true,opening_tempo,17,13,76.47
 daveey,17,true,strike_targeting,52,0,0.0
 daveey,17,true,transport_banking,88,24,27.27
-daveey,18,true,diplomacy_pressure,225,7,3.11
-daveey,18,true,economy_cadence,127,18,14.17
+daveey,18,true,diplomacy_pressure,522,11,2.11
+daveey,18,true,economy_cadence,351,42,11.97
 daveey,18,true,finish_pressure,8,6,75.0
-daveey,18,true,frontier_conversion,70,64,91.43
-daveey,18,true,naval_control,217,57,26.27
-daveey,18,true,opening_tempo,31,25,80.65
-daveey,18,true,transport_banking,99,45,45.45
+daveey,18,true,frontier_conversion,174,150,86.21
+daveey,18,true,naval_control,490,103,21.02
+daveey,18,true,opening_tempo,68,47,69.12
+daveey,18,true,strike_targeting,51,0,0.0
+daveey,18,true,transport_banking,143,55,38.46
 katanasan,33,true,diplomacy_pressure,589,11,1.87
 katanasan,33,true,economy_cadence,295,55,18.64
 katanasan,33,true,frontier_conversion,233,137,58.8
@@ -70,65 +70,64 @@ katanasan,33,true,naval_control,506,15,2.96
 katanasan,33,true,opening_tempo,72,61,84.72
 katanasan,33,true,strike_targeting,13,0,0.0
 katanasan,33,true,transport_banking,119,0,0.0
-odin free,76,true,diplomacy_pressure,3073,0,0.0
-odin free,76,true,economy_cadence,992,185,18.65
+odin free,76,true,diplomacy_pressure,2902,0,0.0
+odin free,76,true,economy_cadence,995,183,18.39
 odin free,76,true,finish_pressure,15,14,93.33
-odin free,76,true,frontier_conversion,1326,907,68.4
-odin free,76,true,naval_control,2642,710,26.87
-odin free,76,true,opening_tempo,361,279,77.29
-odin free,76,true,strike_targeting,357,7,1.96
-odin free,76,true,transport_banking,937,519,55.39
-Auri,42,false,diplomacy_pressure,9113,479,5.26
-Auri,42,false,economy_cadence,3433,755,21.99
+odin free,76,true,frontier_conversion,1371,936,68.27
+odin free,76,true,naval_control,2445,561,22.94
+odin free,76,true,opening_tempo,342,261,76.32
+odin free,76,true,strike_targeting,345,6,1.74
+odin free,76,true,transport_banking,809,432,53.4
+Auri,42,false,diplomacy_pressure,8757,458,5.23
+Auri,42,false,economy_cadence,3377,745,22.06
 Auri,42,false,finish_pressure,27,24,88.89
-Auri,42,false,frontier_conversion,1732,994,57.39
-Auri,42,false,naval_control,11194,2356,21.05
-Auri,42,false,opening_tempo,898,692,77.06
-Auri,42,false,strike_targeting,3351,60,1.79
-Auri,42,false,transport_banking,6133,1048,17.09
-James Boggs,1,false,diplomacy_pressure,3672,272,7.41
-James Boggs,1,false,economy_cadence,1556,316,20.31
+Auri,42,false,frontier_conversion,1643,970,59.04
+Auri,42,false,naval_control,10527,2174,20.65
+Auri,42,false,opening_tempo,894,691,77.29
+Auri,42,false,strike_targeting,3006,60,2.0
+Auri,42,false,transport_banking,5742,1021,17.78
+James Boggs,1,false,diplomacy_pressure,3621,272,7.51
+James Boggs,1,false,economy_cadence,1201,300,24.98
 James Boggs,1,false,finish_pressure,68,48,70.59
-James Boggs,1,false,frontier_conversion,501,242,48.3
-James Boggs,1,false,naval_control,6510,2144,32.93
-James Boggs,1,false,opening_tempo,1351,752,55.66
-James Boggs,1,false,transport_banking,5188,1781,34.33
-RelhAlpha,1,false,diplomacy_pressure,6245,0,0.0
-RelhAlpha,1,false,economy_cadence,1883,287,15.24
-RelhAlpha,1,false,frontier_conversion,1482,499,33.67
-RelhAlpha,1,false,naval_control,5588,2221,39.75
-RelhAlpha,1,false,opening_tempo,1224,690,56.37
-RelhAlpha,1,false,strike_targeting,1824,21,1.15
-RelhAlpha,1,false,transport_banking,3811,0,0.0
-Richard Higgins,1,false,diplomacy_pressure,6453,2,0.03
-Richard Higgins,1,false,economy_cadence,1853,262,14.14
+James Boggs,1,false,frontier_conversion,485,239,49.28
+James Boggs,1,false,naval_control,5770,1950,33.8
+James Boggs,1,false,opening_tempo,1342,742,55.29
+James Boggs,1,false,transport_banking,4463,1607,36.01
+RelhAlpha,1,false,diplomacy_pressure,5945,0,0.0
+RelhAlpha,1,false,economy_cadence,1915,294,15.35
+RelhAlpha,1,false,frontier_conversion,1529,508,33.22
+RelhAlpha,1,false,naval_control,5272,1917,36.36
+RelhAlpha,1,false,opening_tempo,1185,690,58.23
+RelhAlpha,1,false,strike_targeting,1523,21,1.38
+RelhAlpha,1,false,transport_banking,3454,0,0.0
+Richard Higgins,1,false,diplomacy_pressure,6241,2,0.03
+Richard Higgins,1,false,economy_cadence,1792,253,14.12
 Richard Higgins,1,false,finish_pressure,5,2,40.0
-Richard Higgins,1,false,frontier_conversion,1968,507,25.76
-Richard Higgins,1,false,naval_control,5288,2273,42.98
-Richard Higgins,1,false,opening_tempo,1208,689,57.04
-Richard Higgins,1,false,strike_targeting,1805,13,0.72
-Richard Higgins,1,false,transport_banking,4024,0,0.0
-Sefirot,1,false,diplomacy_pressure,4334,112,2.58
-Sefirot,1,false,economy_cadence,2694,610,22.64
-Sefirot,1,false,finish_pressure,71,41,57.75
-Sefirot,1,false,frontier_conversion,527,367,69.64
-Sefirot,1,false,naval_control,4900,1568,32.0
-Sefirot,1,false,opening_tempo,1127,606,53.77
-Sefirot,1,false,transport_banking,2905,866,29.81
-Sefirot,21,false,diplomacy_pressure,101,4,3.96
-Sefirot,21,false,economy_cadence,60,13,21.67
-Sefirot,21,false,frontier_conversion,29,24,82.76
-Sefirot,21,false,naval_control,24,1,4.17
-Sefirot,21,false,opening_tempo,56,25,44.64
-Sefirot,21,false,transport_banking,8,1,12.5
-daveey,13,false,diplomacy_pressure,4200,113,2.69
-daveey,13,false,economy_cadence,1400,324,23.14
-daveey,13,false,finish_pressure,5,3,60.0
-daveey,13,false,frontier_conversion,511,347,67.91
-daveey,13,false,naval_control,3939,1214,30.82
-daveey,13,false,opening_tempo,250,190,76.0
-daveey,13,false,strike_targeting,145,0,0.0
-daveey,13,false,transport_banking,1758,651,37.03
+Richard Higgins,1,false,frontier_conversion,1962,506,25.79
+Richard Higgins,1,false,naval_control,5122,2187,42.7
+Richard Higgins,1,false,opening_tempo,1167,685,58.7
+Richard Higgins,1,false,strike_targeting,1785,13,0.73
+Richard Higgins,1,false,transport_banking,3841,0,0.0
+Sefirot,1,false,diplomacy_pressure,4124,107,2.59
+Sefirot,1,false,economy_cadence,2439,571,23.41
+Sefirot,1,false,finish_pressure,49,29,59.18
+Sefirot,1,false,frontier_conversion,410,321,78.29
+Sefirot,1,false,naval_control,4493,1500,33.39
+Sefirot,1,false,opening_tempo,1052,568,53.99
+Sefirot,1,false,transport_banking,2517,803,31.9
+Sefirot,21,false,diplomacy_pressure,211,6,2.84
+Sefirot,21,false,economy_cadence,130,27,20.77
+Sefirot,21,false,frontier_conversion,45,34,75.56
+Sefirot,21,false,naval_control,130,20,15.38
+Sefirot,21,false,opening_tempo,96,49,51.04
+Sefirot,21,false,transport_banking,38,10,26.32
+daveey,13,false,diplomacy_pressure,2878,78,2.71
+daveey,13,false,economy_cadence,1131,266,23.52
+daveey,13,false,finish_pressure,3,2,66.67
+daveey,13,false,frontier_conversion,406,273,67.24
+daveey,13,false,naval_control,2630,759,28.86
+daveey,13,false,opening_tempo,203,152,74.88
+daveey,13,false,transport_banking,1253,458,36.55
 daveey,16,false,diplomacy_pressure,3161,46,1.46
 daveey,16,false,economy_cadence,1412,163,11.54
 daveey,16,false,finish_pressure,3,2,66.67
@@ -144,33 +143,33 @@ daveey,17,false,naval_control,1223,186,15.21
 daveey,17,false,opening_tempo,157,105,66.88
 daveey,17,false,strike_targeting,77,0,0.0
 daveey,17,false,transport_banking,737,94,12.75
-daveey,18,false,diplomacy_pressure,1634,59,3.61
-daveey,18,false,economy_cadence,429,116,27.04
+daveey,18,false,diplomacy_pressure,1655,59,3.56
+daveey,18,false,economy_cadence,445,118,26.52
 daveey,18,false,finish_pressure,5,4,80.0
-daveey,18,false,frontier_conversion,197,134,68.02
-daveey,18,false,naval_control,1554,361,23.23
-daveey,18,false,opening_tempo,117,81,69.23
+daveey,18,false,frontier_conversion,201,136,67.66
+daveey,18,false,naval_control,1574,364,23.13
+daveey,18,false,opening_tempo,133,92,69.17
 daveey,18,false,strike_targeting,39,0,0.0
-daveey,18,false,transport_banking,767,237,30.9
-docxology,1,false,diplomacy_pressure,6774,0,0.0
-docxology,1,false,economy_cadence,3415,544,15.93
+daveey,18,false,transport_banking,770,237,30.78
+docxology,1,false,diplomacy_pressure,6286,0,0.0
+docxology,1,false,economy_cadence,3257,525,16.12
 docxology,1,false,finish_pressure,9,9,100.0
-docxology,1,false,frontier_conversion,76,76,100.0
-docxology,1,false,naval_control,5836,1726,29.58
-docxology,1,false,opening_tempo,1263,640,50.67
-docxology,1,false,transport_banking,4813,1620,33.66
-katanasan,33,false,diplomacy_pressure,6494,855,13.17
-katanasan,33,false,economy_cadence,3298,1292,39.18
-katanasan,33,false,frontier_conversion,2835,326,11.5
-katanasan,33,false,naval_control,11677,3363,28.8
-katanasan,33,false,opening_tempo,956,715,74.79
+docxology,1,false,frontier_conversion,74,74,100.0
+docxology,1,false,naval_control,5365,1558,29.04
+docxology,1,false,opening_tempo,1243,610,49.07
+docxology,1,false,transport_banking,4388,1455,33.16
+katanasan,33,false,diplomacy_pressure,6292,796,12.65
+katanasan,33,false,economy_cadence,3258,1259,38.64
+katanasan,33,false,frontier_conversion,2778,336,12.1
+katanasan,33,false,naval_control,11141,3197,28.7
+katanasan,33,false,opening_tempo,956,710,74.27
 katanasan,33,false,strike_targeting,127,0,0.0
-katanasan,33,false,transport_banking,5551,1042,18.77
-odin free,76,false,diplomacy_pressure,10689,148,1.38
-odin free,76,false,economy_cadence,2395,776,32.4
-odin free,76,false,finish_pressure,9,9,100.0
-odin free,76,false,frontier_conversion,2250,758,33.69
-odin free,76,false,naval_control,10331,4453,43.1
-odin free,76,false,opening_tempo,881,698,79.23
+katanasan,33,false,transport_banking,5309,1039,19.57
+odin free,76,false,diplomacy_pressure,9926,111,1.12
+odin free,76,false,economy_cadence,2370,763,32.19
+odin free,76,false,finish_pressure,9,8,88.89
+odin free,76,false,frontier_conversion,2212,747,33.77
+odin free,76,false,naval_control,9591,4211,43.91
+odin free,76,false,opening_tempo,839,676,80.57
 odin free,76,false,strike_targeting,35,1,2.86
-odin free,76,false,transport_banking,4675,2217,47.42
+odin free,76,false,transport_banking,4125,1982,48.05
