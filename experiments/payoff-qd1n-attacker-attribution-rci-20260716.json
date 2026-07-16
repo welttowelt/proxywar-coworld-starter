@@ -1,0 +1,413 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-07-16T22:23:22.949Z",
+  "candidate": "attacker-attribution",
+  "parent": "main-workshop",
+  "rows": 16,
+  "arms": {
+    "attacker-attribution": {
+      "matches": 8,
+      "wins": 2,
+      "win_rate": 0.25,
+      "beta_posterior": {
+        "alpha": 3,
+        "beta": 7,
+        "mean": 0.3
+      },
+      "mean_score": 0.25,
+      "mean_final_tiles": 239430.9,
+      "branch_reach_runs": 5,
+      "marker_count": 14,
+      "decisions": 538,
+      "accepted_decisions": 538,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "main-workshop": {
+      "matches": 8,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 9,
+        "mean": 0.1
+      },
+      "mean_score": 0,
+      "mean_final_tiles": 24220.3,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 544,
+      "accepted_decisions": 544,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    }
+  },
+  "payoff_matrix": {
+    "attacker-attribution": {
+      "local-8p-alternating-workshop": {
+        "matches": 8,
+        "wins": 2,
+        "win_rate": 0.25,
+        "beta_posterior": {
+          "alpha": 3,
+          "beta": 7,
+          "mean": 0.3
+        },
+        "mean_score": 0.25,
+        "mean_final_tiles": 239430.9,
+        "branch_reach_runs": 5,
+        "marker_count": 14,
+        "decisions": 538,
+        "accepted_decisions": 538,
+        "accepted_rate": 1,
+        "holds": 0,
+        "rejected_decisions": 0
+      }
+    },
+    "main-workshop": {
+      "local-8p-alternating-workshop": {
+        "matches": 8,
+        "wins": 0,
+        "win_rate": 0,
+        "beta_posterior": {
+          "alpha": 1,
+          "beta": 9,
+          "mean": 0.1
+        },
+        "mean_score": 0,
+        "mean_final_tiles": 24220.3,
+        "branch_reach_runs": 0,
+        "marker_count": 0,
+        "decisions": 544,
+        "accepted_decisions": 544,
+        "accepted_rate": 1,
+        "holds": 0,
+        "rejected_decisions": 0
+      }
+    }
+  },
+  "contexts": {
+    "attacker-attribution | local-8p-alternating-workshop | Asia | seat 0": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0,
+      "mean_final_tiles": 0,
+      "branch_reach_runs": 1,
+      "marker_count": 3,
+      "decisions": 76,
+      "accepted_decisions": 76,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "main-workshop | local-8p-alternating-workshop | Asia | seat 1": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0,
+      "mean_final_tiles": 0,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 27,
+      "accepted_decisions": 27,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "attacker-attribution | local-8p-alternating-workshop | Asia | seat 2": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0,
+      "mean_final_tiles": 155194,
+      "branch_reach_runs": 1,
+      "marker_count": 6,
+      "decisions": 86,
+      "accepted_decisions": 86,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "main-workshop | local-8p-alternating-workshop | Asia | seat 3": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0,
+      "mean_final_tiles": 25199,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 86,
+      "accepted_decisions": 86,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "attacker-attribution | local-8p-alternating-workshop | Asia | seat 4": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0,
+      "mean_final_tiles": 0,
+      "branch_reach_runs": 1,
+      "marker_count": 1,
+      "decisions": 33,
+      "accepted_decisions": 33,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "main-workshop | local-8p-alternating-workshop | Asia | seat 5": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0,
+      "mean_final_tiles": 11054,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 86,
+      "accepted_decisions": 86,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "attacker-attribution | local-8p-alternating-workshop | Asia | seat 6": {
+      "matches": 1,
+      "wins": 1,
+      "win_rate": 1,
+      "beta_posterior": {
+        "alpha": 2,
+        "beta": 1,
+        "mean": 0.6667
+      },
+      "mean_score": 1,
+      "mean_final_tiles": 865104,
+      "branch_reach_runs": 1,
+      "marker_count": 3,
+      "decisions": 86,
+      "accepted_decisions": 86,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "main-workshop | local-8p-alternating-workshop | Asia | seat 7": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0,
+      "mean_final_tiles": 107,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 86,
+      "accepted_decisions": 86,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "main-workshop | local-8p-alternating-workshop | Asia | seat 0": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0,
+      "mean_final_tiles": 132695,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 95,
+      "accepted_decisions": 95,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "attacker-attribution | local-8p-alternating-workshop | Asia | seat 1": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0,
+      "mean_final_tiles": 0,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 26,
+      "accepted_decisions": 26,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "main-workshop | local-8p-alternating-workshop | Asia | seat 2": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0,
+      "mean_final_tiles": 24707,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 95,
+      "accepted_decisions": 95,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "attacker-attribution | local-8p-alternating-workshop | Asia | seat 3": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0,
+      "mean_final_tiles": 0,
+      "branch_reach_runs": 1,
+      "marker_count": 1,
+      "decisions": 41,
+      "accepted_decisions": 41,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "main-workshop | local-8p-alternating-workshop | Asia | seat 4": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0,
+      "mean_final_tiles": 0,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 31,
+      "accepted_decisions": 31,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "attacker-attribution | local-8p-alternating-workshop | Asia | seat 5": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0,
+      "mean_final_tiles": 10329,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 95,
+      "accepted_decisions": 95,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "main-workshop | local-8p-alternating-workshop | Asia | seat 6": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0,
+      "mean_final_tiles": 0,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 38,
+      "accepted_decisions": 38,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "attacker-attribution | local-8p-alternating-workshop | Asia | seat 7": {
+      "matches": 1,
+      "wins": 1,
+      "win_rate": 1,
+      "beta_posterior": {
+        "alpha": 2,
+        "beta": 1,
+        "mean": 0.6667
+      },
+      "mean_score": 1,
+      "mean_final_tiles": 884820,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 95,
+      "accepted_decisions": 95,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    }
+  },
+  "matched_pairs": {
+    "usable_pairs": 2,
+    "candidate_advantages": 2,
+    "parent_advantages": 0,
+    "ties": 0
+  },
+  "gates": {
+    "mechanism_reached": true,
+    "zero_rejected": true,
+    "zero_holds": true,
+    "matched_advantage": true,
+    "diagnostic_4_of_4": false,
+    "regression_20_of_20": false,
+    "promotion_eligible": false
+  },
+  "verdict": "NO_SUBMIT"
+}

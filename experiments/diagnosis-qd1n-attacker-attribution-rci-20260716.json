@@ -1,0 +1,165 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-16T22:24:46Z",
+  "policy": "qd1n:v77",
+  "candidate": "qd1n-rci8-attacker-attribution",
+  "status": "promising_local_no_submit",
+  "remote_state_changed": false,
+  "live_checkpoint": {
+    "completed_round": 420,
+    "round_rank": 3,
+    "round_episode_wins": 1,
+    "round_episodes": 4,
+    "round_mean_final_tiles": 218738,
+    "overall_rank": 1,
+    "overall_score": 45.13060676689005,
+    "current_first_place_streak": 0,
+    "rolling_ffa_wins": 19,
+    "rolling_ffa_matches": 72,
+    "rolling_ffa_win_rate": 0.2639,
+    "next_round_observed": 421
+  },
+  "post_test_live_refresh": {
+    "completed_round": 422,
+    "map": "World",
+    "round_rank": 3,
+    "round_episode_wins": 1,
+    "round_episodes": 4,
+    "round_mean_final_tiles": 158286,
+    "round_holds": 24,
+    "round_fallbacks": 204,
+    "current_first_place_streak": 0,
+    "rolling_ffa_wins": 17,
+    "rolling_ffa_matches": 72,
+    "rolling_ffa_win_rate": 0.2361,
+    "current_eight_round_field": {
+      "qd1n": { "wins": 6, "appearances": 29, "win_rate": 0.2069 },
+      "daveey": { "wins": 12, "appearances": 32, "win_rate": 0.375 },
+      "Auri": { "wins": 9, "appearances": 32, "win_rate": 0.2813 }
+    }
+  },
+  "field_profile": {
+    "rounds": [413, 420],
+    "qd1n": { "appearances": 26, "wins": 5, "win_rate": 0.1923 },
+    "daveey": { "appearances": 31, "wins": 9, "win_rate": 0.2903 },
+    "Auri": { "appearances": 31, "wins": 9, "win_rate": 0.2903 },
+    "qd1n_action_mix": {
+      "decisions": 3703,
+      "neutral_attack_rate": 0.1793,
+      "rival_attack_rate": 0.2187,
+      "neutral_boat_rate": 0.2047,
+      "naval_invasion_rate": 0.0597,
+      "fallbacks": 344,
+      "holds": 22,
+      "rejected": 0
+    }
+  },
+  "diagnosis": {
+    "bounded_replay_cell": "all four completed qd1n episodes in round 420 on Asia",
+    "protocol_fact": "ProxyWar 0.1.8 exposes ownState.incomingAttacks as a numeric count, attacker identities in observation.combat.incomingAttackPlayerIDs, and a per-rival visiblePlayers[].incomingAttack flag.",
+    "source_defect": "buildState read attacker identities only from ownState.incomingAttacks. A numeric count cannot identify an attacker, so incomingAttackerIDs stayed empty in current-protocol play.",
+    "disabled_existing_controls": [
+      "bounded retaliation weight in land and naval target scoring",
+      "immediate revocation of reciprocal or pending-alliance protection after betrayal",
+      "attacker-aware survival alliance and pressure history"
+    ],
+    "round_420_example": "In the eliminated Asia seat-four loss, the replay resolved simultaneous Auri and daveey pressure around a 35 percent neutral expansion order. This illustrates the need for named pressure telemetry, but does not by itself prove that attribution caused the loss.",
+    "causal_hypothesis": "Wiring the current protocol attacker IDs into the existing hostility model will redirect legal counterpressure without adding a new broad selector and will improve matched Asia conversion."
+  },
+  "candidate_change": {
+    "description": "Merge attacker IDs from combat.incomingAttackPlayerIDs, visible-player incomingAttack flags, and legacy structured incomingAttacks values; retain the numeric count for threat cadence.",
+    "marker": "ia1",
+    "marker_meaning": "the selected rival attack targets a currently attributed incoming attacker",
+    "scope": "one protocol adapter path, one observability marker, and one regression test",
+    "public_text": "existing short leetspeak reason with :ia1 suffix"
+  },
+  "verification": {
+    "red_regression": {
+      "name": "current protocol attacker ids activate immediate retaliation",
+      "before": "selected attack:bystander:10",
+      "expected": "attack:aggressor:10",
+      "after": "passed with ia1"
+    },
+    "unit_tests": { "passed": 84, "failed": 0 },
+    "candidate_image": {
+      "tag": "proxywar-agent-llm:qd1n-rci8-attacker-attribution-arm64",
+      "image_id": "sha256:f97635c7669ce8cb3cac8678c6a255522f0d779139cabc2a2aacbf3ddb34bd44",
+      "architecture": "arm64"
+    },
+    "parent_image": {
+      "tag": "proxywar-agent-llm:qd1n-rci6-collapse-cap-arm64",
+      "image_id": "sha256:7031d44bb464e2d810fff6fa9a473afd44aed5280b8f587ed7d2335d82b5c1cf",
+      "architecture": "arm64",
+      "note": "workshop parent at the current source baseline, not the exact live v77 image"
+    },
+    "qualifier": {
+      "variant": "qualifier",
+      "decision_count": 34,
+      "accepted_decisions": 34,
+      "rejected_decisions": 0,
+      "holds": 0,
+      "replay_sha256": "5c0eab606e4f7029d2ec04d0e3464dd468c7f349c93e0db74f0b4779c841f12e"
+    },
+    "matched_asia": {
+      "variant": "tournament-8p-asia",
+      "orientations": 2,
+      "candidate_wins": 2,
+      "parent_wins": 0,
+      "candidate_marker_executions": 14,
+      "candidate_branch_reach_seats": 5,
+      "candidate_decisions": 538,
+      "parent_decisions": 544,
+      "accepted_decisions": 1082,
+      "rejected_decisions": 0,
+      "holds": 0,
+      "orientation_a": {
+        "candidate_slots": [0, 2, 4, 6],
+        "parent_slots": [1, 3, 5, 7],
+        "winner_slot": 6,
+        "winner_arm": "candidate",
+        "winner_tiles": 865104,
+        "turn_count": 8700,
+        "marker_executions": 13,
+        "replay_sha256": "6b8627a991686d45b50b8b92f445b27da368554853fb96326098c1d9c1a85b5c"
+      },
+      "orientation_b": {
+        "candidate_slots": [1, 3, 5, 7],
+        "parent_slots": [0, 2, 4, 6],
+        "winner_slot": 7,
+        "winner_arm": "candidate",
+        "winner_tiles": 884820,
+        "turn_count": 9600,
+        "marker_executions": 1,
+        "replay_sha256": "ec521967cf2d858d03c3844c3e2fb122d0bcdf0ce046ce07b5024ce3ecc050c3"
+      }
+    },
+    "payoff_matrix": {
+      "path": "experiments/payoff-qd1n-attacker-attribution-rci-20260716.json",
+      "candidate_win_rate": 0.25,
+      "parent_win_rate": 0,
+      "candidate_mean_final_tiles": 239430.9,
+      "parent_mean_final_tiles": 24220.3,
+      "usable_pairs": 2,
+      "candidate_advantages": 2,
+      "parent_advantages": 0
+    }
+  },
+  "promotion_gates": {
+    "mechanism_reached": true,
+    "zero_rejected": true,
+    "zero_holds": true,
+    "matched_advantage": true,
+    "diagnostic_4_of_4": false,
+    "regression_20_of_20": false,
+    "promotion_eligible": false
+  },
+  "verdict": {
+    "result": "NO_SUBMIT",
+    "reason": "The candidate has a clean two-orientation local Asia advantage, but the hosted 4/4 and 20/20 map-and-seat gates are still open.",
+    "source_action": "retain the implementation as the leading workshop arm",
+    "upload": false,
+    "submission": false,
+    "league_change": false,
+    "next_test": "Run the candidate against the exact live-v77 parent and then World/Pangaea mirrored cells before any production-architecture upload."
+  }
+}

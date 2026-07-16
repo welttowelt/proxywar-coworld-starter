@@ -859,3 +859,37 @@ claim: ratio alone is not enough to choose the conversion target. The selector
 and its test were removed, v77 was restored, and no image was uploaded or
 submitted. The full record is
 `experiments/diagnosis-qd1n-early-conversion-rci-20260716.json`.
+
+## Qd1n attacker-attribution RCI, 2026-07-16
+
+Round 420 placed qd1n third on Asia with one win in four episodes. In the
+current eight-round field, qd1n won `5/26` appearances (`19.23%`), while daveey
+and Auri each won `9/31` (`29.03%`). A bounded audit of the four round-420
+replays led to the current ProxyWar `0.1.8` protocol contract. It exposes the
+incoming-attack count at `ownState.incomingAttacks`, but sends the attacker IDs
+through `combat.incomingAttackPlayerIDs` and `visiblePlayers[].incomingAttack`.
+Qd1n tried to derive identities from the numeric count, leaving its existing
+retaliation, betrayal, and survival-history controls without named attackers.
+
+Rci-8 merges the current-protocol IDs and visible-player fallback into the
+existing history model. It adds no new broad selector. The `ia1` marker records
+only a selected rival attack against a currently attributed attacker. The red
+regression selected the softer bystander before the repair and the aggressor
+after it; the complete suite passed `84/84`. The current-package qualifier
+accepted `34/34` decisions with zero holds and zero rejections.
+
+Two local `tournament-8p-asia` mirrors swapped candidate and parent seats. The
+candidate won both orientations, at slots six and seven, with 865,104 and
+884,820 tiles. The parent won neither. `ia1` executed fourteen times across
+five candidate seats; all `1,082/1,082` decisions were accepted with zero holds
+and zero rejections. The generated payoff matrix records two candidate pair
+advantages and zero parent advantages.
+
+This is a direct mechanism and matched local advantage, but it is not promotion
+eligible. Local Bedrock was unavailable for both arms, the comparison parent is
+the current workshop baseline rather than the exact live-v77 image, and the
+hosted `4/4` plus `20/20` map-and-seat gates remain open. No image was uploaded,
+no policy was submitted, and qd1n:v77 remains the sole live champion. Evidence:
+`experiments/diagnosis-qd1n-attacker-attribution-rci-20260716.json`,
+`experiments/ledger-qd1n-attacker-attribution-rci-20260716.ndjson`, and
+`experiments/payoff-qd1n-attacker-attribution-rci-20260716.json`.

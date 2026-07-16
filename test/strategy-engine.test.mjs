@@ -19,6 +19,7 @@ function observation({
   troopRatio = 0.8,
   rivals = [],
   incomingAttacks = [],
+  incomingAttackPlayerIDs = [],
   profile = "",
   objective = null,
 } = {}) {
@@ -34,6 +35,7 @@ function observation({
       borderTiles: 100,
       incomingAttacks,
     },
+    combat: { incomingAttackPlayerIDs },
     visiblePlayers: rivals.map((rival) => ({
       isAlive: true,
       sharesBorder: true,
@@ -300,6 +302,53 @@ test("recent aggressor pressure outranks a slightly softer bystander", () => {
     choose([aggressorAttack, bystanderAttack], obs, null, history).id,
     aggressorAttack.id,
   );
+});
+
+test("current protocol attacker ids activate immediate retaliation", () => {
+  const aggressorAttack = action("attack:aggressor:10", "attack", "Attack Aggressor 10%");
+  const bystanderAttack = action("attack:bystander:10", "attack", "Attack Bystander 10%");
+  const obs = observation({
+    tileShare: 0.2,
+    incomingAttacks: 1,
+    incomingAttackPlayerIDs: ["aggressor"],
+    rivals: [
+      {
+        id: "aggressor",
+        name: "Aggressor",
+        tileShare: 0.12,
+        relativeTroopRatio: 1.1,
+        incomingAttack: true,
+      },
+      { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
+    ],
+  });
+
+  const selected = choose([aggressorAttack, bystanderAttack], obs);
+  assert.equal(selected.id, aggressorAttack.id);
+  assert.equal(selected.policyMarker, "ia1");
+});
+
+test("visible incoming flag backs up an absent combat attacker list", () => {
+  const aggressorAttack = action("attack:aggressor:10", "attack", "Attack Aggressor 10%");
+  const bystanderAttack = action("attack:bystander:10", "attack", "Attack Bystander 10%");
+  const obs = observation({
+    tileShare: 0.2,
+    incomingAttacks: 1,
+    rivals: [
+      {
+        id: "aggressor",
+        name: "Aggressor",
+        tileShare: 0.12,
+        relativeTroopRatio: 1.1,
+        incomingAttack: true,
+      },
+      { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
+    ],
+  });
+
+  const selected = choose([aggressorAttack, bystanderAttack], obs);
+  assert.equal(selected.id, aggressorAttack.id);
+  assert.equal(selected.policyMarker, "ia1");
 });
 
 test("naval pressure also prefers an observed aggressor", () => {

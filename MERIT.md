@@ -58,6 +58,7 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | qd1n rci-5 local | rounds 391-410: `110` target marks in `12` losses and zero winning episodes; official engine applies `-40` target relation per mark; first rewrite rejected for spreading `10` marks over more rivals; corrected exact mirror cut marks `10->3`, holds `2->9`, with the same winner, turn, and tiles; `81/81` tests; `645/645` accepted | mechanism and runtime passed; no local win lift, no upload, no league change |
 | qd1n rci-6 local | rounds 398-417: collapse-proxy positions used `57` neutral 35% attacks across `19` losses and zero across wins; an alliance-first rewrite fired `sv1` four times but lost to the parent; corrected `cp1` cap passed `82/82` tests and an exact linux/amd64 `34/34` qualifier; matched Pangaea had `cp1=0`, `645/645` accepted, and the parent won slot three with the prior exact turn and tiles | bounded source correction retained; reach and `4/4` failed, so no upload or league change |
 | qd1n rci-7 local | rounds 411-418: `5/24` wins versus daveey `11/31`; loss replays contained `100` skipped favorable conversion windows versus `3` in wins; ratio-only `cv2` passed `83/83` tests and `34/34` qualifier orders; matched Pangaea reached `cv2` twelve times with `660/660` accepted, but parent slot eight won 377,432 tiles and the best candidate survivor held 42,903 | hypothesis rejected; source restored, no upload, no submission, no league change |
+| qd1n rci-8 local | current ProxyWar `0.1.8` sends attacker identities separately from the numeric incoming-attack count, while qd1n discarded those identity fields; `ia1` restores the existing hostility path, passed `84/84` tests and a `34/34` qualifier, then won both seat-swapped Asia mirrors with `14` marked executions, `1,082/1,082` accepted decisions, zero holds, and zero rejections | first clean two-orientation workshop advantage; retained locally, but `4/4` hosted and `20/20` regression remain open, so no upload, submission, or league change |
 
 Detailed evidence lives in [`experiments/`](experiments/README.md). Public round
 statistics live on the [dashboard](https://welttowelt.github.io/proxywar-coworld-starter/).
@@ -98,3 +99,26 @@ farming. The matched Pangaea gate reached the branch twelve times, but the
 parent won and the candidate produced no winner. The candidate was removed and
 v77 remains the exact live source. No v78 exists; the streak remains `0/1000`
 at the round-418 checkpoint.
+
+Round 420 placed qd1n third with one win across four Asia episodes. The refreshed
+twenty-round window is `19/72` episode wins (`26.39%`), and the official streak
+is `0/1000`. Historical rating still lists Odin Free first overall at `45.1306`,
+but the current eight-round field gives qd1n `5/26` wins against `9/31` for both
+daveey and Auri.
+
+Rci-8 found a protocol-adapter defect instead of adding another combat rule.
+ProxyWar `0.1.8` exposes `ownState.incomingAttacks` as a count and sends the
+attacker IDs through `combat.incomingAttackPlayerIDs` plus per-rival flags.
+Qd1n read only the count, so the existing retaliation and betrayal logic lost
+the attacker's identity. The `ia1` candidate merges the current fields into the
+existing history model. It won both seat-swapped local Asia mirrors; the parent
+won neither. This passes mechanism, runtime, and matched-advantage gates only.
+No v78 was uploaded or submitted, and v77 remains the sole live champion.
+
+The post-test refresh closed round 422 on World at official rank three, again
+with one win across four episodes. Qd1n averaged 158,286 tiles, recorded 24
+holds and 204 fallbacks, and remains at a `0/1000` first-place streak. Across
+rounds 415-422, qd1n won `6/29` appearances (`20.69%`) while daveey won `12/32`
+(`37.5%`). Overall rating still shows Odin Free first at `45.1306`; that
+historical lead does not satisfy current dominance or authorize bypassing the
+unfinished rci-8 gates.

@@ -344,3 +344,20 @@ sh0rt bl4d3: str1k3 4 r1v4l 4t 1.30x b3f0r3 m0r3 n3utr4l l4nd.
 f13ld w1th 377,432 t1l3s; th3 b3st cv2 s34t h3ld 42,903. RCI br0k3
 th3 bl4d3 4nd k3pt th3 l3ss0n. R4t10 4l0n3 d03s n0t ch00s3 th3 pr3y.
 V77 h0lds. N0 v78.
+
+## the nameless attack
+
+Qd1n could count the blows but could not name the hand. ProxyWar carried the
+incoming count in one field and the attacker identities in another; the live
+engine read only the count. Its retaliation weight, betrayal release, and
+survival memory therefore fought without attribution.
+
+`ia1` restores the missing names without inventing a new doctrine. The mark
+appears only when Qd1n's chosen rival strike answers a currently attributed
+attacker. Across two seat-swapped Asia fields it appeared fourteen times. The
+candidate took both crowns with 865,104 and 884,820 tiles; the workshop parent
+took none. Every one of 1,082 orders landed, with no hold and no rejection.
+
+This is the strongest local direction since Qd1n entered the field, but it is
+not yet a live succession. The hosted four and the twenty-map regression still
+guard the gate. V77 remains champion; no v78 exists.

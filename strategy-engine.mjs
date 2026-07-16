@@ -43,6 +43,10 @@ function incomingAttackerIDs(value) {
       entry.forEach(visit);
       return;
     }
+    if (typeof entry === "string") {
+      ids.add(clean(entry).toLowerCase());
+      return;
+    }
     if (!entry || typeof entry !== "object") return;
     const direct = entry.attackerID ?? entry.attackerId ?? entry.sourcePlayerID ??
       entry.sourcePlayerId ?? entry.sourceID ?? entry.sourceId;
@@ -114,18 +118,25 @@ export function avoidActionIDs(history) {
 
 export function buildState(observation, actions, history = []) {
   const own = observation?.ownState || {};
+  const visiblePlayers = (observation?.visiblePlayers || [])
+    .filter((player) => player && player.isAlive);
+  const attributedIncomingAttackerIDs = [...new Set([
+    ...incomingAttackerIDs(own.incomingAttacks),
+    ...incomingAttackerIDs(observation?.combat?.incomingAttackPlayerIDs),
+    ...visiblePlayers
+      .filter((player) => player.incomingAttack === true)
+      .map((player) => playerID(player).toLowerCase()),
+  ])].filter(Boolean);
   const self = {
     tileShare: finiteNumber(own.tileShare),
     troops: finiteNumber(own.troops),
     troopRatio: finiteNumber(own.troopRatio),
     gold: own.gold,
     borderTiles: finiteNumber(own.borderTiles),
-    incomingAttacks: own.incomingAttacks,
-    incomingAttackerIDs: incomingAttackerIDs(own.incomingAttacks),
+    incomingAttacks: own.incomingAttacks ?? attributedIncomingAttackerIDs,
+    incomingAttackerIDs: attributedIncomingAttackerIDs,
   };
-  const rivals = (observation?.visiblePlayers || [])
-    .filter((player) => player && player.isAlive)
-    .map((player) => ({
+  const rivals = visiblePlayers.map((player) => ({
       id: playerID(player),
       name: clean(player.name),
       tileShare: finiteNumber(player.tileShare),
@@ -609,6 +620,10 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (defensiveBuild) return defensiveBuild;
 
   const rivalAttack = chooseRivalAttack(actions, state, plan, history, avoid);
+  const attributedRivalAttack = rivalAttack?.action &&
+    (state.self.incomingAttackerIDs || []).includes(rivalAttack.rival.id.toLowerCase())
+    ? { ...rivalAttack.action, policyMarker: "ia1" }
+    : rivalAttack?.action;
   const collapsing = territoryCollapsing(state, history);
   const neutralAttack = chooseNeutralAttack(
     actions,
@@ -647,14 +662,14 @@ export function chooseAction(actions, state, plan = null, history = []) {
     (entry) => entry.policyMarker === "cv1",
   ) >= 6;
   if (!collapsing && conversionReady && boatConversionStalled(state, history)) {
-    const conversion = rivalAttack?.action || chooseUtility(actions, plan, history) ||
+    const conversion = attributedRivalAttack || chooseUtility(actions, plan, history) ||
       (sinceBuild >= 3 ? build : null) ||
       chooseBoat(actions, state, history, avoid, false, true);
     if (conversion) return { ...conversion, policyMarker: "cv1" };
   }
 
   if (neutralExpansionStalled(state, history)) {
-    if (rivalAttack?.action) return rivalAttack.action;
+    if (attributedRivalAttack) return attributedRivalAttack;
     const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
     if (boatStreak >= 2 && build) return build;
     const escapeBoat = chooseBoat(actions, state, history, avoid);
@@ -666,7 +681,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (state.self.tileShare < 0.12 && neutralAttack && threatCount === 0 && !collapsing) {
     return neutralAttack;
   }
-  if (rivalAttack?.action) return rivalAttack.action;
+  if (attributedRivalAttack) return attributedRivalAttack;
   if (neutralAttack) return neutralAttack;
   if (build && sinceBuild >= 5) return build;
 
