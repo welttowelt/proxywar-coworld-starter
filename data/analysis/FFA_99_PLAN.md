@@ -144,6 +144,32 @@ commitments use three bands: 10% below 0.75 reserve, at most 25% from 0.75 to
 post-opening cliff while leaving target choice and full-bank finish pressure
 unchanged. Promotion still requires 4/4 and then 20/20 regression.
 
+## Qd1n social-efficiency candidate
+
+The rounds 391-410 window contains 110 qd1n target marks across twelve losing
+episodes and none in a winning episode. Only eighteen were first marks for an
+episode-target pair. Replay ordering classifies sixteen more as retaliation
+after the same rival attacked qd1n; the other 76 were nonretaliatory repeats.
+The waste concentrates in Pangaea seat 3, Pangaea seat 4, and World seat 4.
+Those profiles account for 105 of 110 marks and zero episode wins.
+
+OpenFront's source gives the mechanism a concrete cost. A target mark tells
+allies whom to attack, and execution reduces that target's relation toward the
+requestor by 40. Relations clamp at -100. The first rewrite blocked same-target
+repeats but simply rotated all ten actions across more rivals, so RCI rejected
+it. The corrected candidate keeps one live campaign target. A dead or allied
+target permits a fresh `fr1`; renewed incoming hostility permits `rt1`.
+
+The exact current-package replay held all 645 decisions, winner, turn count, and
+final tiles constant. Parent target marks fell from ten to three, all three were
+fresh, and holds rose from two to nine. The 70% action cut matches the historical
+lower-bound projection of 76/110 nonretaliatory repeats. This proves the social
+mechanism and runtime isolation, not a win-rate lift.
+
+This candidate is locally gated only. Qd1n:v77 remains the live champion after
+round 411 rank one and round 412 rank two. Do not replace it until hosted `4/4`
+and separate `20/20` regression gates complete.
+
 ## Promotion gate
 
 First run a four-episode diagnostic on the exact Round 221 Asia seat-3 roster.

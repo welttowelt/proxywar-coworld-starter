@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "name": "qd1n-social-discipline-rci5",
+    "codename": "sk4ld-v4rd",
+    "live_predecessor_ref": "qd1n:v77",
+    "source_parent_commit": "019cfd2",
+    "source_commit": "2fe750177ed37ba102bb6e197220b74c2dd5c9fe",
+    "local_test_image": "proxywar-agent-llm:qd1n-rci5-social-discipline",
+    "local_test_image_id": "sha256:b5f6e5c0c4f24ba518a4740a71185c8c56e4bce1654d97c525cdb5e050b96107",
+    "platform": "linux/amd64",
+    "uploaded": false,
+    "submitted": false
+  },
+  "live_snapshot": {
+    "completed_round": 412,
+    "round_rank": 2,
+    "round_score": 0.3333333333333333,
+    "round_episode_wins": 1,
+    "round_episodes": 3,
+    "round_mean_final_tiles": 115728.7,
+    "round_holds": 2,
+    "overall_rank": 1,
+    "overall_score": 45.13060676689005,
+    "rolling_episode_wins": 24,
+    "rolling_episodes": 78,
+    "rolling_win_rate_pct": 30.77,
+    "current_first_place_streak": 0,
+    "target_first_place_streak": 1000,
+    "champion_ref": "qd1n:v77",
+    "running_round": 413,
+    "running_round_roster_contains_v77": true,
+    "v77_rounds": [
+      { "round": 411, "rank": 1, "wins": 1, "completed_episodes": 3 },
+      { "round": 412, "rank": 2, "wins": 1, "completed_episodes": 3 }
+    ]
+  },
+  "replay_diagnosis": {
+    "window": "completed rounds 391-410",
+    "policy_ref": "qd1n:v76",
+    "target_marks": 110,
+    "episodes_with_target_marks": 12,
+    "target_marks_in_winning_episodes": 0,
+    "unique_episode_targets": 18,
+    "same_episode_target_repeats": 92,
+    "counterfactual_classification": {
+      "first_target_in_episode": 12,
+      "later_target_switches": 6,
+      "retaliatory_same_target_repeat": 16,
+      "nonretaliatory_repeat_suppressed_by_candidate": 76,
+      "minimum_projected_cut_pct": 69.09,
+      "method": "A repeat is retaliatory when the same rival selected a hostile action against odin free after the preceding mark and before the repeat."
+    },
+    "concentration": {
+      "Pangaea_seat_3": { "marks": 46, "episodes": 2, "wins": 0 },
+      "Pangaea_seat_4": { "marks": 16, "episodes": 2, "wins": 0 },
+      "World_seat_4": { "marks": 43, "episodes": 5, "wins": 0 },
+      "other_profiles": { "marks": 5, "episodes": 3, "wins": 0 }
+    },
+    "latest_round_410_world_seat_4": {
+      "won": false,
+      "final_tiles": 1648,
+      "target_marks": 8,
+      "unique_targets": 2,
+      "docxology_marks": 6,
+      "daveey_marks": 2
+    },
+    "hard_profiles": {
+      "Pangaea_seat_4": { "wins": 0, "episodes": 7, "mean_final_tiles": 626 },
+      "World_seat_4": { "wins": 0, "episodes": 7, "mean_final_tiles": 40558 }
+    }
+  },
+  "official_rule_evidence": {
+    "target_mark_semantics": "The OpenFront English game text says a target mark is visible to all allies and coordinates attacks.",
+    "target_mark_source": "https://github.com/openfrontio/OpenFrontIO/blob/46162c0e279f8ce7f3f422759a9ebd29ec6b3639/resources/lang/en.json",
+    "execution_effect": "TargetPlayerExecution decreases the target player's relation toward the requestor by 40.",
+    "execution_source": "https://github.com/openfrontio/OpenFrontIO/blob/46162c0e279f8ce7f3f422759a9ebd29ec6b3639/src/core/execution/TargetPlayerExecution.ts",
+    "relation_bounds": "Relations clamp to [-100, 100], so three unopposed marks can reach maximum hostility from neutral.",
+    "cooldown_and_duration": "A mark lasts 100 ticks and the action cools down for 150 ticks; repeated legal marks are new escalation pulses, not simultaneous duplicates.",
+    "player_source": "https://github.com/openfrontio/OpenFrontIO/blob/46162c0e279f8ce7f3f422759a9ebd29ec6b3639/src/core/game/PlayerImpl.ts",
+    "config_source": "https://github.com/openfrontio/OpenFrontIO/blob/46162c0e279f8ce7f3f422759a9ebd29ec6b3639/src/core/configuration/Config.ts"
+  },
+  "rci": {
+    "problem": "When no tactical or stable alliance action remained, qd1n repeatedly marked the largest rival even without new hostility, creating an avoidable relation penalty in recurring losing profiles.",
+    "smallest_fix": "Keep one live campaign target. Permit a new target after the old target is eliminated or allied, and permit a repeat only after that rival attacks qd1n again.",
+    "preserved_boundaries": [
+      "All tactical actions and stable survival alliances keep their existing priority.",
+      "Allies, reciprocal partners, and fresh alliance-request targets remain protected.",
+      "A renewed attack reopens retaliatory pressure immediately."
+    ],
+    "replay_markers": {
+      "fr1": "fresh campaign mark",
+      "rt1": "retaliatory repeat after renewed hostility"
+    },
+    "boundary": {
+      "one_prior_nonhostile_mark": {
+        "v77_parent": "target:leader",
+        "rejected_rci5_v1": "target:other:fr1",
+        "corrected_rci5_v2": "hold"
+      },
+      "previous_campaign_target_eliminated": "target:new:fr1",
+      "previous_campaign_target_attacks_again": "target:old:rt1"
+    },
+    "critique_rewrite_iteration": {
+      "rejected_commit": "1bf91732f4bcf07373780058ec668101cefb101f",
+      "failure": "The first rewrite rotated repeats to fresh nonhostile rivals. In the exact full replay it kept all 10 target actions and increased unique actor-target pairs from 6 to 10.",
+      "correction": "The second rewrite blocks a new nonhostile target while the current campaign target remains alive and nonallied."
+    }
+  },
+  "cuts_considered": {
+    "implemented": "Remove nonretaliatory repeat marks and fresh-target rotation while a campaign target is still live, because replay concentration and the official -40 relation effect establish both reach and a direct cost.",
+    "not_delete_all_alliance_requests": "All 133 requests occur in losses, but weak-position selection confounds the outcome count and the action can still create legal protection. No new alliance rule was added.",
+    "not_delete_all_holds": "All 123 holds occur in losses, but a hold is safer than a social action that creates a known hostility penalty when every tactical option is exhausted.",
+    "not_restore_subhalf_naval_invasions": "The retained rci-3 boundary found zero sub-0.50 rival invasions among 464 historical winning invasions.",
+    "not_cut_core_tactics": "Attack, boat, build, upgrade, retreat, warship, and nuke actions all appear in winning episodes; outcome correlation alone does not justify removing them."
+  },
+  "verification": {
+    "syntax": "passed",
+    "diff_check": "passed",
+    "unit_tests": { "passed": 81, "failed": 0, "new_cases": 4 },
+    "container": { "build": "passed", "platform": "linux/amd64" },
+    "current_package": {
+      "coworld_id": "cow_15c39dab-eac1-4284-bf3e-bd723d4c2755",
+      "game_version": "0.1.8",
+      "coworld_cli_version": "0.1.30",
+      "bundled_qualifier": "passed with verified replay",
+      "candidate_qualifier": "passed with verified replay"
+    },
+    "full_8p_pangaea": {
+      "game_version": "0.1.8",
+      "map": "Pangaea",
+      "players": 8,
+      "bedrock_available": false,
+      "deterministic_fallback_decisions": 621,
+      "matched_parent": {
+        "image": "proxywar-agent-llm:qd1n-rci4-world-breakout",
+        "decisions": 645,
+        "accepted": 645,
+        "rejected": 0,
+        "target_marks": 10,
+        "unique_actor_target_pairs": 6,
+        "holds": 2,
+        "winner_slot": 3,
+        "turn_count": 8500,
+        "winner_tiles": 358927,
+        "replay_sha256": "307d5a8339c58ccfa2a718d0521f4a5c629c39e503d2c781ff9642c7a3417e26"
+      },
+      "rejected_rci5_v1": {
+        "target_marks": 10,
+        "unique_actor_target_pairs": 10,
+        "holds": 2,
+        "winner_slot": 3,
+        "turn_count": 8500,
+        "winner_tiles": 358927,
+        "replay_sha256": "a4b9fb8ce5f57df321982346df0e5db8ec4e6fe35dc795db8d00cc4ec7e1f6f0",
+        "verdict": "rejected because it spread the same hostility budget across more rivals"
+      },
+      "corrected_candidate": {
+        "decisions": 645,
+        "accepted": 645,
+        "rejected": 0,
+        "target_marks": 3,
+        "fresh_marks": 3,
+        "retaliatory_marks": 0,
+        "unique_actor_target_pairs": 3,
+        "holds": 9,
+        "winner_slot": 3,
+        "turn_count": 8500,
+        "winner_tiles": 358927,
+        "replay_sha256": "3febfbfa179d95e0a7acb51f578c7cb37d3326e104b99f893e984aba7ae69ed0"
+      },
+      "delta": {
+        "target_marks": -7,
+        "target_mark_cut_pct": 70.0,
+        "holds": 7,
+        "winner_or_final_tile_change": 0
+      }
+    }
+  },
+  "rci_verdict": {
+    "diagnosis": "confirmed",
+    "implementation": "unit, container, qualifier, exact matched-parent, and full current-package replay checks passed",
+    "local_direction": "The correction cut target marks by 70 percent with the exact same winner, turn count, and final tiles; it added seven holds and did not establish a win-rate lift.",
+    "standard_promotion_gate": "not completed: no hosted 4/4 or 20/20 regression",
+    "league_action": "none; qd1n:v77 remains champion after round 411 rank 1 and round 412 rank 2",
+    "sustained_win_goal_achieved": false
+  }
+}

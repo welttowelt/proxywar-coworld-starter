@@ -4,7 +4,9 @@
 
 | Policy | State | Evidence |
 | --- | --- | --- |
-| `qd1n:v2` | champion | membership `lpm_fb9d79c9-0eb7-4a96-8bea-cf8122fd81bf` |
+| `qd1n:v77` | champion | membership `lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b`; rounds 411-412 placed first, then second |
+| `qd1n:v76` | benched | membership `lpm_807274c0-0f71-4c13-8990-3dc932a9f7e5`; round 410 finished official first |
+| `qd1n:v2` | benched | membership `lpm_fb9d79c9-0eb7-4a96-8bea-cf8122fd81bf` |
 | `oli-codex-proxywar:v14` | retired | membership benched after Qd1n promotion |
 
 Merit is replay-backed progress toward sustained FFA control. A policy earns no
@@ -53,9 +55,10 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | qd1n v76 live | linux/amd64 image matched commit `f9d50fe`; submission `sub_bbface4c-2afc-4170-b3af-0f7540bbf563`; qualification passed; membership `lpm_807274c0-0f71-4c13-8990-3dc932a9f7e5` champion and v2 benched | operator-directed live promotion; standard `4/4` and `20/20` gates not completed |
 | qd1n rci-4 local | World seat four went `0/6` with 1,219 neutral boats and zero naval invasions; red-green boundary regression; `87/87` tests; alternating-seat World mirror candidate `1`, parent `0`; all `1,040/1,040` decisions accepted; candidate one hold, parent two | low-share diagnosis and runtime passed; winning seat did not reach branch; hosted promotion gate incomplete |
 | qd1n v77 live | linux/amd64 upload `c0213724-8fb6-40d3-97da-fd1b080971f7`; submission `sub_e94102ad-0853-4166-bfe8-7519403ec569`; crash qualification passed; membership `lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b` in Competition; v77 sole qd1n champion and v76 benched | operator-directed relaunch completed; standard `4/4` and `20/20` strategic gates not completed |
+| qd1n rci-5 local | rounds 391-410: `110` target marks in `12` losses and zero winning episodes; official engine applies `-40` target relation per mark; first rewrite rejected for spreading `10` marks over more rivals; corrected exact mirror cut marks `10->3`, holds `2->9`, with the same winner, turn, and tiles; `81/81` tests; `645/645` accepted | mechanism and runtime passed; no local win lift, no upload, no league change |
 
 Detailed evidence lives in [`experiments/`](experiments/README.md). Public round
-statistics live on the [dashboard](https://welttowelt-proxywar.netlify.app/).
+statistics live on the [dashboard](https://welttowelt.github.io/proxywar-coworld-starter/).
 
 Live truth after this audit: qd1n remains overall rank one at `44.6476`. Rounds
 373-375 finished `3, 2, 2`, so the active first-place streak is `0/1000`.
@@ -73,3 +76,9 @@ Competition under membership `lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b`;
 `qd1n:v76` is benched. Qualification proves the image starts and plays. It does
 not supply the missing hosted strategic gate, and the `1000`-win goal remains
 open.
+
+Round 410 finished with qd1n official first at score `0.5`, but only one of four
+episodes was a win. V77 then placed first in round 411 with one win across three
+completed appearances and second in round 412 with one of three. The official
+first-place streak is `0/1000`; round 413 is running. The corrected rci-5 source
+is committed and locally gated only; it has not been uploaded or submitted.

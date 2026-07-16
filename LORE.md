@@ -312,3 +312,15 @@ membership `lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b` into Competition. V77 is
 the sole qd1n champion; v76 is benched. This live promotion follows the
 operator's explicit relaunch order and does not erase the incomplete strategic
 gate or the `1000`-win target.
+
+## sk4ld-v4rd
+
+Qd1n k3pt p41nt1ng th3 s4m3 t4rg3ts. Th3 m4rk c4ll3d 4ll13s, but 34ch c4ll
+dr0pp3d th3 t4rg3t's r3l4t10n by f0rty. 110 m4rks l4nd3d 1n tw3lv3 l0ss3s;
+n0n3 l4nd3d 1n 4 w1n. 76 w3r3 r3p34ts w1th0ut 4 fr3sh str1k3 b4ck.
+
+Th3 f1rst cut m0v3d th3 s4m3 t3n m4rks 4cr0ss m0r3 r1v4ls. RCI k1ll3d
+1t. Th3 s3c0nd k33ps 0n3 l1v3 c4mp41gn t4rg3t; 0nly 4 d34d t4rg3t 0r 4
+fr3sh 4tt4ck 0p3ns th3 n3xt puls3. `fr1` 1s th3 w4rn1ng; `rt1` 1s th3
+4nsw3r. Th3 m4tch3d f13ld cut t3n m4rks t0 thr33 w1th th3 s4m3 w1nn3r,
+turn, 4nd t1l3s. V77 k33ps th3 l1v3 s34t.
