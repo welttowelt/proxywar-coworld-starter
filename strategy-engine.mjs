@@ -242,11 +242,20 @@ function pressureMarker(state, history, rival) {
       break;
     }
   }
-  if (lastPressure === -1) return "fr1";
+  if (lastPressure !== -1) {
+    const freshHostility = (state.self.incomingAttackerIDs || []).includes(rival.id.toLowerCase()) ||
+      history.slice(lastPressure + 1).some((entry) => rivalWasIncoming(entry, rival));
+    return freshHostility ? "rt1" : null;
+  }
 
-  const freshHostility = (state.self.incomingAttackerIDs || []).includes(rival.id.toLowerCase()) ||
-    history.slice(lastPressure + 1).some((entry) => rivalWasIncoming(entry, rival));
-  return freshHostility ? "rt1" : null;
+  const hasLiveCampaignTarget = history.some((entry) => {
+    if (entry.kind !== "target_player") return false;
+    return state.rivals.some((candidate) => !candidate.isAllied && (
+      entry.targetID === candidate.id.toLowerCase() ||
+      targetName(entry) === candidate.name.toLowerCase()
+    ));
+  });
+  return hasLiveCampaignTarget ? null : "fr1";
 }
 
 function stableAllianceRequests(actions) {

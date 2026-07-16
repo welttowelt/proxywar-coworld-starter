@@ -598,7 +598,7 @@ test("an isolated player pressures a rival instead of using a pending alliance",
   assert.equal(selected.policyMarker, "fr1");
 });
 
-test("pressure marks each nonhostile rival once instead of saturating relations", () => {
+test("pressure keeps one live campaign target instead of creating more enemies", () => {
   const targetLeader = {
     ...action("target:leader", "target_player", "Target Leader"),
     metadata: { targetID: "leader" },
@@ -625,19 +625,34 @@ test("pressure marks each nonhostile rival once instead of saturating relations"
     incomingAttackerNames: [],
   }];
 
-  const rotated = choose([targetLeader, targetOther, hold], obs, null, leaderMarked);
-  assert.equal(rotated.id, targetOther.id);
-  assert.equal(rotated.policyMarker, "fr1");
+  assert.equal(choose([targetLeader, targetOther, hold], obs, null, leaderMarked).id, hold.id);
+});
 
-  const bothMarked = [...leaderMarked, {
-    actionID: targetOther.id,
+test("pressure can move after the previous campaign target is eliminated", () => {
+  const targetOther = {
+    ...action("target:other", "target_player", "Target Other"),
+    metadata: { targetID: "other" },
+  };
+  const hold = action("hold", "hold", "Hold");
+  const history = [{
+    actionID: "target:leader",
     kind: "target_player",
-    targetID: "other",
-    targetName: "Other",
+    targetID: "leader",
+    targetName: "Leader",
     incomingAttackerIDs: [],
     incomingAttackerNames: [],
   }];
-  assert.equal(choose([targetLeader, targetOther, hold], obs, null, bothMarked).id, hold.id);
+  const obs = observation({
+    tileShare: 0.01,
+    troopRatio: 0.98,
+    rivals: [
+      { id: "other", name: "Other", tileShare: 0.2, relativeTroopRatio: 0.2 },
+    ],
+  });
+
+  const selected = choose([targetOther, hold], obs, null, history);
+  assert.equal(selected.id, targetOther.id);
+  assert.equal(selected.policyMarker, "fr1");
 });
 
 test("fresh retaliation permits a second pressure mark", () => {
