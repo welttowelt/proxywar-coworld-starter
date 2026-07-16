@@ -269,3 +269,25 @@ matched to commit `f9d50fe`, and `qd1n:v76` was submitted. Qualification passed;
 v76 is champion and v2 is benched. Round 376 had already sealed v2 into its
 roster, so v76 can first fight in round 377. The official streak remains zero
 until a completed round names qd1n first.
+
+## qd1n rci-4
+
+Six World seat-four paths exposed the edge that rci-1 could not reach. Qd1n won
+none and sent 1,219 boats into neutral water without one naval invasion. Round
+407 ended at 4,198 tiles after twelve straight neutral boats produced no gain,
+even though attacks, upgrades, retreats, warships, and warship movement remained
+legal. The existing conversion order stopped at two percent territory; qd1n was
+stranded at 0.646 percent.
+
+The new boundary opens that existing order down to 0.2 percent and adds no new
+selector. A near-eliminated seat below the boundary keeps its last neutral
+escape. The red regression failed before the source change; both boundary cases
+and the full `87/87` suite pass after it.
+
+One current eight-player World mirror ran all 1,040 orders without a rejection.
+The candidate won slot four and recorded one hold against two for the parent.
+A different candidate seat reached the low-share condition and broke several
+flat sequences with attacks, builds, and retreats. The winning seat did not
+reach the branch, so the mirror proves runtime safety and direction, not a
+seat-independent win lift. The operator has ordered a live relaunch; the
+standard hosted `4/4` and `20/20` gates remain incomplete.

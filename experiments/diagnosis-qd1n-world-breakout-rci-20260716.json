@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "name": "qd1n-world-breakout-rci4",
+    "codename": "br1m-r1ft",
+    "live_predecessor_ref": "qd1n:v76",
+    "source_parent_commit": "f9d50fe",
+    "source_commit": "b0c205c9ca324725d1ef17c66887f160068e7ffa",
+    "local_test_image": "proxywar-agent-llm:qd1n-rci4-world-breakout",
+    "local_test_image_id": "sha256:0f506489ecccfeb4df6b00f8f8e8b16422c7afac5eb689a3934828eeedef283c",
+    "uploaded_policy_ref": null,
+    "uploaded_policy_id": null,
+    "submission_id": null,
+    "membership_id": null
+  },
+  "live_snapshot_before": {
+    "completed_round": 407,
+    "champion_ref": "qd1n:v76",
+    "overall_rank": 1,
+    "overall_score": 45.1306,
+    "current_first_place_streak": 1,
+    "wins": 22,
+    "episodes": 77,
+    "win_rate": 0.2857,
+    "world": {
+      "wins": 6,
+      "episodes": 26,
+      "win_rate": 0.3462
+    }
+  },
+  "replay_diagnosis": {
+    "failure_profile": "World seat 4",
+    "episodes": 6,
+    "wins": 0,
+    "neutral_boats": 1219,
+    "naval_invasions": 0,
+    "neutral_boats_by_round": {
+      "392": 149,
+      "395": 143,
+      "398": 162,
+      "401": 282,
+      "404": 199,
+      "407": 284
+    },
+    "latest_episode": {
+      "round": 407,
+      "final_tiles": 4198,
+      "final_tile_share": 0.00646,
+      "last_consecutive_neutral_boats": 12,
+      "turn_range": [39200, 40300],
+      "tile_gain": 0,
+      "available_non_boat_actions": {
+        "attack": 3,
+        "boat_retreat": 1,
+        "warship": 1,
+        "upgrade_structure": 8,
+        "move_warship": 4,
+        "alliance_request": 6,
+        "target_player": 6
+      }
+    }
+  },
+  "rci": {
+    "problem": "The existing stalled-boat conversion interrupt was disabled below two percent territory, including the repeated World seat-4 failure at 0.646 percent.",
+    "smallest_fix": "Lower the conversion floor from 0.02 to 0.002 without adding another selector layer.",
+    "preserved_boundary": "Below 0.2 percent territory, the final neutral escape route remains available.",
+    "red_test": "The sub-two-percent regression failed before the source change because boatConversionStalled returned false.",
+    "green_test": "The stranded-seat and near-eliminated boundary regressions both pass after the source change."
+  },
+  "verification": {
+    "unit_tests_passed": 87,
+    "unit_tests_failed": 0,
+    "syntax_check": "passed",
+    "diff_check": "passed",
+    "container_build": {
+      "status": "passed",
+      "platform": "linux/arm64",
+      "module_smoke": "passed"
+    },
+    "local_world_mirror": {
+      "runtime_version": "0.1.8",
+      "map": "World",
+      "players": 8,
+      "candidate_slots": [0, 2, 4, 6],
+      "parent_slots": [1, 3, 5, 7],
+      "winner_slot": 4,
+      "winner_image": "candidate",
+      "candidate_wins": 1,
+      "parent_wins": 0,
+      "turn_count": 14900,
+      "decisions": 1040,
+      "accepted_decisions": 1040,
+      "rejected_decisions": 0,
+      "candidate": {
+        "decisions": 580,
+        "accepted": 580,
+        "holds": 1,
+        "fallbacks": 568,
+        "attacks": 225,
+        "neutral_boats": 169,
+        "upgrades": 11,
+        "warship_actions": 47
+      },
+      "parent": {
+        "decisions": 460,
+        "accepted": 460,
+        "holds": 2,
+        "fallbacks": 448,
+        "attacks": 191,
+        "neutral_boats": 119,
+        "upgrades": 8,
+        "warship_actions": 51
+      },
+      "replay_verified": true,
+      "replay_sha256": "abc0a9c170e091911e685f71f601e2d2ead9519cff9499fca5930257d51d57cb",
+      "bedrock_available": false,
+      "limitations": [
+        "The local host had no AWS CLI, so planner calls used deterministic fallback behavior.",
+        "The parent image ran under Docker emulation.",
+        "The winning candidate seat did not enter the new low-share branch.",
+        "The one-episode alternating-seat mirror is runtime and directional evidence, not a causal or seat-independent win proof."
+      ]
+    }
+  },
+  "rci_verdict": {
+    "diagnosis": "confirmed",
+    "implementation": "passed unit, container, and full-episode runtime checks",
+    "local_direction": "candidate won the alternating-seat mirror, with the branch reached only by a non-winning candidate seat",
+    "standard_promotion_gate": "not completed: no hosted 4/4 or 20/20 regression",
+    "operator_override": "The operator explicitly required a live relaunch.",
+    "league_action": "pending"
+  }
+}

@@ -791,3 +791,27 @@ of the usual hosted `4/4` plus regression `20/20` gate after the operator requir
 an actual public update. Goal credit remains closed at `0/1000` until official
 first-place finishes begin. Full evidence is in
 `experiments/diagnosis-qd1n-nofeed-rci-20260715.json`.
+
+## Qd1n sub-two-percent World breakout RCI, 2026-07-16
+
+World seat four went `0/6` through round 407 while choosing 1,219 neutral boats
+and zero naval invasions. In the latest loss, qd1n held 0.646 percent of the map
+and closed with twelve straight neutral boats despite legal attacks, upgrades,
+retreats, warships, and warship movement. The existing stalled-boat conversion
+interrupt was disabled below two percent territory.
+
+Rci-4 lowers only that floor to 0.2 percent. It preserves the final neutral
+escape route below the new boundary, and adds no selector or public game text.
+The red regression failed before the source edit; the full suite passes `87/87`
+after it. The linux/arm64 local image built and passed module smoke.
+
+One current `0.1.8` eight-player World mirror finished at turn 14,900 with all
+`1,040/1,040` decisions accepted. The candidate won slot four, and recorded one
+hold against two for the parent. A non-winning candidate seat reached the
+low-share condition and chose several alternatives to stalled neutral boats.
+Because the winning seat never reached the new branch and local Bedrock was
+unavailable, this is runtime and directional evidence rather than causal proof.
+The verified replay hash is
+`abc0a9c170e091911e685f71f601e2d2ead9519cff9499fca5930257d51d57cb`.
+Machine-readable evidence is in
+`experiments/diagnosis-qd1n-world-breakout-rci-20260716.json`.
