@@ -1,13 +1,4 @@
 round_number,rank,score,player_name,policy_name,policy_version,policy_version_id,completed_episode_count,seed_order
-378,1,0.5,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,4,7
-378,2,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
-378,3,0.25,daveey,daveey-proxywar,10,15264470-111c-4c4f-8df4-0932457a9138,4,5
-378,4,0.0,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,3,0
-378,5,0.0,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,3,1
-378,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
-378,7,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
-378,8,0.0,docxology,daf-proxywar,1,81901f3e-2042-458f-89d4-1d11fe6476b1,4,6
-378,9,0.0,Gaijin-01,Eva-00-v27,1,ec3de252-e641-4584-b92d-6d302b1e0a9f,3,8
 379,1,0.3333333333333333,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,3,1
 379,2,0.25,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
 379,3,0.25,daveey,daveey-proxywar,10,15264470-111c-4c4f-8df4-0932457a9138,4,5
@@ -177,3 +168,12 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 399,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
 399,8,0.0,daveey,daveey-proxywar,16,641f9432-6d62-4520-9afb-89e3083d7ff1,4,7
 399,9,0.0,Gaijin-01,Gaijin-01,1,05204830-0bb9-4cf1-a345-35a40d48a7f1,3,8
+400,1,0.3333333333333333,Richard Higgins,co-gas-proxywar-richard,1,345fb515-8470-4745-a470-cd8835c372ed,3,1
+400,2,0.3333333333333333,Gaijin-01,Gaijin-01,1,05204830-0bb9-4cf1-a345-35a40d48a7f1,3,8
+400,3,0.25,odin free,qd1n,76,cdebca35-fca0-4470-8d7f-676f0861a782,4,6
+400,4,0.25,daveey,daveey-proxywar,17,ad80815e-0521-4e85-bb1e-53881de09e38,4,7
+400,5,0.0,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,3,0
+400,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
+400,7,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
+400,8,0.0,katanasan,tsukuyomi-no-kage,33,d6b198f9-8730-4f27-9a6a-680bc6db38ad,4,4
+400,9,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5

@@ -1,20 +1,23 @@
 player_name,policy_version,won,rival_attacks,target_switches,switch_rate_pct,mean_attack_ratio,mean_attack_percent
-odin free,76,true,1064,195,18.68,3.38,24.2
+odin free,76,true,1005,187,18.97,3.53,24.0
 daveey,13,true,493,166,34.3,3.58,29.7
-Auri,42,true,448,144,32.95,3.78,31.6
+Auri,42,true,410,138,34.5,3.93,31.8
 daveey,16,true,337,102,30.82,2.78,29.2
 katanasan,33,true,235,24,10.48,52.56,33.6
-daveey,10,true,154,53,35.1,6.22,27.5
+daveey,10,true,97,34,35.79,8.48,29.3
+daveey,17,true,42,18,43.9,4.26,30.4
+Gaijin-01,1,true,41,7,17.5,2.27,22.8
 RelhAlpha,1,true,21,1,5.0,2.21,20.7
 James Boggs,1,true,13,1,8.33,5.26,10.0
-Auri,42,false,1355,359,27.83,2.78,29.2
-Richard Higgins,1,false,1276,101,8.27,1.17,21.3
-RelhAlpha,1,false,1253,112,9.33,0.9,21.3
-odin free,76,false,1218,238,20.39,2.43,22.1
-Gaijin-01,1,false,1178,138,12.27,1.32,11.5
-docxology,1,false,1135,67,6.3,0.96,10.0
-James Boggs,1,false,1053,190,19.08,1.6,10.3
+Auri,42,false,1417,394,29.16,2.81,29.0
+Richard Higgins,1,false,1353,96,7.4,1.17,21.3
+RelhAlpha,1,false,1330,109,8.53,0.9,21.4
+odin free,76,false,1219,236,20.22,2.48,22.0
+docxology,1,false,1149,72,6.68,1.05,10.0
+Gaijin-01,1,false,1136,142,13.1,1.35,11.5
+James Boggs,1,false,1037,192,19.57,1.6,10.3
 daveey,13,false,852,224,27.05,2.24,27.2
-katanasan,33,false,605,127,23.43,2.94,34.2
-daveey,10,false,335,75,23.29,2.63,26.5
+katanasan,33,false,577,124,24.12,3.04,34.3
 daveey,16,false,334,97,30.31,2.45,27.4
+daveey,10,false,239,54,23.58,2.86,26.3
+daveey,17,false,54,15,29.41,1.77,26.7
