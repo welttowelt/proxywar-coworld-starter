@@ -117,6 +117,11 @@ test("deployed player wiring expands first and converts a weak rival next", asyn
     responses.map((response) => response.selectedLegalActionId),
     ["spawn:100", "expand:terra-nullius:10", "attack:weak:10"],
   );
+  for (const response of responses) {
+    assert.match(response.reason, /^[a-z0-9:]+$/);
+    assert.ok(response.reason.length <= 48);
+    assert.equal(response.reason.toLowerCase().includes("weak"), false);
+  }
 });
 
 test("deployed player reconnects after an unexpected match socket close", async () => {

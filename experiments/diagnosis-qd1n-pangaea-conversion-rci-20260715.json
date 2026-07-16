@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "name": "qd1n-rci1",
+    "source_parent_commit": "d479cf209817da74fdc0c46264cf464d6d56a89e",
+    "parent_policy_ref": "qd1n:v2",
+    "parent_policy_version_id": "a257d3f5-f374-4a2a-a3f3-af41485cbfbf",
+    "parent_image": "proxywar-agent-llm:qd1n-v2-repro",
+    "parent_image_id": "sha256:0da2567453f7c8413bd1f2b79f6c8a38b6c26232c23f59f0ce4d609d8051b861",
+    "candidate_image": "proxywar-agent-llm:qd1n-pangaea-rci1",
+    "candidate_image_id": "sha256:222580a2461071b513355bfd96fdd22190aa0cb3d5ed289fe0d3d2526742bd9b",
+    "uploaded": false,
+    "submitted": false
+  },
+  "failure": {
+    "source_round": 364,
+    "map": "Pangaea",
+    "qd1n_positions": [0, 1, 2, 7],
+    "wins": 0,
+    "decisions": 699,
+    "planner_timeouts": 361,
+    "daily_quota_errors": 145,
+    "summary": "qd1n stayed alive but failed to turn long boat sequences into territory; its social choices also courted an observed attacker while attacking a rival that had spared it"
+  },
+  "mechanisms": {
+    "bounded_conversion": {
+      "marker": "cv1",
+      "trigger": "at least six boat decisions in the last ten with no more than 0.2 percentage points of territory growth",
+      "cooldown_decisions": 6,
+      "persistent_mode": false,
+      "fallback": "exact parent action order when no productive interrupt is legal"
+    },
+    "dynamic_trust": {
+      "input": "current and recent incoming-attacker IDs",
+      "request_rule": "prefer a legal alliance target with zero observed hostility",
+      "protection_rule": "do not attack a fresh alliance-request target for 24 decisions unless it attacks qd1n or qd1n reaches 45 percent territory"
+    },
+    "planner_backoff": {
+      "plan_every_decisions_before": 3,
+      "plan_every_decisions_after": 8,
+      "timeout_backoff_ms": [30000, 60000, 120000, 240000, 300000],
+      "quota_cooldown_ms": 900000,
+      "planner_max_tokens_before": 300,
+      "planner_max_tokens_after": 180,
+      "locked_model_fallback_restored": true
+    },
+    "public_game_text": {
+      "format": "short lowercase leetspeak action codes",
+      "maximum_reason_characters": 48,
+      "rival_names_exposed": false
+    }
+  },
+  "verification": {
+    "tests": {
+      "passed": 75,
+      "failed": 0,
+      "docker_module_smoke": "passed",
+      "packaging_defect_caught": "planner-backoff.mjs was absent from the first image and was added to Dockerfile before any candidate match"
+    },
+    "bundled_player_smoke": {
+      "passed": true,
+      "scores": [0.5097222222222222, 0.49027777777777776]
+    },
+    "same_seed_self_play": {
+      "parent": {
+        "winner_slot": 2,
+        "turns": 8800,
+        "accepted": 306,
+        "holds": 0,
+        "rejections": 0,
+        "planner_refresh_errors": 13,
+        "replay_sha256": "762e39eee6aa943faf098462bff5ca92983ac31c488ae6bda1e1353bd143b603"
+      },
+      "candidate": {
+        "winner_slot": 2,
+        "turns": 8500,
+        "accepted": 302,
+        "holds": 0,
+        "rejections": 0,
+        "conversion_markers": 5,
+        "planner_refresh_errors": 8,
+        "replay_sha256": "80590a67b005aaeae86db0060174c0c57bff1154d63581c1a4b5769260b8fd1d"
+      }
+    },
+    "mirrored_mixed_roster": {
+      "match_a": {
+        "seat_images": ["parent", "candidate", "parent", "candidate"],
+        "winner_slot": 2,
+        "winner_image": "parent",
+        "turns": 8400,
+        "accepted": 294,
+        "holds": 0,
+        "rejections": 0,
+        "candidate_conversion_markers": 1,
+        "replay_sha256": "22ec91e255d927a2ff26d47c6cf5a915a98af07887c6c7b0d83e24a804e41443"
+      },
+      "match_b": {
+        "seat_images": ["candidate", "parent", "candidate", "parent"],
+        "winner_slot": 2,
+        "winner_image": "candidate",
+        "turns": 9400,
+        "accepted": 324,
+        "holds": 0,
+        "rejections": 0,
+        "candidate_conversion_markers": 2,
+        "replay_sha256": "5fe6383c4254d2d4a7a7559f466435fa96d94dd5a47394ff972e8afb0d1aedff"
+      },
+      "score": {
+        "parent_wins": 1,
+        "candidate_wins": 1,
+        "candidate_planner_refresh_errors": 10,
+        "parent_planner_refresh_errors": 17
+      }
+    }
+  },
+  "rci_verdict": {
+    "planner_backoff": "keep as a measured local reliability improvement",
+    "bounded_conversion": "mechanism reached but no strategic advantage established",
+    "dynamic_trust": "unit and integration fixtures passed but no local alliance action reached the rule",
+    "promotion": "closed",
+    "upload": "closed",
+    "league_submission": "closed",
+    "streak": "1/1000 completed first-place finishes after qd1n:v2 won Competition round 366",
+    "required_next_evidence": "a pinned hosted Pangaea diagnostic with conversion and alliance reach, followed by the existing perfect 4/4 and 20/20 gates"
+  }
+}

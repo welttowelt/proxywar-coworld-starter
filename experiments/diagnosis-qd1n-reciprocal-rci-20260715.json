@@ -1,0 +1,184 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "name": "qd1n-rci2",
+    "source_parent_commit": "d420735721dc5d78e06c09d20c292475b0a6088d",
+    "live_policy_ref": "qd1n:v2",
+    "live_policy_version_id": "a257d3f5-f374-4a2a-a3f3-af41485cbfbf",
+    "parent_image": "proxywar-agent-llm:qd1n-pangaea-rci1",
+    "parent_image_id": "sha256:222580a2461071b513355bfd96fdd22190aa0cb3d5ed289fe0d3d2526742bd9b",
+    "candidate_image": "proxywar-agent-llm:qd1n-reciprocal-rci2",
+    "candidate_image_id": "sha256:1f898baa726cc0614c50d18e3a42ed071723b13c75913db5f3fc405c7824f8b9",
+    "uploaded": false,
+    "submitted": false
+  },
+  "replay_diagnosis": {
+    "source_rounds": [
+      366,
+      367
+    ],
+    "game_version": "0.1.8",
+    "maps": [
+      "Asia",
+      "Pangaea"
+    ],
+    "qd1n_episodes": 8,
+    "round_first_places": 2,
+    "targeting_leak": {
+      "qd1n_attacks_on_katanasan": 46,
+      "katanasan_attacks_on_qd1n": 0,
+      "summary": "qd1n repeatedly spent attacks on a rival that never attacked it"
+    },
+    "critical_loss": {
+      "round": 367,
+      "position": 1,
+      "winner": "Auri",
+      "auri_attacks_on_qd1n": 21,
+      "qd1n_attacks_on_auri": 0,
+      "qd1n_attacks_on_katanasan": 16,
+      "summary": "qd1n ignored the eventual winner while attacking the nonhostile reciprocal partner"
+    }
+  },
+  "mechanisms": {
+    "conditional_reciprocity": {
+      "partner_name": "katanasan",
+      "rule": "protect the named rival from attacks, invasions, and pressure while no incoming attack has been observed",
+      "revocation": [
+        "any current or recorded incoming attack from the partner",
+        "qd1n reaches 35 percent territory and enters the finishing phase"
+      ],
+      "persistent_mode": false
+    },
+    "quiet_alliance_preference": {
+      "rule": "when a survival alliance is already the selected action class, prefer peaceful katanasan over another peaceful rival",
+      "blind_donation": false
+    },
+    "retaliation_ranking": {
+      "attack_bonus_per_observed_incoming_attack": 0.35,
+      "attack_bonus_cap": 1.4,
+      "boat_rule": "rank favorable invasion targets by observed hostility before target rotation and troop ratio"
+    },
+    "public_game_text": {
+      "changed": false,
+      "format": "short lowercase leetspeak action codes",
+      "partner_name_exposed": false
+    }
+  },
+  "verification": {
+    "tests": {
+      "focused_passed": 47,
+      "full_passed": 81,
+      "failed": 0,
+      "new_reciprocity_and_retaliation_cases": 6,
+      "diff_check": "passed"
+    },
+    "container": {
+      "build": "passed",
+      "module_smoke": "passed"
+    },
+    "current_package_smoke": {
+      "coworld_id": "cow_15c39dab-eac1-4284-bf3e-bd723d4c2755",
+      "game_version": "0.1.8",
+      "coworld_cli_version": "0.1.30",
+      "bundled_players_passed": true,
+      "scores": [
+        0.49168975,
+        0.50831025
+      ]
+    },
+    "mirrored_8p_pangaea": {
+      "mechanism_reach": "generic local player names prevent the named reciprocal branch from firing; treat these runs as regression evidence only",
+      "match_a": {
+        "seat_images": [
+          "candidate",
+          "parent",
+          "candidate",
+          "parent",
+          "candidate",
+          "parent",
+          "candidate",
+          "parent"
+        ],
+        "winner_slot": 3,
+        "winner_image": "parent",
+        "turns": 10800,
+        "decisions": 721,
+        "accepted": 721,
+        "rejections": 0,
+        "holds": 1,
+        "candidate_holds": 0,
+        "parent_holds": 1,
+        "replay_sha256": "3a7d538f35bbf6049ff902a5168eae98257756457bbf86b62acaffcbab293667"
+      },
+      "match_b": {
+        "seat_images": [
+          "parent",
+          "candidate",
+          "parent",
+          "candidate",
+          "parent",
+          "candidate",
+          "parent",
+          "candidate"
+        ],
+        "winner_slot": 3,
+        "winner_image": "candidate",
+        "turns": 10800,
+        "decisions": 721,
+        "accepted": 721,
+        "rejections": 0,
+        "holds": 1,
+        "candidate_holds": 1,
+        "parent_holds": 0,
+        "replay_sha256": "a2e2f05d9fbc201309cc1afe7784fe9069e530235f722577a276e4f4cfc274ea"
+      },
+      "paired_totals": {
+        "candidate_wins": 1,
+        "parent_wins": 1,
+        "candidate_decisions": 721,
+        "parent_decisions": 721,
+        "candidate_accepted": 721,
+        "parent_accepted": 721,
+        "candidate_holds": 1,
+        "parent_holds": 1,
+        "candidate_rejections": 0,
+        "parent_rejections": 0,
+        "candidate_attacks": 273,
+        "parent_attacks": 273,
+        "candidate_boats": 227,
+        "parent_boats": 227,
+        "summary": "seat 3 won both deterministic mirrors; no local strategic edge was established"
+      }
+    }
+  },
+  "live_state_after_verification": {
+    "checked_at": "2026-07-15T18:19:02Z",
+    "overall_rank": 1,
+    "overall_score": 44.28622079376882,
+    "latest_completed_round": 372,
+    "completed_round_ranks_368_to_372": [
+      5,
+      4,
+      1,
+      1,
+      1
+    ],
+    "current_first_place_streak": 3,
+    "target_first_place_streak": 1000,
+    "running_round": 373,
+    "active_membership_id": "lpm_fb9d79c9-0eb7-4a96-8bea-cf8122fd81bf",
+    "latest_submission_id": "sub_0736f97c-dce8-4588-b08b-6f3c2f734708",
+    "latest_submission_created_at": "2026-07-12T20:36:09.353505Z",
+    "new_submission_created": false
+  },
+  "rci_verdict": {
+    "diagnosis": "keep: replay-backed target-selection leak",
+    "implementation": "keep in the workshop branch as a bounded candidate",
+    "local_regression": "passed without directional advantage",
+    "named_mechanism_reach": "unit-proven, not locally replay-proven because the official local variant uses generic names",
+    "promotion": "closed",
+    "upload": "closed",
+    "league_submission": "closed",
+    "required_next_evidence": "a pinned named-roster hosted diagnostic that reaches reciprocity, followed by the existing perfect 4/4 and 20/20 gates"
+  }
+}

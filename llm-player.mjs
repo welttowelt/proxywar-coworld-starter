@@ -22,6 +22,7 @@ import {
   clean,
   recordDecision,
 } from "./strategy-engine.mjs";
+import { classifyPlannerError, plannerCooldownMs } from "./planner-backoff.mjs";
 
 const url = process.env.COWORLD_PLAYER_WS_URL;
 if (!url) throw new Error("COWORLD_PLAYER_WS_URL is required (the match provides it)");
@@ -60,11 +61,15 @@ const STRATEGY = [
   "Do not loop embargo, donation, chat, or emoji actions when expansion, economy, or combat is available.",
   "Break or ignore alliances late when converting territory can secure the win.",
 ].join(" ");
-const PLAN_EVERY = Number(process.env.PLAN_EVERY || 3); // refresh the plan every N decisions
+const PLAN_EVERY = Math.max(1, Number(process.env.PLAN_EVERY) || 8);
 const PLAN_TIMEOUT_MS = Math.max(1000, Number(process.env.PLAN_TIMEOUT_MS) || 12000);
 const PLAN_FAILURE_COOLDOWN_MS = Math.max(
   1000,
   Number(process.env.PLAN_FAILURE_COOLDOWN_MS) || 30000,
+);
+const PLAN_QUOTA_COOLDOWN_MS = Math.max(
+  PLAN_FAILURE_COOLDOWN_MS,
+  Number(process.env.PLAN_QUOTA_COOLDOWN_MS) || 900000,
 );
 const RECONNECT_BASE_MS = Math.max(10, Number(process.env.RECONNECT_BASE_MS) || 500);
 const SECURITY =
@@ -97,12 +102,12 @@ async function askBedrock(state, signal) {
     '"target":"<exact rival name to pressure, or null>","avoidTargets":["<rival names not to attack>"],' +
     '"reason":"<one short sentence>"}\n' +
     "GAME:\n" + JSON.stringify(state);
-  const candidates = lockedModel ? [lockedModel] : MODELS;
+  const candidates = [...new Set([lockedModel, ...MODELS].filter(Boolean))];
   let lastErr;
   for (const model of candidates) {
     try {
       const r = await bedrock.messages.create(
-        { model, max_tokens: 300, messages: [{ role: "user", content: prompt }] },
+        { model, max_tokens: 180, messages: [{ role: "user", content: prompt }] },
         { signal, timeout: Math.min(8000, PLAN_TIMEOUT_MS), maxRetries: 0 },
       );
       lockedModel = model;
@@ -117,6 +122,8 @@ let plan = null;          // { focus, preferKinds, target, avoidTargets, reason,
 let planDecisionAge = 0;  // decisions answered since the last successful refresh
 let planRefreshInFlight = false;
 let lastPlanError = null; // set when the most recent refresh failed (loud degradation)
+let lastPlanErrorClass = null;
+let planFailureCount = 0;
 let nextPlanRefreshAt = 0;
 
 function refreshPlanInBackground(state) {
@@ -140,11 +147,19 @@ function refreshPlanInBackground(state) {
       };
       planDecisionAge = 0;
       lastPlanError = null;
+      lastPlanErrorClass = null;
+      planFailureCount = 0;
       nextPlanRefreshAt = 0;
     })
     .catch((e) => {
       lastPlanError = (e?.message || String(e)).slice(0, 130);
-      nextPlanRefreshAt = Date.now() + PLAN_FAILURE_COOLDOWN_MS;
+      lastPlanErrorClass = classifyPlannerError(e);
+      planFailureCount += 1;
+      const cooldownMs = plannerCooldownMs(lastPlanErrorClass, planFailureCount, {
+        baseMs: PLAN_FAILURE_COOLDOWN_MS,
+        quotaMs: PLAN_QUOTA_COOLDOWN_MS,
+      });
+      nextPlanRefreshAt = Date.now() + cooldownMs;
       console.error(`plan refresh failed: ${lastPlanError}`);
     })
     .finally(() => { planRefreshInFlight = false; });
@@ -165,6 +180,22 @@ let socket = null;
 let finalReceived = false;
 let reconnectAttempt = 0;
 let reconnectTimer = null;
+
+const PUBLIC_KIND = {
+  spawn: "spn", attack: "atk", nuke: "nuk", build: "bld",
+  upgrade_structure: "upg", boat: "b0t", boat_retreat: "rtr", retreat: "rtr",
+  warship: "w4r", move_warship: "mvw", alliance_request: "4ly",
+  alliance_extend: "4ly", break_alliance: "brk", target_player: "tgt",
+  embargo: "emb", embargo_all: "emb", embargo_stop: "emb", donate_gold: "d0n",
+  donate_troops: "d0n", quick_chat: "cht", emoji: "emj", hold: "h0d",
+};
+
+function publicReason(chosen, hasPlan, degraded, errorClass) {
+  const mode = degraded ? `dgd:${errorClass || "err"}` : hasPlan ? "pln" : "rul";
+  const kind = PUBLIC_KIND[chosen.kind] || "act";
+  const marker = clean(chosen.policyMarker).toLowerCase().replace(/[^a-z0-9]/g, "");
+  return `${mode}:${kind}${marker ? `:${marker}` : ""}`;
+}
 
 function handleMessage(activeSocket, data) {
   if (activeSocket !== socket) return;
@@ -195,24 +226,14 @@ function handleMessage(activeSocket, data) {
 
   const chosen = chooseAction(actions, state, plan, history);
   const degraded = lastPlanError !== null;
-  let reason;
-  if (plan !== null) {
-    const focus = plan.target ? `${plan.focus} -> ${plan.target}` : plan.focus;
-    reason = degraded
-      ? `PLAN(${focus}; stale, refresh failed: ${lastPlanError}): ${chosen.kind}`
-      : `PLAN(${focus}) via ${plan.model}: ${chosen.kind} — ${plan.reason}`;
-  } else {
-    reason = degraded
-      ? `BOOTSTRAP RULE (plan refresh failed: ${lastPlanError}): ${chosen.kind}`
-      : `BOOTSTRAP RULE (first plan in flight): ${chosen.kind}`;
-  }
+  const reason = publicReason(chosen, plan !== null, degraded, lastPlanErrorClass);
 
   recordDecision(history, chosen, state);
   const response = JSON.stringify({
     type: "decision_response",
     requestID: message.requestID,
     selectedLegalActionId: chosen.id,
-    reason: reason.slice(0, 200),
+    reason: reason.slice(0, 48),
     confidence: plan !== null ? (degraded ? 0.5 : 0.75) : 0.4,
     fallbackUsed: plan === null || degraded,
     llmPlannerDegraded: plan === null || degraded,

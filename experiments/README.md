@@ -742,4 +742,97 @@ Odin's wins held Auri to zero or one direct attack and produced 31-38 hostile
 attacks of their own; losses absorbed 6-11 Auri attacks while Odin produced only
 9-20 hostile attacks and spent more turns on alliances, boats, and holds. The
 Frontier counter lane is closed. Its runtime patch, Dockerfile, and dedicated
-tests are removed; v14 remains the sole league version.
+tests are removed; at that checkpoint v14 remained the sole league version.
+
+## Qd1n reciprocal-targeting RCI, 2026-07-15
+
+Rounds 366 and 367 supplied eight current-version replays. Across them qd1n
+attacked katanasan 46 times while katanasan attacked qd1n zero times. The
+clearest Pangaea loss sharpened the error: Auri attacked qd1n 21 times and won,
+while qd1n attacked Auri zero times and katanasan 16 times.
+
+Rci-2 adds conditional reciprocal restraint for katanasan, immediate revocation
+after any incoming attack, a 35% finishing release, peaceful-partner preference
+when an alliance is already the survival action, and bounded retaliation weight
+for land and naval targets. It changes no public game text and makes no blind
+donation.
+
+The focused strategy suite passed `47/47`; the full suite passed `81/81`; the
+container build and module smoke passed. Two mirrored current `0.1.8`
+eight-player Pangaea runs both ended at turn 10,800 with seat three winning.
+The parent won the first and the candidate won the inverted roster. All 1,442
+decisions were accepted with zero rejections; each image recorded one hold
+across the pair. The official local roster uses generic names, so the named
+reciprocal branch could not fire. This is regression evidence, not promotion
+evidence. The machine-readable record is
+`experiments/diagnosis-qd1n-reciprocal-rci-20260715.json`.
+
+## Qd1n no-feed RCI and live v76 submission, 2026-07-15
+
+Round 373's second Pangaea episode isolated a terminal naval loop. Qd1n stopped
+at 135,564 tiles while Richard Higgins reached 284,542. Qd1n launched 107 boats
+at Richard with an average relative troop ratio of 0.376 and a range of
+0.27-0.46. After turn 28,900, qd1n made 115 more decisions: 88 boats, 17 warship
+moves, seven warship builds, and three retreats, with no territory conversion.
+Historical telemetry sharpened the cutoff: 464 naval invasions appeared in
+qd1n's winning episodes from rounds 348-367, and none were below 0.50. Losing
+episodes contained 168 below 0.50.
+
+Rci-3 rejects a desperate rival invasion below 0.50, orders utility actions
+before desperation, and suppresses a rival after six boats in the last ten
+decisions fail to add more than 0.2 percentage points of territory. It preserves
+the 1.15 favorable invasion path, the 1.00 forced-conversion path, productive
+same-target pressure, and the emergency land fallback. Four new strategy cases
+cover the floor, ordering, cooldown, and productive release; the full suite
+passed `85/85`.
+
+The current `0.1.8` Pangaea mirror reached the mechanism in both seat
+assignments. Seat three won each replay, producing a `1-1` image split. Across
+the pair, the candidate recorded zero sub-0.50 rival boats against five for the
+parent, 62 rival boats against 78, and 46 utility actions against 25. All
+`1,371/1,371` decisions were accepted; candidate and parent holds were two and
+one. This is direct mechanism evidence with no seat-independent win advantage.
+
+The first upload attempt exposed an arm64 packaging error and changed no remote
+state. The identical source at commit `f9d50fe` was rebuilt as linux/amd64,
+passed module smoke, and matched the worktree hashes for all four runtime files.
+It uploaded as `qd1n:v76`, submission
+`sub_bbface4c-2afc-4170-b3af-0f7540bbf563`, with automatic champion promotion.
+Qualification passed and membership `lpm_807274c0-0f71-4c13-8990-3dc932a9f7e5`
+became champion; `qd1n:v2` became benched. This was an explicit operator override
+of the usual hosted `4/4` plus regression `20/20` gate after the operator required
+an actual public update. Goal credit remains closed at `0/1000` until official
+first-place finishes begin. Full evidence is in
+`experiments/diagnosis-qd1n-nofeed-rci-20260715.json`.
+
+## Qd1n sub-two-percent World breakout RCI, 2026-07-16
+
+World seat four went `0/6` through round 407 while choosing 1,219 neutral boats
+and zero naval invasions. In the latest loss, qd1n held 0.646 percent of the map
+and closed with twelve straight neutral boats despite legal attacks, upgrades,
+retreats, warships, and warship movement. The existing stalled-boat conversion
+interrupt was disabled below two percent territory.
+
+Rci-4 lowers only that floor to 0.2 percent. It preserves the final neutral
+escape route below the new boundary, and adds no selector or public game text.
+The red regression failed before the source edit; the full suite passes `87/87`
+after it. The linux/arm64 local image built and passed module smoke.
+
+One current `0.1.8` eight-player World mirror finished at turn 14,900 with all
+`1,040/1,040` decisions accepted. The candidate won slot four, and recorded one
+hold against two for the parent. A non-winning candidate seat reached the
+low-share condition and chose several alternatives to stalled neutral boats.
+Because the winning seat never reached the new branch and local Bedrock was
+unavailable, this is runtime and directional evidence rather than causal proof.
+The verified replay hash is
+`abc0a9c170e091911e685f71f601e2d2ead9519cff9499fca5930257d51d57cb`.
+Machine-readable evidence is in
+`experiments/diagnosis-qd1n-world-breakout-rci-20260716.json`.
+
+The exact committed source was rebuilt for linux/amd64 and uploaded as
+`qd1n:v77` (`c0213724-8fb6-40d3-97da-fd1b080971f7`). Submission
+`sub_e94102ad-0853-4166-bfe8-7519403ec569` passed qualification and promoted
+membership `lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b` to Competition. V77 is
+the sole qd1n champion and v76 is benched. The operator explicitly ordered this
+relaunch before the standard hosted `4/4` and `20/20` strategic gates were
+complete.

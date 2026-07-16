@@ -208,3 +208,107 @@ already retired.
 Whenever a result changes policy direction, exposes a mechanism, establishes a
 rival shift, earns a promotion, or kills a candidate, update this chronicle and
 the merit ledger in the same checkpoint commit.
+
+## qd1n rci-1
+
+Round 364 exposed a broken compass, not an empty arsenal. Qd1n survived four
+Pangaea seats but converted none of them: 699 decisions carried 361 planner
+timeouts, 145 daily-quota refusals, and long boat chains. The same replay showed
+why a named pact was weak. James struck qd1n while qd1n asked for his hand;
+katanasan spared qd1n while qd1n still sent steel his way.
+
+The new mark keeps no standing mode. After six flat boat decisions it may change
+one order, then must cool for six decisions and fall back to the old law if no
+productive order is legal. Alliance requests now favor rivals with no observed
+incoming attacks, and a fresh request protects its target until that rival
+attacks or qd1n reaches the late finish. Planner failures now retreat on an
+exponential clock; a daily quota refusal closes the planner door for fifteen
+minutes instead of knocking again every thirty seconds.
+
+The local Pangaea mirror split the crown one to one. Slot two won both mirrored
+fields, once under the parent and once under the candidate. The mark fired, the
+wire accepted every order, and no hold appeared, but the field did not prove a
+strategic edge. The planner did prove a smaller wound: ten failed refreshes
+against seventeen for the parent across the mirrored pair. Qd1n rci-1 stays in
+the workshop. The live `qd1n:v2` seat is unchanged.
+
+## qd1n rci-2
+
+Eight fresh paths showed a waste the scoreboard hid. Qd1n cut katanasan
+forty-six times; katanasan returned no cut. In the clearest lost path Auri
+struck qd1n twenty-one times and took the field while qd1n ignored Auri and
+sent sixteen attacks into the quiet rival.
+
+The new law is reciprocal, not sentimental. Katanasan is spared while his hand
+stays clean. One incoming attack ends the restraint immediately, and thirty-five
+percent control opens the finish. If an alliance is already the survival move,
+the quiet partner receives the first request. No tribute follows. Recorded
+aggressors rise in both land and naval target order, so pressure follows the
+attacker instead of a convenient bystander.
+
+The current eight-player Pangaea mirror split one to one. Seat three won both
+fields, first under the parent and then under the candidate; all 1,442 orders
+were accepted, and each image inherited one hold from that same seat pattern.
+Generic local names kept the reciprocal branch out of the replay, so the pair
+proves regression safety only. Qd1n rci-2 remains in the workshop. The live
+`qd1n:v2` submission is unchanged.
+
+## qd1n rci-3
+
+Round 373 exposed a second waste. Qd1n reached 135,564 Pangaea tiles, stopped
+growing, then kept sending boats into Richard Higgins. One hundred and seven
+launches carried only 0.27-0.46 relative troop strength. The last stretch held
+the same ground while eighty-eight of 115 decisions launched another boat.
+Across the preceding eighty episodes, qd1n's wins contained 464 naval invasions
+and none below 0.50; its losses contained 168 below that line.
+
+The new order refuses a desperate invasion below 0.50, uses a legal nuke,
+upgrade, warship, or warship movement first, and cools a rival after six recent
+boats fail to add territory. Favorable pressure at 1.15, forced conversion at
+1.00, productive invasions, and the emergency land strike remain open. Rci-2's
+conditional restraint for katanasan stays underneath it. Round 375 then
+repeated that older leak on Asia: qd1n attacked katanasan forty-two times across
+three paths and received none in return.
+
+Two current Pangaea mirrors split one to one because seat three won both. The
+candidate removed every sub-0.50 rival invasion: zero against five for the
+parent. All 1,371 orders were accepted. That proves the no-feed order executed;
+it does not prove a seat-independent win lift.
+
+The operator then called out the gap between workshop code and the public
+champion. The first upload was correctly refused because its image was arm64.
+The identical source was rebuilt for linux/amd64, its four runtime hashes were
+matched to commit `f9d50fe`, and `qd1n:v76` was submitted. Qualification passed;
+v76 is champion and v2 is benched. Round 376 had already sealed v2 into its
+roster, so v76 can first fight in round 377. The official streak remains zero
+until a completed round names qd1n first.
+
+## qd1n rci-4
+
+Six World seat-four paths exposed the edge that rci-1 could not reach. Qd1n won
+none and sent 1,219 boats into neutral water without one naval invasion. Round
+407 ended at 4,198 tiles after twelve straight neutral boats produced no gain,
+even though attacks, upgrades, retreats, warships, and warship movement remained
+legal. The existing conversion order stopped at two percent territory; qd1n was
+stranded at 0.646 percent.
+
+The new boundary opens that existing order down to 0.2 percent and adds no new
+selector. A near-eliminated seat below the boundary keeps its last neutral
+escape. The red regression failed before the source change; both boundary cases
+and the full `87/87` suite pass after it.
+
+One current eight-player World mirror ran all 1,040 orders without a rejection.
+The candidate won slot four and recorded one hold against two for the parent.
+A different candidate seat reached the low-share condition and broke several
+flat sequences with attacks, builds, and retreats. The winning seat did not
+reach the branch, so the mirror proves runtime safety and direction, not a
+seat-independent win lift. The operator has ordered a live relaunch; the
+standard hosted `4/4` and `20/20` gates remain incomplete.
+
+The committed source was rebuilt for linux/amd64 and uploaded as `qd1n:v77`,
+mark `br1m-r1ft`. Submission
+`sub_e94102ad-0853-4166-bfe8-7519403ec569` passed the crash qualifier and placed
+membership `lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b` into Competition. V77 is
+the sole qd1n champion; v76 is benched. This live promotion follows the
+operator's explicit relaunch order and does not erase the incomplete strategic
+gate or the `1000`-win target.
