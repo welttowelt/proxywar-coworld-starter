@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-07-17T17:20:00Z",
+  "candidate": "opening-grind-ef2",
+  "parent": "main-v77",
+  "rows": 16,
+  "arms": {
+    "main-v77": {
+      "matches": 16,
+      "wins": 1,
+      "mean_final_tiles": 61485.1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "opening-grind-ef2": {
+      "matches": 16,
+      "wins": 1,
+      "mean_final_tiles": 65400.6,
+      "ef2_marker_count": 143,
+      "marker_count": 38,
+      "confirmed_marker_count": 17,
+      "holds": 1,
+      "rejected_decisions": 0
+    }
+  },
+  "matched_pairs": {
+    "usable_pairs": 1,
+    "candidate_advantages": 0,
+    "parent_advantages": 1,
+    "ties": 0
+  },
+  "gates": {
+    "mechanism_reached": true,
+    "zero_rejected": true,
+    "zero_unexplained_holds": false,
+    "matched_advantage": false,
+    "pangaea_exact_control": true,
+    "diagnostic_4_of_4": false,
+    "regression_20_of_20": false,
+    "promotion_eligible": false
+  },
+  "verdict": "REJECTED_LOCAL_MIRROR_LOST"
+}

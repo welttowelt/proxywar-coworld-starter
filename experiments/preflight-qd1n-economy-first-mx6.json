@@ -5,7 +5,8 @@
     "parent_ref": "qd1n:v77",
     "exact_deltas": [
       "on Asia only, while tile share is below 0.12 with no active threat, suppress the selected rival attack unless it targets a current attributed attacker, and mark the replacement action ef1"
-    ]
+    ],
+    "policy_version_id": "4e2b3d0d-db42-4807-b52f-d31580438a2a"
   },
   "hypothesis": "the winner profile is an unbroken 35 percent neutral expansion with almost no opening probes; ef1 stops the probe-and-reset loop while preserving retaliation and every proven mx3 route",
   "mechanism": {
@@ -27,7 +28,7 @@
     "mechanism_reached": true,
     "qualifier_replay_sha256": "effd594465041efbd0c098bd56bf44d76c09b16f4806ab9b0a16796ca8502dc9"
   },
-  "diagnostic_only": true,
+  "diagnostic_only": false,
   "hosted": {
     "criteria": {
       "win_rate_pct": 100,
@@ -35,11 +36,27 @@
       "max_rejections": 0,
       "planner_degradation_rule": "no_unexplained_regression_vs_parent",
       "min_mechanism_executions": 1
+    },
+    "request_id": "xreq_7eb566ff-04d0-4ebb-9c15-765bde6781ca",
+    "result": {
+      "status": "completed",
+      "episodes": 4,
+      "wins": 0,
+      "holds": 3,
+      "rejections": 0,
+      "mechanism_executions": 125,
+      "planner_degradation_rule_passed": true
     }
   },
   "promotion": {
     "regression_episodes": 20,
     "league_change_allowed": false
   },
-  "verdict": "local gates pass; hosted baseline, hosted 4/4, and independent 20/20 are pending"
+  "verdict": "NO SUBMIT: hosted diagnostic finished 0/4; ef1 removed the opening probes as designed but the replacement decisions yielded less territory, so the arm is rejected and reverted; qd1n:v77 remains the sole live champion",
+  "matched_baseline": {
+    "policy_ref": "qd1n:v77",
+    "request_id": "xreq_8cced59b-77f1-4887-86da-f5e0b27fb8c6",
+    "same_roster": true,
+    "same_variant": true
+  }
 }

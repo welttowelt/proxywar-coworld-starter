@@ -2,7 +2,7 @@
   "schema_version": 1,
   "recorded_at": "2026-07-17T16:20:00Z",
   "candidate": "qd1n-v77-mx6",
-  "verdict": "LOCAL_GATES_PASS_HOSTED_GATES_PENDING",
+  "verdict": "NO_SUBMIT_HOSTED_0_OF_4_ARM_REJECTED",
   "remote_state_changed": false,
   "hypothesis": "on Asia, suppressing the opening rival probe while tile share is below 0.12 with no active threat keeps the expansion cadence unbroken and matches the winner profile: across the twelve hosted mx3/mx5 episodes, every Auri/Richard/katanasan win expanded at 35 percent only with zero to three early rival attacks, while qd1n spent nine to eleven opening probes that never produced a kill and reset the neutral cadence",
   "guards": [
@@ -123,12 +123,86 @@
   },
   "league_state": {
     "live_policy": "qd1n:v77",
-    "candidate_uploaded": false,
+    "candidate_uploaded": true,
     "candidate_submitted": false,
     "champion_changed": false,
     "membership_relaunched": false,
     "official_first_place_streak": 0,
     "target_first_place_streak": 1000
   },
-  "next_test": "upload the exact mx6 image for a hosted diagnostic against the same Competition roster and variant as xreq_8cced59b, reusing the v77 0/4 baseline; submit only after a hosted 4/4 and a separate 20/20 regression"
+  "next_test": "ef2 opening grind was tried next and lost a local mirror; both ef arms are rejected and reverted",
+  "hosted": {
+    "upload": {
+      "policy_ref": "qd1n:v80",
+      "policy_version_id": "4e2b3d0d-db42-4807-b52f-d31580438a2a",
+      "local_image_id": "sha256:d7f4f375adb6f03ba4e9fd016d80d5b203e79c37bd7a44152680cf72ec562550",
+      "architecture": "amd64",
+      "uploaded_at": "2026-07-17T16:40:00Z",
+      "purpose": "hosted diagnostic only; qd1n:v77 stayed live throughout"
+    },
+    "matched_baseline": {
+      "request_id": "xreq_8cced59b-77f1-4887-86da-f5e0b27fb8c6",
+      "policy_ref": "qd1n:v77",
+      "variant": "tournament-8p-asia",
+      "seat": 6,
+      "wins": 0,
+      "episodes": 4
+    },
+    "candidate_diagnostic": {
+      "request_id": "xreq_7eb566ff-04d0-4ebb-9c15-765bde6781ca",
+      "policy_ref": "qd1n:v80",
+      "policy_version_id": "4e2b3d0d-db42-4807-b52f-d31580438a2a",
+      "variant": "tournament-8p-asia",
+      "seat": 6,
+      "wins": 0,
+      "episodes": 4,
+      "decisions": 406,
+      "accepted": 406,
+      "holds": 3,
+      "rejected": 0,
+      "ef1_executions": 125,
+      "ia1_executions": 1,
+      "audit_confirmed_executions": 29,
+      "episodes_detail": [
+        {
+          "episode_request_id": "ereq_7cdc2ce8",
+          "won": false,
+          "final_tiles": 10811,
+          "decisions": 111,
+          "ia1": 0,
+          "ef1": 16,
+          "winner": "proxywar-keystone:v42"
+        },
+        {
+          "episode_request_id": "ereq_901fc1f9",
+          "won": false,
+          "final_tiles": 9497,
+          "decisions": 80,
+          "ia1": 0,
+          "ef1": 44,
+          "winner": "co-gas-proxywar-richard:v6"
+        },
+        {
+          "episode_request_id": "ereq_3252d117",
+          "won": false,
+          "final_tiles": 18352,
+          "decisions": 116,
+          "ia1": 0,
+          "ef1": 51,
+          "winner": "proxywar-keystone:v42"
+        },
+        {
+          "episode_request_id": "ereq_1250b7a5",
+          "won": false,
+          "final_tiles": 9678,
+          "decisions": 99,
+          "ia1": 1,
+          "ef1": 14,
+          "winner": "proxywar-keystone:v42"
+        }
+      ]
+    },
+    "regression_20_of_20": "not run: the diagnostic finished 0/4",
+    "reach_assessment": "ef1 removed every opening probe as designed (zero early rival attacks in all four episodes) but opening territory fell to 54-64k from 75-95k; the probes it suppressed had been profitable, and the cadence-reset leak they caused was the smaller term. Direct reach with a worse outcome than the mx3 1/4 rejects the arm."
+  }
 }

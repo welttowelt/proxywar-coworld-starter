@@ -133,5 +133,19 @@
     "regression_20_of_20": false,
     "promotion_eligible": false
   },
-  "verdict": "NO_SUBMIT_HOSTED_GATES_PENDING"
+  "verdict": "NO_SUBMIT_HOSTED_0_OF_4_FAILED",
+  "hosted": {
+    "baseline_request_id": "xreq_8cced59b-77f1-4887-86da-f5e0b27fb8c6",
+    "candidate_request_id": "xreq_7eb566ff-04d0-4ebb-9c15-765bde6781ca",
+    "variant": "tournament-8p-asia",
+    "candidate_seat": 6,
+    "baseline_wins": 0,
+    "candidate_wins": 0,
+    "candidate_decisions": 406,
+    "candidate_accepted": 406,
+    "candidate_holds": 3,
+    "candidate_rejected": 0,
+    "ef1_executions": 125,
+    "ia1_executions": 1
+  }
 }

@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-17T17:20:00Z",
+  "candidate": "qd1n-v77-mx7",
+  "verdict": "REJECTED_LOCAL_MIRROR_LOST_NO_UPLOAD",
+  "remote_state_changed": false,
+  "hypothesis": "the winner opening is an unbroken 35 percent neutral grind with no cadence warm-up, no avoid-set fallback, and no expansion boats while neutral land remains",
+  "failure": "asia-a flipped to the exact parent at 902,769 tiles while every candidate seat starved between 281 and 6,879; the flat 35 percent grind overspent troops on the same frontier and lost the mirror. asia-b still went to the candidate at 895,806, but a split mirror with starved candidate seats is a regression, not variance",
+  "evidence": {
+    "unit_tests": {
+      "passed": 101,
+      "failed": 0
+    },
+    "qualifier": {
+      "path": "/private/tmp/proxywar-v77-mx7-amd64-qualifier-20260717",
+      "decisions": 34,
+      "accepted": 34,
+      "holds": 0,
+      "rejected": 0,
+      "replay_sha256": "922f07e54742b0824528ff14ea8f1a2ffab4cdf6d0ed15ab339fbe2b622bbced"
+    },
+    "asia_a": {
+      "winner_slot": 7,
+      "winner_arm": "parent",
+      "winner_tiles": 902769,
+      "candidate_seat_tiles": [
+        435,
+        6879,
+        4157,
+        281
+      ],
+      "ef2_executions": 61,
+      "replay_sha256": "e1851bac415c59241b094d98b88afdd92729cbb7aa730d75355e8cd05d8b36e7"
+    },
+    "asia_b": {
+      "winner_slot": 3,
+      "winner_arm": "candidate",
+      "winner_tiles": 895806,
+      "ef2_executions": 82,
+      "replay_sha256": "f36384a77a735994516a345940120d9eecf791af4fa05e87905398a9886fa589"
+    },
+    "image": {
+      "tag": "proxywar-agent-llm:qd1n-v77-mx7-amd64",
+      "image_id": "sha256:15006112a3c8effdb1a581ff20fe549960aff333fd4c8a5450576aa4a8ca7c70",
+      "status": "local only; never uploaded"
+    }
+  },
+  "campaign_summary": {
+    "mx3": "map-routed composition; all local gates; hosted 1/4; retained as local population arm",
+    "pd1": "pile-on discipline; all local gates; hosted 1/4 with 11 executions; reach without improvement, rejected and reverted",
+    "ef1": "opening probe suppression; all local gates; hosted 0/4 with 125 executions; reach with a worse outcome, rejected and reverted",
+    "ef2": "flat 35 percent opening grind; lost the asia-a local mirror with every candidate seat starved; rejected before upload and reverted",
+    "conclusion": "the deterministic guard family is exhausted against the current Competition field; executable source is restored to exact mx3 behavior and qd1n:v77 remains the sole live champion"
+  },
+  "league_state": {
+    "live_policy": "qd1n:v77",
+    "candidate_uploaded": false,
+    "candidate_submitted": false,
+    "champion_changed": false,
+    "membership_relaunched": false,
+    "official_first_place_streak": 0,
+    "target_first_place_streak": 1000
+  }
+}
