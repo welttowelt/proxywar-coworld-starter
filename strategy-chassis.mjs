@@ -157,5 +157,19 @@ export function chooseChassisAction(actions, state, plan = null, history = []) {
   )[0];
   if (retreat) return retreat;
 
+  // Holding while legal tactical actions remain turns a weak position into a
+  // certain loss; the last resort is a cheap unprotected probe, never a hold.
+  const emergencyAttacks = safeActions(actions, (action) =>
+    action.kind === "attack" && !isNeutralExpansion(action)
+  );
+  const emergencyAttack = pickPercent(emergencyAttacks, 10, avoid);
+  if (emergencyAttack) return emergencyAttack;
+
+  const pressure = safeActions(actions, (action) => action.kind === "target_player")
+    .map((action) => ({ action, rival: rivalForAction(action, state) }))
+    .filter(({ rival }) => rival && !rival.isAllied)
+    .sort((left, right) => right.rival.tileShare - left.rival.tileShare)[0]?.action;
+  if (pressure) return pressure;
+
   return actions.find((action) => action.kind === "hold") ?? actions[0];
 }

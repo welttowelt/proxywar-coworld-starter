@@ -225,3 +225,18 @@ test("chassis releases a started target that turned unfavorable", () => {
   );
   assert.equal(selected.id, "attack:juicy:25");
 });
+
+test("chassis probes instead of holding when tactical actions remain", () => {
+  const probe = action("attack:bystander:10", "attack", "Attack Bystander 10%");
+  const hold = action("hold", "hold", "Hold");
+  const selected = choose(
+    [probe, hold],
+    observation({
+      tileShare: 0.15,
+      rivals: [{ id: "bystander", name: "Bystander", tileShare: 0.3, relativeTroopRatio: 0.4 }],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, probe.id);
+});
