@@ -2,7 +2,7 @@
   "schema_version": 1,
   "recorded_at": "2026-07-17T14:10:00Z",
   "candidate": "qd1n-v77-mx5",
-  "verdict": "LOCAL_GATES_PASS_HOSTED_GATES_PENDING",
+  "verdict": "NO_SUBMIT_HOSTED_4_OF_4_FAILED_ARM_REJECTED",
   "remote_state_changed": false,
   "hypothesis": "on Asia, when at least two distinct attackers are attributed across the current protocol fields or the last twelve decisions, suppressing sub-1.3-ratio rival attacks preserves the reserve that the hosted field bled out in episodes 2-3 of the mx3 diagnostic, while attacks at 1.3 or better and the World/Pangaea routes stay untouched",
   "guards": [
@@ -181,12 +181,96 @@
   },
   "league_state": {
     "live_policy": "qd1n:v77",
-    "candidate_uploaded": false,
+    "candidate_uploaded": true,
     "candidate_submitted": false,
     "champion_changed": false,
     "membership_relaunched": false,
     "official_first_place_streak": 0,
     "target_first_place_streak": 1000
   },
-  "next_test": "upload the exact mx5 image for a hosted diagnostic against the same Competition roster and variant as xreq_8cced59b/xreq_53a20fc0, reusing the v77 0/4 baseline; promote only after a hosted 4/4 and a separate 20/20 regression"
+  "next_test": "read the katanasan and Richard Higgins snowball starts; pd1 answered the bleed but not the early snowball, which is the remaining hosted failure class",
+  "hosted": {
+    "upload": {
+      "policy_ref": "qd1n:v79",
+      "policy_version_id": "34345f8f-12dc-46b5-a6c8-f33ad9461519",
+      "local_image_id": "sha256:f4546d41b3496a37010051e335952b1c815de0588ab28e452a45ce25119a9fc5",
+      "architecture": "amd64",
+      "uploaded_at": "2026-07-17T14:35:00Z",
+      "purpose": "hosted diagnostic only; qd1n:v77 stayed live throughout"
+    },
+    "matched_baseline": {
+      "request_id": "xreq_8cced59b-77f1-4887-86da-f5e0b27fb8c6",
+      "policy_ref": "qd1n:v77",
+      "variant": "tournament-8p-asia",
+      "coworld": "proxywar 0.1.9 (cow_73615cc4-83f6-4db7-a562-ac96f3abd8a5)",
+      "seat": 6,
+      "wins": 0,
+      "episodes": 4,
+      "note": "same roster and variant as the mx3 diagnostic"
+    },
+    "candidate_diagnostic": {
+      "request_id": "xreq_4660c5cb-c0ab-46ad-97d6-6db432d88cad",
+      "policy_ref": "qd1n:v79",
+      "policy_version_id": "34345f8f-12dc-46b5-a6c8-f33ad9461519",
+      "variant": "tournament-8p-asia",
+      "seat": 6,
+      "wins": 1,
+      "episodes": 4,
+      "decisions": 406,
+      "accepted": 406,
+      "holds": 0,
+      "rejected": 0,
+      "pd1_executions": 11,
+      "ia1_executions": 7,
+      "audit_confirmed_executions": 3,
+      "episodes_detail": [
+        {
+          "episode_request_id": "ereq_94a7b7d5",
+          "won": false,
+          "score": 0.0,
+          "final_tiles": 117188,
+          "decisions": 101,
+          "ia1": 0,
+          "pd1": 0,
+          "winner": "co-gas-proxywar-richard:v6",
+          "replay_sha256": "b62eb17ce938ae9b3b42b8c49d659ee162d210a650564581c90dd71a9f85f337"
+        },
+        {
+          "episode_request_id": "ereq_40e25d0e",
+          "won": false,
+          "score": 0.0,
+          "final_tiles": 11779,
+          "decisions": 102,
+          "ia1": 2,
+          "pd1": 9,
+          "winner": "tsukuyomi-no-kage:v34",
+          "replay_sha256": "699aa4bae9a71a6233259430d56323d0baf794c1a420c04df8e9dacc85fc6bd1"
+        },
+        {
+          "episode_request_id": "ereq_4e1fabd2",
+          "won": true,
+          "score": 1.0,
+          "final_tiles": 865675,
+          "decisions": 102,
+          "ia1": 0,
+          "pd1": 2,
+          "winner": "qd1n:v79",
+          "replay_sha256": "c0120a2daf0d4afc6b54ce20200c59c4c3eb130c966e60868ebc688d33ce4bff"
+        },
+        {
+          "episode_request_id": "ereq_6e8a688b",
+          "won": false,
+          "score": 0.0,
+          "final_tiles": 126829,
+          "decisions": 101,
+          "ia1": 5,
+          "pd1": 0,
+          "winner": "co-gas-proxywar-richard:v6",
+          "replay_sha256": "a6b33005e265597ab6565d07833d05d8badf639d3de371a309b0c0135ed278bb"
+        }
+      ]
+    },
+    "regression_20_of_20": "not run: the 4/4 diagnostic failure already blocks promotion",
+    "reach_assessment": "pd1 executed eleven times hosted, including nine in the katanasan loss and two in the win; direct reach without outcome improvement over the mx3 1/4 rejects the arm under the population stop rule"
+  }
 }
