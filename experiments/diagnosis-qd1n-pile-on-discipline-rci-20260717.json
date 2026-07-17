@@ -1,0 +1,192 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-17T14:10:00Z",
+  "candidate": "qd1n-v77-mx5",
+  "verdict": "LOCAL_GATES_PASS_HOSTED_GATES_PENDING",
+  "remote_state_changed": false,
+  "hypothesis": "on Asia, when at least two distinct attackers are attributed across the current protocol fields or the last twelve decisions, suppressing sub-1.3-ratio rival attacks preserves the reserve that the hosted field bled out in episodes 2-3 of the mx3 diagnostic, while attacks at 1.3 or better and the World/Pangaea routes stay untouched",
+  "guards": [
+    "pd1 is Asia-only; World keeps the proven pc1 route and Pangaea keeps exact v77",
+    "the guard needs at least two distinct attributed attackers, so single-threat traces are unchanged",
+    "attacks at 1.3 ratio or better proceed, preserving the ep1 winning feast pattern",
+    "no upload, submission, champion change, or league relaunch before hosted 4/4 and independent 20/20 gates pass"
+  ],
+  "hosted_loss_evidence": {
+    "source_request": "xreq_53a20fc0-3334-4495-9bfe-a03b454b3c17",
+    "episode_2": "collapse from 100,433 tiles: 25-40% counters into Sefirot at 1.01-1.21 while Auri, daveey, and Sefirot attacked together",
+    "episode_3": "Richard Higgins landed ten unanswered attacks while qd1n built and countered Auri at 1.23-1.93",
+    "episode_1_win": "escalations into Sefirot ran at 1.3-5.96 under a single attacker; the guard does not reach that pattern",
+    "episode_4": "katanasan snowballed by eating Richard Higgins early; separate failure class, not addressed by pd1"
+  },
+  "source_isolation": {
+    "parent_commit": "b0c205c9ca324725d1ef17c66887f160068e7ffa",
+    "base_candidate_commit": "ce155522cfe9b07c0f87b8623a278f86d90f5a10",
+    "candidate_commit": "a92890d3ad452b284d6c80ddcba3bc05c879278a",
+    "parent_policy": "qd1n:v77",
+    "runtime_diff_files": [
+      "strategy-engine.mjs"
+    ],
+    "test_diff_files": [
+      "test/strategy-engine.test.mjs"
+    ],
+    "isolated_delta": "on Asia only, suppress the selected rival attack when at least two distinct attackers are attributed in the current observation or the last twelve decisions and the best rival ratio is below 1.3, and mark the replacement action pd1",
+    "markers": [
+      "pd1"
+    ],
+    "superseded_mx4": "the current-only attribution variant was byte-identical to mx3 in all six matched runs with zero pd1 reach; widened to the twelve-decision window and superseded before any upload"
+  },
+  "images": {
+    "candidate": {
+      "tag": "proxywar-agent-llm:qd1n-v77-mx5-amd64",
+      "image_id": "sha256:f4546d41b3496a37010051e335952b1c815de0588ab28e452a45ce25119a9fc5",
+      "architecture": "amd64"
+    },
+    "exact_parent": {
+      "tag": "proxywar-agent-llm:qd1n-v77-exact-amd64",
+      "image_id": "sha256:3ea2a36dbf2c554f619adfc36e890e6a333bf43144340bfe594807d539b82ef0",
+      "architecture": "amd64"
+    },
+    "superseded_mx4": {
+      "tag": "proxywar-agent-llm:qd1n-v77-mx4-amd64",
+      "image_id": "sha256:5848c5448cb5589c7ad09859e0d2d7227d10bdc59c0158b2024237da1338d706",
+      "status": "dormant-guard variant; never uploaded"
+    }
+  },
+  "verification": {
+    "red_regression": "the pile-on suppression test failed against mx3 before the source delta; the four scope tests passed unchanged",
+    "unit_tests": {
+      "passed": 101,
+      "failed": 0
+    },
+    "diff_check": "pass",
+    "qualifier": {
+      "path": "/private/tmp/proxywar-v77-mx5-amd64-qualifier-20260717",
+      "decisions": 34,
+      "accepted": 34,
+      "holds": 0,
+      "rejected": 0,
+      "expected_planner_degraded_fallbacks": 10,
+      "replay_sha256": "a2b6f8d61310ec656d09420603d53dd33e395cec044b26ad41e82611c641d863"
+    },
+    "matched_trials": {
+      "ledger": "experiments/ledger-qd1n-pile-on-discipline-exact-v77-20260717.ndjson",
+      "payoff": "experiments/payoff-qd1n-pile-on-discipline-exact-v77-20260717.json",
+      "runs": 6,
+      "evaluated_seats": 48,
+      "candidate_wins": 5,
+      "parent_wins": 1,
+      "candidate_mean_final_tiles": 149941.1,
+      "parent_mean_final_tiles": 26967.3,
+      "candidate_decisions": 2310,
+      "candidate_accepted": 2310,
+      "candidate_rejected": 0,
+      "candidate_raw_holds": 2,
+      "candidate_unexplained_holds": 0,
+      "pd1_executions": 14,
+      "ia1_executions": 5,
+      "pc1_executions": 2,
+      "audit_confirmed_executions": 3,
+      "world_pangaea_carryover": "World and Pangaea trials ran the mx4 image; their decision streams are byte-identical to the mx3 runs, and mx5 changes only an Asia-gated condition, so the World/Pangaea evidence carries over without rerun"
+    },
+    "asia": {
+      "orientations": 2,
+      "candidate_wins": 2,
+      "parent_wins": 0,
+      "winner_tiles": [
+        884022,
+        874107
+      ],
+      "pd1_executions": 14,
+      "ia1_executions": 5,
+      "candidate_holds": 0,
+      "candidate_rejected": 0,
+      "runs": [
+        {
+          "path": "/private/tmp/proxywar-v77-mx5-amd64-asia-a-20260717",
+          "winner_slot": 6,
+          "winner_arm": "candidate",
+          "turn_count": 7800,
+          "replay_sha256": "1a524789eec3b23a9c97e696248cac329cf220ba711f3bb051f4b155939ab681"
+        },
+        {
+          "path": "/private/tmp/proxywar-v77-mx5-amd64-asia-b-20260717",
+          "winner_slot": 7,
+          "winner_arm": "candidate",
+          "turn_count": 9600,
+          "replay_sha256": "ac5dfe3c18dc81523d209c430a0556263604eb926efb3e36a0138ed34712f02f"
+        }
+      ]
+    },
+    "world": {
+      "orientations": 2,
+      "candidate_wins": 2,
+      "parent_wins": 0,
+      "pc1_executions": 2,
+      "candidate_holds": 0,
+      "candidate_rejected": 0,
+      "trace_identity_to_mx3": true,
+      "runs": [
+        {
+          "path": "/private/tmp/proxywar-v77-mx4-amd64-world-a-20260717",
+          "winner_slot": 4,
+          "winner_arm": "candidate",
+          "turn_count": 19600,
+          "replay_sha256": "26610e13c998cba65d8d7bbd2eed6daf6a5576f3304d525de66bf2caaddaa649"
+        },
+        {
+          "path": "/private/tmp/proxywar-v77-mx4-amd64-world-b-20260717",
+          "winner_slot": 3,
+          "winner_arm": "candidate",
+          "turn_count": 17800,
+          "replay_sha256": "df0893e7eadf54ea029938485deb66394c18b867edde9b35826b8458c5e5c18b"
+        }
+      ]
+    },
+    "pangaea": {
+      "orientations": 2,
+      "candidate_wins": 1,
+      "parent_wins": 1,
+      "candidate_markers": 0,
+      "control_equivalence": true,
+      "trace_identity_to_mx3": true,
+      "holds_explanation": "slot 5 produced two holds in both orientations with the identical physical trace, once under the candidate label and once under the parent label; the holds reproduce under the exact parent at the same seat and trace and are explained",
+      "runs": [
+        {
+          "path": "/private/tmp/proxywar-v77-mx4-amd64-pangaea-a-20260717",
+          "winner_slot": 3,
+          "winner_arm": "parent",
+          "turn_count": 8500,
+          "replay_sha256": "ba01c96869e7d5c0fc035bd3c7f3e28875ad84ac971ce887e3936ceae8a3c826"
+        },
+        {
+          "path": "/private/tmp/proxywar-v77-mx4-amd64-pangaea-b-20260717",
+          "winner_slot": 3,
+          "winner_arm": "candidate",
+          "turn_count": 8500,
+          "replay_sha256": "f0c8e5ec4c2dda6479776e398d823922ad7b5de6f18dd50addd42bdef10885eb"
+        }
+      ]
+    }
+  },
+  "gates": {
+    "mechanism_reached": true,
+    "asia_mirrored_advantage": true,
+    "world_trace_identical_to_mx3": true,
+    "pangaea_exact_control": true,
+    "zero_rejected": true,
+    "zero_unexplained_holds": true,
+    "hosted_diagnostic_4_of_4": false,
+    "map_seat_regression_20_of_20": false,
+    "promotion_eligible": false
+  },
+  "league_state": {
+    "live_policy": "qd1n:v77",
+    "candidate_uploaded": false,
+    "candidate_submitted": false,
+    "champion_changed": false,
+    "membership_relaunched": false,
+    "official_first_place_streak": 0,
+    "target_first_place_streak": 1000
+  },
+  "next_test": "upload the exact mx5 image for a hosted diagnostic against the same Competition roster and variant as xreq_8cced59b/xreq_53a20fc0, reusing the v77 0/4 baseline; promote only after a hosted 4/4 and a separate 20/20 regression"
+}

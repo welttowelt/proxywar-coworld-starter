@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-07-17T14:10:00Z",
+  "candidate": "pile-on-discipline-pd1",
+  "parent": "main-v77",
+  "rows": 48,
+  "arms": {
+    "main-v77": {
+      "matches": 24,
+      "wins": 1,
+      "win_rate": 0.0417,
+      "beta_posterior": {
+        "alpha": 2,
+        "beta": 24,
+        "mean": 0.0769
+      },
+      "mean_score": 0.0417,
+      "mean_final_tiles": 26967.3,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "pd1_marker_count": 0,
+      "confirmed_marker_count": 0,
+      "decisions": 2339,
+      "accepted_decisions": 2339,
+      "accepted_rate": 1,
+      "holds": 4,
+      "rejected_decisions": 0
+    },
+    "pile-on-discipline-pd1": {
+      "matches": 24,
+      "wins": 5,
+      "win_rate": 0.2083,
+      "beta_posterior": {
+        "alpha": 6,
+        "beta": 20,
+        "mean": 0.2308
+      },
+      "mean_score": 0.2083,
+      "mean_final_tiles": 149941.1,
+      "branch_reach_runs": 7,
+      "marker_count": 7,
+      "pd1_marker_count": 14,
+      "confirmed_marker_count": 3,
+      "decisions": 2310,
+      "accepted_decisions": 2310,
+      "accepted_rate": 1,
+      "holds": 2,
+      "rejected_decisions": 0,
+      "unexplained_holds": 0
+    }
+  },
+  "map_payoffs": {
+    "Asia": {
+      "main-v77": {
+        "matches": 8,
+        "wins": 0,
+        "win_rate": 0.0,
+        "mean_final_tiles": 25018.375,
+        "holds": 0,
+        "rejected_decisions": 0
+      },
+      "pile-on-discipline-pd1": {
+        "matches": 8,
+        "wins": 2,
+        "win_rate": 0.25,
+        "mean_final_tiles": 237720.75,
+        "marker_count": 5,
+        "pd1_marker_count": 14,
+        "confirmed_marker_count": 3,
+        "holds": 0,
+        "rejected_decisions": 0
+      }
+    },
+    "World": {
+      "main-v77": {
+        "matches": 8,
+        "wins": 0,
+        "win_rate": 0.0,
+        "mean_final_tiles": 3341.625,
+        "holds": 2,
+        "rejected_decisions": 0
+      },
+      "pile-on-discipline-pd1": {
+        "matches": 8,
+        "wins": 2,
+        "win_rate": 0.25,
+        "mean_final_tiles": 159560.625,
+        "marker_count": 2,
+        "pd1_marker_count": 0,
+        "confirmed_marker_count": 0,
+        "holds": 0,
+        "rejected_decisions": 0
+      },
+      "trace_identity": "World runs used the mx4 image whose decision stream is byte-identical to mx3; mx5 only changes an Asia-gated condition, so World evidence carries over."
+    },
+    "Pangaea": {
+      "main-v77": {
+        "matches": 8,
+        "wins": 1,
+        "win_rate": 0.125,
+        "mean_final_tiles": 52541.875,
+        "holds": 2,
+        "rejected_decisions": 0
+      },
+      "pile-on-discipline-pd1": {
+        "matches": 8,
+        "wins": 1,
+        "win_rate": 0.125,
+        "mean_final_tiles": 52541.875,
+        "marker_count": 0,
+        "pd1_marker_count": 0,
+        "confirmed_marker_count": 0,
+        "holds": 2,
+        "rejected_decisions": 0,
+        "unexplained_holds": 0
+      },
+      "control_equivalence": "Both arm labels produced the same decisions, tiles, winner, and two slot-5 holds as the exact-parent mx3/mx4 runs; pd1 is unreachable off-Asia and the trace stayed byte-identical."
+    }
+  },
+  "matched_pairs": {
+    "usable_pairs": 3,
+    "candidate_advantages": 2,
+    "parent_advantages": 0,
+    "ties": 1
+  },
+  "gates": {
+    "mechanism_reached": true,
+    "zero_rejected": true,
+    "zero_unexplained_holds": true,
+    "matched_advantage": true,
+    "pangaea_exact_control": true,
+    "diagnostic_4_of_4": false,
+    "regression_20_of_20": false,
+    "promotion_eligible": false
+  },
+  "verdict": "NO_SUBMIT_HOSTED_GATES_PENDING"
+}
