@@ -1191,3 +1191,12 @@ and no ship case exists. qd1n:v77 remains the sole live champion. Evidence:
 `experiments/diagnosis-qd2n-winner-chassis-20260718.json` and the
 `decisive_ab` block in
 `experiments/diagnosis-qd1n-map-composition-rci-20260717.json`.
+
+The ship question was then tested against the actual league field (the round
+471/472 roster including `co-gas-proxywar-relhalpha:v1`, `Eva-00:v23`,
+`jamesboggs-warlord:v1`, and the current `daveey-proxywar:v22` and
+`co-gas-proxywar-richard:v7`): eight episodes per arm finished v77 `0/8` and
+mx3 `0/8`, with `richard:v7` taking nine of sixteen. There is no ship case in
+either arena. qd1n:v77 remains the sole live champion; the champion's losses
+are structural against the three climbing opponents, who are also iterating
+faster.
