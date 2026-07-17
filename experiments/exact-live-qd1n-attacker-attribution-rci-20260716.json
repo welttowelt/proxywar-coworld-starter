@@ -2,7 +2,7 @@
   "schema_version": 1,
   "recorded_at": "2026-07-16T23:05:18Z",
   "candidate": "qd1n-v77-plus-attacker-attribution",
-  "verdict": "EXACT_PARENT_PASS_NO_SUBMIT",
+  "verdict": "REJECT_UNIVERSAL_SUCCESSOR_RETAIN_ASIA_ARM",
   "remote_state_changed": false,
   "source_isolation": {
     "parent_commit": "b0c205c9ca324725d1ef17c66887f160068e7ffa",
@@ -18,6 +18,11 @@
       "image_id": "sha256:ab6240a53ba805c56999f8d994cf24f427b7374c4650dbc30cd85eb5426f0045",
       "architecture": "arm64"
     },
+    "candidate_architecture_matched": {
+      "tag": "proxywar-agent-llm:qd1n-v77-ia1-amd64",
+      "image_id": "sha256:12fb102cc4d4d19b0c9b512a549d652a0af33a8c8157dd23b7ca92779ec8aaad",
+      "architecture": "amd64"
+    },
     "exact_live_parent": {
       "tag": "proxywar-agent-llm:latest",
       "image_id": "sha256:36d5b2c411f39158a7485c85670adecb17a60bb2e331c8468d41a5c1b7754741",
@@ -26,6 +31,14 @@
   },
   "verification": {
     "unit_tests": {"passed": 89, "failed": 0},
+    "architecture_matched_qualifier": {
+      "variant": "qualifier",
+      "decisions": 34,
+      "accepted": 34,
+      "rejected": 0,
+      "holds": 0,
+      "replay_sha256": "b9c9c065eee3acaaa7d5d24d09d61040eee4e621d1fe733d84980df495a4b765"
+    },
     "qualifier": {
       "variant": "qualifier",
       "decisions": 34,
@@ -69,11 +82,40 @@
         "marker_reach_candidate_seats": 1,
         "replay_sha256": "9cd151bae302ca2e0a2053709b8b704223b9dd4007e951638bf1a82b29a4fd37"
       }
+    },
+    "matched_world": {
+      "variant": "tournament-8p-world",
+      "orientation": "candidate-even-parent-odd",
+      "architecture": "amd64-for-both-arms",
+      "turn_count": 40400,
+      "winner_slot": null,
+      "candidate_top_score": 0.21321221775635388,
+      "parent_top_score": 0.36547530804516204,
+      "candidate_mean_score": 0.08752871737499021,
+      "parent_mean_score": 0.16247128262500976,
+      "candidate_mean_final_tiles": 57034.5,
+      "parent_mean_final_tiles": 105867.75,
+      "candidate_marker_executions": 5,
+      "candidate_branch_reach_seats": 2,
+      "decisions": 2294,
+      "accepted": 2294,
+      "rejected": 0,
+      "holds": 0,
+      "replay_sha256": "600bd64a290a04ae061f79e5bcf31e69f415f5c9ed1b1333906d45fcf621bb32",
+      "payoff_path": "experiments/payoff-qd1n-attacker-attribution-exact-v77-world-20260717.json",
+      "falsifying_decisions": [
+        {"relative_troop_ratio": 0.91, "troop_percent": 10},
+        {"relative_troop_ratio": 1.03, "troop_percent": 25},
+        {"relative_troop_ratio": 1.05, "troop_percent": 10}
+      ],
+      "verdict": "direct reach without matched improvement; stop universal promotion"
     }
   },
   "gates": {
     "mechanism_reached": true,
-    "exact_live_parent_matched_advantage": true,
+    "asia_exact_live_parent_advantage": true,
+    "world_exact_live_parent_advantage": false,
+    "exact_live_parent_matched_advantage": false,
     "zero_rejected": true,
     "zero_holds": true,
     "world_pangaea_mirrors": false,
@@ -81,5 +123,35 @@
     "regression_20_of_20": false,
     "promotion_eligible": false
   },
-  "next_test": "Run matched World and Pangaea cells, then the full four-diagnostic and twenty-regression gates before upload or submission."
+  "source_action": "Restore main executable source and tests to exact deployed v77; retain ia1 only as a reproducible Asia population arm.",
+  "safe_retaliation_followup": {
+    "candidate": "qd1n-v77-sr1-amd64",
+    "image_id": "sha256:fc79b44de9eadcd9dea234dea12ef24649fa0c3bb0f68625286b814f18173c80",
+    "red_regression": "without the floor, a 1.05x attributed aggressor displaced a 1.20x base target",
+    "unit_tests": {"passed": 90, "failed": 0},
+    "qualifier": {
+      "decisions": 34,
+      "accepted": 34,
+      "rejected": 0,
+      "holds": 0,
+      "replay_sha256": "9eba9faa5fe463771c62b8ca545582dae2cb9d4f9917ef1b5619d9ebda8ffba4"
+    },
+    "world": {
+      "turn_count": 40400,
+      "winner_slot": null,
+      "candidate_marker_executions": 2,
+      "marker_ratios": [1.44, 1.12],
+      "accepted": 2294,
+      "rejected": 0,
+      "holds": 0,
+      "candidate_mean_score": 0.08752871737499021,
+      "parent_mean_score": 0.16247128262500976,
+      "candidate_mean_final_tiles": 57034.5,
+      "parent_mean_final_tiles": 105867.75,
+      "selected_action_stream_equal_to_ia1": true,
+      "replay_sha256": "6a7c333a8b04c57b9fefb5bf08f6520d7bf7960ff09954ebfe5175fbcfaf4100"
+    },
+    "verdict": "REJECT_DEAD_LAYER"
+  },
+  "next_test": "Test a reserve-floor selector that blocks rival attacks below 1.10 and marks the replacement expansion or economy action; reject if the action stream does not change or matched World score does not improve."
 }

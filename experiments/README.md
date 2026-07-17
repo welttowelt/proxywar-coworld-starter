@@ -904,3 +904,30 @@ territory was 240,029 versus 2,379.75 for v77. This closes the exact-parent
 Asia gate only. World/Pangaea and the full `4/4` plus `20/20` gates remain open,
 so no image was uploaded or submitted. Exact evidence is in
 `experiments/exact-live-qd1n-attacker-attribution-rci-20260716.json`.
+
+The architecture-matched World gate rejected the universal successor. Both
+arms ran as linux/amd64. The board reached turn 40,400 without an 80-percent
+winner; exact v77 led at score `0.3655` and 238,147 tiles, while the best
+candidate seat reached `0.2132` and 138,931. Candidate mean score was `0.0875`
+against `0.1625`, and mean final territory was 57,034.5 against 105,867.75.
+`ia1` reached five times across two candidate seats, all `2,294/2,294` orders
+were accepted, and neither arm held or rejected an order. Three attributed
+responses attacked at only `0.91x`, `1.03x`, and `1.05x` relative troops. The
+skill rejected `ia1` as a universal v78 successor, restored executable main to
+exact v77, and retained the candidate only as an Asia population arm. The next
+bounded hypothesis requires at least `1.10x` before attribution can influence
+attack selection. World evidence is in
+`experiments/ledger-qd1n-attacker-attribution-exact-v77-world-20260717.ndjson`
+and `experiments/payoff-qd1n-attacker-attribution-exact-v77-world-20260717.json`.
+
+The `sr1` follow-up gated attribution weight and its marker below `1.10x`.
+Its red regression proved a real unit boundary, and the isolated suite passed
+`90/90`; the amd64 qualifier accepted `34/34` decisions. In the identical
+World field, `sr1` reached twice at `1.44x` and `1.12x`, but all 2,294 selected
+action IDs and the complete final score vector were identical to the rejected
+`ia1` run. The base attack selector still chose the sub-1.10 targets after the
+attribution bonus disappeared. RCI retired `sr1` as a dead layer without a
+reverse orientation. The next arm must block the near-parity rival action
+itself and mark the replacement action. Evidence is in
+`experiments/ledger-qd1n-safe-retaliation-exact-v77-world-20260717.ndjson` and
+`experiments/payoff-qd1n-safe-retaliation-exact-v77-world-20260717.json`.

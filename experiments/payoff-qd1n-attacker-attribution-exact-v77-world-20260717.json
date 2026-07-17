@@ -1,0 +1,261 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-07-17T00:07:04.822Z",
+  "candidate": "attacker-attribution-amd64",
+  "parent": "main-v77-amd64",
+  "rows": 8,
+  "arms": {
+    "attacker-attribution-amd64": {
+      "matches": 4,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 5,
+        "mean": 0.1667
+      },
+      "mean_score": 0.0875,
+      "mean_final_tiles": 57034.5,
+      "branch_reach_runs": 2,
+      "marker_count": 5,
+      "decisions": 959,
+      "accepted_decisions": 959,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "main-v77-amd64": {
+      "matches": 4,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 5,
+        "mean": 0.1667
+      },
+      "mean_score": 0.1625,
+      "mean_final_tiles": 105867.8,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 1335,
+      "accepted_decisions": 1335,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    }
+  },
+  "payoff_matrix": {
+    "attacker-attribution-amd64": {
+      "exact-v77-local-8p-amd64": {
+        "matches": 4,
+        "wins": 0,
+        "win_rate": 0,
+        "beta_posterior": {
+          "alpha": 1,
+          "beta": 5,
+          "mean": 0.1667
+        },
+        "mean_score": 0.0875,
+        "mean_final_tiles": 57034.5,
+        "branch_reach_runs": 2,
+        "marker_count": 5,
+        "decisions": 959,
+        "accepted_decisions": 959,
+        "accepted_rate": 1,
+        "holds": 0,
+        "rejected_decisions": 0
+      }
+    },
+    "main-v77-amd64": {
+      "exact-v77-local-8p-amd64": {
+        "matches": 4,
+        "wins": 0,
+        "win_rate": 0,
+        "beta_posterior": {
+          "alpha": 1,
+          "beta": 5,
+          "mean": 0.1667
+        },
+        "mean_score": 0.1625,
+        "mean_final_tiles": 105867.8,
+        "branch_reach_runs": 0,
+        "marker_count": 0,
+        "decisions": 1335,
+        "accepted_decisions": 1335,
+        "accepted_rate": 1,
+        "holds": 0,
+        "rejected_decisions": 0
+      }
+    }
+  },
+  "contexts": {
+    "attacker-attribution-amd64 | exact-v77-local-8p-amd64 | World | seat 0": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0,
+      "mean_final_tiles": 0,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 32,
+      "accepted_decisions": 32,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "main-v77-amd64 | exact-v77-local-8p-amd64 | World | seat 1": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0.1194,
+      "mean_final_tiles": 77820,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 403,
+      "accepted_decisions": 403,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "attacker-attribution-amd64 | exact-v77-local-8p-amd64 | World | seat 2": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0.1369,
+      "mean_final_tiles": 89207,
+      "branch_reach_runs": 1,
+      "marker_count": 2,
+      "decisions": 403,
+      "accepted_decisions": 403,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "main-v77-amd64 | exact-v77-local-8p-amd64 | World | seat 3": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0.3655,
+      "mean_final_tiles": 238147,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 403,
+      "accepted_decisions": 403,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "attacker-attribution-amd64 | exact-v77-local-8p-amd64 | World | seat 4": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0.2132,
+      "mean_final_tiles": 138931,
+      "branch_reach_runs": 1,
+      "marker_count": 3,
+      "decisions": 403,
+      "accepted_decisions": 403,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "main-v77-amd64 | exact-v77-local-8p-amd64 | World | seat 5": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0,
+      "mean_final_tiles": 0,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 126,
+      "accepted_decisions": 126,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "attacker-attribution-amd64 | exact-v77-local-8p-amd64 | World | seat 6": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0,
+      "mean_final_tiles": 0,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 121,
+      "accepted_decisions": 121,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "main-v77-amd64 | exact-v77-local-8p-amd64 | World | seat 7": {
+      "matches": 1,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {
+        "alpha": 1,
+        "beta": 2,
+        "mean": 0.3333
+      },
+      "mean_score": 0.165,
+      "mean_final_tiles": 107504,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 403,
+      "accepted_decisions": 403,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    }
+  },
+  "matched_pairs": {
+    "usable_pairs": 1,
+    "candidate_advantages": 0,
+    "parent_advantages": 1,
+    "ties": 0
+  },
+  "gates": {
+    "mechanism_reached": true,
+    "zero_rejected": true,
+    "zero_holds": true,
+    "matched_advantage": false,
+    "diagnostic_4_of_4": false,
+    "regression_20_of_20": false,
+    "promotion_eligible": false
+  },
+  "verdict": "NO_SUBMIT"
+}

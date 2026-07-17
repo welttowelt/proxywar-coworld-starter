@@ -19,7 +19,6 @@ function observation({
   troopRatio = 0.8,
   rivals = [],
   incomingAttacks = [],
-  incomingAttackPlayerIDs = [],
   profile = "",
   objective = null,
 } = {}) {
@@ -35,7 +34,6 @@ function observation({
       borderTiles: 100,
       incomingAttacks,
     },
-    combat: { incomingAttackPlayerIDs },
     visiblePlayers: rivals.map((rival) => ({
       isAlive: true,
       sharesBorder: true,
@@ -304,53 +302,6 @@ test("recent aggressor pressure outranks a slightly softer bystander", () => {
   );
 });
 
-test("current protocol attacker ids activate immediate retaliation", () => {
-  const aggressorAttack = action("attack:aggressor:10", "attack", "Attack Aggressor 10%");
-  const bystanderAttack = action("attack:bystander:10", "attack", "Attack Bystander 10%");
-  const obs = observation({
-    tileShare: 0.2,
-    incomingAttacks: 1,
-    incomingAttackPlayerIDs: ["aggressor"],
-    rivals: [
-      {
-        id: "aggressor",
-        name: "Aggressor",
-        tileShare: 0.12,
-        relativeTroopRatio: 1.1,
-        incomingAttack: true,
-      },
-      { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
-    ],
-  });
-
-  const selected = choose([aggressorAttack, bystanderAttack], obs);
-  assert.equal(selected.id, aggressorAttack.id);
-  assert.equal(selected.policyMarker, "ia1");
-});
-
-test("visible incoming flag backs up an absent combat attacker list", () => {
-  const aggressorAttack = action("attack:aggressor:10", "attack", "Attack Aggressor 10%");
-  const bystanderAttack = action("attack:bystander:10", "attack", "Attack Bystander 10%");
-  const obs = observation({
-    tileShare: 0.2,
-    incomingAttacks: 1,
-    rivals: [
-      {
-        id: "aggressor",
-        name: "Aggressor",
-        tileShare: 0.12,
-        relativeTroopRatio: 1.1,
-        incomingAttack: true,
-      },
-      { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
-    ],
-  });
-
-  const selected = choose([aggressorAttack, bystanderAttack], obs);
-  assert.equal(selected.id, aggressorAttack.id);
-  assert.equal(selected.policyMarker, "ia1");
-});
-
 test("naval pressure also prefers an observed aggressor", () => {
   const aggressorBoat = {
     ...action("boat:aggressor:8", "boat", "Boat to Aggressor 8%"),
@@ -548,27 +499,6 @@ test("sustained territory collapse inserts an emergency build", () => {
   );
 });
 
-test("territory collapse caps neutral expansion at twenty percent", () => {
-  const actions = [10, 20, 35].map((percent) => ({
-    ...action(
-      `expand:terra-nullius:${percent}`,
-      "attack",
-      `Expand into Terra Nullius ${percent}%`,
-    ),
-    metadata: { expansion: true, troopPercent: percent },
-  }));
-  const history = [0.2, 0.18, 0.16].map((tileShare, index) => ({
-    actionID: `expand:terra-nullius:${index}`,
-    kind: "attack",
-    neutral: true,
-    tileShare,
-  }));
-
-  const selected = choose(actions, observation({ tileShare: 0.14 }), null, history);
-  assert.equal(selected.id, "expand:terra-nullius:20");
-  assert.equal(selected.policyMarker, "cp1");
-});
-
 test("midgame pressure keeps a reliable tactical action over alliance requests", () => {
   const allianceWithLeader = {
     ...action("alliance:leader", "alliance_request", "Alliance with Leader"),
@@ -663,98 +593,7 @@ test("an isolated player pressures a rival instead of using a pending alliance",
       { id: "other", name: "Other", tileShare: 0.2, relativeTroopRatio: 0.2 },
     ],
   });
-  const selected = choose([pendingAlliance, targetLeader, hold], obs);
-  assert.equal(selected.id, targetLeader.id);
-  assert.equal(selected.policyMarker, "fr1");
-});
-
-test("pressure keeps one live campaign target instead of creating more enemies", () => {
-  const targetLeader = {
-    ...action("target:leader", "target_player", "Target Leader"),
-    metadata: { targetID: "leader" },
-  };
-  const targetOther = {
-    ...action("target:other", "target_player", "Target Other"),
-    metadata: { targetID: "other" },
-  };
-  const hold = action("hold", "hold", "Hold");
-  const obs = observation({
-    tileShare: 0.01,
-    troopRatio: 0.98,
-    rivals: [
-      { id: "leader", name: "Leader", tileShare: 0.7, relativeTroopRatio: 0.1 },
-      { id: "other", name: "Other", tileShare: 0.2, relativeTroopRatio: 0.2 },
-    ],
-  });
-  const leaderMarked = [{
-    actionID: targetLeader.id,
-    kind: "target_player",
-    targetID: "leader",
-    targetName: "Leader",
-    incomingAttackerIDs: [],
-    incomingAttackerNames: [],
-  }];
-
-  assert.equal(choose([targetLeader, targetOther, hold], obs, null, leaderMarked).id, hold.id);
-});
-
-test("pressure can move after the previous campaign target is eliminated", () => {
-  const targetOther = {
-    ...action("target:other", "target_player", "Target Other"),
-    metadata: { targetID: "other" },
-  };
-  const hold = action("hold", "hold", "Hold");
-  const history = [{
-    actionID: "target:leader",
-    kind: "target_player",
-    targetID: "leader",
-    targetName: "Leader",
-    incomingAttackerIDs: [],
-    incomingAttackerNames: [],
-  }];
-  const obs = observation({
-    tileShare: 0.01,
-    troopRatio: 0.98,
-    rivals: [
-      { id: "other", name: "Other", tileShare: 0.2, relativeTroopRatio: 0.2 },
-    ],
-  });
-
-  const selected = choose([targetOther, hold], obs, null, history);
-  assert.equal(selected.id, targetOther.id);
-  assert.equal(selected.policyMarker, "fr1");
-});
-
-test("fresh retaliation permits a second pressure mark", () => {
-  const targetLeader = {
-    ...action("target:leader", "target_player", "Target Leader"),
-    metadata: { targetID: "leader" },
-  };
-  const hold = action("hold", "hold", "Hold");
-  const history = [{
-    actionID: targetLeader.id,
-    kind: "target_player",
-    targetID: "leader",
-    targetName: "Leader",
-    incomingAttackerIDs: [],
-    incomingAttackerNames: [],
-  }, {
-    actionID: "hold",
-    kind: "hold",
-    incomingAttackerIDs: ["leader"],
-    incomingAttackerNames: ["Leader"],
-  }];
-  const obs = observation({
-    tileShare: 0.01,
-    troopRatio: 0.98,
-    rivals: [
-      { id: "leader", name: "Leader", tileShare: 0.7, relativeTroopRatio: 0.1 },
-    ],
-  });
-
-  const selected = choose([targetLeader, hold], obs, null, history);
-  assert.equal(selected.id, targetLeader.id);
-  assert.equal(selected.policyMarker, "rt1");
+  assert.equal(choose([pendingAlliance, targetLeader, hold], obs).id, targetLeader.id);
 });
 
 test("survival alliance does not consume tempo without incoming pressure", () => {

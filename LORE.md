@@ -367,3 +367,14 @@ restored names on top of exact v77. Qd1n took both seat directions again, at
 873,409 and 909,275 tiles. Ten named answers crossed five candidate seats; 905
 orders landed without a hold or rejection. Asia now favors the repaired sight,
 but World, Pangaea, the four, and the twenty still bar the succession.
+
+World refused the same crown. Five named answers landed cleanly, but three met
+the attacker near parity or from below. Exact v77 ended the long field with
+nearly twice the candidate's mean territory. The sight remains in the Asia
+arm; the universal blade returns to its sheath. The next answer waits for
+advantage before it turns toward the hand that struck.
+
+The first restraint changed the rune, not the hand. `sr1` hid the weak answers,
+yet every order and every border ended where the failed field had ended. The
+dead rune was retired. The next restraint must stop the strike itself and spend
+the saved reserve on land or iron.

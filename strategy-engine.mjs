@@ -43,10 +43,6 @@ function incomingAttackerIDs(value) {
       entry.forEach(visit);
       return;
     }
-    if (typeof entry === "string") {
-      ids.add(clean(entry).toLowerCase());
-      return;
-    }
     if (!entry || typeof entry !== "object") return;
     const direct = entry.attackerID ?? entry.attackerId ?? entry.sourcePlayerID ??
       entry.sourcePlayerId ?? entry.sourceID ?? entry.sourceId;
@@ -118,25 +114,18 @@ export function avoidActionIDs(history) {
 
 export function buildState(observation, actions, history = []) {
   const own = observation?.ownState || {};
-  const visiblePlayers = (observation?.visiblePlayers || [])
-    .filter((player) => player && player.isAlive);
-  const attributedIncomingAttackerIDs = [...new Set([
-    ...incomingAttackerIDs(own.incomingAttacks),
-    ...incomingAttackerIDs(observation?.combat?.incomingAttackPlayerIDs),
-    ...visiblePlayers
-      .filter((player) => player.incomingAttack === true)
-      .map((player) => playerID(player).toLowerCase()),
-  ])].filter(Boolean);
   const self = {
     tileShare: finiteNumber(own.tileShare),
     troops: finiteNumber(own.troops),
     troopRatio: finiteNumber(own.troopRatio),
     gold: own.gold,
     borderTiles: finiteNumber(own.borderTiles),
-    incomingAttacks: own.incomingAttacks ?? attributedIncomingAttackerIDs,
-    incomingAttackerIDs: attributedIncomingAttackerIDs,
+    incomingAttacks: own.incomingAttacks,
+    incomingAttackerIDs: incomingAttackerIDs(own.incomingAttacks),
   };
-  const rivals = visiblePlayers.map((player) => ({
+  const rivals = (observation?.visiblePlayers || [])
+    .filter((player) => player && player.isAlive)
+    .map((player) => ({
       id: playerID(player),
       name: clean(player.name),
       tileShare: finiteNumber(player.tileShare),
@@ -239,34 +228,6 @@ function rivalIsProtected(state, history, rival) {
     return !history.slice(index + 1).some((later) => rivalWasIncoming(later, rival));
   }
   return false;
-}
-
-function pressureMarker(state, history, rival) {
-  let lastPressure = -1;
-  for (let index = history.length - 1; index >= 0; index--) {
-    const entry = history[index];
-    const sameTarget = entry.kind === "target_player" && (
-      entry.targetID === rival.id.toLowerCase() || targetName(entry) === rival.name.toLowerCase()
-    );
-    if (sameTarget) {
-      lastPressure = index;
-      break;
-    }
-  }
-  if (lastPressure !== -1) {
-    const freshHostility = (state.self.incomingAttackerIDs || []).includes(rival.id.toLowerCase()) ||
-      history.slice(lastPressure + 1).some((entry) => rivalWasIncoming(entry, rival));
-    return freshHostility ? "rt1" : null;
-  }
-
-  const hasLiveCampaignTarget = history.some((entry) => {
-    if (entry.kind !== "target_player") return false;
-    return state.rivals.some((candidate) => !candidate.isAllied && (
-      entry.targetID === candidate.id.toLowerCase() ||
-      targetName(entry) === candidate.name.toLowerCase()
-    ));
-  });
-  return hasLiveCampaignTarget ? null : "fr1";
 }
 
 function stableAllianceRequests(actions) {
@@ -428,19 +389,11 @@ function chooseRivalAttack(actions, state, plan, history, avoid) {
   };
 }
 
-function chooseNeutralAttack(actions, history, avoid, maxPercent = 35) {
+function chooseNeutralAttack(actions, history, avoid) {
   const candidates = safeActions(actions, isNeutralExpansion);
   const streak = consecutive(history, (entry) => entry.neutral === true && entry.kind === "attack");
   const cadence = [10, 10, 20, 35];
-  const uncappedPercent = cadence[Math.min(streak, cadence.length - 1)];
-  const desiredPercent = Math.min(
-    uncappedPercent,
-    maxPercent,
-  );
-  const selected = pickPercent(candidates, desiredPercent, avoid);
-  return selected && uncappedPercent > maxPercent
-    ? { ...selected, policyMarker: "cp1" }
-    : selected;
+  return pickPercent(candidates, cadence[Math.min(streak, cadence.length - 1)], avoid);
 }
 
 export function neutralExpansionStalled(state, history) {
@@ -620,17 +573,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (defensiveBuild) return defensiveBuild;
 
   const rivalAttack = chooseRivalAttack(actions, state, plan, history, avoid);
-  const attributedRivalAttack = rivalAttack?.action &&
-    (state.self.incomingAttackerIDs || []).includes(rivalAttack.rival.id.toLowerCase())
-    ? { ...rivalAttack.action, policyMarker: "ia1" }
-    : rivalAttack?.action;
-  const collapsing = territoryCollapsing(state, history);
-  const neutralAttack = chooseNeutralAttack(
-    actions,
-    history,
-    avoid,
-    collapsing ? 20 : 35,
-  );
+  const neutralAttack = chooseNeutralAttack(actions, history, avoid);
   const build = chooseBuild(actions, history);
   const sinceBuild = decisionsSince(history, (entry) =>
     entry.kind === "build" || entry.kind === "upgrade_structure"
@@ -640,6 +583,8 @@ export function chooseAction(actions, state, plan = null, history = []) {
     sinceBuild >= 14;
   const finishingTarget = rivalAttack && rivalAttack.streak > 0 &&
     rivalAttack.rival.relativeTroopRatio >= 1.5;
+  const collapsing = territoryCollapsing(state, history);
+
   if (collapsing && build && sinceBuild >= 3 && !finishingTarget) return build;
 
   const allianceMove = chooseAllianceMove(
@@ -662,14 +607,14 @@ export function chooseAction(actions, state, plan = null, history = []) {
     (entry) => entry.policyMarker === "cv1",
   ) >= 6;
   if (!collapsing && conversionReady && boatConversionStalled(state, history)) {
-    const conversion = attributedRivalAttack || chooseUtility(actions, plan, history) ||
+    const conversion = rivalAttack?.action || chooseUtility(actions, plan, history) ||
       (sinceBuild >= 3 ? build : null) ||
       chooseBoat(actions, state, history, avoid, false, true);
     if (conversion) return { ...conversion, policyMarker: "cv1" };
   }
 
   if (neutralExpansionStalled(state, history)) {
-    if (attributedRivalAttack) return attributedRivalAttack;
+    if (rivalAttack?.action) return rivalAttack.action;
     const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
     if (boatStreak >= 2 && build) return build;
     const escapeBoat = chooseBoat(actions, state, history, avoid);
@@ -681,7 +626,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (state.self.tileShare < 0.12 && neutralAttack && threatCount === 0 && !collapsing) {
     return neutralAttack;
   }
-  if (attributedRivalAttack) return attributedRivalAttack;
+  if (rivalAttack?.action) return rivalAttack.action;
   if (neutralAttack) return neutralAttack;
   if (build && sinceBuild >= 5) return build;
 
@@ -726,18 +671,8 @@ export function chooseAction(actions, state, plan = null, history = []) {
   const pressure = safeActions(actions, (action) => action.kind === "target_player")
     .map((action) => ({ action, rival: rivalForAction(action, state) }))
     .filter(({ rival }) => rival && !rivalIsProtected(state, history, rival))
-    .map((candidate) => ({
-      ...candidate,
-      marker: pressureMarker(state, history, candidate.rival),
-      hostility: recentHostility(state, history, candidate.rival),
-    }))
-    .filter(({ marker }) => marker !== null)
-    .sort((left, right) =>
-      Number(right.marker === "rt1") - Number(left.marker === "rt1") ||
-      right.hostility - left.hostility ||
-      right.rival.tileShare - left.rival.tileShare
-    )[0];
-  if (pressure) return { ...pressure.action, policyMarker: pressure.marker };
+    .sort((left, right) => right.rival.tileShare - left.rival.tileShare)[0]?.action;
+  if (pressure) return pressure;
 
   return actions.find((action) => action.kind === "hold") ?? actions[0];
 }

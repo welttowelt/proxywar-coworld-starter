@@ -3,7 +3,7 @@
   "recorded_at": "2026-07-16T22:24:46Z",
   "policy": "qd1n:v77",
   "candidate": "qd1n-rci8-attacker-attribution",
-  "status": "exact_live_parent_pass_no_submit",
+  "status": "rejected_universal_successor_retained_asia_arm",
   "remote_state_changed": false,
   "live_checkpoint": {
     "completed_round": 420,
@@ -116,6 +116,41 @@
       "candidate_mean_final_tiles": 240029,
       "parent_mean_final_tiles": 2379.75
     },
+    "architecture_matched_world_rejection": {
+      "evidence_path": "experiments/exact-live-qd1n-attacker-attribution-rci-20260716.json",
+      "ledger_path": "experiments/ledger-qd1n-attacker-attribution-exact-v77-world-20260717.ndjson",
+      "payoff_path": "experiments/payoff-qd1n-attacker-attribution-exact-v77-world-20260717.json",
+      "candidate_image_id": "sha256:12fb102cc4d4d19b0c9b512a549d652a0af33a8c8157dd23b7ca92779ec8aaad",
+      "parent_image_id": "sha256:36d5b2c411f39158a7485c85670adecb17a60bb2e331c8468d41a5c1b7754741",
+      "turn_count": 40400,
+      "winner_slot": null,
+      "candidate_marker_executions": 5,
+      "candidate_branch_reach_seats": 2,
+      "accepted_decisions": 2294,
+      "rejected_decisions": 0,
+      "holds": 0,
+      "candidate_mean_score": 0.0875,
+      "parent_mean_score": 0.1625,
+      "candidate_mean_final_tiles": 57034.5,
+      "parent_mean_final_tiles": 105867.75,
+      "replay_sha256": "600bd64a290a04ae061f79e5bcf31e69f415f5c9ed1b1333906d45fcf621bb32",
+      "verdict": "direct reach without matched World improvement; reject as universal v78 successor"
+    },
+    "safe_retaliation_followup": {
+      "candidate_image_id": "sha256:fc79b44de9eadcd9dea234dea12ef24649fa0c3bb0f68625286b814f18173c80",
+      "ledger_path": "experiments/ledger-qd1n-safe-retaliation-exact-v77-world-20260717.ndjson",
+      "payoff_path": "experiments/payoff-qd1n-safe-retaliation-exact-v77-world-20260717.json",
+      "unit_tests": { "passed": 90, "failed": 0 },
+      "candidate_marker_executions": 2,
+      "accepted_decisions": 2294,
+      "rejected_decisions": 0,
+      "holds": 0,
+      "selected_action_stream_equal_to_ia1": true,
+      "candidate_mean_score": 0.0875,
+      "parent_mean_score": 0.1625,
+      "replay_sha256": "6a7c333a8b04c57b9fefb5bf08f6520d7bf7960ff09954ebfe5175fbcfaf4100",
+      "verdict": "rejected as a dead layer because the guard changed markers but not any selected action or outcome"
+    },
     "matched_asia": {
       "variant": "tournament-8p-asia",
       "orientations": 2,
@@ -162,7 +197,9 @@
   },
   "promotion_gates": {
     "mechanism_reached": true,
-    "exact_live_parent_matched_advantage": true,
+    "asia_exact_live_parent_matched_advantage": true,
+    "world_exact_live_parent_matched_advantage": false,
+    "exact_live_parent_matched_advantage": false,
     "zero_rejected": true,
     "zero_holds": true,
     "matched_advantage": true,
@@ -172,11 +209,11 @@
   },
   "verdict": {
     "result": "NO_SUBMIT",
-    "reason": "The candidate has clean two-orientation Asia advantages against both the workshop parent and an attribution-only exact-live-v77 parent, but World/Pangaea and the hosted 4/4 plus 20/20 map-and-seat gates are still open.",
-    "source_action": "retain the implementation as the leading workshop arm",
+    "reason": "The candidate won both exact-parent Asia orientations, but direct ia1 reach on architecture-matched World produced lower mean score and territory than exact v77. The universal successor is rejected.",
+    "source_action": "restore executable main source and tests to exact v77; retain ia1 only as a reproducible Asia population arm",
     "upload": false,
     "submission": false,
     "league_change": false,
-    "next_test": "Run World/Pangaea mirrored cells against exact live v77, then the full 4/4 and 20/20 gates before any production-architecture upload."
+    "next_test": "Test a reserve-floor selector that blocks rival attacks below 1.10 and visibly marks the replacement expansion or economy action."
   }
 }
