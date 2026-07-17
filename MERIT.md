@@ -64,6 +64,8 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | qd1n sr1 exact World | attribution bonus/marker gated below `1.10x`; red regression and `90/90` suite passed; `34/34` qualifier; two `sr1` executions; `2,294/2,294` accepted with zero holds/rejections; all selected action IDs and final scores exactly matched rejected ia1 World | dead layer retired because it changed telemetry but no action or outcome; no reverse, upload, submission, or league change |
 | qd1n rf1 exact World | selector-level `1.10x` reserve floor; red regression and `87/87` suite passed; amd64 qualifier accepted `34/34`; World reached `rf1` 13 times across three candidate seats with `1,054/1,054` accepted, zero holds, and zero rejections | exact v77 won outright at turn 15,500; candidate mean score `0` and 12,591 tiles versus parent `0.25` and 150,311; ratio-only floor retired, no reverse, upload, submission, or league change |
 | qd1n pc1 exact World/Pangaea | active near-parity counter escalated from 10% to 40%; red regression and `90/90` suite passed; amd64 qualifier `34/34`; candidate won both World seat directions at 632,072 and 532,198 tiles, with two accepted `pc1` executions and zero candidate holds/rejections | Pangaea reached `pc1` once but parent won 355,670 tiles; universal successor rejected, World arm retained locally, no upload, submission, membership, or relaunch change |
+| qd1n mx3 map composition local | spawn-tile map fingerprint routes Asia `ia1` and World `pc1`, exact v77 elsewhere; mx1 rejected (sentinel IDs unreachable), mx2 superseded by Asia-narrowed parsing; `95/95` tests; amd64 qualifier `34/34`; six exact-image matched runs won both Asia and both World mirrors with Pangaea trace-identical control; `ia1` 10 (5 confirmed) and `pc1` 2; `2,278/2,278` accepted, zero rejections, two explained Pangaea slot-5 holds | all local gates passed |
+| qd1n mx3 hosted | uploaded exact amd64 image as `qd1n:v78` (`348cab68-a00d-483d-ba94-67c8e00d469e`) for testing only; matched baseline `xreq_8cced59b-77f1-4887-86da-f5e0b27fb8c6` finished `0/4`; candidate diagnostic `xreq_53a20fc0-3334-4495-9bfe-a03b454b3c17` finished `1/4` (won at 1,015,250 tiles, lost to `proxywar-keystone:v42`, `co-gas-proxywar-richard:v6`, `tsukuyomi-no-kage:v34`); `ia1` 6 (3 confirmed); `682/682` accepted, zero holds, zero rejections | hosted `4/4` failed, `20/20` not run, NO SUBMIT; v77 remains sole champion |
 
 Detailed evidence lives in [`experiments/`](experiments/README.md). Public round
 statistics live on the [dashboard](https://welttowelt.github.io/proxywar-coworld-starter/).
@@ -127,3 +129,27 @@ rounds 415-422, qd1n won `6/29` appearances (`20.69%`) while daveey won `12/32`
 (`37.5%`). Overall rating still shows Odin Free first at `45.1306`; that
 historical lead does not satisfy current dominance or authorize bypassing the
 unfinished rci-8 gates.
+
+Rci-11 composed the proven arms behind a spawn-tile map fingerprint: `ia1`
+only on Asia, `pc1` only on World, exact v77 on Pangaea and unknown maps. The
+mx2 string-form parsing was narrowed to Asia after source-isolation review,
+producing the mx3 image; mx1 was rejected earlier because legal-action
+sentinel IDs never reached the policy. All six exact-image matched runs
+reproduced their mx2 traces decision-for-decision: candidate won both Asia and
+both World mirrors, and Pangaea stayed trace-identical under swapped labels
+with the same two slot-5 holds under both arms, which keeps them explained.
+The exact amd64 image was uploaded as `qd1n:v78` for hosted testing with v77
+kept live. The hosted gate then rejected the candidate: the matched v77
+baseline went `0/4` and the candidate went `1/4` on tournament-8p-asia against
+the current Competition field. `ia1` executed six times with three
+confirmations, all `682` candidate decisions were accepted, and there were no
+holds or rejections, but the `4/4` gate failed. Verdict: NO SUBMIT; the `20/20`
+regression was not run, v77 remains the sole live champion, and mx3 is
+retained only as a local population arm.
+
+Round 443 finished official first at score `0.75` with `qd1n:v77`, lifting the
+verified streak to `1/1000`. Round 444 then finished fourth at `0.25`
+(`co-gas-proxywar-richard:v6` first), resetting the official first-place
+streak to `0/1000`; rounds 446 and 447 placed second and third. Qd1n remains
+overall rank one at `33.5505` against daveey `24.2877` and Auri `23.6957`.
+The `1000`-win target stays open.

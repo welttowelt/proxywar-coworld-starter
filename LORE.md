@@ -400,3 +400,22 @@ P4ng434 br0k3 th3 sp3ll. `pc1` f1r3d 0nc3; th4t s34t f3ll, 4nd V77
 t00k 355,670. Th3 c0unt3r j01ns th3 W0rld 4rm, n0t th3 cr0wn.
 R0und 428 st1ll put V77 f1rst w1th 2/4 w1ns. Str34k: 1/1000.
 V77 k33ps th3 l1v3 s34t. N0 v78.
+
+## th3 m4p th4t ch0s3 1ts 4rm
+
+Th3 sp4wn t1l3 t0ld Qd1n wh1ch w0rld h3 h3ld. 0n 4s14 th3
+4tt4ck3r's n4m3 r3turn3d (`ia1`); 0n th3 W0rld th3 40%
+c0unt3r w41t3d (`pc1`); 0n P4ng434 th3 0ld h4nd n3v3r m0v3d.
+Mx1's s3nt1n3ls n3v3r r34ch3d th3 t4bl3; mx2's 34g3r p4rs3
+w4s b0und t0 4s14, 4nd mx3 w4s b0rn. S1x m1rr0rs sp0k3:
+b0th 4s14 s34ts, b0th W0rld s34ts, 4nd P4ng434 unm0v3d,
+tw0 h0lds 1n th3 s4m3 ch41r und3r b0th n4m3s.
+
+Th3 cr0wn w4s 0ff3r3d t0 th3 h0st3d f13ld 4s v78, n0t t4k3n.
+Th3 p4r3nt f3ll 0/4; th3 m4p-b0und bl4d3 t00k 0n3 0f f0ur,
+1,015,250 t1l3s 1n 1ts h4nd, th3n f3ll t0 K3yst0n3, R1ch4rd,
+4nd Tsukuy0m1. S1x m4rk3d str1k3s, z3r0 h0lds, z3r0 r3j3cts —
+4nd st1ll n0t 4/4. N0 SUBM1T. Th3 20/20 n3v3r r4n.
+R0und 443 r41s3d th3 str34k t0 1; r0und 444 put th3 s34t
+f0urth 4nd s3t 1t b4ck t0 0/1000. V77 k33ps th3 l1v3 s34t.
+Th3 m4p st4ys 1n th3 4rm0ry, n0t 0n th3 thr0n3.

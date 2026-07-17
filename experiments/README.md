@@ -976,3 +976,55 @@ was submitted, and no membership or relaunch changed. Evidence is in
 `experiments/diagnosis-qd1n-pressure-counter-rci-20260717.json`,
 `experiments/ledger-qd1n-pressure-counter-exact-v77-20260717.ndjson`, and
 `experiments/payoff-qd1n-pressure-counter-exact-v77-20260717.json`.
+
+## Qd1n map-composition RCI, 2026-07-17
+
+The two replay-proven counter arms only fired on their own maps, so rci-11
+composed them behind a map fingerprint derived from the policy-visible
+`ownState.spawnTile`: current-protocol attacker attribution (`ia1`) only on
+Asia, the active near-parity 40-percent pressure counter (`pc1`) only on
+World, and byte-exact v77 on Pangaea and unknown maps. The Normal-map spawn
+sets were validated against 717 cached official replays with zero cross-map
+overlap; Compact maps expose no validated spawn set and fail closed to exact
+v77.
+
+Mx1 was rejected because spawn legal-action sentinel IDs are resolved inside
+the game layer and never reached the policy. Mx2 passed every local gate but
+its source-isolation review narrowed string-form attacker parsing to Asia
+only, producing the mx3 source and image
+(`proxywar-agent-llm:qd1n-v77-mx3-amd64`,
+`sha256:e97d89814b18771357b90ba5daedf50796a11568d0dd966f6978535d35cea472`)
+plus a Pangaea regression test. The isolated suite passed `95/95`, and the
+amd64 qualifier accepted `34/34` decisions with zero holds and zero
+rejections.
+
+Six exact-image matched trials ran the mx3 image against the exact v77 image
+in alternating even/odd seats. The candidate won both Asia orientations
+(slots 6 and 7) and both World orientations (slots 4 and 3). Pangaea
+reproduced the same physical winner and trace after labels swapped, including
+the same two slot-5 holds under each label; those holds reproduce under the
+exact parent at the same seat and trace and are therefore explained. Across
+48 seats the candidate won 5 matches against the parent's 1, with `ia1`
+reaching ten times (five audit-confirmed), `pc1` twice, `2,278/2,278`
+candidate decisions accepted, and zero rejections. Mean final territory was
+240,029 versus 2,379.75 on Asia and 159,560.6 versus 3,341.6 on World.
+
+The exact amd64 image was uploaded as `qd1n:v78`
+(`348cab68-a00d-483d-ba94-67c8e00d469e`) for hosted testing while v77 stayed
+live. The matched parent baseline
+`xreq_8cced59b-77f1-4887-86da-f5e0b27fb8c6` finished `0/4` on
+tournament-8p-asia (proxywar `0.1.9`) against the current Competition field.
+The candidate diagnostic `xreq_53a20fc0-3334-4495-9bfe-a03b454b3c17` finished
+`1/4`: it won its first episode with 1,015,250 tiles and four `ia1`
+executions, then lost to `proxywar-keystone:v42`,
+`co-gas-proxywar-richard:v6`, and `tsukuyomi-no-kage:v34`. All `682`
+candidate decisions were accepted with zero holds and zero rejections, and
+`ia1` executed six times with three audit confirmations, while the parent
+emitted no markers from the same seat. The hosted `4/4` gate failed, so the
+verdict is NO SUBMIT: the `20/20` regression was not run, no submission was
+made, no membership changed, and qd1n:v77 remains the sole live champion.
+The mx3 source stays committed as a local population arm only. Evidence:
+`experiments/diagnosis-qd1n-map-composition-rci-20260717.json`,
+`experiments/ledger-qd1n-map-composition-exact-v77-20260717.ndjson`,
+`experiments/payoff-qd1n-map-composition-exact-v77-20260717.json`, and
+`experiments/preflight-qd1n-map-composition-mx3.json`.
