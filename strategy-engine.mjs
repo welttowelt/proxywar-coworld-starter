@@ -625,12 +625,6 @@ export function chooseAction(actions, state, plan = null, history = []) {
     (state.self.incomingAttackerIDs || []).includes(rivalAttack.rival.id.toLowerCase())
     ? { ...rivalAttack.action, policyMarker: "ia1" }
     : rivalAttack?.action;
-  const economyFirst = state.mapFingerprint === "Asia" && state.self.tileShare < 0.12 &&
-    threatCount === 0 && rivalAttack?.action &&
-    !(state.self.incomingAttackerIDs || []).includes(rivalAttack.rival.id.toLowerCase());
-  const openingAttack = economyFirst ? null : routedRivalAttack;
-  const withEconomy = (action) =>
-    economyFirst && action && !action.policyMarker ? { ...action, policyMarker: "ef1" } : action;
   const neutralAttack = chooseNeutralAttack(actions, history, avoid);
   const build = chooseBuild(actions, history);
   const sinceBuild = decisionsSince(history, (entry) =>
@@ -665,41 +659,41 @@ export function chooseAction(actions, state, plan = null, history = []) {
     (entry) => entry.policyMarker === "cv1",
   ) >= 6;
   if (!collapsing && conversionReady && boatConversionStalled(state, history)) {
-    const conversion = openingAttack || chooseUtility(actions, plan, history) ||
+    const conversion = routedRivalAttack || chooseUtility(actions, plan, history) ||
       (sinceBuild >= 3 ? build : null) ||
       chooseBoat(actions, state, history, avoid, false, true);
     if (conversion) return { ...conversion, policyMarker: "cv1" };
   }
 
   if (neutralExpansionStalled(state, history)) {
-    if (openingAttack) return openingAttack;
+    if (routedRivalAttack) return routedRivalAttack;
     const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
-    if (boatStreak >= 2 && build) return withEconomy(build);
+    if (boatStreak >= 2 && build) return build;
     const escapeBoat = chooseBoat(actions, state, history, avoid);
-    if (escapeBoat) return withEconomy(escapeBoat);
-    if (build) return withEconomy(build);
+    if (escapeBoat) return escapeBoat;
+    if (build) return build;
   }
 
-  if (cadenceBuild && !finishingTarget) return withEconomy(build);
+  if (cadenceBuild && !finishingTarget) return build;
   if (state.self.tileShare < 0.12 && neutralAttack && threatCount === 0 && !collapsing) {
     return neutralAttack;
   }
-  if (openingAttack) return openingAttack;
-  if (neutralAttack) return withEconomy(neutralAttack);
-  if (build && sinceBuild >= 5) return withEconomy(build);
+  if (routedRivalAttack) return routedRivalAttack;
+  if (neutralAttack) return neutralAttack;
+  if (build && sinceBuild >= 5) return build;
 
   const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
-  if (boatStreak >= 2 && build) return withEconomy(build);
+  if (boatStreak >= 2 && build) return build;
   const boat = chooseBoat(actions, state, history, avoid);
-  if (boat) return withEconomy(boat);
+  if (boat) return boat;
 
   const utility = chooseUtility(actions, plan, history);
-  if (utility) return withEconomy(utility);
+  if (utility) return utility;
 
   const desperateInvasion = !neutralAttack && !rivalAttack?.action && !build;
   if (desperateInvasion) {
     const desperateBoat = chooseBoat(actions, state, history, avoid, true);
-    if (desperateBoat) return withEconomy(desperateBoat);
+    if (desperateBoat) return desperateBoat;
   }
 
   const donation = safeActions(actions, (action) => {
@@ -710,12 +704,12 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (donation) return donation;
 
   // Holding while legal tactical actions remain turns a weak position into a certain loss.
-  if (build) return withEconomy(build);
+  if (build) return build;
   const retreat = safeActions(
     actions,
     (action) => action.kind === "boat_retreat" || action.kind === "retreat",
   )[0];
-  if (retreat) return withEconomy(retreat);
+  if (retreat) return retreat;
   const emergencyAttacks = safeActions(actions, (action) => {
     if (action.kind !== "attack" || isNeutralExpansion(action)) return false;
     const rival = rivalForAction(action, state);
