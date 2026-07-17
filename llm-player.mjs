@@ -18,10 +18,14 @@ import { AnthropicBedrock } from "@anthropic-ai/bedrock-sdk";
 import {
   PLAN_KINDS,
   buildState,
-  chooseAction,
+  chooseAction as chooseSelectorAction,
   clean,
   recordDecision,
 } from "./strategy-engine.mjs";
+import { chooseChassisAction } from "./strategy-chassis.mjs";
+
+const chooseAction =
+  process.env.POLICY_ENGINE === "qd2n" ? chooseChassisAction : chooseSelectorAction;
 import { classifyPlannerError, plannerCooldownMs } from "./planner-backoff.mjs";
 
 const url = process.env.COWORLD_PLAYER_WS_URL;

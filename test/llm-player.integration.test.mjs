@@ -202,3 +202,88 @@ test("planner doctrine encodes the hosted winner profile", async () => {
   assert.match(source, /Commit 35% to neutral expansion/);
   assert.doesNotMatch(source, /Probe with 10%, escalate to 25%/);
 });
+
+test("qd2n engine wiring grinds the opening at 35 percent", async () => {
+  const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
+  await new Promise((resolve) => server.once("listening", resolve));
+  const { port } = server.address();
+  const lowRisk = { level: "low" };
+  const requests = [
+    request("grind", [
+      {
+        id: "expand:terra-nullius:10",
+        kind: "attack",
+        label: "Expand into neutral land with 10% troops",
+        risk: lowRisk,
+        metadata: { expansion: true, troopPercent: 10 },
+      },
+      {
+        id: "expand:terra-nullius:20",
+        kind: "attack",
+        label: "Expand into neutral land with 20% troops",
+        risk: lowRisk,
+        metadata: { expansion: true, troopPercent: 20 },
+      },
+      {
+        id: "expand:terra-nullius:35",
+        kind: "attack",
+        label: "Expand into neutral land with 35% troops",
+        risk: lowRisk,
+        metadata: { expansion: true, troopPercent: 35 },
+      },
+      { id: "hold", kind: "hold", label: "Hold", risk: lowRisk },
+    ], {
+      phase: "active",
+      ownState: {
+        tileShare: 0.08, troopRatio: 0.8, troops: 500000, gold: 250000,
+        borderTiles: 100, incomingAttacks: [],
+      },
+      visiblePlayers: [],
+    }),
+  ];
+
+  const responses = [];
+  let stderr = "";
+  const child = spawn(process.execPath, [playerPath], {
+    env: {
+      ...process.env,
+      COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
+      POLICY_ENGINE: "qd2n",
+      AWS_ACCESS_KEY_ID: "test",
+      AWS_SECRET_ACCESS_KEY: "test",
+      AWS_EC2_METADATA_DISABLED: "true",
+      BEDROCK_MODEL: "invalid-test-model",
+    },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  child.stderr.on("data", (chunk) => { stderr += String(chunk); });
+
+  const completed = new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      child.kill("SIGKILL");
+      reject(new Error(`qd2n wiring test timed out: ${stderr}`));
+    }, 8000);
+    server.once("connection", (socket) => {
+      socket.send(JSON.stringify(requests[0]));
+      socket.on("message", (data) => {
+        responses.push(JSON.parse(String(data)));
+        socket.send(JSON.stringify({ type: "final" }));
+      });
+    });
+    child.once("error", reject);
+    child.once("exit", (code) => {
+      clearTimeout(timeout);
+      if (code === 0) resolve();
+      else reject(new Error(`player exited ${code}: ${stderr}`));
+    });
+  });
+
+  try {
+    await completed;
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+
+  assert.equal(responses[0].selectedLegalActionId, "expand:terra-nullius:35");
+  assert.match(responses[0].reason, /ch1/);
+});
