@@ -1070,3 +1070,20 @@ matched control. Evidence:
 `experiments/ledger-qd1n-pile-on-discipline-exact-v77-20260717.ndjson`,
 `experiments/payoff-qd1n-pile-on-discipline-exact-v77-20260717.json`, and
 `experiments/preflight-qd1n-pile-on-discipline-mx5.json`.
+
+The exact amd64 image was uploaded as `qd1n:v79`
+(`34345f8f-12dc-46b5-a6c8-f33ad9461519`) for hosted testing while v77 stayed
+live. The diagnostic `xreq_4660c5cb-c0ab-46ad-97d6-6db432d88cad` ran the same
+roster, variant, seat, and episode count as the mx3 diagnostic, reusing the
+v77 `0/4` baseline `xreq_8cced59b-77f1-4887-86da-f5e0b27fb8c6` as the matched
+control. The candidate finished `1/4`: it won at 865,675 tiles with two `pd1`
+executions, then lost to `co-gas-proxywar-richard:v6` twice and
+`tsukuyomi-no-kage:v34` once. `pd1` executed eleven times and `ia1` seven,
+with three audit confirmations; all `406` candidate decisions were accepted
+with zero holds and zero rejections. Nine of the eleven `pd1` stands came in
+the katanasan loss, where the seat was already doomed by an early snowball —
+direct reach without outcome improvement over the mx3 `1/4`. The population
+stop rule therefore rejects the arm: no `20/20` regression was run, no
+submission was made, no membership changed, and qd1n:v77 remains the sole
+live champion. The falsified hypothesis is preserved in the ledger; the
+remaining hosted failure class is the early snowball, not the pile-on bleed.

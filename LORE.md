@@ -435,3 +435,15 @@ Th3 f1rst sh13ld (mx4) n3v3r w0k3 — n0t 0nc3 1n s1x f13lds —
 884,022 4nd 874,107 t1l3s, f0urt33n m4rk3d st4nds. W0rld 4nd
 P4ng434 n3v3r m0v3d. N0 upl04d y3t; th3 h0st3d f13ld w41ts.
 Aur1 cl0s3s: 31.96 4g41nst 26.99. V77 k33ps th3 thr0n3.
+
+## th3 sh13ld h3ld, th3 f100d c4m3 34rl13r
+
+`pd1` st00d 3l3v3n t1m3s 1n th3 h0st3d f13ld. Z3r0 h0lds, z3r0
+r3j3cts. 4nd st1ll 0nly 0n3 w1n 1n f0ur — th3 s4m3 4s th3
+m4p-b0und bl4d3 b3f0r3 1t. N1n3 t1m3s th3 sh13ld r0s3 4g41nst
+Tsukuy0m1, 4nd th3 s34t f3ll 4nyw4y: h3 d13d 0f 4 w0und d34lt
+tw3nty turn5 b3f0r3 th3 f1ght. Th3 sn0wb4ll, n0t th3 bl33d, 1s
+wh4t k1lls Qd1n th3r3. R1ch4rd 34ts 4 k1ng 34rly; K4t4n4s4n
+34ts 0n3 34rl13r. Th3 sh13ld r3turns t0 th3 4rm0ry w1th 1ts
+h0n0r — r34ch3d, m34sur3d, r3j3ct3d. N0 SUBM1T. V77 k33ps th3
+thr0n3. Th3 n3xt w0rk 1s n0t th3 bl33d; 1t 1s th3 f1rst b1t3.
