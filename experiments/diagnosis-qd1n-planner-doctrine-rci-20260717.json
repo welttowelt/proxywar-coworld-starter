@@ -2,7 +2,7 @@
   "schema_version": 1,
   "recorded_at": "2026-07-17T17:40:00Z",
   "candidate": "qd1n-v77-sp1",
-  "verdict": "LOCAL_GATES_PASS_HOSTED_GATES_PENDING",
+  "verdict": "NO_SUBMIT_HOSTED_0_OF_4_ARM_REJECTED",
   "remote_state_changed": false,
   "hypothesis": "the deterministic selector already executes every accepted decision; the hosted losses came with live Bedrock plans steering target choice. Encoding the hosted winner profile directly in the planner doctrine (no rival attacks before 12 percent land unless attacked first, rivals only at 1.3 or better, 35 percent neutral commitment, no second front under attack) shifts the plan-driven decisions that produced the mx3/ef1 hosted losses, without touching the proven mx3 selector",
   "guards": [
@@ -99,12 +99,85 @@
   },
   "league_state": {
     "live_policy": "qd1n:v77",
-    "candidate_uploaded": false,
+    "candidate_uploaded": true,
     "candidate_submitted": false,
     "champion_changed": false,
     "membership_relaunched": false,
     "official_first_place_streak": 0,
     "target_first_place_streak": 1000
   },
-  "next_test": "hosted diagnostic xreq_4f9ab61a-83d7-4234-bcef-493b4f0d74f0 against the standard Competition roster, reusing the v77 0/4 baseline; submit only after 4/4 and a separate 20/20"
+  "next_test": "no further bounded arms: five consecutive gates (mx3 1/4, pd1 1/4, ef1 0/4, ef2 local mirror lost, sp1 0/4) show the current roster outclasses incremental qd1n variants regardless of layer; any next step must be a deeper rewrite, not another guard",
+  "hosted": {
+    "upload": {
+      "policy_ref": "qd1n:v81",
+      "policy_version_id": "3f7d3e16-0c3f-4e2a-89ac-409909aea573",
+      "local_image_id": "sha256:1b5b8e23d5689e846095f44376aa9502939bce03e92196df533044eaf8feeafe",
+      "architecture": "amd64",
+      "uploaded_at": "2026-07-17T17:50:00Z",
+      "purpose": "hosted diagnostic only; qd1n:v77 stayed live throughout"
+    },
+    "matched_baseline": {
+      "request_id": "xreq_8cced59b-77f1-4887-86da-f5e0b27fb8c6",
+      "policy_ref": "qd1n:v77",
+      "variant": "tournament-8p-asia",
+      "seat": 6,
+      "wins": 0,
+      "episodes": 4
+    },
+    "candidate_diagnostic": {
+      "request_id": "xreq_4f9ab61a-83d7-4234-bcef-493b4f0d74f0",
+      "policy_ref": "qd1n:v81",
+      "policy_version_id": "3f7d3e16-0c3f-4e2a-89ac-409909aea573",
+      "variant": "tournament-8p-asia",
+      "seat": 6,
+      "wins": 0,
+      "episodes": 4,
+      "decisions": 390,
+      "accepted": 390,
+      "holds": 3,
+      "rejected": 0,
+      "planner_degraded_decisions": 224,
+      "plan_driven_decisions": 166,
+      "episodes_detail": [
+        {
+          "episode_request_id": "ereq_d4a093bb",
+          "won": false,
+          "final_tiles": 10493,
+          "decisions": 94,
+          "plan_driven": 54,
+          "planner_degraded": 40,
+          "winner": "co-gas-proxywar-richard:v6"
+        },
+        {
+          "episode_request_id": "ereq_8f0ecf2a",
+          "won": false,
+          "final_tiles": 9739,
+          "decisions": 115,
+          "plan_driven": 29,
+          "planner_degraded": 86,
+          "winner": "proxywar-keystone:v42"
+        },
+        {
+          "episode_request_id": "ereq_d20376fe",
+          "won": false,
+          "final_tiles": 10537,
+          "decisions": 84,
+          "plan_driven": 22,
+          "planner_degraded": 62,
+          "winner": "proxywar-keystone:v42"
+        },
+        {
+          "episode_request_id": "ereq_f62d0a40",
+          "won": false,
+          "final_tiles": 8672,
+          "decisions": 97,
+          "plan_driven": 61,
+          "planner_degraded": 36,
+          "winner": "proxywar-keystone:v42"
+        }
+      ]
+    },
+    "regression_20_of_20": "not run: the diagnostic finished 0/4",
+    "reach_assessment": "the doctrine shipped but Bedrock was throttled in 224 of 390 decisions (57%), so the plan layer barely played; the deterministic fallback still produced the cadence-mixed opening and the surviving Sefirot probes. The arm is inconclusive on doctrine terms and failed on outcome terms: 0/4 with three more unexplained holds."
+  }
 }
