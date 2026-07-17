@@ -19,6 +19,8 @@ function observation({
   troopRatio = 0.8,
   rivals = [],
   incomingAttacks = [],
+  incomingAttackPlayerIDs = [],
+  spawnTile = null,
   profile = "",
   objective = null,
 } = {}) {
@@ -33,7 +35,9 @@ function observation({
       gold: 250000,
       borderTiles: 100,
       incomingAttacks,
+      spawnTile,
     },
+    combat: { incomingAttackPlayerIDs },
     visiblePlayers: rivals.map((rival) => ({
       isAlive: true,
       sharesBorder: true,
@@ -300,6 +304,161 @@ test("recent aggressor pressure outranks a slightly softer bystander", () => {
     choose([aggressorAttack, bystanderAttack], obs, null, history).id,
     aggressorAttack.id,
   );
+});
+
+test("official Normal-map spawn tiles identify every supported route", () => {
+  const cases = {
+    Asia: [1180588, 1228670, 1216916, 1214746, 1224834, 892476, 1020678, 1450648],
+    World: [1088580, 1216626, 877134, 659476, 494334, 628394, 994502, 1333674],
+    Pangaea: [659528, 534350, 266554, 687420, 622372, 589302, 450306, 740346],
+  };
+  for (const [map, spawnTiles] of Object.entries(cases)) {
+    for (const spawnTile of spawnTiles) {
+      const state = buildState(observation({ spawnTile }), [action("hold", "hold", "Hold")]);
+      assert.equal(state.mapFingerprint, map);
+    }
+  }
+});
+
+test("unknown spawn tiles fail closed and recorded map identity persists", () => {
+  const actions = [action("hold", "hold", "Hold")];
+  const unknownState = buildState(observation({ spawnTile: 42 }), actions);
+  assert.equal(unknownState.mapFingerprint, null);
+
+  const spawnState = buildState(observation({ spawnTile: 1088580 }), actions);
+  const history = [];
+  recordDecision(history, chooseAction(actions, spawnState), spawnState);
+  const laterState = buildState(observation(), actions, history);
+  assert.equal(history[0].mapFingerprint, "World");
+  assert.equal(laterState.mapFingerprint, "World");
+});
+
+test("Asia route restores current attacker attribution", () => {
+  const aggressorAttack = action("attack:aggressor:10", "attack", "Attack Aggressor 10%");
+  const bystanderAttack = action("attack:bystander:10", "attack", "Attack Bystander 10%");
+  const obs = observation({
+    tileShare: 0.2,
+    incomingAttacks: 1,
+    incomingAttackPlayerIDs: ["aggressor"],
+    spawnTile: 1180588,
+    rivals: [
+      { id: "aggressor", name: "Aggressor", tileShare: 0.12, relativeTroopRatio: 1.1, incomingAttack: true },
+      { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
+    ],
+  });
+  const selected = choose(
+    [aggressorAttack, bystanderAttack],
+    obs,
+    null,
+    [],
+  );
+  assert.equal(selected.id, aggressorAttack.id);
+  assert.equal(selected.policyMarker, "ia1");
+});
+
+test("World route commits against an active near-parity attacker", () => {
+  const actions = [10, 25, 40].map((percent) => ({
+    ...action(`attack:threat:${percent}`, "attack", `Attack Threat ${percent}%`),
+    metadata: { targetID: "threat", troopPercent: percent, incomingAttack: true },
+  }));
+  const obs = observation({
+    tileShare: 0.2,
+    troopRatio: 0.9,
+    incomingAttacks: 1,
+    spawnTile: 1088580,
+    rivals: [{ id: "threat", name: "Threat", tileShare: 0.12, relativeTroopRatio: 1.03 }],
+  });
+  const selected = choose(
+    actions,
+    obs,
+    null,
+    [],
+  );
+  assert.equal(selected.id, "attack:threat:40");
+  assert.equal(selected.policyMarker, "pc1");
+});
+
+test("World route stays on parent cadence without active pressure", () => {
+  const actions = [10, 25, 40].map((percent) => ({
+    ...action(`attack:threat:${percent}`, "attack", `Attack Threat ${percent}%`),
+    metadata: { targetID: "threat", troopPercent: percent, incomingAttack: true },
+  }));
+  const selected = choose(
+    actions,
+    observation({
+      tileShare: 0.2,
+      troopRatio: 0.9,
+      spawnTile: 1088580,
+      rivals: [{ id: "threat", name: "Threat", tileShare: 0.12, relativeTroopRatio: 1.03 }],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, "attack:threat:10");
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("Pangaea route ignores current-protocol attribution and stays exact v77", () => {
+  const aggressorAttack = action("attack:aggressor:10", "attack", "Attack Aggressor 10%");
+  const bystanderAttack = action("attack:bystander:10", "attack", "Attack Bystander 10%");
+  const selected = choose(
+    [aggressorAttack, bystanderAttack],
+    observation({
+      tileShare: 0.2,
+      incomingAttacks: 1,
+      incomingAttackPlayerIDs: ["aggressor"],
+      spawnTile: 659528,
+      rivals: [
+        { id: "aggressor", name: "Aggressor", tileShare: 0.12, relativeTroopRatio: 1.1, incomingAttack: true },
+        { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, bystanderAttack.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("Pangaea route preserves exact-v77 handling of string-form incoming attacks", () => {
+  const aggressorAttack = action("attack:aggressor:10", "attack", "Attack Aggressor 10%");
+  const bystanderAttack = action("attack:bystander:10", "attack", "Attack Bystander 10%");
+  const selected = choose(
+    [aggressorAttack, bystanderAttack],
+    observation({
+      tileShare: 0.2,
+      incomingAttacks: ["aggressor"],
+      spawnTile: 659528,
+      rivals: [
+        { id: "aggressor", name: "Aggressor", tileShare: 0.12, relativeTroopRatio: 1.1 },
+        { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, bystanderAttack.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("unknown maps ignore both composition arms and stay exact v77", () => {
+  const actions = [10, 40].map((percent) => ({
+    ...action(`attack:threat:${percent}`, "attack", `Attack Threat ${percent}%`),
+    metadata: { targetID: "threat", troopPercent: percent, incomingAttack: true },
+  }));
+  const selected = choose(
+    actions,
+    observation({
+      tileShare: 0.2,
+      troopRatio: 0.9,
+      incomingAttacks: 1,
+      incomingAttackPlayerIDs: ["threat"],
+      spawnTile: 42,
+      rivals: [{ id: "threat", name: "Threat", tileShare: 0.12, relativeTroopRatio: 1.03 }],
+    }),
+  );
+  assert.equal(selected.id, "attack:threat:10");
+  assert.equal(selected.policyMarker, undefined);
 });
 
 test("naval pressure also prefers an observed aggressor", () => {

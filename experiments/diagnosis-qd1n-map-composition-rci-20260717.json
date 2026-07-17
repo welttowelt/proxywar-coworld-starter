@@ -1,0 +1,234 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-17T09:35:00Z",
+  "candidate": "qd1n-v77-mx3",
+  "verdict": "LOCAL_GATES_PASS_HOSTED_GATES_PENDING",
+  "remote_state_changed": false,
+  "hypothesis": "routing the two replay-proven counters only on their validated maps will retain exact v77 on Pangaea while recovering Asia attacker attribution and World near-parity pressure conversion",
+  "guards": [
+    "unknown map fingerprints fail closed to exact v77",
+    "Pangaea remains byte-behavior equivalent to exact v77",
+    "Asia receives only current-protocol attacker attribution",
+    "World receives only the active near-parity 40 percent counter",
+    "no upload, submission, champion change, or league relaunch before hosted 4/4 and independent 20/20 gates pass"
+  ],
+  "source_isolation": {
+    "parent_commit": "b0c205c9ca324725d1ef17c66887f160068e7ffa",
+    "parent_policy": "qd1n:v77",
+    "runtime_diff_files": [
+      "strategy-engine.mjs"
+    ],
+    "test_diff_files": [
+      "test/strategy-engine.test.mjs"
+    ],
+    "isolated_delta": "derive a stable map fingerprint from ownState.spawnTile, route Asia-only current-protocol attacker attribution (ia1) and World-only near-parity 40 percent pressure counter (pc1), and preserve exact v77 on Pangaea or unknown maps",
+    "markers": [
+      "ia1",
+      "pc1"
+    ],
+    "mx3_revision": "supersedes mx2: string-form attacker attribution parsing narrowed to Asia only after the source-isolation review; adds a Pangaea exact-behavior regression test; behavior on Asia, World, and Pangaea reproduced the mx2 matched traces decision-for-decision"
+  },
+  "rejected_probe": {
+    "name": "mx1",
+    "reason": "the spawn legal action is resolved inside the game layer before the external policy request, so legal-action sentinel IDs never reached llm-player",
+    "excluded_run": "/private/tmp/proxywar-v77-mx1-amd64-asia-a-20260717",
+    "exclusion_reason": "runner used the bundled starter-player instead of /app/llm-player.mjs",
+    "policy_run": "/private/tmp/proxywar-v77-mx1-amd64-asia-a2-20260717",
+    "policy_run_result": "candidate won but ia1 reach was zero; mx1 was rejected and never uploaded"
+  },
+  "map_fingerprint_validation": {
+    "source": "717 cached official replay files under data/cache/replays",
+    "episodes_by_map": {
+      "Pangaea": 242,
+      "Asia": 241,
+      "World": 121,
+      "Europe": 113
+    },
+    "normal_spawn_tiles": {
+      "Asia": [
+        1180588,
+        1228670,
+        1216916,
+        1214746,
+        1224834,
+        892476,
+        1020678,
+        1450648
+      ],
+      "World": [
+        1088580,
+        1216626,
+        877134,
+        659476,
+        494334,
+        628394,
+        994502,
+        1333674
+      ],
+      "Pangaea": [
+        659528,
+        534350,
+        266554,
+        687420,
+        622372,
+        589302,
+        450306,
+        740346
+      ]
+    },
+    "cross_map_overlap": 0,
+    "unknown_map_behavior": "exact v77",
+    "europe_behavior": "unknown and exact v77 because cached Europe episodes are Compact and expose no validated Normal eight-player spawn set"
+  },
+  "images": {
+    "candidate": {
+      "tag": "proxywar-agent-llm:qd1n-v77-mx3-amd64",
+      "image_id": "sha256:e97d89814b18771357b90ba5daedf50796a11568d0dd966f6978535d35cea472",
+      "architecture": "amd64"
+    },
+    "exact_parent": {
+      "tag": "proxywar-agent-llm:qd1n-v77-exact-amd64",
+      "image_id": "sha256:3ea2a36dbf2c554f619adfc36e890e6a333bf43144340bfe594807d539b82ef0",
+      "architecture": "amd64"
+    },
+    "superseded_mx2": {
+      "tag": "proxywar-agent-llm:qd1n-v77-mx2-amd64",
+      "image_id": "sha256:4c067b05af0538bd21b761d8cbbfa280cfae1abae9ee9a213daff1720bbf72b4",
+      "status": "rejected by source-isolation review; never uploaded"
+    }
+  },
+  "verification": {
+    "red_regression": "four map-routing tests failed against exact v77 before the source delta",
+    "unit_tests": {
+      "passed": 95,
+      "failed": 0
+    },
+    "diff_check": "pass",
+    "qualifier": {
+      "path": "/private/tmp/proxywar-v77-mx3-amd64-qualifier-20260717",
+      "decisions": 34,
+      "accepted": 34,
+      "holds": 0,
+      "rejected": 0,
+      "expected_planner_degraded_fallbacks": 10,
+      "replay_sha256": "ad1901625c0eb0d70e0fc687d782f34a3ddb5181832ea037421ce8ed8bb6dae9"
+    },
+    "matched_trials": {
+      "ledger": "experiments/ledger-qd1n-map-composition-exact-v77-20260717.ndjson",
+      "payoff": "experiments/payoff-qd1n-map-composition-exact-v77-20260717.json",
+      "runs": 6,
+      "evaluated_seats": 48,
+      "candidate_wins": 5,
+      "parent_wins": 1,
+      "candidate_mean_final_tiles": 150710.5,
+      "parent_mean_final_tiles": 19421.1,
+      "candidate_decisions": 2278,
+      "candidate_accepted": 2278,
+      "candidate_rejected": 0,
+      "candidate_raw_holds": 2,
+      "candidate_unexplained_holds": 0
+    },
+    "asia": {
+      "orientations": 2,
+      "candidate_wins": 2,
+      "parent_wins": 0,
+      "candidate_mean_final_tiles": 240029,
+      "parent_mean_final_tiles": 2379.75,
+      "ia1_executions": 10,
+      "audit_confirmed_ia1_executions": 5,
+      "candidate_holds": 0,
+      "candidate_rejected": 0,
+      "runs": [
+        {
+          "path": "/private/tmp/proxywar-v77-mx3-amd64-asia-a-20260717",
+          "winner_slot": 6,
+          "winner_arm": "candidate",
+          "turn_count": 7400,
+          "replay_sha256": "c2206cec5625c901ece4da5494a70574e4cd68211dd9cd6ac559ea10696e482c"
+        },
+        {
+          "path": "/private/tmp/proxywar-v77-mx3-amd64-asia-b-20260717",
+          "winner_slot": 7,
+          "winner_arm": "candidate",
+          "turn_count": 7500,
+          "replay_sha256": "357172e2c44449ae8cbd91093f6657f0d324274a4ab2837239dd4cfc56e74e6b"
+        }
+      ]
+    },
+    "world": {
+      "orientations": 2,
+      "candidate_wins": 2,
+      "parent_wins": 0,
+      "candidate_mean_final_tiles": 159560.625,
+      "parent_mean_final_tiles": 3341.625,
+      "pc1_executions": 2,
+      "candidate_holds": 0,
+      "candidate_rejected": 0,
+      "runs": [
+        {
+          "path": "/private/tmp/proxywar-v77-mx3-amd64-world-a-20260717",
+          "winner_slot": 4,
+          "winner_arm": "candidate",
+          "turn_count": 19600,
+          "replay_sha256": "d99f52957c16861cb96460df3c8c313460b602fd70fe94eeb1611b89631152ad"
+        },
+        {
+          "path": "/private/tmp/proxywar-v77-mx3-amd64-world-b-20260717",
+          "winner_slot": 3,
+          "winner_arm": "candidate",
+          "turn_count": 17800,
+          "replay_sha256": "3ec8ac25b37ab2d4326dee113b0c489238c53e6be727deae7038774337b641bc"
+        }
+      ],
+      "audit_confirmed_pc1_executions": 0
+    },
+    "pangaea": {
+      "orientations": 2,
+      "candidate_wins": 1,
+      "parent_wins": 1,
+      "candidate_mean_final_tiles": 52541.875,
+      "parent_mean_final_tiles": 52541.875,
+      "candidate_markers": 0,
+      "control_equivalence": true,
+      "holds_explanation": "slot 5 produced two holds in both orientations with the identical physical trace, once carrying the candidate label (pangaea-b) and once the parent label (pangaea-a); the parent-labelled seat runs the exact v77 image, so the holds reproduce under the exact parent at the same seat and trace and are explained",
+      "runs": [
+        {
+          "path": "/private/tmp/proxywar-v77-mx3-amd64-pangaea-a-20260717",
+          "winner_slot": 3,
+          "winner_arm": "parent",
+          "turn_count": 8500,
+          "replay_sha256": "d8b2d823118cec9f1249507bffda0f197dec8fe5d4f131f29253ee6c66e5afbc"
+        },
+        {
+          "path": "/private/tmp/proxywar-v77-mx3-amd64-pangaea-b-20260717",
+          "winner_slot": 3,
+          "winner_arm": "candidate",
+          "turn_count": 8500,
+          "replay_sha256": "46d2b6223e50ce6f13e8d11f72a45fc74a5e98db02400735d00fe2568502c8b2"
+        }
+      ]
+    }
+  },
+  "gates": {
+    "mechanism_reached": true,
+    "map_classifier_validated": true,
+    "matched_advantage": true,
+    "pangaea_exact_control": true,
+    "zero_rejected": true,
+    "zero_unexplained_holds": true,
+    "hosted_diagnostic_4_of_4": false,
+    "map_seat_regression_20_of_20": false,
+    "exact_live_identity_verified": false,
+    "promotion_eligible": false
+  },
+  "league_state": {
+    "live_policy": "qd1n:v77",
+    "candidate_uploaded": false,
+    "candidate_submitted": false,
+    "champion_changed": false,
+    "membership_relaunched": false,
+    "official_first_place_streak": 1,
+    "target_first_place_streak": 1000
+  },
+  "next_test": "Upload only the exact candidate image after source integration, then run a matched hosted 4/4 diagnostic and a separate 20/20 map-seat regression before any league change."
+}

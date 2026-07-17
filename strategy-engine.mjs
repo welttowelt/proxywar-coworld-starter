@@ -9,6 +9,14 @@ const SOCIAL_KINDS = new Set([
 const RECIPROCAL_RIVALS = new Set(["katanasan"]);
 const MIN_DESPERATE_INVASION_RATIO = 0.5;
 const MIN_CONVERSION_TILE_SHARE = 0.002;
+const MAP_SPAWN_TILES = new Map([
+  ...[1180588, 1228670, 1216916, 1214746, 1224834, 892476, 1020678, 1450648]
+    .map((tile) => [tile, "Asia"]),
+  ...[1088580, 1216626, 877134, 659476, 494334, 628394, 994502, 1333674]
+    .map((tile) => [tile, "World"]),
+  ...[659528, 534350, 266554, 687420, 622372, 589302, 450306, 740346]
+    .map((tile) => [tile, "Pangaea"]),
+]);
 
 export const PLAN_KINDS = [
   "spawn", "attack", "nuke", "build", "upgrade_structure", "boat", "boat_retreat", "retreat",
@@ -62,6 +70,14 @@ function incomingAttackerIDs(value) {
   return [...ids].filter(Boolean);
 }
 
+function currentProtocolAttackerIDs(value) {
+  const structuredIDs = incomingAttackerIDs(value);
+  const directIDs = (Array.isArray(value) ? value : [value])
+    .filter((entry) => typeof entry === "string")
+    .map((entry) => clean(entry).toLowerCase());
+  return [...new Set([...structuredIDs, ...directIDs])].filter(Boolean);
+}
+
 export function actionText(action) {
   return `${action?.id ?? ""} ${action?.label ?? ""}`.toLowerCase();
 }
@@ -80,6 +96,17 @@ export function isNeutralExpansion(action) {
     id.startsWith("expand:terra-nullius:") ||
     actionText(action).includes("terra nullius")
   );
+}
+
+export function inferMapFingerprint(observation, history = []) {
+  const spawnTile = Number(observation?.ownState?.spawnTile);
+  if (Number.isFinite(spawnTile) && MAP_SPAWN_TILES.has(spawnTile)) {
+    return MAP_SPAWN_TILES.get(spawnTile);
+  }
+  for (let index = history.length - 1; index >= 0; index--) {
+    if (history[index]?.mapFingerprint) return history[index].mapFingerprint;
+  }
+  return null;
 }
 
 function isNeutralBoat(action) {
@@ -114,6 +141,20 @@ export function avoidActionIDs(history) {
 
 export function buildState(observation, actions, history = []) {
   const own = observation?.ownState || {};
+  const mapFingerprint = inferMapFingerprint(observation, history);
+  const visiblePlayers = (observation?.visiblePlayers || [])
+    .filter((player) => player && player.isAlive);
+  const baseIncomingAttackerIDs = incomingAttackerIDs(own.incomingAttacks);
+  const currentProtocolIncomingAttackerIDs = [...new Set([
+    ...baseIncomingAttackerIDs,
+    ...currentProtocolAttackerIDs(observation?.combat?.incomingAttackPlayerIDs),
+    ...visiblePlayers
+      .filter((player) => player.incomingAttack === true)
+      .map((player) => playerID(player).toLowerCase()),
+  ])].filter(Boolean);
+  const activeIncomingAttackerIDs = mapFingerprint === "Asia"
+    ? currentProtocolIncomingAttackerIDs
+    : baseIncomingAttackerIDs;
   const self = {
     tileShare: finiteNumber(own.tileShare),
     troops: finiteNumber(own.troops),
@@ -121,11 +162,9 @@ export function buildState(observation, actions, history = []) {
     gold: own.gold,
     borderTiles: finiteNumber(own.borderTiles),
     incomingAttacks: own.incomingAttacks,
-    incomingAttackerIDs: incomingAttackerIDs(own.incomingAttacks),
+    incomingAttackerIDs: activeIncomingAttackerIDs,
   };
-  const rivals = (observation?.visiblePlayers || [])
-    .filter((player) => player && player.isAlive)
-    .map((player) => ({
+  const rivals = visiblePlayers.map((player) => ({
       id: playerID(player),
       name: clean(player.name),
       tileShare: finiteNumber(player.tileShare),
@@ -142,6 +181,7 @@ export function buildState(observation, actions, history = []) {
     risk: clean(action.risk?.level),
   }));
   return {
+    mapFingerprint,
     phase: clean(observation?.phase),
     decisionNumber: history.length,
     self,
@@ -354,7 +394,7 @@ function attackScore(rival, state, plan, history) {
     retaliationBonus + (planTarget ? 0.25 : 0);
 }
 
-function chooseRivalAttack(actions, state, plan, history, avoid) {
+function chooseRivalAttack(actions, state, plan, history, avoid, threatCount = 0) {
   const grouped = new Map();
   for (const action of safeActions(actions, (candidate) =>
     candidate.kind === "attack" && !isNeutralExpansion(candidate)
@@ -379,11 +419,19 @@ function chooseRivalAttack(actions, state, plan, history, avoid) {
     history,
     (entry) => entry.kind === "attack" && targetName(entry) === best.rival.name.toLowerCase(),
   );
-  let desiredPercent = 10;
-  if (streak >= 1 && best.rival.relativeTroopRatio >= 1.1) desiredPercent = 25;
-  if (streak >= 2 && best.rival.relativeTroopRatio >= 1.5) desiredPercent = 40;
+  const pressureCounter = state.mapFingerprint === "World" && threatCount > 0 &&
+    best.rival.relativeTroopRatio >= 1 && best.rival.relativeTroopRatio < 1.1 &&
+    best.actions.some((action) => action?.metadata?.incomingAttack === true);
+  let desiredPercent = pressureCounter ? 40 : 10;
+  if (!pressureCounter && streak >= 1 && best.rival.relativeTroopRatio >= 1.1) {
+    desiredPercent = 25;
+  }
+  if (!pressureCounter && streak >= 2 && best.rival.relativeTroopRatio >= 1.5) {
+    desiredPercent = 40;
+  }
+  const action = pickPercent(best.actions, desiredPercent, avoid);
   return {
-    action: pickPercent(best.actions, desiredPercent, avoid),
+    action: pressureCounter ? { ...action, policyMarker: "pc1" } : action,
     rival: best.rival,
     streak,
   };
@@ -572,7 +620,11 @@ export function chooseAction(actions, state, plan = null, history = []) {
     : null;
   if (defensiveBuild) return defensiveBuild;
 
-  const rivalAttack = chooseRivalAttack(actions, state, plan, history, avoid);
+  const rivalAttack = chooseRivalAttack(actions, state, plan, history, avoid, threatCount);
+  const routedRivalAttack = state.mapFingerprint === "Asia" && rivalAttack?.action &&
+    (state.self.incomingAttackerIDs || []).includes(rivalAttack.rival.id.toLowerCase())
+    ? { ...rivalAttack.action, policyMarker: "ia1" }
+    : rivalAttack?.action;
   const neutralAttack = chooseNeutralAttack(actions, history, avoid);
   const build = chooseBuild(actions, history);
   const sinceBuild = decisionsSince(history, (entry) =>
@@ -607,14 +659,14 @@ export function chooseAction(actions, state, plan = null, history = []) {
     (entry) => entry.policyMarker === "cv1",
   ) >= 6;
   if (!collapsing && conversionReady && boatConversionStalled(state, history)) {
-    const conversion = rivalAttack?.action || chooseUtility(actions, plan, history) ||
+    const conversion = routedRivalAttack || chooseUtility(actions, plan, history) ||
       (sinceBuild >= 3 ? build : null) ||
       chooseBoat(actions, state, history, avoid, false, true);
     if (conversion) return { ...conversion, policyMarker: "cv1" };
   }
 
   if (neutralExpansionStalled(state, history)) {
-    if (rivalAttack?.action) return rivalAttack.action;
+    if (routedRivalAttack) return routedRivalAttack;
     const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
     if (boatStreak >= 2 && build) return build;
     const escapeBoat = chooseBoat(actions, state, history, avoid);
@@ -626,7 +678,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (state.self.tileShare < 0.12 && neutralAttack && threatCount === 0 && !collapsing) {
     return neutralAttack;
   }
-  if (rivalAttack?.action) return rivalAttack.action;
+  if (routedRivalAttack) return routedRivalAttack;
   if (neutralAttack) return neutralAttack;
   if (build && sinceBuild >= 5) return build;
 
@@ -692,6 +744,7 @@ export function recordDecision(history, action, state) {
     tileShare: state.self.tileShare,
     incomingAttackerIDs,
     incomingAttackerNames,
+    mapFingerprint: state.mapFingerprint,
     policyMarker: action.policyMarker ?? null,
   });
   if (history.length > 320) history.shift();
