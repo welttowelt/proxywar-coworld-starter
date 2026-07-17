@@ -1154,3 +1154,102 @@ test("donations require an allied recipient and ally focus", () => {
   assert.equal(choose(actions, observation({ rivals: [rival] }), { focus: "ally" }).kind, "donate_gold");
 });
 
+
+function grindHistory() {
+  return [1, 2].map((index) => ({
+    actionID: "expand:terra-nullius:35",
+    kind: "attack",
+    neutral: true,
+    tileShare: 0.06,
+  }));
+}
+
+function grindActions() {
+  return [
+    action("expand:terra-nullius:10", "attack", "Expand into neutral land with 10% troops"),
+    action("expand:terra-nullius:20", "attack", "Expand into neutral land with 20% troops"),
+    action("expand:terra-nullius:35", "attack", "Expand into neutral land with 35% troops"),
+  ];
+}
+
+test("Asia opening grind commits to the 35 percent neutral attack", () => {
+  const selected = choose(
+    grindActions(),
+    observation({ tileShare: 0.08, troopRatio: 0.9, spawnTile: 1180588 }),
+    null,
+    grindHistory(),
+  );
+  assert.equal(selected.id, "expand:terra-nullius:35");
+  assert.equal(selected.policyMarker, "ef2");
+});
+
+test("Asia opening grind releases once the opening is secured", () => {
+  const probe = action("attack:bystander:10", "attack", "Attack Bystander 10%");
+  const selected = choose(
+    [...grindActions(), probe],
+    observation({
+      tileShare: 0.15,
+      troopRatio: 0.9,
+      spawnTile: 1180588,
+      rivals: [{ id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 }],
+    }),
+    null,
+    grindHistory(),
+  );
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("Asia opening grind yields to an active threat", () => {
+  const selected = choose(
+    grindActions(),
+    observation({
+      tileShare: 0.08,
+      troopRatio: 0.9,
+      incomingAttacks: 1,
+      spawnTile: 1180588,
+    }),
+    null,
+    grindHistory(),
+  );
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("World ignores the opening grind and keeps the parent cadence", () => {
+  const selected = choose(
+    grindActions(),
+    observation({ tileShare: 0.08, troopRatio: 0.9, spawnTile: 1088580 }),
+    null,
+    grindHistory(),
+  );
+  assert.equal(selected.id, "expand:terra-nullius:20");
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("Pangaea ignores the opening grind and stays exact v77", () => {
+  const selected = choose(
+    grindActions(),
+    observation({ tileShare: 0.08, troopRatio: 0.9, spawnTile: 659528 }),
+    null,
+    grindHistory(),
+  );
+  assert.equal(selected.id, "expand:terra-nullius:20");
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("Asia opening grind falls through when no neutral land remains", () => {
+  const build = action("build:City:1", "build", "Build City");
+  const probe = action("attack:bystander:10", "attack", "Attack Bystander 10%");
+  const selected = choose(
+    [build, probe],
+    observation({
+      tileShare: 0.08,
+      troopRatio: 0.9,
+      spawnTile: 1180588,
+      rivals: [{ id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 }],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, probe.id);
+  assert.equal(selected.policyMarker, undefined);
+});
