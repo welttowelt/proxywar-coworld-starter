@@ -109,7 +109,7 @@ export function inferMapFingerprint(observation, history = []) {
   return null;
 }
 
-function isNeutralBoat(action) {
+export function isNeutralBoat(action) {
   return action?.kind === "boat" && (
     action?.metadata?.expansion === true || actionText(action).includes("terra nullius")
   );
@@ -210,7 +210,7 @@ export function rivalForAction(action, state) {
   });
 }
 
-function consecutive(history, predicate) {
+export function consecutive(history, predicate) {
   let count = 0;
   for (let index = history.length - 1; index >= 0; index--) {
     if (!predicate(history[index])) break;
@@ -219,14 +219,14 @@ function consecutive(history, predicate) {
   return count;
 }
 
-function decisionsSince(history, predicate) {
+export function decisionsSince(history, predicate) {
   for (let index = history.length - 1; index >= 0; index--) {
     if (predicate(history[index])) return history.length - 1 - index;
   }
   return Infinity;
 }
 
-function incomingThreatCount(value) {
+export function incomingThreatCount(value) {
   if (Array.isArray(value)) return value.length;
   if (typeof value === "number") return value;
   if (value && typeof value === "object") return Object.keys(value).length;
@@ -240,7 +240,7 @@ function rivalWasIncoming(entry, rival) {
     (entry?.incomingAttackerNames || []).some((candidate) => candidate.toLowerCase() === name);
 }
 
-function recentHostility(state, history, rival, window = 24) {
+export function recentHostility(state, history, rival, window = 24) {
   const current = (state.self.incomingAttackerIDs || []).includes(rival.id.toLowerCase()) ? 1 : 0;
   return current + history.slice(-window).filter((entry) => rivalWasIncoming(entry, rival)).length;
 }
@@ -270,7 +270,7 @@ function rivalIsProtected(state, history, rival) {
   return false;
 }
 
-function stableAllianceRequests(actions) {
+export function stableAllianceRequests(actions) {
   // Relation 2 is a transient pending-request action. It can disappear while the
   // simultaneous turn is resolving, which makes the game replace it with HOLD.
   return safeActions(actions, (action) =>
@@ -278,7 +278,7 @@ function stableAllianceRequests(actions) {
   );
 }
 
-function bestAllianceRequest(actions, state, history, allowPending = false) {
+export function bestAllianceRequest(actions, state, history, allowPending = false) {
   const candidates = allowPending
     ? safeActions(actions, (action) => action.kind === "alliance_request")
     : stableAllianceRequests(actions);
@@ -329,7 +329,7 @@ function chooseAllianceMove(actions, state, history, threatCount, collapsing, ac
   return bestAllianceRequest(actions, state, history, true);
 }
 
-function safeActions(actions, predicate = () => true) {
+export function safeActions(actions, predicate = () => true) {
   const matching = actions.filter(predicate);
   const safe = matching.filter((action) => action.risk?.level !== "high");
   return safe.length > 0 ? safe : matching;
@@ -345,7 +345,7 @@ function hasReliableTacticalAction(actions) {
   });
 }
 
-function pickPercent(candidates, desiredPercent, avoid) {
+export function pickPercent(candidates, desiredPercent, avoid) {
   if (candidates.length === 0) return null;
   const fresh = candidates.filter((action) => !avoid.has(action.id));
   const pool = fresh.length > 0 ? fresh : candidates;
@@ -437,7 +437,7 @@ function chooseRivalAttack(actions, state, plan, history, avoid, threatCount = 0
   };
 }
 
-function chooseNeutralAttack(actions, history, avoid) {
+export function chooseNeutralAttack(actions, history, avoid) {
   const candidates = safeActions(actions, isNeutralExpansion);
   const streak = consecutive(history, (entry) => entry.neutral === true && entry.kind === "attack");
   const cadence = [10, 10, 20, 35];
@@ -490,7 +490,7 @@ function builtUnits(history) {
     .map((entry) => String(entry.actionID).toLowerCase());
 }
 
-function chooseBuild(actions, history, defend = false) {
+export function chooseBuild(actions, history, defend = false) {
   const candidates = safeActions(actions, (action) =>
     action.kind === "build" && !actionText(action).includes("defense post")
   );
@@ -533,7 +533,7 @@ function boatTargetStalled(state, history, rival) {
   return Number.isFinite(baseline) && currentShare <= baseline + 0.002;
 }
 
-function chooseBoat(
+export function chooseBoat(
   actions,
   state,
   history,
@@ -585,7 +585,7 @@ function chooseBoat(
   return pickPercent(pool, boatStreak === 0 ? 8 : 16, avoid);
 }
 
-function chooseUtility(actions, plan, history) {
+export function chooseUtility(actions, plan, history) {
   const preferredKinds = (plan?.preferKinds || []).filter((kind) =>
     ["nuke", "upgrade_structure", "warship", "move_warship"].includes(kind)
   );
