@@ -322,5 +322,22 @@
     },
     "regression_20_of_20": "not run: the 4/4 diagnostic failure already blocks promotion",
     "identity_evidence": "local image e97d898 contains exactly committed source ce15552; upload returned qd1n:v78; hosted candidate replays emitted ia1 six times while the matched v77 baseline emitted zero markers from the same seat"
+  },
+  "decisive_ab": {
+    "purpose": "extended A/B to decide whether mx3 (v78) should replace v77 in the league despite the failed 4/4 gate",
+    "baseline_requests": [
+      "xreq_8cced59b-77f1-4887-86da-f5e0b27fb8c6",
+      "xreq_d7aa32c5-32cc-47cb-b70a-b3a9b6937ee5"
+    ],
+    "candidate_requests": [
+      "xreq_53a20fc0-3334-4495-9bfe-a03b454b3c17",
+      "xreq_81b22c82-8e02-4745-a145-40184a14c979"
+    ],
+    "variant": "tournament-8p-asia",
+    "baseline_wins": 0,
+    "baseline_episodes": 12,
+    "candidate_wins": 1,
+    "candidate_episodes": 12,
+    "conclusion": "no ship case: the 1/12 versus 0/12 edge is noise at this sample, the hosted 4/4 gate remains unmet, and qd1n:v77 stays the sole live champion"
   }
 }
