@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-17T01:30:31Z",
+  "candidate": "qd1n-v77-reserve-floor-rf1",
+  "verdict": "REJECT_UNIVERSAL_RESERVE_FLOOR",
+  "remote_state_changed": false,
+  "source_isolation": {
+    "parent_commit": "b0c205c9ca324725d1ef17c66887f160068e7ffa",
+    "parent_policy": "qd1n:v77",
+    "runtime_diff_files": ["strategy-engine.mjs"],
+    "test_diff_files": ["test/strategy-engine.test.mjs", "test/llm-player.integration.test.mjs"],
+    "mechanism": "block normal rival attacks below 1.10 relative troops and mark the replacement expansion or economy action",
+    "marker": "rf1"
+  },
+  "images": {
+    "candidate": {"tag": "proxywar-agent-llm:qd1n-v77-rf1-amd64", "image_id": "sha256:22c21a50afc596b0c02a723887abe7bf4c4d375e5c24cac4985b35a5ff94e206", "architecture": "amd64"},
+    "exact_live_parent": {"tag": "proxywar-agent-llm:latest", "image_id": "sha256:36d5b2c411f39158a7485c85670adecb17a60bb2e331c8468d41a5c1b7754741", "architecture": "amd64"}
+  },
+  "verification": {
+    "red_regression": "exact v77 selected a 0.92x leader attack; rf1 replaced it with neutral expansion",
+    "unit_tests": {"passed": 87, "failed": 0},
+    "qualifier": {"variant": "qualifier", "decisions": 34, "accepted": 34, "rejected": 0, "holds": 0, "marker_executions": 0, "replay_sha256": "27930dbf02567b605cebd5c803acbe87f4e0f6eb8d62b25690db2094dfb5fdc6"},
+    "matched_world": {
+      "variant": "tournament-8p-world",
+      "orientation": "candidate-even-parent-odd",
+      "architecture": "amd64-for-both-arms",
+      "turn_count": 15500,
+      "winner_slot": 3,
+      "winner_arm": "parent",
+      "candidate_mean_score": 0,
+      "parent_mean_score": 0.25,
+      "candidate_mean_final_tiles": 12591.25,
+      "parent_mean_final_tiles": 150311,
+      "candidate_marker_executions": 13,
+      "candidate_branch_reach_seats": 3,
+      "decisions": 1054,
+      "accepted": 1054,
+      "rejected": 0,
+      "holds": 0,
+      "replay_sha256": "76290c72871e7a97e734dfb2ea107a74504b636d900f29094b6fbd82e604a3c6",
+      "payoff_path": "experiments/payoff-qd1n-reserve-floor-exact-v77-world-20260717.json",
+      "verdict": "direct selector reach with decisive matched regression; stop without reverse orientation"
+    }
+  },
+  "gates": {
+    "mechanism_reached": true,
+    "zero_rejected": true,
+    "zero_holds": true,
+    "world_exact_live_parent_advantage": false,
+    "exact_live_parent_matched_advantage": false,
+    "diagnostic_4_of_4": false,
+    "regression_20_of_20": false,
+    "promotion_eligible": false
+  },
+  "source_action": "Keep main executable source and live champion at exact v77; retire rf1 and do not run the reverse orientation.",
+  "lesson": "A universal 1.10 reserve floor removes too much conversion tempo. Any next arm must be context-gated by incoming pressure or target value rather than ratio alone."
+}

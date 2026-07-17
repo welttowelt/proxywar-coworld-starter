@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-07-17T01:30:31Z",
+  "candidate": "reserve-floor-rf1",
+  "parent": "main-v77-amd64",
+  "rows": 8,
+  "arms": {
+    "main-v77-amd64": {
+      "matches": 4,
+      "wins": 1,
+      "win_rate": 0.25,
+      "beta_posterior": {"alpha": 2, "beta": 4, "mean": 0.3333},
+      "mean_score": 0.25,
+      "mean_final_tiles": 150311,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 572,
+      "accepted_decisions": 572,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    },
+    "reserve-floor-rf1": {
+      "matches": 4,
+      "wins": 0,
+      "win_rate": 0,
+      "beta_posterior": {"alpha": 1, "beta": 5, "mean": 0.1667},
+      "mean_score": 0,
+      "mean_final_tiles": 12591.25,
+      "branch_reach_runs": 3,
+      "marker_count": 13,
+      "decisions": 482,
+      "accepted_decisions": 482,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    }
+  },
+  "payoff_matrix": {
+    "main-v77-amd64": {
+      "exact-v77-local-8p-amd64": {"matches": 4, "wins": 1, "win_rate": 0.25, "mean_score": 0.25, "mean_final_tiles": 150311}
+    },
+    "reserve-floor-rf1": {
+      "exact-v77-local-8p-amd64": {"matches": 4, "wins": 0, "win_rate": 0, "mean_score": 0, "mean_final_tiles": 12591.25}
+    }
+  },
+  "matched_pairs": {"usable_pairs": 1, "candidate_advantages": 0, "parent_advantages": 1, "ties": 0},
+  "gates": {
+    "mechanism_reached": true,
+    "zero_rejected": true,
+    "zero_holds": true,
+    "matched_advantage": false,
+    "diagnostic_4_of_4": false,
+    "regression_20_of_20": false,
+    "promotion_eligible": false
+  },
+  "verdict": "NO_SUBMIT"
+}

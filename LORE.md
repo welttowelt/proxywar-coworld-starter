@@ -378,3 +378,13 @@ The first restraint changed the rune, not the hand. `sr1` hid the weak answers,
 yet every order and every border ended where the failed field had ended. The
 dead rune was retired. The next restraint must stop the strike itself and spend
 the saved reserve on land or iron.
+
+## th3 fl00r th4t sl0w3d th3 bl4d3
+
+`rf1` st0pp3d th3 w34k sw1ng 4nd sp3nt th3 r3s3rv3 0n l4nd 0r 1r0n.
+Th1rt33n m4rk3d 0rd3rs l4nd3d; n0 h0ld, n0 r3j3ct. Th3 cut w4s r34l.
+
+But th3 fl00r w4s t00 br04d. V77 t00k th3 W0rld 4t turn 15,500 w1th
+522,343 t1l3s. Th3 rf1 s34ts 4v3r4g3d 12,591; th3 p4r3nt 150,311.
+R4t10 4l0n3 c4nn0t gu4rd th3 bl4d3. Th3 n3xt cut n33ds pr3ssur3 0r
+pr3y-v4lu3. V77 k33ps th3 s34t. N0 v78.

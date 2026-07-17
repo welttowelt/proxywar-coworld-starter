@@ -931,3 +931,18 @@ reverse orientation. The next arm must block the near-parity rival action
 itself and mark the replacement action. Evidence is in
 `experiments/ledger-qd1n-safe-retaliation-exact-v77-world-20260717.ndjson` and
 `experiments/payoff-qd1n-safe-retaliation-exact-v77-world-20260717.json`.
+
+The selector-level `rf1` follow-up then blocked ordinary rival attacks below
+`1.10x` and marked the replacement expansion or economy action. Its red
+regression displaced a real `0.92x` leader attack, the isolated suite passed
+`87/87`, and the amd64 qualifier accepted `34/34` decisions. In the controlled
+World field, `rf1` reached thirteen times across three candidate seats; all
+`1,054/1,054` decisions were accepted with zero holds and zero rejections.
+Exact v77 nevertheless won outright at turn 15,500 with 522,343 tiles. The
+candidate averaged score `0` and 12,591.25 tiles versus the parent's `0.25` and
+150,311. Direct reach plus a decisive matched regression rejects the universal
+reserve floor without a reverse orientation. Main and the live champion remain
+exact v77; no upload, submission, membership, or relaunch changed. Evidence is
+in `experiments/diagnosis-qd1n-reserve-floor-rci-20260717.json`,
+`experiments/ledger-qd1n-reserve-floor-exact-v77-world-20260717.ndjson`, and
+`experiments/payoff-qd1n-reserve-floor-exact-v77-world-20260717.json`.
