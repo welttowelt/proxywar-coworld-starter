@@ -2,7 +2,7 @@
   "schema_version": 1,
   "recorded_at": "2026-07-17T09:35:00Z",
   "candidate": "qd1n-v77-mx3",
-  "verdict": "LOCAL_GATES_PASS_HOSTED_GATES_PENDING",
+  "verdict": "NO_SUBMIT_HOSTED_4_OF_4_FAILED",
   "remote_state_changed": false,
   "hypothesis": "routing the two replay-proven counters only on their validated maps will retain exact v77 on Pangaea while recovering Asia attacker attribution and World near-parity pressure conversion",
   "guards": [
@@ -218,17 +218,109 @@
     "zero_unexplained_holds": true,
     "hosted_diagnostic_4_of_4": false,
     "map_seat_regression_20_of_20": false,
-    "exact_live_identity_verified": false,
+    "exact_live_identity_verified": true,
     "promotion_eligible": false
   },
   "league_state": {
     "live_policy": "qd1n:v77",
-    "candidate_uploaded": false,
+    "candidate_uploaded": true,
     "candidate_submitted": false,
     "champion_changed": false,
     "membership_relaunched": false,
-    "official_first_place_streak": 1,
-    "target_first_place_streak": 1000
+    "official_first_place_streak": 0,
+    "target_first_place_streak": 1000,
+    "streak_note": "round 443 finished first (streak 1); round 444 finished fourth with qd1n:v77, resetting the official streak to 0/1000"
   },
-  "next_test": "Upload only the exact candidate image after source integration, then run a matched hosted 4/4 diagnostic and a separate 20/20 map-seat regression before any league change."
+  "next_test": "Re-form a bounded hypothesis from the hosted losses to proxywar-keystone:v42, co-gas-proxywar-richard:v6, and tsukuyomi-no-kage:v34 before any new upload; the mx3 source remains a retained local population arm",
+  "hosted": {
+    "upload": {
+      "policy_ref": "qd1n:v78",
+      "policy_version_id": "348cab68-a00d-483d-ba94-67c8e00d469e",
+      "local_image_id": "sha256:e97d89814b18771357b90ba5daedf50796a11568d0dd966f6978535d35cea472",
+      "registry_image_id": "img_827ba822-caea-4b37-b72a-b70dc58b2b69",
+      "registry_image_digest": "sha256:9edaafd7342e65d99d411dffb0f727cd73a51e148819949a8815d982294e5840",
+      "architecture": "amd64",
+      "uploaded_at": "2026-07-17T09:49:29Z",
+      "purpose": "hosted testing only; qd1n:v77 stayed live throughout"
+    },
+    "matched_baseline": {
+      "request_id": "xreq_8cced59b-77f1-4887-86da-f5e0b27fb8c6",
+      "policy_ref": "qd1n:v77",
+      "policy_version_id": "c0213724-8fb6-40d3-97da-fd1b080971f7",
+      "variant": "tournament-8p-asia",
+      "coworld": "proxywar 0.1.9 (cow_73615cc4-83f6-4db7-a562-ac96f3abd8a5)",
+      "seat": 6,
+      "wins": 0,
+      "episodes": 4,
+      "decisions": 477,
+      "accepted": 477,
+      "holds": 0,
+      "rejected": 0,
+      "markers": 0
+    },
+    "candidate_diagnostic": {
+      "request_id": "xreq_53a20fc0-3334-4495-9bfe-a03b454b3c17",
+      "policy_ref": "qd1n:v78",
+      "policy_version_id": "348cab68-a00d-483d-ba94-67c8e00d469e",
+      "variant": "tournament-8p-asia",
+      "seat": 6,
+      "wins": 1,
+      "episodes": 4,
+      "decisions": 682,
+      "accepted": 682,
+      "holds": 0,
+      "rejected": 0,
+      "ia1_executions": 6,
+      "audit_confirmed_ia1_executions": 3,
+      "spawn_tile": 1020678,
+      "map_fingerprint": "Asia",
+      "episodes_detail": [
+        {
+          "episode_request_id": "ereq_f764732e",
+          "won": true,
+          "score": 1.0,
+          "final_tiles": 1015250,
+          "decisions": 100,
+          "ia1": 4,
+          "confirmed": 2,
+          "replay_sha256": "af67ce195ede680242c25d5f0d3dbb841e26d752c84610a4a1f280b6cc97a49d"
+        },
+        {
+          "episode_request_id": "ereq_8d5584f5",
+          "won": false,
+          "score": 0.0,
+          "final_tiles": 10854,
+          "decisions": 88,
+          "ia1": 0,
+          "confirmed": 0,
+          "winner": "proxywar-keystone:v42",
+          "replay_sha256": "4b6e56ba915a2aab99203d9c22f223535e6593b0949fcd5b15c4bd33dd2acdd0"
+        },
+        {
+          "episode_request_id": "ereq_4802cc13",
+          "won": false,
+          "score": 0.0,
+          "final_tiles": 4683,
+          "decisions": 91,
+          "ia1": 0,
+          "confirmed": 0,
+          "winner": "co-gas-proxywar-richard:v6",
+          "replay_sha256": "916ef0e10eb5874691665d22899fbde04625f35a632f0cb85d8960628da97d25"
+        },
+        {
+          "episode_request_id": "ereq_b9640236",
+          "won": false,
+          "score": 0.29013154543897096,
+          "final_tiles": 313300,
+          "decisions": 403,
+          "ia1": 2,
+          "confirmed": 1,
+          "winner": "tsukuyomi-no-kage:v34",
+          "replay_sha256": "00267f36462e0f595dd8b52b54d019ec8458c4e3956634f744d73a37928d0043"
+        }
+      ]
+    },
+    "regression_20_of_20": "not run: the 4/4 diagnostic failure already blocks promotion",
+    "identity_evidence": "local image e97d898 contains exactly committed source ce15552; upload returned qd1n:v78; hosted candidate replays emitted ia1 six times while the matched v77 baseline emitted zero markers from the same seat"
+  }
 }

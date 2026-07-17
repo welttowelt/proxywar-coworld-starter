@@ -5,7 +5,8 @@
     "parent_ref": "qd1n:v77",
     "exact_deltas": [
       "derive the map from the policy-visible ownState.spawnTile, apply current-protocol attacker attribution only on Asia and the active near-parity 40 percent pressure counter only on World, and preserve exact v77 on Pangaea or unknown maps"
-    ]
+    ],
+    "policy_version_id": "348cab68-a00d-483d-ba94-67c8e00d469e"
   },
   "hypothesis": "map-composed routing preserves the Pangaea champion trace while recovering the replay-proven Asia and World counter arms",
   "mechanism": {
@@ -27,7 +28,7 @@
     "mechanism_reached": true,
     "qualifier_replay_sha256": "ad1901625c0eb0d70e0fc687d782f34a3ddb5181832ea037421ce8ed8bb6dae9"
   },
-  "diagnostic_only": true,
+  "diagnostic_only": false,
   "hosted": {
     "criteria": {
       "win_rate_pct": 100,
@@ -35,11 +36,27 @@
       "max_rejections": 0,
       "planner_degradation_rule": "no_unexplained_regression_vs_parent",
       "min_mechanism_executions": 1
+    },
+    "request_id": "xreq_53a20fc0-3334-4495-9bfe-a03b454b3c17",
+    "result": {
+      "status": "completed",
+      "episodes": 4,
+      "wins": 1,
+      "holds": 0,
+      "rejections": 0,
+      "mechanism_executions": 6,
+      "planner_degradation_rule_passed": true
     }
   },
   "promotion": {
     "regression_episodes": 20,
     "league_change_allowed": false
   },
-  "verdict": "local gates pass; hosted baseline, hosted 4/4, and independent 20/20 are pending"
+  "verdict": "NO SUBMIT: hosted diagnostic finished 1/4 against the matched current Competition field (baseline parent 0/4); ia1 reached six times with zero holds and zero rejections, but the 4/4 gate failed; the 20/20 regression was not run; qd1n:v77 remains the sole live champion",
+  "matched_baseline": {
+    "policy_ref": "qd1n:v77",
+    "request_id": "xreq_8cced59b-77f1-4887-86da-f5e0b27fb8c6",
+    "same_roster": true,
+    "same_variant": true
+  }
 }
