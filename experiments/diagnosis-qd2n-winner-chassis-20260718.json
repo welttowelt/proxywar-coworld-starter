@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-18T00:45:00Z",
+  "candidate": "qd2n-ch2",
+  "verdict": "REJECTED_LOCAL_MIRRORS_SPLIT_NO_UPLOAD",
+  "remote_state_changed": false,
+  "hypothesis": "the shared winner chassis \u2014 flat 35 percent opening grind above a troop floor, retaliation-first contact at 25 percent minimum, sticky target finishing, capped boats, active alliances \u2014 wins mirrors against exact v77",
+  "outcome": "the chassis fails the mirrored gates in both iterations: 2/6 candidate wins each, with Asia and Pangaea split by dominant seats and World lost 0/4 across iterations; candidate seats outside the dominant positions starve, and 30 holds appeared in losing positions",
+  "iterations": {
+    "ch1": {
+      "commit": "afd973698e9a2470c8b24575553136c4aaf775d7",
+      "image": "proxywar-agent-llm:qd2n-ch1-amd64",
+      "image_id": "sha256:110ff55a79d7cd68bf3a576e087162c91f62372ea44dfde4a2d067543c89912d",
+      "candidate_wins": 2,
+      "candidate_holds": 51,
+      "candidate_rejected": 0,
+      "ch1_executions": 483,
+      "ch2_executions": 419
+    },
+    "ch2": {
+      "commit": "9bf1ba55f869084ed6e61bc561b546a40baf9a87",
+      "changes": "sticky target finishing and probe-before-hold emergency path",
+      "image": "proxywar-agent-llm:qd2n-ch2-amd64",
+      "asia_a_flip": "asia-a flipped from parent (ch1) to candidate at 877,450 tiles",
+      "candidate_wins": 2,
+      "candidate_holds": 14,
+      "candidate_rejected": 0,
+      "ch1_executions": 454,
+      "ch2_executions": 367
+    }
+  },
+  "evidence": {
+    "unit_tests": {
+      "passed": 109,
+      "failed": 0
+    },
+    "qualifier": {
+      "path": "/private/tmp/proxywar-qd2n-ch1-amd64-qualifier-20260717",
+      "decisions": 34,
+      "accepted": 34,
+      "holds": 0,
+      "rejected": 0,
+      "replay_sha256": "dd381cf8a7c4290bb4e99d10e9a29873c373e0e60606b8f7f5d259759b57ddb4"
+    },
+    "runs": {
+      "ch1-asia-a": {
+        "winner_slot": 7,
+        "winner_arm": "parent",
+        "turn_count": 8300,
+        "replay_sha256": "0e86857af02fc353a28eaf21a7384ea4733845479cd69065f6497ab31c7154a3"
+      },
+      "ch1-asia-b": {
+        "winner_slot": 3,
+        "winner_arm": "candidate",
+        "turn_count": 8700,
+        "replay_sha256": "476b1c157de49c037410f3b6fbf0d8199a987618c12f45692f24effb490fe245"
+      },
+      "ch1-world-a": {
+        "winner_slot": 3,
+        "winner_arm": "parent",
+        "turn_count": 14500,
+        "replay_sha256": "1f031239bc0f4f13d96fe849f1885fcaa4e5f964dc197872265ddd6325c3752c"
+      },
+      "ch1-world-b": {
+        "winner_slot": 4,
+        "winner_arm": "parent",
+        "turn_count": 19300,
+        "replay_sha256": "0b6f6fecf828da526b8bba396645581dd84ffbfc317b3c30b8cf768aaa3aba8c"
+      },
+      "ch1-pangaea-a": {
+        "winner_slot": 6,
+        "winner_arm": "candidate",
+        "turn_count": 9800,
+        "replay_sha256": "ead40c720d997551f78ee00f1f5855fff0291d5a49ba609fd9ce01bfec78e2a7"
+      },
+      "ch1-pangaea-b": {
+        "winner_slot": 6,
+        "winner_arm": "parent",
+        "turn_count": 8500,
+        "replay_sha256": "498e3a4fba7d0741d76edb52e178fec62f3bfd65502cf49d60877b44869e3aa4"
+      },
+      "ch2-asia-a": {
+        "winner_slot": 2,
+        "winner_arm": "candidate",
+        "turn_count": 10100,
+        "replay_sha256": "d86bd4481d8621464bee447772964b284fbbd7f07409cd2500bdfcfa53b953a3"
+      },
+      "ch2-asia-b": {
+        "winner_slot": 6,
+        "winner_arm": "parent",
+        "turn_count": 8300,
+        "replay_sha256": "13c635095d8b1680dbe07c627ae64bdf3eea88af4ba2dbadd415dc3c5271abde"
+      },
+      "ch2-world-a": {
+        "winner_slot": 3,
+        "winner_arm": "parent",
+        "turn_count": 14900,
+        "replay_sha256": "5a0647d7f8ea4bf3240dcfa4f02aef086e73879ba8947a7094f255bc37e84104"
+      },
+      "ch2-world-b": {
+        "winner_slot": 4,
+        "winner_arm": "parent",
+        "turn_count": 18600,
+        "replay_sha256": "7845bd5ce546304798e8f847b4ae7056a692262ee187fe6d6f1d06ddab237d8a"
+      },
+      "ch2-pangaea-a": {
+        "winner_slot": 6,
+        "winner_arm": "candidate",
+        "turn_count": 8600,
+        "replay_sha256": "09276c155877dafd57fa9207a373406d8468b0f432cd2f8858cc503d6547bb78"
+      },
+      "ch2-pangaea-b": {
+        "winner_slot": 6,
+        "winner_arm": "parent",
+        "turn_count": 9000,
+        "replay_sha256": "487181abc5dd39058fa4395f039ada770e86c567e2186315831aee6607e1f14c"
+      }
+    }
+  },
+  "league_state": {
+    "live_policy": "qd1n:v77",
+    "candidate_uploaded": false,
+    "candidate_submitted": false,
+    "champion_changed": false,
+    "membership_relaunched": false,
+    "official_first_place_streak": 0,
+    "target_first_place_streak": 1000
+  }
+}
