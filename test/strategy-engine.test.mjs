@@ -1187,6 +1187,27 @@ test("Asia pile-on discipline replaces a near-parity rival attack", () => {
   assert.equal(selected.policyMarker, "pd1");
 });
 
+test("Asia pile-on discipline counts a recent historical attacker", () => {
+  const attacks = [10, 25, 40].map((percent) =>
+    action(`attack:bystander:${percent}`, "attack", `Attack Bystander ${percent}%`));
+  const build = action("build:City:1", "build", "Build City");
+  const history = [{
+    actionID: "build:City:0",
+    kind: "build",
+    tileShare: 0.2,
+    incomingAttackerIDs: ["raider"],
+    incomingAttackerNames: ["Raider"],
+  }];
+  const selected = choose(
+    [...attacks, build],
+    pileOnObservation({ spawnTile: 1180588, attackerCount: 1, incomingAttacks: 1 }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, build.id);
+  assert.equal(selected.policyMarker, "pd1");
+});
+
 test("Asia pile-on discipline lets a strong-ratio counter through", () => {
   const attacks = [10, 25, 40].map((percent) =>
     action(`attack:bystander:${percent}`, "attack", `Attack Bystander ${percent}%`));

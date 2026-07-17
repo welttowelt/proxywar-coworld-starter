@@ -245,6 +245,24 @@ function recentHostility(state, history, rival, window = 24) {
   return current + history.slice(-window).filter((entry) => rivalWasIncoming(entry, rival)).length;
 }
 
+function recentDistinctAttackerCount(state, history, window = 12) {
+  const ids = new Set(
+    (state.self.incomingAttackerIDs || []).map((id) => String(id).toLowerCase()),
+  );
+  for (const entry of history.slice(-window)) {
+    for (const id of entry?.incomingAttackerIDs || []) {
+      ids.add(String(id).toLowerCase());
+    }
+    for (const name of entry?.incomingAttackerNames || []) {
+      const rival = state.rivals.find(
+        (candidate) => candidate.name.toLowerCase() === String(name).toLowerCase(),
+      );
+      ids.add(rival ? rival.id.toLowerCase() : String(name).toLowerCase());
+    }
+  }
+  return ids.size;
+}
+
 function isReciprocalRival(rival) {
   return RECIPROCAL_RIVALS.has(rival.name.toLowerCase());
 }
@@ -626,7 +644,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
     ? { ...rivalAttack.action, policyMarker: "ia1" }
     : rivalAttack?.action;
   const pileOnDiscipline = state.mapFingerprint === "Asia" &&
-    new Set((state.self.incomingAttackerIDs || []).map((id) => id.toLowerCase())).size >= 2 &&
+    recentDistinctAttackerCount(state, history) >= 2 &&
     rivalAttack?.action && Number.isFinite(rivalAttack.rival.relativeTroopRatio) &&
     rivalAttack.rival.relativeTroopRatio < 1.3;
   const disciplinedAttack = pileOnDiscipline ? null : routedRivalAttack;
@@ -713,12 +731,12 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (donation) return donation;
 
   // Holding while legal tactical actions remain turns a weak position into a certain loss.
-  if (build) return build;
+  if (build) return withDiscipline(build);
   const retreat = safeActions(
     actions,
     (action) => action.kind === "boat_retreat" || action.kind === "retreat",
   )[0];
-  if (retreat) return retreat;
+  if (retreat) return withDiscipline(retreat);
   const emergencyAttacks = safeActions(actions, (action) => {
     if (action.kind !== "attack" || isNeutralExpansion(action)) return false;
     const rival = rivalForAction(action, state);
