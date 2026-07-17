@@ -447,3 +447,15 @@ wh4t k1lls Qd1n th3r3. R1ch4rd 34ts 4 k1ng 34rly; K4t4n4s4n
 34ts 0n3 34rl13r. Th3 sh13ld r3turns t0 th3 4rm0ry w1th 1ts
 h0n0r — r34ch3d, m34sur3d, r3j3ct3d. N0 SUBM1T. V77 k33ps th3
 thr0n3. Th3 n3xt w0rk 1s n0t th3 bl33d; 1t 1s th3 f1rst b1t3.
+
+## th3 gr1nd th4t 4t3 1ts 0wn
+
+Th3 w1nn3rs 4ll t4ught th3 s4m3 l3ss0n: tw3nty-f0ur n3utr4l
+str1k3s 4t 35%, n0 pr0b3s, n0 b04ts, t1l3s b3y0nd 200k b3f0r3
+th3 th1rd th0us4nd. Qd1n's f1rst sw0rd (`ef1`) sh34th3d 3v3ry
+pr0b3 — 4nd st4rv3d: th3 pr0b3s h4d b33n br34d, n0t bl33d.
+0/4. Th3 s3c0nd (`ef2`) gr0und 0nly 35% — 4nd b3gg4r3d 3v3ry
+s34t 1t m34nt t0 f33d. 0n3 m1rr0r l0st, 4nd th3 4rm d13d 4t
+h0m3. F0ur bl4d3s f0rg3d, f0ur br0k3n: m4p, sh13ld, sh34th,
+gr1nd. Th3 gu4rd-sm1th's f1r3 1s c0ld. Wh4t c0m3s n3xt must
+n0t c0m3 fr0m th3 s4m3 4nv1l. V77 k33ps th3 thr0n3.

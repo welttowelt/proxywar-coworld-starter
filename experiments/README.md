@@ -1087,3 +1087,45 @@ stop rule therefore rejects the arm: no `20/20` regression was run, no
 submission was made, no membership changed, and qd1n:v77 remains the sole
 live champion. The falsified hypothesis is preserved in the ledger; the
 remaining hosted failure class is the early snowball, not the pile-on bleed.
+
+## Qd1n opening-economy RCI, 2026-07-17
+
+Reading the twelve hosted episodes from the mx3 and pd1 diagnostics by
+winner, the opening profile is mechanical. Every Auri, Richard Higgins, and
+katanasan win spent its first thirty decisions on 22-25 neutral attacks, all
+at 35 percent, with zero to three rival probes, reaching 174,594-265,674
+tiles by turn 3000. Qd1n mixed 10/20/35 percent neutral attacks with nine to
+eleven rival probes and reached 72,308-106,196. No opening probe in any
+episode produced a kill, and each probe reset the 10/10/20/35 neutral
+cadence.
+
+The `ef1` arm suppressed the opening probes on Asia while tile share stayed
+below 0.12 with no active threat, preserving retaliation against current
+attackers. It passed `101/101` tests, a `34/34` qualifier, and won both Asia
+mirrors at 889,486 and 934,015 tiles with 76 `ef1` executions. Hosted as
+`qd1n:v80` (`4e2b3d0d-db42-4807-b52f-d31580438a2a`), the diagnostic
+`xreq_7eb566ff-04d0-4ebb-9c15-765bde6781ca` finished `0/4`: the probes were
+removed exactly as designed, but opening territory fell to 54,032-63,869
+tiles because the suppressed probes had been profitable pokes, and five
+unexplained holds appeared beside them. Direct reach with a worse outcome
+than the mx3 `1/4`; the arm is rejected and reverted.
+
+The `ef2` arm then forced the remaining difference, a flat 35 percent neutral
+grind with no cadence warm-up and no avoid-set fallback. It passed `101/101`
+tests and a `34/34` qualifier, won asia-b at 895,806 tiles, but flipped
+asia-a to the exact parent at 902,769 with every candidate seat starved
+between 281 and 6,879 tiles. A split mirror with starved candidate seats is
+a regression, so the arm was rejected before any upload and reverted.
+
+Four deterministic guards have now failed against the current Competition
+field: the map composition (hosted `1/4`), pile-on discipline (hosted `1/4`),
+probe suppression (hosted `0/4`), and the opening grind (lost local mirror).
+Executable source is restored to exact mx3 behavior, no submission was made,
+and qd1n:v77 remains the sole live champion. Evidence:
+`experiments/diagnosis-qd1n-economy-first-rci-20260717.json`,
+`experiments/ledger-qd1n-economy-first-exact-v77-20260717.ndjson`,
+`experiments/payoff-qd1n-economy-first-exact-v77-20260717.json`,
+`experiments/preflight-qd1n-economy-first-mx6.json`,
+`experiments/diagnosis-qd1n-opening-grind-rci-20260717.json`,
+`experiments/ledger-qd1n-opening-grind-exact-v77-20260717.ndjson`, and
+`experiments/payoff-qd1n-opening-grind-exact-v77-20260717.json`.

@@ -68,6 +68,9 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | qd1n mx3 hosted | uploaded exact amd64 image as `qd1n:v78` (`348cab68-a00d-483d-ba94-67c8e00d469e`) for testing only; matched baseline `xreq_8cced59b-77f1-4887-86da-f5e0b27fb8c6` finished `0/4`; candidate diagnostic `xreq_53a20fc0-3334-4495-9bfe-a03b454b3c17` finished `1/4` (won at 1,015,250 tiles, lost to `proxywar-keystone:v42`, `co-gas-proxywar-richard:v6`, `tsukuyomi-no-kage:v34`); `ia1` 6 (3 confirmed); `682/682` accepted, zero holds, zero rejections | hosted `4/4` failed, `20/20` not run, NO SUBMIT; v77 remains sole champion |
 | qd1n pd1 pile-on discipline local | hosted losses showed 25-40% near-parity counters under multi-attacker pile-ons; Asia-only guard suppresses sub-1.3 rival attacks whenever two distinct attackers are attributed in the current observation or the last twelve decisions; dormant current-only mx4 superseded before upload; `101/101` tests; amd64 qualifier `34/34`; both Asia mirrors won at 884,022 and 874,107 tiles with `pd1` 14 executions; `ia1` 5 and `pc1` 2 preserved; World/Pangaea byte-identical to mx3; `2,310/2,310` accepted, zero rejections, two explained Pangaea slot-5 holds | all local gates pass; hosted `4/4` and `20/20` pending |
 | qd1n pd1 hosted | uploaded exact amd64 image as `qd1n:v79` (`34345f8f-12dc-46b5-a6c8-f33ad9461519`) for testing only; diagnostic `xreq_4660c5cb-c0ab-46ad-97d6-6db432d88cad` finished `1/4` against the mx3 roster (won at 865,675 tiles, lost to `co-gas-proxywar-richard:v6` twice and `tsukuyomi-no-kage:v34`); `pd1` 11 and `ia1` 7 executions (3 confirmed); `406/406` accepted, zero holds, zero rejections | direct reach without outcome improvement over the mx3 `1/4`; arm rejected, NO SUBMIT; v77 remains sole champion |
+| qd1n ef1 hosted | opening decomposition showed winners grind 22-25 neutral attacks at 35 percent with zero early probes while qd1n spent 9-11 probes that never produced a kill; probe-suppression arm passed all local gates (both mirrors, `ef1` 76 executions); hosted as `qd1n:v80` (`4e2b3d0d-db42-4807-b52f-d31580438a2a`), diagnostic `xreq_7eb566ff-04d0-4ebb-9c15-765bde6781ca` finished `0/4` with opening territory down to 54-64k — the suppressed probes had been profitable; `406/406` accepted, five unexplained holds | reach with a worse outcome than mx3; arm rejected and reverted, NO SUBMIT |
+| qd1n ef2 local | flat 35-percent opening grind with no cadence warm-up and no avoid-set fallback; `101/101` tests and `34/34` qualifier passed; asia-b mirror won at 895,806 tiles, but asia-a flipped to the exact parent at 902,769 with every candidate seat starved between 281 and 6,879 tiles | lost local mirror; arm rejected before upload and reverted; v77 remains sole champion |
+| ef campaign verdict | four consecutive deterministic guards (map composition, pile-on discipline, probe suppression, opening grind) produced hosted `1/4`, `1/4`, `0/4`, and a lost local mirror; executable source is restored to exact mx3 behavior every time | guard family exhausted against the current Competition field; no submission is possible without a different lever |
 
 Detailed evidence lives in [`experiments/`](experiments/README.md). Public round
 statistics live on the [dashboard](https://welttowelt.github.io/proxywar-coworld-starter/).
@@ -175,3 +178,17 @@ No submission was made and v77 remains the sole live champion. The overall
 lead narrowed to `31.9642` over Auri `26.9881`; the remaining hosted failure
 class is the early snowball that `pd1` never claimed to answer, with katanasan
 and Richard Higgins converting eliminations before the guard can matter.
+
+Rci-13 chased that snowball into the opening. The winner profile across the
+twelve hosted episodes is mechanical: 22-25 neutral attacks, all at 35
+percent, zero to three rival probes, and 174-265k tiles by turn 3000. Qd1n
+ground out 72-106k with a mixed cadence and nine to eleven probes that never
+produced a kill. Two arms tried to close that gap. `ef1` suppressed the
+opening probes and passed every local gate, but hosted as `qd1n:v80` it went
+`0/4` with opening territory down to 54-64k — the probes had been profitable,
+and five unexplained holds landed beside them. `ef2` forced the flat 35
+percent grind and lost the asia-a local mirror outright, with every candidate
+seat starved under 7,000 tiles. Both arms are rejected and reverted; the
+source rests at exact mx3 behavior, no submission was made, and v77 remains
+the sole live champion. Four deterministic guards have now failed to move the
+hosted field: the next lever must come from outside the guard family.
