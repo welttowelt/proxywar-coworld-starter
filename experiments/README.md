@@ -1175,3 +1175,19 @@ rule while the edge lives in the sequence. The recommendation is a fresh
 minimal deterministic policy (qd2n) implementing the chassis, gated through
 the same pipeline. Full analysis and counted evidence:
 `experiments/winner-decision-logic-20260717.md`.
+
+## Qd2n winner-chassis evaluation and decisive A/B, 2026-07-18
+
+The chassis rewrite built qd2n as a fresh minimal deterministic policy:
+flat 35 percent opening grind above a 100k troop floor, retaliation-first
+contact at 25 percent minimum, sticky target finishing, capped boats, and
+probe-before-hold. Two iterations each finished 2/6 in the mirrored gates
+with Asia and Pangaea split by dominant seats and World lost 0/4; candidate
+holds fell from 51 (ch1) to 14 (ch2). The mirrors reject the chassis; it was
+never uploaded. A final decisive A/B then extended the standard-roster
+diagnostics to twelve episodes per arm: v77 finished 0/12 and mx3 (v78)
+1/12. That edge is noise at this sample, the hosted 4/4 gate stays unmet,
+and no ship case exists. qd1n:v77 remains the sole live champion. Evidence:
+`experiments/diagnosis-qd2n-winner-chassis-20260718.json` and the
+`decisive_ab` block in
+`experiments/diagnosis-qd1n-map-composition-rci-20260717.json`.
