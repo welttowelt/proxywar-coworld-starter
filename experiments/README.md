@@ -1129,3 +1129,35 @@ and qd1n:v77 remains the sole live champion. Evidence:
 `experiments/diagnosis-qd1n-opening-grind-rci-20260717.json`,
 `experiments/ledger-qd1n-opening-grind-exact-v77-20260717.ndjson`, and
 `experiments/payoff-qd1n-opening-grind-exact-v77-20260717.json`.
+
+## Qd1n planner-doctrine RCI, 2026-07-17
+
+The guard campaign left one untested lever: the Bedrock planner that steers
+hosted target selection. The `sp1` arm rewrote three STRATEGY sentences to
+the hosted winner profile — strongest-commitment Terra Nullius opening with
+no rival attacks before 12 percent land unless attacked first, rivals only at
+relativeTroopRatio 1.3 or better, 35 percent neutral commitment, and no
+second front under attack. The selector stayed byte-identical to mx3, proven
+by both Asia mirrors reproducing the mx3 decision streams exactly, with the
+candidate winning both and zero holds or rejections across a `34/34`
+qualifier and 453 matched decisions.
+
+Uploaded as `qd1n:v81` (`3f7d3e16-0c3f-4e2a-89ac-409909aea573`), the
+diagnostic `xreq_4f9ab61a-83d7-4234-bcef-493b4f0d74f0` finished `0/4`
+against the standard roster. The decisive measurement was not the loss but
+the shape of it: Bedrock was throttled in 224 of 390 candidate decisions
+(57 percent), so the doctrine barely played, and the deterministic fallback
+kept the cadence-mixed opening and the surviving Sefirot probes. The arm is
+inconclusive on doctrine terms and failed on outcome terms. All `390`
+decisions were accepted with zero rejections and three unexplained holds.
+
+This closes the bounded-arm campaign. Five consecutive gates — map
+composition `1/4`, pile-on discipline `1/4`, probe suppression `0/4`, opening
+grind lost locally, planner doctrine `0/4` — each fired as designed and none
+moved the hosted score, while the v77 baseline is `0/4` on the same roster.
+Incremental variants of this policy do not currently clear this field. No
+submission was made, no membership changed, and qd1n:v77 remains the sole
+live champion. Evidence:
+`experiments/diagnosis-qd1n-planner-doctrine-rci-20260717.json`,
+`experiments/ledger-qd1n-planner-doctrine-exact-v77-20260717.ndjson`, and
+`experiments/preflight-qd1n-planner-doctrine-sp1.json`.

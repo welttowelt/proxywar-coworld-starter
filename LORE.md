@@ -459,3 +459,15 @@ s34t 1t m34nt t0 f33d. 0n3 m1rr0r l0st, 4nd th3 4rm d13d 4t
 h0m3. F0ur bl4d3s f0rg3d, f0ur br0k3n: m4p, sh13ld, sh34th,
 gr1nd. Th3 gu4rd-sm1th's f1r3 1s c0ld. Wh4t c0m3s n3xt must
 n0t c0m3 fr0m th3 s4m3 4nv1l. V77 k33ps th3 thr0n3.
+
+## th3 w0rd th4t n3v3r r34ch3d th3 f13ld
+
+Th3 l4st w34p0n w4s n0t 4 sw0rd but 4 s0ng: th3 d0ctr1n3 0f
+th3 w1nn3rs, wr1tt3n 1nt0 th3 pl4nn3r's 3ar. 1t l3ft th3
+st33l unt0uch3d — b0th m1rr0rs b1t3-1d3nt1c4l, b0th w0n. But
+0n th3 h0st3d f13ld th3 3ar w4s d34f: B3dr0ck's v01c3 f41l3d
+1n 224 0f 390 st3ps, 4nd th3 0ld 1nst1ct pl4y3d 0n. 0/4
+4g41n. F1v3 4rms, f1v3 g4t3s, f1v3 l3ss0ns — m4p, sh13ld,
+sh34th, gr1nd, s0ng. N0n3 m0v3d th3 sc0r3. Th3 tru7h 1s pl41n:
+th1s f13ld 1s str0ng3r th4n 1ncr3m3nts. V77 k33ps th3 thr0n3.
+Th3 n3xt w0rk 1s n0t 4n07h3r 4rm; 1t 1s 4 n3w f0rg3.
