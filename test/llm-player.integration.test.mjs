@@ -193,3 +193,12 @@ test("deployed player reconnects after an unexpected match socket close", async 
     ["spawn:200", "expand:terra-nullius:10"],
   );
 });
+
+test("planner doctrine encodes the hosted winner profile", async () => {
+  const { readFile } = await import("node:fs/promises");
+  const source = await readFile(playerPath, "utf8");
+  assert.match(source, /do not attack any rival before that threshold unless they attacked you first/i);
+  assert.match(source, /only at relativeTroopRatio 1\.3 or better/i);
+  assert.match(source, /Commit 35% to neutral expansion/);
+  assert.doesNotMatch(source, /Probe with 10%, escalate to 25%/);
+});
