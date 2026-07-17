@@ -53,7 +53,17 @@ function pickRivalAttack(actions, state, history, avoid) {
     if (!grouped.has(rival.name)) grouped.set(rival.name, { rival, actions: [] });
     grouped.get(rival.name).actions.push(action);
   }
-  const best = [...grouped.values()]
+  const started = [...history].reverse().find((entry) => entry.kind === "attack" && targetName(entry));
+  const startedName = started ? targetName(started) : null;
+  const options = [...grouped.values()];
+  const sticky = startedName
+    ? options.find((option) =>
+        option.rival.name.toLowerCase() === startedName &&
+        Number.isFinite(option.rival.relativeTroopRatio) &&
+        option.rival.relativeTroopRatio >= 1.0
+      )
+    : null;
+  const best = sticky ?? options
     .map((option) => ({
       ...option,
       score: chassisAttackScore(option.rival, state, history),

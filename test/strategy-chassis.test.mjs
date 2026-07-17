@@ -173,3 +173,55 @@ test("chassis uses an alliance when no tactical action remains", () => {
   );
   assert.equal(selected.id, ally.id);
 });
+
+test("chassis finishes a started target instead of switching", () => {
+  const weak = [10, 25, 40].map((percent) =>
+    action(`attack:weak:${percent}`, "attack", `Attack Weak ${percent}%`));
+  const juicy = [10, 25, 40].map((percent) =>
+    action(`attack:juicy:${percent}`, "attack", `Attack Juicy ${percent}%`));
+  const history = [{
+    actionID: "attack:weak:25",
+    kind: "attack",
+    targetName: "weak",
+    tileShare: 0.15,
+  }];
+  const selected = choose(
+    [...weak, ...juicy],
+    observation({
+      tileShare: 0.15,
+      rivals: [
+        { id: "weak", name: "Weak", tileShare: 0.06, relativeTroopRatio: 1.2 },
+        { id: "juicy", name: "Juicy", tileShare: 0.25, relativeTroopRatio: 1.4 },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, "attack:weak:25");
+});
+
+test("chassis releases a started target that turned unfavorable", () => {
+  const weak = [10, 25, 40].map((percent) =>
+    action(`attack:weak:${percent}`, "attack", `Attack Weak ${percent}%`));
+  const juicy = [10, 25, 40].map((percent) =>
+    action(`attack:juicy:${percent}`, "attack", `Attack Juicy ${percent}%`));
+  const history = [{
+    actionID: "attack:weak:25",
+    kind: "attack",
+    targetName: "weak",
+    tileShare: 0.15,
+  }];
+  const selected = choose(
+    [...weak, ...juicy],
+    observation({
+      tileShare: 0.15,
+      rivals: [
+        { id: "weak", name: "Weak", tileShare: 0.06, relativeTroopRatio: 0.8 },
+        { id: "juicy", name: "Juicy", tileShare: 0.25, relativeTroopRatio: 1.4 },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, "attack:juicy:25");
+});
