@@ -1161,3 +1161,17 @@ live champion. Evidence:
 `experiments/diagnosis-qd1n-planner-doctrine-rci-20260717.json`,
 `experiments/ledger-qd1n-planner-doctrine-exact-v77-20260717.ndjson`, and
 `experiments/preflight-qd1n-planner-doctrine-sp1.json`.
+
+## Winner decision-logic comparison, 2026-07-17
+
+Following the closed bounded-arm campaign, the sixteen hosted episodes were
+re-read by winner. The three dominant policies share one chassis: a flat 35
+percent neutral grind through the opening (198-266k tiles by turn 3000),
+rival attacks only at 25-40 percent commitment afterward, active alliance
+play, and almost no mid-game boats. Qd1n inverts all four: a 10-percent
+probe ladder, cadence resets, 346 mid-game boats, and 7 alliance requests
+against the field's 16-46. The bounded arms failed because each changed one
+rule while the edge lives in the sequence. The recommendation is a fresh
+minimal deterministic policy (qd2n) implementing the chassis, gated through
+the same pipeline. Full analysis and counted evidence:
+`experiments/winner-decision-logic-20260717.md`.
