@@ -1,29 +1,30 @@
 player_name,policy_version,won,rival_attacks,target_switches,switch_rate_pct,mean_attack_ratio,mean_attack_percent
-odin free,77,true,1504,415,28.1,4.77,22.4
-Auri,42,true,1111,315,29.06,3.28,30.1
-Richard Higgins,6,true,266,46,17.69,5.05,28.7
+odin free,77,true,1344,365,27.67,4.4,22.7
+Auri,42,true,1064,296,28.52,3.21,30.2
+Richard Higgins,6,true,376,62,16.85,5.14,28.5
 Sefirot,23,true,169,47,28.14,3.31,20.6
-daveey,18,true,130,30,23.62,2.42,24.0
 katanasan,34,true,102,8,8.08,1.59,31.8
+daveey,18,true,88,17,19.77,1.65,20.9
 daveey,20,true,84,30,36.59,5.74,26.1
+James Boggs,1,true,80,10,12.66,2.8,10.0
 Calc,23,true,51,26,52.0,5.86,25.6
 Calc,1,true,33,20,62.5,3.77,18.2
 Calc,21,true,22,13,61.9,4.25,22.3
-docxology,1,false,1496,157,11.08,1.24,10.0
-odin free,77,false,1437,354,25.58,3.56,21.9
-Richard Higgins,6,false,1234,247,20.48,1.43,29.2
-Sefirot,23,false,1092,268,26.43,2.21,18.8
-Ron @ SWGY,1,false,1055,397,40.72,2.19,18.0
-Auri,42,false,932,333,37.33,2.72,28.2
-daveey,18,false,826,294,36.66,2.43,27.6
-James Boggs,1,false,720,72,10.67,1.08,10.3
-katanasan,34,false,467,105,25.12,5.48,34.3
-RelhAlpha,1,false,425,30,7.5,0.77,21.6
+docxology,1,false,1523,161,11.15,1.33,10.0
+odin free,77,false,1422,345,25.24,3.45,21.8
+Richard Higgins,6,false,1139,246,22.12,1.48,29.5
+Sefirot,23,false,1110,266,25.78,2.29,19.2
+Ron @ SWGY,1,false,1107,409,39.82,2.02,17.9
+Auri,42,false,890,304,35.85,2.39,27.9
+James Boggs,1,false,694,69,10.63,1.1,10.3
+daveey,18,false,630,243,39.9,2.18,26.5
+katanasan,34,false,473,108,25.53,5.43,34.1
+RelhAlpha,1,false,455,32,7.46,0.86,21.5
 Calc,14,false,233,106,47.96,4.22,17.3
-daveey,20,false,205,63,32.47,2.96,25.3
+daveey,20,false,222,65,30.95,2.88,25.3
 Calc,1,false,120,27,23.08,4.12,17.6
 Calc,23,false,39,22,59.46,3.38,25.0
+Calc,27,false,39,14,37.84,3.51,21.5
 Calc,20,false,28,13,52.0,1.71,18.0
 Calc,21,false,15,1,7.69,1.98,20.0
 Calc,24,false,3,2,100.0,1.34,25.0
-Calc,27,false,2,1,100.0,2.91,25.0
