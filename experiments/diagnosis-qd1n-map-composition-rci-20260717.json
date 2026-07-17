@@ -339,5 +339,18 @@
     "candidate_wins": 1,
     "candidate_episodes": 12,
     "conclusion": "no ship case: the 1/12 versus 0/12 edge is noise at this sample, the hosted 4/4 gate remains unmet, and qd1n:v77 stays the sole live champion"
+  },
+  "league_field_ab": {
+    "purpose": "test the v78 ship case against the current league field (round 471/472 roster) rather than the strongest-8 roster",
+    "baseline_request": "xreq_803f222f-ac96-4edc-af88-de96212e22a7",
+    "candidate_request": "xreq_39f14eaf-106e-47de-bfeb-45ddd3a9a7f4",
+    "variant": "tournament-8p-asia",
+    "roster": "proxywar-keystone:v42, daveey-proxywar:v22, co-gas-proxywar-richard:v7, tsukuyomi-no-kage:v34, jamesboggs-warlord:v1, Eva-00:v23, co-gas-proxywar-relhalpha:v1",
+    "baseline_wins": 0,
+    "baseline_episodes": 8,
+    "candidate_wins": 0,
+    "candidate_episodes": 8,
+    "field_note": "co-gas-proxywar-richard:v7 won 9 of 16 episodes; opponents are iterating faster than qd1n",
+    "conclusion": "no ship case in either arena: mx3 shows no edge over v77 on the strong roster (1/12 vs 0/12) or the current league roster (0/8 vs 0/8); qd1n:v77 remains the sole live champion"
   }
 }
