@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-17T02:25:00Z",
+  "candidate": "qd1n-v77-pressure-counter-pc1",
+  "verdict": "REJECT_UNIVERSAL_SUCCESSOR_RETAIN_WORLD_ARM",
+  "remote_state_changed": false,
+  "live_evidence": {
+    "rounds": "421-428",
+    "episodes": 32,
+    "wins": 10,
+    "losses": 22,
+    "near_parity_active_attacker_under_pressure": {
+      "ten_percent_actions": 6,
+      "ten_percent_mean_next_tile_delta": -5172,
+      "ten_percent_collapse_rate": 0.833,
+      "forty_percent_actions": 1,
+      "forty_percent_mean_next_tile_delta": 8249,
+      "forty_percent_wins": 1
+    },
+    "latest_round": {
+      "round_number": 428,
+      "rank": 1,
+      "episode_wins": 2,
+      "episodes": 4,
+      "mean_tiles": 281718,
+      "holds": 1,
+      "rejected": 0,
+      "first_place_streak": 1
+    }
+  },
+  "source_isolation": {
+    "parent_commit": "b0c205c9ca324725d1ef17c66887f160068e7ffa",
+    "parent_policy": "qd1n:v77",
+    "runtime_diff_files": [
+      "strategy-engine.mjs"
+    ],
+    "test_diff_files": [
+      "test/strategy-engine.test.mjs"
+    ],
+    "mechanism": "when exact v77 already selects an active near-parity attacker while incoming pressure exists, choose the legal 40 percent counter instead of 10 percent",
+    "marker": "pc1"
+  },
+  "images": {
+    "candidate": {
+      "tag": "proxywar-agent-llm:qd1n-v77-pc1-amd64",
+      "image_id": "sha256:66553425ab2364928619ce67f81be0a34cf8bba022b86b4d799fb1de7da4193d",
+      "architecture": "amd64"
+    },
+    "exact_live_parent": {
+      "tag": "proxywar-agent-llm:latest",
+      "image_id": "sha256:36d5b2c411f39158a7485c85670adecb17a60bb2e331c8468d41a5c1b7754741",
+      "architecture": "amd64"
+    }
+  },
+  "verification": {
+    "red_regression": "exact v77 selected 10 percent against an active 1.03x attacker; pc1 selected 40 percent",
+    "unit_tests": {
+      "passed": 90,
+      "failed": 0
+    },
+    "qualifier": {
+      "variant": "qualifier",
+      "decisions": 34,
+      "accepted": 34,
+      "rejected": 0,
+      "holds": 0,
+      "marker_executions": 0,
+      "replay_sha256": "ab40650e8bd70aac3aea9026a4d5db559642940d4e50c9f249fd7c034245db2a"
+    },
+    "matched_world": {
+      "orientations": 2,
+      "candidate_wins": 2,
+      "parent_wins": 0,
+      "candidate_marker_executions": 2,
+      "candidate_branch_reach_seats": 2,
+      "decisions": 2371,
+      "accepted": 2371,
+      "rejected": 0,
+      "candidate_holds": 0,
+      "parent_holds": 2,
+      "candidate_mean_score": 0.25,
+      "parent_mean_score": 0,
+      "candidate_mean_final_tiles": 159560.6,
+      "parent_mean_final_tiles": 3341.6,
+      "orientation_a": {
+        "candidate_slots": [
+          0,
+          2,
+          4,
+          6
+        ],
+        "winner_slot": 4,
+        "winner_arm": "candidate",
+        "winner_tiles": 632072,
+        "turn_count": 19600,
+        "marker_executions": 0,
+        "replay_sha256": "730d97b289abb7ea2c78bbae929839a94337e9d1db3578137d5e4d7684e76ce6"
+      },
+      "orientation_b": {
+        "candidate_slots": [
+          1,
+          3,
+          5,
+          7
+        ],
+        "winner_slot": 3,
+        "winner_arm": "candidate",
+        "winner_tiles": 532198,
+        "turn_count": 17800,
+        "marker_executions": 2,
+        "replay_sha256": "7f0eba9a5c053f0409a7aa54fb4fdc1faa07f7d9d3b3a457ad90a5f171bcbb7f"
+      }
+    },
+    "matched_pangaea": {
+      "orientations": 1,
+      "candidate_wins": 0,
+      "parent_wins": 1,
+      "candidate_marker_executions": 1,
+      "candidate_branch_reach_seats": 1,
+      "decisions": 614,
+      "accepted": 614,
+      "rejected": 0,
+      "holds": 0,
+      "candidate_mean_score": 0,
+      "parent_mean_score": 0.25,
+      "candidate_mean_final_tiles": 15542,
+      "parent_mean_final_tiles": 89541.75,
+      "winner_slot": 3,
+      "winner_arm": "parent",
+      "winner_tiles": 355670,
+      "turn_count": 8000,
+      "replay_sha256": "46b882e85248d51c2375b052f88a5d28fc0fed782e6067fca7960c663d9f064c",
+      "verdict": "direct reach without matched improvement; stop without reverse orientation"
+    }
+  },
+  "gates": {
+    "mechanism_reached": true,
+    "world_exact_live_parent_advantage": true,
+    "pangaea_exact_live_parent_advantage": false,
+    "cross_map_matched_advantage": false,
+    "zero_rejected": true,
+    "candidate_zero_holds": true,
+    "diagnostic_4_of_4": false,
+    "regression_20_of_20": false,
+    "promotion_eligible": false
+  },
+  "source_action": "Keep main executable source and live champion at exact v77; retain pc1 only as a reproducible World population arm.",
+  "next_test": "Do not generalize pressure commitment across maps. Mine a Pangaea-specific causal failure before changing the universal live policy."
+}

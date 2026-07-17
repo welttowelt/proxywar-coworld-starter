@@ -946,3 +946,33 @@ exact v77; no upload, submission, membership, or relaunch changed. Evidence is
 in `experiments/diagnosis-qd1n-reserve-floor-rci-20260717.json`,
 `experiments/ledger-qd1n-reserve-floor-exact-v77-world-20260717.ndjson`, and
 `experiments/payoff-qd1n-reserve-floor-exact-v77-world-20260717.json`.
+
+## Qd1n decisive pressure-counter RCI, 2026-07-17
+
+The refreshed rounds 421-428 contained six near-parity 10-percent attacks
+against a current attacker while incoming pressure was active. Five of six
+lost territory by the next decision, averaging -5,172 tiles. The sole observed
+40-percent counter in the same bounded state gained 8,249 tiles and won. The
+`pc1` arm therefore changes only the commitment level when exact v77 already
+selects a current attacker at `1.00-1.09x` while incoming pressure exists.
+
+The red regression moved that decision from 10 to 40 percent and marked it
+`pc1`; calm attacks and bystander targets remained 10-percent probes. The full
+suite passed `90/90`, and the amd64 qualifier accepted `34/34` decisions. In
+two seat-swapped World mirrors, the candidate won both directions with 632,072
+and 532,198 tiles. The first orientation had no branch reach and was not treated
+as causal proof. The reverse reached `pc1` twice, including once in the winning
+seat; both orders were server-accepted. Across World, candidate mean score was
+`0.25` versus `0`, mean territory was 159,560.6 versus 3,341.6, and candidate
+seats had zero holds or rejections.
+
+Pangaea rejected universal promotion. `pc1` reached once and was confirmed,
+but that candidate seat was eliminated; exact v77 won with 355,670 tiles.
+Candidate mean territory was 15,542 versus 89,541.75. Direct reach without
+matched improvement triggered the stop rule, so no reverse Pangaea orientation
+or broader promotion gate ran. The World arm remains reproducible locally;
+main and the live champion remain exact v77. No image was uploaded, no policy
+was submitted, and no membership or relaunch changed. Evidence is in
+`experiments/diagnosis-qd1n-pressure-counter-rci-20260717.json`,
+`experiments/ledger-qd1n-pressure-counter-exact-v77-20260717.ndjson`, and
+`experiments/payoff-qd1n-pressure-counter-exact-v77-20260717.json`.

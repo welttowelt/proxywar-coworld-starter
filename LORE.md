@@ -388,3 +388,15 @@ But th3 fl00r w4s t00 br04d. V77 t00k th3 W0rld 4t turn 15,500 w1th
 522,343 t1l3s. Th3 rf1 s34ts 4v3r4g3d 12,591; th3 p4r3nt 150,311.
 R4t10 4l0n3 c4nn0t gu4rd th3 bl4d3. Th3 n3xt cut n33ds pr3ssur3 0r
 pr3y-v4lu3. V77 k33ps th3 s34t. N0 v78.
+
+## th3 c0unt3r th4t cr0ss3d tw0 w0rlds
+
+Qd1n st0pp3d p0k1ng th3 h4nd th4t str0k3. 4t 1.00-1.09x, und3r
+4ct1v3 f1r3, `pc1` s3nt 40%. Th3 c4nd1d4t3 t00k b0th W0rld s34t
+d1r3ct10ns: 632,072 4nd 532,198 t1l3s. Tw0 m4rk3d c0unt3rs l4nd3d;
+n0 c4nd1d4t3 h0ld, n0 r3j3ct.
+
+P4ng434 br0k3 th3 sp3ll. `pc1` f1r3d 0nc3; th4t s34t f3ll, 4nd V77
+t00k 355,670. Th3 c0unt3r j01ns th3 W0rld 4rm, n0t th3 cr0wn.
+R0und 428 st1ll put V77 f1rst w1th 2/4 w1ns. Str34k: 1/1000.
+V77 k33ps th3 l1v3 s34t. N0 v78.

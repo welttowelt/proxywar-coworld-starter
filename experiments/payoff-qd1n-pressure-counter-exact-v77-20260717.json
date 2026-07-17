@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-07-17T02:25:00Z",
+  "candidate": "pressure-counter-pc1",
+  "parent": "main-v77-amd64",
+  "rows": 24,
+  "arms": {
+    "main-v77-amd64": {
+      "matches": 12,
+      "wins": 1,
+      "win_rate": 0.0833,
+      "beta_posterior": {
+        "alpha": 2,
+        "beta": 12,
+        "mean": 0.1429
+      },
+      "mean_score": 0.0833,
+      "mean_final_tiles": 32075,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "decisions": 1511,
+      "accepted_decisions": 1511,
+      "accepted_rate": 1,
+      "holds": 2,
+      "rejected_decisions": 0
+    },
+    "pressure-counter-pc1": {
+      "matches": 12,
+      "wins": 2,
+      "win_rate": 0.1667,
+      "beta_posterior": {
+        "alpha": 3,
+        "beta": 11,
+        "mean": 0.2143
+      },
+      "mean_score": 0.1667,
+      "mean_final_tiles": 111554.4,
+      "branch_reach_runs": 3,
+      "marker_count": 3,
+      "decisions": 1474,
+      "accepted_decisions": 1474,
+      "accepted_rate": 1,
+      "holds": 0,
+      "rejected_decisions": 0
+    }
+  },
+  "map_payoffs": {
+    "World": {
+      "main-v77-amd64": {
+        "matches": 8,
+        "wins": 0,
+        "win_rate": 0,
+        "mean_score": 0,
+        "mean_final_tiles": 3341.6,
+        "holds": 2,
+        "rejected_decisions": 0
+      },
+      "pressure-counter-pc1": {
+        "matches": 8,
+        "wins": 2,
+        "win_rate": 0.25,
+        "mean_score": 0.25,
+        "mean_final_tiles": 159560.6,
+        "marker_count": 2,
+        "holds": 0,
+        "rejected_decisions": 0
+      }
+    },
+    "Pangaea": {
+      "main-v77-amd64": {
+        "matches": 4,
+        "wins": 1,
+        "win_rate": 0.25,
+        "mean_score": 0.25,
+        "mean_final_tiles": 89541.8,
+        "holds": 0,
+        "rejected_decisions": 0
+      },
+      "pressure-counter-pc1": {
+        "matches": 4,
+        "wins": 0,
+        "win_rate": 0,
+        "mean_score": 0,
+        "mean_final_tiles": 15542,
+        "marker_count": 1,
+        "holds": 0,
+        "rejected_decisions": 0
+      }
+    }
+  },
+  "matched_pairs": {
+    "usable_pairs": 3,
+    "candidate_advantages": 2,
+    "parent_advantages": 1,
+    "ties": 0
+  },
+  "gates": {
+    "mechanism_reached": true,
+    "zero_rejected": true,
+    "candidate_zero_holds": true,
+    "world_matched_advantage": true,
+    "pangaea_matched_advantage": false,
+    "diagnostic_4_of_4": false,
+    "regression_20_of_20": false,
+    "promotion_eligible": false
+  },
+  "verdict": "NO_SUBMIT_RETAIN_WORLD_ARM"
+}
