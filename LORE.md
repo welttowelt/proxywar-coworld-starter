@@ -419,3 +419,19 @@ Th3 p4r3nt f3ll 0/4; th3 m4p-b0und bl4d3 t00k 0n3 0f f0ur,
 R0und 443 r41s3d th3 str34k t0 1; r0und 444 put th3 s34t
 f0urth 4nd s3t 1t b4ck t0 0/1000. V77 k33ps th3 l1v3 s34t.
 Th3 m4p st4ys 1n th3 4rm0ry, n0t 0n th3 thr0n3.
+
+## th3 sh13ld th4t w41t3d f0r tw0
+
+Wh3n thr33 h4nds str0k3 4t 0nc3, Qd1n k3pt sw1ng1ng b4ck 4t
+th3 w34k3st — 40% 4t 1.03x, 4g41n 4nd 4g41n, unt1l n0 r3s3rv3
+w4s l3ft t0 h0ld th3 sh0r3. Th3 l3ss0n: 0n3 4tt4ck3r 1s 4
+du3l; tw0 1s 4n 4mbusH. `pd1` w4tch3s th3 l4st tw3lv3 st3ps;
+wh3n tw0 n4m3s st4nd 4g41nst h1m 4nd th3 0dds 4r3 und3r 1.3,
+th3 sw0rd st4ys 4nd th3 w4ll r1s3s 1nst34d.
+
+Th3 f1rst sh13ld (mx4) n3v3r w0k3 — n0t 0nc3 1n s1x f13lds —
+4nd w4s r3t1r3d b3f0r3 1t s4w f1r3. Th3 w1d3 0n3 (mx5) st00d:
+101/101 t3sts, 34/34 qu4l1f13r, b0th 4s14 m1rr0rs w0n,
+884,022 4nd 874,107 t1l3s, f0urt33n m4rk3d st4nds. W0rld 4nd
+P4ng434 n3v3r m0v3d. N0 upl04d y3t; th3 h0st3d f13ld w41ts.
+Aur1 cl0s3s: 31.96 4g41nst 26.99. V77 k33ps th3 thr0n3.

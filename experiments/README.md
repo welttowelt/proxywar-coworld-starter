@@ -1028,3 +1028,45 @@ The mx3 source stays committed as a local population arm only. Evidence:
 `experiments/ledger-qd1n-map-composition-exact-v77-20260717.ndjson`,
 `experiments/payoff-qd1n-map-composition-exact-v77-20260717.json`, and
 `experiments/preflight-qd1n-map-composition-mx3.json`.
+
+## Qd1n pile-on discipline RCI, 2026-07-17
+
+The three hosted mx3 losses shared one mechanic. Under multi-attacker
+pile-ons, qd1n kept spending 25-40 percent counters at 1.01-1.21 ratios: in
+episode two it lost 94,000 tiles in seven hundred turns while Auri, daveey,
+and Sefirot attacked together; in episode three Richard Higgins landed ten
+unanswered attacks while qd1n built and countered Auri. The winning episode
+ran the opposite shape: one attacker at a time and counters at 1.3-6x. The
+`pd1` guard therefore fires only on Asia and only when two distinct attackers
+are attributed in the current observation or the last twelve decisions; if
+the best rival ratio is below 1.3, the rival attack is suppressed and the
+replacement action is marked `pd1`. Strong-ratio counters, the ia1/pc1
+routes, and every non-Asia behavior are untouched.
+
+The first, current-only attribution variant (mx4) never fired: all six
+matched runs reproduced the mx3 traces decision-for-decision with zero `pd1`
+reach, so it was superseded before upload. The windowed mx5 passed `101/101`
+tests and a `34/34` amd64 qualifier with zero holds and zero rejections, then
+won both Asia mirrors at 884,022 tiles (slot six) and 874,107 tiles (slot
+seven) with `pd1` executing fourteen times across three candidate seats.
+`ia1` executed five times and `pc1` twice, preserving the mx3 arms. World and
+Pangaea trials ran the mx4 image whose decision streams are byte-identical to
+mx3; mx5 changes only an Asia-gated condition, so that evidence carries over.
+Across the 48 evaluated seats the candidate won five matches against the
+parent's one, with `2,310/2,310` decisions accepted, zero rejections, and two
+Pangaea slot-5 holds that reproduce under the exact parent at the same seat
+and trace (explained). Candidate mean final territory was 149,941.1 versus
+26,967.3 for the parent.
+
+The exact amd64 image is
+`proxywar-agent-llm:qd1n-v77-mx5-amd64`
+(`sha256:f4546d41b3496a37010051e335952b1c815de0588ab28e452a45ce25119a9fc5`),
+built from commit `a92890d3ad452b284d6c80ddcba3bc05c879278a`. No image was
+uploaded or submitted; qd1n:v77 remains the sole live champion. The next gate
+is a hosted diagnostic against the same Competition roster and variant as
+`xreq_8cced59b-77f1-4887-86da-f5e0b27fb8c6`, whose v77 `0/4` baseline is the
+matched control. Evidence:
+`experiments/diagnosis-qd1n-pile-on-discipline-rci-20260717.json`,
+`experiments/ledger-qd1n-pile-on-discipline-exact-v77-20260717.ndjson`,
+`experiments/payoff-qd1n-pile-on-discipline-exact-v77-20260717.json`, and
+`experiments/preflight-qd1n-pile-on-discipline-mx5.json`.

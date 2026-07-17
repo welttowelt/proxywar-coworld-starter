@@ -66,6 +66,7 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | qd1n pc1 exact World/Pangaea | active near-parity counter escalated from 10% to 40%; red regression and `90/90` suite passed; amd64 qualifier `34/34`; candidate won both World seat directions at 632,072 and 532,198 tiles, with two accepted `pc1` executions and zero candidate holds/rejections | Pangaea reached `pc1` once but parent won 355,670 tiles; universal successor rejected, World arm retained locally, no upload, submission, membership, or relaunch change |
 | qd1n mx3 map composition local | spawn-tile map fingerprint routes Asia `ia1` and World `pc1`, exact v77 elsewhere; mx1 rejected (sentinel IDs unreachable), mx2 superseded by Asia-narrowed parsing; `95/95` tests; amd64 qualifier `34/34`; six exact-image matched runs won both Asia and both World mirrors with Pangaea trace-identical control; `ia1` 10 (5 confirmed) and `pc1` 2; `2,278/2,278` accepted, zero rejections, two explained Pangaea slot-5 holds | all local gates passed |
 | qd1n mx3 hosted | uploaded exact amd64 image as `qd1n:v78` (`348cab68-a00d-483d-ba94-67c8e00d469e`) for testing only; matched baseline `xreq_8cced59b-77f1-4887-86da-f5e0b27fb8c6` finished `0/4`; candidate diagnostic `xreq_53a20fc0-3334-4495-9bfe-a03b454b3c17` finished `1/4` (won at 1,015,250 tiles, lost to `proxywar-keystone:v42`, `co-gas-proxywar-richard:v6`, `tsukuyomi-no-kage:v34`); `ia1` 6 (3 confirmed); `682/682` accepted, zero holds, zero rejections | hosted `4/4` failed, `20/20` not run, NO SUBMIT; v77 remains sole champion |
+| qd1n pd1 pile-on discipline local | hosted losses showed 25-40% near-parity counters under multi-attacker pile-ons; Asia-only guard suppresses sub-1.3 rival attacks whenever two distinct attackers are attributed in the current observation or the last twelve decisions; dormant current-only mx4 superseded before upload; `101/101` tests; amd64 qualifier `34/34`; both Asia mirrors won at 884,022 and 874,107 tiles with `pd1` 14 executions; `ia1` 5 and `pc1` 2 preserved; World/Pangaea byte-identical to mx3; `2,310/2,310` accepted, zero rejections, two explained Pangaea slot-5 holds | all local gates pass; hosted `4/4` and `20/20` pending |
 
 Detailed evidence lives in [`experiments/`](experiments/README.md). Public round
 statistics live on the [dashboard](https://welttowelt.github.io/proxywar-coworld-starter/).
@@ -153,3 +154,18 @@ verified streak to `1/1000`. Round 444 then finished fourth at `0.25`
 streak to `0/1000`; rounds 446 and 447 placed second and third. Qd1n remains
 overall rank one at `33.5505` against daveey `24.2877` and Auri `23.6957`.
 The `1000`-win target stays open.
+
+Rci-12 read the three hosted mx3 losses as one mechanic: under multi-attacker
+pile-ons, qd1n kept launching 25-40 percent counters at 1.01-1.21 ratios while
+its strategic layer already asked for defense. The `pd1` guard answers only on
+Asia: when two distinct attackers are attributed in the current observation or
+the last twelve decisions and the best rival ratio is below 1.3, the rival
+attack is suppressed and the replacement is marked. The winning ep1 pattern
+(one attacker, counters at 1.3-6x) is deliberately unreachable. A current-only
+variant (mx4) stayed dormant through all six matched runs and was superseded
+before upload. The windowed mx5 passed `101/101` tests, a `34/34` qualifier,
+and won both Asia mirrors at 884,022 and 874,107 tiles with `pd1` executing
+fourteen times; World and Pangaea stayed byte-identical to the mx3 traces.
+No image was uploaded or submitted; v77 remains the sole live champion. The
+overall lead narrowed to `31.9642` over Auri `26.9881`, so the hosted
+diagnostic is the next scheduled gate.
