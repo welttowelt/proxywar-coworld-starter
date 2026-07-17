@@ -1,106 +1,106 @@
 attacker,target_name,rival_attacks,mean_relative_troop_ratio,median_relative_troop_ratio,mean_troop_percent
-Auri,daveey,504,1.82,1.37,30.9
-Auri,odin free,392,2.13,1.3,29.1
-Auri,katanasan,298,2.36,1.42,29.1
-Auri,Ron SWGY,258,3.44,1.85,28.9
-Auri,Sefirot,204,6.27,2.3,27.0
-Auri,Richard Higgins,140,1.9,1.28,30.7
-Auri,Calc,108,2.92,1.56,27.5
-Auri,RelhAlpha,89,3.62,1.47,30.6
-Auri,James Boggs,78,2.29,1.75,26.2
-Auri,docxology,75,2.58,1.49,29.6
+Auri,daveey,474,1.83,1.34,30.9
+Auri,odin free,387,2.15,1.28,29.0
+Auri,katanasan,278,2.39,1.42,28.7
+Auri,Ron SWGY,271,3.41,1.92,29.0
+Auri,Sefirot,184,6.83,2.53,26.6
+Auri,Richard Higgins,130,1.8,1.27,30.0
+Auri,Calc,104,3.0,1.6,27.0
+Auri,RelhAlpha,84,3.62,1.46,30.5
+Auri,James Boggs,78,2.29,1.74,26.0
+Auri,docxology,73,2.5,1.49,29.5
+Calc,daveey,125,2.26,2.49,17.1
 Calc,Richard Higgins,79,0.48,0.2,12.8
-Calc,Sefirot,73,3.07,2.46,17.6
-Calc,daveey,60,1.75,1.33,20.5
-Calc,odin free,33,2.46,1.65,18.6
-Calc,Auri,30,2.2,1.44,19.0
-Calc,Ron SWGY,21,4.15,2.79,17.9
-Calc,katanasan,12,1.67,1.17,17.5
+Calc,Sefirot,68,3.48,2.54,16.8
+Calc,Ron SWGY,49,9.3,9.88,16.1
+Calc,Auri,42,2.9,1.66,18.9
+Calc,odin free,33,1.96,1.43,19.1
+Calc,katanasan,28,5.39,4.0,17.0
 Calc,James Boggs,8,2.11,2.2,21.3
 Calc,docxology,1,3.51,3.51,10.0
-James Boggs,Auri,176,1.43,1.35,10.0
+James Boggs,Auri,168,1.42,1.35,10.0
 James Boggs,RelhAlpha,102,0.84,0.73,10.0
-James Boggs,Richard Higgins,101,1.0,0.81,10.0
-James Boggs,odin free,76,0.91,0.54,10.0
-James Boggs,daveey,67,1.55,1.2,10.0
-James Boggs,Sefirot,45,1.61,1.28,10.0
-James Boggs,katanasan,26,1.74,1.1,10.0
+James Boggs,Richard Higgins,94,1.02,0.82,10.0
+James Boggs,odin free,84,0.85,0.51,10.0
+James Boggs,daveey,75,1.52,1.21,10.4
+James Boggs,Sefirot,54,1.7,1.38,11.9
+James Boggs,katanasan,18,2.19,1.15,10.8
 James Boggs,docxology,14,1.68,1.7,10.0
+James Boggs,Ron SWGY,10,1.09,1.14,14.5
 James Boggs,Calc,6,0.72,0.53,10.0
-James Boggs,Ron SWGY,3,0.2,0.12,10.0
-RelhAlpha,Auri,167,1.16,0.97,22.3
-RelhAlpha,daveey,164,0.8,0.7,22.3
-RelhAlpha,Richard Higgins,158,1.2,0.75,21.8
+RelhAlpha,Richard Higgins,143,1.25,0.77,21.7
+RelhAlpha,Auri,131,1.13,0.87,22.7
+RelhAlpha,daveey,125,0.87,0.77,22.0
+RelhAlpha,odin free,101,0.66,0.65,23.1
 RelhAlpha,Sefirot,90,1.25,0.87,21.7
-RelhAlpha,odin free,65,0.61,0.62,22.9
 RelhAlpha,James Boggs,41,2.56,2.74,13.3
-RelhAlpha,katanasan,18,0.8,0.79,23.3
-Richard Higgins,Auri,279,1.56,1.02,20.8
-Richard Higgins,odin free,205,1.28,0.93,23.2
-Richard Higgins,daveey,199,0.9,0.83,24.5
+RelhAlpha,katanasan,5,0.86,0.81,22.0
+Richard Higgins,Auri,260,1.62,1.07,20.8
+Richard Higgins,odin free,199,1.3,0.94,23.1
+Richard Higgins,daveey,195,0.93,0.84,24.8
+Richard Higgins,Calc,100,1.59,0.94,24.1
 Richard Higgins,RelhAlpha,98,0.82,0.65,22.6
-Richard Higgins,Calc,92,1.67,0.96,24.0
 Richard Higgins,Sefirot,83,1.69,1.25,25.7
-Richard Higgins,katanasan,60,2.01,0.99,28.3
-Richard Higgins,Ron SWGY,8,3.71,2.03,26.9
+Richard Higgins,katanasan,56,2.12,1.12,29.3
+Richard Higgins,Ron SWGY,15,2.47,1.3,26.0
 Richard Higgins,James Boggs,2,0.44,0.44,10.0
-Ron @ SWGY,Sefirot,167,4.13,1.87,19.7
-Ron @ SWGY,Auri,130,1.5,1.2,16.3
-Ron @ SWGY,odin free,124,0.9,0.76,13.3
+Ron @ SWGY,Sefirot,179,4.02,1.9,20.1
+Ron @ SWGY,Auri,146,1.56,1.22,16.7
+Ron @ SWGY,odin free,137,0.88,0.73,13.3
 Ron @ SWGY,Richard Higgins,102,0.19,0.11,13.1
-Ron @ SWGY,daveey,81,1.48,1.12,16.1
-Ron @ SWGY,katanasan,74,4.63,1.27,18.3
-Ron @ SWGY,James Boggs,71,4.77,3.07,22.7
-Ron @ SWGY,Calc,55,2.84,1.57,17.6
-Ron @ SWGY,docxology,46,3.32,2.36,24.0
-Ron @ SWGY,RelhAlpha,4,0.84,0.68,13.8
-Sefirot,daveey,337,2.09,1.13,19.7
-Sefirot,odin free,240,1.9,1.17,17.0
-Sefirot,James Boggs,174,2.45,1.82,20.2
-Sefirot,Ron SWGY,158,3.62,1.44,18.4
-Sefirot,Auri,148,1.69,1.17,18.9
-Sefirot,katanasan,112,2.58,1.19,18.0
-Sefirot,Richard Higgins,111,1.99,1.21,18.5
-Sefirot,RelhAlpha,104,1.29,1.15,19.4
-Sefirot,docxology,69,1.76,1.27,22.4
-Sefirot,Calc,38,4.68,2.51,15.1
-daveey,Auri,599,3.68,1.32,25.5
-daveey,Sefirot,543,4.23,1.68,29.4
-daveey,odin free,462,1.96,1.26,25.6
-daveey,katanasan,277,5.16,1.57,26.2
-daveey,docxology,259,3.82,1.73,29.3
-daveey,RelhAlpha,169,3.71,1.5,26.2
-daveey,Ron SWGY,169,2.66,1.66,27.6
-daveey,Richard Higgins,166,1.89,1.38,28.8
-daveey,Calc,128,2.1,1.49,28.6
-daveey,James Boggs,83,5.17,1.95,31.5
-docxology,Auri,459,0.74,0.7,10.0
-docxology,daveey,395,0.82,0.7,10.0
+Ron @ SWGY,daveey,90,1.38,1.1,15.7
+Ron @ SWGY,katanasan,87,4.5,1.45,19.3
+Ron @ SWGY,James Boggs,81,4.4,2.74,22.4
+Ron @ SWGY,Calc,72,2.19,1.17,16.3
+Ron @ SWGY,docxology,51,3.25,2.36,24.4
+Ron @ SWGY,RelhAlpha,7,0.65,0.56,12.1
+Sefirot,daveey,341,2.08,1.12,19.7
+Sefirot,odin free,238,1.88,1.16,17.0
+Sefirot,James Boggs,162,2.4,1.82,19.8
+Sefirot,Ron SWGY,162,3.75,1.49,18.3
+Sefirot,Auri,135,1.73,1.17,18.7
+Sefirot,katanasan,106,2.72,1.23,18.1
+Sefirot,RelhAlpha,100,1.3,1.16,19.6
+Sefirot,Richard Higgins,97,2.08,1.22,18.4
+Sefirot,docxology,66,1.78,1.27,22.3
+Sefirot,Calc,40,5.12,2.74,15.3
+daveey,Auri,589,3.79,1.34,25.5
+daveey,Sefirot,541,4.25,1.68,29.5
+daveey,odin free,466,1.95,1.24,25.4
+daveey,katanasan,260,5.51,1.59,26.8
+daveey,docxology,252,3.8,1.69,29.2
+daveey,Ron SWGY,228,3.22,2.22,29.7
+daveey,Richard Higgins,154,1.86,1.35,28.8
+daveey,RelhAlpha,148,3.84,1.4,26.2
+daveey,Calc,124,2.07,1.41,28.5
+daveey,James Boggs,95,4.78,1.84,30.8
+docxology,Auri,417,0.78,0.74,10.0
+docxology,daveey,392,0.83,0.7,10.0
+docxology,odin free,143,0.59,0.49,10.0
 docxology,James Boggs,133,2.02,0.52,10.0
-docxology,odin free,126,0.6,0.49,10.0
+docxology,Ron SWGY,63,1.31,0.79,10.0
 docxology,katanasan,61,0.79,0.74,10.0
-docxology,Ron SWGY,58,1.08,0.8,10.0
-docxology,Sefirot,28,3.72,2.3,10.0
-docxology,RelhAlpha,27,0.61,0.63,10.0
+docxology,Sefirot,27,3.81,2.57,10.0
 docxology,Richard Higgins,18,0.36,0.35,10.0
+docxology,RelhAlpha,15,0.58,0.62,10.0
 docxology,Calc,12,2.73,2.33,10.0
-katanasan,Auri,189,1.76,1.32,31.0
-katanasan,daveey,168,1.47,1.27,32.6
-katanasan,Sefirot,105,3.56,2.04,36.4
-katanasan,Richard Higgins,64,1.47,1.33,29.9
-katanasan,Calc,37,1.85,1.23,32.3
-katanasan,Ron SWGY,23,5.66,2.57,40.0
+katanasan,Auri,160,1.57,1.33,30.5
+katanasan,daveey,125,1.53,1.27,34.1
+katanasan,Sefirot,93,3.86,2.14,35.6
+katanasan,Richard Higgins,63,1.46,1.32,29.8
+katanasan,Calc,35,1.83,1.21,31.9
+katanasan,Ron SWGY,28,5.17,2.45,40.0
 katanasan,docxology,21,10.26,1.77,33.6
-katanasan,RelhAlpha,10,1.4,1.43,40.0
-katanasan,James Boggs,8,7.4,4.64,40.0
+katanasan,James Boggs,6,8.47,7.66,40.0
+katanasan,RelhAlpha,4,1.38,1.39,40.0
 katanasan,odin free,4,0.33,0.23,10.0
-odin free,Sefirot,625,4.85,1.81,22.0
-odin free,daveey,556,3.61,1.4,22.5
-odin free,Auri,525,2.66,1.39,21.5
-odin free,Ron SWGY,395,4.99,2.2,20.6
-odin free,James Boggs,248,4.83,1.82,22.0
-odin free,Calc,218,3.1,1.63,20.7
-odin free,Richard Higgins,155,2.87,1.36,21.8
-odin free,katanasan,102,2.43,1.35,21.9
-odin free,RelhAlpha,67,2.78,1.53,25.7
-odin free,docxology,57,3.51,2.62,23.2
+odin free,Sefirot,630,4.81,1.78,22.1
+odin free,daveey,576,3.45,1.38,22.8
+odin free,Auri,537,2.7,1.4,21.7
+odin free,Ron SWGY,432,4.9,2.17,21.0
+odin free,James Boggs,263,4.72,1.8,21.9
+odin free,Calc,223,3.07,1.63,20.9
+odin free,Richard Higgins,161,2.82,1.35,22.2
+odin free,katanasan,105,2.57,1.36,22.0
+odin free,RelhAlpha,103,2.38,1.51,25.7
+odin free,docxology,64,3.4,2.62,23.1
