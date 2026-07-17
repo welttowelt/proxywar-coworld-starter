@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-17T16:20:00Z",
+  "candidate": "qd1n-v77-mx6",
+  "verdict": "LOCAL_GATES_PASS_HOSTED_GATES_PENDING",
+  "remote_state_changed": false,
+  "hypothesis": "on Asia, suppressing the opening rival probe while tile share is below 0.12 with no active threat keeps the expansion cadence unbroken and matches the winner profile: across the twelve hosted mx3/mx5 episodes, every Auri/Richard/katanasan win expanded at 35 percent only with zero to three early rival attacks, while qd1n spent nine to eleven opening probes that never produced a kill and reset the neutral cadence",
+  "guards": [
+    "ef1 is Asia-only; World keeps the pc1 route and Pangaea keeps exact v77",
+    "retaliation against a current attributed attacker stays open (ia1 preserved)",
+    "the guard releases at 0.12 tile share or on any active threat",
+    "no submission or champion change before hosted 4/4 and independent 20/20 gates pass"
+  ],
+  "hosted_loss_evidence": {
+    "winner_profile": "Auri/Richard/katanasan first-3000-turn shape: 22-25 neutral attacks all at 35 percent, 0-3 rival attacks, tiles 174,594-265,674",
+    "qd1n_profile": "16-17 neutral attacks mixed 10/20/35 plus 9-11 rival probes, tiles 72,308-106,196",
+    "probe_yield": "zero opening probes produced a kill in any of the twelve episodes; each interrupted the 10/10/20/35 neutral cadence",
+    "pd1_lesson": "the pile-on guard reached eleven times hosted without outcome improvement and was rejected and reverted before this arm"
+  },
+  "source_isolation": {
+    "parent_commit": "b0c205c9ca324725d1ef17c66887f160068e7ffa",
+    "base_candidate_commit": "ce155522cfe9b07c0f87b8623a278f86d90f5a10",
+    "candidate_commit": "ba7a424ea8ce421a1fe1d6402793f4d2920f4996",
+    "parent_policy": "qd1n:v77",
+    "runtime_diff_files": [
+      "strategy-engine.mjs"
+    ],
+    "test_diff_files": [
+      "test/strategy-engine.test.mjs"
+    ],
+    "isolated_delta": "on Asia only, while tile share is below 0.12 with no active threat, suppress the selected rival attack unless it targets a current attributed attacker, and mark the replacement action ef1",
+    "retired_delta": "pd1 pile-on discipline was rejected for reach without improvement and reverted from source before this arm",
+    "markers": [
+      "ef1"
+    ]
+  },
+  "images": {
+    "candidate": {
+      "tag": "proxywar-agent-llm:qd1n-v77-mx6-amd64",
+      "image_id": "sha256:d7f4f375adb6f03ba4e9fd016d80d5b203e79c37bd7a44152680cf72ec562550",
+      "architecture": "amd64"
+    },
+    "exact_parent": {
+      "tag": "proxywar-agent-llm:qd1n-v77-exact-amd64",
+      "image_id": "sha256:3ea2a36dbf2c554f619adfc36e890e6a333bf43144340bfe594807d539b82ef0",
+      "architecture": "amd64"
+    }
+  },
+  "verification": {
+    "red_regression": "the opening-probe suppression test failed against the mx3-restored source before the ef1 branch; the five scope tests passed unchanged",
+    "unit_tests": {
+      "passed": 101,
+      "failed": 0
+    },
+    "diff_check": "pass",
+    "qualifier": {
+      "path": "/private/tmp/proxywar-v77-mx6-amd64-qualifier-20260717",
+      "decisions": 34,
+      "accepted": 34,
+      "holds": 0,
+      "rejected": 0,
+      "expected_planner_degraded_fallbacks": 10,
+      "replay_sha256": "effd594465041efbd0c098bd56bf44d76c09b16f4806ab9b0a16796ca8502dc9"
+    },
+    "matched_trials": {
+      "ledger": "experiments/ledger-qd1n-economy-first-exact-v77-20260717.ndjson",
+      "payoff": "experiments/payoff-qd1n-economy-first-exact-v77-20260717.json",
+      "runs": 6,
+      "evaluated_seats": 48,
+      "candidate_wins": 5,
+      "parent_wins": 1,
+      "candidate_mean_final_tiles": 156378.5,
+      "parent_mean_final_tiles": 20057.2,
+      "candidate_decisions": 2439,
+      "candidate_accepted": 2439,
+      "candidate_rejected": 0,
+      "candidate_raw_holds": 2,
+      "candidate_unexplained_holds": 0,
+      "ef1_executions": 76,
+      "ia1_executions": 18,
+      "pc1_executions": 2,
+      "audit_confirmed_executions": 39
+    },
+    "asia": {
+      "orientations": 2,
+      "candidate_wins": 2,
+      "parent_wins": 0,
+      "winner_tiles": [
+        889486,
+        934015
+      ],
+      "ef1_executions": 76,
+      "ia1_executions": 18,
+      "candidate_holds": 0,
+      "candidate_rejected": 0,
+      "runs": [
+        {
+          "path": "/private/tmp/proxywar-v77-mx6-amd64-asia-a-20260717",
+          "winner_slot": 0,
+          "winner_arm": "candidate",
+          "turn_count": 8100,
+          "replay_sha256": "07de10ec4ea9ac26c13bea6e1b4d30680a55db34d4827aad69e31741a7330665"
+        },
+        {
+          "path": "/private/tmp/proxywar-v77-mx6-amd64-asia-b-20260717",
+          "winner_slot": 3,
+          "winner_arm": "candidate",
+          "turn_count": 7700,
+          "replay_sha256": "3f4a2e0aa975e8aedc97af0942de42cb7626b95df9064d84580034fea6c276a6"
+        }
+      ]
+    }
+  },
+  "gates": {
+    "mechanism_reached": true,
+    "asia_mirrored_advantage": true,
+    "world_pangaea_carryover": "mx6 changes only an Asia-gated condition; mx3 World/Pangaea evidence carries over",
+    "zero_rejected": true,
+    "zero_unexplained_holds": true,
+    "hosted_diagnostic_4_of_4": false,
+    "map_seat_regression_20_of_20": false,
+    "promotion_eligible": false
+  },
+  "league_state": {
+    "live_policy": "qd1n:v77",
+    "candidate_uploaded": false,
+    "candidate_submitted": false,
+    "champion_changed": false,
+    "membership_relaunched": false,
+    "official_first_place_streak": 0,
+    "target_first_place_streak": 1000
+  },
+  "next_test": "upload the exact mx6 image for a hosted diagnostic against the same Competition roster and variant as xreq_8cced59b, reusing the v77 0/4 baseline; submit only after a hosted 4/4 and a separate 20/20 regression"
+}

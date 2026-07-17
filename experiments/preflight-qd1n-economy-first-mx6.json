@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-llm:qd1n-v77-mx6-amd64",
+    "parent_ref": "qd1n:v77",
+    "exact_deltas": [
+      "on Asia only, while tile share is below 0.12 with no active threat, suppress the selected rival attack unless it targets a current attributed attacker, and mark the replacement action ef1"
+    ]
+  },
+  "hypothesis": "the winner profile is an unbroken 35 percent neutral expansion with almost no opening probes; ef1 stops the probe-and-reset loop while preserving retaliation and every proven mx3 route",
+  "mechanism": {
+    "marker": "ef1",
+    "prior_reachable_decisions": 76,
+    "source": "experiments/diagnosis-qd1n-economy-first-rci-20260717.json"
+  },
+  "local": {
+    "runs": 6,
+    "independent_traces": 6,
+    "wins": 5,
+    "self_play": false,
+    "evaluated_seats": 48,
+    "accepted_decisions": 2439,
+    "holds": 2,
+    "unexplained_holds": 0,
+    "rejections": 0,
+    "planner_degraded_decisions": 2367,
+    "mechanism_reached": true,
+    "qualifier_replay_sha256": "effd594465041efbd0c098bd56bf44d76c09b16f4806ab9b0a16796ca8502dc9"
+  },
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  },
+  "verdict": "local gates pass; hosted baseline, hosted 4/4, and independent 20/20 are pending"
+}

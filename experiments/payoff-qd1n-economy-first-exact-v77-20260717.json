@@ -1,0 +1,137 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-07-17T16:20:00Z",
+  "candidate": "economy-first-ef1",
+  "parent": "main-v77",
+  "rows": 48,
+  "arms": {
+    "main-v77": {
+      "matches": 24,
+      "wins": 1,
+      "win_rate": 0.0417,
+      "beta_posterior": {
+        "alpha": 2,
+        "beta": 24,
+        "mean": 0.0769
+      },
+      "mean_score": 0.0417,
+      "mean_final_tiles": 20057.2,
+      "branch_reach_runs": 0,
+      "marker_count": 0,
+      "ef1_marker_count": 0,
+      "confirmed_marker_count": 0,
+      "decisions": 2292,
+      "accepted_decisions": 2292,
+      "accepted_rate": 1,
+      "holds": 4,
+      "rejected_decisions": 0
+    },
+    "economy-first-ef1": {
+      "matches": 24,
+      "wins": 5,
+      "win_rate": 0.2083,
+      "beta_posterior": {
+        "alpha": 6,
+        "beta": 20,
+        "mean": 0.2308
+      },
+      "mean_score": 0.2083,
+      "mean_final_tiles": 156378.5,
+      "branch_reach_runs": 9,
+      "marker_count": 20,
+      "ef1_marker_count": 76,
+      "confirmed_marker_count": 39,
+      "decisions": 2439,
+      "accepted_decisions": 2439,
+      "accepted_rate": 1,
+      "holds": 2,
+      "rejected_decisions": 0,
+      "unexplained_holds": 0
+    }
+  },
+  "map_payoffs": {
+    "Asia": {
+      "main-v77": {
+        "matches": 8,
+        "wins": 0,
+        "win_rate": 0.0,
+        "mean_final_tiles": 4288.25,
+        "holds": 0,
+        "rejected_decisions": 0
+      },
+      "economy-first-ef1": {
+        "matches": 8,
+        "wins": 2,
+        "win_rate": 0.25,
+        "mean_final_tiles": 257033.0,
+        "marker_count": 18,
+        "ef1_marker_count": 76,
+        "confirmed_marker_count": 39,
+        "holds": 0,
+        "rejected_decisions": 0
+      }
+    },
+    "World": {
+      "main-v77": {
+        "matches": 8,
+        "wins": 0,
+        "win_rate": 0.0,
+        "mean_final_tiles": 3341.625,
+        "holds": 2,
+        "rejected_decisions": 0
+      },
+      "economy-first-ef1": {
+        "matches": 8,
+        "wins": 2,
+        "win_rate": 0.25,
+        "mean_final_tiles": 159560.625,
+        "marker_count": 2,
+        "ef1_marker_count": 0,
+        "confirmed_marker_count": 0,
+        "holds": 0,
+        "rejected_decisions": 0
+      },
+      "trace_identity": "World rows are the mx3 runs; ef1 is unreachable off-Asia, so evidence carries over."
+    },
+    "Pangaea": {
+      "main-v77": {
+        "matches": 8,
+        "wins": 1,
+        "win_rate": 0.125,
+        "mean_final_tiles": 52541.875,
+        "holds": 2,
+        "rejected_decisions": 0
+      },
+      "economy-first-ef1": {
+        "matches": 8,
+        "wins": 1,
+        "win_rate": 0.125,
+        "mean_final_tiles": 52541.875,
+        "marker_count": 0,
+        "ef1_marker_count": 0,
+        "confirmed_marker_count": 0,
+        "holds": 2,
+        "rejected_decisions": 0,
+        "unexplained_holds": 0
+      },
+      "control_equivalence": "Pangaea rows are the mx3 exact-control runs: mx6 changes only an Asia-gated condition, so the byte-identical trace and its two explained slot-5 holds carry over."
+    }
+  },
+  "matched_pairs": {
+    "usable_pairs": 3,
+    "candidate_advantages": 2,
+    "parent_advantages": 0,
+    "ties": 1
+  },
+  "gates": {
+    "mechanism_reached": true,
+    "zero_rejected": true,
+    "zero_unexplained_holds": true,
+    "matched_advantage": true,
+    "pangaea_exact_control": true,
+    "diagnostic_4_of_4": false,
+    "regression_20_of_20": false,
+    "promotion_eligible": false
+  },
+  "verdict": "NO_SUBMIT_HOSTED_GATES_PENDING"
+}
