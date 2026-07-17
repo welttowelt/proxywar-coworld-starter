@@ -158,7 +158,7 @@
       "episodes": 4,
       "decisions": 406,
       "accepted": 406,
-      "holds": 3,
+      "holds": 5,
       "rejected": 0,
       "ef1_executions": 125,
       "ia1_executions": 1,
@@ -200,7 +200,8 @@
           "ef1": 14,
           "winner": "proxywar-keystone:v42"
         }
-      ]
+      ],
+      "holds_note": "two holds in episode one and three in episode four with no parent-baseline holds; unexplained and counted against the arm"
     },
     "regression_20_of_20": "not run: the diagnostic finished 0/4",
     "reach_assessment": "ef1 removed every opening probe as designed (zero early rival attacks in all four episodes) but opening territory fell to 54-64k from 75-95k; the probes it suppressed had been profitable, and the cadence-reset leak they caused was the smaller term. Direct reach with a worse outcome than the mx3 1/4 rejects the arm."
