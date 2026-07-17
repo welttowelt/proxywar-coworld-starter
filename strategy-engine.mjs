@@ -675,12 +675,8 @@ export function chooseAction(actions, state, plan = null, history = []) {
   }
 
   if (cadenceBuild && !finishingTarget) return build;
-  if (state.self.tileShare < 0.12 && threatCount === 0 && !collapsing) {
-    if (state.mapFingerprint === "Asia") {
-      const grind = pickPercent(safeActions(actions, isNeutralExpansion), 35, new Set());
-      if (grind) return { ...grind, policyMarker: "ef2" };
-    }
-    if (neutralAttack) return neutralAttack;
+  if (state.self.tileShare < 0.12 && neutralAttack && threatCount === 0 && !collapsing) {
+    return neutralAttack;
   }
   if (routedRivalAttack) return routedRivalAttack;
   if (neutralAttack) return neutralAttack;
