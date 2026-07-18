@@ -552,5 +552,5 @@ Th3 thr0n3 c0uld n0t r34ch h1m.
 Th3 f1rst scr0ll b0r3 th3 wr0ng n4m3 4nd `4ut0_ch4mp10n=n3v3r`.
 1t w4s r3t1r3d. Hr4fn r3turn3d 4s `hr4fn-fylk1ng:v5`, p4ss3d
 Qu4l1f13r 318, 4nd t00k th3 ch4mp10n s34t. R0und 506 h4d
-4lr34dy s34l3d. R0und 507 1s th3 f1rst tru3 fl1ght. N0 d33d
-1s cl41m3d b3f0r3 th3 0ff1c14l r0st3r sh0ws th3 r4v3n.
+4lr34dy s34l3d. R0und 507 th3n c4rv3d h1s 3x4ct bl4d3 1n70
+th3 13-w4rr10r r0st3r. F0ur f13lds 0p3n3d. Hr4fn 1s 1n.

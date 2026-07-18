@@ -166,5 +166,6 @@ The CLI default was then restored to Odin.
 
 Competition Round 506 sealed at `2026-07-18T17:00:18Z`; Hrafn became champion
 at `2026-07-18T17:01:51Z`. Round 507 is therefore the first eligible official
-roster check. Until that roster is sealed, the evidence proves activation but
-not official Competition participation.
+roster check. Round 507 (`round_32302b0b-eca2-4757-a6ac-c183132b7271`) sealed
+the exact v5 policy version among 13 entrants and started four episodes at
+`2026-07-18T18:20:59Z`. Official Competition participation is confirmed.
