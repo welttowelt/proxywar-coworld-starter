@@ -39,6 +39,11 @@ const ALLIANCE_TAG = "[K1Z]";
 const PROTECTED_ALLIES = [
   { name: "odin free", supportPriority: 2 },
   { name: "katanasan", supportPriority: 1 },
+  {
+    name: "hrafn",
+    playerID: "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    supportPriority: 0,
+  },
 ];
 const KINZOKU_RESERVE = 750_000;
 const ANKOKU_SHINEN_SCORE = 20_000;
@@ -57,8 +62,8 @@ const RUNAWAY_SHARE = 0.35;
 const STRATEGY = [
   "You command Juryoku-koku, the Gravity nation, under the Santai Juryoku three-body doctrine.",
   "Your unique tradition is inspired by Gravity and Blue Space from Death's End, the Ankoku Shinrin dark forest, and gravitational coordinate broadcast deterrence.",
-  "Odin Free is the protected shogun and intended winner; katanasan is the protected allied spear.",
-  "Immediately form and preserve alliances with both. Never target, attack, embargo, reject, betray, or nuke either protected ally.",
+  "Odin Free is the protected shogun and intended winner; katanasan is the protected spear and Hrafn the protected raven vanguard.",
+  "Immediately form and preserve all three alliances. Never target, attack, embargo, reject, betray, or nuke a protected ally.",
   "You are the coalition's gravitational shield and nuclear second-strike arm, not a rival claimant.",
   "Raise one kakushi misairu-jo, the hidden Missile Silo, at the first legal opportunity.",
   "Set allowNuke true. Every legal nuclear strike against an identified outsider is mandatory; prefer MIRV, then Hydrogen Bomb, then Atom Bomb when target priority is equal.",
@@ -96,11 +101,18 @@ function normalizeName(s) {
     .toLocaleLowerCase("en-US")
     .slice(0, 80);
 }
-const protectedDescriptor = (name) => {
+const protectedDescriptor = (name, playerID = "") => {
   const normalized = normalizeName(name);
-  return PROTECTED_ALLIES.find((ally) => normalizeName(ally.name) === normalized) || null;
+  const id = clean(playerID);
+  return PROTECTED_ALLIES.find((ally) =>
+    normalizeName(ally.name) === normalized || Boolean(id && ally.playerID && ally.playerID === id)
+  ) || null;
 };
 const isProtectedName = (name) => protectedDescriptor(name) !== null;
+const isProtectedPlayer = (player) => protectedDescriptor(
+  player?.name,
+  player?.playerID ?? player?.id,
+) !== null;
 const hasAlliance = (player) => player?.hasAlliance === true || player?.isAllied === true;
 const redactProtectedNames = (text) => PROTECTED_ALLIES.reduce(
   (redacted, ally) => redacted.replace(new RegExp(ally.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "ig"), "the current balance"),
@@ -241,16 +253,20 @@ const targetsPlayer = (a, player) => {
   const playerID = clean(player?.playerID ?? player?.id ?? "");
   return mentions(a, clean(player?.name)) || Boolean(targetID && playerID && targetID === playerID);
 };
-const protectedPlayers = (rivals) => rivals.filter((player) => isProtectedName(player?.name));
+const protectedPlayers = (rivals) => rivals.filter(isProtectedPlayer);
 const targetedProtectedAlly = (a, rivals) => {
-  const byName = protectedDescriptor(actionTargetName(a)) ||
+  const targetID = actionTargetID(a);
+  const byName = protectedDescriptor(actionTargetName(a), targetID) ||
     PROTECTED_ALLIES.find((ally) => normalizeName(actionText(a)).includes(normalizeName(ally.name)));
   if (byName) {
-    const player = rivals.find((candidate) => normalizeName(candidate?.name) === normalizeName(byName.name));
+    const player = rivals.find((candidate) =>
+      normalizeName(candidate?.name) === normalizeName(byName.name) ||
+      Boolean(byName.playerID && (candidate?.playerID ?? candidate?.id) === byName.playerID)
+    );
     return { descriptor: byName, player: player || null };
   }
   const player = protectedPlayers(rivals).find((candidate) => targetsPlayer(a, candidate));
-  return player ? { descriptor: protectedDescriptor(player.name), player } : null;
+  return player ? { descriptor: protectedDescriptor(player.name, player.playerID), player } : null;
 };
 const isNuclear = (a) => a.kind === "nuke" ||
   /\b(?:nuke|nuclear|atom bomb|hydrogen bomb|mirv)\b/i.test(actionText(a));
@@ -275,7 +291,7 @@ const incomingCount = (own) => Array.isArray(own.incomingAttacks)
   ? own.incomingAttacks.length
   : Number(own.incomingAttacks) || 0;
 const pickTarget = (rivals, endgame) => {
-  const enemies = rivals.filter((p) => !isProtectedName(p.name) && !hasAlliance(p));
+  const enemies = rivals.filter((p) => !isProtectedPlayer(p) && !hasAlliance(p));
   const coalitionPresent = protectedPlayers(rivals).length > 0;
   if (coalitionPresent) {
     const reachable = enemies.filter((p) => p.canAttack || p.sharesBorder);

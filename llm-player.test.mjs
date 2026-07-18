@@ -18,10 +18,15 @@ const player = (name, playerID, tileShare, overrides = {}) => ({
 
 const odin = player("odin free", "odin-1", 0.40);
 const katanasan = player("katanasan", "katana-1", 0.31);
+const hrafn = player(
+  "K1Z Hrafn",
+  "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+  0.20,
+);
 const strong = player("Takeda Rival", "rival-strong", 0.34, { relativeTroopRatio: 1.2 });
 const weak = player("Mori Rival", "rival-weak", 0.10, { relativeTroopRatio: 2.2 });
 
-const observation = (rivals = [odin, katanasan, strong, weak], overrides = {}) => ({
+const observation = (rivals = [odin, katanasan, hrafn, strong, weak], overrides = {}) => ({
   turnNumber: 12000,
   phase: "active",
   ownState: {
@@ -90,7 +95,7 @@ const nuke = (unit, target, priority = 180) => ({
   },
 });
 
-for (const ally of [odin, katanasan]) {
+for (const ally of [odin, katanasan, hrafn]) {
   test(`Gravity immediately requests alliance with ${ally.name}`, () => {
     assert.equal(
       choose([neutral, attack(strong), allianceRequest(ally), hold], observation()).id,
@@ -107,7 +112,9 @@ for (const ally of [odin, katanasan]) {
   test(`Gravity stops privileging ${ally.name} request after hasAlliance`, () => {
     const allied = { ...ally, isAllied: true, hasAlliance: true };
     const rivals = [
-      ...(ally === odin ? [allied, katanasan] : [odin, allied]),
+      ...[odin, katanasan, hrafn].map((candidate) =>
+        candidate === ally ? allied : candidate
+      ),
       strong,
       weak,
     ];
@@ -118,7 +125,7 @@ for (const ally of [odin, katanasan]) {
   });
 }
 
-for (const ally of [odin, katanasan]) {
+for (const ally of [odin, katanasan, hrafn]) {
   for (const kind of [
     "attack", "boat", "warship", "move_warship", "embargo",
     "target_player", "alliance_reject", "break_alliance",
@@ -152,19 +159,37 @@ test("Gravity protects a Unicode-normalized katanasan name", () => {
   assert.equal(choose([fullwidth, hold], observation()).id, hold.id);
 });
 
+test("Gravity protects Hrafn by exact ID after a display rename", () => {
+  const renamedHrafn = player("Raven", hrafn.playerID, 0.70);
+  const idOnlyNuke = nuke("MIRV", renamedHrafn);
+  delete idOnlyNuke.metadata.targetName;
+  idOnlyNuke.label = "Nuclear strike";
+  assert.equal(
+    choose([idOnlyNuke, hold], observation([odin, katanasan, renamedHrafn, strong])).id,
+    hold.id,
+  );
+});
+
 test("Gravity protects both visible K1Z alliance names", () => {
   const taggedOdin = player("K1Z odin free", "odin-live", odin.tileShare);
   const taggedKatana = player("K1Z katanasan", "katana-live", katanasan.tileShare);
+  const taggedHrafn = player("[K1Z] Hrafn", hrafn.playerID, hrafn.tileShare);
   const taggedOdinAttack = targeted("attack", taggedOdin);
   const taggedKatanaNuke = nuke("Atom Bomb", taggedKatana);
+  const taggedHrafnAttack = targeted("attack", taggedHrafn);
   taggedOdinAttack.label = "Attack player";
   taggedKatanaNuke.label = "Nuclear strike";
+  taggedHrafnAttack.label = "Attack player";
   assert.equal(
-    choose([taggedOdinAttack, hold], observation([taggedOdin, taggedKatana, strong])).id,
+    choose([taggedOdinAttack, hold], observation([taggedOdin, taggedKatana, taggedHrafn, strong])).id,
     hold.id,
   );
   assert.equal(
-    choose([taggedKatanaNuke, hold], observation([taggedOdin, taggedKatana, strong])).id,
+    choose([taggedKatanaNuke, hold], observation([taggedOdin, taggedKatana, taggedHrafn, strong])).id,
+    hold.id,
+  );
+  assert.equal(
+    choose([taggedHrafnAttack, hold], observation([taggedOdin, taggedKatana, taggedHrafn, strong])).id,
     hold.id,
   );
 });
