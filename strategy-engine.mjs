@@ -313,7 +313,7 @@ function chooseAllianceMove(actions, state, history, threatCount, collapsing, ac
     const breaks = safeActions(actions, (action) => {
       if (action.kind !== "break_alliance") return false;
       const rival = rivalForAction(action, state);
-      return rival?.isAllied === true;
+      return rival?.isAllied === true && !isReciprocalRival(rival);
     });
     return breaks[0] ?? null;
   }
@@ -440,6 +440,26 @@ function chooseRivalAttack(actions, state, plan, history, avoid, threatCount = 0
     streak,
     peaceRedirect: false,
   };
+}
+
+function kingmakerAllianceAction(actions, state) {
+  const kingmaker = state.rivals.find(isReciprocalRival);
+  if (!kingmaker || kingmaker.isAllied) return null;
+  const candidates = safeActions(actions, (action) => {
+    if (action.kind !== "alliance_request") return false;
+    const rival = rivalForAction(action, state);
+    return rival && isReciprocalRival(rival);
+  });
+  if (candidates.length === 0) return null;
+  const stable = candidates.filter((action) => Number(action?.metadata?.relation) !== 2);
+  if (stable.length > 0) return { ...stable[0], policyMarker: "kp2" };
+  const offerPending = safeActions(actions, (action) => {
+    if (action.kind !== "alliance_reject") return false;
+    const rival = rivalForAction(action, state);
+    return rival && isReciprocalRival(rival);
+  }).length > 0;
+  if (offerPending) return { ...candidates[0], policyMarker: "kp2" };
+  return null;
 }
 
 function chooseAtomBomb(actions, state, history) {
@@ -643,6 +663,9 @@ export function chooseAction(actions, state, plan = null, history = []) {
     ? chooseBuild(actions, history, true)
     : null;
   if (defensiveBuild) return defensiveBuild;
+
+  const kingmakerAlliance = kingmakerAllianceAction(actions, state);
+  if (kingmakerAlliance) return kingmakerAlliance;
 
   const atomBomb = chooseAtomBomb(actions, state, history);
   if (atomBomb) return atomBomb;

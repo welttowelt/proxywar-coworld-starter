@@ -1250,3 +1250,85 @@ test("an Atom Bomb under SAM coverage is skipped", () => {
   );
   assert.equal(selected.id, city.id);
 });
+
+test("an alliance offer from katanasan is accepted on sight", () => {
+  const ally = {
+    ...action("alliance:katanasan:1", "alliance_request", "Request alliance with katanasan"),
+    metadata: { recipientID: "katanasan", recipientName: "katanasan", relation: 0 },
+  };
+  const probe = action("attack:bystander:10", "attack", "Attack Bystander 10%");
+  const selected = choose(
+    [ally, probe],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      rivals: [
+        { id: "katanasan", name: "katanasan", tileShare: 0.12, relativeTroopRatio: 1.1 },
+        { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, ally.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("a pending katanasan offer is accepted through the transient action", () => {
+  const ally = {
+    ...action("alliance:katanasan:1", "alliance_request", "Request alliance with katanasan"),
+    metadata: { recipientID: "katanasan", recipientName: "katanasan", relation: 2 },
+  };
+  const reject = {
+    ...action("alliance_reject:katanasan:1", "alliance_reject", "Reject katanasan alliance"),
+    metadata: { recipientID: "katanasan", recipientName: "katanasan" },
+  };
+  const probe = action("attack:bystander:10", "attack", "Attack Bystander 10%");
+  const selected = choose(
+    [ally, reject, probe],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      rivals: [
+        { id: "katanasan", name: "katanasan", tileShare: 0.12, relativeTroopRatio: 1.1 },
+        { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, ally.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("an existing katanasan alliance is never broken or re-requested", () => {
+  const ally = {
+    ...action("alliance:katanasan:1", "alliance_request", "Request alliance with katanasan"),
+    metadata: { recipientID: "katanasan", recipientName: "katanasan", relation: 1 },
+  };
+  const breakAlliance = {
+    ...action("break_alliance:katanasan:1", "break_alliance", "Break alliance with katanasan"),
+    metadata: { targetID: "katanasan", targetName: "katanasan" },
+  };
+  const history = Array.from({ length: 20 }, (_, index) => ({
+    actionID: `attack:bystander:${index % 3}`, kind: "attack", targetName: "bystander", tileShare: 0.5,
+  }));
+  const probe = action("attack:bystander:10", "attack", "Attack Bystander 10%");
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [ally, breakAlliance, probe, build],
+    observation({
+      tileShare: 0.5,
+      troopRatio: 0.9,
+      incomingAttacks: 1,
+      rivals: [
+        { id: "katanasan", name: "katanasan", tileShare: 0.12, relativeTroopRatio: 1.1, isAllied: true },
+        { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.notEqual(selected.id, breakAlliance.id);
+  assert.notEqual(selected.id, ally.id);
+});
