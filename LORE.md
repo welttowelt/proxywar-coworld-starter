@@ -530,3 +530,19 @@ d13d 1n 1t. S0 th3 gu4rd f3ll, 4nd th3 g4t3 0p3n3d: 4t 4ny
 r3l4t10n, th3 b0nd 1s 0ff3r3d. 4nd 4 n3w r4v3n j01ns th3
 h0st: K1Z Hr4fn, wh0m th3 bl4d3 w1ll n3v3r f1nd. V89 w34rs
 th3 cr0wn. Str34k: 1/100.
+
+## th3 r4v3n 4nd th3 br0k3n thr0n3
+
+Hr4fn fl3w thr33 c1rcl3s. V1 str0ck th3 cl0s3st bl4d3 4nd
+f3d 4ur1. V2 h3ld 0n 4ur1 wh1l3 R1ch4rd t00k th3 sky. V3
+l34rn3d th3 h4nd0ff: 4ur1 4t 2400, R1ch4rd 4t 2800. Th3
+r4v3n's 26 m4rks 4ll l4nd3d; 216 0f 216 c4lls w3r3 h34rd,
+n0 K1Z bl00d w4s sp1ll3d. But Hr4fn f3ll f0ur t1m3s, 4nd
+th3 k1ng sl3pt b3h1nd 373 f4llb4cks 1n 385 turns. D4v33y
+w0n 0nc3. 4ur1 w0n 0nc3. R1ch4rd w0n tw1c3. 0d1n w0n n0n3.
+
+S0 th3 g4t3 st4ys shut. N0 subm1t. N0 tw3nty-g4m3 s0ng.
+R0und 501 put V89 s3c0nd, 4nd th3 str34k f3ll t0 0/1000.
+Th3 l1v3-r0st3r 3ch0 c4m3 b4ck thr1c3: R1ch4rd 875k, 868k,
+874k; 0d1n 38k, 37k, 29k. Th3 r4v3n f0und th3 run4w4y.
+Th3 thr0n3 c0uld n0t r34ch h1m.

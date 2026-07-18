@@ -1,8 +1,9 @@
 # K1Z Hrafn: Implementation and Promotion Record
 
-Status at 2026-07-18 16:28 CEST: the player, reciprocal protection, runtime,
-tests, exact images, and three challenger versions exist. Hrafn has no league
-submission or membership. Promotion remains blocked on outcome gates.
+Status at 2026-07-18 16:47 CEST: the player, reciprocal protection, runtime,
+tests, exact images, and three challenger versions exist. V3 finished its
+diagnostic at `0/4` Odin firsts, then opened the exact-live confirmation at
+`0/3`. Hrafn has no league submission or membership and v3 is rejected.
 
 ## Identity and role
 
@@ -101,13 +102,20 @@ Exact images:
 Requests:
 
 - `xreq_4ed65079-e5fd-443c-b892-e45a3524b809`: diagnostic created with
-  `qd1n:v87` and `Eva-00:v25`; retained for mechanism evidence after those live
-  versions drifted.
+  `qd1n:v87` and `Eva-00:v25`; it finished `0/4` with daveey, Auri, Richard,
+  and Richard wins. Hrafn executed `rv3` 26 times with all `216` Hrafn
+  decisions accepted, zero Hrafn holds or fallbacks, and zero K1Z harm. Odin
+  used fallback behavior in `373/385` decisions. Hrafn died in all four.
 - `xreq_550333e2-38ff-4631-86d5-75b9a06fcd26`: exact-live gate with
   `qd1n:v89`, `Eva-00:v26`, Auri v42, daveey v22, Richard v7, Gravity v3, and
-  Katanasan v39.
+  Katanasan v39. Richard won its first three completed episodes with
+  `875,938/868,209/874,679` tiles; Odin finished at
+  `38,587/37,230/29,044`. Hrafn executed `rv3` 25 times and kept all `287`
+  decisions clean. This confirmation cannot reopen v3 promotion after the
+  diagnostic hard-fail.
 
-No v3 request authorizes submission until it is complete and replay-audited.
+V3 is rejected. The 20-episode request was not created and no Hrafn version was
+submitted.
 
 ## Promotion gates
 
@@ -123,6 +131,11 @@ No v3 request authorizes submission until it is complete and replay-audited.
 
 These gates qualify one live Hrafn submission. They do not count toward the
 1,000-first-place streak; only completed official league rounds count.
+
+The v3 diagnostic failed step 1, so steps 2-6 are closed for v3. A new Hrafn
+version must begin a fresh gate sequence. The replay evidence also isolates the
+larger fleet constraint: Hrafn handed pressure from Auri to Richard as designed,
+but Odin's fallback-dominated chassis did not convert the support.
 
 ## Evidence contract
 
