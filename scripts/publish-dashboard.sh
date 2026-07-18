@@ -36,6 +36,7 @@ fi
 
 retry git pull --ff-only origin main
 npm run data:refresh
+npm run cache:prune
 git add data/analysis data/processed site/data
 
 if git diff --cached --quiet; then
