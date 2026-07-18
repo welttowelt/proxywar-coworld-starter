@@ -786,6 +786,21 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (kingmakerAlliance) return kingmakerAlliance;
 
   const atomBomb = chooseAtomBomb(actions, state, history);
+  const deferPangaeaNuclearConstruction = atomBomb &&
+    state.mapFingerprint === "Pangaea" &&
+    state.self.tileShare < 0.05;
+  if (deferPangaeaNuclearConstruction) {
+    const alternatives = actions.filter((action) =>
+      !(
+        action.kind === "build" &&
+        String(action?.metadata?.unit ?? "").toLowerCase() === "atom bomb"
+      )
+    );
+    if (alternatives.some((action) => action.kind !== "hold")) {
+      const replacement = chooseAction(alternatives, state, plan, history);
+      return { ...replacement, policyMarker: "pn1" };
+    }
+  }
   if (atomBomb) return atomBomb;
 
   const rivalAttack = chooseRivalAttack(actions, state, plan, history, avoid, threatCount);

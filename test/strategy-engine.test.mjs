@@ -2112,3 +2112,108 @@ test("outsiders remain legal nuclear targets beside all three K1Z allies", () =>
   assert.equal(selected.id, bomb.id);
   assert.equal(selected.policyMarker, "nk1");
 });
+
+test("Pangaea low-share nuclear construction yields to frontier growth", () => {
+  const atomBomb = {
+    ...action("build:Atom Bomb:423439", "build", "Build Atom Bomb"),
+    metadata: {
+      unit: "Atom Bomb",
+      targetID: "leader",
+      targetName: "Leader",
+      targetTileShare: 0.67,
+      targetSamCoverage: 0,
+    },
+  };
+  const neutralAttack = {
+    ...action("expand:terra-nullius:10", "attack", "Attack Terra Nullius 10%"),
+    metadata: { expansion: true, troopPercent: 10 },
+  };
+  const obs = observation({
+    tileShare: 0.02,
+    spawnTile: 659528,
+    rivals: [
+      { id: "leader", name: "Leader", tileShare: 0.67, relativeTroopRatio: 0.7 },
+    ],
+  });
+  const selected = choose([atomBomb, neutralAttack], obs);
+  assert.equal(selected.id, neutralAttack.id);
+  assert.equal(selected.policyMarker, "pn1");
+});
+
+test("Pangaea low-share nuclear construction yields to naval frontier access", () => {
+  const atomBomb = {
+    ...action("build:Atom Bomb:423439", "build", "Build Atom Bomb"),
+    metadata: {
+      unit: "Atom Bomb",
+      targetID: "leader",
+      targetName: "Leader",
+      targetTileShare: 0.67,
+      targetSamCoverage: 0,
+    },
+  };
+  const warshipMove = action(
+    "move_warship:2352-2785:274370",
+    "move_warship",
+    "Move Warship",
+  );
+  const obs = observation({
+    tileShare: 0.02,
+    spawnTile: 659528,
+    rivals: [
+      { id: "leader", name: "Leader", tileShare: 0.67, relativeTroopRatio: 0.7 },
+    ],
+  });
+  const selected = choose([atomBomb, warshipMove], obs);
+  assert.equal(selected.id, warshipMove.id);
+  assert.equal(selected.policyMarker, "pn1");
+});
+
+test("Pangaea established seats retain nuclear leader pressure", () => {
+  const atomBomb = {
+    ...action("build:Atom Bomb:423439", "build", "Build Atom Bomb"),
+    metadata: {
+      unit: "Atom Bomb",
+      targetID: "leader",
+      targetName: "Leader",
+      targetTileShare: 0.67,
+      targetSamCoverage: 0,
+    },
+  };
+  const neutralAttack = {
+    ...action("expand:terra-nullius:10", "attack", "Attack Terra Nullius 10%"),
+    metadata: { expansion: true, troopPercent: 10 },
+  };
+  const obs = observation({
+    tileShare: 0.05,
+    spawnTile: 659528,
+    rivals: [
+      { id: "leader", name: "Leader", tileShare: 0.67, relativeTroopRatio: 0.7 },
+    ],
+  });
+  assert.equal(choose([atomBomb, neutralAttack], obs).id, atomBomb.id);
+});
+
+test("World low-share seats retain exact nuclear behavior", () => {
+  const atomBomb = {
+    ...action("build:Atom Bomb:423439", "build", "Build Atom Bomb"),
+    metadata: {
+      unit: "Atom Bomb",
+      targetID: "leader",
+      targetName: "Leader",
+      targetTileShare: 0.67,
+      targetSamCoverage: 0,
+    },
+  };
+  const neutralAttack = {
+    ...action("expand:terra-nullius:10", "attack", "Attack Terra Nullius 10%"),
+    metadata: { expansion: true, troopPercent: 10 },
+  };
+  const obs = observation({
+    tileShare: 0.02,
+    spawnTile: 494334,
+    rivals: [
+      { id: "leader", name: "Leader", tileShare: 0.67, relativeTroopRatio: 0.7 },
+    ],
+  });
+  assert.equal(choose([atomBomb, neutralAttack], obs).id, atomBomb.id);
+});
