@@ -1,0 +1,56 @@
+{
+  "coworld_id": "cow_73615cc4-83f6-4db7-a562-ac96f3abd8a5",
+  "variant_id": "tournament-8p-asia",
+  "roster": [
+    {
+      "player": {
+        "policy_ref": "proxywar-keystone:v42"
+      },
+      "slot": 0
+    },
+    {
+      "player": {
+        "policy_ref": "daveey-proxywar:v22"
+      },
+      "slot": 1
+    },
+    {
+      "player": {
+        "policy_ref": "co-gas-proxywar-richard:v7"
+      },
+      "slot": 2
+    },
+    {
+      "player": {
+        "policy_ref": "Eva-00:v25"
+      },
+      "slot": 3
+    },
+    {
+      "player": {
+        "policy_ref": "hrafn-fylking:v3"
+      },
+      "slot": 4
+    },
+    {
+      "player": {
+        "policy_ref": "santai-juryoku:v3"
+      },
+      "slot": 5
+    },
+    {
+      "player": {
+        "policy_ref": "tsukuyomi-no-kage:v39"
+      },
+      "slot": 6
+    },
+    {
+      "player": {
+        "policy_ref": "qd1n:v87"
+      },
+      "slot": 7
+    }
+  ],
+  "num_episodes": 4,
+  "notes": "K1Z Hrafn v3 gate: Auri-first pressure hands off at a five-point outsider lead; same exact v1/v2 roster."
+}
