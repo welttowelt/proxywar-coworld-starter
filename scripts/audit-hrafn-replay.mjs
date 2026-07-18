@@ -22,7 +22,7 @@ const decisions = rawDecisions
   .split(/\r?\n/)
   .filter(Boolean)
   .map((line) => JSON.parse(line));
-const policyDecisions = decisions.filter((decision) =>
+const taggedDecisions = decisions.filter((decision) =>
   String(decision.reason ?? "").startsWith("[K1Z]")
 );
 const harmfulKinds = new Set([
@@ -39,6 +39,18 @@ const memberIDs = new Set(K1Z_MEMBERS.map((member) => member.id.toLowerCase()));
 const memberNames = new Set(
   K1Z_MEMBERS.flatMap((member) => member.names.map(canonicalizeK1ZName)),
 );
+memberNames.add(canonicalizeK1ZName("Hrafn"));
+const namedHrafnDecisions = decisions.filter((decision) =>
+  canonicalizeK1ZName(decision.username) === canonicalizeK1ZName("Hrafn")
+);
+const hrafnDecisions = namedHrafnDecisions.length > 0
+  ? namedHrafnDecisions
+  : taggedDecisions;
+const coalitionDecisions = decisions.filter((decision) =>
+  memberNames.has(canonicalizeK1ZName(decision.username)) ||
+  taggedDecisions.includes(decision)
+);
+const policyDecisions = coalitionDecisions;
 
 function targetIdentity(decision) {
   const metadata = decision?.selectedActionMetadata ?? {};
@@ -84,7 +96,7 @@ const harmfulK1Z = policyDecisions.filter((decision) => {
   target: targetIdentity(decision),
 }));
 
-const badPublicReasons = policyDecisions.filter((decision) => {
+const badPublicReasons = hrafnDecisions.filter((decision) => {
   const reason = String(decision.reason ?? "");
   return reason.length > 48 || !/^[\x20-\x7e]+$/.test(reason) ||
     !reason.startsWith("[K1Z]");
@@ -94,6 +106,39 @@ const badPublicReasons = policyDecisions.filter((decision) => {
   reason: decision.reason,
 }));
 
+const resultPlayers = Array.isArray(replay.results?.players)
+  ? replay.results.players.map((player) => ({
+    slot: player.slot,
+    name: player.name,
+    canonical_name: canonicalizeK1ZName(player.name),
+    score: Number.isFinite(Number(player.score)) ? Number(player.score) : null,
+    tiles_owned: Number.isFinite(Number(player.tiles_owned))
+      ? Number(player.tiles_owned)
+      : null,
+    is_alive: player.is_alive ?? null,
+  }))
+  : [];
+const odin = resultPlayers.find((player) =>
+  player.canonical_name === canonicalizeK1ZName("odin free")
+);
+const hrafn = resultPlayers.find((player) =>
+  player.canonical_name === canonicalizeK1ZName("Hrafn")
+);
+const maximumScore = Math.max(
+  ...resultPlayers.map((player) => player.score).filter(Number.isFinite),
+  -Infinity,
+);
+const coalitionResults = resultPlayers.filter((player) =>
+  memberNames.has(player.canonical_name)
+);
+const outsiderResults = resultPlayers.filter((player) =>
+  !memberNames.has(player.canonical_name)
+);
+const sum = (rows, field) => rows.reduce(
+  (total, row) => total + (Number.isFinite(row[field]) ? row[field] : 0),
+  0,
+);
+
 const report = {
   schema_version: 1,
   replay_path: target,
@@ -101,11 +146,21 @@ const report = {
   game_id: replay.gameID ?? replay.results?.game_id ?? null,
   turn_count: replay.results?.turn_count ?? replay.finalState?.turn ?? null,
   winner_slot: replay.results?.winner_slot ?? null,
+  winner_name: Number.isInteger(replay.results?.winner_slot)
+    ? resultPlayers.find((player) => player.slot === replay.results.winner_slot)?.name ?? null
+    : null,
   scores: replay.results?.scores ?? null,
+  players: resultPlayers,
+  odin_first: Boolean(odin) && odin.score === maximumScore,
+  hrafn_survived: hrafn?.is_alive === true,
+  coalition_score: sum(coalitionResults, "score"),
+  outsider_score: sum(outsiderResults, "score"),
+  coalition_tiles: sum(coalitionResults, "tiles_owned"),
+  outsider_tiles: sum(outsiderResults, "tiles_owned"),
   total_decisions: decisions.length,
   policy_decisions: policyDecisions.length,
   per_player: perPlayer,
-  rv1_executions: policyDecisions.filter((decision) =>
+  rv1_executions: hrafnDecisions.filter((decision) =>
     String(decision.reason).includes(":rv1")
   ).length,
   harmful_k1z_actions: harmfulK1Z,
