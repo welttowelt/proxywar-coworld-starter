@@ -2,7 +2,7 @@
   "schema_version": 1,
   "recorded_at": "2026-07-18T00:45:00Z",
   "candidate": "qd2n-ch2",
-  "verdict": "REJECTED_LOCAL_MIRRORS_SPLIT_NO_UPLOAD",
+  "verdict": "PROJECT_CLOSED_HYBRID_DOMINATED_BY_MX3",
   "remote_state_changed": false,
   "hypothesis": "the shared winner chassis \u2014 flat 35 percent opening grind above a troop floor, retaliation-first contact at 25 percent minimum, sticky target finishing, capped boats, active alliances \u2014 wins mirrors against exact v77",
   "outcome": "the chassis fails the mirrored gates in both iterations: 2/6 candidate wins each, with Asia and Pangaea split by dominant seats and World lost 0/4 across iterations; candidate seats outside the dominant positions starve, and 51 candidate holds in ch1 fell only to 14 in ch2 after the probe-before-hold emergency path",
@@ -125,5 +125,31 @@
     "membership_relaunched": false,
     "official_first_place_streak": 0,
     "target_first_place_streak": 1000
-  }
+  },
+  "ch3": {
+    "commit": "66352cb7e7023953418ec996a517137df1dff609",
+    "changes": "frontier-stall grind cutoff, map grind ceilings, fresh-target ratio floor 1.3, defense at 2+ attackers",
+    "candidate_wins": 1,
+    "outcome": "regression: the fresh-target floor made the chassis passive and v77's probe ladder ate every candidate seat except asia-b's winner (868,092); falsified and rolled back"
+  },
+  "hybrid": {
+    "commit": "4fb85639e66193e1e34af145655949e6cc399c43",
+    "changes": "ch2 chassis on Asia/Pangaea, mx3 route on World and unknown maps",
+    "image": "proxywar-agent-llm:qd2n-hyb1-amd64",
+    "candidate_wins": 4,
+    "mirrors": {
+      "Asia": "1-1 split",
+      "World": "2-0 candidate (mx3 route reproduced exactly)",
+      "Pangaea": "1-1 split"
+    },
+    "winner_tiles": {
+      "asia_a": 877450,
+      "world_a": 632072,
+      "world_b": 532198,
+      "pangaea_a": 376364
+    },
+    "trace_note": "every hybrid trace is byte-identical to its donor code path (ch2 on Asia/Pangaea, mx3 on World)",
+    "outcome": "fails the mirrored-advantage gate with Asia split, and is strictly dominated by mx3, which won 5/6 including both Asia mirrors; the architecture project stops here per its pre-registered rule"
+  },
+  "final_assessment": "three chassis generations and one hybrid later, the mx3 composition remains the best measured policy: it won 5/6 mirrors including both Asia orientations, and no mechanism since has beaten it. mx3 itself has no ship case over v77 on either hosted roster (1/12 vs 0/12 strong, 0/8 vs 0/8 league-field). qd1n:v77 remains the sole live champion."
 }
