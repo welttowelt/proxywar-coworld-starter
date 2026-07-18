@@ -1466,3 +1466,33 @@ made. Full replay hashes and arm counts are recorded in
 [`diagnosis-qd1n-nuclear-action-discipline-nc2-20260718.json`](diagnosis-qd1n-nuclear-action-discipline-nc2-20260718.json).
 The next arm should target early rolling boat, retreat, and repeated-alliance
 churn on low-share seats rather than another late nuclear guard.
+
+## BD1 boat-retreat recovery rejection (2026-07-19)
+
+BD1 targeted that early churn directly. On a seat below 12 percent territory,
+six boat or boat-retreat decisions in a flat twelve-decision window temporarily
+deferred a repeated coalition request for a legal land attack or economic
+build. Productive naval growth, absence of a real recovery action, and K1Z
+protection remained explicit no-change cases.
+
+Five focused tests and the full `151/151` suite passed. The exact linux/amd64
+candidate image matched strategy hash
+`996240894cab9a37d7092503006e1919e1d01e4e1b0c10be9dbe6913bb479215`.
+The standard qualifier accepted `34/34` decisions with zero holds or
+rejections and produced a verified replay.
+
+The bounded World seat swap proved direct reach without advantage. BD1
+executed 14 accepted markers, 12 audit-confirmed, across `984/984` candidate
+decisions with zero holds or rejections. Candidate territory totaled `650,559`
+against parent `652,628` (`-2,069`, `-0.317%`), with score
+`0.998428-1.001572`; all eight candidate and all eight parent seats remained
+alive at the horizon. The interventions created attacks and economic builds,
+but did not change the weak-seat survival boundary.
+
+BD1 was rejected before full mirrors. No hosted request, upload, submission,
+membership, or champion change followed. Full replay hashes, marker timing,
+and seat deltas are recorded in
+[`diagnosis-qd1n-boat-retreat-recovery-bd1-20260719.json`](diagnosis-qd1n-boat-retreat-recovery-bd1-20260719.json).
+The next hypothesis should target the post-attack collapse itself using
+incoming pressure, reserve strength, and border access rather than treating
+naval churn as the root cause.

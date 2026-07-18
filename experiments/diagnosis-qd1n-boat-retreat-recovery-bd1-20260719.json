@@ -1,0 +1,199 @@
+{
+  "experiment": "qd1n boat-retreat recovery BD1",
+  "date": "2026-07-19",
+  "status": "rejected",
+  "hypothesis": "A low-share seat that has made at least six boat or boat-retreat decisions in a flat twelve-decision window should temporarily defer a repeated coalition request for an accepted land attack or economic build.",
+  "candidate": {
+    "branch": "rci/bd1",
+    "commit": "b4f0108de8e5edf3a2a00753e283ebda3269f8ac",
+    "strategy_sha256": "996240894cab9a37d7092503006e1919e1d01e4e1b0c10be9dbe6913bb479215",
+    "image": "proxywar-agent-llm:qd1n-v89-bd1-amd64",
+    "image_id": "sha256:97038112588d840ceb7983978656f62b3b1e319ac974bea88230dc4aeefe1942",
+    "platform": "linux/amd64"
+  },
+  "parent": {
+    "live_policy": "qd1n:v89",
+    "local_image": "proxywar-agent-llm:qd1n-v77-km4-amd64",
+    "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+    "platform": "linux/amd64"
+  },
+  "tests": {
+    "focused": {
+      "passed": 5,
+      "failed": 0,
+      "coverage": [
+        "flat boat-retreat churn exits through economy",
+        "productive naval growth preserves coalition reciprocity",
+        "no legal recovery preserves coalition reciprocity",
+        "neutral land expansion is a valid recovery",
+        "a protected K1Z attack is never treated as recovery"
+      ]
+    },
+    "full": {
+      "passed": 151,
+      "failed": 0
+    }
+  },
+  "qualifier": {
+    "path": "/private/tmp/proxywar-qd1n-bd1-amd64-qualifier-20260718",
+    "decisions": 34,
+    "accepted": 34,
+    "rejected": 0,
+    "holds": 0,
+    "fallbacks": 10,
+    "marker_executions": 0,
+    "replay_verified": true,
+    "replay_sha256": "69211474c8b537ea599ae9281eb9e34584362255d376e2f237500d1d46be16d2"
+  },
+  "bounded_matched_world": {
+    "configuration": {
+      "map": "World",
+      "players": 8,
+      "max_decision_steps": 120,
+      "turns_per_decision_step": 100,
+      "seat_swap": "candidate even in A and odd in B"
+    },
+    "orientation_a": {
+      "path": "/private/tmp/proxywar-bd1-reach-world-a-20260718",
+      "turn_count": 12400,
+      "decisions": 984,
+      "accepted": 984,
+      "rejected": 0,
+      "holds": 0,
+      "fallbacks": 960,
+      "candidate_markers": 4,
+      "marker_seat": "Coworld Starter 1",
+      "marker_actions": [
+        {
+          "turn": 2900,
+          "kind": "attack",
+          "target": "Coworld Starter 2",
+          "tiles_before": 17001,
+          "audit": "confirmed"
+        },
+        {
+          "turn": 7100,
+          "kind": "build Factory",
+          "tiles_before": 25772,
+          "audit": "confirmed"
+        },
+        {
+          "turn": 9500,
+          "kind": "build City",
+          "tiles_before": 25903,
+          "audit": "confirmed"
+        },
+        {
+          "turn": 9600,
+          "kind": "build Factory",
+          "tiles_before": 25903,
+          "audit": "confirmed"
+        }
+      ],
+      "replay_verified": true,
+      "replay_sha256": "36153d8ee514b0103b8fe7ea55b46406a78c9291bce80cd91da571abeeb83051"
+    },
+    "orientation_b": {
+      "path": "/private/tmp/proxywar-bd1-reach-world-b-20260718",
+      "turn_count": 12400,
+      "decisions": 984,
+      "accepted": 984,
+      "rejected": 0,
+      "holds": 0,
+      "fallbacks": 960,
+      "candidate_markers": 10,
+      "confirmed_markers": 8,
+      "accepted_but_audit_unknown": 2,
+      "marker_seats": {
+        "Coworld Starter 2": 4,
+        "Coworld Starter 4": 1,
+        "Coworld Starter 6": 5
+      },
+      "replay_verified": true,
+      "replay_sha256": "5e612b72bd1a34a03ee0bd0f56b57909b16732a76e4a624be4b2a36d1d9b43d9"
+    },
+    "aggregate": {
+      "candidate": {
+        "decisions": 984,
+        "accepted": 984,
+        "rejected": 0,
+        "holds": 0,
+        "fallbacks": 960,
+        "marker_executions": 14,
+        "score": 0.9984278493476391,
+        "tiles": 650559,
+        "surviving_seats": 8
+      },
+      "parent": {
+        "decisions": 984,
+        "accepted": 984,
+        "rejected": 0,
+        "holds": 0,
+        "fallbacks": 960,
+        "score": 1.001572150652361,
+        "tiles": 652628,
+        "surviving_seats": 8
+      },
+      "candidate_tile_delta": -2069,
+      "candidate_tile_delta_percent": -0.3170259320776969,
+      "candidate_score_delta": -0.003144301304721875,
+      "seat_tile_deltas": [
+        {
+          "slot": 0,
+          "name": "Coworld Starter 1",
+          "delta": 1061
+        },
+        {
+          "slot": 1,
+          "name": "Coworld Starter 2",
+          "delta": 501
+        },
+        {
+          "slot": 2,
+          "name": "katanasan",
+          "delta": -25307
+        },
+        {
+          "slot": 3,
+          "name": "Coworld Starter 4",
+          "delta": -1257
+        },
+        {
+          "slot": 4,
+          "name": "juryoku-koku",
+          "delta": 21950
+        },
+        {
+          "slot": 5,
+          "name": "Coworld Starter 6",
+          "delta": 157
+        },
+        {
+          "slot": 6,
+          "name": "odin free",
+          "delta": 1246
+        },
+        {
+          "slot": 7,
+          "name": "Coworld Starter 8",
+          "delta": -420
+        }
+      ]
+    }
+  },
+  "promotion_gates": {
+    "mechanism_reach": "passed: 14 accepted markers, 12 audit-confirmed",
+    "accepted_actions": "passed: 984/984 candidate decisions accepted with zero holds or rejections",
+    "matched_advantage": "failed: candidate lost 2069 tiles and 0.003144 score across the seat swap",
+    "hosted_4_of_4": "not run after matched failure",
+    "regression_20_of_20": "not run after matched failure",
+    "live_identity_submission_membership": "unchanged"
+  },
+  "verdict": {
+    "decision": "reject",
+    "reason": "BD1 reached weak seats and created accepted attacks and economic builds, but the interventions did not change survival and slightly reduced aggregate territory. The branch does not justify full mirrors, upload, submission, membership, or champion changes.",
+    "live_policy_after": "qd1n:v89",
+    "official_first_place_streak_after": "0/1000"
+  },
+  "next_hypothesis": "Target the post-attack collapse itself: use incoming pressure, troop reserve, and loss of border access to decide between retreat, defensive economy, and one concentrated counter rather than using boat churn alone as the trigger."
+}

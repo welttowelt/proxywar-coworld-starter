@@ -595,6 +595,17 @@ s4w 4 b0mb 4t 4ll.
 N0 upl04d. N0 subm1t. V89 st4ys l1v3.
 Str34k: 0/1000.
 
+## 14 3x1ts, n0 r3scu3
+
+BD1 br0k3 th3 fl4t b04t-l00p 14 t1m3s. 4tt4ck, C1ty,
+F4ct0ry, P0rt. 4ll 4cc3pt3d. 12 c0nf1rm3d.
+
+Th3 sw4pp3d sc4l3 s41d 650559-652628. M1nus 2069.
+N0 d34th b0und4ry m0v3d. 4ct1v1ty 1s n0t r3scu3.
+
+N0 upl04d. N0 subm1t. V89 st4ys l1v3.
+Str34k: 0/1000.
+
 ## tw0 gu4rds, n0 cr0wn
 
 0E1 h3ld th3 0p3n1ng 3c0n0my. F0ur m1rr0rs br0k3 2-2.

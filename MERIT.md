@@ -100,6 +100,7 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | Hrafn v1-v3 hosted RCI | `hrafn-fylking:v1` went `0/4` and fed Auri; v2 went `0/4` and transferred the snowball to Richard; v3 correctly handed pressure from Auri to Richard by turn 2800, then finished its diagnostic `0/4` with `rv3` 26 times, `216/216` Hrafn decisions accepted, zero Hrafn holds/fallbacks, zero K1Z harm, and Hrafn dead `4/4`; Odin used fallback behavior in `373/385` decisions; the exact-live v89/v26 confirmation opened `0/3`, all Richard wins at `875,938/868,209/874,679` tiles against Odin's `38,587/37,230/29,044`; Hrafn kept `287/287` decisions clean | v1/v2/v3 rejected, NO SUBMIT; no Hrafn league membership; 20-game gate not created; exact-live request `xreq_550333e2` retained as confirmation only |
 | qd1n OE1 opening-economy guard | deferred optional coalition requests and fresh rival pressure during the first 20 calm decisions while neutral expansion or the first economic build remained available; exact-image, seat-swapped World and Pangaea mirrors completed with all `5,875/5,875` decisions accepted | rejected: candidate and exact parent split the four orientations `2-2`; combined candidate tiles `1,071,853` versus parent `1,071,905`. Identity and seat, not OE1, explain the outcomes. Asia reruns were stopped as redundant; no upload, submission, or champion change; inverse commit `f1347251` restores exact v89 source |
 | qd1n NF1 land-front concentration | while a current or recent hostile land front exists, prefer that attacker and permit only a credible existing finish; corrected amd64 image `ee4330c7`, `149/149` candidate tests, `34/34` qualifier accepted; exact World mirrors exercised `nf1` 115 times with candidate `1681/1681` decisions accepted and zero rejections | rejected at the first matched gate: candidate and parent tied exactly after the seat swap at score units `1-1`, tiles `651,609-651,609`, and two survivors each. No Asia/Pangaea extension, hosted request, upload, submission, or champion change; evidence in `experiments/diagnosis-qd1n-no-new-front-rci-20260718.json` |
+| qd1n BD1 boat-retreat recovery | on a sub-12-percent seat, six boat/retreat decisions in a flat twelve-decision window temporarily defer a repeated coalition request for a legal land attack or economy build; `5/5` focused and `151/151` full tests passed; amd64 qualifier accepted `34/34`; bounded seat-swapped World play reached `bd1` 14 times, 12 audit-confirmed, with all `984/984` candidate decisions accepted and zero holds/rejections | rejected at the bounded matched gate: candidate tiles `650,559` versus parent `652,628` (`-2,069`, `-0.317%`), score `0.998428-1.001572`, and all eight seats per arm still alive. Reach produced activity but no survival boundary change. No full mirrors, hosted request, upload, submission, membership, or champion change |
 
 Detailed evidence lives in [`experiments/`](experiments/README.md). Public round
 statistics live on the [dashboard](https://welttowelt.github.io/proxywar-coworld-starter/).
@@ -306,6 +307,17 @@ only 119 total tiles (`651,528-651,409`, `+0.0183%`) and did not move a win
 boundary. The losing odd seats never exposed a nuke action. NC2 is rejected;
 no hosted extension, upload, submission, membership, or champion change
 followed.
+
+BD1 tested the next early-failure hypothesis. A sub-12-percent seat with six
+boat or boat-retreat decisions in a flat twelve-decision window could defer a
+repeated coalition request for a legal land attack or economy build. The
+candidate passed `5/5` focused tests, `151/151` total tests, and a `34/34`
+amd64 qualifier. In bounded, seat-swapped World play, BD1 executed 14 accepted
+recovery actions, 12 audit-confirmed, across `984/984` candidate decisions with
+zero holds or rejections. The actions did not rescue the weak seats: aggregate
+candidate territory was `650,559` versus parent `652,628` (`-0.317%`), and all
+eight seats per arm remained alive at the horizon. BD1 is rejected before full
+mirrors; qd1n:v89 remains live and exact.
 
 Hrafn appeared in three Round 510 episodes and placed rank 13. Its
 `481/481` decisions were accepted with zero fallbacks, but it died in all
