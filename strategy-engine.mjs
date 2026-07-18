@@ -6,7 +6,13 @@ const SOCIAL_KINDS = new Set([
 
 // Publicly declared reciprocal partner. Neutrality is conditional: any observed
 // incoming attack revokes it, and late dominance still permits a clean finish.
-const RECIPROCAL_RIVALS = new Set(["katanasan", "juryoku-koku"]);
+function normalizedRivalName(value) {
+  return String(value ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
+const RECIPROCAL_RIVALS = new Set(
+  ["katanasan", "juryoku-koku"].map(normalizedRivalName),
+);
 const RECIPROCAL_RIVAL_IDS = new Set([
   "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
 ]);
@@ -269,7 +275,7 @@ function recentDistinctAttackerCount(state, history, window = 12) {
 }
 
 function isReciprocalRival(rival) {
-  return RECIPROCAL_RIVALS.has(String(rival?.name ?? "").toLowerCase()) ||
+  return RECIPROCAL_RIVALS.has(normalizedRivalName(rival?.name)) ||
     RECIPROCAL_RIVAL_IDS.has(String(rival?.id ?? "").toLowerCase());
 }
 
@@ -476,12 +482,13 @@ function kingmakerAllianceAction(actions, state, history) {
       const rival = rivalForAction(action, state);
       return rival && isReciprocalRival(rival) &&
         (rival.id.toLowerCase() === partner.id.toLowerCase() ||
-          rival.name.toLowerCase() === partner.name.toLowerCase());
+          normalizedRivalName(rival.name) === normalizedRivalName(partner.name));
     });
     if (candidates.length === 0) continue;
     const lastAttempt = decisionsSince(history, (entry) =>
       entry.kind === "alliance_request" &&
-      (entry.targetID === partner.id.toLowerCase() || targetName(entry) === partner.name.toLowerCase()));
+      (entry.targetID === partner.id.toLowerCase() ||
+        normalizedRivalName(targetName(entry)) === normalizedRivalName(partner.name)));
     if (lastAttempt < KINGMAKER_RETRY_COOLDOWN) continue;
     const stable = candidates.filter((action) => Number(action?.metadata?.relation) !== 2);
     if (stable.length > 0) return { ...stable[0], policyMarker: "kp2" };
@@ -490,7 +497,7 @@ function kingmakerAllianceAction(actions, state, history) {
       const rival = rivalForAction(action, state);
       return rival && isReciprocalRival(rival) &&
         (rival.id.toLowerCase() === partner.id.toLowerCase() ||
-          rival.name.toLowerCase() === partner.name.toLowerCase());
+          normalizedRivalName(rival.name) === normalizedRivalName(partner.name));
     }).length > 0;
     if (offerPending) return { ...candidates[0], policyMarker: "kp2" };
   }

@@ -1644,3 +1644,42 @@ test("outsiders stay valid nuclear targets under the three-body pact", () => {
   assert.equal(selected.id, bomb.id);
   assert.equal(selected.policyMarker, "nk1");
 });
+
+test("Gravity is protected under the game's spaced display name", () => {
+  const probe = action("attack:juryokukoku:10", "attack", "Attack juryoku koku 10%");
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [probe, build],
+    observation({
+      tileShare: 0.4,
+      troopRatio: 0.9,
+      rivals: [{ id: "juryokukoku", name: "juryoku koku", tileShare: 0.12, relativeTroopRatio: 1.8 }],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, build.id);
+});
+
+test("a Gravity alliance is accepted under the spaced display name", () => {
+  const gravityAlly = {
+    ...action("alliance:juryokukoku:1", "alliance_request", "Request alliance with juryoku koku"),
+    metadata: { recipientID: "juryokukoku", recipientName: "juryoku koku", relation: 0 },
+  };
+  const probe = action("attack:bystander:10", "attack", "Attack Bystander 10%");
+  const selected = choose(
+    [gravityAlly, probe],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      rivals: [
+        { id: "juryokukoku", name: "juryoku koku", tileShare: 0.12, relativeTroopRatio: 1.1 },
+        { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, gravityAlly.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
