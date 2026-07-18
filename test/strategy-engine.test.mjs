@@ -128,6 +128,150 @@ test("productive boat growth does not trigger conversion mode", () => {
   assert.equal(boatConversionStalled(state, history), false);
 });
 
+test("bd1 exits flat rolling boat and retreat churn through economy", () => {
+  const ally = {
+    ...action("alliance:katanasan:1", "alliance_request", "Request alliance with katanasan"),
+    metadata: { recipientID: "katanasan", recipientName: "katanasan", relation: 0 },
+  };
+  const city = action("build:City:1", "build", "Build City");
+  const history = [
+    { actionID: "alliance:katanasan:0", kind: "alliance_request", targetName: "katanasan", tileShare: 0.01 },
+    ...Array.from({ length: 9 }, (_, index) => ({
+      actionID: index % 2 === 0 ? `boat:terra:${index}` : `retreat:boat:${index}`,
+      kind: index % 2 === 0 ? "boat" : "boat_retreat",
+      neutral: index % 2 === 0,
+      tileShare: 0.01,
+    })),
+  ];
+  const selected = choose(
+    [ally, city],
+    observation({
+      tileShare: 0.01,
+      rivals: [{ id: "katanasan", name: "katanasan", tileShare: 0.12, relativeTroopRatio: 0.8 }],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, city.id);
+  assert.equal(selected.policyMarker, "bd1");
+});
+
+test("bd1 preserves the reciprocal request when rolling naval play is productive", () => {
+  const ally = {
+    ...action("alliance:katanasan:1", "alliance_request", "Request alliance with katanasan"),
+    metadata: { recipientID: "katanasan", recipientName: "katanasan", relation: 0 },
+  };
+  const city = action("build:City:1", "build", "Build City");
+  const history = [
+    { actionID: "alliance:katanasan:0", kind: "alliance_request", targetName: "katanasan", tileShare: 0.01 },
+    ...Array.from({ length: 9 }, (_, index) => ({
+      actionID: index % 2 === 0 ? `boat:terra:${index}` : `retreat:boat:${index}`,
+      kind: index % 2 === 0 ? "boat" : "boat_retreat",
+      neutral: index % 2 === 0,
+      tileShare: 0.011 + index * 0.001,
+    })),
+  ];
+  const selected = choose(
+    [ally, city],
+    observation({
+      tileShare: 0.02,
+      rivals: [{ id: "katanasan", name: "katanasan", tileShare: 0.12, relativeTroopRatio: 0.8 }],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, ally.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("bd1 never drops a reciprocal request without a land or economy exit", () => {
+  const ally = {
+    ...action("alliance:katanasan:1", "alliance_request", "Request alliance with katanasan"),
+    metadata: { recipientID: "katanasan", recipientName: "katanasan", relation: 0 },
+  };
+  const boat = action("boat:terra:8", "boat", "Boat to Terra Nullius 8%");
+  const history = [
+    { actionID: "alliance:katanasan:0", kind: "alliance_request", targetName: "katanasan", tileShare: 0.01 },
+    ...Array.from({ length: 9 }, (_, index) => ({
+      actionID: index % 2 === 0 ? `boat:terra:${index}` : `retreat:boat:${index}`,
+      kind: index % 2 === 0 ? "boat" : "boat_retreat",
+      neutral: index % 2 === 0,
+      tileShare: 0.01,
+    })),
+  ];
+  const selected = choose(
+    [ally, boat],
+    observation({
+      tileShare: 0.01,
+      rivals: [{ id: "katanasan", name: "katanasan", tileShare: 0.12, relativeTroopRatio: 0.8 }],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, ally.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("bd1 converts stalled naval churn into neutral land expansion", () => {
+  const ally = {
+    ...action("alliance:katanasan:1", "alliance_request", "Request alliance with katanasan"),
+    metadata: { recipientID: "katanasan", recipientName: "katanasan", relation: 0 },
+  };
+  const expansion = action(
+    "expand:terra-nullius:10",
+    "attack",
+    "Attack Terra Nullius 10%",
+  );
+  const history = [
+    { actionID: "alliance:katanasan:0", kind: "alliance_request", targetName: "katanasan", tileShare: 0.01 },
+    ...Array.from({ length: 9 }, (_, index) => ({
+      actionID: index % 2 === 0 ? `boat:terra:${index}` : `retreat:boat:${index}`,
+      kind: index % 2 === 0 ? "boat" : "boat_retreat",
+      neutral: index % 2 === 0,
+      tileShare: 0.01,
+    })),
+  ];
+  const selected = choose(
+    [ally, expansion],
+    observation({
+      tileShare: 0.01,
+      rivals: [{ id: "katanasan", name: "katanasan", tileShare: 0.12, relativeTroopRatio: 0.8 }],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, expansion.id);
+  assert.equal(selected.policyMarker, "bd1");
+});
+
+test("bd1 never treats an attack on K1Z as a recovery route", () => {
+  const ally = {
+    ...action("alliance:katanasan:1", "alliance_request", "Request alliance with katanasan"),
+    metadata: { recipientID: "katanasan", recipientName: "katanasan", relation: 0 },
+  };
+  const harmful = action("attack:katanasan:10", "attack", "Attack katanasan 10%");
+  const history = [
+    { actionID: "alliance:katanasan:0", kind: "alliance_request", targetName: "katanasan", tileShare: 0.01 },
+    ...Array.from({ length: 9 }, (_, index) => ({
+      actionID: index % 2 === 0 ? `boat:terra:${index}` : `retreat:boat:${index}`,
+      kind: index % 2 === 0 ? "boat" : "boat_retreat",
+      neutral: index % 2 === 0,
+      tileShare: 0.01,
+    })),
+  ];
+  const selected = choose(
+    [ally, harmful],
+    observation({
+      tileShare: 0.01,
+      rivals: [{ id: "katanasan", name: "katanasan", tileShare: 0.12, relativeTroopRatio: 1.8 }],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, ally.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
 test("alliance selection rejects a recent attacker when a peaceful rival is legal", () => {
   const attackerAlliance = {
     ...action("alliance:attacker", "alliance_request", "Alliance with Attacker"),

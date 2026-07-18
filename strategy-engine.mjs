@@ -398,6 +398,13 @@ function hasReliableTacticalAction(actions) {
   });
 }
 
+function hasLandOrEconomyRecoveryAction(actions) {
+  return actions.some((action) => {
+    if (action.kind === "attack") return true;
+    return action.kind === "build" && !actionText(action).includes("defense post");
+  });
+}
+
 export function pickPercent(candidates, desiredPercent, avoid) {
   if (candidates.length === 0) return null;
   const fresh = candidates.filter((action) => !avoid.has(action.id));
@@ -641,6 +648,22 @@ export function boatConversionStalled(state, history) {
   return currentShare <= shares[0] + 0.002;
 }
 
+export function rollingNavalRecoveryStalled(state, history) {
+  const currentShare = finiteNumber(state?.self?.tileShare, NaN);
+  if (!Number.isFinite(currentShare) || currentShare >= 0.12) return false;
+  const recent = history.slice(-12);
+  if (recent.length < 10) return false;
+  const churnCount = recent.filter((entry) =>
+    entry.kind === "boat" || entry.kind === "boat_retreat"
+  ).length;
+  if (churnCount < 6) return false;
+  const shares = recent
+    .map((entry) => finiteNumber(entry?.tileShare, NaN))
+    .filter(Number.isFinite);
+  if (shares.length < 8) return false;
+  return currentShare <= shares[0] + 0.002;
+}
+
 function builtUnits(history) {
   return history
     .filter((entry) => entry.kind === "build")
@@ -783,7 +806,10 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (defensiveBuild) return defensiveBuild;
 
   const kingmakerAlliance = kingmakerAllianceAction(actions, state, history);
-  if (kingmakerAlliance) return kingmakerAlliance;
+  const rollingNavalRecovery = rollingNavalRecoveryStalled(state, history);
+  const deferKingmakerAlliance = rollingNavalRecovery &&
+    hasLandOrEconomyRecoveryAction(actions);
+  if (kingmakerAlliance && !deferKingmakerAlliance) return kingmakerAlliance;
 
   const atomBomb = chooseAtomBomb(actions, state, history);
   if (atomBomb) return atomBomb;
@@ -818,6 +844,12 @@ export function chooseAction(actions, state, plan = null, history = []) {
   const finishingTarget = rivalAttack && rivalAttack.streak > 0 &&
     rivalAttack.rival.relativeTroopRatio >= 1.5;
   const collapsing = territoryCollapsing(state, history);
+
+  if (rollingNavalRecovery) {
+    const recovery = disciplinedAttack || neutralAttack || build;
+    if (recovery) return { ...recovery, policyMarker: "bd1" };
+  }
+  if (kingmakerAlliance) return kingmakerAlliance;
 
   if (collapsing && build && sinceBuild >= 3 && !finishingTarget) return build;
 
