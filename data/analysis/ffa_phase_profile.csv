@@ -1,6 +1,6 @@
 player_name,policy_version,won,phase,decisions,rival_attack_rate_pct,neutral_attack_rate_pct,build_rate_pct,social_rate_pct,hold_rate_pct,mean_attack_ratio,mean_attack_percent
 Auri,42,true,opening,170,0.59,64.12,5.29,0.0,0.0,1.67,40.0
-Auri,42,true,conversion,255,12.55,72.55,12.55,0.0,0.0,2.14,25.9
+Auri,42,true,conversion,255,12.55,72.55,12.55,0.0,0.0,2.13,25.9
 Auri,42,true,finish,1805,38.06,21.77,10.25,3.32,0.28,4.12,30.6
 Auri,42,false,opening,620,0.16,66.29,3.55,0.0,0.0,1.72,10.0
 Auri,42,false,conversion,929,16.58,64.69,13.46,1.4,0.11,2.18,29.3
