@@ -128,6 +128,106 @@ test("productive boat growth does not trigger conversion mode", () => {
   assert.equal(boatConversionStalled(state, history), false);
 });
 
+test("nr1 keeps troops home through economy after recent early pressure", () => {
+  const boat = action("boat:terra:8", "boat", "Boat to Terra Nullius 8%");
+  const city = action("build:City:1", "build", "Build City");
+  const history = [
+    { actionID: "build:Factory:0", kind: "build", tileShare: 0.03 },
+    {
+      actionID: "alliance:outsider:0",
+      kind: "alliance_request",
+      tileShare: 0.03,
+      allProtocolAttackerIDs: ["raider"],
+    },
+  ];
+  const selected = choose([boat, city], observation({ tileShare: 0.03 }), null, history);
+  assert.equal(selected.id, city.id);
+  assert.equal(selected.policyMarker, "nr1");
+});
+
+test("nr1 uses an available upgrade instead of another exposed transport", () => {
+  const boat = action("boat:terra:8", "boat", "Boat to Terra Nullius 8%");
+  const upgrade = action("upgrade:city:1", "upgrade_structure", "Upgrade City");
+  const history = [{
+    actionID: "build:City:0",
+    kind: "build",
+    tileShare: 0.03,
+    allProtocolAttackerIDs: ["raider"],
+  }];
+  const selected = choose([boat, upgrade], observation({ tileShare: 0.03 }), null, history);
+  assert.equal(selected.id, upgrade.id);
+  assert.equal(selected.policyMarker, "nr1");
+});
+
+test("nr1 does not suppress naval expansion without recent pressure", () => {
+  const boat = action("boat:terra:8", "boat", "Boat to Terra Nullius 8%");
+  const city = action("build:City:1", "build", "Build City");
+  const history = [
+    { actionID: "build:Factory:0", kind: "build", tileShare: 0.03 },
+    { actionID: "alliance:outsider:0", kind: "alliance_request", tileShare: 0.03 },
+  ];
+  const selected = choose([boat, city], observation({ tileShare: 0.03 }), null, history);
+  assert.equal(selected.id, boat.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("nr1 leaves established high-share naval play unchanged", () => {
+  const boat = action("boat:terra:8", "boat", "Boat to Terra Nullius 8%");
+  const city = action("build:City:1", "build", "Build City");
+  const history = [
+    { actionID: "build:Factory:0", kind: "build", tileShare: 0.2 },
+    {
+      actionID: "alliance:outsider:0",
+      kind: "alliance_request",
+      tileShare: 0.2,
+      allProtocolAttackerIDs: ["raider"],
+    },
+  ];
+  const selected = choose([boat, city], observation({ tileShare: 0.2 }), null, history);
+  assert.equal(selected.id, boat.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("nr1 preserves a K1Z reciprocal request under early pressure", () => {
+  const ally = {
+    ...action("alliance:katanasan:1", "alliance_request", "Request alliance with katanasan"),
+    metadata: { recipientID: "katanasan", recipientName: "katanasan", relation: 0 },
+  };
+  const boat = action("boat:terra:8", "boat", "Boat to Terra Nullius 8%");
+  const city = action("build:City:1", "build", "Build City");
+  const history = [{
+    actionID: "build:Factory:0",
+    kind: "build",
+    tileShare: 0.03,
+    allProtocolAttackerIDs: ["raider"],
+  }];
+  const selected = choose(
+    [ally, boat, city],
+    observation({
+      tileShare: 0.03,
+      rivals: [{ id: "katanasan", name: "katanasan", tileShare: 0.12, relativeTroopRatio: 0.8 }],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, ally.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("nr1 never converts a stale Defense Post into a reserve action", () => {
+  const boat = action("boat:terra:8", "boat", "Boat to Terra Nullius 8%");
+  const post = action("build:Defense Post:1", "build", "Build Defense Post");
+  const history = [{
+    actionID: "build:Factory:0",
+    kind: "build",
+    tileShare: 0.03,
+    allProtocolAttackerIDs: ["raider"],
+  }];
+  const selected = choose([boat, post], observation({ tileShare: 0.03 }), null, history);
+  assert.equal(selected.id, boat.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
 test("alliance selection rejects a recent attacker when a peaceful rival is legal", () => {
   const attackerAlliance = {
     ...action("alliance:attacker", "alliance_request", "Alliance with Attacker"),

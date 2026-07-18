@@ -641,6 +641,12 @@ export function boatConversionStalled(state, history) {
   return currentShare <= shares[0] + 0.002;
 }
 
+export function earlyPressureNavalReserve(state, history) {
+  const currentShare = finiteNumber(state?.self?.tileShare, NaN);
+  if (!Number.isFinite(currentShare) || currentShare >= 0.12) return false;
+  return recentDistinctAttackerCount(state, history, 8) > 0;
+}
+
 function builtUnits(history) {
   return history
     .filter((entry) => entry.kind === "build")
@@ -834,6 +840,18 @@ export function chooseAction(actions, state, plan = null, history = []) {
     (allianceMove.kind === "break_alliance" || !hasReliableTacticalAction(actions))
   ) {
     return allianceMove;
+  }
+
+  const neutralBoatAvailable = safeActions(actions, isNeutralBoat).length > 0;
+  if (
+    earlyPressureNavalReserve(state, history) &&
+    neutralBoatAvailable &&
+    !disciplinedAttack &&
+    !neutralAttack
+  ) {
+    const reserve = build ||
+      safeActions(actions, (action) => action.kind === "upgrade_structure")[0];
+    if (reserve) return { ...reserve, policyMarker: "nr1" };
   }
 
   const conversionReady = decisionsSince(
