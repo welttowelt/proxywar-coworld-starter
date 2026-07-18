@@ -1280,3 +1280,34 @@ streak is `1/100` and `1/1000`: two wins in the first five rounds of the
 era, against v77's recent drought. The katanasan bond and the mx3 base are
 producing round wins; the pile-on guard (pd2) and the three-body extension
 are next in the deployment queue behind the smoke verification.
+
+## K1Z identity and the fog-of-war contract, v84/v85 (2026-07-18)
+
+The coalition moved to visible identity: odin free was renamed in place to
+`K1Z odin free` (player ID `ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c`
+unchanged, memberships preserved), matching `K1Z katanasan` and
+`K1Z juryoku-koku`. v83's raw-name matcher could not recognize tagged
+allies, so the canonical matcher shipped as `qd1n:v84`
+(`04d7be67-3d01-4d06-a9c1-ff6ceb44225a`, submission
+`sub_fa36de92-574a-4ffa-84d2-efd4697fd45e`, champion interim): NFKC,
+separators to spaces, collapse, one leading `K1Z` tag stripped, lowercase;
+protection by canonical name, pinned stable player IDs, or observed in-game
+ID. `139/139` tests, red-first verified, including the hidden-label nuke
+whose metadata only names `K1Z juryoku koku`.
+
+The km4 smoke2 audit then isolated why Gravity never received requests:
+`alliance:9h8tnrym` was in odin's legal set from turn 400 onward, but
+juryoku-koku sat outside odin's `visiblePlayers` (fog of war), and the
+kingmaker loop only iterated visible rivals. Telemetry: katanasan
+`allianceState: requested` (4 kp2), juryoku `none`; `531/531` accepted,
+zero holds, zero rejections, zero harmful actions vs either ally.
+`qd1n:v85` (`8fd97edf-9bc8-432a-a532-26ea6348fd36`, submission
+`sub_59ff8ae8-861e-4e81-91c6-03c852f0876a`, membership `lpm_25cd60b6`)
+discovers partners from alliance metadata as well, records the retry
+cooldown from it, and never re-requests an allied visible partner.
+`144/144` tests, red-first verified; image sha256
+`023667e67d0a1509bc7b5e070cd09a57a42e798c90864623089863d6973c0945`
+(linux/amd64) byte-identical to committed source (worktree `98fec1b9`,
+main `462a94a1`). Smoke3 end-to-end verification is running at time of
+writing; the standard `4/4` and `20/20` strategic gates remain incomplete
+(operator-and-coalition-directed promotion).

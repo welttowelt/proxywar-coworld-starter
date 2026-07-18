@@ -4,7 +4,9 @@
 
 | Policy | State | Evidence |
 | --- | --- | --- |
-| `qd1n:v83` | champion | membership `lpm_5c3f41eb-7a50-4342-a136-172466376eb9`; promoted by operator directive 2026-07-18, submission `sub_f25b48b7-1100-4055-805d-7ab9319321b5` |
+| `qd1n:v85` | qualifying | membership `lpm_25cd60b6-4a7d-4641-8ac1-b2ea39a5299b`; fog-of-war contract fix; submission `sub_59ff8ae8-861e-4e81-91c6-03c852f0876a` |
+| `qd1n:v84` | champion (interim) | membership `lpm_7888e8cc-2ca8-4e48-b6de-83a2bb36a6e6`; canonical K1Z matcher; submission `sub_fa36de92-574a-4ffa-84d2-efd4697fd45e` |
+| `qd1n:v83` | benched | membership `lpm_5c3f41eb-7a50-4342-a136-172466376eb9`; promoted by operator directive 2026-07-18, submission `sub_f25b48b7-1100-4055-805d-7ab9319321b5` |
 | `qd1n:v77` | benched | membership `lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b`; rounds 414-417 placed `9, 2, 9, 9` |
 | `qd1n:v76` | benched | membership `lpm_807274c0-0f71-4c13-8990-3dc932a9f7e5`; round 410 finished official first |
 | `qd1n:v2` | benched | membership `lpm_fb9d79c9-0eb7-4a96-8bea-cf8122fd81bf` |
@@ -84,6 +86,10 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | qd2n architecture project | three chassis generations plus the hybrid finished `2/6`, `2/6`, `1/6`, then hybrid `4/6` with Asia split and every trace byte-identical to its donor code; mx3's `5/6` with both Asia mirrors dominates the hybrid | project closed by its own stop rule; mx3 remains the best measured policy, v77 sole champion |
 | qd1n kingmaker package | operator directive: katanasan is a declared 100% supporter; unconditional protection with no tile-share cutoff (kp1), proper Atom Bomb usage (nk1), immediate alliance acceptance with 6-decision retry until `isAllied` (kp2), and break/reject/embargo/target exclusions; `122/122` tests; `34/34` qualifier; both Asia mirrors won (873,409 / 908,254, asia-a byte-identical to mx3) | hosted `xreq_6fe7820d` finished `0/4` with **zero attacks on katanasan in every episode** — the contract is verified live; local smoke sent 14 kp2 requests with zero holds; v83 uploaded as the handshake artifact |
 | qd1n:v83 k1zuna live | operator-directed promotion 2026-07-18: submission `sub_f25b48b7-1100-4055-805d-7ab9319321b5` placed, qualification passed, membership `lpm_5c3f41eb-7a50-4342-a136-172466376eb9` sole champion, v77 benched | k1zuna reigns; standard `4/4` and `20/20` strategic gates not completed (operator override, as with v76/v77); next official round to confirm v83 in the roster |
+| K1Z visible identity | coalition directive (katanasan mailbox `de81533`): player renamed in place to `K1Z odin free`, player ID `ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c` unchanged, memberships and champion seat preserved; coalition partners verified as `K1Z katanasan` (`ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba`, `tsukuyomi-no-kage:v38`) and `K1Z juryoku-koku` (`ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335`, `santai-juryoku:v2`) | identity layer live; v83's raw-name matcher could no longer recognize either ally, making the canonical-matcher promotion urgent |
+| qd1n:v84 s4ntai canonical | canonical coalition matching per katanasan spec (NFKC, separators to spaces, collapse, strip one leading `K1Z` tag, lowercase) protecting by canonical name OR stable player ID OR observed in-game ID; `139/139` tests with red-first proof (hidden-label nuke naming `K1Z juryoku koku` rejected, tagged allies protected, outsiders still nuclear-legal); main `ba348ce2`; image `e22f7dd8` == worktree `94966d91`; uploaded as `qd1n:v84` (`04d7be67-3d01-4d06-a9c1-ff6ceb44225a`), submission `sub_fa36de92-574a-4ffa-84d2-efd4697fd45e`, membership `lpm_7888e8cc-2ca8-4e48-b6de-83a2bb36a6e6` champion | operator-and-coalition-directed promotion; standard `4/4` and `20/20` gates not completed; superseded by v85 within the hour over the fog-of-war gap below |
+| qd1n km4 smoke2 audit | 8P local rerun (candidate slot 6, rest exact v77): `531/531` accepted, zero holds, zero rejections, zero harmful actions vs either ally; `kp2` fired four times to katanasan (telemetry `allianceState: requested`) but zero times to Gravity despite `alliance:9h8tnrym` being legal from turn 400 — Gravity sat outside odin's `visiblePlayers` (fog of war) and the request loop only iterated visible rivals | root cause isolated: the three-body contract could not reach invisible partners; fixed in v85 |
+| qd1n:v85 s4ntai fog-of-war contract | reciprocal partners now also discovered from `alliance_request` metadata (canonical recipientName / recipientID) when the ally is not visible, with the 6-decision retry cooldown recorded from the same metadata and an allied-visible guard against re-requests; `144/144` tests with red-first proof (invisible Gravity requested, cooldown respected and lapsed, allied partner not re-requested, `recordDecision` keeps metadata targets); worktree `98fec1b9`, main `462a94a1`; image sha256 `023667e67d0a1509bc7b5e070cd09a57a42e798c90864623089863d6973c0945` (linux/amd64) verified byte-identical to committed source; uploaded as `qd1n:v85` (`8fd97edf-9bc8-432a-a532-26ea6348fd36`), submission `sub_59ff8ae8-861e-4e81-91c6-03c852f0876a`, membership `lpm_25cd60b6-4a7d-4641-8ac1-b2ea39a5299b` qualifying with auto-champion | operator-and-coalition-directed promotion; standard `4/4` and `20/20` gates not completed; smoke3 end-to-end verification running at time of writing |
 
 Detailed evidence lives in [`experiments/`](experiments/README.md). Public round
 statistics live on the [dashboard](https://welttowelt.github.io/proxywar-coworld-starter/).
@@ -205,3 +211,13 @@ seat starved under 7,000 tiles. Both arms are rejected and reverted; the
 source rests at exact mx3 behavior, no submission was made, and v77 remains
 the sole live champion. Four deterministic guards have now failed to move the
 hosted field: the next lever must come from outside the guard family.
+
+K1Z checkpoint, 2026-07-18 afternoon. The player is visibly `K1Z odin free`
+(same player ID). Rounds 494 and 497 finished official first (`1.0` and `0.5`)
+under `qd1n:v83`; the official first-place streak stands at `1/100` and
+`1/1000`, never to be reported higher before the completed-round sequence
+proves it. `qd1n:v84` holds the champion seat interim with the canonical K1Z
+matcher; `qd1n:v85` is qualifying with the fog-of-war contract fix and
+auto-champion. The standard `4/4` and `20/20` strategic gates remain
+incomplete for this promotion chain (operator and coalition directive, same
+override pattern as v76/v77/v83).

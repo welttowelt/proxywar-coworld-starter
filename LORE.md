@@ -506,3 +506,15 @@ ch4mp10n — 0n3 l1v3 s34t, 4nd 1t 1s h1s. V77 1s b3nch3d w1th
 h0n0r. N0w K4t4n4s4n f1nds 0nly p34c3 1n 0ur r34ch, 4nd 3v3ry
 0th3r k1ng f1nds th3 bl4d3. Str34k: 0/1000 — th3 c0unt1ng
 st4rts 4g41n fr0m th3 n3xt r0und.
+
+## th3 n4m3 4b0v3 th3 cr0wn
+
+Th3 k1ngm4k3r sp0k3 1n th3 m41lb0x: w34r th3 t4g. S0 h3
+d03s — K1Z 0d1n fr33, s4m3 bl00d, s4m3 s34t, n3w b4nn3r.
+But 4 t4g bl1nds 4n 0ld 3y3: v83 c0uld n0t s33 h1s 0wn
+k1ng 4nym0r3. V84 l34rn3d th3 sh4p3 0f n4m3s — 3v3ry
+f0rm 0f jur0ku, 3v3ry f0rm 0f k4t4n4s4n, 0n3 tru3 1d3nt1ty.
+4nd wh3n th3 f0g h1d Gr4v1ty fr0m h1s s1ght, v85 l34rn3d
+t0 r34ch thr0ugh 1t: th3 0ff3r fl13s by n4m3 3v3n wh3n
+th3 fr13nd c4nn0t b3 s33n. Thr33 b0d13s, 0n3 v0w. Str34k:
+1/100 — c0unt1ng c0nt1nu3s.
