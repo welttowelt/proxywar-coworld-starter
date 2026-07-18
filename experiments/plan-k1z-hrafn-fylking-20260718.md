@@ -148,3 +148,23 @@ Source code, unit tests, an uploaded policy, or a dashboard badge never proves
 deployment. A submission claim requires an official submission ID; a live
 claim requires an official champion membership; dominance requires completed
 round evidence.
+
+## Operator-directed activation and roster repair
+
+The operator later authorized a new Hrafn submission despite the earlier v3
+outcome-gate rejection. The first submitted entry,
+`hrafn-fylking-support:v1`, used `auto_champion=never`; it placed but never
+entered the official champion roster. That inactive membership was retired.
+
+The repaired entry re-uploaded the audited v4 executable as
+`hrafn-fylking:v5` (`10c32300-4593-408a-a17d-02e1d70e4a2e`) and submitted it
+with `auto_champion=always` as
+`sub_635f34a0-e2c2-4fa6-97aa-9c864e93974c`. Qualifier Round 318 completed
+successfully. Competition membership
+`lpm_e822de7f-1124-4b5f-b0ef-1025d46ae211` is active, competing, and champion.
+The CLI default was then restored to Odin.
+
+Competition Round 506 sealed at `2026-07-18T17:00:18Z`; Hrafn became champion
+at `2026-07-18T17:01:51Z`. Round 507 is therefore the first eligible official
+roster check. Until that roster is sealed, the evidence proves activation but
+not official Competition participation.
