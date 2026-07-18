@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-llm:qd1n-v77-km1-amd64",
+    "parent_ref": "qd1n:v77",
+    "exact_deltas": [
+      "protect katanasan unconditionally while katanasan never attacks us, vetoing and kp1-marking any redirected attack",
+      "build one missile silo after the economy trio and fire Atom Bombs only at unprotected, SAM-free, worthwhile targets with nk1 markers"
+    ]
+  },
+  "hypothesis": "katanasan is a declared 100% supporter; never striking him preserves the alliance, and proper Atom Bomb usage adds the leader-pressure tool Auri already uses",
+  "mechanism": {
+    "marker": "kp1|nk1",
+    "prior_reachable_decisions": 1,
+    "source": "experiments/diagnosis-qd1n-kingmaker-rci-20260718.json",
+    "reach_note": "kp1 is unreachable locally (bots are never named katanasan); nk1 engaged once locally (silo at turn 6400); hosted roster measures both"
+  },
+  "local": {
+    "runs": 2,
+    "independent_traces": 2,
+    "wins": 2,
+    "self_play": false,
+    "evaluated_seats": 16,
+    "accepted_decisions": 453,
+    "holds": 0,
+    "unexplained_holds": 0,
+    "rejections": 0,
+    "planner_degraded_decisions": 437,
+    "mechanism_reached": true,
+    "qualifier_replay_sha256": "d36b0a65e87c5d4b9a1bd421872826489ae2f178c468c927832b623b6ac95072"
+  },
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  },
+  "verdict": "local gates pass; hosted baseline, hosted 4/4, and independent 20/20 are pending"
+}

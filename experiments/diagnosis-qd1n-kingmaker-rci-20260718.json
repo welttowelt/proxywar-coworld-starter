@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-18T02:30:00Z",
+  "candidate": "qd1n-v77-km1",
+  "verdict": "LOCAL_GATES_PASS_HOSTED_GATES_PENDING",
+  "remote_state_changed": false,
+  "hypothesis": "operator directive: katanasan is a 100% supporter and must never be attacked; the existing reciprocal trust had a 0.35 tile-share cutoff that let qd1n first-strike him in three recorded wins, and qd1n almost never built silos or fired Atom Bombs while Auri fires them at runaway leaders",
+  "guards": [
+    "katanasan protection is unconditional on tile share; it breaks only if katanasan attacks first",
+    "Atom Bombs are never built against protected rivals or under SAM coverage",
+    "silo preference slots after city/factory/port; no other build-order change"
+  ],
+  "source_isolation": {
+    "parent_commit": "b0c205c9ca324725d1ef17c66887f160068e7ffa",
+    "candidate_commit": "ce709d83646fa5d49a3cbc0563271eda5d0b0e2a",
+    "runtime_diff_files": [
+      "strategy-engine.mjs"
+    ],
+    "test_diff_files": [
+      "test/strategy-engine.test.mjs"
+    ],
+    "isolated_delta": "move the katanasan reciprocal trust above the 0.35 cutoff with kp1 redirect markers, add proper Atom Bomb selection (nk1) excluding protected rivals and SAM-covered targets, and prefer one missile silo after the economy trio",
+    "markers": [
+      "kp1",
+      "nk1"
+    ]
+  },
+  "images": {
+    "candidate": {
+      "tag": "proxywar-agent-llm:qd1n-v77-km1-amd64",
+      "image_id": "sha256:675bdbcadc259d608ed7015db5e2bbb1e0664d07f88289542254a9c9a7cf03ef",
+      "architecture": "amd64"
+    },
+    "exact_parent": {
+      "tag": "proxywar-agent-llm:qd1n-v77-exact-amd64",
+      "image_id": "sha256:3ea2a36dbf2c554f619adfc36e890e6a333bf43144340bfe594807d539b82ef0",
+      "architecture": "amd64"
+    }
+  },
+  "verification": {
+    "red_regression": "the 0.35-cutoff peace test and the leader-bomb test failed before the delta; the escape-hatch, katanasan-bomb, and SAM tests passed unchanged",
+    "unit_tests": {
+      "passed": 116,
+      "failed": 0
+    },
+    "diff_check": "pass",
+    "qualifier": {
+      "path": "/private/tmp/proxywar-v77-km1-amd64-qualifier-20260718",
+      "decisions": 34,
+      "accepted": 34,
+      "holds": 0,
+      "rejected": 0,
+      "expected_planner_degraded_fallbacks": 10,
+      "replay_sha256": "d36b0a65e87c5d4b9a1bd421872826489ae2f178c468c927832b623b6ac95072"
+    },
+    "matched_trials": {
+      "ledger": "experiments/ledger-qd1n-kingmaker-exact-v77-20260718.ndjson",
+      "runs": [
+        {
+          "path": "/private/tmp/proxywar-v77-km1-amd64-asia-a-20260718",
+          "winner_slot": 6,
+          "winner_arm": "candidate",
+          "turn_count": 7400,
+          "replay_sha256": "07d1c2048bdc8f46e3bd072e5cb37d742419ddf372db6a4b1d851d989c229b1e"
+        },
+        {
+          "path": "/private/tmp/proxywar-v77-km1-amd64-asia-b-20260718",
+          "winner_slot": 7,
+          "winner_arm": "candidate",
+          "turn_count": 7500,
+          "replay_sha256": "7547830a71db3d86298447750be6488cab5ae1b6715101d9d593e8a34febae42"
+        }
+      ],
+      "evaluated_seats": 16,
+      "candidate_wins": 2,
+      "parent_wins": 0,
+      "winner_tiles": [
+        873409,
+        908254
+      ],
+      "candidate_decisions": 463,
+      "candidate_accepted": 463,
+      "candidate_rejected": 0,
+      "candidate_holds": 0,
+      "asia_a_trace": "byte-identical to the mx3 run",
+      "asia_b_trace": "candidate won 908,254; one nk1-driven silo build at turn 6400, otherwise mx3-equivalent",
+      "kp1_note": "local bots are never named katanasan, so kp1 is unreachable locally by design; its real test is the hosted roster"
+    }
+  },
+  "gates": {
+    "asia_mirrored_advantage": true,
+    "zero_rejected": true,
+    "zero_unexplained_holds": true,
+    "hosted_diagnostic_4_of_4": false,
+    "map_seat_regression_20_of_20": false,
+    "promotion_eligible": false
+  },
+  "league_state": {
+    "live_policy": "qd1n:v77",
+    "candidate_uploaded": false,
+    "candidate_submitted": false,
+    "champion_changed": false,
+    "membership_relaunched": false,
+    "official_first_place_streak": 0,
+    "target_first_place_streak": 1000
+  },
+  "next_test": "hosted diagnostic xreq_6fe7820d-7776-4580-9a3b-b6df6ec248e3 on the current league roster with tsukuyomi-no-kage:v34 present"
+}
