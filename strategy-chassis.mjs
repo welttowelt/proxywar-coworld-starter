@@ -153,7 +153,7 @@ export function chooseChassisAction(actions, state, plan = null, history = []) {
   }
   if (build) return build;
 
-  const utility = chooseUtility(actions, plan, history);
+  const utility = chooseUtility(actions, state, plan, history);
   if (utility) return utility;
 
   const alliance = bestAllianceRequest(actions, state, history);

@@ -6,7 +6,10 @@ const SOCIAL_KINDS = new Set([
 
 // Publicly declared reciprocal partner. Neutrality is conditional: any observed
 // incoming attack revokes it, and late dominance still permits a clean finish.
-const RECIPROCAL_RIVALS = new Set(["katanasan"]);
+const RECIPROCAL_RIVALS = new Set(["katanasan", "juryoku-koku"]);
+const RECIPROCAL_RIVAL_IDS = new Set([
+  "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+]);
 const MIN_DESPERATE_INVASION_RATIO = 0.5;
 const MIN_CONVERSION_TILE_SHARE = 0.002;
 const MAP_SPAWN_TILES = new Map([
@@ -266,7 +269,8 @@ function recentDistinctAttackerCount(state, history, window = 12) {
 }
 
 function isReciprocalRival(rival) {
-  return RECIPROCAL_RIVALS.has(rival.name.toLowerCase());
+  return RECIPROCAL_RIVALS.has(String(rival?.name ?? "").toLowerCase()) ||
+    RECIPROCAL_RIVAL_IDS.has(String(rival?.id ?? "").toLowerCase());
 }
 
 function reciprocalTrustIntact(state, history, rival) {
@@ -465,26 +469,31 @@ function chooseRivalAttack(actions, state, plan, history, avoid, threatCount = 0
 const KINGMAKER_RETRY_COOLDOWN = 6;
 
 function kingmakerAllianceAction(actions, state, history) {
-  const kingmaker = state.rivals.find(isReciprocalRival);
-  if (!kingmaker || kingmaker.isAllied) return null;
-  const candidates = safeActions(actions, (action) => {
-    if (action.kind !== "alliance_request") return false;
-    const rival = rivalForAction(action, state);
-    return rival && isReciprocalRival(rival);
-  });
-  if (candidates.length === 0) return null;
-  const lastAttempt = decisionsSince(history, (entry) =>
-    entry.kind === "alliance_request" &&
-    (entry.targetID === kingmaker.id.toLowerCase() || targetName(entry) === kingmaker.name.toLowerCase()));
-  if (lastAttempt < KINGMAKER_RETRY_COOLDOWN) return null;
-  const stable = candidates.filter((action) => Number(action?.metadata?.relation) !== 2);
-  if (stable.length > 0) return { ...stable[0], policyMarker: "kp2" };
-  const offerPending = safeActions(actions, (action) => {
-    if (action.kind !== "alliance_reject") return false;
-    const rival = rivalForAction(action, state);
-    return rival && isReciprocalRival(rival);
-  }).length > 0;
-  if (offerPending) return { ...candidates[0], policyMarker: "kp2" };
+  const partners = state.rivals.filter((rival) => isReciprocalRival(rival) && !rival.isAllied);
+  for (const partner of partners) {
+    const candidates = safeActions(actions, (action) => {
+      if (action.kind !== "alliance_request") return false;
+      const rival = rivalForAction(action, state);
+      return rival && isReciprocalRival(rival) &&
+        (rival.id.toLowerCase() === partner.id.toLowerCase() ||
+          rival.name.toLowerCase() === partner.name.toLowerCase());
+    });
+    if (candidates.length === 0) continue;
+    const lastAttempt = decisionsSince(history, (entry) =>
+      entry.kind === "alliance_request" &&
+      (entry.targetID === partner.id.toLowerCase() || targetName(entry) === partner.name.toLowerCase()));
+    if (lastAttempt < KINGMAKER_RETRY_COOLDOWN) continue;
+    const stable = candidates.filter((action) => Number(action?.metadata?.relation) !== 2);
+    if (stable.length > 0) return { ...stable[0], policyMarker: "kp2" };
+    const offerPending = safeActions(actions, (action) => {
+      if (action.kind !== "alliance_reject") return false;
+      const rival = rivalForAction(action, state);
+      return rival && isReciprocalRival(rival) &&
+        (rival.id.toLowerCase() === partner.id.toLowerCase() ||
+          rival.name.toLowerCase() === partner.name.toLowerCase());
+    }).length > 0;
+    if (offerPending) return { ...candidates[0], policyMarker: "kp2" };
+  }
   return null;
 }
 
@@ -655,7 +664,7 @@ export function chooseBoat(
   return pickPercent(pool, boatStreak === 0 ? 8 : 16, avoid);
 }
 
-export function chooseUtility(actions, plan, history) {
+export function chooseUtility(actions, state, plan, history) {
   const preferredKinds = (plan?.preferKinds || []).filter((kind) =>
     ["nuke", "upgrade_structure", "warship", "move_warship"].includes(kind)
   );
@@ -663,7 +672,11 @@ export function chooseUtility(actions, plan, history) {
     "nuke", ...preferredKinds, "upgrade_structure", "warship", "move_warship",
   ])];
   for (const kind of order) {
-    const action = safeActions(actions, (candidate) => candidate.kind === kind)[0];
+    const action = safeActions(actions, (candidate) => {
+      if (candidate.kind !== kind) return false;
+      const rival = rivalForAction(candidate, state);
+      return !rival || !rivalIsProtected(state, history, rival);
+    })[0];
     if (action) return action;
   }
 
@@ -749,7 +762,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
     (entry) => entry.policyMarker === "cv1",
   ) >= 6;
   if (!collapsing && conversionReady && boatConversionStalled(state, history)) {
-    const conversion = disciplinedAttack || chooseUtility(actions, plan, history) ||
+    const conversion = disciplinedAttack || chooseUtility(actions, state, plan, history) ||
       (sinceBuild >= 3 ? build : null) ||
       chooseBoat(actions, state, history, avoid, false, true);
     if (conversion) return { ...conversion, policyMarker: "cv1" };
@@ -777,7 +790,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
   const boat = chooseBoat(actions, state, history, avoid);
   if (boat) return withDiscipline(withPeace(boat));
 
-  const utility = chooseUtility(actions, plan, history);
+  const utility = chooseUtility(actions, state, plan, history);
   if (utility) return withDiscipline(withPeace(utility));
 
   const desperateInvasion = !neutralAttack && !rivalAttack?.action && !build;

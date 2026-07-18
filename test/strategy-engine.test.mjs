@@ -1521,3 +1521,126 @@ test("a strong counter at 1.3 or better proceeds under pile-on", () => {
   assert.equal(selected.id, "attack:bystander:10");
   assert.equal(selected.policyMarker, undefined);
 });
+
+test("a Gravity alliance request is accepted with the same priority as katanasan", () => {
+  const gravityAlly = {
+    ...action("alliance:juryoku:1", "alliance_request", "Request alliance with juryoku-koku"),
+    metadata: { recipientID: "juryoku-koku", recipientName: "juryoku-koku", relation: 0 },
+  };
+  const probe = action("attack:bystander:10", "attack", "Attack Bystander 10%");
+  const selected = choose(
+    [gravityAlly, probe],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      rivals: [
+        { id: "juryoku-koku", name: "juryoku-koku", tileShare: 0.12, relativeTroopRatio: 1.1 },
+        { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, gravityAlly.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("Gravity is protected by exact player ID even under another name", () => {
+  const probe = action("attack:someone:10", "attack", "Attack Someone 10%");
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [probe, build],
+    observation({
+      tileShare: 0.4,
+      troopRatio: 0.9,
+      rivals: [{
+        id: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+        name: "Someone",
+        tileShare: 0.12,
+        relativeTroopRatio: 1.8,
+      }],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, build.id);
+});
+
+test("alliance requests stop only for the confirmed ally, not the pending one", () => {
+  const gravityAlly = {
+    ...action("alliance:juryoku:1", "alliance_request", "Request alliance with juryoku-koku"),
+    metadata: { recipientID: "juryoku-koku", recipientName: "juryoku-koku", relation: 0 },
+  };
+  const katAlly = {
+    ...action("alliance:katanasan:1", "alliance_request", "Request alliance with katanasan"),
+    metadata: { recipientID: "katanasan", recipientName: "katanasan", relation: 0 },
+  };
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [gravityAlly, katAlly, build],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      rivals: [
+        { id: "katanasan", name: "katanasan", tileShare: 0.12, relativeTroopRatio: 1.1, isAllied: true },
+        { id: "juryoku-koku", name: "juryoku-koku", tileShare: 0.12, relativeTroopRatio: 1.1 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, gravityAlly.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("no harmful action of any kind is taken against Gravity or katanasan", () => {
+  const harmfulKat = action("attack:katanasan:10", "attack", "Attack katanasan 10%");
+  const harmfulGravBoat = action("boat:juryoku:8", "boat", "Invade juryoku-koku");
+  const harmfulGravNuke = {
+    ...action("build:Atom Bomb:1", "build", "Build Atom Bomb"),
+    metadata: { unit: "Atom Bomb", targetID: "juryoku-koku", targetName: "juryoku-koku", targetTileShare: 0.7, targetSamCoverage: 0 },
+  };
+  const harmfulGravWarship = {
+    ...action("move_warship:juryoku:1", "move_warship", "Move warship toward juryoku-koku"),
+    metadata: { targetID: "juryoku-koku", targetName: "juryoku-koku" },
+  };
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [harmfulKat, harmfulGravBoat, harmfulGravNuke, harmfulGravWarship, build],
+    observation({
+      tileShare: 0.4,
+      troopRatio: 0.9,
+      rivals: [
+        { id: "katanasan", name: "katanasan", tileShare: 0.12, relativeTroopRatio: 1.8 },
+        { id: "juryoku-koku", name: "juryoku-koku", tileShare: 0.12, relativeTroopRatio: 1.8 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, build.id);
+});
+
+test("outsiders stay valid nuclear targets under the three-body pact", () => {
+  const bomb = {
+    ...action("build:Atom Bomb:1", "build", "Build Atom Bomb"),
+    metadata: { unit: "Atom Bomb", targetID: "leader", targetName: "Leader", targetTileShare: 0.79, targetSamCoverage: 0 },
+  };
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [bomb, build],
+    observation({
+      tileShare: 0.2,
+      troopRatio: 0.9,
+      rivals: [
+        { id: "katanasan", name: "katanasan", tileShare: 0.1, relativeTroopRatio: 1.5 },
+        { id: "juryoku-koku", name: "juryoku-koku", tileShare: 0.1, relativeTroopRatio: 1.5 },
+        { id: "leader", name: "Leader", tileShare: 0.79, relativeTroopRatio: 0.5 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, bomb.id);
+  assert.equal(selected.policyMarker, "nk1");
+});
