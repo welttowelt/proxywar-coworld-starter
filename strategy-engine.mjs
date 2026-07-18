@@ -6,14 +6,27 @@ const SOCIAL_KINDS = new Set([
 
 // Publicly declared reciprocal partner. Neutrality is conditional: any observed
 // incoming attack revokes it, and late dominance still permits a clean finish.
+//
+// Canonical coalition identity, shared with katanasan v38 / santai-juryoku:v2:
+// NFKC, hyphen/underscore/dot runs become spaces, whitespace collapses, one
+// optional leading [K1Z]/K1Z tag is removed, then lowercase. The game itself
+// also rewrites display names (e.g. "juryoku-koku" -> "juryoku koku"), so every
+// name comparison routes through this canonical form.
 function normalizedRivalName(value) {
-  return String(value ?? "").toLowerCase().replace(/[^a-z0-9]/g, "");
+  return String(value ?? "")
+    .normalize("NFKC")
+    .replace(/[-_.]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/^(?:\[k1z\]|k1z)(?:\s+|$)/i, "")
+    .toLowerCase();
 }
 
 const RECIPROCAL_RIVALS = new Set(
   ["katanasan", "juryoku-koku"].map(normalizedRivalName),
 );
 const RECIPROCAL_RIVAL_IDS = new Set([
+  "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
   "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
 ]);
 const MIN_DESPERATE_INVASION_RATIO = 0.5;
@@ -210,11 +223,17 @@ export function rivalForAction(action, state) {
   ).toLowerCase();
   const metadataName = clean(
     action?.metadata?.targetName ?? action?.metadata?.recipientName ?? "",
-  ).toLowerCase();
+  );
+  const canonicalMetadataName = normalizedRivalName(metadataName);
   return state.rivals.find((rival) => {
-    const nameMatches = rival.name && text.includes(rival.name.toLowerCase());
+    const canonicalName = normalizedRivalName(rival.name);
+    const nameMatches = rival.name && (
+      text.includes(rival.name.toLowerCase()) ||
+      (canonicalName.length >= 3 && text.includes(canonicalName))
+    );
     const idMatches = rival.id && text.includes(rival.id.toLowerCase());
-    const metadataNameMatches = rival.name && metadataName === rival.name.toLowerCase();
+    const metadataNameMatches = canonicalName.length > 0 &&
+      canonicalMetadataName === canonicalName;
     const metadataIDMatches = rival.id && metadataID === rival.id.toLowerCase();
     return metadataNameMatches || metadataIDMatches || nameMatches || idMatches;
   });

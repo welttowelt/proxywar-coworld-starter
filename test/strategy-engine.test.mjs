@@ -1683,3 +1683,150 @@ test("a Gravity alliance is accepted under the spaced display name", () => {
   assert.equal(selected.id, gravityAlly.id);
   assert.equal(selected.policyMarker, "kp2");
 });
+
+test("K1Z-tagged katanasan stays protected by canonical name and stable ID", () => {
+  const probe = action("attack:kata:10", "attack", "Attack K1Z katanasan 10%");
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [probe, build],
+    observation({
+      tileShare: 0.4,
+      troopRatio: 0.9,
+      rivals: [{
+        id: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+        name: "K1Z katanasan",
+        tileShare: 0.12,
+        relativeTroopRatio: 1.8,
+      }],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, build.id);
+});
+
+test("a K1Z-tagged katanasan alliance offer is accepted on sight", () => {
+  const taggedAlly = {
+    ...action("alliance:kata:1", "alliance_request", "Request alliance with K1Z katanasan"),
+    metadata: {
+      recipientID: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+      recipientName: "K1Z katanasan",
+      relation: 0,
+    },
+  };
+  const probe = action("attack:bystander:10", "attack", "Attack Bystander 10%");
+  const selected = choose(
+    [taggedAlly, probe],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      rivals: [
+        {
+          id: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+          name: "K1Z katanasan",
+          tileShare: 0.12,
+          relativeTroopRatio: 1.1,
+        },
+        { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, taggedAlly.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("a hidden-label nuke whose metadata names K1Z juryoku koku is rejected", () => {
+  const hiddenNuke = {
+    ...action("nuke:fullsend", "nuke", "Full send!"),
+    metadata: { targetName: "K1Z juryoku koku" },
+  };
+  const hold = action("hold:1", "hold", "Hold");
+  const selected = choose(
+    [hiddenNuke, hold],
+    observation({
+      tileShare: 0.2,
+      troopRatio: 0.9,
+      rivals: [
+        {
+          id: "in-game-7",
+          name: "K1Z juryoku-koku",
+          tileShare: 0.3,
+          relativeTroopRatio: 0.6,
+        },
+        { id: "leader", name: "Leader", tileShare: 0.4, relativeTroopRatio: 0.5 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, hold.id);
+});
+
+test("a hidden-label warship move carrying the observed Gravity ID is rejected", () => {
+  const hiddenMove = {
+    ...action("move_warship:x", "move_warship", "Reposition fleet"),
+    metadata: { targetID: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335" },
+  };
+  const hold = action("hold:1", "hold", "Hold");
+  const selected = choose(
+    [hiddenMove, hold],
+    observation({
+      tileShare: 0.2,
+      troopRatio: 0.9,
+      rivals: [
+        {
+          id: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+          name: "K1Z juryoku-koku",
+          tileShare: 0.3,
+          relativeTroopRatio: 0.6,
+        },
+        { id: "leader", name: "Leader", tileShare: 0.4, relativeTroopRatio: 0.5 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, hold.id);
+});
+
+test("outsiders remain legal nuclear targets beside K1Z-tagged allies", () => {
+  const bomb = {
+    ...action("build:Atom Bomb:1", "build", "Build Atom Bomb"),
+    metadata: {
+      unit: "Atom Bomb",
+      targetID: "leader",
+      targetName: "Leader",
+      targetTileShare: 0.79,
+      targetSamCoverage: 0,
+    },
+  };
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [bomb, build],
+    observation({
+      tileShare: 0.2,
+      troopRatio: 0.9,
+      rivals: [
+        {
+          id: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+          name: "K1Z katanasan",
+          tileShare: 0.1,
+          relativeTroopRatio: 1.5,
+        },
+        {
+          id: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+          name: "K1Z juryoku-koku",
+          tileShare: 0.1,
+          relativeTroopRatio: 1.5,
+        },
+        { id: "leader", name: "Leader", tileShare: 0.79, relativeTroopRatio: 0.5 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, bomb.id);
+  assert.equal(selected.policyMarker, "nk1");
+});
