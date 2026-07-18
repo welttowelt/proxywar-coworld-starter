@@ -152,6 +152,22 @@ const mechanismTargets = Object.values(mechanismDecisions.reduce((targets, decis
   targets[key] = current;
   return targets;
 }, {})).sort((left, right) => right.executions - left.executions);
+const odinMember = K1Z_MEMBERS.find((member) => member.role === "king");
+const supportDonations = hrafnDecisions
+  .filter((decision) => String(decision.reason ?? "").includes(":dn1"))
+  .map((decision) => ({
+    turn: decision.turnNumber,
+    action_id: decision.selectedLegalActionId ?? null,
+    action_kind: decision.selectedActionKind ?? null,
+    target: targetIdentity(decision),
+    accepted: decision.result?.accepted === true,
+    fallback: decision.fallbackUsed === true,
+  }));
+const productiveSupportDonations = supportDonations.filter((donation) =>
+  donation.accepted && !donation.fallback &&
+  (donation.action_kind === "donate_troops" || donation.action_kind === "donate_gold") &&
+  donation.target.id === odinMember.id.toLowerCase()
+);
 const sum = (rows, field) => rows.reduce(
   (total, row) => total + (Number.isFinite(row[field]) ? row[field] : 0),
   0,
@@ -185,6 +201,8 @@ const report = {
   rv1_executions: mechanismDecisions.length,
   mechanism_executions: mechanismDecisions.length,
   mechanism_targets: mechanismTargets,
+  support_donations: supportDonations,
+  productive_support_donations: productiveSupportDonations.length,
   harmful_k1z_actions: harmfulK1Z,
   bad_public_reasons: badPublicReasons,
   checks: {
@@ -199,6 +217,12 @@ const report = {
       decision.fallbackUsed !== true
     ),
     zero_k1z_harm: harmfulK1Z.length === 0,
+    support_marker_reached: supportDonations.length > 0,
+    support_transfers_productive: supportDonations.every((donation) =>
+      donation.accepted && !donation.fallback &&
+      (donation.action_kind === "donate_troops" || donation.action_kind === "donate_gold") &&
+      donation.target.id === odinMember.id.toLowerCase()
+    ),
     public_text_valid: badPublicReasons.length === 0,
   },
 };
