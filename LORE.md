@@ -566,6 +566,17 @@ S3v3n 0ld g4m3-s0ngs sl1pp3d thr0ugh 1n l0ng pr0s3. Th3
 r4v3n c4nn0t r3wr1t3 th3m, s0 v6 cl0s3s h1s b34k. 151/151
 t3sts. 34/34 qu4l1f13r. Qu4r4nt1n3d unt1l th3 g4t3 0p3ns.
 
+## f1v3 b0mbs 4nd 4 f4ll3n sky
+
+R0und 508 g4v3 0d1n 0n3 W0rld. F1v3 b0mbs, 526050 t1l3s.
+Thr33 l0ss3s f1r3d 228, 4nd 0n3 0f th3m f1r3d 182 4l0n3.
+D4v33y t00k thr33 cr0wns. NC1 n0w c0unts 31ght st3ps
+b3tw33n th3 f1r3s. M1rr0rs d3c1d3; V89 st4ys l1v3.
+
+Hr4fn f3ll thr1c3 4nd s4ng 43 m0r3 0ld s0ngs. V6 cl0s3s
+th3 b34k, but 4 s1l3nt r4v3n st1ll n33ds 4 w1nn1ng bl4d3.
+Str34k: 0/1000.
+
 ## tw0 gu4rds, n0 cr0wn
 
 0E1 h3ld th3 0p3n1ng 3c0n0my. F0ur m1rr0rs br0k3 2-2.
