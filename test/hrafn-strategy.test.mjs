@@ -241,6 +241,84 @@ test("rv1 skips an oversized K1Z member and pins the strongest outsider", () => 
   assert.equal(chosen.policyMarker, "rv1");
 });
 
+test("rv2 prioritizes Auri over a larger reachable outsider", () => {
+  const auri = rival({
+    id: "auri",
+    name: "Auri",
+    tileShare: 0.2,
+    relativeTroopRatio: 1.5,
+  });
+  const larger = rival({
+    id: "larger",
+    name: "Larger",
+    tileShare: 0.4,
+    relativeTroopRatio: 2,
+  });
+  const chosen = chooseHrafnAction(
+    [attack(larger, 25), attack(auri, 25)],
+    observation({ tileShare: 0.12, rivals: [larger, auri] }),
+  );
+  assert.equal(chosen.id, "attack:auri:25");
+  assert.equal(chosen.policyMarker, "rv2");
+});
+
+test("rv2 targets Auri without feeding him below the attack floor", () => {
+  const auri = rival({
+    id: "auri",
+    name: "Auri",
+    tileShare: 0.3,
+    relativeTroopRatio: 1.2,
+  });
+  const odin = rival({
+    id: K1Z_MEMBERS[0].id,
+    name: "K1Z odin free",
+    isAllied: true,
+  });
+  const target = action(
+    "target:auri",
+    "target_player",
+    "Target Auri",
+    { targetID: auri.id, targetName: auri.name },
+  );
+  const chosen = chooseHrafnAction(
+    [attack(auri, 25), target],
+    observation({ tileShare: 0.12, rivals: [auri, odin] }),
+  );
+  assert.equal(chosen.id, target.id);
+  assert.equal(chosen.policyMarker, "rv2");
+});
+
+test("rv2 switches an older outsider lock to newly reachable Auri", () => {
+  const auri = rival({
+    id: "auri",
+    name: "Auri",
+    tileShare: 0.2,
+    relativeTroopRatio: 1.5,
+  });
+  const older = rival({
+    id: "older",
+    name: "Older",
+    tileShare: 0.4,
+    relativeTroopRatio: 2,
+  });
+  const history = [{
+    actionID: "attack:older:25",
+    kind: "attack",
+    targetID: older.id,
+    targetName: canonicalizeK1ZName(older.name),
+    tileShare: 0.12,
+    policyMarker: "rv1",
+    campaignStartDecision: 0,
+  }];
+  const chosen = chooseHrafnAction(
+    [attack(older, 25), attack(auri, 25)],
+    observation({ tileShare: 0.12, rivals: [older, auri] }),
+    history,
+  );
+  assert.equal(chosen.id, "attack:auri:25");
+  assert.equal(chosen.policyMarker, "rv2");
+});
+
 test("rv1 respects the configured troop-ratio floor", () => {
   const foe = rival({
     id: "foe",

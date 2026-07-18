@@ -97,6 +97,7 @@ const harmfulK1Z = policyDecisions.filter((decision) => {
 }));
 
 const badPublicReasons = hrafnDecisions.filter((decision) => {
+  if (decision.actionSelectionSource === "deterministic-spawn") return false;
   const reason = String(decision.reason ?? "");
   return reason.length > 48 || !/^[\x20-\x7e]+$/.test(reason) ||
     !reason.startsWith("[K1Z]");
@@ -158,10 +159,13 @@ const report = {
   coalition_tiles: sum(coalitionResults, "tiles_owned"),
   outsider_tiles: sum(outsiderResults, "tiles_owned"),
   total_decisions: decisions.length,
+  framework_spawn_decisions: hrafnDecisions.filter((decision) =>
+    decision.actionSelectionSource === "deterministic-spawn"
+  ).length,
   policy_decisions: policyDecisions.length,
   per_player: perPlayer,
   rv1_executions: hrafnDecisions.filter((decision) =>
-    String(decision.reason).includes(":rv1")
+    /:rv[12](?:$|[^a-z0-9])/i.test(String(decision.reason))
   ).length,
   harmful_k1z_actions: harmfulK1Z,
   bad_public_reasons: badPublicReasons,
