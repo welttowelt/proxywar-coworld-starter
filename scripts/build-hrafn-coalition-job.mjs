@@ -19,7 +19,7 @@ if (!templatePath || !outputPath) {
   throw new Error(
     "usage: node scripts/build-hrafn-coalition-job.mjs " +
     "--template <job.json> --output <job.json> --map <Asia|World|Pangaea> " +
-    "--orientation <a|b> --arm <candidate|control> --seed <integer>",
+    "--orientation <a|b> --arm <candidate-v1|candidate-v2|control> --seed <integer>",
   );
 }
 if (!new Set(["Asia", "World", "Pangaea"]).has(map)) {
@@ -28,7 +28,7 @@ if (!new Set(["Asia", "World", "Pangaea"]).has(map)) {
 if (!new Set(["a", "b"]).has(orientation)) {
   throw new Error(`unsupported orientation: ${orientation}`);
 }
-if (!new Set(["candidate", "control"]).has(arm)) {
+if (!new Set(["candidate-v1", "candidate-v2", "control"]).has(arm)) {
   throw new Error(`unsupported arm: ${arm}`);
 }
 if (!Number.isInteger(seed) || seed < 0 || seed > 308915775) {
@@ -59,9 +59,11 @@ const roster = {
   },
   hrafn: {
     name: "K1Z Hrafn",
-    image: arm === "candidate"
-      ? "proxywar-agent-llm:hrafn-v1-arm64"
-      : "proxywar-agent-llm:hrafn-v0-arm64",
+    image: arm === "candidate-v2"
+      ? "proxywar-agent-llm:hrafn-v2-arm64"
+      : arm === "candidate-v1"
+        ? "proxywar-agent-llm:hrafn-v1-arm64"
+        : "proxywar-agent-llm:hrafn-v0-arm64",
     run: ["node", "/app/hrafn-player.mjs"],
   },
   gravity: {
