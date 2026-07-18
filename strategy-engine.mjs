@@ -442,7 +442,9 @@ function chooseRivalAttack(actions, state, plan, history, avoid, threatCount = 0
   };
 }
 
-function kingmakerAllianceAction(actions, state) {
+const KINGMAKER_RETRY_COOLDOWN = 6;
+
+function kingmakerAllianceAction(actions, state, history) {
   const kingmaker = state.rivals.find(isReciprocalRival);
   if (!kingmaker || kingmaker.isAllied) return null;
   const candidates = safeActions(actions, (action) => {
@@ -451,6 +453,10 @@ function kingmakerAllianceAction(actions, state) {
     return rival && isReciprocalRival(rival);
   });
   if (candidates.length === 0) return null;
+  const lastAttempt = decisionsSince(history, (entry) =>
+    entry.kind === "alliance_request" &&
+    (entry.targetID === kingmaker.id.toLowerCase() || targetName(entry) === kingmaker.name.toLowerCase()));
+  if (lastAttempt < KINGMAKER_RETRY_COOLDOWN) return null;
   const stable = candidates.filter((action) => Number(action?.metadata?.relation) !== 2);
   if (stable.length > 0) return { ...stable[0], policyMarker: "kp2" };
   const offerPending = safeActions(actions, (action) => {
@@ -664,7 +670,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
     : null;
   if (defensiveBuild) return defensiveBuild;
 
-  const kingmakerAlliance = kingmakerAllianceAction(actions, state);
+  const kingmakerAlliance = kingmakerAllianceAction(actions, state, history);
   if (kingmakerAlliance) return kingmakerAlliance;
 
   const atomBomb = chooseAtomBomb(actions, state, history);
