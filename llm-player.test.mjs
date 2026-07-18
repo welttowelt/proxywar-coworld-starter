@@ -116,6 +116,11 @@ test("Kuroi Taiyo never breaks its alliance with Odin", () => {
 });
 
 const gravity = player("juryoku-koku", "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335", 0.28);
+const hrafn = player(
+  "K1Z Hrafn",
+  "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+  0.22,
+);
 const gravityObs = observation([odin, gravity, strong, weak]);
 const allianceRequest = (target) => ({
   id: `alliance_request:${target.playerID}`,
@@ -189,6 +194,41 @@ test("Kuroi Taiyo protects Gravity's visible K1Z alliance name", () => {
     choose(
       [attack(taggedGravity), hold],
       observation([odin, taggedGravity, strong, weak]),
+    ).id,
+    hold.id,
+  );
+});
+
+test("Kuroi Taiyo immediately requests a Hrafn alliance", () => {
+  assert.equal(
+    choose(
+      [attack(strong), allianceRequest(hrafn), hold],
+      observation([odin, gravity, hrafn, strong, weak]),
+    ).kind,
+    "alliance_request",
+  );
+});
+
+test("Kuroi Taiyo protects Hrafn by exact ID after a display rename", () => {
+  const renamedHrafn = player("Raven", hrafn.playerID, 0.75);
+  const idOnlyNuke = nuke("MIRV", renamedHrafn);
+  delete idOnlyNuke.metadata.targetName;
+  idOnlyNuke.label = "Nuclear strike";
+  assert.equal(
+    choose(
+      [idOnlyNuke, hold],
+      observation([odin, gravity, renamedHrafn, strong, weak]),
+    ).id,
+    hold.id,
+  );
+});
+
+test("Kuroi Taiyo protects Hrafn's visible K1Z alliance name", () => {
+  const taggedHrafn = player("[K1Z] Hrafn", hrafn.playerID, 0.75);
+  assert.equal(
+    choose(
+      [attack(taggedHrafn), hold],
+      observation([odin, gravity, taggedHrafn, strong, weak]),
     ).id,
     hold.id,
   );

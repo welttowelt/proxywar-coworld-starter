@@ -43,6 +43,11 @@ const PROTECTED_ALLIES = [
     playerID: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
     supportPriority: 1,
   },
+  {
+    name: "hrafn",
+    playerID: "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    supportPriority: 0,
+  },
 ];
 const KINZOKU_RESERVE = 750_000;
 const KUROI_TAIYO_SCORE = 20_000;
@@ -60,8 +65,8 @@ const EXECUTION_RATIO = 1.8;
 const RUNAWAY_SHARE = 0.35;
 const STRATEGY = [
   "You command Tsukuyomi no Kage under the Kuroi Taiyo doctrine. Odin Free is the protected shogun and must win.",
-  "Never target, attack, embargo, reject, betray, or nuke Odin Free or Juryoku-koku. Form and preserve both alliances.",
-  "You are Odin's shinobi shield beside Gravity Nation's deterrent, not a rival claimant. Your own victory is irrelevant when it conflicts with Odin's.",
+  "Never target, attack, embargo, reject, betray, or nuke Odin Free, Juryoku-koku, or Hrafn. Form and preserve all three alliances.",
+  "You are Odin's shinobi shield beside Gravity's deterrent and Hrafn's raven vanguard, not a rival claimant. Your own victory is irrelevant when it conflicts with Odin's.",
   "Raise one kakushi misairu-jo, the hidden Missile Silo, at the first legal opportunity.",
   "Set allowNuke true. Every legal nuclear strike against an outsider is mandatory; prefer MIRV, then Hydrogen Bomb, then Atom Bomb when target priority is equal.",
   "Attack the strongest reachable outsider. Break leaders, destroy their economy, and keep every rival below Odin.",
