@@ -23,11 +23,12 @@ function normalizedRivalName(value) {
 }
 
 const RECIPROCAL_RIVALS = new Set(
-  ["katanasan", "juryoku-koku"].map(normalizedRivalName),
+  ["katanasan", "juryoku-koku", "hrafn"].map(normalizedRivalName),
 );
 const RECIPROCAL_RIVAL_IDS = new Set([
   "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
   "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+  "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
 ]);
 const MIN_DESPERATE_INVASION_RATIO = 0.5;
 const MIN_CONVERSION_TILE_SHARE = 0.002;
