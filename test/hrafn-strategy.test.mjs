@@ -350,6 +350,27 @@ test("Hrafn v1 never donates", () => {
   assert.equal(chosen.id, hold.id);
 });
 
+test("a fresh harmless social action beats hold when tactics are exhausted", () => {
+  const chat = action("chat:raven", "quick_chat", "Raven signal");
+  const hold = action("hold", "hold", "Hold");
+  const chosen = chooseHrafnAction([hold, chat], observation());
+  assert.equal(chosen.id, chat.id);
+  assert.equal(publicHrafnReason(chosen), "[K1Z] r4vn:cht");
+});
+
+test("the harmless fallback does not loop the same public signal", () => {
+  const chat = action("chat:raven", "quick_chat", "Raven signal");
+  const hold = action("hold", "hold", "Hold");
+  const history = [{
+    actionID: chat.id,
+    kind: chat.kind,
+    targetID: null,
+    targetName: null,
+  }];
+  const chosen = chooseHrafnAction([hold, chat], observation(), history);
+  assert.equal(chosen.id, hold.id);
+});
+
 test("recorded rv1 decisions retain the campaign identity", () => {
   const foe = rival({ id: "foe", name: "Foe" });
   const chosen = {

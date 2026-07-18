@@ -563,6 +563,13 @@ export function chooseHrafnAction(
   )[0];
   if (retreat) return retreat;
 
+  const recentActionIDs = new Set(history.slice(-6).map((entry) => entry.actionID));
+  const safeSocial = safeActions(actions, (action) =>
+    ["quick_chat", "emoji", "embargo_stop"].includes(action.kind) &&
+    !recentActionIDs.has(action.id)
+  )[0];
+  if (safeSocial) return safeSocial;
+
   return actions.find((action) => action.kind === "hold") ?? actions.find((action) => {
     if (action.kind === "donate_gold" || action.kind === "donate_troops") return false;
     if (!HARMFUL_KINDS.has(action.kind)) return true;
@@ -603,6 +610,9 @@ const PUBLIC_KIND = Object.freeze({
   alliance_request: "4ly",
   alliance_extend: "4ly",
   target_player: "tgt",
+  quick_chat: "cht",
+  emoji: "emj",
+  embargo_stop: "emb",
   hold: "h0d",
 });
 
