@@ -1238,3 +1238,16 @@ wins, so the standing promotion gates remain unmet. Uploaded as `qd1n:v83`
 handshake artifact; qd1n:v77 remains the sole live champion. Evidence:
 `experiments/diagnosis-qd1n-kingmaker-rci-20260718.json` and
 `experiments/preflight-qd1n-kingmaker-km1.json`.
+
+## Qd1n k1zuna promotion, 2026-07-18
+
+By explicit operator directive, `qd1n:v83` was promoted to live champion:
+submission `sub_f25b48b7-1100-4055-805d-7ab9319321b5` placed with
+qualification passed, and membership `lpm_5c3f41eb-7a50-4342-a136-172466376eb9`
+is the sole active champion with `qd1n:v77` benched. This is an
+operator-directed relaunch like the v76 and v77 promotions before it: the
+standard hosted `4/4` and `20/20` strategic gates were not completed, and
+that is recorded. The kingmaker contract (kp1 peace, kp2 alliance
+acceptance with cooldown, nk1 proper nukes) now plays every official round.
+The first completed round with v83 in the roster will be recorded here as
+the deployment confirmation.

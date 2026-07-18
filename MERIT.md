@@ -4,7 +4,8 @@
 
 | Policy | State | Evidence |
 | --- | --- | --- |
-| `qd1n:v77` | champion | membership `lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b`; rounds 414-417 placed `9, 2, 9, 9` |
+| `qd1n:v83` | champion | membership `lpm_5c3f41eb-7a50-4342-a136-172466376eb9`; promoted by operator directive 2026-07-18, submission `sub_f25b48b7-1100-4055-805d-7ab9319321b5` |
+| `qd1n:v77` | benched | membership `lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b`; rounds 414-417 placed `9, 2, 9, 9` |
 | `qd1n:v76` | benched | membership `lpm_807274c0-0f71-4c13-8990-3dc932a9f7e5`; round 410 finished official first |
 | `qd1n:v2` | benched | membership `lpm_fb9d79c9-0eb7-4a96-8bea-cf8122fd81bf` |
 | `oli-codex-proxywar:v14` | retired | membership benched after Qd1n promotion |
@@ -78,7 +79,7 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | league-field A/B | current round-471/472 roster, eight episodes per arm: v77 `0/8`, mx3 `0/8`; `richard:v7` won nine of sixteen | no ship case in the arena that counts either; opponents iterate faster |
 | qd2n architecture project | three chassis generations plus the hybrid finished `2/6`, `2/6`, `1/6`, then hybrid `4/6` with Asia split and every trace byte-identical to its donor code; mx3's `5/6` with both Asia mirrors dominates the hybrid | project closed by its own stop rule; mx3 remains the best measured policy, v77 sole champion |
 | qd1n kingmaker package | operator directive: katanasan is a declared 100% supporter; unconditional protection with no tile-share cutoff (kp1), proper Atom Bomb usage (nk1), immediate alliance acceptance with 6-decision retry until `isAllied` (kp2), and break/reject/embargo/target exclusions; `122/122` tests; `34/34` qualifier; both Asia mirrors won (873,409 / 908,254, asia-a byte-identical to mx3) | hosted `xreq_6fe7820d` finished `0/4` with **zero attacks on katanasan in every episode** — the contract is verified live; local smoke sent 14 kp2 requests with zero holds; v83 uploaded as the handshake artifact |
-| qd1n:v83 k1zuna | `09fce37f-6f9b-4163-a411-d0e0ecc679de`; Japanese-codename upload carrying kp1+nk1+kp2 with cooldown retry; studio gpt codex notified on the fleet mailbox | handshake deployed; v77 remains sole live champion pending an operator promotion call |
+| qd1n:v83 k1zuna live | operator-directed promotion 2026-07-18: submission `sub_f25b48b7-1100-4055-805d-7ab9319321b5` placed, qualification passed, membership `lpm_5c3f41eb-7a50-4342-a136-172466376eb9` sole champion, v77 benched | k1zuna reigns; standard `4/4` and `20/20` strategic gates not completed (operator override, as with v76/v77); next official round to confirm v83 in the roster |
 
 Detailed evidence lives in [`experiments/`](experiments/README.md). Public round
 statistics live on the [dashboard](https://welttowelt.github.io/proxywar-coworld-starter/).
