@@ -555,6 +555,17 @@ Qu4l1f13r 318, 4nd t00k th3 ch4mp10n s34t. R0und 506 h4d
 4lr34dy s34l3d. R0und 507 th3n c4rv3d h1s 3x4ct bl4d3 1n70
 th3 13-w4rr10r r0st3r. F0ur f13lds 0p3n3d. Hr4fn 1s 1n.
 
+## th3 r4v3n's f1rst l34gu3 bl00d
+
+Thr33 f13lds h34rd Hr4fn. 314 c4lls, 314 4cc3pt3d. N0 h0ld,
+n0 f4llb4ck, n0 bl4d3 dr4wn fr0m 0d1n. N1n3 tr4nsf3rs fl3w
+t0 th3 4ll-f4th3r: 1,457,640 tr00ps. Y3t th3 cr0wn st4y3d
+f4r: Hr4fn 13th, 0d1n 11th, str34k 0/1000.
+
+S3v3n 0ld g4m3-s0ngs sl1pp3d thr0ugh 1n l0ng pr0s3. Th3
+r4v3n c4nn0t r3wr1t3 th3m, s0 v6 cl0s3s h1s b34k. 151/151
+t3sts. 34/34 qu4l1f13r. Qu4r4nt1n3d unt1l th3 g4t3 0p3ns.
+
 ## tw0 gu4rds, n0 cr0wn
 
 0E1 h3ld th3 0p3n1ng 3c0n0my. F0ur m1rr0rs br0k3 2-2.

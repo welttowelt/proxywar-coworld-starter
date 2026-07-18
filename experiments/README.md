@@ -1372,3 +1372,25 @@ deployed v89 digest
 The live champion was never changed. Full NF1 evidence and replay digests are
 recorded in
 [`diagnosis-qd1n-no-new-front-rci-20260718.json`](diagnosis-qd1n-no-new-front-rci-20260718.json).
+
+## Hrafn Round 507 official audit and public-text quarantine (2026-07-18)
+
+Round 507 is Hrafn's first completed official Competition round.
+`hrafn-fylking:v5` appeared in three of the four rotating 12-seat Pangaea
+episodes, finished rank 13 at `0/3`, averaged 20,652 final tiles, and survived
+twice. Its execution path was clean: `314/314` accepted decisions, zero holds,
+zero fallbacks, zero harmful actions against Odin, and nine accepted troop
+donations to Odin totaling 1,457,640.
+
+The replay also exposed seven selected `quick_chat` actions. Their visible
+messages are authored by the game action and cannot be replaced by Hrafn's
+bounded leet response reason, so the long prose violated the operator's public
+short-leet rule. Commit `38fca307` adds a red-first regression and suppresses
+those uncontrollable public actions without altering combat, alliance,
+donation, expansion, economy, or leader-lock branches. The linux/amd64 v6
+candidate (`sha256:816b734c205fad2452eaef3c076f27377939c4a78a4336fd63d7ae313b5be410`)
+passes `151/151` tests and a `34/34` qualifier with zero holds, fallbacks, or
+quick-chat selections (replay
+`00a072e0b41b68ff88b2f348fe933fb1cd56c22de56e516d5f197b5c6b9f2a84`).
+It remains a quarantined compliance candidate: no upload, submission,
+membership, or champion change has been made.
