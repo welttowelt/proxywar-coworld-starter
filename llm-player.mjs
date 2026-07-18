@@ -35,6 +35,7 @@ try { bedrock = new AnthropicBedrock({ awsRegion: REGION }); } catch (e) { bedro
 let lockedModel = null;
 
 // Claude picks one stance and one victim; the local fighter executes instantly.
+const ALLIANCE_TAG = "[K1Z]";
 const PROTECTED_ALLIES = [
   { name: "odin free", supportPriority: 2 },
   {
@@ -66,7 +67,7 @@ const STRATEGY = [
   "Attack the strongest reachable outsider. Break leaders, destroy their economy, and keep every rival below Odin.",
   "Grow, build shiro, and defend the honmaru only enough to preserve the nuclear platform and continue the campaign.",
   "When Odin leads, donate strength, attack all surviving rivals, and accept self-sacrifice if it directly secures his victory.",
-  "Keep the protected relationship private in every public reason.",
+  "Use K1Z only as a minimal coalition mark; keep the rest of your voice distinctly Tsukuyomi and conceal operational details.",
 ].join(" ");
 // A plan is strategic, not a per-click opinion.  The official Europe R314
 // replay exhausted Bedrock's daily token allowance after refreshing every five
@@ -89,7 +90,7 @@ function clean(s) {
   return String(s ?? "").replace(/[^\x20-\x7e]/g, " ").replace(/\s+/g, " ").trim().slice(0, 60);
 }
 function normalizeName(s) {
-  return String(s ?? "").normalize("NFKC").replace(/\s+/gu, " ").trim().toLocaleLowerCase("en-US").slice(0, 80);
+  return String(s ?? "").normalize("NFKC").replace(/[-_.]+/g, " ").replace(/\s+/gu, " ").trim().toLocaleLowerCase("en-US").slice(0, 80);
 }
 const protectedDescriptor = (name, playerID = "") => {
   const normalized = normalizeName(name);
@@ -623,6 +624,7 @@ function start() {
       ? `FIGHTER(local; planner unavailable): ${chosen.kind}`
       : `FIGHTER(local; plan loading): ${chosen.kind}`;
   }
+  reason = `${ALLIANCE_TAG} ${reason}`;
 
   remember(chosen, obs);
   socket.send(JSON.stringify({
@@ -640,4 +642,4 @@ function start() {
 }
 
 if (process.env.PROXYWAR_SELF_TEST !== "1") start();
-export { buildState, choose, remember, scoreAction, extractPlan };
+export { ALLIANCE_TAG, buildState, choose, remember, scoreAction, extractPlan };

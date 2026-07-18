@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 process.env.PROXYWAR_SELF_TEST = "1";
-const { choose } = await import("./llm-player.mjs?kuroi-taiyo-test");
+const { ALLIANCE_TAG, choose } = await import("./llm-player.mjs?kuroi-taiyo-test");
 
 const player = (name, playerID, tileShare, overrides = {}) => ({
   name,
@@ -156,4 +156,33 @@ test("Kuroi Taiyo stops requesting Gravity after the alliance is observed", () =
     ).kind,
     "alliance_request",
   );
+});
+
+test("Kuroi Taiyo protects Gravity's live space-normalized display name", () => {
+  const liveGravity = player("juryoku koku", "sjh3tur2", 0.70);
+  const liveBoat = {
+    id: "boat:428270:16",
+    kind: "boat",
+    risk: { level: "medium" },
+    metadata: { targetID: liveGravity.playerID, targetName: liveGravity.name },
+  };
+  assert.equal(
+    choose([liveBoat, hold], observation([odin, liveGravity, strong, weak])).id,
+    hold.id,
+  );
+});
+
+test("Kuroi Taiyo requests Gravity using its live space-normalized display name", () => {
+  const liveGravity = player("juryoku koku", "sjh3tur2", 0.28);
+  assert.equal(
+    choose(
+      [allianceRequest(liveGravity), attack(strong), hold],
+      observation([odin, liveGravity, strong, weak]),
+    ).kind,
+    "alliance_request",
+  );
+});
+
+test("K1Z is the minimal shared alliance layer", () => {
+  assert.equal(ALLIANCE_TAG, "[K1Z]");
 });
