@@ -90,7 +90,14 @@ function clean(s) {
   return String(s ?? "").replace(/[^\x20-\x7e]/g, " ").replace(/\s+/g, " ").trim().slice(0, 60);
 }
 function normalizeName(s) {
-  return String(s ?? "").normalize("NFKC").replace(/[-_.]+/g, " ").replace(/\s+/gu, " ").trim().toLocaleLowerCase("en-US").slice(0, 80);
+  return String(s ?? "")
+    .normalize("NFKC")
+    .replace(/[-_.]+/g, " ")
+    .replace(/\s+/gu, " ")
+    .trim()
+    .replace(/^\[?\s*k1z\s*\]?\s+/iu, "")
+    .toLocaleLowerCase("en-US")
+    .slice(0, 80);
 }
 const protectedDescriptor = (name, playerID = "") => {
   const normalized = normalizeName(name);

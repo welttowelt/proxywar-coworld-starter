@@ -183,6 +183,17 @@ test("Kuroi Taiyo requests Gravity using its live space-normalized display name"
   );
 });
 
+test("Kuroi Taiyo protects Gravity's visible K1Z alliance name", () => {
+  const taggedGravity = player("K1Z juryoku koku", "gravity-live", 0.70);
+  assert.equal(
+    choose(
+      [attack(taggedGravity), hold],
+      observation([odin, taggedGravity, strong, weak]),
+    ).id,
+    hold.id,
+  );
+});
+
 test("K1Z is the minimal shared alliance layer", () => {
   assert.equal(ALLIANCE_TAG, "[K1Z]");
 });
