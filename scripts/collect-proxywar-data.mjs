@@ -5,10 +5,16 @@ import path from "node:path";
 import process from "node:process";
 
 import { buildOfficialStreakState } from "./official-streak.mjs";
+import {
+  ODIN_CANONICAL_NAME,
+  ODIN_PLAYER_ID,
+  canonicalDashboardPlayerName,
+} from "./player-identity.mjs";
 
 const COWORLD_PACKAGE = "coworld==0.1.28";
 const DEFAULT_LEAGUE_ID = "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42";
-const TRACKED_PLAYER_NAME = "odin free";
+const TRACKED_PLAYER_NAME = ODIN_CANONICAL_NAME;
+const TRACKED_PLAYER_ID = ODIN_PLAYER_ID;
 const CHALLENGER_PLAYER_NAME = "Auri";
 const SOURCE_FINGERPRINT_VERSION = 1;
 const ALLOWED_REPLAY_HOSTS = new Set(["softmax-public.s3.amazonaws.com"]);
@@ -164,7 +170,10 @@ function participantRow(episode, replay, position) {
     round_id: episode.round_id,
     participant_position: position,
     player_id: participant.player_id,
-    player_name: participant.player_name,
+    player_name: canonicalDashboardPlayerName(
+      participant.player_name,
+      participant.player_id,
+    ),
     policy_id: participant.policy_id,
     policy_name: participant.policy_name,
     policy_version: participant.version,
@@ -200,7 +209,10 @@ function decisionRow(decision, episode, participant, replayHash) {
     replay_sha256: replayHash,
     participant_position: participant?.participant_position ?? null,
     player_id: participant?.player_id ?? null,
-    player_name: participant?.player_name ?? decision.username ?? null,
+    player_name: canonicalDashboardPlayerName(
+      participant?.player_name ?? decision.username,
+      participant?.player_id,
+    ),
     policy_version_id: participant?.policy_version_id ?? null,
     policy_name: participant?.policy_name ?? null,
     policy_version: participant?.policy_version ?? null,
@@ -254,13 +266,14 @@ function ndjson(rows) {
 }
 
 function roundStandingRow(round, result, collectedAt) {
+  const playerID = result.player?.id ?? result.policy_version?.player_id ?? null;
   return {
     round_id: round.id,
     round_number: round.round_number,
     rank: numberOrNull(result.rank),
     score: numberOrNull(result.score),
-    player_id: result.player?.id ?? result.policy_version?.player_id ?? null,
-    player_name: result.player?.name ?? null,
+    player_id: playerID,
+    player_name: canonicalDashboardPlayerName(result.player?.name, playerID),
     policy_id: result.policy_version?.policy?.id ?? null,
     policy_name: result.policy_version?.policy?.name ?? null,
     policy_version: numberOrNull(result.policy_version?.version),
@@ -344,7 +357,13 @@ const officialStreakState = await buildOfficialStreakState({
   collectedAt,
   loadStanding: async (round) => {
     const result = (roundDetail(round).results || [])
-      .find((entry) => entry.player?.name === TRACKED_PLAYER_NAME);
+      .find((entry) =>
+        entry.player?.id === TRACKED_PLAYER_ID ||
+        canonicalDashboardPlayerName(
+          entry.player?.name,
+          entry.player?.id ?? entry.policy_version?.player_id,
+        ) === TRACKED_PLAYER_NAME
+      );
     return result ? roundStandingRow(round, result, collectedAt) : null;
   },
 });
@@ -357,7 +376,7 @@ const leaderboardRows = leaderboardResponse.map((result) => ({
   division_id: divisionID,
   rank: numberOrNull(result.rank),
   player_id: result.player_id ?? null,
-  player_name: result.player_name ?? null,
+  player_name: canonicalDashboardPlayerName(result.player_name, result.player_id),
   score: numberOrNull(result.score),
   score_label: result.score_label ?? null,
   rounds_played: numberOrNull(result.rounds_played),
@@ -383,7 +402,10 @@ const membershipRows = membershipResponse.map((membership) => ({
   policy_version_id: membership.policy_version?.id ?? null,
   policy_label: membership.policy_version?.label ?? null,
   player_id: membership.player?.id ?? null,
-  player_name: membership.player?.name ?? null,
+  player_name: canonicalDashboardPlayerName(
+    membership.player?.name,
+    membership.player?.id,
+  ),
   start_time: normalizeTimestamp(membership.start_time),
   end_time: normalizeTimestamp(membership.end_time),
   collected_at: collectedAt,
