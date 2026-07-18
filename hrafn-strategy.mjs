@@ -754,9 +754,11 @@ export function chooseHrafnAction(
   if (retreat) return retreat;
 
   const recentActionIDs = new Set(history.slice(-6).map((entry) => entry.actionID));
+  // Quick-chat text is authored by the game, not by the player response.
+  // Selecting it can therefore publish long prose that violates Hrafn's
+  // short-leet public contract even though the response reason is bounded.
   const safeSocial = safeActions(actions, (action) =>
-    ["quick_chat", "emoji", "embargo_stop"].includes(action.kind) &&
-    !recentActionIDs.has(action.id)
+    action.kind === "embargo_stop" && !recentActionIDs.has(action.id)
   )[0];
   if (safeSocial) return safeSocial;
 
