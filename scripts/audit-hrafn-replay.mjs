@@ -166,7 +166,10 @@ const supportDonations = hrafnDecisions
 const productiveSupportDonations = supportDonations.filter((donation) =>
   donation.accepted && !donation.fallback &&
   (donation.action_kind === "donate_troops" || donation.action_kind === "donate_gold") &&
-  donation.target.id === odinMember.id.toLowerCase()
+  (
+    donation.target.id === odinMember.id.toLowerCase() ||
+    donation.target.name === canonicalizeK1ZName(odinMember.names[0])
+  )
 );
 const sum = (rows, field) => rows.reduce(
   (total, row) => total + (Number.isFinite(row[field]) ? row[field] : 0),
@@ -221,7 +224,10 @@ const report = {
     support_transfers_productive: supportDonations.every((donation) =>
       donation.accepted && !donation.fallback &&
       (donation.action_kind === "donate_troops" || donation.action_kind === "donate_gold") &&
-      donation.target.id === odinMember.id.toLowerCase()
+      (
+        donation.target.id === odinMember.id.toLowerCase() ||
+        donation.target.name === canonicalizeK1ZName(odinMember.names[0])
+      )
     ),
     public_text_valid: badPublicReasons.length === 0,
   },
