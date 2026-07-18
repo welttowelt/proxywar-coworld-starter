@@ -320,8 +320,11 @@ function rivalIsProtected(state, history, rival) {
 }
 
 export function stableAllianceRequests(actions) {
-  // Relation 2 is a transient pending-request action. It can disappear while the
-  // simultaneous turn is resolving, which makes the game replace it with HOLD.
+  // Legacy survival-path filter from the transient-hold incident (635be1d9).
+  // Note: per the game source, metadata.relation is the Relation enum
+  // (0 Hostile, 1 Distrustful, 2 Neutral, 3 Friendly), so this excludes
+  // Neutral candidates — kept for the generic survival path only. The
+  // coalition kingmaker path deliberately accepts partners at any relation.
   return safeActions(actions, (action) =>
     action.kind === "alliance_request" && Number(action?.metadata?.relation) !== 2
   );
@@ -563,12 +566,11 @@ function kingmakerAllianceAction(actions, state, history) {
       (entry.targetID === partner.id.toLowerCase() ||
         normalizedRivalName(targetName(entry)) === normalizedRivalName(partner.name)));
     if (lastAttempt < KINGMAKER_RETRY_COOLDOWN) continue;
-    const stable = candidates.filter((action) => Number(action?.metadata?.relation) !== 2);
-    if (stable.length > 0) return { ...stable[0], policyMarker: "kp2" };
-    const offerPending = safeActions(actions, (action) =>
-      action.kind === "alliance_reject" && matchesKingmakerPartner(action, partner, state)
-    ).length > 0;
-    if (offerPending) return { ...candidates[0], policyMarker: "kp2" };
+    // metadata.relation is the game's Relation enum (0 Hostile, 1 Distrustful,
+    // 2 Neutral, 3 Friendly), not a pending-state flag: coalition partners are
+    // requested at any relation, and selecting the request also accepts the
+    // partner's own pending offer (reverse handshake).
+    return { ...candidates[0], policyMarker: "kp2" };
   }
   return null;
 }

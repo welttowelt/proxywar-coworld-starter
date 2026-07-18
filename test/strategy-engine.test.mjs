@@ -1957,3 +1957,32 @@ test("recordDecision keeps metadata targets for invisible partners", () => {
   assert.equal(history[0].targetID, "9h8tnrym");
   assert.equal(history[0].targetName, "juryoku koku");
 });
+
+test("a Neutral-relation Gravity partner is requested immediately", () => {
+  const gravityAlly = {
+    ...action("alliance:9h8tnrym", "alliance_request", "Request alliance with juryoku koku"),
+    metadata: { recipientID: "9h8tnrym", recipientName: "juryoku koku", relation: 2 },
+  };
+  const probe = action("attack:bystander:10", "attack", "Attack Bystander 10%");
+  const selected = choose(
+    [gravityAlly, probe],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      rivals: [
+        {
+          id: "9h8tnrym",
+          name: "juryoku koku",
+          tileShare: 0.12,
+          relativeTroopRatio: 1.1,
+          relation: "2",
+        },
+        { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, gravityAlly.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
