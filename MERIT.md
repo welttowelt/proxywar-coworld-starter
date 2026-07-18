@@ -284,8 +284,31 @@ relevant but unpromoted.
 NC1 is rejected. The exact World seat swap tied candidate and parent at score
 units `1-1`, tiles `651,409-651,409`, and two survivors each. Every aggregate
 action count was identical; both arms selected 27 nuke actions. The candidate
-recorded zero `nc1` and zero `nk1` executions because it throttled Atom Bomb
-construction while the official failure uses the separate `nuke` firing
-action. No hosted extension, upload, submission, or champion change followed.
-`qd1n:v89` remains exact and live. The next nuclear test must instrument the
-firing path itself before any long mirror.
+recorded zero `nc1` and zero `nk1` executions because it looked for Atom Bomb
+construction under action kind `build`, while the game adapter exposes that
+same construction as action kind `nuke`. No hosted extension, upload,
+submission, or champion change followed. `qd1n:v89` remains exact and live.
+The next nuclear test must instrument the adapter's `nuke` path before any
+long mirror.
+
+Round 510 World checkpoint. Odin placed official rank 2 at score `0.25`,
+taking one of four episode wins while Daveey took three. The result lifted
+Odin to overall rank 2 at `23.8896`, behind Daveey at `32.9201`; the official
+first-place streak remains `0/1000`. Live v89 selected 122 nuke-tagged Atom
+Bomb construction actions across the four episodes, and 107 repeated within
+eight personal decisions. NC2 reaches that exact adapter path: its bounded
+World probe recorded two accepted economy replacements at turns 10,600 and
+10,700 across `984/984` accepted decisions with zero holds or rejections.
+The candidate then reached 27 times in its exact seat-swapped World gate, but
+the apparent orientation-A sweep followed the even seats. After the swap,
+candidate and parent tied `1-1` in score units and `2-2` survivors. NC2 gained
+only 119 total tiles (`651,528-651,409`, `+0.0183%`) and did not move a win
+boundary. The losing odd seats never exposed a nuke action. NC2 is rejected;
+no hosted extension, upload, submission, membership, or champion change
+followed.
+
+Hrafn appeared in three Round 510 episodes and placed rank 13. Its
+`481/481` decisions were accepted with zero fallbacks, but it died in all
+three appearances, recorded 38 holds, and selected 82 more game-authored
+quick chats. The quarantined v6 public-text fix remains relevant, but no Hrafn
+promotion has been made without outcome evidence.

@@ -577,6 +577,24 @@ Hr4fn f3ll thr1c3 4nd s4ng 43 m0r3 0ld s0ngs. V6 cl0s3s
 th3 b34k, but 4 s1l3nt r4v3n st1ll n33ds 4 w1nn1ng bl4d3.
 Str34k: 0/1000.
 
+## 0n3 cr0wn, 122 b0mbs
+
+R0und 510 g4v3 0d1n 0n3 0f f0ur W0rlds. D4v33y t00k
+thr33. 0d1n cl1mb3d t0 s3c0nd 0v3r4ll, but th3 g4p
+st4ys 9.0305.
+
+122 b0mbs w3r3 f0rg3d. 107 c4m3 b3f0r3 31ght st3ps
+h4d p4ss3d. NC2 t0uch3d th3 r1ght g4t3 tw1c3: tw0
+b0mbs b3c4m3 tw0 upgr4d3s, b0th 4cc3pt3d. N0 h0ld.
+
+Th3 m1rr0r d3c1d3d. NC2 m4rk3d 27, but th3 cr0wn
+f0ll0w3d th3 3v3n s34ts: 1-1, tw0 surv1v0rs t0 tw0.
+119 t1l3s m0r3, n0 cr0wn m0r3. Th3 w34k s34ts n3v3r
+s4w 4 b0mb 4t 4ll.
+
+N0 upl04d. N0 subm1t. V89 st4ys l1v3.
+Str34k: 0/1000.
+
 ## tw0 gu4rds, n0 cr0wn
 
 0E1 h3ld th3 0p3n1ng 3c0n0my. F0ur m1rr0rs br0k3 2-2.
@@ -587,9 +605,9 @@ V89 st4ys 3x4ct. Str34k: 0/1000.
 ## th3 gu4rd 4t th3 wr0ng f0rg3
 
 NC1 c0unt3d 31ght st3ps 4ft3r 4 b0mb w4s bu1lt. But th3
-f13ld's f1r3 c4m3 fr0m 4n0th3r g4t3: `nuk3`, n0t `bu1ld`.
-F1fty-f0ur3 f1r3s fl3w 4cr0ss th3 m1rr0rs. NC1 m4rk3d
-n0n3. S34ts sw4pp3d; th3 sc4l3 st4y3d 1-1,
+f13ld's f0rg3 m4rk3d th3 s4m3 b0mb `nuk3`, n0t `bu1ld`.
+F1fty-f0ur b0mbs cr0ss3d th3 m1rr0rs. NC1 m4rk3d n0n3.
+S34ts sw4pp3d; th3 sc4l3 st4y3d 1-1,
 651409-651409. Th3 bl4d3 n3v3r t0uch3d th3 f41lur3.
 
 N0 upl04d. N0 subm1t. V89 st4ys 3x4ct.

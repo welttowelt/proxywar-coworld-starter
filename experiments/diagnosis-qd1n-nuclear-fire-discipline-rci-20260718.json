@@ -23,7 +23,7 @@
     "replay_signal": "Odin's winning episode selected five nuke actions across 194 decisions; the three losing episodes selected 228 nuke actions across 810 decisions, including 182 in one loss"
   },
   "critique": {
-    "failure": "the candidate targeted Atom Bomb construction through chooseAtomBomb, but the official spam is the distinct selectedActionKind nuke firing path",
+    "failure": "the candidate looked for Atom Bomb construction under action kind build through chooseAtomBomb, but the game adapter exposes that same construction under selectedActionKind nuke",
     "matched_evidence": "both orientations selected 27 nuke actions per arm while nc1 and nk1 executed zero times; every aggregate action count and outcome metric was identical after the seat swap",
     "lesson": "a reachable symptom does not prove the proposed code branch reaches it; action-kind attribution must be verified before a long mirror"
   },
@@ -36,7 +36,7 @@
     "image_id": "sha256:e370e01b8855254d7c7417250957dd6be92b9eb5706c80e22138f9b3d98295ea",
     "isolated_delta": "after a tagged Atom Bomb construction, suppress another Atom Bomb construction for eight Odin decisions and mark the replacement nc1",
     "preserved_paths": [
-      "nuke firing selection",
+      "adapter nuke-tagged construction selection",
       "World pc1 near-parity counter",
       "Asia ia1 attacker routing",
       "pd2 multi-attacker reserve discipline",
@@ -91,5 +91,5 @@
     "regression_required": "20/20",
     "current_verdict": "REJECTED at the first matched World gate; no Asia/Pangaea extension, hosted request, upload, submission, or champion change"
   },
-  "next_test": "NC2 must throttle repeated selectedActionKind nuke firing directly, preserve the first strategic strike, mark replacement land or economy actions, and prove direct reach before a full mirror"
+  "next_test": "NC2 must throttle repeated selectedActionKind nuke construction directly, preserve the first strategic construction, mark replacement land or economy actions, and prove direct reach before a full mirror"
 }

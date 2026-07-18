@@ -1399,9 +1399,10 @@ membership, or champion change has been made.
 
 Round 508 supplied a strong symptom: Odin selected five nuke actions in its
 World win and 228 across the three losses. NC1 attempted an eight-decision
-cooldown, but it attached the guard to `chooseAtomBomb`, which selects Atom
-Bomb construction. The repeated official action is the separate
-`selectedActionKind === "nuke"` firing path.
+cooldown, but it attached the guard to `chooseAtomBomb`, which looks for Atom
+Bomb construction under action kind `build`. The game adapter exposes that
+same construction under `selectedActionKind === "nuke"`, so NC1 guarded an
+unreachable representation.
 
 The linux/amd64 candidate
 (`sha256:e370e01b8855254d7c7417250957dd6be92b9eb5706c80e22138f9b3d98295ea`)
@@ -1415,8 +1416,8 @@ NC1 stopped at the first matched gate. No Asia/Pangaea extension, hosted
 request, upload, submission, or champion change was made. Full evidence and
 replay hashes are recorded in
 [`diagnosis-qd1n-nuclear-fire-discipline-rci-20260718.json`](diagnosis-qd1n-nuclear-fire-discipline-rci-20260718.json).
-The next nuclear arm must throttle nuke firing directly and prove branch reach
-before a full mirror.
+The next nuclear arm must throttle the adapter's nuke-tagged construction
+directly and prove branch reach before a full mirror.
 
 ## Round 509 Pangaea audit (2026-07-18)
 
@@ -1434,3 +1435,34 @@ game-authored long quick chats, reinforcing the public-text defect fixed by
 the quarantined v6 candidate. Hrafn placed rank 13 at `0/3`; the transfer
 contract is working, while both warriors still lack reliable Pangaea
 conversion.
+
+## Round 510 and NC2 matched rejection (2026-07-18)
+
+Round 510 ran four World episodes. Odin placed second at `1/4` while Daveey
+took `3/4`, leaving the official first-place streak at `0/1000` and the
+overall leaderboard at Daveey `32.9201`, Odin `23.8896`. Live v89 selected
+122 nuke-tagged Atom Bomb construction actions; 107 repeated within eight
+personal decisions. Hrafn placed thirteenth at `0/3`. Its `481/481` decisions
+were accepted with zero fallbacks, but 38 holds and 82 game-authored quick
+chats reinforced both its outcome and public-text gaps.
+
+NC2 guarded the adapter's actual `nuke` action kind. Four focused tests and
+the full `150/150` suite passed. The standard amd64 qualifier accepted
+`34/34` decisions with zero holds or rejections. A bounded World probe then
+proved direct reach: two `nc2` upgrades were accepted at turns 10,600 and
+10,700 across `984/984` accepted decisions.
+
+The exact 400-step World seat swap rejected the candidate. Orientation A
+gave both surviving even seats to NC2, but orientation B gave those same
+seats to the parent. Aggregate score tied `1-1`, survivors tied `2-2`, and
+NC2's total territory edge was only 119 tiles (`651,528-651,409`,
+`+0.0183%`). Candidate decisions were `1868/1868` accepted with one hold and
+27 marker executions; parent decisions were `1786/1786` accepted with three
+holds. The losing odd candidate seats never exposed a nuke action, so the
+guard cannot rescue the failure path.
+
+No hosted extension, upload, submission, membership, or champion change was
+made. Full replay hashes and arm counts are recorded in
+[`diagnosis-qd1n-nuclear-action-discipline-nc2-20260718.json`](diagnosis-qd1n-nuclear-action-discipline-nc2-20260718.json).
+The next arm should target early rolling boat, retreat, and repeated-alliance
+churn on low-share seats rather than another late nuclear guard.
