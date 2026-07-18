@@ -1200,3 +1200,13 @@ mx3 `0/8`, with `richard:v7` taking nine of sixteen. There is no ship case in
 either arena. qd1n:v77 remains the sole live champion; the champion's losses
 are structural against the three climbing opponents, who are also iterating
 faster.
+
+The architecture project's hybrid (ch2 chassis on Asia/Pangaea, mx3 route on
+World) finished 4/6 with every trace byte-identical to its donor code: World
+went 2-0 for the candidate, but Asia split 1-1, which fails the
+mirrored-advantage gate — and mx3's 5/6 with both Asia mirrors dominates the
+hybrid outright. The project stops by its own pre-registered rule: the mx3
+composition remains the best measured policy, and mx3 has no ship case over
+v77 on either hosted roster. qd1n:v77 remains the sole live champion.
+Evidence: `experiments/diagnosis-qd2n-winner-chassis-20260718.json` and
+`experiments/qd2n-architecture-blueprint-20260718.md`.
