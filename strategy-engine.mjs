@@ -163,6 +163,7 @@ export function buildState(observation, actions, history = []) {
     borderTiles: finiteNumber(own.borderTiles),
     incomingAttacks: own.incomingAttacks,
     incomingAttackerIDs: activeIncomingAttackerIDs,
+    allProtocolAttackerIDs: currentProtocolIncomingAttackerIDs,
   };
   const rivals = visiblePlayers.map((player) => ({
       id: playerID(player),
@@ -243,6 +244,25 @@ function rivalWasIncoming(entry, rival) {
 export function recentHostility(state, history, rival, window = 24) {
   const current = (state.self.incomingAttackerIDs || []).includes(rival.id.toLowerCase()) ? 1 : 0;
   return current + history.slice(-window).filter((entry) => rivalWasIncoming(entry, rival)).length;
+}
+
+function recentDistinctAttackerCount(state, history, window = 12) {
+  const ids = new Set(
+    (state.self.allProtocolAttackerIDs || state.self.incomingAttackerIDs || [])
+      .map((id) => String(id).toLowerCase()),
+  );
+  for (const entry of history.slice(-window)) {
+    for (const id of entry?.allProtocolAttackerIDs || entry?.incomingAttackerIDs || []) {
+      ids.add(String(id).toLowerCase());
+    }
+    for (const name of entry?.incomingAttackerNames || []) {
+      const rival = state.rivals.find(
+        (candidate) => candidate.name.toLowerCase() === String(name).toLowerCase(),
+      );
+      ids.add(rival ? rival.id.toLowerCase() : String(name).toLowerCase());
+    }
+  }
+  return ids.size;
 }
 
 function isReciprocalRival(rival) {
@@ -684,6 +704,17 @@ export function chooseAction(actions, state, plan = null, history = []) {
     (state.self.incomingAttackerIDs || []).includes(rivalAttack.rival.id.toLowerCase())
     ? { ...rivalAttack.action, policyMarker: "ia1" }
     : rivalAttack?.action;
+  const pc1Band = state.mapFingerprint === "World" && rivalAttack?.action &&
+    (state.self.incomingAttackerIDs || []).includes(rivalAttack.rival.id.toLowerCase()) &&
+    rivalAttack.rival.relativeTroopRatio >= 1 && rivalAttack.rival.relativeTroopRatio < 1.1;
+  const pileOnDiscipline = recentDistinctAttackerCount(state, history) >= 2 &&
+    rivalAttack?.action && Number.isFinite(rivalAttack.rival.relativeTroopRatio) &&
+    rivalAttack.rival.relativeTroopRatio < 1.3 && !pc1Band;
+  const disciplinedAttack = pileOnDiscipline ? null : routedRivalAttack;
+  const withDiscipline = (action) =>
+    pileOnDiscipline && action && !action.policyMarker
+      ? { ...action, policyMarker: "pd2" }
+      : action;
   const neutralAttack = chooseNeutralAttack(actions, history, avoid);
   const build = chooseBuild(actions, history);
   const sinceBuild = decisionsSince(history, (entry) =>
@@ -718,41 +749,41 @@ export function chooseAction(actions, state, plan = null, history = []) {
     (entry) => entry.policyMarker === "cv1",
   ) >= 6;
   if (!collapsing && conversionReady && boatConversionStalled(state, history)) {
-    const conversion = routedRivalAttack || chooseUtility(actions, plan, history) ||
+    const conversion = disciplinedAttack || chooseUtility(actions, plan, history) ||
       (sinceBuild >= 3 ? build : null) ||
       chooseBoat(actions, state, history, avoid, false, true);
     if (conversion) return { ...conversion, policyMarker: "cv1" };
   }
 
   if (neutralExpansionStalled(state, history)) {
-    if (routedRivalAttack) return routedRivalAttack;
+    if (disciplinedAttack) return disciplinedAttack;
     const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
-    if (boatStreak >= 2 && build) return withPeace(build);
+    if (boatStreak >= 2 && build) return withDiscipline(withPeace(build));
     const escapeBoat = chooseBoat(actions, state, history, avoid);
-    if (escapeBoat) return withPeace(escapeBoat);
-    if (build) return withPeace(build);
+    if (escapeBoat) return withDiscipline(withPeace(escapeBoat));
+    if (build) return withDiscipline(withPeace(build));
   }
 
-  if (cadenceBuild && !finishingTarget) return withPeace(build);
+  if (cadenceBuild && !finishingTarget) return withDiscipline(withPeace(build));
   if (state.self.tileShare < 0.12 && neutralAttack && threatCount === 0 && !collapsing) {
     return neutralAttack;
   }
-  if (routedRivalAttack) return routedRivalAttack;
-  if (neutralAttack) return withPeace(neutralAttack);
-  if (build && sinceBuild >= 5) return withPeace(build);
+  if (disciplinedAttack) return disciplinedAttack;
+  if (neutralAttack) return withDiscipline(withPeace(neutralAttack));
+  if (build && sinceBuild >= 5) return withDiscipline(withPeace(build));
 
   const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
-  if (boatStreak >= 2 && build) return build;
+  if (boatStreak >= 2 && build) return withDiscipline(build);
   const boat = chooseBoat(actions, state, history, avoid);
-  if (boat) return withPeace(boat);
+  if (boat) return withDiscipline(withPeace(boat));
 
   const utility = chooseUtility(actions, plan, history);
-  if (utility) return withPeace(utility);
+  if (utility) return withDiscipline(withPeace(utility));
 
   const desperateInvasion = !neutralAttack && !rivalAttack?.action && !build;
   if (desperateInvasion) {
     const desperateBoat = chooseBoat(actions, state, history, avoid, true);
-    if (desperateBoat) return desperateBoat;
+    if (desperateBoat) return withDiscipline(desperateBoat);
   }
 
   const donation = safeActions(actions, (action) => {
@@ -763,12 +794,12 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (donation) return donation;
 
   // Holding while legal tactical actions remain turns a weak position into a certain loss.
-  if (build) return withPeace(build);
+  if (build) return withDiscipline(withPeace(build));
   const retreat = safeActions(
     actions,
     (action) => action.kind === "boat_retreat" || action.kind === "retreat",
   )[0];
-  if (retreat) return withPeace(retreat);
+  if (retreat) return withDiscipline(withPeace(retreat));
   const emergencyAttacks = safeActions(actions, (action) => {
     if (action.kind !== "attack" || isNeutralExpansion(action)) return false;
     const rival = rivalForAction(action, state);
@@ -802,6 +833,7 @@ export function recordDecision(history, action, state) {
     targetID: rival?.id?.toLowerCase() ?? null,
     tileShare: state.self.tileShare,
     incomingAttackerIDs,
+    allProtocolAttackerIDs: state.self.allProtocolAttackerIDs || [],
     incomingAttackerNames,
     mapFingerprint: state.mapFingerprint,
     policyMarker: action.policyMarker ?? null,

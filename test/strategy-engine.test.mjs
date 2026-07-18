@@ -1413,3 +1413,111 @@ test("unrelated rivals stay valid attack and nuclear targets", () => {
   assert.equal(selected.id, bomb.id);
   assert.equal(selected.policyMarker, "nk1");
 });
+
+function pileOnObs({ spawnTile, bystanderRatio = 1.2, attackerCount = 2 } = {}) {
+  const attackers = [
+    { id: "aggressor", name: "Aggressor", tileShare: 0.12, relativeTroopRatio: 1.05, incomingAttack: true },
+    { id: "raider", name: "Raider", tileShare: 0.12, relativeTroopRatio: 1.02, incomingAttack: true },
+  ].slice(0, attackerCount);
+  return observation({
+    tileShare: 0.2,
+    troopRatio: 0.9,
+    incomingAttacks: attackerCount,
+    incomingAttackPlayerIDs: attackers.map((rival) => rival.id),
+    spawnTile,
+    rivals: [
+      ...attackers,
+      { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: bystanderRatio },
+    ],
+  });
+}
+
+test("Pangaea pile-on discipline suppresses a near-parity rival attack", () => {
+  const attacks = [10, 25, 40].map((percent) =>
+    action(`attack:bystander:${percent}`, "attack", `Attack Bystander ${percent}%`));
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [...attacks, build],
+    pileOnObs({ spawnTile: 659528 }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, build.id);
+  assert.equal(selected.policyMarker, "pd2");
+});
+
+test("Asia pile-on discipline suppresses even a current attacker below 1.3", () => {
+  const attacks = [10, 25, 40].map((percent) =>
+    action(`attack:aggressor:${percent}`, "attack", `Attack Aggressor ${percent}%`));
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [...attacks, build],
+    observation({
+      tileShare: 0.2,
+      troopRatio: 0.9,
+      incomingAttacks: 2,
+      incomingAttackPlayerIDs: ["aggressor", "raider"],
+      spawnTile: 1180588,
+      rivals: [
+        { id: "aggressor", name: "Aggressor", tileShare: 0.12, relativeTroopRatio: 1.2, incomingAttack: true },
+        { id: "raider", name: "Raider", tileShare: 0.12, relativeTroopRatio: 1.02, incomingAttack: true },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, build.id);
+  assert.equal(selected.policyMarker, "pd2");
+});
+
+test("World near-parity counter survives the pile-on discipline band", () => {
+  const actions = [10, 25, 40].map((percent) => ({
+    ...action(`attack:aggressor:${percent}`, "attack", `Attack Aggressor ${percent}%`),
+    metadata: { targetID: "aggressor", troopPercent: percent, incomingAttack: true },
+  }));
+  const selected = choose(
+    actions,
+    observation({
+      tileShare: 0.2,
+      troopRatio: 0.9,
+      incomingAttacks: 2,
+      spawnTile: 1088580,
+      rivals: [
+        { id: "aggressor", name: "Aggressor", tileShare: 0.12, relativeTroopRatio: 1.05, incomingAttack: true },
+        { id: "raider", name: "Raider", tileShare: 0.12, relativeTroopRatio: 1.02 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, "attack:aggressor:40");
+  assert.equal(selected.policyMarker, "pc1");
+});
+
+test("a single attacker never triggers pile-on discipline", () => {
+  const attacks = [10, 25, 40].map((percent) =>
+    action(`attack:bystander:${percent}`, "attack", `Attack Bystander ${percent}%`));
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [...attacks, build],
+    pileOnObs({ spawnTile: 659528, attackerCount: 1 }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, "attack:bystander:10");
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("a strong counter at 1.3 or better proceeds under pile-on", () => {
+  const attacks = [10, 25, 40].map((percent) =>
+    action(`attack:bystander:${percent}`, "attack", `Attack Bystander ${percent}%`));
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [...attacks, build],
+    pileOnObs({ spawnTile: 659528, bystanderRatio: 1.5 }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, "attack:bystander:10");
+  assert.equal(selected.policyMarker, undefined);
+});
