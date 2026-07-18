@@ -2,7 +2,7 @@
   "schema_version": 1,
   "recorded_at": "2026-07-18T02:30:00Z",
   "candidate": "qd1n-v77-km1",
-  "verdict": "KP1_VERIFIED_HOSTED_0_OF_4_NO_SUBMIT",
+  "verdict": "PROMOTED_BY_OPERATOR_K1ZUNA_CHAMPION",
   "remote_state_changed": false,
   "hypothesis": "operator directive: katanasan is a 100% supporter and must never be attacked; the existing reciprocal trust had a 0.35 tile-share cutoff that let qd1n first-strike him in three recorded wins, and qd1n almost never built silos or fired Atom Bombs while Auri fires them at runaway leaders",
   "guards": [
@@ -96,13 +96,23 @@
     "promotion_eligible": false
   },
   "league_state": {
-    "live_policy": "qd1n:v77",
+    "live_policy": "qd1n:v83",
     "candidate_uploaded": true,
-    "candidate_submitted": false,
-    "champion_changed": false,
-    "membership_relaunched": false,
+    "candidate_submitted": true,
+    "champion_changed": true,
+    "membership_relaunched": true,
     "official_first_place_streak": 0,
-    "target_first_place_streak": 1000
+    "target_first_place_streak": 1000,
+    "promotion": {
+      "directed_by": "operator directive 2026-07-18 (promote kizuna)",
+      "submission_id": "sub_f25b48b7-1100-4055-805d-7ab9319321b5",
+      "submission_status": "placed",
+      "qualification": "passed",
+      "membership_id": "lpm_5c3f41eb-7a50-4342-a136-172466376eb9",
+      "is_champion": true,
+      "previous_champion": "qd1n:v77 benched (lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b)",
+      "gates_note": "standard hosted 4/4 and 20/20 strategic gates were not completed; promotion was operator-directed like v76/v77 before it"
+    }
   },
   "next_test": "operator decision: hold v77 under gate discipline, or accept km1 live for the alliance requirement despite the unmet gates",
   "hosted": {
