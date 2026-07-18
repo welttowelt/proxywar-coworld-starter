@@ -17,7 +17,19 @@ CREATE OR REPLACE TEMP VIEW memberships AS
 SELECT * FROM read_ndjson_auto('data/staging/memberships.ndjson');
 
 CREATE OR REPLACE TEMP VIEW challenger_memberships AS
-SELECT * FROM read_ndjson_auto('data/staging/challenger_memberships.ndjson');
+SELECT * FROM read_ndjson(
+  'data/staging/challenger_memberships.ndjson',
+  columns = {
+    membership_id: 'VARCHAR',
+    substatus: 'VARCHAR',
+    is_champion: 'BOOLEAN',
+    policy_version: 'BIGINT',
+    policy_version_id: 'VARCHAR',
+    player_name: 'VARCHAR',
+    start_time: 'TIMESTAMP',
+    collected_at: 'TIMESTAMP'
+  }
+);
 
 CREATE OR REPLACE TEMP VIEW episodes AS
 SELECT * FROM read_ndjson_auto('data/staging/episodes.ndjson');
