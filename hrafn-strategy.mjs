@@ -63,6 +63,9 @@ export const HRAFN_DEFAULTS = Object.freeze({
   campaignDecisions: 8,
   campaignCooldownDecisions: 6,
   allianceCooldownDecisions: 6,
+  supportCooldownDecisions: 8,
+  supportMinimumTileShare: 0.06,
+  supportLeadGap: 0.01,
   pressureCooldownDecisions: 12,
 });
 
@@ -294,6 +297,31 @@ function coalitionAllianceAction(actions, state, history, config) {
   return candidates[0]
     ? { ...candidates[0].action, policyMarker: "k1z" }
     : null;
+}
+
+function odinSupportAction(actions, state, history, config) {
+  const odin = state.rivals.find((rival) =>
+    coalitionMemberForRival(rival)?.role === "king" && rival.isAlive !== false
+  );
+  if (!odin) return null;
+  if (
+    state.own.tileShare < config.supportMinimumTileShare ||
+    state.own.tileShare < odin.tileShare + config.supportLeadGap
+  ) {
+    return null;
+  }
+  const since = decisionsSince(history, (entry) =>
+    entry.policyMarker === "dn1" && entry.targetID === odin.id.toLowerCase()
+  );
+  if (since < config.supportCooldownDecisions) return null;
+  const candidates = safeActions(actions, (action) =>
+    (action.kind === "donate_troops" || action.kind === "donate_gold") &&
+    rivalForHrafnAction(action, state)?.id.toLowerCase() === odin.id.toLowerCase()
+  );
+  const troops = candidates.find((action) => action.kind === "donate_troops");
+  const gold = candidates.find((action) => action.kind === "donate_gold");
+  const selected = troops ?? gold;
+  return selected ? { ...selected, policyMarker: "dn1" } : null;
 }
 
 function attackGroups(actions, state) {
@@ -571,6 +599,9 @@ export function chooseHrafnAction(
   const alliance = coalitionAllianceAction(actions, state, history, config);
   if (alliance) return alliance;
 
+  const support = odinSupportAction(actions, state, history, config);
+  if (support) return support;
+
   const incomingCount = state.incomingAttackerIDs.length ||
     finiteNumber(state.own.incomingAttacks);
   const severePressure = incomingCount >= 2 ||
@@ -769,6 +800,8 @@ const PUBLIC_KIND = Object.freeze({
   alliance_request: "4ly",
   alliance_extend: "4ly",
   target_player: "tgt",
+  donate_troops: "dnt",
+  donate_gold: "dnt",
   quick_chat: "cht",
   emoji: "emj",
   embargo_stop: "emb",

@@ -491,7 +491,7 @@ test("unrelated Odin-like fields do not fabricate shared threat telemetry", () =
   assert.equal(chosen.id, "attack:leader:25");
 });
 
-test("Hrafn v1 never donates", () => {
+test("Hrafn v3 does not donate before it has a meaningful lead over Odin", () => {
   const odin = rival({
     id: K1Z_MEMBERS[0].id,
     name: "odin free",
@@ -506,6 +506,68 @@ test("Hrafn v1 never donates", () => {
   const hold = action("hold", "hold", "Hold");
   const chosen = chooseHrafnAction([donation, hold], observation({ rivals: [odin] }));
   assert.equal(chosen.id, hold.id);
+});
+
+test("dn1 transfers troops to a lagging Odin after Hrafn establishes a lead", () => {
+  const odin = rival({
+    id: K1Z_MEMBERS[0].id,
+    name: "K1Z odin free",
+    tileShare: 0.04,
+    isAllied: true,
+  });
+  const donation = action(
+    "donate_troops:odin",
+    "donate_troops",
+    "Donate troops to odin free",
+    { recipientID: odin.id, recipientName: odin.name },
+  );
+  const expand = action(
+    "expand:terra-nullius:35",
+    "attack",
+    "Expand Terra Nullius 35%",
+    { expansion: true, troopPercent: 35 },
+  );
+  const chosen = chooseHrafnAction(
+    [expand, donation],
+    observation({ tileShare: 0.08, rivals: [odin] }),
+  );
+  assert.equal(chosen.id, donation.id);
+  assert.equal(chosen.policyMarker, "dn1");
+  assert.equal(publicHrafnReason(chosen), "[K1Z] r4vn:dnt:dn1");
+});
+
+test("dn1 respects its cooldown instead of draining Hrafn every decision", () => {
+  const odin = rival({
+    id: K1Z_MEMBERS[0].id,
+    name: "K1Z odin free",
+    tileShare: 0.04,
+    isAllied: true,
+  });
+  const donation = action(
+    "donate_troops:odin",
+    "donate_troops",
+    "Donate troops to odin free",
+    { recipientID: odin.id, recipientName: odin.name },
+  );
+  const expand = action(
+    "expand:terra-nullius:35",
+    "attack",
+    "Expand Terra Nullius 35%",
+    { expansion: true, troopPercent: 35 },
+  );
+  const history = [{
+    actionID: donation.id,
+    kind: donation.kind,
+    targetID: odin.id,
+    targetName: "odin free",
+    policyMarker: "dn1",
+  }];
+  const chosen = chooseHrafnAction(
+    [expand, donation],
+    observation({ tileShare: 0.08, rivals: [odin] }),
+    history,
+  );
+  assert.equal(chosen.id, expand.id);
 });
 
 test("a fresh harmless social action beats hold when tactics are exhausted", () => {
