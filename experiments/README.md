@@ -1267,3 +1267,16 @@ and was also eliminated. Zero rejected decisions and one hold in the
 episode. Official first-place streak: `0/100` (and `0/1000`). One
 appearance is not a pattern; round 494 is the next measurement, with the
 pile-on cell flagged as the binding constraint if it repeats.
+
+## K1zuna's first wins, rounds 494-497 (2026-07-18)
+
+Round 494 finished official **first** at score `1.0` with `qd1n:v83`
+(`round_be011549-a013-49be-bc96-6185d8307cc3`), the k1zuna era's first win.
+Round 495 placed third at `0.25` (Richard Higgins first), resetting the
+streak. Round 496 finished out of the points (daveey `1.0`). Round 497
+finished official **first** again at `0.5`
+(`round_f2795e55-8136-4b6f-848b-7dd985d10846`). The official first-place
+streak is `1/100` and `1/1000`: two wins in the first five rounds of the
+era, against v77's recent drought. The katanasan bond and the mx3 base are
+producing round wins; the pile-on guard (pd2) and the three-body extension
+are next in the deployment queue behind the smoke verification.
