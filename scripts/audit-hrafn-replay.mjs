@@ -165,7 +165,7 @@ const report = {
   policy_decisions: policyDecisions.length,
   per_player: perPlayer,
   rv1_executions: hrafnDecisions.filter((decision) =>
-    /:rv[12](?:$|[^a-z0-9])/i.test(String(decision.reason))
+    /:rv[123](?:$|[^a-z0-9])/i.test(String(decision.reason))
   ).length,
   harmful_k1z_actions: harmfulK1Z,
   bad_public_reasons: badPublicReasons,

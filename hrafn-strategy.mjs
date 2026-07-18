@@ -54,6 +54,8 @@ export const HRAFN_DEFAULTS = Object.freeze({
   continuingRelativeTroopRatio: 1.1,
   priorityTargetNames: Object.freeze(["auri"]),
   priorityAttackFloor: 1.35,
+  leaderHandoffGap: 0.05,
+  leaderPressureCooldownDecisions: 4,
   openingPercent: 25,
   pressurePercent: 10,
   priorityPressurePercent: 25,
@@ -369,6 +371,53 @@ function selectPriorityCampaign(groups, state, config) {
     )[0] ?? null;
 }
 
+function selectAdaptiveLeader(state, history, config) {
+  if (
+    state.own.tileShare < config.activationTileShare ||
+    state.own.tileShare > config.activationCeiling
+  ) {
+    return null;
+  }
+  const outsiders = state.rivals
+    .filter((rival) => !isProtectedRival(rival))
+    .sort((left, right) =>
+      right.tileShare - left.tileShare ||
+      right.relativeTroopRatio - left.relativeTroopRatio
+    );
+  if (outsiders.length === 0) return null;
+  const auri = outsiders.find((rival) => isPriorityTarget(rival, config)) ?? null;
+  const rv3Started = history.some((entry) => entry.policyMarker === "rv3");
+  if (!rv3Started && auri) return auri;
+  const leader = outsiders[0];
+  if (
+    auri &&
+    leader.tileShare - auri.tileShare <= config.leaderHandoffGap
+  ) {
+    return auri;
+  }
+  return rv3Started || auri ? leader : null;
+}
+
+function adaptiveLeaderPressureAction(actions, state, history, rival, config) {
+  const since = decisionsSince(history, (entry) =>
+    entry.policyMarker === "rv3" &&
+    (entry.targetID === rival.id.toLowerCase() ||
+      entry.targetName === rival.canonicalName)
+  );
+  if (since < config.leaderPressureCooldownDecisions) return null;
+  const action = safeActions(actions, (candidate) =>
+    candidate.kind === "target_player" &&
+    rivalForHrafnAction(candidate, state)?.id.toLowerCase() === rival.id.toLowerCase()
+  )[0];
+  return action
+    ? {
+        ...action,
+        policyMarker: "rv3",
+        campaignStartDecision: history.length,
+      }
+    : null;
+}
+
 function selectNewCampaign(groups, state, config) {
   if (
     state.own.tileShare < config.activationTileShare ||
@@ -537,9 +586,40 @@ export function chooseHrafnAction(
 
   const groups = attackGroups(actions, state);
   const campaign = campaignState(history, state, config);
+  const adaptiveLeader = rv1Enabled
+    ? selectAdaptiveLeader(state, history, config)
+    : null;
+  const leaderInterceptActive = adaptiveLeader !== null;
+  if (adaptiveLeader) {
+    const group = groups.find(({ rival }) =>
+      rival.id.toLowerCase() === adaptiveLeader.id.toLowerCase()
+    );
+    if (
+      group &&
+      adaptiveLeader.relativeTroopRatio >= config.priorityAttackFloor
+    ) {
+      const attack = campaignAttack(
+        group,
+        history,
+        history.length,
+        config,
+        "rv3",
+      );
+      if (attack) return attack;
+    }
+    const pressure = adaptiveLeaderPressureAction(
+      actions,
+      state,
+      history,
+      adaptiveLeader,
+      config,
+    );
+    if (pressure) return pressure;
+  }
+
   const priority = selectPriorityCampaign(groups, state, config);
   const activePriority = campaign.active && isPriorityTarget(campaign.rival, config);
-  if (rv1Enabled && priority && !activePriority) {
+  if (rv1Enabled && !leaderInterceptActive && priority && !activePriority) {
     if (priority.rival.relativeTroopRatio >= config.priorityAttackFloor) {
       const attack = campaignAttack(
         priority,
@@ -561,7 +641,7 @@ export function chooseHrafnAction(
     );
     if (pressure) return pressure;
   }
-  if (rv1Enabled && campaign.active) {
+  if (rv1Enabled && !leaderInterceptActive && campaign.active) {
     const group = groups.find(({ rival }) =>
       rival.id.toLowerCase() === campaign.rival.id.toLowerCase()
     );
@@ -607,7 +687,12 @@ export function chooseHrafnAction(
     if (build) return build;
   }
 
-  if (rv1Enabled && !campaign.active && !campaign.cooling) {
+  if (
+    rv1Enabled &&
+    !leaderInterceptActive &&
+    !campaign.active &&
+    !campaign.cooling
+  ) {
     const next = selectNewCampaign(groups, state, config);
     if (next) {
       const attack = campaignAttack(next, history, history.length, config);

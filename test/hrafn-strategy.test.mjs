@@ -241,7 +241,7 @@ test("rv1 skips an oversized K1Z member and pins the strongest outsider", () => 
   assert.equal(chosen.policyMarker, "rv1");
 });
 
-test("rv2 prioritizes Auri over a larger reachable outsider", () => {
+test("rv3 opens on Auri before a larger reachable outsider", () => {
   const auri = rival({
     id: "auri",
     name: "Auri",
@@ -259,10 +259,10 @@ test("rv2 prioritizes Auri over a larger reachable outsider", () => {
     observation({ tileShare: 0.12, rivals: [larger, auri] }),
   );
   assert.equal(chosen.id, "attack:auri:25");
-  assert.equal(chosen.policyMarker, "rv2");
+  assert.equal(chosen.policyMarker, "rv3");
 });
 
-test("rv2 targets Auri without feeding him below the attack floor", () => {
+test("rv3 targets Auri without feeding him below the attack floor", () => {
   const auri = rival({
     id: "auri",
     name: "Auri",
@@ -285,10 +285,10 @@ test("rv2 targets Auri without feeding him below the attack floor", () => {
     observation({ tileShare: 0.12, rivals: [auri, odin] }),
   );
   assert.equal(chosen.id, target.id);
-  assert.equal(chosen.policyMarker, "rv2");
+  assert.equal(chosen.policyMarker, "rv3");
 });
 
-test("rv2 switches an older outsider lock to newly reachable Auri", () => {
+test("rv3 switches an older outsider lock to newly reachable Auri", () => {
   const auri = rival({
     id: "auri",
     name: "Auri",
@@ -316,7 +316,87 @@ test("rv2 switches an older outsider lock to newly reachable Auri", () => {
     history,
   );
   assert.equal(chosen.id, "attack:auri:25");
-  assert.equal(chosen.policyMarker, "rv2");
+  assert.equal(chosen.policyMarker, "rv3");
+});
+
+test("rv3 hands off from suppressed Auri to a runaway Richard", () => {
+  const auri = rival({
+    id: "auri",
+    name: "Auri",
+    tileShare: 0.18,
+    relativeTroopRatio: 2,
+  });
+  const richard = rival({
+    id: "richard",
+    name: "Richard Higgins",
+    tileShare: 0.3,
+    relativeTroopRatio: 1.5,
+  });
+  const history = [{
+    actionID: "target:auri",
+    kind: "target_player",
+    targetID: auri.id,
+    targetName: canonicalizeK1ZName(auri.name),
+    tileShare: 0.12,
+    policyMarker: "rv3",
+    campaignStartDecision: 0,
+  }];
+  const chosen = chooseHrafnAction(
+    [attack(auri, 25), attack(richard, 25)],
+    observation({ tileShare: 0.12, rivals: [auri, richard] }),
+    history,
+  );
+  assert.equal(chosen.id, "attack:richard:25");
+  assert.equal(chosen.policyMarker, "rv3");
+});
+
+test("rv3 cooldown grows neutrals instead of feeding a weak leader or side target", () => {
+  const auri = rival({
+    id: "auri",
+    name: "Auri",
+    tileShare: 0.18,
+    relativeTroopRatio: 2,
+  });
+  const richard = rival({
+    id: "richard",
+    name: "Richard Higgins",
+    tileShare: 0.3,
+    relativeTroopRatio: 1.2,
+  });
+  const side = rival({
+    id: "side",
+    name: "Side",
+    tileShare: 0.1,
+    relativeTroopRatio: 3,
+  });
+  const target = action(
+    "target:richard",
+    "target_player",
+    "Target Richard Higgins",
+    { targetID: richard.id, targetName: richard.name },
+  );
+  const expand = action(
+    "expand:terra-nullius:35",
+    "attack",
+    "Expand Terra Nullius 35%",
+    { expansion: true, troopPercent: 35 },
+  );
+  const history = [{
+    actionID: target.id,
+    kind: target.kind,
+    targetID: richard.id,
+    targetName: canonicalizeK1ZName(richard.name),
+    tileShare: 0.12,
+    policyMarker: "rv3",
+    campaignStartDecision: 0,
+  }];
+  const chosen = chooseHrafnAction(
+    [attack(richard, 25), attack(side, 25), target, expand],
+    observation({ tileShare: 0.12, rivals: [auri, richard, side] }),
+    history,
+  );
+  assert.equal(chosen.id, expand.id);
+  assert.equal(chosen.policyMarker, undefined);
 });
 
 test("rv1 respects the configured troop-ratio floor", () => {
