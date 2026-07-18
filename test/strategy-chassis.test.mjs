@@ -79,7 +79,7 @@ test("chassis never probes at 10 percent against a rival", () => {
     probe,
     observation({
       tileShare: 0.15,
-      rivals: [{ id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 }],
+      rivals: [{ id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.4 }],
     }),
     null,
     [],
@@ -118,6 +118,7 @@ test("chassis retaliates against a current attacker before grinding", () => {
       tileShare: 0.08,
       incomingAttacks: 1,
       incomingAttackPlayerIDs: ["aggressor"],
+      spawnTile: 1180588,
       rivals: [{ id: "aggressor", name: "Aggressor", tileShare: 0.12, relativeTroopRatio: 1.0, incomingAttack: true }],
     }),
     null,
@@ -149,7 +150,7 @@ test("chassis builds defensive economy when threatened and weak", () => {
   // holds are gate-fatal. The Auri fortification pattern is deferred evidence.
   const selected = choose(
     [defense, city, ...neutralActions()],
-    observation({ tileShare: 0.08, troopRatio: 0.5, incomingAttacks: 1 }),
+    observation({ tileShare: 0.08, troopRatio: 0.5, incomingAttacks: 2 }),
     null,
     [],
   );
@@ -239,4 +240,88 @@ test("chassis probes instead of holding when tactical actions remain", () => {
     [],
   );
   assert.equal(selected.id, probe.id);
+});
+
+test("chassis stops grinding when the frontier stalls", () => {
+  const history = [0.06, 0.061, 0.061, 0.061].map((tileShare) => ({
+    actionID: "expand:terra-nullius:35",
+    kind: "attack",
+    neutral: true,
+    tileShare,
+  }));
+  const selected = choose(
+    [...neutralActions(), action("build:City:1", "build", "Build City")],
+    observation({ tileShare: 0.061, troops: 500000 }),
+    null,
+    history,
+  );
+  assert.notEqual(selected.policyMarker, "ch1");
+});
+
+test("chassis grinds while the frontier still produces", () => {
+  const history = [0.05, 0.055, 0.06, 0.065].map((tileShare) => ({
+    actionID: "expand:terra-nullius:35",
+    kind: "attack",
+    neutral: true,
+    tileShare,
+  }));
+  const selected = choose(
+    neutralActions(),
+    observation({ tileShare: 0.07, troops: 500000 }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, "expand:terra-nullius:35");
+  assert.equal(selected.policyMarker, "ch1");
+});
+
+test("chassis converts earlier on World than on Asia", () => {
+  const probe = [10, 25].map((percent) =>
+    action(`attack:bystander:${percent}`, "attack", `Attack Bystander ${percent}%`));
+  const obs = {
+    tileShare: 0.1,
+    troops: 500000,
+    rivals: [{ id: "bystander", name: "Bystander", tileShare: 0.08, relativeTroopRatio: 1.4 }],
+  };
+  const asia = choose(
+    [...neutralActions(), ...probe],
+    observation({ ...obs, spawnTile: 1180588 }),
+    null,
+    [],
+  );
+  assert.equal(asia.id, "expand:terra-nullius:35");
+  const world = choose(
+    [...neutralActions(), ...probe],
+    observation({ ...obs, spawnTile: 1088580 }),
+    null,
+    [],
+  );
+  assert.equal(world.id, "attack:bystander:25");
+});
+
+test("chassis refuses fresh attrition below 1.3 but finishes a started target", () => {
+  const probe = [10, 25].map((percent) =>
+    action(`attack:bystander:${percent}`, "attack", `Attack Bystander ${percent}%`));
+  const build = action("build:City:1", "build", "Build City");
+  const fresh = choose(
+    [...probe, build],
+    observation({
+      tileShare: 0.15,
+      rivals: [{ id: "bystander", name: "Bystander", tileShare: 0.08, relativeTroopRatio: 1.1 }],
+    }),
+    null,
+    [],
+  );
+  assert.equal(fresh.id, build.id);
+  const history = [{ actionID: "attack:bystander:25", kind: "attack", targetName: "bystander", tileShare: 0.15 }];
+  const sticky = choose(
+    [...probe, build],
+    observation({
+      tileShare: 0.15,
+      rivals: [{ id: "bystander", name: "Bystander", tileShare: 0.08, relativeTroopRatio: 1.1 }],
+    }),
+    null,
+    history,
+  );
+  assert.equal(sticky.id, "attack:bystander:25");
 });
