@@ -2,7 +2,7 @@
   "schema_version": 1,
   "recorded_at": "2026-07-18T02:30:00Z",
   "candidate": "qd1n-v77-km1",
-  "verdict": "LOCAL_GATES_PASS_HOSTED_GATES_PENDING",
+  "verdict": "KP1_VERIFIED_HOSTED_0_OF_4_NO_SUBMIT",
   "remote_state_changed": false,
   "hypothesis": "operator directive: katanasan is a 100% supporter and must never be attacked; the existing reciprocal trust had a 0.35 tile-share cutoff that let qd1n first-strike him in three recorded wins, and qd1n almost never built silos or fired Atom Bombs while Auri fires them at runaway leaders",
   "guards": [
@@ -97,12 +97,63 @@
   },
   "league_state": {
     "live_policy": "qd1n:v77",
-    "candidate_uploaded": false,
+    "candidate_uploaded": true,
     "candidate_submitted": false,
     "champion_changed": false,
     "membership_relaunched": false,
     "official_first_place_streak": 0,
     "target_first_place_streak": 1000
   },
-  "next_test": "hosted diagnostic xreq_6fe7820d-7776-4580-9a3b-b6df6ec248e3 on the current league roster with tsukuyomi-no-kage:v34 present"
+  "next_test": "operator decision: hold v77 under gate discipline, or accept km1 live for the alliance requirement despite the unmet gates",
+  "hosted": {
+    "upload": {
+      "policy_ref": "qd1n:v82",
+      "policy_version_id": "a09423b3-fc5c-43e9-bbc6-bc9976e2e11c",
+      "purpose": "hosted diagnostic only; qd1n:v77 stayed live throughout"
+    },
+    "candidate_diagnostic": {
+      "request_id": "xreq_6fe7820d-7776-4580-9a3b-b6df6ec248e3",
+      "policy_ref": "qd1n:v82",
+      "policy_version_id": "a09423b3-fc5c-43e9-bbc6-bc9976e2e11c",
+      "variant": "tournament-8p-asia",
+      "seat": 6,
+      "wins": 0,
+      "episodes": 4,
+      "decisions": 391,
+      "accepted": 391,
+      "holds": 2,
+      "rejected": 0,
+      "katanasan_attacks_by_candidate": 0,
+      "katanasan_attacks_on_candidate": 0,
+      "atom_bombs_fired": 0,
+      "episodes_detail": [
+        {
+          "episode_request_id": "ereq_50a44a05",
+          "final_tiles": 10329,
+          "holds": 2,
+          "winner": "tsukuyomi-no-kage:v34"
+        },
+        {
+          "episode_request_id": "ereq_07b66bd0",
+          "final_tiles": 10329,
+          "holds": 0,
+          "winner": "proxywar-keystone:v42"
+        },
+        {
+          "episode_request_id": "ereq_116ea87d",
+          "final_tiles": 9184,
+          "holds": 0,
+          "winner": "proxywar-keystone:v42"
+        },
+        {
+          "episode_request_id": "ereq_49ea5358",
+          "final_tiles": 12619,
+          "holds": 0,
+          "winner": "proxywar-keystone:v42"
+        }
+      ],
+      "note": "kp1 verified hosted: zero attacks on katanasan across four episodes with tsukuyomi-no-kage:v34 present, and katanasan never attacked the candidate; episode one was won by katanasan unopposed by us, which the operator's alliance accepts. nk1 did not fire: the candidate was eliminated before its economy could field a silo target."
+    },
+    "regression_20_of_20": "not run: the diagnostic finished 0/4"
+  }
 }

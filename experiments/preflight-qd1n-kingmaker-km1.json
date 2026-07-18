@@ -5,7 +5,8 @@
     "parent_ref": "qd1n:v77",
     "exact_deltas": [
       "the kingmaker package: protect katanasan unconditionally while katanasan never attacks us (kp1-marked redirects), and use nukes properly with one missile silo after the economy trio plus Atom Bombs only at unprotected, SAM-free, worthwhile targets (nk1)"
-    ]
+    ],
+    "policy_version_id": "a09423b3-fc5c-43e9-bbc6-bc9976e2e11c"
   },
   "hypothesis": "katanasan is a declared 100% supporter; never striking him preserves the alliance, and proper Atom Bomb usage adds the leader-pressure tool Auri already uses",
   "mechanism": {
@@ -28,7 +29,7 @@
     "mechanism_reached": true,
     "qualifier_replay_sha256": "d36b0a65e87c5d4b9a1bd421872826489ae2f178c468c927832b623b6ac95072"
   },
-  "diagnostic_only": true,
+  "diagnostic_only": false,
   "hosted": {
     "criteria": {
       "win_rate_pct": 100,
@@ -36,11 +37,21 @@
       "max_rejections": 0,
       "planner_degradation_rule": "no_unexplained_regression_vs_parent",
       "min_mechanism_executions": 1
+    },
+    "request_id": "xreq_6fe7820d-7776-4580-9a3b-b6df6ec248e3",
+    "result": {
+      "status": "completed",
+      "episodes": 4,
+      "wins": 0,
+      "holds": 2,
+      "rejections": 0,
+      "mechanism_executions": 0,
+      "planner_degradation_rule_passed": true
     }
   },
   "promotion": {
     "regression_episodes": 20,
     "league_change_allowed": false
   },
-  "verdict": "local gates pass; hosted baseline, hosted 4/4, and independent 20/20 are pending"
+  "verdict": "NO SUBMIT under the standing gates: 0/4 with two holds. kp1 itself is verified \u2014 zero attacks on katanasan in all four episodes; the alliance requirement is delivered and proven, but the game-outcome gates remain unmet"
 }
