@@ -78,6 +78,8 @@ const perPlayer = Object.fromEntries(
       ).length,
       fallbacks: rows.filter((decision) => decision.fallbackUsed === true).length,
       rv1: rows.filter((decision) => String(decision.reason).includes(":rv1")).length,
+      rv2: rows.filter((decision) => String(decision.reason).includes(":rv2")).length,
+      rv3: rows.filter((decision) => String(decision.reason).includes(":rv3")).length,
       k1z: rows.filter((decision) => String(decision.reason).includes(":k1z")).length,
       sk1: rows.filter((decision) => String(decision.reason).includes(":sk1")).length,
     }];
@@ -135,6 +137,21 @@ const coalitionResults = resultPlayers.filter((player) =>
 const outsiderResults = resultPlayers.filter((player) =>
   !memberNames.has(player.canonical_name)
 );
+const mechanismDecisions = hrafnDecisions.filter((decision) =>
+  /:rv[123](?:$|[^a-z0-9])/i.test(String(decision.reason))
+);
+const mechanismTargets = Object.values(mechanismDecisions.reduce((targets, decision) => {
+  const target = targetIdentity(decision);
+  const key = target.id || target.name || "unknown";
+  const current = targets[key] ?? {
+    id: target.id || null,
+    name: target.name || null,
+    executions: 0,
+  };
+  current.executions += 1;
+  targets[key] = current;
+  return targets;
+}, {})).sort((left, right) => right.executions - left.executions);
 const sum = (rows, field) => rows.reduce(
   (total, row) => total + (Number.isFinite(row[field]) ? row[field] : 0),
   0,
@@ -165,9 +182,9 @@ const report = {
   ).length,
   policy_decisions: policyDecisions.length,
   per_player: perPlayer,
-  rv1_executions: hrafnDecisions.filter((decision) =>
-    /:rv[123](?:$|[^a-z0-9])/i.test(String(decision.reason))
-  ).length,
+  rv1_executions: mechanismDecisions.length,
+  mechanism_executions: mechanismDecisions.length,
+  mechanism_targets: mechanismTargets,
   harmful_k1z_actions: harmfulK1Z,
   bad_public_reasons: badPublicReasons,
   checks: {
