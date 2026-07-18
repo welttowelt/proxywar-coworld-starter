@@ -1,11 +1,11 @@
 {
   "schema_version": 4,
   "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
-  "collected_at": "2026-07-18T08:30:54.286Z",
-  "source_fingerprint": "14f980ea6ecdd3b7e5ee0fb7a5ca9743bf24269d34673c9ba9f227c928bcecf7",
+  "collected_at": "2026-07-18T09:07:00.841Z",
+  "source_fingerprint": "2a49215fa8e1e0300e633d82db73a54ec0d7bb628f63fcd492a0ce31058b037d",
   "requested_round_count": 20,
-  "first_round_number": 471,
-  "last_round_number": 490,
+  "first_round_number": 472,
+  "last_round_number": 491,
   "round_count": 20,
   "live_round_count": 12,
   "round_standing_count": 220,
@@ -16,33 +16,9 @@
   "challenger_membership_count": 1,
   "episode_count": 80,
   "participant_count": 640,
-  "decision_count": 66931,
-  "replay_bytes": 1861837244,
+  "decision_count": 70556,
+  "replay_bytes": 1937047014,
   "replays": [
-    {
-      "episode_id": "07792c20-49b0-48c8-8819-9cc71bb0dfc3",
-      "url": "https://softmax-public.s3.amazonaws.com/replays/9ba89bcf-1a34-4dc1-ae8b-e78cef8cd641.replay",
-      "sha256": "e68e58a03e8ff5866d606fef7608a9f1ab4a4d35f2a0092f9fcb0fc5327f94fd",
-      "bytes": 12304954
-    },
-    {
-      "episode_id": "da3eefa9-1de2-4042-9d15-909a6013d392",
-      "url": "https://softmax-public.s3.amazonaws.com/replays/ba7147c6-9d82-425f-a63a-5c9a6b7ea735.replay",
-      "sha256": "a0b7ed6ba2db4c5f5789169fd85c6f8a070f5ffdfb255adba0c8375b6c88cb4e",
-      "bytes": 23266152
-    },
-    {
-      "episode_id": "a8fef775-acb4-449c-aab0-b709963f2b25",
-      "url": "https://softmax-public.s3.amazonaws.com/replays/3425ea90-a426-4ae7-a814-e93baca95af7.replay",
-      "sha256": "e98a6d31005b8000bb9c7e08737c84f1ea70924dc2421b21064ced918d0a8e69",
-      "bytes": 23879052
-    },
-    {
-      "episode_id": "613e7227-2027-4ef4-a770-186094fb21e3",
-      "url": "https://softmax-public.s3.amazonaws.com/replays/413cb56c-9d44-4d7a-85ae-3599ca9443c8.replay",
-      "sha256": "c6d1353c58b6234175cfb24fb0d5ba53302c9ec29cbd4c5954ee083cc5a80f93",
-      "bytes": 15802379
-    },
     {
       "episode_id": "fcbc89ad-8ebb-4ed2-9c55-1cb924773ae7",
       "url": "https://softmax-public.s3.amazonaws.com/replays/abce3a04-6c60-4990-9d78-efc398959010.replay",
@@ -498,6 +474,30 @@
       "url": "https://softmax-public.s3.amazonaws.com/replays/3e4a3470-c9d7-4692-b402-4cc3bda8851f.replay",
       "sha256": "b8c133cf7f47822191d30a04e13beac3412b981e9aecae2d085c0911e047409a",
       "bytes": 14775947
+    },
+    {
+      "episode_id": "94286397-d55b-45a7-8127-fc8df49cfce1",
+      "url": "https://softmax-public.s3.amazonaws.com/replays/499f939f-19f5-49f5-bd3b-0d219e7b45d8.replay",
+      "sha256": "943756ec39fbed0f2741a442d9f94116c3ed46c4c589b4fccce45c0c0b84bdb7",
+      "bytes": 35473980
+    },
+    {
+      "episode_id": "01975882-30ef-494a-8793-7b2c4ac2cef9",
+      "url": "https://softmax-public.s3.amazonaws.com/replays/f02be623-4e75-49f0-93ad-6899af3e9287.replay",
+      "sha256": "71a96115f004113f6858896a3f23e6b44f55cc313f54d7507ea95bf51c88f2f9",
+      "bytes": 61284603
+    },
+    {
+      "episode_id": "3932aac8-a173-457a-b7fd-5ef9ae12527f",
+      "url": "https://softmax-public.s3.amazonaws.com/replays/065f68d3-d6a8-4986-bf74-c2c5d3af9908.replay",
+      "sha256": "21e3cb34a56cd140bd083ef15463016e43865350e971362d8a30a4bf9d7365a8",
+      "bytes": 29693564
+    },
+    {
+      "episode_id": "b7958189-3a70-4f93-9bd9-ffda625ed10e",
+      "url": "https://softmax-public.s3.amazonaws.com/replays/2c55197a-9ecf-4db1-8bba-e67da2470ff3.replay",
+      "sha256": "cba5c51ccf8c3304f3512a582360fd545332fefea1892498aaad5f917ba54f4b",
+      "bytes": 24010160
     }
   ]
 }
