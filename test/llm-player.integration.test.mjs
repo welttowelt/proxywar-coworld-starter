@@ -236,7 +236,7 @@ test("qd2n engine wiring grinds the opening at 35 percent", async () => {
       phase: "active",
       ownState: {
         tileShare: 0.08, troopRatio: 0.8, troops: 500000, gold: 250000,
-        borderTiles: 100, incomingAttacks: [],
+        borderTiles: 100, incomingAttacks: [], spawnTile: 1180588,
       },
       visiblePlayers: [],
     }),
