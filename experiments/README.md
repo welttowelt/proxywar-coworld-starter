@@ -1210,3 +1210,31 @@ composition remains the best measured policy, and mx3 has no ship case over
 v77 on either hosted roster. qd1n:v77 remains the sole live champion.
 Evidence: `experiments/diagnosis-qd2n-winner-chassis-20260718.json` and
 `experiments/qd2n-architecture-blueprint-20260718.md`.
+
+## Qd1n kingmaker contract, 2026-07-18
+
+The operator declared katanasan a 100% supporter and kingmaker. Three
+deterministic, LLM-proof rules now carry the contract. `kp1` protects
+katanasan unconditionally with no tile-share cutoff (the old restraint let
+qd1n first-strike him at 0.35+, which happened in three recorded wins) and
+breaks only if he attacks first. `kp2` selects any legal alliance_request
+targeting him immediately — a reverse request accepts his pending offer —
+and retries on a six-decision cooldown until the observation confirms
+`isAllied`, then stops. `nk1` builds one missile silo after the economy
+trio and fires Atom Bombs only at unprotected, SAM-free, worthwhile
+targets, never at him. Break, reject, embargo, target, and boat channels
+are excluded by construction; matching uses normalized name plus player ID.
+
+The evidence: `122/122` unit tests including the spec's four proof cases;
+`34/34` qualifier with zero holds and zero rejections; both Asia mirrors
+won (asia-a byte-identical to the mx3 run, asia-b at 908,254); the hosted
+diagnostic `xreq_6fe7820d-7776-4580-9a3b-b6df6ec248e3` with
+`tsukuyomi-no-kage:v34` in the roster recorded **zero harmful actions
+against katanasan in all four episodes** (and none from him); and a local
+smoke game against a katanasan-named seat sent fourteen kp2 requests with
+zero holds and zero harmful actions. The diagnostic finished `0/4` on
+wins, so the standing promotion gates remain unmet. Uploaded as `qd1n:v83`
+(`09fce37f-6f9b-4163-a411-d0e0ecc679de`, codename k1zuna) as the
+handshake artifact; qd1n:v77 remains the sole live champion. Evidence:
+`experiments/diagnosis-qd1n-kingmaker-rci-20260718.json` and
+`experiments/preflight-qd1n-kingmaker-km1.json`.

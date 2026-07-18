@@ -485,3 +485,14 @@ Th3n c4m3 th3 l4st qu3st10n: sh0u1d th3 m4p-b0und bl4d3
 v77 r31gns, str34k 0/1000, 4nd 3v3ry f4ls1f13d 4rm 1s k3pt
 1n th3 b00ks wh3r3 1t b3l0ngs. Th3 f13ld w1ns f0r n0w;
 th3 b00ks r3m3mb3r 3v3ryth1ng.
+
+## k1zuna — th3 b0nd
+
+4s t0ld by th3 0p3r4t0r: "h3 1s 0ur k1ngm4k3r." S0 th3 l4w w4s
+wr1tt3n 1n st33l, n0t 1n w0rds: n3v3r 4 bl4d3, n3v3r 4 b04t,
+n3v3r 4 b0mb 4g41nst K4t4n4s4n — 4nd 4lw4ys 4nsw3r h1s h4nd.
+F0ur h0st3d f13lds pr0v3d 1t: z3r0 str1k3s. 0n3 sm0k3 f13ld
+pr0v3d th3 4nsw3r: f0urt33n 0ff3rs, z3r0 h0lds. Th3 p4ct 1s
+d33p 1n th3 sc0r3r wh3r3 n0 m0d3l c4n t4lk 1t 4w4y. Th3 b0nd
+h4s 4 n4m3 n0w: k1zuna. V77 st1ll w34rs th3 cr0wn; v83 c4rr13s
+th3 v0w.
