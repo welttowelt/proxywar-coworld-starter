@@ -1394,3 +1394,43 @@ quick-chat selections (replay
 `00a072e0b41b68ff88b2f348fe933fb1cd56c22de56e516d5f197b5c6b9f2a84`).
 It remains a quarantined compliance candidate: no upload, submission,
 membership, or champion change has been made.
+
+## NC1 wrong-layer rejection (2026-07-18)
+
+Round 508 supplied a strong symptom: Odin selected five nuke actions in its
+World win and 228 across the three losses. NC1 attempted an eight-decision
+cooldown, but it attached the guard to `chooseAtomBomb`, which selects Atom
+Bomb construction. The repeated official action is the separate
+`selectedActionKind === "nuke"` firing path.
+
+The linux/amd64 candidate
+(`sha256:e370e01b8855254d7c7417250957dd6be92b9eb5706c80e22138f9b3d98295ea`)
+passed its qualifier and the full `148/148` branch suite. Its exact World
+mirrors then rejected it decisively: candidate and exact parent tied at score
+units `1-1`, tiles `651,409-651,409`, and two survivors each after the seat
+swap. Both arms selected 27 nuke actions and every aggregate action count was
+identical. `nc1` and `nk1` executed zero times.
+
+NC1 stopped at the first matched gate. No Asia/Pangaea extension, hosted
+request, upload, submission, or champion change was made. Full evidence and
+replay hashes are recorded in
+[`diagnosis-qd1n-nuclear-fire-discipline-rci-20260718.json`](diagnosis-qd1n-nuclear-fire-discipline-rci-20260718.json).
+The next nuclear arm must throttle nuke firing directly and prove branch reach
+before a full mirror.
+
+## Round 509 Pangaea audit (2026-07-18)
+
+`qd1n:v89` finished official rank 4 at score `0.25` without a sole episode
+win. Across four episodes Odin averaged 72,988 final tiles and recorded
+`956/956` accepted decisions, zero rejections, 82 holds, 745 fallbacks, and
+293 boat or boat-retreat selections. Daveey, Ron, and Richard won the three
+sole-winner episodes. Their replay traces attacked broad target sets, so the
+round does not prove exclusive coordination against Odin.
+
+Hrafn appeared three times, survived all three, and transferred 4,787,685
+troops to Odin without a harmful action against him. Its `786/786` decisions
+had zero fallbacks or rejections and two holds. Live v5 also selected 16 more
+game-authored long quick chats, reinforcing the public-text defect fixed by
+the quarantined v6 candidate. Hrafn placed rank 13 at `0/3`; the transfer
+contract is working, while both warriors still lack reliable Pangaea
+conversion.

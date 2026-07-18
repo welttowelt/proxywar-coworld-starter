@@ -267,3 +267,25 @@ daveey won `3/4`. The refreshed 20-round snapshot is `10/72` FFA wins
 (`13.89%`) with zero data-quality failures. The official streak remains
 `0/1000`, Round 509 is running with both warriors, and live `qd1n:v89` remains
 unchanged while NC1 runs its matched gate.
+
+Round 509 Pangaea checkpoint. Odin placed official rank 4 at score `0.25`
+without a sole episode win, averaging 72,988 final tiles across four
+episodes. All `956/956` decisions were accepted with zero rejections, but
+82 holds, 745 fallbacks, and 293 boat or boat-retreat selections exposed the
+conversion failure. The three sole winners were Daveey, Ron, and Richard;
+their attack-heavy traces hit many rivals, so the replays do not support an
+exclusive anti-Odin coordination claim. Hrafn placed rank 13 at `0/3`, yet
+survived all three appearances, delivered 4,787,685 troops to Odin, and
+recorded zero harmful actions against him. Hrafn's `786/786` decisions had
+zero fallbacks or rejections, two holds, and 16 more uncontrollable long
+quick-chat selections. The v6 public-text quarantine remains directly
+relevant but unpromoted.
+
+NC1 is rejected. The exact World seat swap tied candidate and parent at score
+units `1-1`, tiles `651,409-651,409`, and two survivors each. Every aggregate
+action count was identical; both arms selected 27 nuke actions. The candidate
+recorded zero `nc1` and zero `nk1` executions because it throttled Atom Bomb
+construction while the official failure uses the separate `nuke` firing
+action. No hosted extension, upload, submission, or champion change followed.
+`qd1n:v89` remains exact and live. The next nuclear test must instrument the
+firing path itself before any long mirror.
