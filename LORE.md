@@ -634,3 +634,26 @@ t0 0d1n. N0 K1Z bl00d. But s1xt33n 0ld g4m3-s0ngs
 3sc4p3d h1s b34k. V6 st1ll w41ts 4t th3 g4t3.
 
 Str34k: 0/1000.
+
+## tw0 sh13lds, 0n3 s34t
+
+NR1 w41t3d f0r th3 4tt4ck3r's n4m3. P4ng434 n3v3r sp0k3 1t.
+644 c4lls l4nd3d. Z3r0 m4rks. Th3 sh13ld n3v3r r0s3.
+
+NR2 n33d3d n0 n4m3. Und3r 12%, 1t t00k C1ty, P0rt, 4nd
+upgr4d3 b3f0r3 4 n3utr4l b04t. T3n m4rks. 4ll t3n l4nd3d.
+Th3 sc4l3 s41d 1-1, 2 surv1v0rs t0 2, 420304-420335.
+Th3 s4m3 3v3n s34ts l1v3d b0th t1m3s.
+
+N0 upl04d. N0 subm1t. V89 st4ys 3x4ct.
+
+## r0und 515 — t1m3 1s l4nd
+
+N0 s0l3 cr0wn. St1ll 0d1n t00k f1rst: 0.5, 131767 m34n
+t1l3s, z3r0 h0lds, z3r0 r3j3cts. D4v33y t00k th3 0nly
+d3cl4r3d w1n 4nd f1n1sh3d s3c0nd.
+
+Th3 cl0ck c0unts l4nd. Th3 n3xt bl4d3 must k33p t3rr1t0ry
+4cr0ss s34ts, n0t m3r3ly sw4p b04ts f0r w4lls.
+
+R0und str34k: 1/1000. 0v3r4ll: D4v33y f1rst, 0d1n s3c0nd.

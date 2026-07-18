@@ -1496,3 +1496,42 @@ and seat deltas are recorded in
 The next hypothesis should target the post-attack collapse itself using
 incoming pressure, reserve strength, and border access rather than treating
 naval churn as the root cause.
+
+## NR1 and NR2 Pangaea naval-reserve rejection (2026-07-19)
+
+Round 513 separated the losing Pangaea seats from Odin's only large timeout
+position. All three losing seats were attacked by turn 2,100 and continued
+neutral boat play; the 300,192-tile seat was not attacked until turn 7,600.
+NR1 therefore tried to preserve a low-share defensive reserve after attributed
+pressure by preferring a legal build or upgrade over a neutral boat.
+
+NR1 passed `6/6` focused tests, the full `152/152` suite, and a `34/34`
+linux/amd64 qualifier. Its Pangaea reach probe accepted all `644/644`
+decisions with zero holds or rejections, but executed zero `nr1` markers.
+The current Pangaea decision payload did not reliably expose attacker
+attribution at the point where the rule had to choose. The arm failed the
+first promotion gate and stopped without a matched extension.
+
+NR2 removed that unobservable dependency. Below a 12-percent land base, it
+preferred a legal build or upgrade over a neutral boat while preserving
+neutral land, credible rival counters, K1Z requests, high-share naval play,
+and the existing `cv1` path. It passed `10/10` focused compatibility tests,
+the full `153/153` suite, and a `34/34` qualifier.
+
+The bounded Pangaea seat swap reached NR2 ten times, all accepted and
+audit-confirmed. Candidate decisions were `683/683` accepted with zero holds
+or rejections. The mechanism still produced no advantage: candidate and
+parent tied score `1-1` and surviving seats `2-2`, while candidate territory
+fell from `420,335` to `420,304` (`-31`, `-0.0074%`). The same even seats
+survived both orientations, so seat geometry dominated the branch.
+
+Both arms are rejected. No hosted request, upload, submission, membership, or
+champion change followed. Exact evidence and replay hashes are recorded in
+[`diagnosis-qd1n-pangaea-naval-reserve-rci-20260719.json`](diagnosis-qd1n-pangaea-naval-reserve-rci-20260719.json).
+
+The official checkpoint then moved in the live parent: `qd1n:v89` placed first
+in Round 515 at score `0.5`, 131,767 mean tiles, zero holds, and zero rejected
+decisions. It recorded zero declared episode wins; the official rank came from
+territorial timeout scoring. The verified first-place streak is `1/1000`.
+The next experiment should isolate that bounded-territory conversion rather
+than add another broad boat/economy ordering rule.

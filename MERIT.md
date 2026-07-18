@@ -101,6 +101,8 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | qd1n OE1 opening-economy guard | deferred optional coalition requests and fresh rival pressure during the first 20 calm decisions while neutral expansion or the first economic build remained available; exact-image, seat-swapped World and Pangaea mirrors completed with all `5,875/5,875` decisions accepted | rejected: candidate and exact parent split the four orientations `2-2`; combined candidate tiles `1,071,853` versus parent `1,071,905`. Identity and seat, not OE1, explain the outcomes. Asia reruns were stopped as redundant; no upload, submission, or champion change; inverse commit `f1347251` restores exact v89 source |
 | qd1n NF1 land-front concentration | while a current or recent hostile land front exists, prefer that attacker and permit only a credible existing finish; corrected amd64 image `ee4330c7`, `149/149` candidate tests, `34/34` qualifier accepted; exact World mirrors exercised `nf1` 115 times with candidate `1681/1681` decisions accepted and zero rejections | rejected at the first matched gate: candidate and parent tied exactly after the seat swap at score units `1-1`, tiles `651,609-651,609`, and two survivors each. No Asia/Pangaea extension, hosted request, upload, submission, or champion change; evidence in `experiments/diagnosis-qd1n-no-new-front-rci-20260718.json` |
 | qd1n BD1 boat-retreat recovery | on a sub-12-percent seat, six boat/retreat decisions in a flat twelve-decision window temporarily defer a repeated coalition request for a legal land attack or economy build; `5/5` focused and `151/151` full tests passed; amd64 qualifier accepted `34/34`; bounded seat-swapped World play reached `bd1` 14 times, 12 audit-confirmed, with all `984/984` candidate decisions accepted and zero holds/rejections | rejected at the bounded matched gate: candidate tiles `650,559` versus parent `652,628` (`-2,069`, `-0.317%`), score `0.998428-1.001572`, and all eight seats per arm still alive. Reach produced activity but no survival boundary change. No full mirrors, hosted request, upload, submission, membership, or champion change |
+| qd1n NR1 attributed naval reserve | after recent incoming pressure on a sub-12-percent seat, prefer a legal build or upgrade over a neutral boat; `6/6` focused and `152/152` full tests passed; amd64 qualifier accepted `34/34`; Pangaea probe accepted `644/644` decisions with zero holds/rejections | rejected at mechanism reach: current Pangaea decision payload did not reliably expose the attacker identity when the rule chose, so `nr1` executed zero times. No matched extension, upload, submission, membership, or champion change |
+| qd1n NR2 low-share land base | below 12-percent territory, prefer a legal build or upgrade over a neutral boat while preserving neutral land, credible counters, K1Z requests, high-share naval play, and `cv1`; `10/10` focused compatibility and `153/153` full tests passed; amd64 qualifier accepted `34/34`; bounded Pangaea seat swap reached ten audit-confirmed replacements with `683/683` candidate decisions accepted and zero holds/rejections | rejected at matched advantage: score tied `1-1`, survivors tied `2-2`, and candidate territory was `420,304` versus parent `420,335` (`-31`, `-0.0074%`). The same even seats survived both orientations. No hosted request, upload, submission, membership, or champion change |
 
 Detailed evidence lives in [`experiments/`](experiments/README.md). Public round
 statistics live on the [dashboard](https://welttowelt.github.io/proxywar-coworld-starter/).
@@ -324,3 +326,18 @@ Hrafn appeared in three Round 510 episodes and placed rank 13. Its
 three appearances, recorded 38 holds, and selected 82 more game-authored
 quick chats. The quarantined v6 public-text fix remains relevant, but no Hrafn
 promotion has been made without outcome evidence.
+
+Pangaea naval-reserve checkpoint. Round 513 showed three Odin loss seats
+attacked by turn 2,100 while continuing neutral boats; the 300,192-tile timeout
+seat was not attacked until turn 7,600. NR1 could not observe attributed
+pressure at its decision boundary and failed reach with zero markers. NR2
+removed that dependency and reached ten times, but its exact bounded seat swap
+tied score and survivors while losing 31 territory. Both arms are rejected;
+live `qd1n:v89` remains exact.
+
+Round 515 then placed live `qd1n:v89` official first at score `0.5`, 131,767
+mean tiles, zero holds, and zero rejected decisions. Odin recorded zero
+declared episode wins; the rank came from bounded territorial timeout scoring.
+The official first-place streak is now `1/1000`. Overall league score still
+places Daveey first at `30.5297`, Odin second at `23.4639`, and Auri third at
+`17.1762`. This is a live recovery checkpoint, not sustained dominance.
