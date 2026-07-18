@@ -496,6 +496,8 @@ function chooseRivalAttack(actions, state, plan, history, avoid, threatCount = 0
 }
 
 const KINGMAKER_RETRY_COOLDOWN = 6;
+const OPENING_ECONOMY_DECISIONS = 20;
+const OPENING_ECONOMY_SHARE_CAP = 0.2;
 
 // Reciprocal partners come from two channels: visible rivals, and
 // alliance_request metadata when the partner is outside the visible set.
@@ -782,16 +784,67 @@ export function chooseAction(actions, state, plan = null, history = []) {
     : null;
   if (defensiveBuild) return defensiveBuild;
 
-  const kingmakerAlliance = kingmakerAllianceAction(actions, state, history);
+  // oe1: bounded opening economy rule. While the opening window is calm and
+  // real opening work exists (neutral expansion or the first economic build),
+  // alliance, targeting, and optional pressure actions must not preempt it.
+  // Confirmed incoming pressure ends the rule immediately, a pending partner
+  // offer (reverse handshake) is still accepted on sight, and nothing is
+  // deferred when no opening work is available — the contract is deferred,
+  // never dropped. oe1 only marks actions the rule actually rerouted.
+  const activeDecisions = history.filter((entry) => entry.kind !== "spawn").length;
+  const confirmedPressure = threatCount > 0 ||
+    (state.self.incomingAttackerIDs || []).length > 0;
+  const openingEconomy = activeDecisions < OPENING_ECONOMY_DECISIONS &&
+    state.self.tileShare < OPENING_ECONOMY_SHARE_CAP && !confirmedPressure;
+  const neutralAvailable = actions.some(isNeutralExpansion);
+  const firstBuildDue = !history.some((entry) => entry.kind === "build") &&
+    actions.some((action) => action.kind === "build") &&
+    activeDecisions >= 4 && state.self.tileShare >= 0.05;
+  const openingWorkAvailable = neutralAvailable || firstBuildDue;
+  let oe1Suppress = false;
+  let kingmakerAlliance = kingmakerAllianceAction(actions, state, history);
+  if (openingEconomy && openingWorkAvailable && kingmakerAlliance) {
+    const partners = reciprocalPartners(actions, state);
+    const partnerOfferPending = safeActions(actions, (action) =>
+      action.kind === "alliance_reject" &&
+      partners.some((partner) => matchesKingmakerPartner(action, partner, state))
+    ).length > 0;
+    if (!partnerOfferPending) {
+      kingmakerAlliance = null;
+      oe1Suppress = true;
+    }
+  }
   if (kingmakerAlliance) return kingmakerAlliance;
+
+  // The first economic build must complete inside the window; later builds
+  // keep the standard cadence.
+  const openingFirstBuild = openingEconomy && firstBuildDue
+    ? chooseBuild(actions, history)
+    : null;
+  if (openingFirstBuild) {
+    return { ...openingFirstBuild, policyMarker: "oe1" };
+  }
 
   const atomBomb = chooseAtomBomb(actions, state, history);
   if (atomBomb) return atomBomb;
 
-  const rivalAttack = chooseRivalAttack(actions, state, plan, history, avoid, threatCount);
+  let rivalAttack = chooseRivalAttack(actions, state, plan, history, avoid, threatCount);
+  if (openingEconomy && openingWorkAvailable && rivalAttack?.action &&
+    !neutralExpansionStalled(state, history)) {
+    const finishing = rivalAttack.streak >= 1 &&
+      Number.isFinite(rivalAttack.rival.relativeTroopRatio) &&
+      rivalAttack.rival.relativeTroopRatio >= 1.5;
+    const retaliation = recentHostility(state, history, rivalAttack.rival) > 0;
+    if (!finishing && !retaliation) {
+      rivalAttack = null;
+      oe1Suppress = true;
+    }
+  }
   const peaceRedirect = rivalAttack?.peaceRedirect === true;
+  const withOe1 = (action) =>
+    oe1Suppress && action && !action.policyMarker ? { ...action, policyMarker: "oe1" } : action;
   const withPeace = (action) =>
-    peaceRedirect && action && !action.policyMarker ? { ...action, policyMarker: "kp1" } : action;
+    withOe1(peaceRedirect && action && !action.policyMarker ? { ...action, policyMarker: "kp1" } : action);
   const routedRivalAttack = state.mapFingerprint === "Asia" && rivalAttack?.action &&
     (state.self.incomingAttackerIDs || []).includes(rivalAttack.rival.id.toLowerCase())
     ? { ...rivalAttack.action, policyMarker: "ia1" }
@@ -804,22 +857,21 @@ export function chooseAction(actions, state, plan = null, history = []) {
     rivalAttack.rival.relativeTroopRatio < 1.3 && !pc1Band;
   const disciplinedAttack = pileOnDiscipline ? null : routedRivalAttack;
   const withDiscipline = (action) =>
-    pileOnDiscipline && action && !action.policyMarker
+    withOe1(pileOnDiscipline && action && !action.policyMarker
       ? { ...action, policyMarker: "pd2" }
-      : action;
+      : action);
   const neutralAttack = chooseNeutralAttack(actions, history, avoid);
   const build = chooseBuild(actions, history);
   const sinceBuild = decisionsSince(history, (entry) =>
     entry.kind === "build" || entry.kind === "upgrade_structure"
   );
-  const activeDecisions = history.filter((entry) => entry.kind !== "spawn").length;
   const cadenceBuild = build && state.self.tileShare >= 0.08 && activeDecisions >= 6 &&
     sinceBuild >= 14;
   const finishingTarget = rivalAttack && rivalAttack.streak > 0 &&
     rivalAttack.rival.relativeTroopRatio >= 1.5;
   const collapsing = territoryCollapsing(state, history);
 
-  if (collapsing && build && sinceBuild >= 3 && !finishingTarget) return build;
+  if (collapsing && build && sinceBuild >= 3 && !finishingTarget) return withOe1(build);
 
   const allianceMove = chooseAllianceMove(
     actions,
@@ -848,7 +900,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
   }
 
   if (neutralExpansionStalled(state, history)) {
-    if (disciplinedAttack) return disciplinedAttack;
+    if (disciplinedAttack) return withOe1(disciplinedAttack);
     const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
     if (boatStreak >= 2 && build) return withDiscipline(withPeace(build));
     const escapeBoat = chooseBoat(actions, state, history, avoid);
@@ -858,9 +910,9 @@ export function chooseAction(actions, state, plan = null, history = []) {
 
   if (cadenceBuild && !finishingTarget) return withDiscipline(withPeace(build));
   if (state.self.tileShare < 0.12 && neutralAttack && threatCount === 0 && !collapsing) {
-    return neutralAttack;
+    return withOe1(neutralAttack);
   }
-  if (disciplinedAttack) return disciplinedAttack;
+  if (disciplinedAttack) return withOe1(disciplinedAttack);
   if (neutralAttack) return withDiscipline(withPeace(neutralAttack));
   if (build && sinceBuild >= 5) return withDiscipline(withPeace(build));
 
