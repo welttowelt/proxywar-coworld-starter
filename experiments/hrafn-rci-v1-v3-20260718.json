@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "recorded_at": "2026-07-18T14:31:00Z",
+  "recorded_at": "2026-07-18T14:47:00Z",
   "objective": "Qualify one Hrafn challenger only if it makes Odin finish first without coalition harm.",
   "identity": {
     "player_name": "K1Z Hrafn",
@@ -194,12 +194,74 @@
       },
       "diagnostic_request": {
         "id": "xreq_4ed65079-e5fd-443c-b892-e45a3524b809",
-        "snapshot_status": "running",
-        "roster_note": "Started with qd1n:v87 and Eva-00:v25; retained as diagnostic after live roster drift."
+        "snapshot_status": "completed",
+        "completed_episodes": 4,
+        "odin_firsts": 0,
+        "roster_note": "Started with qd1n:v87 and Eva-00:v25; retained as diagnostic after live roster drift.",
+        "episodes": [
+          {
+            "winner": "daveey",
+            "replay_url": "https://softmax-public.s3.amazonaws.com/replays/963e1228-02db-4f80-9a69-c5c0b7142550.replay",
+            "replay_sha256": "a7ad37fa824ee39cc71e339b349782c2a3db8d207ec9adfeacaca18c92c05d92",
+            "hrafn_survived": false,
+            "hrafn_accepted": 50,
+            "hrafn_decisions": 50,
+            "hrafn_holds": 0,
+            "hrafn_fallbacks": 0,
+            "mechanism_executions": 6,
+            "k1z_harm": 0,
+            "odin_fallbacks": 95,
+            "odin_decisions": 98
+          },
+          {
+            "winner": "Richard Higgins",
+            "replay_url": "https://softmax-public.s3.amazonaws.com/replays/1d1375c3-20ab-4b6e-b122-8c438b479f5f.replay",
+            "replay_sha256": "2d2860e167cb81934d7a105e28ad08dfb5bcf7a3a24147f24b72a8a81ce4c30b",
+            "hrafn_survived": false,
+            "hrafn_accepted": 60,
+            "hrafn_decisions": 60,
+            "hrafn_holds": 0,
+            "hrafn_fallbacks": 0,
+            "mechanism_executions": 8,
+            "k1z_harm": 0,
+            "odin_fallbacks": 85,
+            "odin_decisions": 88
+          },
+          {
+            "winner": "Richard Higgins",
+            "replay_url": "https://softmax-public.s3.amazonaws.com/replays/95015879-930f-4b02-927a-02e0e4daf7b8.replay",
+            "replay_sha256": "5a8099cf2e45899657d17fbdb0dfc9c074023b4d1001e82e8d97664ab3065d34",
+            "hrafn_survived": false,
+            "hrafn_accepted": 57,
+            "hrafn_decisions": 57,
+            "hrafn_holds": 0,
+            "hrafn_fallbacks": 0,
+            "mechanism_executions": 6,
+            "k1z_harm": 0,
+            "odin_fallbacks": 90,
+            "odin_decisions": 93
+          },
+          {
+            "winner": "Auri",
+            "replay_url": "https://softmax-public.s3.amazonaws.com/replays/e0813004-6140-433e-9bc7-9c938eae7ca5.replay",
+            "replay_sha256": "380ef958a0dda83896a3cdf2912f7cad8f5c0387916014099ec3776f1ed5203a",
+            "hrafn_survived": false,
+            "hrafn_accepted": 49,
+            "hrafn_decisions": 49,
+            "hrafn_holds": 0,
+            "hrafn_fallbacks": 0,
+            "mechanism_executions": 6,
+            "k1z_harm": 0,
+            "odin_fallbacks": 103,
+            "odin_decisions": 106
+          }
+        ]
       },
       "exact_live_request": {
         "id": "xreq_550333e2-38ff-4631-86d5-75b9a06fcd26",
         "snapshot_status": "running",
+        "completed_episodes": 3,
+        "odin_firsts": 0,
         "roster": [
           "proxywar-keystone:v42",
           "daveey-proxywar:v22",
@@ -209,12 +271,69 @@
           "santai-juryoku:v3",
           "tsukuyomi-no-kage:v39",
           "qd1n:v89"
+        ],
+        "episodes": [
+          {
+            "winner": "Richard Higgins",
+            "replay_url": "https://softmax-public.s3.amazonaws.com/replays/826f2b0d-e635-4aee-bd65-98c2c50c59e6.replay",
+            "replay_sha256": "a45bc3fd276a870f8b2c06f3015d9d54546391edcaf5030171311b27bf7e08f3",
+            "hrafn_survived": true,
+            "hrafn_tiles": 8124,
+            "hrafn_accepted": 127,
+            "hrafn_decisions": 127,
+            "hrafn_holds": 0,
+            "hrafn_fallbacks": 0,
+            "mechanism_executions": 10,
+            "k1z_harm": 0,
+            "odin_tiles": 38587,
+            "odin_fallbacks": 66,
+            "odin_decisions": 127,
+            "winner_tiles": 875938
+          },
+          {
+            "winner": "Richard Higgins",
+            "replay_url": "https://softmax-public.s3.amazonaws.com/replays/40c53098-fd7b-4ca3-bd0d-4a83be7c5a46.replay",
+            "replay_sha256": "8b1a35f672aecb86b34493baae494677455a97aad3085ee0a5ae6252dccf6a93",
+            "hrafn_survived": true,
+            "hrafn_tiles": 4165,
+            "hrafn_accepted": 102,
+            "hrafn_decisions": 102,
+            "hrafn_holds": 0,
+            "hrafn_fallbacks": 0,
+            "mechanism_executions": 9,
+            "k1z_harm": 0,
+            "odin_tiles": 37230,
+            "odin_fallbacks": 46,
+            "odin_decisions": 102,
+            "winner_tiles": 868209
+          },
+          {
+            "winner": "Richard Higgins",
+            "replay_url": "https://softmax-public.s3.amazonaws.com/replays/d26875da-28b4-484f-83f2-de020edb5fee.replay",
+            "replay_sha256": "801b2c52aef6e1359e3621f58f79c4804c7124e202dfe05e28c7e147656ef51e",
+            "hrafn_survived": false,
+            "hrafn_tiles": 0,
+            "hrafn_accepted": 58,
+            "hrafn_decisions": 58,
+            "hrafn_holds": 0,
+            "hrafn_fallbacks": 0,
+            "mechanism_executions": 6,
+            "k1z_harm": 0,
+            "odin_tiles": 29044,
+            "odin_fallbacks": 66,
+            "odin_decisions": 92,
+            "winner_tiles": 874679
+          }
         ]
       },
-      "verdict": "pending_no_submit"
+      "matched_local": {
+        "status": "aborted_after_hosted_hard_fail",
+        "reason": "The hosted diagnostic reached 0/3 Odin firsts; local emulation could not reopen promotion."
+      },
+      "verdict": "rejected_no_submit"
     }
   ],
-  "binding_risk": "Recent hosted coalition runs show qd1n's deterministic fallback on most decisions and only 20k-28k final tiles while outsiders reach roughly 880k-930k. A safe kingmaker cannot compensate for a noncompetitive king chassis by itself.",
+  "binding_risk": "The v87 diagnostic was fallback-dominated in 373 of 385 Odin decisions. With live v89, Odin still finished at 38,587 and 37,230 tiles while Richard reached 875,938 and 868,209. A safe kingmaker cannot compensate for that chassis gap by itself.",
   "final_claim": {
     "submitted": false,
     "live": false,
