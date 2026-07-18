@@ -152,6 +152,23 @@ test("Gravity protects a Unicode-normalized katanasan name", () => {
   assert.equal(choose([fullwidth, hold], observation()).id, hold.id);
 });
 
+test("Gravity protects both visible K1Z alliance names", () => {
+  const taggedOdin = player("K1Z odin free", "odin-live", odin.tileShare);
+  const taggedKatana = player("K1Z katanasan", "katana-live", katanasan.tileShare);
+  const taggedOdinAttack = targeted("attack", taggedOdin);
+  const taggedKatanaNuke = nuke("Atom Bomb", taggedKatana);
+  taggedOdinAttack.label = "Attack player";
+  taggedKatanaNuke.label = "Nuclear strike";
+  assert.equal(
+    choose([taggedOdinAttack, hold], observation([taggedOdin, taggedKatana, strong])).id,
+    hold.id,
+  );
+  assert.equal(
+    choose([taggedKatanaNuke, hold], observation([taggedOdin, taggedKatana, strong])).id,
+    hold.id,
+  );
+});
+
 test("Gravity attacks the strongest reachable outsider, never an ally", () => {
   const giantKatana = { ...katanasan, tileShare: 0.70 };
   const selected = choose(
