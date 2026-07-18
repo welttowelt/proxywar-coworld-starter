@@ -66,6 +66,8 @@ export const HRAFN_DEFAULTS = Object.freeze({
   supportCooldownDecisions: 8,
   supportMinimumTileShare: 0.06,
   supportLeadGap: 0.01,
+  vanguardLockMinimumRelativeTroopRatio: 1.35,
+  vanguardLockContinuingRelativeTroopRatio: 1.1,
   pressureCooldownDecisions: 12,
 });
 
@@ -322,6 +324,52 @@ function odinSupportAction(actions, state, history, config) {
   const gold = candidates.find((action) => action.kind === "donate_gold");
   const selected = troops ?? gold;
   return selected ? { ...selected, policyMarker: "dn1" } : null;
+}
+
+function vanguardLockedRival(history, state) {
+  const latest = [...history].reverse().find((entry) =>
+    entry.policyMarker === "vr1" && (entry.targetID || entry.targetName)
+  );
+  if (!latest) return null;
+  return state.rivals.find((rival) =>
+    !isProtectedRival(rival) &&
+    ((latest.targetID && rival.id.toLowerCase() === latest.targetID) ||
+      (latest.targetName && rival.canonicalName === latest.targetName))
+  ) ?? null;
+}
+
+function vanguardLeaderAttack(groups, state, history, config) {
+  if (
+    state.own.tileShare < config.activationTileShare ||
+    state.own.tileShare > config.activationCeiling
+  ) {
+    return null;
+  }
+  const locked = vanguardLockedRival(history, state);
+  const leaders = state.rivals
+    .filter((rival) => !isProtectedRival(rival))
+    .sort((left, right) => right.tileShare - left.tileShare ||
+      right.relativeTroopRatio - left.relativeTroopRatio);
+  const target = locked ?? leaders[0] ?? null;
+  if (!target) return null;
+  const group = groups.find(({ rival }) =>
+    rival.id.toLowerCase() === target.id.toLowerCase()
+  );
+  const floor = locked
+    ? config.vanguardLockContinuingRelativeTroopRatio
+    : config.vanguardLockMinimumRelativeTroopRatio;
+  if (!group || !Number.isFinite(target.relativeTroopRatio) || target.relativeTroopRatio < floor) return null;
+  const continuing = history.some((entry) =>
+    entry.policyMarker === "vr1" && entry.targetID === target.id.toLowerCase()
+  );
+  const action = chooseClosestPercent(
+    group.actions,
+    continuing ? config.pressurePercent : config.openingPercent,
+    config.maximumCommitPercent,
+  );
+  return action
+    ? { ...action, policyMarker: "vr1", campaignStartDecision: history.length }
+    : null;
 }
 
 function attackGroups(actions, state) {
@@ -599,9 +647,6 @@ export function chooseHrafnAction(
   const alliance = coalitionAllianceAction(actions, state, history, config);
   if (alliance) return alliance;
 
-  const support = odinSupportAction(actions, state, history, config);
-  if (support) return support;
-
   const incomingCount = state.incomingAttackerIDs.length ||
     finiteNumber(state.own.incomingAttacks);
   const severePressure = incomingCount >= 2 ||
@@ -616,6 +661,21 @@ export function chooseHrafnAction(
   }
 
   const groups = attackGroups(actions, state);
+  const hasVanguardLock = vanguardLockedRival(history, state) !== null;
+  if (hasVanguardLock) {
+    const lockedVanguard = vanguardLeaderAttack(groups, state, history, config);
+    if (lockedVanguard) return lockedVanguard;
+  }
+
+  // A legal transfer must not interrupt a leader fight.  This is deliberately
+  // narrow: vr1 opens only when dn1 is actually available, and otherwise the
+  // established campaign machinery retains priority.
+  const support = odinSupportAction(actions, state, history, config);
+  if (support) {
+    const vanguard = vanguardLeaderAttack(groups, state, history, config);
+    if (vanguard) return vanguard;
+  }
+
   const campaign = campaignState(history, state, config);
   const adaptiveLeader = rv1Enabled
     ? selectAdaptiveLeader(state, history, config)
@@ -704,6 +764,8 @@ export function chooseHrafnAction(
     );
     if (pressure) return pressure;
   }
+
+  if (support) return support;
 
   if (state.own.tileShare < config.activationTileShare) {
     const expansion = neutralExpansion(actions);

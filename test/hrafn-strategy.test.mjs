@@ -570,6 +570,62 @@ test("dn1 respects its cooldown instead of draining Hrafn every decision", () =>
   assert.equal(chosen.id, expand.id);
 });
 
+test("vr1 opens a legal fight against the runaway leader before a troop transfer", () => {
+  const odin = rival({
+    id: K1Z_MEMBERS[0].id,
+    name: "K1Z odin free",
+    tileShare: 0.04,
+    isAllied: true,
+  });
+  const leader = rival({
+    id: "leader",
+    name: "Richard Higgins",
+    tileShare: 0.22,
+    relativeTroopRatio: 1.5,
+  });
+  const donation = action(
+    "donate_troops:odin",
+    "donate_troops",
+    "Donate troops to odin free",
+    { recipientID: odin.id, recipientName: odin.name },
+  );
+  const chosen = chooseHrafnAction(
+    [donation, attack(leader, 25)],
+    observation({ tileShare: 0.12, rivals: [odin, leader] }),
+  );
+  assert.equal(chosen.id, "attack:leader:25");
+  assert.equal(chosen.policyMarker, "vr1");
+});
+
+test("vr1 holds the established leader front instead of switching to a side target", () => {
+  const leader = rival({
+    id: "leader",
+    name: "Richard Higgins",
+    tileShare: 0.2,
+    relativeTroopRatio: 1.2,
+  });
+  const side = rival({
+    id: "side",
+    name: "Auri",
+    tileShare: 0.26,
+    relativeTroopRatio: 2,
+  });
+  const history = [{
+    actionID: "attack:leader:25",
+    kind: "attack",
+    targetID: leader.id,
+    targetName: "richard higgins",
+    policyMarker: "vr1",
+  }];
+  const chosen = chooseHrafnAction(
+    [attack(side, 25), attack(leader, 10)],
+    observation({ tileShare: 0.12, rivals: [leader, side] }),
+    history,
+  );
+  assert.equal(chosen.id, "attack:leader:10");
+  assert.equal(chosen.policyMarker, "vr1");
+});
+
 test("a fresh harmless social action beats hold when tactics are exhausted", () => {
   const chat = action("chat:raven", "quick_chat", "Raven signal");
   const hold = action("hold", "hold", "Hold");
