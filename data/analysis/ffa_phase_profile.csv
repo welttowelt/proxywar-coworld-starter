@@ -14,6 +14,24 @@ James Boggs,1,true,finish,252,15.87,14.29,3.97,32.14,0.0,2.18,10.0
 James Boggs,1,false,opening,630,6.19,37.62,20.0,2.38,0.0,1.67,10.0
 James Boggs,1,false,conversion,907,41.12,15.1,12.35,16.32,0.11,1.15,10.2
 James Boggs,1,false,finish,5151,12.85,2.31,5.65,54.34,0.1,1.01,11.1
+K1Z juryoku-koku,1,false,opening,40,0.0,30.0,0.0,40.0,0.0,,
+K1Z juryoku-koku,1,false,conversion,57,0.0,24.56,5.26,66.67,0.0,,
+K1Z juryoku-koku,1,false,finish,278,0.36,10.79,4.32,57.55,0.0,1.08,40.0
+K1Z katanasan,34,true,opening,10,0.0,50.0,10.0,10.0,0.0,,
+K1Z katanasan,34,true,conversion,15,0.0,93.33,6.67,0.0,0.0,,
+K1Z katanasan,34,true,finish,46,67.39,23.91,8.7,0.0,0.0,1.49,31.8
+K1Z katanasan,34,false,opening,200,0.0,59.0,10.0,1.0,0.0,,
+K1Z katanasan,34,false,conversion,300,2.0,68.67,11.67,2.33,0.0,4.76,35.0
+K1Z katanasan,34,false,finish,2168,9.55,26.98,13.1,0.14,1.25,1.92,33.0
+K1Z katanasan,35,true,opening,10,0.0,50.0,10.0,10.0,0.0,,
+K1Z katanasan,35,true,conversion,15,0.0,93.33,6.67,0.0,0.0,,
+K1Z katanasan,35,true,finish,72,59.72,33.33,6.94,0.0,0.0,1.49,32.7
+K1Z katanasan,35,false,opening,80,0.0,50.0,10.0,10.0,0.0,,
+K1Z katanasan,35,false,conversion,120,0.0,70.0,12.5,3.33,0.0,,
+K1Z katanasan,35,false,finish,1115,5.65,29.51,16.59,0.36,1.17,2.05,30.2
+K1Z katanasan,36,false,opening,40,0.0,50.0,10.0,10.0,0.0,,
+K1Z katanasan,36,false,conversion,60,0.0,65.0,15.0,11.67,0.0,,
+K1Z katanasan,36,false,finish,473,4.86,17.55,12.26,10.57,3.81,5.83,39.3
 RelhAlpha,1,true,opening,10,0.0,70.0,0.0,0.0,0.0,,
 RelhAlpha,1,true,conversion,15,0.0,100.0,0.0,0.0,0.0,,
 RelhAlpha,1,true,finish,85,42.35,35.29,22.35,0.0,0.0,3.13,24.2
@@ -50,24 +68,6 @@ daveey,22,false,finish,6220,24.12,7.77,8.15,4.07,15.1,2.21,24.2
 docxology,1,false,opening,797,16.31,53.58,0.0,0.0,0.0,0.85,10.0
 docxology,1,false,conversion,850,68.47,31.53,0.0,0.0,0.0,0.57,10.0
 docxology,1,false,finish,2442,31.41,28.83,9.54,1.27,0.0,1.2,10.0
-juryoku-koku,1,false,opening,40,0.0,30.0,0.0,40.0,0.0,,
-juryoku-koku,1,false,conversion,57,0.0,24.56,5.26,66.67,0.0,,
-juryoku-koku,1,false,finish,278,0.36,10.79,4.32,57.55,0.0,1.08,40.0
-katanasan,34,true,opening,10,0.0,50.0,10.0,10.0,0.0,,
-katanasan,34,true,conversion,15,0.0,93.33,6.67,0.0,0.0,,
-katanasan,34,true,finish,46,67.39,23.91,8.7,0.0,0.0,1.49,31.8
-katanasan,34,false,opening,200,0.0,59.0,10.0,1.0,0.0,,
-katanasan,34,false,conversion,300,2.0,68.67,11.67,2.33,0.0,4.76,35.0
-katanasan,34,false,finish,2168,9.55,26.98,13.1,0.14,1.25,1.92,33.0
-katanasan,35,true,opening,10,0.0,50.0,10.0,10.0,0.0,,
-katanasan,35,true,conversion,15,0.0,93.33,6.67,0.0,0.0,,
-katanasan,35,true,finish,72,59.72,33.33,6.94,0.0,0.0,1.49,32.7
-katanasan,35,false,opening,80,0.0,50.0,10.0,10.0,0.0,,
-katanasan,35,false,conversion,120,0.0,70.0,12.5,3.33,0.0,,
-katanasan,35,false,finish,1115,5.65,29.51,16.59,0.36,1.17,2.05,30.2
-katanasan,36,false,opening,40,0.0,50.0,10.0,10.0,0.0,,
-katanasan,36,false,conversion,60,0.0,65.0,15.0,11.67,0.0,,
-katanasan,36,false,finish,473,4.86,17.55,12.26,10.57,3.81,5.83,39.3
 odin free,77,true,opening,140,0.0,70.0,0.0,0.0,0.0,,
 odin free,77,true,conversion,210,20.95,66.19,9.05,0.0,0.0,2.72,23.6
 odin free,77,true,finish,1590,50.88,10.5,10.94,0.0,0.0,3.66,23.2
