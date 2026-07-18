@@ -7,7 +7,7 @@
     "player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
     "policy_name": "hrafn-fylking",
     "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
-    "submissions": 0,
+    "submissions": 1,
     "memberships": 0
   },
   "promotion_contract": {
@@ -370,7 +370,13 @@
         "tsukuyomi-no-kage:v39",
         "qd1n:v89"
       ],
-      "promotion_status": "diagnostic_only_pending_replay_audit"
+      "submission": {
+        "id": "sub_e1f7b528-3ca5-4949-8339-d52d497c2152",
+        "status": "pending",
+        "auto_champion": "never",
+        "reason": "operator-directed participation; this does not replace the performance promotion gate"
+      },
+      "promotion_status": "submitted_for_participation_pending_replay_audit"
     }
   ],
   "excluded_requests": [
