@@ -333,6 +333,37 @@
       "verdict": "rejected_no_submit"
     }
   ],
+  "pending_candidates": [
+    {
+      "label": "hrafn-fylking-support:v1",
+      "policy_version_id": "68cde4d5-266f-475f-b247-da8323ffae10",
+      "source_commit": "0c151570",
+      "mechanism": "dn1 bounded troop donation to Odin after Hrafn reaches 6% share and leads Odin by one point; eight-decision cooldown",
+      "request_id": "xreq_9d9e251a-ff87-4998-803f-22aad64625f3",
+      "status": "running",
+      "identity_verified": {
+        "player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+        "player_name": "K1Z Hrafn"
+      },
+      "roster": [
+        "proxywar-keystone:v42",
+        "daveey-proxywar:v22",
+        "co-gas-proxywar-richard:v7",
+        "Eva-00:v26",
+        "hrafn-fylking-support:v1",
+        "santai-juryoku:v3",
+        "tsukuyomi-no-kage:v39",
+        "qd1n:v89"
+      ],
+      "promotion_status": "diagnostic_only_pending_replay_audit"
+    }
+  ],
+  "excluded_requests": [
+    {
+      "request_id": "xreq_8ec69ea0-27f4-4152-9a66-f4be734c4b4f",
+      "reason": "The uploaded hrafn-fylking:v4 inherited Odin's active player identity. It is not a Hrafn evaluation and is excluded from every gate."
+    }
+  ],
   "binding_risk": "The v87 diagnostic was fallback-dominated in 373 of 385 Odin decisions. With live v89, Odin still finished at 38,587 and 37,230 tiles while Richard reached 875,938 and 868,209. A safe kingmaker cannot compensate for that chassis gap by itself.",
   "final_claim": {
     "submitted": false,
