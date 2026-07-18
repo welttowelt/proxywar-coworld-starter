@@ -259,8 +259,8 @@
       },
       "exact_live_request": {
         "id": "xreq_550333e2-38ff-4631-86d5-75b9a06fcd26",
-        "snapshot_status": "running",
-        "completed_episodes": 3,
+        "snapshot_status": "completed",
+        "completed_episodes": 4,
         "odin_firsts": 0,
         "roster": [
           "proxywar-keystone:v42",
@@ -323,6 +323,21 @@
             "odin_fallbacks": 66,
             "odin_decisions": 92,
             "winner_tiles": 874679
+          },
+          {
+            "winner": "Auri",
+            "replay_url": "https://softmax-public.s3.amazonaws.com/replays/193abff0-0f2c-4d1e-8f6d-cf5cd3d4fb83.replay",
+            "replay_sha256": "c93865153f4f658c5a2b590017b42b2102487544387ebf471c203113c401f83c",
+            "hrafn_survived": false,
+            "hrafn_tiles": 0,
+            "hrafn_accepted": 57,
+            "hrafn_decisions": 57,
+            "hrafn_holds": 0,
+            "hrafn_fallbacks": 0,
+            "mechanism_executions": 8,
+            "k1z_harm": 0,
+            "odin_tiles": 42052,
+            "winner_tiles": 780162
           }
         ]
       },
