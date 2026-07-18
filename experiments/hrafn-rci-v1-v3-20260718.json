@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-18T14:31:00Z",
+  "objective": "Qualify one Hrafn challenger only if it makes Odin finish first without coalition harm.",
+  "identity": {
+    "player_name": "K1Z Hrafn",
+    "player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "policy_name": "hrafn-fylking",
+    "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+    "submissions": 0,
+    "memberships": 0
+  },
+  "promotion_contract": {
+    "hosted_gate": {
+      "episodes": 4,
+      "required_odin_firsts": 4
+    },
+    "regression_gate": {
+      "episodes": 20,
+      "required_odin_firsts": 20
+    },
+    "required_each_episode": [
+      "Hrafn mechanism executes",
+      "zero K1Z harm",
+      "all Hrafn decisions accepted",
+      "zero Hrafn holds",
+      "zero Hrafn rejections",
+      "zero Hrafn fallbacks",
+      "verified replay digest"
+    ],
+    "official_streak_credit": false
+  },
+  "fixed_roster_v1_v2": [
+    "proxywar-keystone:v42",
+    "daveey-proxywar:v22",
+    "co-gas-proxywar-richard:v7",
+    "Eva-00:v25",
+    "hrafn-candidate",
+    "santai-juryoku:v3",
+    "tsukuyomi-no-kage:v39",
+    "qd1n:v87"
+  ],
+  "control": {
+    "label": "hrafn-fylking-control:v1",
+    "policy_version_id": "6ddd286d-0156-4290-baf7-f535621951d1",
+    "request_id": "xreq_ea89dbb4-73fb-4605-92bc-35fa49f7d6ec",
+    "snapshot_status": "running",
+    "completed_episodes": 3,
+    "odin_firsts": 0,
+    "winners": [
+      "daveey",
+      "Auri",
+      "Auri"
+    ],
+    "replays": [
+      "https://softmax-public.s3.amazonaws.com/replays/8b722dd9-5bf5-4893-87c4-91ee8f19d61a.replay",
+      "https://softmax-public.s3.amazonaws.com/replays/1d878014-4a46-4b22-a0dd-124a3306f6bb.replay",
+      "https://softmax-public.s3.amazonaws.com/replays/dfed0819-de5c-4db6-aaa1-78aafbe114e4.replay"
+    ]
+  },
+  "candidates": [
+    {
+      "label": "hrafn-fylking:v1",
+      "policy_version_id": "4b2b0074-c244-4225-b937-266364753b14",
+      "mechanism": "rv1 generic strongest-outsider pin",
+      "request_id": "xreq_d36a8049-d4c2-473b-a05a-f304f759e3a9",
+      "status": "completed",
+      "odin_firsts": 0,
+      "episodes": [
+        {
+          "winner": "Auri",
+          "replay_url": "https://softmax-public.s3.amazonaws.com/replays/30c8c2a8-4ee7-43de-a871-31b1c6ac98e3.replay",
+          "replay_sha256": "dc26e83775296fb6057f26a21dd32ab09bd3a01880368ceac9102882be25d258",
+          "hrafn_survived": false,
+          "hrafn_accepted": 47,
+          "hrafn_decisions": 47,
+          "hrafn_holds": 0,
+          "hrafn_fallbacks": 0,
+          "mechanism_executions": 10,
+          "k1z_harm": 0
+        },
+        {
+          "winner": "Auri",
+          "replay_url": "https://softmax-public.s3.amazonaws.com/replays/ffa5abbb-5c4f-4c18-97d1-9498c7983c05.replay",
+          "replay_sha256": "28390fef1f0ac32f116ac83ac7b4731fc043080a54fcf5ecad940c41d488ec1b",
+          "hrafn_survived": false,
+          "hrafn_accepted": 53,
+          "hrafn_decisions": 53,
+          "hrafn_holds": 0,
+          "hrafn_fallbacks": 0,
+          "mechanism_executions": 6,
+          "k1z_harm": 0
+        },
+        {
+          "winner": "Richard Higgins",
+          "replay_url": "https://softmax-public.s3.amazonaws.com/replays/5abd6a03-6b45-43f9-93c4-71ad56150d9c.replay",
+          "replay_sha256": "2c060eff9450ade1e7d6c71ee7a797dae758646c9c8cb56d8e94e0ac907fdbde",
+          "hrafn_survived": false,
+          "hrafn_accepted": 45,
+          "hrafn_decisions": 45,
+          "hrafn_holds": 0,
+          "hrafn_fallbacks": 0,
+          "mechanism_executions": 7,
+          "k1z_harm": 0
+        },
+        {
+          "winner": "Auri",
+          "replay_url": "https://softmax-public.s3.amazonaws.com/replays/95361c78-ccfd-4772-a08a-fe7f9c0c037f.replay",
+          "replay_sha256": "99fa8ffa227cda49dc1072d104f254f3f643b82995da0d21c89b3c87fd132fb4",
+          "hrafn_survived": false,
+          "hrafn_accepted": 54,
+          "hrafn_decisions": 54,
+          "hrafn_holds": 0,
+          "hrafn_fallbacks": 0,
+          "mechanism_executions": 10,
+          "k1z_harm": 0
+        }
+      ],
+      "diagnosis": "Weak-ratio side pressure fed Auri's snowball.",
+      "verdict": "rejected_no_submit"
+    },
+    {
+      "label": "hrafn-fylking:v2",
+      "policy_version_id": "cd13a53c-586a-438e-bef9-6975ab9a3dc9",
+      "mechanism": "rv2 fixed Auri-first pressure",
+      "request_id": "xreq_8f5d001e-dcd8-4fd1-a339-d0dda750f658",
+      "status": "completed",
+      "odin_firsts": 0,
+      "episodes": [
+        {
+          "winner": "Richard Higgins",
+          "replay_url": "https://softmax-public.s3.amazonaws.com/replays/d308f181-81dd-4d2d-8f98-f5ba73713a7e.replay",
+          "replay_sha256": "819540a50348a9a983516f67b24dd889e2037dd36bca94ef7f04b63914961576",
+          "hrafn_survived": true,
+          "hrafn_accepted": 80,
+          "hrafn_decisions": 80,
+          "hrafn_holds": 0,
+          "hrafn_fallbacks": 0,
+          "mechanism_executions": 9,
+          "k1z_harm": 0
+        },
+        {
+          "winner": "Richard Higgins",
+          "replay_url": "https://softmax-public.s3.amazonaws.com/replays/5f40b715-5069-4b56-8e4e-6df12ced7dce.replay",
+          "replay_sha256": "90524af41d4feef2417fa6c9cc3102102d0f0c49dd724c6f7c6964d410f9a2fa",
+          "hrafn_survived": false,
+          "hrafn_accepted": 51,
+          "hrafn_decisions": 51,
+          "hrafn_holds": 0,
+          "hrafn_fallbacks": 0,
+          "mechanism_executions": 11,
+          "k1z_harm": 0
+        },
+        {
+          "winner": "Richard Higgins",
+          "replay_url": "https://softmax-public.s3.amazonaws.com/replays/54f54868-92e3-457b-8fc7-4e44e9761368.replay",
+          "replay_sha256": "25e6a35983396120afbdb7df66b449619c18d609efa0796ba79dbd177f304bee",
+          "hrafn_survived": true,
+          "hrafn_accepted": 83,
+          "hrafn_decisions": 83,
+          "hrafn_holds": 0,
+          "hrafn_fallbacks": 0,
+          "mechanism_executions": 21,
+          "k1z_harm": 0
+        },
+        {
+          "winner": "Auri",
+          "replay_url": "https://softmax-public.s3.amazonaws.com/replays/8276d4d1-f18d-4c30-bc62-a7a21cf0c703.replay",
+          "replay_sha256": "c2294b3c7fc71d5fb876eea1a01afd1df84e5e505532f733975251c8f0c915b7",
+          "hrafn_survived": true,
+          "hrafn_accepted": 83,
+          "hrafn_decisions": 83,
+          "hrafn_holds": 0,
+          "hrafn_fallbacks": 0,
+          "mechanism_executions": 11,
+          "k1z_harm": 0
+        }
+      ],
+      "diagnosis": "Fixed Auri pressure transferred the snowball to Richard.",
+      "verdict": "rejected_no_submit"
+    },
+    {
+      "label": "hrafn-fylking:v3",
+      "policy_version_id": "4e4df3e4-b8b3-4409-9483-f6dc7a19e23b",
+      "source_commit": "b26a5829",
+      "mechanism": "rv3 Auri-first pressure with five-point strongest-outsider handoff and a 1.35 direct-attack floor",
+      "tests": {
+        "passed": 147,
+        "failed": 0
+      },
+      "images": {
+        "arm64": "sha256:3be7499dd241dbb04ddd271c0a6c11151025e201cb28e5a41bbfc7cfaf75bb93",
+        "amd64": "sha256:5925486bc37212f0e0ca15511a34e672d9f13bb735220b6d1cbfa067ae67da80"
+      },
+      "diagnostic_request": {
+        "id": "xreq_4ed65079-e5fd-443c-b892-e45a3524b809",
+        "snapshot_status": "running",
+        "roster_note": "Started with qd1n:v87 and Eva-00:v25; retained as diagnostic after live roster drift."
+      },
+      "exact_live_request": {
+        "id": "xreq_550333e2-38ff-4631-86d5-75b9a06fcd26",
+        "snapshot_status": "running",
+        "roster": [
+          "proxywar-keystone:v42",
+          "daveey-proxywar:v22",
+          "co-gas-proxywar-richard:v7",
+          "Eva-00:v26",
+          "hrafn-fylking:v3",
+          "santai-juryoku:v3",
+          "tsukuyomi-no-kage:v39",
+          "qd1n:v89"
+        ]
+      },
+      "verdict": "pending_no_submit"
+    }
+  ],
+  "binding_risk": "Recent hosted coalition runs show qd1n's deterministic fallback on most decisions and only 20k-28k final tiles while outsiders reach roughly 880k-930k. A safe kingmaker cannot compensate for a noncompetitive king chassis by itself.",
+  "final_claim": {
+    "submitted": false,
+    "live": false,
+    "dominant": false,
+    "official_first_streak": "unproven"
+  }
+}

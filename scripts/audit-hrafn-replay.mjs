@@ -50,7 +50,7 @@ const coalitionDecisions = decisions.filter((decision) =>
   memberNames.has(canonicalizeK1ZName(decision.username)) ||
   taggedDecisions.includes(decision)
 );
-const policyDecisions = coalitionDecisions;
+const policyDecisions = hrafnDecisions;
 
 function targetIdentity(decision) {
   const metadata = decision?.selectedActionMetadata ?? {};
@@ -66,8 +66,8 @@ function targetIdentity(decision) {
 }
 
 const perPlayer = Object.fromEntries(
-  [...new Set(policyDecisions.map((decision) => decision.username))].map((username) => {
-    const rows = policyDecisions.filter((decision) => decision.username === username);
+  [...new Set(coalitionDecisions.map((decision) => decision.username))].map((username) => {
+    const rows = coalitionDecisions.filter((decision) => decision.username === username);
     return [username, {
       decisions: rows.length,
       accepted: rows.filter((decision) => decision?.result?.accepted === true).length,
@@ -84,7 +84,7 @@ const perPlayer = Object.fromEntries(
   }),
 );
 
-const harmfulK1Z = policyDecisions.filter((decision) => {
+const harmfulK1Z = coalitionDecisions.filter((decision) => {
   if (!harmfulKinds.has(decision.selectedActionKind)) return false;
   const target = targetIdentity(decision);
   return memberIDs.has(target.id) || memberNames.has(target.name);
@@ -159,6 +159,7 @@ const report = {
   coalition_tiles: sum(coalitionResults, "tiles_owned"),
   outsider_tiles: sum(outsiderResults, "tiles_owned"),
   total_decisions: decisions.length,
+  coalition_decisions: coalitionDecisions.length,
   framework_spawn_decisions: hrafnDecisions.filter((decision) =>
     decision.actionSelectionSource === "deterministic-spawn"
   ).length,
