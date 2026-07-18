@@ -1830,3 +1830,130 @@ test("outsiders remain legal nuclear targets beside K1Z-tagged allies", () => {
   assert.equal(selected.id, bomb.id);
   assert.equal(selected.policyMarker, "nk1");
 });
+
+test("an invisible Gravity partner is requested from alliance metadata", () => {
+  const gravityAlly = {
+    ...action("alliance:9h8tnrym", "alliance_request", "Send alliance request"),
+    metadata: { recipientID: "9h8tnrym", recipientName: "juryoku koku", relation: 0 },
+  };
+  const probe = action("attack:bystander:10", "attack", "Attack Bystander 10%");
+  const selected = choose(
+    [gravityAlly, probe],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      rivals: [
+        { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, gravityAlly.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("an invisible Gravity retry respects the six-decision cooldown", () => {
+  const gravityAlly = {
+    ...action("alliance:9h8tnrym", "alliance_request", "Send alliance request"),
+    metadata: { recipientID: "9h8tnrym", recipientName: "juryoku koku", relation: 0 },
+  };
+  const probe = action("attack:bystander:10", "attack", "Attack Bystander 10%");
+  const history = [
+    { actionID: "x0", kind: "attack", tileShare: 0.1 },
+    { actionID: "x1", kind: "attack", tileShare: 0.1 },
+    { actionID: "x2", kind: "attack", tileShare: 0.1 },
+    {
+      actionID: "alliance:9h8tnrym",
+      kind: "alliance_request",
+      targetID: "9h8tnrym",
+      targetName: "juryoku koku",
+      tileShare: 0.1,
+    },
+  ];
+  const selected = choose(
+    [gravityAlly, probe],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      rivals: [
+        { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, probe.id);
+});
+
+test("an invisible Gravity is retried once the cooldown lapses", () => {
+  const gravityAlly = {
+    ...action("alliance:9h8tnrym", "alliance_request", "Send alliance request"),
+    metadata: { recipientID: "9h8tnrym", recipientName: "juryoku koku", relation: 0 },
+  };
+  const probe = action("attack:bystander:10", "attack", "Attack Bystander 10%");
+  const history = [
+    {
+      actionID: "alliance:9h8tnrym",
+      kind: "alliance_request",
+      targetID: "9h8tnrym",
+      targetName: "juryoku koku",
+      tileShare: 0.1,
+    },
+    ...Array.from({ length: 6 }, (_, index) => ({
+      actionID: `x${index}`,
+      kind: "attack",
+      tileShare: 0.1,
+    })),
+  ];
+  const selected = choose(
+    [gravityAlly, probe],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      rivals: [
+        { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, gravityAlly.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("an allied Gravity gets no fresh requests while its action lingers", () => {
+  const gravityAlly = {
+    ...action("alliance:9h8tnrym", "alliance_request", "Send alliance request"),
+    metadata: { recipientID: "9h8tnrym", recipientName: "juryoku koku", relation: 1 },
+  };
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [gravityAlly, build],
+    observation({
+      tileShare: 0.2,
+      troopRatio: 0.9,
+      rivals: [{
+        id: "9h8tnrym",
+        name: "juryoku koku",
+        tileShare: 0.12,
+        relativeTroopRatio: 1.1,
+        isAllied: true,
+      }],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, build.id);
+});
+
+test("recordDecision keeps metadata targets for invisible partners", () => {
+  const history = [];
+  const state = buildState(observation({ rivals: [] }), [], history);
+  recordDecision(history, {
+    ...action("alliance:9h8tnrym", "alliance_request", "Send alliance request"),
+    metadata: { recipientID: "9h8tnrym", recipientName: "juryoku koku", relation: 0 },
+  }, state);
+  assert.equal(history[0].targetID, "9h8tnrym");
+  assert.equal(history[0].targetName, "juryoku koku");
+});

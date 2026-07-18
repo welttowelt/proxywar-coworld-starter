@@ -493,16 +493,70 @@ function chooseRivalAttack(actions, state, plan, history, avoid, threatCount = 0
 
 const KINGMAKER_RETRY_COOLDOWN = 6;
 
-function kingmakerAllianceAction(actions, state, history) {
+// Reciprocal partners come from two channels: visible rivals, and
+// alliance_request metadata when the partner is outside the visible set.
+// The game offers alliance actions for players fog-of-war hides from
+// visiblePlayers, so the contract must not depend on visibility alone. A
+// partner already visible (allied or not) is never re-added from metadata.
+function reciprocalPartners(actions, state) {
   const partners = state.rivals.filter((rival) => isReciprocalRival(rival) && !rival.isAllied);
-  for (const partner of partners) {
-    const candidates = safeActions(actions, (action) => {
-      if (action.kind !== "alliance_request") return false;
-      const rival = rivalForAction(action, state);
-      return rival && isReciprocalRival(rival) &&
-        (rival.id.toLowerCase() === partner.id.toLowerCase() ||
-          normalizedRivalName(rival.name) === normalizedRivalName(partner.name));
+  const seen = new Set();
+  for (const rival of state.rivals) {
+    if (rival.id) seen.add(`id:${rival.id.toLowerCase()}`);
+    const canonical = normalizedRivalName(rival.name);
+    if (canonical) seen.add(`name:${canonical}`);
+  }
+  for (const action of actions) {
+    if (action?.kind !== "alliance_request") continue;
+    const recipientID = clean(
+      action?.metadata?.recipientID ?? action?.metadata?.targetID ?? "",
+    ).toLowerCase();
+    const recipientName = clean(
+      action?.metadata?.recipientName ?? action?.metadata?.targetName ?? "",
+    );
+    const canonical = normalizedRivalName(recipientName);
+    const reciprocal = RECIPROCAL_RIVAL_IDS.has(recipientID) ||
+      (canonical.length > 0 && RECIPROCAL_RIVALS.has(canonical));
+    if (!reciprocal) continue;
+    if ((recipientID && seen.has(`id:${recipientID}`)) ||
+      (canonical && seen.has(`name:${canonical}`))) continue;
+    if (recipientID) seen.add(`id:${recipientID}`);
+    if (canonical) seen.add(`name:${canonical}`);
+    partners.push({
+      id: recipientID || recipientName,
+      name: recipientName || recipientID,
+      tileShare: 0,
+      relativeTroopRatio: NaN,
+      isAllied: false,
     });
+  }
+  return partners;
+}
+
+function matchesKingmakerPartner(action, partner, state) {
+  const rival = rivalForAction(action, state);
+  if (rival) {
+    return isReciprocalRival(rival) &&
+      (rival.id.toLowerCase() === partner.id.toLowerCase() ||
+        normalizedRivalName(rival.name) === normalizedRivalName(partner.name));
+  }
+  const recipientID = clean(
+    action?.metadata?.recipientID ?? action?.metadata?.targetID ?? "",
+  ).toLowerCase();
+  const recipientName = clean(
+    action?.metadata?.recipientName ?? action?.metadata?.targetName ?? "",
+  );
+  return (recipientID.length > 0 && recipientID === partner.id.toLowerCase()) ||
+    (recipientName.length > 0 &&
+      normalizedRivalName(recipientName) === normalizedRivalName(partner.name));
+}
+
+function kingmakerAllianceAction(actions, state, history) {
+  const partners = reciprocalPartners(actions, state);
+  for (const partner of partners) {
+    const candidates = safeActions(actions, (action) =>
+      action.kind === "alliance_request" && matchesKingmakerPartner(action, partner, state)
+    );
     if (candidates.length === 0) continue;
     const lastAttempt = decisionsSince(history, (entry) =>
       entry.kind === "alliance_request" &&
@@ -511,13 +565,9 @@ function kingmakerAllianceAction(actions, state, history) {
     if (lastAttempt < KINGMAKER_RETRY_COOLDOWN) continue;
     const stable = candidates.filter((action) => Number(action?.metadata?.relation) !== 2);
     if (stable.length > 0) return { ...stable[0], policyMarker: "kp2" };
-    const offerPending = safeActions(actions, (action) => {
-      if (action.kind !== "alliance_reject") return false;
-      const rival = rivalForAction(action, state);
-      return rival && isReciprocalRival(rival) &&
-        (rival.id.toLowerCase() === partner.id.toLowerCase() ||
-          normalizedRivalName(rival.name) === normalizedRivalName(partner.name));
-    }).length > 0;
+    const offerPending = safeActions(actions, (action) =>
+      action.kind === "alliance_reject" && matchesKingmakerPartner(action, partner, state)
+    ).length > 0;
     if (offerPending) return { ...candidates[0], policyMarker: "kp2" };
   }
   return null;
@@ -860,6 +910,12 @@ export function chooseAction(actions, state, plan = null, history = []) {
 
 export function recordDecision(history, action, state) {
   const rival = rivalForAction(action, state);
+  const metadataTargetID = clean(
+    action?.metadata?.recipientID ?? action?.metadata?.targetID ?? "",
+  ).toLowerCase();
+  const metadataTargetName = clean(
+    action?.metadata?.recipientName ?? action?.metadata?.targetName ?? "",
+  );
   const incomingAttackerIDs = state.self.incomingAttackerIDs || [];
   const incomingAttackerNames = state.rivals
     .filter((candidate) => incomingAttackerIDs.includes(candidate.id.toLowerCase()))
@@ -868,8 +924,8 @@ export function recordDecision(history, action, state) {
     actionID: action.id,
     kind: action.kind,
     neutral: isNeutralExpansion(action) || isNeutralBoat(action),
-    targetName: rival?.name ?? null,
-    targetID: rival?.id?.toLowerCase() ?? null,
+    targetName: rival?.name ?? (metadataTargetName || null),
+    targetID: rival?.id?.toLowerCase() ?? (metadataTargetID || null),
     tileShare: state.self.tileShare,
     incomingAttackerIDs,
     allProtocolAttackerIDs: state.self.allProtocolAttackerIDs || [],
