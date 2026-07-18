@@ -90,16 +90,31 @@
       "replay_sha256": "3e237bd9a23993d12a48a1888763f078d1fa36168349c1579561b0e69ddfb5e2"
     },
     "matched_world": {
-      "status": "running",
+      "status": "completed_rejected",
       "orientations": 2,
       "candidate_seats": "even in A, odd in B",
-      "parent": "exact qd1n:v89 executable image"
+      "parent": "exact qd1n:v89 executable image",
+      "candidate_score_units": 1,
+      "parent_score_units": 1,
+      "candidate_tiles": 651609,
+      "parent_tiles": 651609,
+      "candidate_survivors": 2,
+      "parent_survivors": 2,
+      "candidate_decisions": 1681,
+      "candidate_accepted_decisions": 1681,
+      "candidate_rejections": 0,
+      "candidate_holds": 8,
+      "candidate_fallbacks": 1657,
+      "nf1_executions": 115,
+      "orientation_a_replay_sha256": "0b1054ba1d2a0b79d2381942d388566c3b0d2cafd7320ae5f45a39e3ad607200",
+      "orientation_b_replay_sha256": "c9d5f21d8bdd4376ba1a0eb57944611395e9dca7ea3a8a2b0ff7626c2b760da1",
+      "verdict": "exact aggregate tie after the seat swap; identity and seat explain the result and nf1 provides no causal advantage"
     }
   },
   "promotion_gate": {
     "local_mirrors_required": true,
     "hosted_required": "4/4 with zero holds, zero rejections, and nf1 reach",
     "regression_required": "20/20",
-    "current_verdict": "PENDING; do not upload, submit, or change Odin's champion"
+    "current_verdict": "REJECTED at the matched World gate; no Asia/Pangaea extension, hosted request, upload, submission, or champion change"
   }
 }

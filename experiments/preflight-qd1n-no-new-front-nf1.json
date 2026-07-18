@@ -15,18 +15,25 @@
     "source": "experiments/diagnosis-qd1n-no-new-front-rci-20260718.json"
   },
   "local": {
-    "runs": 1,
-    "independent_traces": 1,
+    "runs": 3,
+    "independent_traces": 3,
     "wins": 0,
     "self_play": true,
-    "evaluated_seats": 2,
-    "accepted_decisions": 34,
-    "holds": 0,
-    "unexplained_holds": 0,
+    "evaluated_seats": 10,
+    "accepted_decisions": 1715,
+    "holds": 8,
+    "unexplained_holds": 8,
     "rejections": 0,
-    "planner_degraded_decisions": 10,
-    "mechanism_reached": false,
-    "qualifier_replay_sha256": "3e237bd9a23993d12a48a1888763f078d1fa36168349c1579561b0e69ddfb5e2"
+    "planner_degraded_decisions": 1667,
+    "mechanism_reached": true,
+    "qualifier_replay_sha256": "3e237bd9a23993d12a48a1888763f078d1fa36168349c1579561b0e69ddfb5e2",
+    "mechanism_executions": 115,
+    "candidate_score_units": 1,
+    "parent_score_units": 1,
+    "candidate_tiles": 651609,
+    "parent_tiles": 651609,
+    "orientation_a_replay_sha256": "0b1054ba1d2a0b79d2381942d388566c3b0d2cafd7320ae5f45a39e3ad607200",
+    "orientation_b_replay_sha256": "c9d5f21d8bdd4376ba1a0eb57944611395e9dca7ea3a8a2b0ff7626c2b760da1"
   },
   "diagnostic_only": true,
   "hosted": {
@@ -52,11 +59,11 @@
     "regression_episodes": 20,
     "league_change_allowed": false
   },
-  "verdict": "PENDING: amd64 qualifier passed 34/34; exact-image World mirrors are running; no upload, submission, or champion change is allowed",
+  "verdict": "REJECTED: nf1 executed 115 times but tied the exact parent after the seat swap at 1 score unit and 651609 tiles each; no extension, upload, submission, or champion change",
   "matched_baseline": {
     "policy_ref": "qd1n:v89",
     "request_id": null,
-    "same_roster": false,
-    "same_variant": false
+    "same_roster": true,
+    "same_variant": true
   }
 }
