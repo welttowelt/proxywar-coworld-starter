@@ -626,15 +626,15 @@ test("vr1 holds the established leader front instead of switching to a side targ
   assert.equal(chosen.policyMarker, "vr1");
 });
 
-test("a fresh harmless social action beats hold when tactics are exhausted", () => {
+test("public quick chat is never selected because its game-authored prose cannot be leet", () => {
   const chat = action("chat:raven", "quick_chat", "Raven signal");
   const hold = action("hold", "hold", "Hold");
   const chosen = chooseHrafnAction([hold, chat], observation());
-  assert.equal(chosen.id, chat.id);
-  assert.equal(publicHrafnReason(chosen), "[K1Z] r4vn:cht");
+  assert.equal(chosen.id, hold.id);
+  assert.equal(publicHrafnReason(chosen), "[K1Z] r4vn:h0d");
 });
 
-test("the harmless fallback does not loop the same public signal", () => {
+test("public quick chat stays suppressed after a prior public signal", () => {
   const chat = action("chat:raven", "quick_chat", "Raven signal");
   const hold = action("hold", "hold", "Hold");
   const history = [{
