@@ -641,6 +641,11 @@ export function boatConversionStalled(state, history) {
   return currentShare <= shares[0] + 0.002;
 }
 
+export function earlyNavalBaseUnready(state) {
+  const currentShare = finiteNumber(state?.self?.tileShare, NaN);
+  return Number.isFinite(currentShare) && currentShare < 0.12;
+}
+
 function builtUnits(history) {
   return history
     .filter((entry) => entry.kind === "build")
@@ -845,6 +850,19 @@ export function chooseAction(actions, state, plan = null, history = []) {
       (sinceBuild >= 3 ? build : null) ||
       chooseBoat(actions, state, history, avoid, false, true);
     if (conversion) return { ...conversion, policyMarker: "cv1" };
+  }
+
+  const neutralBoatAvailable = safeActions(actions, isNeutralBoat).length > 0;
+  if (
+    conversionReady &&
+    earlyNavalBaseUnready(state) &&
+    neutralBoatAvailable &&
+    !disciplinedAttack &&
+    !neutralAttack
+  ) {
+    const reserve = build ||
+      safeActions(actions, (action) => action.kind === "upgrade_structure")[0];
+    if (reserve) return { ...reserve, policyMarker: "nr2" };
   }
 
   if (neutralExpansionStalled(state, history)) {
