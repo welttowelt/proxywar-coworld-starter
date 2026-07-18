@@ -1,15 +1,4 @@
 round_number,rank,score,player_name,policy_name,policy_version,policy_version_id,completed_episode_count,seed_order
-461,1,0.75,odin free,qd1n,77,c0213724-8fb6-40d3-97da-fd1b080971f7,4,7
-461,2,0.5,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,2,1
-461,3,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,1,0
-461,4,0.0,RelhAlpha,co-gas-proxywar-relhalpha,1,cc3a6e1f-7c8c-44f1-8af8-18e1e51a8d40,3,2
-461,5,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,3
-461,6,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
-461,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-461,8,0.0,Sefirot,Eva-00,23,d25ca50c-91ef-4caf-8a5c-391667b7a815,4,6
-461,9,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,3,8
-461,10,0.0,katanasan,tsukuyomi-no-kage,34,d5a2e375-10ed-44f1-b69d-32dcacc91ae0,2,9
-461,11,0.0,daveey,daveey-proxywar,20,6d65b2d0-1d70-4f6e-85ed-114149274e89,1,10
 462,1,0.5,katanasan,tsukuyomi-no-kage,34,d5a2e375-10ed-44f1-b69d-32dcacc91ae0,2,9
 462,2,0.3333333333333333,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,3,4
 462,3,0.3333333333333333,odin free,qd1n,77,c0213724-8fb6-40d3-97da-fd1b080971f7,3,7
@@ -219,3 +208,14 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 480,9,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,3,8
 480,10,0.0,katanasan,tsukuyomi-no-kage,34,d5a2e375-10ed-44f1-b69d-32dcacc91ae0,2,9
 480,11,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,1,10
+481,1,0.75,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
+481,2,0.5,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,2,1
+481,3,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,1,0
+481,4,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
+481,5,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
+481,6,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
+481,7,0.0,Sefirot,Eva-00,24,2b3261a9-f41d-449e-9532-f59c5737bec7,4,6
+481,8,0.0,odin free,qd1n,77,c0213724-8fb6-40d3-97da-fd1b080971f7,4,7
+481,9,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,3,8
+481,10,0.0,katanasan,tsukuyomi-no-kage,34,d5a2e375-10ed-44f1-b69d-32dcacc91ae0,2,9
+481,11,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,1,10
