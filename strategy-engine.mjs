@@ -496,6 +496,7 @@ function chooseRivalAttack(actions, state, plan, history, avoid, threatCount = 0
 }
 
 const KINGMAKER_RETRY_COOLDOWN = 6;
+const NUCLEAR_FIRE_COOLDOWN = 8;
 
 // Reciprocal partners come from two channels: visible rivals, and
 // alliance_request metadata when the partner is outside the visible set.
@@ -785,13 +786,28 @@ export function chooseAction(actions, state, plan = null, history = []) {
   const kingmakerAlliance = kingmakerAllianceAction(actions, state, history);
   if (kingmakerAlliance) return kingmakerAlliance;
 
+  // nc1: do not queue a fresh Atom Bomb every decision while the previous
+  // strike is still resolving. Round 506 produced 197 accepted bomb orders
+  // with a median gap of one decision. Preserve the first strategic strike,
+  // then let the normal land/economy policy act for one bounded window.
   const atomBomb = chooseAtomBomb(actions, state, history);
-  if (atomBomb) return atomBomb;
+  const nuclearCooling = atomBomb &&
+    decisionsSince(history, (entry) => entry.policyMarker === "nk1") <
+      NUCLEAR_FIRE_COOLDOWN;
+  if (atomBomb && !nuclearCooling) return atomBomb;
+  const withNuclear = (action) =>
+    nuclearCooling && action && !action.policyMarker
+      ? { ...action, policyMarker: "nc1" }
+      : action;
 
   const rivalAttack = chooseRivalAttack(actions, state, plan, history, avoid, threatCount);
   const peaceRedirect = rivalAttack?.peaceRedirect === true;
   const withPeace = (action) =>
-    peaceRedirect && action && !action.policyMarker ? { ...action, policyMarker: "kp1" } : action;
+    withNuclear(
+      peaceRedirect && action && !action.policyMarker
+        ? { ...action, policyMarker: "kp1" }
+        : action,
+    );
   const routedRivalAttack = state.mapFingerprint === "Asia" && rivalAttack?.action &&
     (state.self.incomingAttackerIDs || []).includes(rivalAttack.rival.id.toLowerCase())
     ? { ...rivalAttack.action, policyMarker: "ia1" }
@@ -804,9 +820,11 @@ export function chooseAction(actions, state, plan = null, history = []) {
     rivalAttack.rival.relativeTroopRatio < 1.3 && !pc1Band;
   const disciplinedAttack = pileOnDiscipline ? null : routedRivalAttack;
   const withDiscipline = (action) =>
-    pileOnDiscipline && action && !action.policyMarker
-      ? { ...action, policyMarker: "pd2" }
-      : action;
+    withNuclear(
+      pileOnDiscipline && action && !action.policyMarker
+        ? { ...action, policyMarker: "pd2" }
+        : action,
+    );
   const neutralAttack = chooseNeutralAttack(actions, history, avoid);
   const build = chooseBuild(actions, history);
   const sinceBuild = decisionsSince(history, (entry) =>
@@ -819,7 +837,9 @@ export function chooseAction(actions, state, plan = null, history = []) {
     rivalAttack.rival.relativeTroopRatio >= 1.5;
   const collapsing = territoryCollapsing(state, history);
 
-  if (collapsing && build && sinceBuild >= 3 && !finishingTarget) return build;
+  if (collapsing && build && sinceBuild >= 3 && !finishingTarget) {
+    return withNuclear(build);
+  }
 
   const allianceMove = chooseAllianceMove(
     actions,
@@ -833,7 +853,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
     allianceMove && !finishingTarget &&
     (allianceMove.kind === "break_alliance" || !hasReliableTacticalAction(actions))
   ) {
-    return allianceMove;
+    return withNuclear(allianceMove);
   }
 
   const conversionReady = decisionsSince(
@@ -844,11 +864,11 @@ export function chooseAction(actions, state, plan = null, history = []) {
     const conversion = disciplinedAttack || chooseUtility(actions, state, plan, history) ||
       (sinceBuild >= 3 ? build : null) ||
       chooseBoat(actions, state, history, avoid, false, true);
-    if (conversion) return { ...conversion, policyMarker: "cv1" };
+    if (conversion) return withNuclear({ ...conversion, policyMarker: "cv1" });
   }
 
   if (neutralExpansionStalled(state, history)) {
-    if (disciplinedAttack) return disciplinedAttack;
+    if (disciplinedAttack) return withNuclear(disciplinedAttack);
     const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
     if (boatStreak >= 2 && build) return withDiscipline(withPeace(build));
     const escapeBoat = chooseBoat(actions, state, history, avoid);
@@ -858,9 +878,9 @@ export function chooseAction(actions, state, plan = null, history = []) {
 
   if (cadenceBuild && !finishingTarget) return withDiscipline(withPeace(build));
   if (state.self.tileShare < 0.12 && neutralAttack && threatCount === 0 && !collapsing) {
-    return neutralAttack;
+    return withNuclear(neutralAttack);
   }
-  if (disciplinedAttack) return disciplinedAttack;
+  if (disciplinedAttack) return withNuclear(disciplinedAttack);
   if (neutralAttack) return withDiscipline(withPeace(neutralAttack));
   if (build && sinceBuild >= 5) return withDiscipline(withPeace(build));
 
@@ -883,7 +903,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
     const rival = rivalForAction(action, state);
     return plan?.focus === "ally" && rival?.isAllied === true;
   })[0];
-  if (donation) return donation;
+  if (donation) return withNuclear(donation);
 
   // Holding while legal tactical actions remain turns a weak position into a certain loss.
   if (build) return withDiscipline(withPeace(build));
@@ -898,17 +918,17 @@ export function chooseAction(actions, state, plan = null, history = []) {
     return rival && !rivalIsProtected(state, history, rival);
   });
   const emergencyAttack = pickPercent(emergencyAttacks, 10, avoid);
-  if (emergencyAttack) return emergencyAttack;
+  if (emergencyAttack) return withNuclear(emergencyAttack);
 
   const survivalAlliance = bestAllianceRequest(actions, state, history);
-  if (survivalAlliance) return survivalAlliance;
+  if (survivalAlliance) return withNuclear(survivalAlliance);
   const pressure = safeActions(actions, (action) => action.kind === "target_player")
     .map((action) => ({ action, rival: rivalForAction(action, state) }))
     .filter(({ rival }) => rival && !rivalIsProtected(state, history, rival))
     .sort((left, right) => right.rival.tileShare - left.rival.tileShare)[0]?.action;
-  if (pressure) return pressure;
+  if (pressure) return withNuclear(pressure);
 
-  return actions.find((action) => action.kind === "hold") ?? actions[0];
+  return withNuclear(actions.find((action) => action.kind === "hold") ?? actions[0]);
 }
 
 export function recordDecision(history, action, state) {

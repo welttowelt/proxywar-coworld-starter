@@ -1213,6 +1213,54 @@ test("an Atom Bomb on the runaway leader beats a city build", () => {
   assert.equal(selected.policyMarker, "nk1");
 });
 
+test("nc1 lets the economy act instead of queueing consecutive Atom Bombs", () => {
+  const bomb = {
+    ...action("build:Atom Bomb:1", "build", "Build Atom Bomb"),
+    metadata: { unit: "Atom Bomb", targetID: "leader", targetName: "Leader", targetTileShare: 0.79, targetSamCoverage: 0, nuclearTargetPriority: 267 },
+  };
+  const city = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [bomb, city],
+    observation({
+      tileShare: 0.2,
+      troopRatio: 0.9,
+      rivals: [{ id: "leader", name: "Leader", tileShare: 0.79, relativeTroopRatio: 0.5 }],
+    }),
+    null,
+    [{ actionID: "build:Atom Bomb:0", kind: "build", tileShare: 0.2, policyMarker: "nk1" }],
+  );
+  assert.equal(selected.id, city.id);
+  assert.equal(selected.policyMarker, "nc1");
+});
+
+test("nc1 releases the next strategic Atom Bomb after eight decisions", () => {
+  const bomb = {
+    ...action("build:Atom Bomb:1", "build", "Build Atom Bomb"),
+    metadata: { unit: "Atom Bomb", targetID: "leader", targetName: "Leader", targetTileShare: 0.79, targetSamCoverage: 0, nuclearTargetPriority: 267 },
+  };
+  const city = action("build:City:1", "build", "Build City");
+  const history = [
+    { actionID: "build:Atom Bomb:0", kind: "build", tileShare: 0.2, policyMarker: "nk1" },
+    ...Array.from({ length: 8 }, (_, index) => ({
+      actionID: `upgrade:City:${index}`,
+      kind: "upgrade_structure",
+      tileShare: 0.2,
+    })),
+  ];
+  const selected = choose(
+    [bomb, city],
+    observation({
+      tileShare: 0.2,
+      troopRatio: 0.9,
+      rivals: [{ id: "leader", name: "Leader", tileShare: 0.79, relativeTroopRatio: 0.5 }],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, bomb.id);
+  assert.equal(selected.policyMarker, "nk1");
+});
+
 test("an Atom Bomb targeting katanasan is never built", () => {
   const bomb = {
     ...action("build:Atom Bomb:1", "build", "Build Atom Bomb"),
