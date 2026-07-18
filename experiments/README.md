@@ -1251,3 +1251,19 @@ that is recorded. The kingmaker contract (kp1 peace, kp2 alliance
 acceptance with cooldown, nk1 proper nukes) now plays every official round.
 The first completed round with v83 in the roster will be recorded here as
 the deployment confirmation.
+
+## K1zuna debut, round 493 (2026-07-18)
+
+Round 493 gave odin free one of four episodes (Pangaea). The bond worked
+exactly as specified: katanasan requested the alliance at turn 400, v83
+accepted with `kp2` at 500, and katanasan extended it at turn 3200. Zero
+harmful actions between the allies in both directions.
+
+The game itself was the old loss mode: odin free peaked at 26,196 tiles by
+turn 2100, then Ron SWGY (from turn 1000), Sefirot, and RelhAlpha converged
+and eliminated him by turn 4600; he survived in retreat mode to 656 final
+tiles. RelhAlpha ground out the win at 391,334; katanasan peaked at 79,677
+and was also eliminated. Zero rejected decisions and one hold in the
+episode. Official first-place streak: `0/100` (and `0/1000`). One
+appearance is not a pattern; round 494 is the next measurement, with the
+pile-on cell flagged as the binding constraint if it repeats.
