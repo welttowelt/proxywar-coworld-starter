@@ -114,3 +114,46 @@ test("Kuroi Taiyo never breaks its alliance with Odin", () => {
   };
   assert.equal(choose([breakOdin, hold], obs).id, "hold");
 });
+
+const gravity = player("juryoku-koku", "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335", 0.28);
+const gravityObs = observation([odin, gravity, strong, weak]);
+const allianceRequest = (target) => ({
+  id: `alliance_request:${target.playerID}`,
+  kind: "alliance_request",
+  risk: { level: "low" },
+  metadata: { targetID: target.playerID, targetName: target.name },
+});
+
+test("Kuroi Taiyo immediately requests a Gravity alliance while unallied", () => {
+  assert.equal(
+    choose([attack(strong), allianceRequest(gravity), hold], gravityObs).kind,
+    "alliance_request",
+  );
+});
+
+test("Kuroi Taiyo never attacks Gravity even when Gravity is strongest", () => {
+  const leadingGravity = { ...gravity, tileShare: 0.75 };
+  const selected = choose(
+    [attack(leadingGravity), attack(strong), hold],
+    observation([odin, leadingGravity, strong, weak]),
+  );
+  assert.equal(selected.metadata.targetID, strong.playerID);
+});
+
+test("Kuroi Taiyo never nukes Gravity by exact player ID", () => {
+  const idOnlyNuke = nuke("MIRV", gravity);
+  delete idOnlyNuke.metadata.targetName;
+  idOnlyNuke.label = "Nuclear strike";
+  assert.equal(choose([idOnlyNuke, hold], gravityObs).id, hold.id);
+});
+
+test("Kuroi Taiyo stops requesting Gravity after the alliance is observed", () => {
+  const alliedGravity = { ...gravity, isAllied: true, hasAlliance: true };
+  assert.notEqual(
+    choose(
+      [allianceRequest(alliedGravity), attack(strong), hold],
+      observation([odin, alliedGravity, strong, weak]),
+    ).kind,
+    "alliance_request",
+  );
+});

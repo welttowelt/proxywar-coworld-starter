@@ -35,11 +35,19 @@ try { bedrock = new AnthropicBedrock({ awsRegion: REGION }); } catch (e) { bedro
 let lockedModel = null;
 
 // Claude picks one stance and one victim; the local fighter executes instantly.
-const SHADOW_FRIEND = "odin free";
+const PROTECTED_ALLIES = [
+  { name: "odin free", supportPriority: 2 },
+  {
+    name: "juryoku-koku",
+    playerID: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+    supportPriority: 1,
+  },
+];
 const KINZOKU_RESERVE = 750_000;
 const KUROI_TAIYO_SCORE = 20_000;
 const KAKUSHI_MISAIRU_JO_SCORE = 12_000;
-const HARMFUL_TO_SHOGUN = new Set([
+const ALLIANCE_REQUEST_SCORE = 30_000;
+const HARMFUL_TO_ALLY = new Set([
   "attack", "boat", "warship", "move_warship", "nuke", "embargo",
   "target_player", "alliance_reject", "break_alliance",
 ]);
@@ -51,11 +59,11 @@ const EXECUTION_RATIO = 1.8;
 const RUNAWAY_SHARE = 0.35;
 const STRATEGY = [
   "You command Tsukuyomi no Kage under the Kuroi Taiyo doctrine. Odin Free is the protected shogun and must win.",
-  "Never target, attack, embargo, reject, betray, or nuke Odin. Preserve and extend the alliance and aid him with gold or troops.",
-  "You are Odin's shinobi shield and nuclear spear, not a rival claimant. Your own victory is irrelevant when it conflicts with Odin's.",
+  "Never target, attack, embargo, reject, betray, or nuke Odin Free or Juryoku-koku. Form and preserve both alliances.",
+  "You are Odin's shinobi shield beside Gravity Nation's deterrent, not a rival claimant. Your own victory is irrelevant when it conflicts with Odin's.",
   "Raise one kakushi misairu-jo, the hidden Missile Silo, at the first legal opportunity.",
-  "Set allowNuke true. Every legal nuclear strike against a non-Odin daimyo is mandatory; prefer MIRV, then Hydrogen Bomb, then Atom Bomb when target priority is equal.",
-  "Attack the strongest reachable non-Odin daimyo. Break leaders, destroy their economy, and keep every rival below Odin.",
+  "Set allowNuke true. Every legal nuclear strike against an outsider is mandatory; prefer MIRV, then Hydrogen Bomb, then Atom Bomb when target priority is equal.",
+  "Attack the strongest reachable outsider. Break leaders, destroy their economy, and keep every rival below Odin.",
   "Grow, build shiro, and defend the honmaru only enough to preserve the nuclear platform and continue the campaign.",
   "When Odin leads, donate strength, attack all surviving rivals, and accept self-sacrifice if it directly secures his victory.",
   "Keep the protected relationship private in every public reason.",
@@ -80,6 +88,25 @@ const recentCount = (id, n = 8) => history.slice(-n).filter((d) => d.actionID ==
 function clean(s) {
   return String(s ?? "").replace(/[^\x20-\x7e]/g, " ").replace(/\s+/g, " ").trim().slice(0, 60);
 }
+function normalizeName(s) {
+  return String(s ?? "").normalize("NFKC").replace(/\s+/gu, " ").trim().toLocaleLowerCase("en-US").slice(0, 80);
+}
+const protectedDescriptor = (name, playerID = "") => {
+  const normalized = normalizeName(name);
+  const id = clean(playerID);
+  return PROTECTED_ALLIES.find((ally) =>
+    normalizeName(ally.name) === normalized || Boolean(id && ally.playerID && ally.playerID === id)
+  ) || null;
+};
+const isProtectedPlayer = (player) => protectedDescriptor(
+  player?.name,
+  player?.playerID ?? player?.id,
+) !== null;
+const hasAlliance = (player) => player?.hasAlliance === true || player?.isAllied === true;
+const redactProtectedNames = (text) => PROTECTED_ALLIES.reduce(
+  (redacted, ally) => redacted.replace(new RegExp(ally.name.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "ig"), "the current balance"),
+  String(text ?? ""),
+);
 function buildState(obs, actions) {
   const own = obs.ownState || {};
   const self = {
@@ -176,7 +203,7 @@ function refreshPlanInBackground(state) {
       const rawTarget = parsed.target ? clean(parsed.target) : null;
       plan = {
         mode: MODES.has(mode) ? mode : "expand",
-        target: rawTarget?.toLowerCase() === SHADOW_FRIEND ? null : rawTarget,
+        target: protectedDescriptor(rawTarget) ? null : rawTarget,
         allowNuke: parsed.allowNuke === true,
         reason: clean(parsed.reason).slice(0, 120),
         model,
@@ -204,16 +231,31 @@ const actionTargetName = (a) => clean(
 );
 const actionTargetID = (a) => clean(
   a?.metadata?.targetID ?? a?.metadata?.recipientID ??
-  (/^(?:attack|target(?:_player)?|embargo|alliance(?:_[a-z]+)?|nuke):([^:]+)/.exec(String(a?.id || ""))?.[1] ?? ""),
+  (/^(?:attack|boat|warship|move_warship|target(?:_player)?|embargo|alliance(?:_[a-z]+)?|break_alliance|donate(?:_[a-z]+)?|nuke):([^:]+)/.exec(String(a?.id || ""))?.[1] ?? ""),
 );
 const mentions = (a, name) => Boolean(name) && (
-  actionTargetName(a).toLowerCase() === clean(name).toLowerCase() ||
-  actionText(a).includes(clean(name).toLowerCase())
+  normalizeName(actionTargetName(a)) === normalizeName(name) ||
+  normalizeName(actionText(a)).includes(normalizeName(name))
 );
 const targetsPlayer = (a, player) => {
   const targetID = actionTargetID(a);
   const playerID = clean(player?.playerID ?? player?.id ?? "");
   return mentions(a, clean(player?.name)) || Boolean(targetID && playerID && targetID === playerID);
+};
+const protectedPlayers = (rivals) => rivals.filter(isProtectedPlayer);
+const targetedProtectedAlly = (a, rivals) => {
+  const targetID = actionTargetID(a);
+  const byDescriptor = protectedDescriptor(actionTargetName(a), targetID) ||
+    PROTECTED_ALLIES.find((ally) => normalizeName(actionText(a)).includes(normalizeName(ally.name)));
+  if (byDescriptor) {
+    const player = rivals.find((candidate) =>
+      normalizeName(candidate?.name) === normalizeName(byDescriptor.name) ||
+      Boolean(byDescriptor.playerID && (candidate?.playerID ?? candidate?.id) === byDescriptor.playerID)
+    );
+    return { descriptor: byDescriptor, player: player || null };
+  }
+  const player = protectedPlayers(rivals).find((candidate) => targetsPlayer(a, candidate));
+  return player ? { descriptor: protectedDescriptor(player.name, player.playerID), player } : null;
 };
 const isNuclear = (a) => a.kind === "nuke" ||
   /\b(?:nuke|nuclear|atom bomb|hydrogen bomb|mirv)\b/i.test(actionText(a));
@@ -238,9 +280,9 @@ const incomingCount = (own) => Array.isArray(own.incomingAttacks)
   ? own.incomingAttacks.length
   : Number(own.incomingAttacks) || 0;
 const pickTarget = (rivals, endgame) => {
-  const enemies = rivals.filter((p) => clean(p.name).toLowerCase() !== SHADOW_FRIEND && !p.isAllied);
-  const odinPresent = rivals.some((p) => clean(p.name).toLowerCase() === SHADOW_FRIEND);
-  if (odinPresent) {
+  const enemies = rivals.filter((p) => !isProtectedPlayer(p) && !hasAlliance(p));
+  const coalitionPresent = protectedPlayers(rivals).length > 0;
+  if (coalitionPresent) {
     const reachable = enemies.filter((p) => p.canAttack || p.sharesBorder);
     const threats = reachable.length > 0 ? reachable : enemies;
     return clean([...threats].sort((a, b) =>
@@ -250,7 +292,7 @@ const pickTarget = (rivals, endgame) => {
   const recentWar = history.slice(-12).reverse().find((decision) => decision.hostileTargetID || decision.hostileTargetName);
   const locked = recentWar && enemies.find((p) =>
     (recentWar.hostileTargetID && p.playerID === recentWar.hostileTargetID) ||
-    (recentWar.hostileTargetName && clean(p.name).toLowerCase() === recentWar.hostileTargetName.toLowerCase())
+    (recentWar.hostileTargetName && normalizeName(p.name) === normalizeName(recentWar.hostileTargetName))
   );
   // A 35% runaway needs pressure, but R308 showed that blindly chasing it
   // past an overmatched bordered neighbor strands our army. Take the clean
@@ -261,7 +303,7 @@ const pickTarget = (rivals, endgame) => {
     .sort((a, b) => (Number(b.relativeTroopRatio) || 0) - (Number(a.relativeTroopRatio) || 0))[0];
   const globalLeader = enemies.find((p) =>
     (endgame?.leaderID && p.playerID === endgame.leaderID) ||
-    clean(p.name).toLowerCase() === clean(endgame?.leaderName).toLowerCase()
+    normalizeName(p.name) === normalizeName(endgame?.leaderName)
   );
   if (globalLeader && Number(endgame?.leaderTileShare) >= RUNAWAY_SHARE) {
     return clean(executionTarget?.name || globalLeader.name);
@@ -276,7 +318,7 @@ const pickTarget = (rivals, endgame) => {
   // execution opportunity is not permission to create a second front.
   if (locked) return clean(locked.name);
   if (executionTarget) return clean(executionTarget.name);
-  const planned = enemies.find((p) => clean(p.name).toLowerCase() === plan?.target?.toLowerCase());
+  const planned = enemies.find((p) => normalizeName(p.name) === normalizeName(plan?.target));
   if (planned) return clean(planned.name);
   return clean([...enemies].sort((a, b) => {
     const score = (p) => (p.sharesBorder ? 2 : 0) + (p.canAttack ? 2 : 0) +
@@ -310,17 +352,17 @@ function scoreAction(a, obs, actions = []) {
   const kind = String(a.kind || "");
   const own = obs.ownState || {};
   const rivals = (obs.visiblePlayers || []).filter((p) => p?.isAlive);
-  const rival = rivals.find((p) => mentions(a, clean(p.name)));
+  const rival = rivals.find((p) => targetsPlayer(a, p));
   const ratio = Number(rival?.relativeTroopRatio) || 0;
   const targetShare = Number(rival?.tileShare) || 0;
   const tileShare = Number(own.tileShare) || 0;
   const incoming = incomingCount(own);
   const target = pickTarget(rivals, obs.endgame);
-  const targetRival = rivals.find((p) => clean(p.name).toLowerCase() === clean(target).toLowerCase());
-  const targetLeaderShare = clean(obs.endgame?.leaderName).toLowerCase() === clean(target).toLowerCase()
+  const targetRival = rivals.find((p) => normalizeName(p.name) === normalizeName(target));
+  const targetLeaderShare = normalizeName(obs.endgame?.leaderName) === normalizeName(target)
     ? Math.max(Number(targetRival?.tileShare) || 0, Number(obs.endgame?.leaderTileShare) || 0)
     : Number(targetRival?.tileShare) || 0;
-  const targetMatch = mentions(a, target);
+  const targetMatch = Boolean(targetRival && targetsPlayer(a, targetRival));
   const runawayLeader = targetLeaderShare >= RUNAWAY_SHARE;
   const runaway = targetMatch && runawayLeader;
   const neutral = isNeutralExpansion(a);
@@ -339,16 +381,16 @@ function scoreAction(a, obs, actions = []) {
     !severeIncoming && !runawayLeader;
   const directPressureAvailable = actions.some((candidate) =>
     ["attack", "boat", "warship", "move_warship", "nuke"].includes(String(candidate.kind)) &&
-    mentions(candidate, target)
+    Boolean(targetRival && targetsPlayer(candidate, targetRival))
   );
   const needsReach = runawayLeader && !directPressureAvailable;
-  const shadowFriend = rivals.find((p) => clean(p.name).toLowerCase() === SHADOW_FRIEND);
-  const friendMove = mentions(a, SHADOW_FRIEND) || Boolean(shadowFriend && targetsPlayer(a, shadowFriend));
-  const friendSafe = ["alliance_request", "alliance_extend"].includes(kind) ||
+  const allyTarget = targetedProtectedAlly(a, rivals);
+  const allyMove = allyTarget !== null;
+  const allySafe = ["alliance_request", "alliance_extend"].includes(kind) ||
     isSupport(a) || ["quick_chat", "emoji", "hold"].includes(kind);
 
-  if (friendMove && (isNuclear(a) || HARMFUL_TO_SHOGUN.has(kind))) return -Infinity;
-  if (friendMove && !friendSafe) return -Infinity;
+  if (allyMove && (isNuclear(a) || HARMFUL_TO_ALLY.has(kind))) return -Infinity;
+  if (allyMove && !allySafe) return -Infinity;
   if (kind === "embargo_all") return -Infinity;
   if (isNuclear(a)) {
     const knownTarget = Boolean(actionTargetName(a) || actionTargetID(a));
@@ -481,7 +523,7 @@ function scoreAction(a, obs, actions = []) {
     // keep sailing only when no such conversion is available at all.
     const conversionAvailable = actions.some((candidate) =>
       ["attack", "boat", "build", "upgrade", "upgrade_structure"].includes(candidate.kind) &&
-      candidate.risk?.level !== "high" && !mentions(candidate, SHADOW_FRIEND),
+      candidate.risk?.level !== "high" && !targetedProtectedAlly(candidate, rivals),
     );
     if (recentNavalOrders >= 2 && conversionAvailable) return -Infinity;
     const navalSaturationPenalty = Math.max(0, recentNavalOrders - 2) * 380;
@@ -489,19 +531,21 @@ function scoreAction(a, obs, actions = []) {
       (exactRecommendedNaval ? 620 : 0) + (needsReach ? 260 : 0) -
       movementLoopPenalty - navalSaturationPenalty;
   }
-  // Hosted RCI v33: an unanswered request remains legal and game-accepted, so
-  // the old score spent 9-16 decisions per episode repeating the same public
-  // signal to Odin. One quiet request preserves cooperation without exposing
-  // the relationship or sacrificing the campaign tempo.
+  // Retry each reciprocal request whenever the engine reoffers it until the
+  // observation confirms that specific alliance.
   if (kind === "alliance_request") {
-    const alreadyRequestedFriend = history.some((d) => d.kind === "alliance_request");
-    return friendMove && !alreadyRequestedFriend ? 3_000 : -Infinity;
+    if (!allyTarget || hasAlliance(allyTarget.player)) return -Infinity;
+    return ALLIANCE_REQUEST_SCORE + allyTarget.descriptor.supportPriority * 100;
   }
-  if (kind === "alliance_extend") return friendMove ? 3_200 : -Infinity;
+  if (kind === "alliance_extend") {
+    return allyTarget && hasAlliance(allyTarget.player) ? 3_200 : -Infinity;
+  }
   if (isSupport(a)) {
     const recentAid = history.slice(-8).some((d) => d.kind === kind);
     const keepsReserve = kind !== "donate_gold" || Number(own.gold) >= KINZOKU_RESERVE * 3;
-    return friendMove && keepsReserve && !recentAid ? 2_400 : -Infinity;
+    return allyTarget && keepsReserve && !recentAid
+      ? 2_300 + allyTarget.descriptor.supportPriority * 100
+      : -Infinity;
   }
   // Embargo starts race just like public target marks. Europe v18 spent four
   // fallback holds contesting a stateful embargo id before one attempt landed;
@@ -570,7 +614,7 @@ function start() {
   let reason;
   if (plan !== null) {
     const focus = plan.target ? `${plan.mode} -> ${plan.target}` : plan.mode;
-    const publicReason = plan.reason.replace(new RegExp(SHADOW_FRIEND, "ig"), "the current balance");
+    const publicReason = redactProtectedNames(plan.reason);
     reason = degraded
       ? `FIGHTER(${focus}; stale): ${chosen.kind}`
       : `FIGHTER(${focus}) via ${plan.model}: ${chosen.kind} — ${publicReason}`;
