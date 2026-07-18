@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-llm:qd1n-v89-nc1-amd64",
+    "parent_ref": "qd1n:v89",
+    "exact_deltas": [
+      "after a tagged Atom Bomb construction, suppress another Atom Bomb construction for eight Odin decisions and mark the replacement nc1"
+    ],
+    "policy_version_id": null
+  },
+  "hypothesis": "one bounded cooldown after an Atom Bomb action will interrupt the repeated nuclear loop and restore land or economy conversion",
+  "mechanism": {
+    "marker": "nc1",
+    "prior_reachable_decisions": 228,
+    "source": "experiments/diagnosis-qd1n-nuclear-fire-discipline-rci-20260718.json"
+  },
+  "local": {
+    "runs": 3,
+    "independent_traces": 3,
+    "wins": 0,
+    "self_play": true,
+    "evaluated_seats": 9,
+    "accepted_decisions": 1879,
+    "holds": 1,
+    "unexplained_holds": 1,
+    "rejections": 0,
+    "planner_degraded_decisions": 1831,
+    "mechanism_reached": false,
+    "qualifier_replay_sha256": "10684a26d0430b8c8f8403e10985b808cabaa21af689daa9c3208f4ccdd18772",
+    "mechanism_executions": 0,
+    "candidate_score_units": 1,
+    "parent_score_units": 1,
+    "candidate_tiles": 651409,
+    "parent_tiles": 651409,
+    "orientation_a_replay_sha256": "fe39acbe3b33830d447ed4aaecb7d5863e6f5268e493dbdaa2cf163fc3e642e5",
+    "orientation_b_replay_sha256": "4faf66464660e12fc56967bd3633fee6a3a6256aa85b221fab3ea109c1ff2079"
+  },
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    },
+    "request_id": null,
+    "result": {
+      "status": "not_started",
+      "episodes": 0,
+      "wins": 0,
+      "holds": 0,
+      "rejections": 0,
+      "mechanism_executions": 0,
+      "planner_degradation_rule_passed": false
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  },
+  "verdict": "REJECTED: NC1 and the exact parent tied after the seat swap with identical score, tiles, survivors, and action counts; nc1/nk1 executed zero times because the candidate throttled Atom Bomb construction instead of nuke firing; no upload, submission, or champion change",
+  "matched_baseline": {
+    "policy_ref": "qd1n:v89",
+    "request_id": null,
+    "same_roster": true,
+    "same_variant": true
+  }
+}
