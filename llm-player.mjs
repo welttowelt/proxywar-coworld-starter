@@ -35,6 +35,7 @@ try { bedrock = new AnthropicBedrock({ awsRegion: REGION }); } catch (e) { bedro
 let lockedModel = null;
 
 // Claude picks one stance and one outsider; the local fighter enforces the pact.
+const ALLIANCE_TAG = "[K1Z]";
 const PROTECTED_ALLIES = [
   { name: "odin free", supportPriority: 2 },
   { name: "katanasan", supportPriority: 1 },
@@ -54,7 +55,8 @@ const EXECUTION_RATIO = 1.8;
 // there is still time to build reach; coalition allies are excluded by pickTarget.
 const RUNAWAY_SHARE = 0.35;
 const STRATEGY = [
-  "You command Juryoku-koku under the Santai Juryoku and Ankoku Shinen doctrines.",
+  "You command Juryoku-koku, the Gravity nation, under the Santai Juryoku three-body doctrine.",
+  "Your unique tradition is inspired by Gravity and Blue Space from Death's End, the Ankoku Shinrin dark forest, and gravitational coordinate broadcast deterrence.",
   "Odin Free is the protected shogun and intended winner; katanasan is the protected allied spear.",
   "Immediately form and preserve alliances with both. Never target, attack, embargo, reject, betray, or nuke either protected ally.",
   "You are the coalition's gravitational shield and nuclear second-strike arm, not a rival claimant.",
@@ -62,7 +64,7 @@ const STRATEGY = [
   "Set allowNuke true. Every legal nuclear strike against an identified outsider is mandatory; prefer MIRV, then Hydrogen Bomb, then Atom Bomb when target priority is equal.",
   "Attack the strongest reachable outsider. Break runaway leaders, destroy hostile economies, and keep every outsider below Odin.",
   "Grow and fortify enough to preserve the deterrent. Support Odin first and katanasan second without exhausting the nuclear reserve.",
-  "Keep the three-body pact private in every public reason.",
+  "Use K1Z only as a minimal coalition mark; keep the rest of your voice distinctly Gravity and never expose operational pact details.",
 ].join(" ");
 // A plan is strategic, not a per-click opinion.  The official Europe R314
 // replay exhausted Bedrock's daily token allowance after refreshing every five
@@ -85,7 +87,7 @@ function clean(s) {
   return String(s ?? "").replace(/[^\x20-\x7e]/g, " ").replace(/\s+/g, " ").trim().slice(0, 60);
 }
 function normalizeName(s) {
-  return String(s ?? "").normalize("NFKC").replace(/\s+/gu, " ").trim().toLocaleLowerCase("en-US").slice(0, 80);
+  return String(s ?? "").normalize("NFKC").replace(/[-_.]+/g, " ").replace(/\s+/gu, " ").trim().toLocaleLowerCase("en-US").slice(0, 80);
 }
 const protectedDescriptor = (name) => {
   const normalized = normalizeName(name);
@@ -611,6 +613,7 @@ function start() {
       ? `FIGHTER(local; planner unavailable): ${chosen.kind}`
       : `FIGHTER(local; plan loading): ${chosen.kind}`;
   }
+  reason = `${ALLIANCE_TAG} ${reason}`;
 
   remember(chosen, obs);
   socket.send(JSON.stringify({
@@ -628,4 +631,4 @@ function start() {
 }
 
 if (process.env.PROXYWAR_SELF_TEST !== "1") start();
-export { buildState, choose, remember, scoreAction, extractPlan };
+export { ALLIANCE_TAG, buildState, choose, remember, scoreAction, extractPlan };

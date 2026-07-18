@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 process.env.PROXYWAR_SELF_TEST = "1";
-const { choose } = await import("./llm-player.mjs?juryoku-koku-test");
+const { ALLIANCE_TAG, choose } = await import("./llm-player.mjs?juryoku-koku-test");
 
 const player = (name, playerID, tileShare, overrides = {}) => ({
   name,
@@ -185,4 +185,8 @@ test("Gravity supports Odin before katanasan", () => {
 
 test("Gravity can support katanasan when Odin support is unavailable", () => {
   assert.equal(choose([donate(katanasan), hold], observation()).metadata.targetID, katanasan.playerID);
+});
+
+test("K1Z is Gravity's only shared alliance layer", () => {
+  assert.equal(ALLIANCE_TAG, "[K1Z]");
 });
