@@ -518,3 +518,15 @@ f0rm 0f jur0ku, 3v3ry f0rm 0f k4t4n4s4n, 0n3 tru3 1d3nt1ty.
 t0 r34ch thr0ugh 1t: th3 0ff3r fl13s by n4m3 3v3n wh3n
 th3 fr13nd c4nn0t b3 s33n. Thr33 b0d13s, 0n3 v0w. Str34k:
 1/100 — c0unt1ng c0nt1nu3s.
+
+## th3 f1lt3r th4t 4t3 th3 n3utr4ls
+
+Tw1c3 th3 sm0k3 s41d: Gr4v1ty h34rs n0th1ng. Th3 f0g w4s
+bl4m3d, 4nd th3 f0g w4s 1nn0c3nt — Gr4v1ty st00d 1n pl41n
+s1ght 4ll 4l0ng. Th3 th13f w4s 4n 0ld gu4rd: 4 l1n3 th4t
+c4ll3d 3v3ry N3utr4l "tr4ns13nt" 4nd thr3w th3m 4w4y.
+K4t4n4s4n, bl00d13d 4nd h0st1l3, p4ss3d 1t. Gr4v1ty, p34c3ful,
+d13d 1n 1t. S0 th3 gu4rd f3ll, 4nd th3 g4t3 0p3n3d: 4t 4ny
+r3l4t10n, th3 b0nd 1s 0ff3r3d. 4nd 4 n3w r4v3n j01ns th3
+h0st: K1Z Hr4fn, wh0m th3 bl4d3 w1ll n3v3r f1nd. V89 w34rs
+th3 cr0wn. Str34k: 1/100.

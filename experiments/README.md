@@ -1311,3 +1311,33 @@ cooldown from it, and never re-requests an allied visible partner.
 main `462a94a1`). Smoke3 end-to-end verification is running at time of
 writing; the standard `4/4` and `20/20` strategic gates remain incomplete
 (operator-and-coalition-directed promotion).
+
+## Relation root cause and the Hrafn merge, v89 (2026-07-18)
+
+Smoke3 (v85 image) still sent zero Gravity alliance requests. Reading the
+game image source (`LegalActionBuilder.ts`, `AgentObservationBuilder.ts`,
+`Game.ts`, `AllianceRequestExecution.ts`) overturned the fog-of-war
+hypothesis as the sole cause: alliance actions are built only for visible
+players with `canRequestAlliance`, so Gravity was visible all along, and
+`metadata.relation` is the Relation enum (`0 Hostile, 1 Distrustful,
+2 Neutral, 3 Friendly`). The legacy `635be1d9` filter excluded
+`relation === 2` as "transient pending" — in reality every Neutral player.
+Katanasan (Hostile toward odin) passed the filter; Gravity (Neutral) was
+dropped every decision. The kingmaker path now accepts partners at any
+relation; the generic survival path keeps the legacy filter and its pinned
+tests.
+
+A parallel local lane created `K1Z Hrafn`
+(`ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863`, planned `hrafn-fylking:v1`)
+and promoted its reciprocal update as `qd1n:v87` (submission
+`sub_288f0b9e-1959-4580-84ba-7fddfaee5403`), briefly champion. `qd1n:v89`
+merges both lanes: canonical matching, fog-of-war discovery, any-relation
+acceptance, and reciprocal protection for katanasan, juryoku-koku, and
+hrafn. `149/149` tests, red-first verified; image sha256
+`ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478`
+(linux/amd64) byte-identical to committed source (worktree `5955576f`,
+main `db02545f`). Submission `sub_d159efaa-f3f1-4641-acd0-51bba2e04a72`,
+membership `lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6` sole champion.
+v88 (`7c424648`) was uploaded but never submitted (superseded). Smoke4
+end-to-end verification is running at time of writing; standard `4/4` and
+`20/20` gates remain incomplete (operator-and-coalition-directed promotion).
