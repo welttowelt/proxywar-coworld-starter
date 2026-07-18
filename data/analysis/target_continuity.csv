@@ -1,23 +1,24 @@
 player_name,policy_version,won,rival_attacks,target_switches,switch_rate_pct,mean_attack_ratio,mean_attack_percent
-daveey,22,true,1113,420,38.6,3.53,30.5
-odin free,77,true,850,210,25.15,3.65,23.1
-Auri,42,true,848,243,29.31,4.64,30.1
+daveey,22,true,1022,380,38.04,3.61,30.6
+odin free,77,true,929,218,23.88,3.51,23.3
+Auri,42,true,876,236,27.57,4.48,30.3
 Richard Higgins,7,true,356,78,22.35,3.35,29.6
 Sefirot,24,true,121,37,31.09,1.59,27.4
 RelhAlpha,3,true,82,31,38.27,8.77,33.6
+katanasan,35,true,43,3,7.14,1.49,32.7
 James Boggs,1,true,41,6,15.0,2.16,10.0
 RelhAlpha,1,true,36,1,2.86,3.13,24.2
 katanasan,34,true,31,3,10.0,1.49,31.8
-daveey,22,false,1592,505,32.86,2.17,24.3
-Richard Higgins,7,false,1450,255,18.0,1.97,29.8
-docxology,1,false,1440,96,7.06,0.88,10.0
-Sefirot,24,false,1327,352,28.16,2.36,29.3
-odin free,77,false,1226,265,22.69,2.19,20.7
-James Boggs,1,false,1113,155,14.79,0.98,10.7
-Auri,42,false,1011,296,31.16,2.62,28.8
-Ron @ SWGY,1,false,932,311,35.38,2.13,18.1
-RelhAlpha,3,false,561,65,11.93,1.1,27.9
-RelhAlpha,1,false,323,24,7.87,1.29,20.7
+daveey,22,false,1637,524,33.16,2.16,24.4
+docxology,1,false,1439,97,7.14,0.88,10.0
+Richard Higgins,7,false,1343,234,17.86,1.67,29.2
+Sefirot,24,false,1332,354,28.21,2.34,29.3
+odin free,77,false,1224,256,21.96,2.13,20.9
+James Boggs,1,false,1070,145,14.41,1.03,10.7
+Auri,42,false,1056,305,30.62,2.74,29.2
+Ron @ SWGY,1,false,913,307,35.74,2.15,18.1
+RelhAlpha,3,false,624,69,11.39,1.23,27.7
+RelhAlpha,1,false,274,21,8.11,1.35,20.5
 katanasan,34,false,235,45,20.83,2.01,33.4
-Calc,27,false,32,18,66.67,2.69,21.7
+Calc,27,false,37,20,64.52,2.77,22.2
 katanasan,35,false,29,4,16.0,1.93,29.1
