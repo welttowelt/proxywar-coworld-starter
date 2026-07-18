@@ -2,7 +2,7 @@ import test from "node:test";
 import assert from "node:assert/strict";
 
 process.env.PROXYWAR_SELF_TEST = "1";
-const { choose } = await import("./llm-player.mjs?kuroi-taiyo-test");
+const { choose } = await import("./llm-player.mjs?juryoku-koku-test");
 
 const player = (name, playerID, tileShare, overrides = {}) => ({
   name,
@@ -16,7 +16,12 @@ const player = (name, playerID, tileShare, overrides = {}) => ({
   ...overrides,
 });
 
-const observation = (rivals) => ({
+const odin = player("odin free", "odin-1", 0.40);
+const katanasan = player("katanasan", "katana-1", 0.31);
+const strong = player("Takeda Rival", "rival-strong", 0.34, { relativeTroopRatio: 1.2 });
+const weak = player("Mori Rival", "rival-weak", 0.10, { relativeTroopRatio: 2.2 });
+
+const observation = (rivals = [odin, katanasan, strong, weak], overrides = {}) => ({
   turnNumber: 12000,
   phase: "active",
   ownState: {
@@ -29,7 +34,7 @@ const observation = (rivals) => ({
   visiblePlayers: rivals,
   endgame: {
     leaderName: "odin free",
-    leaderTileShare: 0.4,
+    leaderTileShare: 0.40,
     ownTileShare: 0.24,
     turnsToTimer: 100,
   },
@@ -43,17 +48,21 @@ const observation = (rivals) => ({
     },
     navalControl: { recommended: false },
   },
+  ...overrides,
 });
 
-const odin = player("odin free", "odin-1", 0.4, { isAllied: true });
-const strong = player("Takeda Rival", "rival-strong", 0.32, { relativeTroopRatio: 1.2 });
-const weak = player("Mori Rival", "rival-weak", 0.1, { relativeTroopRatio: 2.2 });
-const obs = observation([odin, strong, weak]);
-
 const hold = { id: "hold", kind: "hold", risk: { level: "low" }, metadata: {} };
-const attack = (target, percent = 40) => ({
-  id: `attack:${target.playerID}:${percent}`,
+const neutral = {
+  id: "attack:neutral:35",
   kind: "attack",
+  label: "Expand into neutral territory",
+  risk: { level: "low" },
+  metadata: { expansion: true, targetName: "Terra Nullius" },
+};
+const targeted = (kind, target, overrides = {}) => ({
+  id: `${kind}:${target.playerID}:40`,
+  kind,
+  label: `${kind} ${target.name}`,
   risk: { level: "medium" },
   metadata: {
     targetID: target.playerID,
@@ -61,10 +70,15 @@ const attack = (target, percent = 40) => ({
     relativeTroopRatio: target.relativeTroopRatio,
     targetTileShare: target.tileShare,
   },
+  ...overrides,
 });
+const attack = (target) => targeted("attack", target);
+const allianceRequest = (target) => targeted("alliance_request", target, { risk: { level: "low" } });
+const donate = (target, kind = "donate_gold") => targeted(kind, target, { risk: { level: "low" } });
 const nuke = (unit, target, priority = 180) => ({
-  id: `build:${unit}:silo-1`,
+  id: `nuke:${target.playerID}:${unit}`,
   kind: "nuke",
+  label: `${unit} against ${target.name}`,
   risk: { level: "high" },
   metadata: {
     unit,
@@ -76,41 +90,99 @@ const nuke = (unit, target, priority = 180) => ({
   },
 });
 
-test("Kuroi Taiyo always fires a safe non-Odin nuke", () => {
-  assert.equal(choose([attack(strong), nuke("Atom Bomb", strong), hold], obs).kind, "nuke");
-});
+for (const ally of [odin, katanasan]) {
+  test(`Gravity immediately requests alliance with ${ally.name}`, () => {
+    assert.equal(
+      choose([neutral, attack(strong), allianceRequest(ally), hold], observation()).id,
+      allianceRequest(ally).id,
+    );
+  });
 
-test("Kuroi Taiyo never fires a nuke at Odin", () => {
-  assert.equal(choose([nuke("Atom Bomb", odin), hold], obs).id, "hold");
-});
+  test(`Gravity retries ${ally.name} request while observation is not allied`, () => {
+    const action = allianceRequest(ally);
+    assert.equal(choose([action, neutral, hold], observation()).id, action.id);
+    assert.equal(choose([action, neutral, hold], observation()).id, action.id);
+  });
 
-test("Kuroi Taiyo prefers MIRV when nuclear target priority is equal", () => {
+  test(`Gravity stops privileging ${ally.name} request after hasAlliance`, () => {
+    const allied = { ...ally, isAllied: true, hasAlliance: true };
+    const rivals = [
+      ...(ally === odin ? [allied, katanasan] : [odin, allied]),
+      strong,
+      weak,
+    ];
+    assert.notEqual(
+      choose([allianceRequest(allied), neutral, hold], observation(rivals)).kind,
+      "alliance_request",
+    );
+  });
+}
+
+for (const ally of [odin, katanasan]) {
+  for (const kind of [
+    "attack", "boat", "warship", "move_warship", "embargo",
+    "target_player", "alliance_reject", "break_alliance",
+  ]) {
+    test(`Gravity never selects ${kind} against ${ally.name}`, () => {
+      assert.equal(choose([targeted(kind, ally), hold], observation()).id, hold.id);
+    });
+  }
+
+  test(`Gravity never nukes ${ally.name}`, () => {
+    assert.equal(choose([nuke("Atom Bomb", ally), hold], observation()).id, hold.id);
+  });
+}
+
+test("Gravity protects an ally matched only by normalized observed player ID", () => {
+  const spacedOdin = player("  ODIN   FREE  ", odin.playerID, odin.tileShare);
+  const idOnlyAttack = targeted("attack", odin);
+  delete idOnlyAttack.metadata.targetName;
+  idOnlyAttack.label = "Attack player";
   assert.equal(
-    choose([nuke("Atom Bomb", strong), nuke("Hydrogen Bomb", strong), nuke("MIRV", strong)], obs).metadata.unit,
+    choose([idOnlyAttack, hold], observation([spacedOdin, katanasan, strong])).id,
+    hold.id,
+  );
+});
+
+test("Gravity protects a Unicode-normalized katanasan name", () => {
+  const fullwidth = targeted("attack", katanasan);
+  delete fullwidth.metadata.targetID;
+  fullwidth.metadata.targetName = "ＫＡＴＡＮＡＳＡＮ";
+  fullwidth.label = "Attack player";
+  assert.equal(choose([fullwidth, hold], observation()).id, hold.id);
+});
+
+test("Gravity attacks the strongest reachable outsider, never an ally", () => {
+  const giantKatana = { ...katanasan, tileShare: 0.70 };
+  const selected = choose(
+    [attack(giantKatana), attack(weak), attack(strong), hold],
+    observation([odin, giantKatana, strong, weak]),
+  );
+  assert.equal(selected.metadata.targetID, strong.playerID);
+});
+
+test("Gravity always fires a safe outsider nuke", () => {
+  assert.equal(choose([attack(strong), nuke("Atom Bomb", strong), hold], observation()).kind, "nuke");
+});
+
+test("Gravity prefers MIRV when outsider nuclear priority is equal", () => {
+  assert.equal(
+    choose([
+      nuke("Atom Bomb", strong),
+      nuke("Hydrogen Bomb", strong),
+      nuke("MIRV", strong),
+    ], observation()).metadata.unit,
     "MIRV",
   );
 });
 
-test("Kuroi Taiyo builds its first Missile Silo before ordinary combat", () => {
-  const silo = {
-    id: "build:Missile Silo:440044",
-    kind: "build",
-    risk: { level: "low" },
-    metadata: { unit: "Missile Silo", cost: "1000000" },
-  };
-  assert.equal(choose([attack(weak), attack(strong), silo, hold], obs).id, silo.id);
+test("Gravity supports Odin before katanasan", () => {
+  assert.equal(
+    choose([donate(katanasan), donate(odin), hold], observation()).metadata.targetID,
+    odin.playerID,
+  );
 });
 
-test("Kuroi Taiyo attacks the strongest reachable non-Odin rival", () => {
-  assert.equal(choose([attack(weak), attack(strong), hold], obs).metadata.targetID, strong.playerID);
-});
-
-test("Kuroi Taiyo never breaks its alliance with Odin", () => {
-  const breakOdin = {
-    id: "break_alliance:odin-1",
-    kind: "break_alliance",
-    risk: { level: "low" },
-    metadata: { targetID: odin.playerID, targetName: odin.name },
-  };
-  assert.equal(choose([breakOdin, hold], obs).id, "hold");
+test("Gravity can support katanasan when Odin support is unavailable", () => {
+  assert.equal(choose([donate(katanasan), hold], observation()).metadata.targetID, katanasan.playerID);
 });
