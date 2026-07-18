@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "recorded_at": "2026-07-18T14:47:00Z",
+  "recorded_at": "2026-07-18T17:55:00Z",
   "objective": "Qualify one Hrafn challenger only if it makes Odin finish first without coalition harm.",
   "identity": {
     "player_name": "K1Z Hrafn",
@@ -355,7 +355,7 @@
       "source_commit": "0c151570",
       "mechanism": "dn1 bounded troop donation to Odin after Hrafn reaches 6% share and leads Odin by one point; eight-decision cooldown",
       "request_id": "xreq_9d9e251a-ff87-4998-803f-22aad64625f3",
-      "status": "running",
+      "status": "completed",
       "identity_verified": {
         "player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
         "player_name": "K1Z Hrafn"
@@ -372,11 +372,71 @@
       ],
       "submission": {
         "id": "sub_e1f7b528-3ca5-4949-8339-d52d497c2152",
-        "status": "pending",
+        "status": "placed",
         "auto_champion": "never",
         "reason": "operator-directed participation; this does not replace the performance promotion gate"
       },
-      "promotion_status": "submitted_for_participation_pending_replay_audit"
+      "episodes": [
+        {
+          "winner": "Richard Higgins",
+          "replay_url": "https://softmax-public.s3.amazonaws.com/replays/1da162cd-4c4d-4095-a012-998876ce4566.replay",
+          "replay_sha256": "f6c674357143bb32d8f602ec9dee7fbd15cfcfb9e3f82aa0e8755b85a4330817",
+          "hrafn_survived": true,
+          "hrafn_tiles": 5650,
+          "hrafn_decisions": 75,
+          "hrafn_accepted": 75,
+          "hrafn_holds": 0,
+          "hrafn_fallbacks": 0,
+          "donations": 3,
+          "k1z_harm": 0,
+          "odin_tiles": 25064
+        },
+        {
+          "winner": "Richard Higgins",
+          "replay_url": "https://softmax-public.s3.amazonaws.com/replays/3b5091cd-8aa6-43f3-80bd-39b3a62830e8.replay",
+          "replay_sha256": "0da4b1448763486695c595317cb19b047a793f61ac014468edec0a93dd51ec4d",
+          "hrafn_survived": true,
+          "hrafn_tiles": 126184,
+          "hrafn_decisions": 142,
+          "hrafn_accepted": 142,
+          "hrafn_holds": 0,
+          "hrafn_fallbacks": 0,
+          "donations": 10,
+          "k1z_harm": 0,
+          "odin_tiles": 27343
+        },
+        {
+          "winner": "Richard Higgins",
+          "replay_url": "https://softmax-public.s3.amazonaws.com/replays/dc1f12ec-97b0-48c0-9b72-2ef36a48368a.replay",
+          "replay_sha256": "02dd55ecea6f8efb1c499baae5da90ef5112c7e56b8fbcc95127e7334b2267ed",
+          "hrafn_survived": true,
+          "hrafn_tiles": 5947,
+          "hrafn_decisions": 109,
+          "hrafn_accepted": 109,
+          "hrafn_holds": 0,
+          "hrafn_fallbacks": 0,
+          "donations": 3,
+          "k1z_harm": 0,
+          "odin_tiles": 40307
+        },
+        {
+          "winner": "daveey",
+          "replay_url": "https://softmax-public.s3.amazonaws.com/replays/4d40148a-3261-4aab-903c-628112d5aac6.replay",
+          "replay_sha256": "a0f5963a4ef38d60928a0ead575d896c89a469f34c3fc9b3c7c3ff2f5ef7cc3a",
+          "hrafn_survived": false,
+          "hrafn_tiles": 0,
+          "hrafn_decisions": 56,
+          "hrafn_accepted": 56,
+          "hrafn_holds": 0,
+          "hrafn_fallbacks": 0,
+          "donations": 3,
+          "k1z_harm": 0,
+          "odin_tiles": 368548
+        }
+      ],
+      "odin_firsts": 0,
+      "diagnosis": "dn1 was mechanically clean (19 accepted troop transfers across four games) but did not produce an Odin first. The final game was competitive but daveey finished first, 694338 tiles to Odin's 368548.",
+      "promotion_status": "failed_hosted_gate_0_of_4; placed only by operator-directed participation"
     }
   ],
   "excluded_requests": [
@@ -387,8 +447,8 @@
   ],
   "binding_risk": "The v87 diagnostic was fallback-dominated in 373 of 385 Odin decisions. With live v89, Odin still finished at 38,587 and 37,230 tiles while Richard reached 875,938 and 868,209. A safe kingmaker cannot compensate for that chassis gap by itself.",
   "final_claim": {
-    "submitted": false,
-    "live": false,
+    "submitted": true,
+    "live": true,
     "dominant": false,
     "official_first_streak": "unproven"
   }
