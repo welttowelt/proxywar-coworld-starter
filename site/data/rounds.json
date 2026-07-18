@@ -1,4 +1,6 @@
 [
+	{"round_id":"round_580ac475-0cd6-4684-9784-0f35a1120364","round_number":512,"status":"completed","entrant_count":13,"episodes":4,"player_count":12,"started_at":"2026-07-18T20:43:25.675Z","completed_at":"2026-07-18T21:38:09.350Z"},
+	{"round_id":"round_808917ff-1b5a-4e23-b334-46206f048a5a","round_number":511,"status":"completed","entrant_count":13,"episodes":4,"player_count":12,"started_at":"2026-07-18T20:25:02.767Z","completed_at":"2026-07-18T20:42:50.133Z"},
 	{"round_id":"round_985adcf2-2f44-4a02-8487-6a6493d40aa7","round_number":510,"status":"completed","entrant_count":13,"episodes":4,"player_count":12,"started_at":"2026-07-18T19:46:19.820Z","completed_at":"2026-07-18T20:24:20.974Z"},
 	{"round_id":"round_6993f3d7-2983-4d1a-877a-b45ed9d95a93","round_number":509,"status":"completed","entrant_count":13,"episodes":4,"player_count":12,"started_at":"2026-07-18T19:14:14.262Z","completed_at":"2026-07-18T19:45:41.017Z"},
 	{"round_id":"round_9a7c10d0-a981-4f1d-82de-f02c2242d272","round_number":508,"status":"completed","entrant_count":13,"episodes":4,"player_count":12,"started_at":"2026-07-18T18:36:52.247Z","completed_at":"2026-07-18T19:13:51.052Z"},
@@ -16,7 +18,5 @@
 	{"round_id":"round_a534c9b7-0a4d-4e19-bfd5-b82b4dee98b7","round_number":496,"status":"completed","entrant_count":12,"episodes":4,"player_count":12,"started_at":"2026-07-18T11:00:35.953Z","completed_at":"2026-07-18T11:29:31.052Z"},
 	{"round_id":"round_8de0cc81-e3f1-45ec-ad9b-5b005a0990af","round_number":495,"status":"completed","entrant_count":12,"episodes":4,"player_count":12,"started_at":"2026-07-18T10:30:39.614Z","completed_at":"2026-07-18T10:44:38.271Z"},
 	{"round_id":"round_be011549-a013-49be-bc96-6185d8307cc3","round_number":494,"status":"completed","entrant_count":11,"episodes":1,"player_count":8,"started_at":"2026-07-18T10:00:23.542Z","completed_at":"2026-07-18T10:29:59.721Z"},
-	{"round_id":"round_09904637-26b8-415e-b8dc-f6c4b55df25e","round_number":493,"status":"completed","entrant_count":11,"episodes":1,"player_count":8,"started_at":"2026-07-18T09:30:43.988Z","completed_at":"2026-07-18T09:50:30.819Z"},
-	{"round_id":"round_f4655b42-ee5e-4043-852e-f7182d4cb2c6","round_number":492,"status":"completed","entrant_count":11,"episodes":4,"player_count":8,"started_at":"2026-07-18T09:02:47.719Z","completed_at":"2026-07-18T09:16:41.880Z"},
-	{"round_id":"round_a50eb935-5e26-4de7-bfb7-f3dbcae4a2a5","round_number":491,"status":"completed","entrant_count":11,"episodes":4,"player_count":8,"started_at":"2026-07-18T08:30:22.688Z","completed_at":"2026-07-18T09:02:18.585Z"}
+	{"round_id":"round_09904637-26b8-415e-b8dc-f6c4b55df25e","round_number":493,"status":"completed","entrant_count":11,"episodes":1,"player_count":8,"started_at":"2026-07-18T09:30:43.988Z","completed_at":"2026-07-18T09:50:30.819Z"}
 ]

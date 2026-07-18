@@ -1,39 +1,36 @@
 player_name,policy_version,won,rival_attacks,target_switches,switch_rate_pct,mean_attack_ratio,mean_attack_percent
-daveey,22,true,1650,490,30.12,3.18,29.6
-Richard Higgins,7,true,669,216,32.68,7.48,32.0
+daveey,22,true,1588,464,29.63,3.11,29.7
+Richard Higgins,7,true,788,254,32.61,7.39,31.9
+Auri,42,true,345,109,32.06,3.43,28.8
+K1Z juryoku-koku,3,true,201,52,26.67,5.81,36.6
 RelhAlpha,3,true,196,63,32.64,5.55,30.8
-Auri,42,true,182,43,24.16,3.11,30.9
 odin free,83,true,178,56,32.18,4.7,20.8
-odin free,77,true,143,20,14.18,2.87,24.0
 odin free,89,true,121,37,31.36,20.56,21.7
-K1Z juryoku-koku,3,true,104,23,23.0,6.37,38.0
-K1Z katanasan,39,true,67,14,21.88,11.64,38.7
+K1Z katanasan,39,true,104,16,16.0,7.99,38.3
 Ron @ SWGY,1,true,59,15,25.86,3.15,22.7
-K1Z katanasan,35,true,43,3,7.14,1.49,32.7
 K1Z katanasan,38,true,20,2,10.53,2.16,34.8
-Richard Higgins,7,false,4317,904,21.21,2.19,29.7
-RelhAlpha,3,false,3560,727,20.8,2.23,29.8
-daveey,22,false,1878,594,32.48,2.09,23.9
-Auri,42,false,1367,441,33.92,2.32,29.0
-Ron @ SWGY,1,false,1305,490,39.61,2.08,18.4
-James Boggs,1,false,1203,173,15.19,1.07,10.0
-docxology,1,false,1064,45,4.54,0.7,10.0
-Sefirot,27,false,592,227,39.96,2.72,29.2
-odin free,89,false,525,104,21.1,5.06,18.5
-Sefirot,24,false,455,155,36.05,3.82,28.8
+Richard Higgins,7,false,4528,949,21.22,2.17,29.7
+RelhAlpha,3,false,3943,842,21.73,2.31,30.0
+daveey,22,false,2139,654,31.31,2.17,24.4
+Ron @ SWGY,1,false,1419,529,39.19,2.02,18.5
+Auri,42,false,1240,394,33.56,1.97,28.9
+James Boggs,1,false,1152,159,14.61,1.07,10.0
+docxology,1,false,977,38,4.2,0.6,10.0
+Sefirot,27,false,738,268,37.96,2.6,29.6
+odin free,89,false,565,117,22.29,4.86,18.2
 Sefirot,25,false,380,150,40.76,2.91,31.2
-Calc,27,false,240,74,35.07,3.22,16.2
+Sefirot,24,false,336,121,37.93,4.54,28.9
+Calc,27,false,270,81,33.89,3.15,16.3
+K1Z juryoku-koku,3,false,230,38,18.72,6.71,36.9
 odin free,83,false,201,50,26.46,3.41,22.3
 Sefirot,26,false,199,61,32.45,1.86,29.8
-K1Z juryoku-koku,3,false,193,31,18.24,7.72,36.9
-K1Z katanasan,39,false,153,44,34.11,4.95,33.2
-odin free,77,false,143,33,24.09,2.43,20.9
+K1Z katanasan,39,false,162,45,33.33,5.18,33.4
 odin free,85,false,105,30,29.41,7.77,20.3
 odin free,87,false,81,22,28.57,2.71,21.9
-K1Z Hrafn,5,false,43,5,13.89,8.58,10.0
+K1Z Hrafn,5,false,62,8,15.69,7.0,11.9
 K1Z katanasan,38,false,42,15,42.86,7.86,32.5
-K1Z katanasan,35,false,32,9,30.0,2.84,35.3
 K1Z juryoku-koku,2,false,30,7,29.17,2.5,35.5
+K1Z katanasan,35,false,24,7,30.43,2.54,35.0
 K1Z katanasan,36,false,23,7,36.84,5.83,39.3
 K1Z juryoku-koku,1,false,13,2,20.0,1.69,37.7
 K1Z katanasan,37,false,5,0,0.0,1.47,31.0
