@@ -258,6 +258,41 @@ test("reciprocal neutrality protects katanasan before the finishing phase", () =
   assert.equal(choose([katanasanAttack, aggressorAttack], obs).id, aggressorAttack.id);
 });
 
+test("Hrafn is protected under every declared K1Z display form", () => {
+  const hold = action("hold", "hold", "Hold");
+  for (const [index, name] of [
+    "Hrafn",
+    "K1Z Hrafn",
+    "[K1Z] Hrafn",
+    "k1z-hrafn",
+    "K1Z_HRAFN",
+    "k1z.hrafn",
+  ].entries()) {
+    const hrafnAttack = action(`attack:hrafn:${index}`, "attack", `Attack ${name} 10%`);
+    const obs = observation({
+      tileShare: 0.4,
+      incomingAttackPlayerIDs: ["hrafn"],
+      rivals: [{ id: "hrafn", name, tileShare: 0.1, relativeTroopRatio: 2 }],
+    });
+    assert.equal(choose([hrafnAttack, hold], obs).id, hold.id);
+  }
+});
+
+test("Hrafn exact player ID remains protected after a display rename", () => {
+  const hrafnID = "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863";
+  const renamedAttack = {
+    ...action("attack:hrafn-renamed:10", "attack", "Attack Raven 10%"),
+    metadata: { targetID: hrafnID, troopPercent: 10 },
+  };
+  const hold = action("hold", "hold", "Hold");
+  const obs = observation({
+    tileShare: 0.4,
+    incomingAttackPlayerIDs: [hrafnID],
+    rivals: [{ id: hrafnID, name: "Raven", tileShare: 0.1, relativeTroopRatio: 2 }],
+  });
+  assert.equal(choose([renamedAttack, hold], obs).id, hold.id);
+});
+
 test("betrayal revokes reciprocal neutrality immediately", () => {
   const katanasanAttack = action("attack:kata:10", "attack", "Attack katanasan 10%");
   const history = [{

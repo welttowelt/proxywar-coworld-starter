@@ -23,12 +23,17 @@ function normalizedRivalName(value) {
 }
 
 const RECIPROCAL_RIVALS = new Set(
-  ["katanasan", "juryoku-koku"].map(normalizedRivalName),
+  ["katanasan", "juryoku-koku", "hrafn"].map(normalizedRivalName),
 );
 const RECIPROCAL_RIVAL_IDS = new Set([
   "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
   "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+  "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
 ]);
+const HARD_PROTECTED_RIVAL_IDS = new Set([
+  "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+]);
+const HARD_PROTECTED_RIVALS = new Set(["hrafn"].map(normalizedRivalName));
 const MIN_DESPERATE_INVASION_RATIO = 0.5;
 const MIN_CONVERSION_TILE_SHARE = 0.002;
 const MAP_SPAWN_TILES = new Map([
@@ -298,11 +303,17 @@ function isReciprocalRival(rival) {
     RECIPROCAL_RIVAL_IDS.has(String(rival?.id ?? "").toLowerCase());
 }
 
+function isHardProtectedRival(rival) {
+  return HARD_PROTECTED_RIVALS.has(normalizedRivalName(rival?.name)) ||
+    HARD_PROTECTED_RIVAL_IDS.has(String(rival?.id ?? "").toLowerCase());
+}
+
 function reciprocalTrustIntact(state, history, rival) {
   return isReciprocalRival(rival) && recentHostility(state, history, rival, history.length) === 0;
 }
 
 function rivalIsProtected(state, history, rival) {
+  if (isHardProtectedRival(rival)) return true;
   if (rival.isAllied) return true;
   if (reciprocalTrustIntact(state, history, rival)) return true;
   if (state.self.tileShare >= 0.35) return false;
