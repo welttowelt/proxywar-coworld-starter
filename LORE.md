@@ -554,3 +554,10 @@ Th3 f1rst scr0ll b0r3 th3 wr0ng n4m3 4nd `4ut0_ch4mp10n=n3v3r`.
 Qu4l1f13r 318, 4nd t00k th3 ch4mp10n s34t. R0und 506 h4d
 4lr34dy s34l3d. R0und 507 th3n c4rv3d h1s 3x4ct bl4d3 1n70
 th3 13-w4rr10r r0st3r. F0ur f13lds 0p3n3d. Hr4fn 1s 1n.
+
+## tw0 gu4rds, n0 cr0wn
+
+0E1 h3ld th3 0p3n1ng 3c0n0my. F0ur m1rr0rs br0k3 2-2.
+NF1 h3ld th3 l4nd fr0nt. 115 m4rks l4nd3d, y3t th3 m1rr0r
+cl0s3d 1-1 4nd 651609-651609. B0th bl4d3s w3r3 burn3d.
+V89 st4ys 3x4ct. Str34k: 0/1000.

@@ -1341,3 +1341,34 @@ membership `lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6` sole champion.
 v88 (`7c424648`) was uploaded but never submitted (superseded). Smoke4
 end-to-end verification is running at time of writing; standard `4/4` and
 `20/20` gates remain incomplete (operator-and-coalition-directed promotion).
+
+## OE1 and NF1 rejection, exact v89 restoration (2026-07-18)
+
+Round 505 exposed two linked failures: Odin opened additional land fronts
+after another player had already attacked, and optional opening pressure
+could consume tempo before the first economic base was established.
+
+OE1 deferred optional coalition requests and fresh rival attacks during the
+first 20 calm decisions while neutral expansion or the first economic build
+remained available. Exact-image, seat-swapped World and Pangaea mirrors split
+candidate and parent score units `2-2`; candidate tiles totaled `1,071,853`
+against parent `1,071,905`. The result followed player identity and seat.
+OE1 was rejected without upload, submission, or champion change. The
+unfinished Asia reruns were stopped because two completed map pairs already
+falsified causal lift.
+
+NF1 concentrated hostile land pressure on a current or recent attacker,
+preserving leader emergencies, planned weak conversion, and credible
+finishes. The corrected amd64 build passed `149/149` candidate tests and a
+`34/34` qualifier. Its exact World mirrors executed `nf1` 115 times, so the
+branch was reachable. After the seat swap, candidate and exact parent tied at
+score units `1-1`, tiles `651,609-651,609`, and two survivors each. NF1 was
+rejected at the first matched gate; the Asia/Pangaea extension and all hosted
+gates stayed closed.
+
+Commit `f1347251` inverses OE1 and restores `strategy-engine.mjs` to exact
+deployed v89 digest
+`f2ee66d570033508c4158bcb83d56d81dc198cdcebb91098d7e67eefdc8e6a7a`.
+The live champion was never changed. Full NF1 evidence and replay digests are
+recorded in
+[`diagnosis-qd1n-no-new-front-rci-20260718.json`](diagnosis-qd1n-no-new-front-rci-20260718.json).
