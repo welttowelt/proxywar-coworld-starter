@@ -21,7 +21,11 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
    zero unexplained holds.
 4. A `20/20` map-and-seat regression gate must pass before league promotion.
 5. The rolling FFA target remains at least `99%`; the streak target remains
-   `1000` wins. Neither target is currently achieved.
+   `1000` wins, with a declared interim milestone of `100` consecutive
+   official first-place finishes starting from the k1zuna debut (round 493).
+   Neither target is currently achieved; the streak is `0/100` and `0/1000`
+   and must never be reported as achieved before the official completed-round
+   sequence proves it.
 
 ## current record
 
