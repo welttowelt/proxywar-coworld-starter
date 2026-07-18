@@ -255,9 +255,9 @@ function reciprocalTrustIntact(state, history, rival) {
 
 function rivalIsProtected(state, history, rival) {
   if (rival.isAllied) return true;
+  if (reciprocalTrustIntact(state, history, rival)) return true;
   if (state.self.tileShare >= 0.35) return false;
   if ((state.self.incomingAttackerIDs || []).includes(rival.id.toLowerCase())) return false;
-  if (reciprocalTrustIntact(state, history, rival)) return true;
 
   for (let index = history.length - 1; index >= Math.max(0, history.length - 24); index--) {
     const entry = history[index];
@@ -400,7 +400,7 @@ function chooseRivalAttack(actions, state, plan, history, avoid, threatCount = 0
     candidate.kind === "attack" && !isNeutralExpansion(candidate)
   )) {
     const rival = rivalForAction(action, state);
-    if (!rival || rivalIsProtected(state, history, rival)) continue;
+    if (!rival) continue;
     if (!grouped.has(rival.name)) grouped.set(rival.name, { rival, actions: [] });
     grouped.get(rival.name).actions.push(action);
   }
@@ -408,13 +408,16 @@ function chooseRivalAttack(actions, state, plan, history, avoid, threatCount = 0
   const options = [...grouped.values()]
     .map((option) => ({
       ...option,
+      protected: rivalIsProtected(state, history, option.rival),
       score: attackScore(option.rival, state, plan, history),
     }))
     .filter((option) => Number.isFinite(option.score))
     .sort((left, right) => right.score - left.score);
   if (options.length === 0) return null;
 
-  const best = options[0];
+  const peaceRedirect = options[0].protected;
+  const best = options.find((option) => !option.protected);
+  if (!best) return { action: null, rival: null, streak: 0, peaceRedirect: true };
   const streak = consecutive(
     history,
     (entry) => entry.kind === "attack" && targetName(entry) === best.rival.name.toLowerCase(),
@@ -430,11 +433,31 @@ function chooseRivalAttack(actions, state, plan, history, avoid, threatCount = 0
     desiredPercent = 40;
   }
   const action = pickPercent(best.actions, desiredPercent, avoid);
+  const marker = pressureCounter ? "pc1" : peaceRedirect ? "kp1" : null;
   return {
-    action: pressureCounter ? { ...action, policyMarker: "pc1" } : action,
+    action: marker ? { ...action, policyMarker: marker } : action,
     rival: best.rival,
     streak,
+    peaceRedirect: false,
   };
+}
+
+function chooseAtomBomb(actions, state, history) {
+  const candidates = safeActions(actions, (action) =>
+    action.kind === "build" && String(action?.metadata?.unit ?? "").toLowerCase() === "atom bomb"
+  ).map((action) => ({ action, rival: rivalForAction(action, state) }))
+    .filter(({ action, rival }) =>
+      rival &&
+      !rivalIsProtected(state, history, rival) &&
+      Number(action?.metadata?.targetSamCoverage ?? 1) === 0 &&
+      (Number(action?.metadata?.targetTileShare ?? 0) >= 0.12 ||
+        (state.self.incomingAttackerIDs || []).includes(rival.id.toLowerCase()))
+    );
+  const best = candidates.sort((left, right) =>
+    Number(right.action?.metadata?.targetTileShare ?? 0) -
+    Number(left.action?.metadata?.targetTileShare ?? 0)
+  )[0];
+  return best ? { ...best.action, policyMarker: "nk1" } : null;
 }
 
 export function chooseNeutralAttack(actions, history, avoid) {
@@ -502,6 +525,7 @@ export function chooseBuild(actions, history, defend = false) {
         ...(built.some((id) => id.includes("city")) ? [] : ["city"]),
         ...(built.some((id) => id.includes("factory")) ? [] : ["factory"]),
         ...(built.some((id) => id.includes("port")) ? [] : ["port"]),
+        ...(built.some((id) => id.includes("missile silo")) ? [] : ["missile silo"]),
         "city", "factory", "port", "missile silo", "sam launcher",
       ];
   for (const unit of preferences) {
@@ -620,7 +644,13 @@ export function chooseAction(actions, state, plan = null, history = []) {
     : null;
   if (defensiveBuild) return defensiveBuild;
 
+  const atomBomb = chooseAtomBomb(actions, state, history);
+  if (atomBomb) return atomBomb;
+
   const rivalAttack = chooseRivalAttack(actions, state, plan, history, avoid, threatCount);
+  const peaceRedirect = rivalAttack?.peaceRedirect === true;
+  const withPeace = (action) =>
+    peaceRedirect && action && !action.policyMarker ? { ...action, policyMarker: "kp1" } : action;
   const routedRivalAttack = state.mapFingerprint === "Asia" && rivalAttack?.action &&
     (state.self.incomingAttackerIDs || []).includes(rivalAttack.rival.id.toLowerCase())
     ? { ...rivalAttack.action, policyMarker: "ia1" }
@@ -668,27 +698,27 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (neutralExpansionStalled(state, history)) {
     if (routedRivalAttack) return routedRivalAttack;
     const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
-    if (boatStreak >= 2 && build) return build;
+    if (boatStreak >= 2 && build) return withPeace(build);
     const escapeBoat = chooseBoat(actions, state, history, avoid);
-    if (escapeBoat) return escapeBoat;
-    if (build) return build;
+    if (escapeBoat) return withPeace(escapeBoat);
+    if (build) return withPeace(build);
   }
 
-  if (cadenceBuild && !finishingTarget) return build;
+  if (cadenceBuild && !finishingTarget) return withPeace(build);
   if (state.self.tileShare < 0.12 && neutralAttack && threatCount === 0 && !collapsing) {
     return neutralAttack;
   }
   if (routedRivalAttack) return routedRivalAttack;
-  if (neutralAttack) return neutralAttack;
-  if (build && sinceBuild >= 5) return build;
+  if (neutralAttack) return withPeace(neutralAttack);
+  if (build && sinceBuild >= 5) return withPeace(build);
 
   const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
   if (boatStreak >= 2 && build) return build;
   const boat = chooseBoat(actions, state, history, avoid);
-  if (boat) return boat;
+  if (boat) return withPeace(boat);
 
   const utility = chooseUtility(actions, plan, history);
-  if (utility) return utility;
+  if (utility) return withPeace(utility);
 
   const desperateInvasion = !neutralAttack && !rivalAttack?.action && !build;
   if (desperateInvasion) {
@@ -704,12 +734,12 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (donation) return donation;
 
   // Holding while legal tactical actions remain turns a weak position into a certain loss.
-  if (build) return build;
+  if (build) return withPeace(build);
   const retreat = safeActions(
     actions,
     (action) => action.kind === "boat_retreat" || action.kind === "retreat",
   )[0];
-  if (retreat) return retreat;
+  if (retreat) return withPeace(retreat);
   const emergencyAttacks = safeActions(actions, (action) => {
     if (action.kind !== "attack" || isNeutralExpansion(action)) return false;
     const rival = rivalForAction(action, state);

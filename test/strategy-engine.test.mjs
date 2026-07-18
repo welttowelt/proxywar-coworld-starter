@@ -1155,3 +1155,98 @@ test("donations require an allied recipient and ally focus", () => {
 });
 
 
+
+test("katanasan stays protected past the 0.35 tile share cutoff", () => {
+  const kingmaker = [10, 25, 40].map((percent) =>
+    action(`attack:katanasan:${percent}`, "attack", `Attack katanasan ${percent}%`));
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [...kingmaker, build],
+    observation({
+      tileShare: 0.4,
+      troopRatio: 0.9,
+      rivals: [{ id: "katanasan", name: "katanasan", tileShare: 0.12, relativeTroopRatio: 1.8 }],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, build.id);
+  assert.equal(selected.policyMarker, "kp1");
+});
+
+test("katanasan protection breaks only when katanasan attacks first", () => {
+  const kingmaker = [10, 25].map((percent) =>
+    action(`attack:katanasan:${percent}`, "attack", `Attack katanasan ${percent}%`));
+  const selected = choose(
+    kingmaker,
+    observation({
+      tileShare: 0.4,
+      troopRatio: 0.9,
+      incomingAttacks: 1,
+      incomingAttackPlayerIDs: ["katanasan"],
+      spawnTile: 1180588,
+      rivals: [{ id: "katanasan", name: "katanasan", tileShare: 0.12, relativeTroopRatio: 1.8, incomingAttack: true }],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, "attack:katanasan:10");
+});
+
+test("an Atom Bomb on the runaway leader beats a city build", () => {
+  const bomb = {
+    ...action("build:Atom Bomb:1", "build", "Build Atom Bomb"),
+    metadata: { unit: "Atom Bomb", targetID: "leader", targetName: "Leader", targetTileShare: 0.79, targetSamCoverage: 0, nuclearTargetPriority: 267 },
+  };
+  const city = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [bomb, city],
+    observation({
+      tileShare: 0.2,
+      troopRatio: 0.9,
+      rivals: [{ id: "leader", name: "Leader", tileShare: 0.79, relativeTroopRatio: 0.5 }],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, bomb.id);
+  assert.equal(selected.policyMarker, "nk1");
+});
+
+test("an Atom Bomb targeting katanasan is never built", () => {
+  const bomb = {
+    ...action("build:Atom Bomb:1", "build", "Build Atom Bomb"),
+    metadata: { unit: "Atom Bomb", targetID: "katanasan", targetName: "katanasan", targetTileShare: 0.79, targetSamCoverage: 0, nuclearTargetPriority: 267 },
+  };
+  const city = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [bomb, city],
+    observation({
+      tileShare: 0.2,
+      troopRatio: 0.9,
+      rivals: [{ id: "katanasan", name: "katanasan", tileShare: 0.79, relativeTroopRatio: 0.5 }],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, city.id);
+});
+
+test("an Atom Bomb under SAM coverage is skipped", () => {
+  const bomb = {
+    ...action("build:Atom Bomb:1", "build", "Build Atom Bomb"),
+    metadata: { unit: "Atom Bomb", targetID: "leader", targetName: "Leader", targetTileShare: 0.79, targetSamCoverage: 1, nuclearTargetPriority: 267 },
+  };
+  const city = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [bomb, city],
+    observation({
+      tileShare: 0.2,
+      troopRatio: 0.9,
+      rivals: [{ id: "leader", name: "Leader", tileShare: 0.79, relativeTroopRatio: 0.5 }],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, city.id);
+});
