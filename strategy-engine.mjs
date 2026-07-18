@@ -743,12 +743,23 @@ export function chooseBoat(
   return pickPercent(pool, boatStreak === 0 ? 8 : 16, avoid);
 }
 
-export function chooseUtility(actions, state, plan, history) {
+export function chooseUtility(
+  actions,
+  state,
+  plan,
+  history,
+  { allowNuke = true } = {},
+) {
   const preferredKinds = (plan?.preferKinds || []).filter((kind) =>
-    ["nuke", "upgrade_structure", "warship", "move_warship"].includes(kind)
+    ["nuke", "upgrade_structure", "warship", "move_warship"].includes(kind) &&
+    (allowNuke || kind !== "nuke")
   );
   const order = [...new Set([
-    "nuke", ...preferredKinds, "upgrade_structure", "warship", "move_warship",
+    ...(allowNuke ? ["nuke"] : []),
+    ...preferredKinds,
+    "upgrade_structure",
+    "warship",
+    "move_warship",
   ])];
   for (const kind of order) {
     const action = safeActions(actions, (candidate) => {
@@ -838,13 +849,41 @@ export function chooseAction(actions, state, plan = null, history = []) {
 
   const conversionReady = decisionsSince(
     history,
-    (entry) => entry.policyMarker === "cv1",
+    (entry) => entry.policyMarker === "cv1" || entry.parentPolicyMarker === "cv1",
   ) >= 6;
+  const nuclearFire = safeActions(actions, (candidate) => {
+    if (candidate.kind !== "nuke") return false;
+    const rival = rivalForAction(candidate, state);
+    return !rival || !rivalIsProtected(state, history, rival);
+  })[0];
+  const nuclearFireCooling = Boolean(nuclearFire) &&
+    decisionsSince(history, (entry) => entry.kind === "nuke") < 8;
+  const withNuclearDiscipline = (action, parentPolicyMarker = null) =>
+    nuclearFireCooling && action && action.id !== nuclearFire.id
+      ? {
+        ...action,
+        policyMarker: "nc2",
+        ...(parentPolicyMarker ? { parentPolicyMarker } : {}),
+      }
+      : action;
   if (!collapsing && conversionReady && boatConversionStalled(state, history)) {
-    const conversion = disciplinedAttack || chooseUtility(actions, state, plan, history) ||
+    const conversion = disciplinedAttack || chooseUtility(
+      actions,
+      state,
+      plan,
+      history,
+      { allowNuke: !nuclearFireCooling },
+    ) ||
       (sinceBuild >= 3 ? build : null) ||
       chooseBoat(actions, state, history, avoid, false, true);
-    if (conversion) return { ...conversion, policyMarker: "cv1" };
+    if (conversion) {
+      const selected = nuclearFireCooling && !disciplinedAttack
+        ? withNuclearDiscipline(conversion, "cv1")
+        : conversion;
+      return selected.policyMarker === "nc2"
+        ? selected
+        : { ...selected, policyMarker: "cv1" };
+    }
   }
 
   if (neutralExpansionStalled(state, history)) {
@@ -869,13 +908,23 @@ export function chooseAction(actions, state, plan = null, history = []) {
   const boat = chooseBoat(actions, state, history, avoid);
   if (boat) return withDiscipline(withPeace(boat));
 
-  const utility = chooseUtility(actions, state, plan, history);
-  if (utility) return withDiscipline(withPeace(utility));
+  const utility = chooseUtility(
+    actions,
+    state,
+    plan,
+    history,
+    { allowNuke: !nuclearFireCooling },
+  );
+  if (utility) {
+    return withNuclearDiscipline(withDiscipline(withPeace(utility)));
+  }
 
   const desperateInvasion = !neutralAttack && !rivalAttack?.action && !build;
   if (desperateInvasion) {
     const desperateBoat = chooseBoat(actions, state, history, avoid, true);
-    if (desperateBoat) return withDiscipline(desperateBoat);
+    if (desperateBoat) {
+      return withNuclearDiscipline(withDiscipline(desperateBoat));
+    }
   }
 
   const donation = safeActions(actions, (action) => {
@@ -883,30 +932,35 @@ export function chooseAction(actions, state, plan = null, history = []) {
     const rival = rivalForAction(action, state);
     return plan?.focus === "ally" && rival?.isAllied === true;
   })[0];
-  if (donation) return donation;
+  if (donation) return withNuclearDiscipline(donation);
 
   // Holding while legal tactical actions remain turns a weak position into a certain loss.
-  if (build) return withDiscipline(withPeace(build));
+  if (build) {
+    return withNuclearDiscipline(withDiscipline(withPeace(build)));
+  }
   const retreat = safeActions(
     actions,
     (action) => action.kind === "boat_retreat" || action.kind === "retreat",
   )[0];
-  if (retreat) return withDiscipline(withPeace(retreat));
+  if (retreat) {
+    return withNuclearDiscipline(withDiscipline(withPeace(retreat)));
+  }
   const emergencyAttacks = safeActions(actions, (action) => {
     if (action.kind !== "attack" || isNeutralExpansion(action)) return false;
     const rival = rivalForAction(action, state);
     return rival && !rivalIsProtected(state, history, rival);
   });
   const emergencyAttack = pickPercent(emergencyAttacks, 10, avoid);
-  if (emergencyAttack) return emergencyAttack;
+  if (emergencyAttack) return withNuclearDiscipline(emergencyAttack);
 
   const survivalAlliance = bestAllianceRequest(actions, state, history);
-  if (survivalAlliance) return survivalAlliance;
+  if (survivalAlliance) return withNuclearDiscipline(survivalAlliance);
   const pressure = safeActions(actions, (action) => action.kind === "target_player")
     .map((action) => ({ action, rival: rivalForAction(action, state) }))
     .filter(({ rival }) => rival && !rivalIsProtected(state, history, rival))
     .sort((left, right) => right.rival.tileShare - left.rival.tileShare)[0]?.action;
-  if (pressure) return pressure;
+  if (pressure) return withNuclearDiscipline(pressure);
+  if (nuclearFire) return nuclearFire;
 
   return actions.find((action) => action.kind === "hold") ?? actions[0];
 }
@@ -935,6 +989,7 @@ export function recordDecision(history, action, state) {
     incomingAttackerNames,
     mapFingerprint: state.mapFingerprint,
     policyMarker: action.policyMarker ?? null,
+    parentPolicyMarker: action.parentPolicyMarker ?? null,
   });
   if (history.length > 320) history.shift();
 }

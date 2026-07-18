@@ -1251,6 +1251,79 @@ test("an Atom Bomb under SAM coverage is skipped", () => {
   assert.equal(selected.id, city.id);
 });
 
+test("nc2 selects nonnuclear utility instead of repeating a nuke firing action", () => {
+  const nuke = action("nuke:leader:full", "nuke", "Fire at Leader");
+  const upgrade = action("upgrade:factory:1", "upgrade_structure", "Upgrade Factory");
+  const selected = choose(
+    [nuke, upgrade],
+    observation({ tileShare: 0.2, troopRatio: 0.9 }),
+    null,
+    [{ actionID: "nuke:leader:full", kind: "nuke" }],
+  );
+  assert.equal(selected.id, upgrade.id);
+  assert.equal(selected.policyMarker, "nc2");
+});
+
+test("nc2 releases nuke firing after eight intervening decisions", () => {
+  const nuke = action("nuke:leader:full", "nuke", "Fire at Leader");
+  const upgrade = action("upgrade:factory:1", "upgrade_structure", "Upgrade Factory");
+  const history = [
+    { actionID: "nuke:leader:full", kind: "nuke" },
+    ...Array.from({ length: 8 }, (_, index) => ({
+      actionID: `upgrade:factory:${index}`,
+      kind: "upgrade_structure",
+    })),
+  ];
+  const selected = choose(
+    [nuke, upgrade],
+    observation({ tileShare: 0.2, troopRatio: 0.9 }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, nuke.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("nc2 never converts a sole legal nuke firing action into hold", () => {
+  const nuke = action("nuke:leader:full", "nuke", "Fire at Leader");
+  const hold = action("hold", "hold", "Hold");
+  const selected = choose(
+    [nuke, hold],
+    observation({ tileShare: 0.2, troopRatio: 0.9 }),
+    null,
+    [{ actionID: "nuke:leader:full", kind: "nuke" }],
+  );
+  assert.equal(selected.id, nuke.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("nc2 preserves the conversion cooldown when it replaces a repeated nuke", () => {
+  const nuke = action("nuke:leader:full", "nuke", "Fire at Leader");
+  const boat = action("boat:terra:8", "boat", "Boat to Terra Nullius 8%");
+  const upgrade = action("upgrade:port:1", "upgrade_structure", "Upgrade Port");
+  const history = Array.from({ length: 8 }, (_, index) => ({
+    actionID: index === 1 ? nuke.id : `boat:terra:${index}`,
+    kind: index === 1 ? "nuke" : "boat",
+    neutral: index !== 1,
+    tileShare: 0.08,
+  }));
+  const state = buildState(
+    observation({ tileShare: 0.08 }),
+    [nuke, boat, upgrade],
+    history,
+  );
+  const selected = chooseAction([nuke, boat, upgrade], state, null, history);
+  assert.equal(selected.id, upgrade.id);
+  assert.equal(selected.policyMarker, "nc2");
+  assert.equal(selected.parentPolicyMarker, "cv1");
+
+  recordDecision(history, selected, state);
+  assert.equal(history.at(-1).parentPolicyMarker, "cv1");
+  const cooled = choose([nuke, boat, upgrade], observation({ tileShare: 0.08 }), null, history);
+  assert.equal(cooled.id, boat.id);
+  assert.equal(cooled.policyMarker, undefined);
+});
+
 test("an alliance offer from katanasan is accepted on sight", () => {
   const ally = {
     ...action("alliance:katanasan:1", "alliance_request", "Request alliance with katanasan"),
