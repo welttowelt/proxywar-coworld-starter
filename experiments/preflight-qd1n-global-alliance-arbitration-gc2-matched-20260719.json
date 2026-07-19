@@ -140,7 +140,11 @@
     "no paired Odin finish advantage: placement first; if tied, score and final tiles must improve without worse survival"
   ],
   "matched_result": {
-    "status": "COMPLETED_REJECTED",
+    "status": "COMPLETED_QUARANTINED_REJECTED",
+    "evidence_status": "conservative_rejection_only",
+    "fresh_hrafn_pre_run_approval": false,
+    "later_hrafn_verdict": "INSUFFICIENT",
+    "later_hrafn_mailbox_commit": "4b3da75",
     "audit_path": "experiments/audit-qd1n-global-alliance-arbitration-gc2-matched-20260719.json",
     "ledger_path": "experiments/ledger-qd1n-global-alliance-arbitration-gc2-20260719.ndjson",
     "payoff_path": "experiments/payoff-qd1n-global-alliance-arbitration-gc2-20260719.json",

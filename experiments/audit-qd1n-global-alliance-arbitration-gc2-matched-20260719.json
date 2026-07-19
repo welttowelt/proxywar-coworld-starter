@@ -4,6 +4,7 @@
   "experiment": "qd1n global alliance arbitration GC2",
   "gate": "matched live-coalition same-seed same-seat pair",
   "verdict": "REJECT_GC2_RELIABILITY_REGRESSION_AND_NO_FINISH_ADVANTAGE",
+  "evidence_status": "QUARANTINED_FOR_ADVANCEMENT_CONSERVATIVE_REJECTION_ONLY",
   "local_qualified": false,
   "runtime": {
     "coworld_version": "0.1.30",
@@ -26,6 +27,10 @@
     "hash_method": "sha256(JSON.stringify(recursively-key-sorted value) + newline)",
     "only_request_delta": "players[0].image",
     "verification_command_passed": true,
+    "fresh_hrafn_pre_run_approval": false,
+    "later_hrafn_verdict": "INSUFFICIENT",
+    "later_hrafn_mailbox_commit": "4b3da75",
+    "battlefield_execution_basis": "the user's standing rapid-decision command after the review SLA elapsed",
     "output_a": "/private/tmp/proxywar-gc2-matched-live-coalition-a-20260719-cycle1",
     "output_b": "/private/tmp/proxywar-gc2-matched-live-coalition-b-20260719-cycle1",
     "started_at": "2026-07-19T14:08:33+02:00",
@@ -144,6 +149,7 @@
     "partner_hold_note": "The audit helper also reports unrelated Juryoku holds because it aggregates candidate parity across seats. The gate verdict filters strictly to Odin seat zero; Odin had zero holds in both arms."
   },
   "gate_results": {
+    "required_hrafn_pre_run_approval_present": false,
     "immutable_identity": true,
     "sole_request_delta_verified": true,
     "redacted_config_hashes_reconciled": true,
@@ -160,9 +166,9 @@
     "finish_placement_advantage": false,
     "degradation_non_regression": false
   },
-  "rejection_reason": "GC2 reached eleven accepted times but trailed exact v89 by 200 tiles at decision twenty, 65 at decision fifty, and 253 at decision one hundred and finish. It also produced one additional degraded decision. The pre-registered reliability and finish gates both fail.",
-  "evidence_boundary": "This four-player Compact pair is a local interaction gate, not an eight- or twelve-player tournament estimate. Its direct same-seed regression is sufficient to reject GC2 but not to estimate league win rate.",
+  "rejection_reason": "GC2 cannot advance because the required Hrafn pre-run approval was absent. Its quarantined output also reached eleven accepted times but trailed exact v89 by 200 tiles at decision twenty, 65 at decision fifty, and 253 at decision one hundred and finish, with one additional degraded decision. The conservative battlefield decision is rejection.",
+  "evidence_boundary": "The pair began under the user's rapid battlefield-command rule but without Hrafn's required exact-hash pre-run approval; Hrafn later returned INSUFFICIENT. The outputs remain quarantined and cannot qualify or promote GC2. They may only support the fail-closed rejection. This four-player Compact pair is not an eight- or twelve-player tournament estimate and cannot estimate league win rate.",
   "promotion_eligible": false,
   "external_action_allowed": false,
-  "next_action": "Retire GC2 without hosted testing, RunPod execution, upload, submission, membership, champion, or league change. Keep exact v89 live and begin only the narrower substitution-causal RCI."
+  "next_action": "Retire GC2 without hosted testing, RunPod execution, upload, submission, membership, champion, or league change. Keep exact v89 live. Preserve both outputs under quarantine and begin only the narrower substitution-causal RCI."
 }

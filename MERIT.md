@@ -252,3 +252,6 @@ Odin holds, rejections, or protected-K1Z harm. It still trailed exact v89 by
 decisions rose from `146` to `147`. GC2 is rejected under two pre-registered
 stop conditions. No RunPod duplicate, hosted test, upload, submission,
 membership, champion, or league change follows; exact v89 remains live.
+The local pair began before Hrafn's required exact-hash approval and is
+therefore quarantined for advancement. Its result supports rejection only; it
+cannot qualify or promote GC2.

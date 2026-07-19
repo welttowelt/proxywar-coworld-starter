@@ -1391,3 +1391,10 @@ because it cannot alter this decision. No hosted test, upload, submission,
 membership, champion, or league action follows. Exact v89 remains live. The
 smallest next RCI is a causal diff of the eleven substitutions, followed by at
 most one preregistered narrower cadence or progress-gated arbitration arm.
+
+Governance boundary: the pair started under the user's rapid
+battlefield-command rule after the review SLA elapsed, but before Hrafn supplied
+the required exact-hash pre-run approval. Hrafn later returned `INSUFFICIENT`
+at mailbox commit `4b3da75`. Both outputs therefore remain quarantined and
+ineligible for qualification or promotion. Their regressions can only support
+the conservative rejection above; they cannot advance GC2.
