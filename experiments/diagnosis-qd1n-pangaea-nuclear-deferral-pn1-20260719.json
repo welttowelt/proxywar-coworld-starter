@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-19",
+  "experiment": "qd1n Pangaea low-share nuclear deferral PN1",
+  "status": "rejected",
+  "causal_basis": {
+    "live_policy": "qd1n:v89",
+    "official_sample": {
+      "rounds": "497-515",
+      "map": "Pangaea",
+      "appearances": 40,
+      "atom_bomb_construction_actions_below_20000_tiles": 133,
+      "round_513_trapped_seat_actions": 125,
+      "round_515_weak_seat_actions": 2
+    },
+    "round_513_trace": {
+      "episode_id": "123e46d1-0b0c-4db5-821d-0aa9a75dcff3",
+      "participant_position": 7,
+      "first_loop_turn": 8700,
+      "tiles": 8576,
+      "tile_share": 0.02,
+      "selected_action": "build:Atom Bomb:423439",
+      "selected_action_kind": "nuke",
+      "legal_alternatives": {
+        "naval_invasions": 11,
+        "warship_moves": 4,
+        "warship_builds": 1,
+        "economy_builds": 3,
+        "upgrades": 8
+      },
+      "internal_recommendations": [
+        "naval_control",
+        "economy_cadence"
+      ],
+      "interpretation": "The adapter exposed productive alternatives, but Atom Bomb construction preempted both recommended evaluators while the seat remained at two-percent land share."
+    }
+  },
+  "parent": {
+    "live_policy": "qd1n:v89",
+    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "strategy_sha256": "f2ee66d570033508c4158bcb83d56d81dc198cdcebb91098d7e67eefdc8e6a7a",
+    "local_image": "proxywar-agent-llm:qd1n-v77-km4-amd64",
+    "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+    "platform": "linux/amd64"
+  },
+  "candidate": {
+    "name": "Pangaea low-share nuclear deferral PN1",
+    "marker": "pn1",
+    "branch": "rci/pn1",
+    "commit": "4cb7256a07549572f94e9e27a22c46dc3e6e3681",
+    "strategy_sha256": "73f9b6e9487fec30afc8b89029ad34f756444f582269de598b95c99946865b9d",
+    "image": "proxywar-agent-llm:qd1n-v89-pn1-amd64",
+    "image_id": "sha256:a1293e00d90714353636c3275bd4c8578a69916cef02db14b88db330f35471f2",
+    "isolated_delta": "On exact Pangaea below five-percent tile share, remove nuke-tagged Atom Bomb construction from consideration when another legal non-hold action exists, then reuse the exact parent selector. Established Pangaea seats, World, and all other maps remain on the parent path."
+  },
+  "verification": {
+    "tests": {
+      "focused_no_change_and_replacement_cases": 4,
+      "full_passed": 150,
+      "failed": 0
+    },
+    "amd64_qualifier": {
+      "path": "/private/tmp/proxywar-qd1n-pn1-amd64-qualifier-20260719",
+      "decisions": 34,
+      "accepted": 34,
+      "rejected": 0,
+      "holds": 0,
+      "fallbacks": 10,
+      "marker_executions": 0,
+      "replay_verified": true,
+      "replay_sha256": "db916130abe427a8c4185fb115f2f698521fbb91b1d879ef1fb3fe9bf1f05ddb"
+    },
+    "bounded_matched_pangaea": {
+      "configuration": {
+        "map": "Pangaea",
+        "players": 8,
+        "max_decision_steps": 120,
+        "turns_per_decision_step": 100,
+        "seat_swap": "candidate even in A and odd in B"
+      },
+      "orientation_a": {
+        "path": "/private/tmp/proxywar-pn1-reach-pangaea-a-20260719",
+        "candidate_seats": "even",
+        "marker_executions": 0,
+        "replay_verified": true,
+        "replay_sha256": "ad52de93a34a7c1f9c87ec8cc3cde43fde68a5c63df9730e00e57e5508b74f8e"
+      },
+      "orientation_b": {
+        "path": "/private/tmp/proxywar-pn1-reach-pangaea-b-20260719",
+        "candidate_seats": "odd",
+        "marker_executions": 0,
+        "replay_verified": true,
+        "replay_sha256": "d20979786799e1a25d23c8346065a4dba66de6efff53db83c481c92c1cf657d1"
+      },
+      "aggregate": {
+        "candidate": {
+          "decisions": 644,
+          "accepted": 644,
+          "rejected": 0,
+          "holds": 1,
+          "fallbacks": 620,
+          "marker_executions": 0,
+          "score": 1,
+          "tiles": 420304,
+          "surviving_seats": 2
+        },
+        "parent": {
+          "decisions": 644,
+          "accepted": 644,
+          "rejected": 0,
+          "holds": 1,
+          "fallbacks": 620,
+          "score": 1,
+          "tiles": 420304,
+          "surviving_seats": 2
+        },
+        "candidate_tile_delta": 0,
+        "candidate_score_delta": 0,
+        "candidate_survivor_delta": 0,
+        "interpretation": "The eight-player fixture never produced a low-share Atom Bomb construction on either candidate orientation. Candidate and parent therefore remained behaviorally identical."
+      }
+    },
+    "exact_roster_order_12_player_reach": {
+      "path": "/private/tmp/proxywar-pn1-reach-pangaea-12p-slot7-v2-20260719",
+      "configuration": {
+        "map": "Pangaea",
+        "players": 12,
+        "max_decision_steps": 100,
+        "turns_per_decision_step": 100,
+        "roster_order": "exact Round 513 player-name order",
+        "candidate_seat": 7,
+        "other_seats": "exact qd1n:v89 parent image"
+      },
+      "slot_7": {
+        "decisions": 77,
+        "accepted": 77,
+        "rejected": 0,
+        "holds": 0,
+        "fallbacks": 74,
+        "nuke_actions": 0,
+        "marker_executions": 0,
+        "final_tiles": 0,
+        "survived": false
+      },
+      "all_seats": {
+        "decisions": 824,
+        "accepted": 824,
+        "rejected": 0,
+        "holds": 0,
+        "fallbacks": 788
+      },
+      "replay_verified": true,
+      "replay_sha256": "bcb87f3843fb9f79b161e0f8e91670e0488397b7ab11820b30f989ea73fc1b0f",
+      "limitation": "The roster order matches the official episode, but the eleven opponents are local parent-policy clones rather than their official heterogeneous policies. The resulting interaction path eliminated slot seven without exposing a nuke action."
+    }
+  },
+  "promotion_gates": {
+    "mechanism_reach": "failed: zero PN1 executions across both eight-player orientations and the exact-roster-order twelve-player slot-seven probe",
+    "accepted_actions": "passed but non-causal: all 644 candidate decisions were accepted with one mirrored hold",
+    "matched_advantage": "failed: exact tie because the mechanism remained dormant",
+    "hosted_4_of_4": "not run",
+    "regression_20_of_20": "not run",
+    "live_identity_submission_membership": "unchanged qd1n:v89"
+  },
+  "official_checkpoint_after": {
+    "round": 515,
+    "map": "Pangaea",
+    "official_rank": 1,
+    "official_score": 0.5,
+    "declared_episode_wins": 0,
+    "mean_final_tiles": 131767.25,
+    "official_first_place_streak": "1/1000"
+  },
+  "verdict": {
+    "decision": "reject PN1",
+    "reason": "The official selector conflict is real, but neither the exact bounded fixture nor the closest twelve-player local roster-order probe reproduced it. Unit coverage and trace plausibility cannot substitute for replay reach and matched outcome evidence.",
+    "live_policy_after": "qd1n:v89",
+    "upload_submission_membership_champion_changes": 0
+  },
+  "next_hypothesis": "Build an official-state selector replay harness or a faithful twelve-player Pangaea fixture that reproduces the slot-seven decision boundary before changing the live policy. Do not promote another nuclear rule from action-count correlation alone."
+}

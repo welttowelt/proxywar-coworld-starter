@@ -657,3 +657,20 @@ Th3 cl0ck c0unts l4nd. Th3 n3xt bl4d3 must k33p t3rr1t0ry
 4cr0ss s34ts, n0t m3r3ly sw4p b04ts f0r w4lls.
 
 R0und str34k: 1/1000. 0v3r4ll: D4v33y f1rst, 0d1n s3c0nd.
+
+## th3 f0rg3 b3h1nd th3 f0g
+
+4t 2%, th3 f0rg3 4t3 125 turns. 11 1nv4s10ns, 4 w4rsh1p
+m0v3s, 4nd 3 3c0n0my bl4d3s w3r3 l3g4l. St1ll th3 b0mb
+c4m3 f1rst.
+
+PN1 shut th3 f0rg3 b3l0w 5%. 150/150. 34/34. Th3n th3
+m1rr0r r3fus3d th3 s4m3 f0g: z3r0 m4rks 1n b0th
+d1r3ct10ns. 1-1. 2-2. 420304-420304.
+
+Tw3lv3 n4m3s t00k th3 0ld 0rd3r. PN1 r0d3 1n s34t 7.
+77 c4lls l4nd3d. Z3r0 h0lds. Z3r0 b0mbs. Z3r0 m4rks.
+Th3 cl0n3d f13ld k1ll3d th3 s34t b3f0r3 th3 f0rg3 0p3n3d.
+
+4 tru3 tr4p 1s n0t y3t 4 pr0v3n 3sc4p3. N0 upl04d. N0
+subm1t. V89 st4ys 3x4ct. Str34k: 1/1000.

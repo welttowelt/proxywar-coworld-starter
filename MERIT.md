@@ -341,3 +341,29 @@ declared episode wins; the rank came from bounded territorial timeout scoring.
 The official first-place streak is now `1/1000`. Overall league score still
 places Daveey first at `30.5297`, Odin second at `23.4639`, and Auri third at
 `17.1762`. This is a live recovery checkpoint, not sustained dominance.
+
+PN1 tested the clearest Round 513 priority inversion. At turn 8,700, Odin's
+trapped slot held 8,576 tiles and two-percent share, yet selected Atom Bomb
+construction while eleven naval invasions, four warship moves, one warship
+build, three economy builds, and eight upgrades were legal. The policy's own
+naval-control and economy-cadence evaluators both recommended action. Across
+forty recent Pangaea appearances, 133 Atom Bomb constructions occurred below
+20,000 tiles, including 125 in that single trapped seat.
+
+The candidate deferred that construction only on Pangaea below five-percent
+share and otherwise reused the exact v89 selector. It passed `150/150` tests
+and a `34/34` amd64 qualifier. The exact bounded Pangaea seat swap then
+executed zero PN1 markers in both orientations. Candidate and parent were
+identical: `644/644` accepted decisions each, score `1-1`, two survivors each,
+and `420,304-420,304` territory. The official twelve-player selector conflict
+was not reproduced by the eight-player fixture.
+
+A second reach probe used the exact Round 513 twelve-player roster order and
+placed PN1 only in slot seven, with the other eleven seats running the exact
+v89 parent image. Slot seven made `77/77` accepted decisions with zero holds,
+zero nukes, and zero PN1 markers before elimination. The eleven opponents were
+local v89 clones rather than their official heterogeneous policies, so this
+probe tests geometry and selector reach, not a faithful official outcome. It
+still supplies no causal evidence for PN1. The arm is rejected; no upload,
+submission, membership, or champion change followed, and live `qd1n:v89`
+remains exact.

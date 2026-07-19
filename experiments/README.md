@@ -1535,3 +1535,42 @@ decisions. It recorded zero declared episode wins; the official rank came from
 territorial timeout scoring. The verified first-place streak is `1/1000`.
 The next experiment should isolate that bounded-territory conversion rather
 than add another broad boat/economy ordering rule.
+
+## PN1 Pangaea low-share nuclear-deferral rejection (2026-07-19)
+
+PN1 targeted a concrete Round 513 selector conflict. At two-percent land
+share, Odin repeatedly selected nuke-tagged Atom Bomb construction despite
+legal naval invasions, warship movement, economy builds, and upgrades. The
+policy's naval-control and economy-cadence evaluators both exposed productive
+alternatives. Across forty recent Pangaea appearances, 133 Atom Bomb
+construction actions landed below 20,000 tiles; 125 came from the single
+Round 513 trapped seat.
+
+The candidate removed Atom Bomb construction from consideration only on exact
+Pangaea below five-percent share when another legal non-hold action existed,
+then reused the parent selector. Established Pangaea positions and every other
+map stayed on the exact v89 path. Four focused cases and the full `150/150`
+suite passed. The amd64 qualifier accepted `34/34` decisions with zero holds
+or rejections.
+
+The exact bounded Pangaea seat swap did not reproduce the official
+twelve-player decision boundary. PN1 executed zero times with candidate seats
+even and zero times with candidate seats odd. Both arms therefore remained
+identical: `644/644` decisions accepted, score `1-1`, two survivors each, and
+territory `420,304-420,304`.
+
+The closest local twelve-player reach probe then used the exact Round 513
+roster order and put PN1 only in slot seven. That seat completed `77/77`
+accepted decisions with zero holds, zero nukes, and zero PN1 markers before
+elimination. The other eleven seats ran exact v89 parent clones rather than
+the real heterogeneous opponent policies, so the probe cannot claim faithful
+official outcome reproduction. It does prove that roster order and seat
+geometry alone do not expose the selector conflict.
+
+PN1 is rejected at mechanism reach. No hosted request, upload, submission,
+membership, or champion change followed. Full trace evidence, image hashes,
+and replay hashes are recorded in
+[`diagnosis-qd1n-pangaea-nuclear-deferral-pn1-20260719.json`](diagnosis-qd1n-pangaea-nuclear-deferral-pn1-20260719.json).
+The next nuclear experiment must reproduce the official slot-seven selector
+state in a faithful twelve-player fixture or state-replay harness before any
+live-policy change.
