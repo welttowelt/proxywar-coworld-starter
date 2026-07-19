@@ -22,7 +22,25 @@
         "targeted_replay": "pg2-parent-control-replay-asia20260721",
         "replay_verdict": "REPLAY_REQUIRED"
       }
+    },
+    {
+      "id": "pangaea-20260721-parent-hold",
+      "pair": "pangaea-20260721",
+      "map": "Pangaea",
+      "seed": 20260721,
+      "role": "parent",
+      "replay_confirmed": true,
+      "control_anomalies": ["Odin had an unexplained hold"],
+      "unexplained_holds": [
+        {"turn": 5200, "reason": "dgd:err:h0d"},
+        {"turn": 5400, "reason": "dgd:err:h0d"}
+      ],
+      "candidate_required_clean": true,
+      "evidence": {
+        "first_screen_execution": "pg2-fast-screen-42e9a181",
+        "targeted_replay": "pg2-pangaea-control-replay-42e9a181",
+        "replay_verdict": "REPLAY_REQUIRED"
+      }
     }
   ]
 }
-
