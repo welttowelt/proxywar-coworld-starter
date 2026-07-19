@@ -690,3 +690,19 @@ US1 br0k3 th3 r1ng 0nc3: turn 11400, 8%, r4t10 4.32.
 
 4n 3sc4p3 w1th0ut l4nd 1s n0 cr0wn. N0 upl04d. N0
 subm1t. V89 st4ys 3x4ct. Str34k: 0/1000.
+
+## 29 3sc4p3s 4ft3r th3 f4ll
+
+PE1 br0k3 th3 st4l3 p4ct. S1x m4rks w0n 4022 l0c4l t1l3s.
+V90 th3n r0d3 th3 tru3 f13ld.
+
+F0ur s34ts. Z3r0 cr0wns. 1422 m34n t1l3s. 29 m4rks
+l4nd3d, 4nd 22 c4m3 1n 0n3 d34d-end run. Th3 bl4d3
+m0v3d. Th3 l4nd d1d n0t.
+
+Th3 34rl13r w4ll w4s m1ss1ng. 46 t1m3s 0d1n s4w 4
+D3f3ns3 P0st und3r h34vy f1r3. Z3r0 r0s3. R0n r41s3d
+29 4nd t00k 4 cr0wn. 4ur1 r41s3d 4 4nd t00k 4 cr0wn.
+
+V90 1s r3j3ct3d. N0 subm1t. V89 st4ys l1v3.
+R0und 520: f1rst. R0und 521: t3nth. Str34k: 0/1000.

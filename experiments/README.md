@@ -1609,3 +1609,42 @@ gate results are recorded in
 [`diagnosis-qd1n-world-upgrade-stall-us1-20260719.json`](diagnosis-qd1n-world-upgrade-stall-us1-20260719.json).
 The next arm should target the earlier collapse or pressure boundary, not add
 another late escape action that cannot move territory.
+
+## PE1 Pangaea pending-pact escape rejection (2026-07-19)
+
+Round 517 exposed 58 holds in one near-eliminated Odin seat. Fifty-seven had
+legal tactical actions. Twenty-four occurred while a stale pending alliance
+request to runaway outsider Richard Higgins caused the parent to protect him
+from attacks and boats. Round 519 reproduced the boundary with 24 more holds
+and two terminal outsider-boat loops.
+
+PE1 changed only exact Pangaea below one-percent territory after forty active
+decisions. It allowed an attack or boat through pending-request protection
+while preserving actual allies and reciprocal K1Z partners. Five focused
+cases, the full `153/153` suite, and a `34/34` amd64 qualifier passed. The
+eight-player seat swap reached six accepted markers and gave the candidate a
+small local edge: score `1.004784-0.995216`, territory
+`422,346-418,324` (`+4,022`), and survivors `3-3`.
+
+The candidate uploaded as diagnostic-only `qd1n:v90`; live `qd1n:v89` stayed
+untouched. The exact twelve-player hosted Pangaea request
+`xreq_df3924cd-f07a-4e61-b59a-d29b7a3da0d6` then rejected PE1 decisively.
+The candidate lost `0/4`, averaged 1,422 final tiles, recorded four holds and
+zero rejections, and fired 29 accepted PE1 actions. One loss contained 22
+markers spread across several outsiders. The mechanism removed a hold loop
+after collapse but did not recover land.
+
+The hosted replays point earlier. Odin had 46 decisions with a legal Defense
+Post while incoming pressure was at least ten percent; the parent selected
+zero. In the same field, Ron's winning episode selected 29 Defense Posts, 17
+audit-confirmed, and Auri's winning episode selected four, all confirmed. The
+parent still excludes Defense Post from reliable builds because of an old
+stale-action assumption.
+
+PE1 is rejected. No regression, submission, membership, or champion change
+followed. Round 520 briefly restored official rank one on World, but Round 521
+returned live v89 to rank ten on Pangaea and reset the streak to `0/1000`.
+Full hashes, replays, and gate evidence are recorded in
+[`diagnosis-qd1n-pangaea-pending-pact-escape-pe1-20260719.json`](diagnosis-qd1n-pangaea-pending-pact-escape-pe1-20260719.json).
+The next isolated arm should test a bounded early Defense Post override before
+collapse, not another terminal escape.

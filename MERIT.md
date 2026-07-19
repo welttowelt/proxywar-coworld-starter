@@ -390,3 +390,25 @@ was not yet visible to the audit, and the matched result stayed identical:
 `1-1` score, `8-8` survivors, and `651,609-651,609` territory. US1 is rejected;
 no upload, hosted extension, submission, membership, or champion change
 followed. Live `qd1n:v89` remains exact.
+
+PE1 tested the Round 517 terminal pact-state hold loop. On exact Pangaea below
+one-percent territory after forty active decisions, it allowed an outsider
+attack or boat through pending-request protection while preserving actual
+allies and reciprocal K1Z partners. The candidate passed `153/153` tests and a
+`34/34` qualifier. Its exact local seat swap reached six times and gained
+4,022 tiles with a small positive score delta, so it advanced as hosted
+diagnostic `qd1n:v90` while live v89 stayed untouched.
+
+The hosted result rejected it: `0/4`, 1,422 mean final tiles, four holds, zero
+rejections, and 29 accepted PE1 actions. One episode fired 22 markers across
+several outsiders. The arm fixed an action-layer hold after the position had
+already collapsed; it did not create recovery.
+
+The same four replays expose the earlier boundary. Odin ignored 46 legal
+Defense Post actions under at least ten-percent incoming pressure because the
+parent still classifies that structure as unreliable. Ron's winning episode
+selected 29 Defense Posts, 17 confirmed; Auri's winning episode selected four,
+all confirmed. This is the next isolated hypothesis. PE1 receives no
+regression, submission, membership, or champion change. Round 520 placed live
+v89 first on World, then Round 521 placed it tenth on Pangaea and reset the
+official streak to `0/1000`.
