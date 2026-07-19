@@ -12,6 +12,7 @@ const PARITY_PULSE_TAG = "[hrafn-s4r:r1ft]";
 const LEADER_SEVER_TAGS = ["[n1dh0ggr:s3vr]", "[f3nr1r:s3vr]"];
 const WIRE_SALVAGE_TAG = "[g4lga-v4rd:w1re]";
 const BANK_BUILD_TAG = "[h3l-v4kt:bank-build]";
+const PENDING_PACT_ESCAPE_MARKER = ":pe1";
 const ALLOWED_REPLAY_HOSTS = new Set(["softmax-public.s3.amazonaws.com"]);
 const MAX_REPLAY_BYTES = 64 * 1024 * 1024;
 
@@ -79,6 +80,7 @@ export function auditEpisodeReplay(
   const leaderSeverSelections = [];
   const wireSalvageSelections = [];
   const wireVetoSelections = [];
+  const pendingPactEscapeSelections = [];
   for (const decision of decisions) {
     const isSpawn = decision.selectedActionKind === "spawn";
     const selectedMetadata = decision.selectedActionMetadata ?? {};
@@ -198,6 +200,17 @@ export function auditEpisodeReplay(
         fallback: decision.fallbackUsed === true,
       });
     }
+    if (String(decision.reason ?? "").includes(PENDING_PACT_ESCAPE_MARKER)) {
+      pendingPactEscapeSelections.push({
+        turn: decision.turnNumber,
+        action_id: decision.selectedLegalActionId ?? null,
+        selected_action_kind: decision.selectedActionKind ?? null,
+        target_name: decision.selectedActionMetadata?.targetName ?? null,
+        troop_percent: decision.selectedActionMetadata?.troopPercent ?? null,
+        accepted: decision.result?.accepted ?? null,
+        fallback: decision.fallbackUsed === true,
+      });
+    }
     const vetoMatch = String(decision.reason ?? "").match(/wireVeto=([^|]+)\s+\|\|/);
     if (vetoMatch) {
       wireVetoSelections.push({
@@ -240,6 +253,7 @@ export function auditEpisodeReplay(
     leader_sever_selections: leaderSeverSelections,
     wire_salvage_selections: wireSalvageSelections,
     wire_veto_selections: wireVetoSelections,
+    pending_pact_escape_selections: pendingPactEscapeSelections,
   };
 }
 
@@ -265,6 +279,9 @@ export function buildGateReport(
   const leaderSevers = audits.flatMap((audit) => audit.leader_sever_selections ?? []);
   const wireSalvages = audits.flatMap((audit) => audit.wire_salvage_selections ?? []);
   const wireVetoes = audits.flatMap((audit) => audit.wire_veto_selections ?? []);
+  const pendingPactEscapes = audits.flatMap((audit) =>
+    audit.pending_pact_escape_selections ?? []
+  );
   const aligned = opportunities.filter((opportunity) => opportunity.aligned).length;
   const mechanismExercised = openingSelections.length > 0;
   const mechanismPassed = mechanismExercised && aligned === opportunities.length;
@@ -325,6 +342,14 @@ export function buildGateReport(
         selection.fallback === false &&
         selection.selected_action_kind !== "hold"
       );
+  } else if (mechanism === "pending-pact-escape") {
+    checks.pending_pact_escape_mechanism_exercised = pendingPactEscapes.length > 0;
+    checks.all_pending_pact_escapes_productive = pendingPactEscapes.length > 0 &&
+      pendingPactEscapes.every((selection) =>
+        selection.accepted === true &&
+        (selection.selected_action_kind === "attack" ||
+          selection.selected_action_kind === "boat")
+      );
   } else {
     checks.opening_alliance_mechanism_exercised = mechanismExercised;
     checks.exact_opening_alliance_alignment = mechanismPassed;
@@ -356,6 +381,7 @@ export function buildGateReport(
     leader_sever_selections: leaderSevers.length,
     wire_salvage_selections: wireSalvages.length,
     wire_veto_selections: wireVetoes.length,
+    pending_pact_escape_selections: pendingPactEscapes.length,
     checks,
     passed: Object.values(checks).every(Boolean),
     episode_audits: audits,
@@ -413,11 +439,12 @@ async function main() {
   }
   if (!new Set([
     "bank-build", "leader-sever", "opening-alliance", "opening-reserve", "parity-pulse",
-    "pressure-pulse", "wire-salvage", "wire-veto",
+    "pending-pact-escape", "pressure-pulse", "wire-salvage", "wire-veto",
   ]).has(mechanism)) {
     throw new Error(
       "--mechanism must be bank-build, opening-alliance, opening-reserve, " +
-      "leader-sever, parity-pulse, pressure-pulse, wire-salvage, or wire-veto",
+      "leader-sever, parity-pulse, pending-pact-escape, pressure-pulse, " +
+      "wire-salvage, or wire-veto",
     );
   }
   const request = coworldJson(["xp-request", "get", requestID], root);

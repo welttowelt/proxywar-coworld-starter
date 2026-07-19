@@ -370,3 +370,72 @@ test("wire-salvage gate requires an accepted productive replacement", () => {
   assert.equal(report.checks.all_wire_salvages_productive, true);
   assert.equal(report.passed, true);
 });
+
+test("pending-pact-escape gate parses and requires an accepted attack or boat", () => {
+  const fixture = replay("expand:terra-nullius:10");
+  const decisions = fixture.inlineRunArtifacts["decisions.jsonl"]
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line));
+  decisions[1] = {
+    ...decisions[1],
+    selectedActionKind: "boat",
+    selectedLegalActionId: "boat:9001:8",
+    selectedActionMetadata: {
+      targetID: "outsider",
+      targetName: "Richard Higgins",
+      troopPercent: 8,
+    },
+    reason: "dgd:err:b0t:pe1",
+    fallbackUsed: true,
+    result: { accepted: true },
+  };
+  fixture.inlineRunArtifacts["decisions.jsonl"] =
+    `${decisions.map((decision) => JSON.stringify(decision)).join("\n")}\n`;
+
+  const audit = auditEpisodeReplay(episode(), fixture);
+  const report = buildGateReport(
+    { id: "xreq-pending-pact-escape", status: "completed" },
+    [audit, audit, audit, audit],
+    4,
+    { mechanism: "pending-pact-escape" },
+  );
+
+  assert.equal(audit.pending_pact_escape_selections.length, 1);
+  assert.equal(report.pending_pact_escape_selections, 4);
+  assert.equal(report.checks.pending_pact_escape_mechanism_exercised, true);
+  assert.equal(report.checks.all_pending_pact_escapes_productive, true);
+  assert.equal(report.planner_degraded_decisions, 4);
+  assert.equal(report.passed, true);
+});
+
+test("pending-pact-escape gate rejects a tagged hold", () => {
+  const audits = Array.from({ length: 4 }, (_, index) => ({
+    won: true,
+    final_tiles: 220000 + index,
+    holds: 0,
+    rejected: 0,
+    fallbacks: 0,
+    pending_pact_escape_selections: index === 0
+      ? [{
+          turn: 9200,
+          action_id: "hold",
+          selected_action_kind: "hold",
+          target_name: null,
+          troop_percent: null,
+          accepted: true,
+          fallback: true,
+        }]
+      : [],
+  }));
+  const report = buildGateReport(
+    { id: "xreq-pending-pact-escape-hold", status: "completed" },
+    audits,
+    4,
+    { mechanism: "pending-pact-escape" },
+  );
+
+  assert.equal(report.checks.pending_pact_escape_mechanism_exercised, true);
+  assert.equal(report.checks.all_pending_pact_escapes_productive, false);
+  assert.equal(report.passed, false);
+});
