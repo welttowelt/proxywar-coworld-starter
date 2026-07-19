@@ -1,3 +1,4 @@
-# Hrafn is the persistent writable operator for the hrafn-fylking lane.
+# Hrafn's repository default. The automatic launcher also passes these values
+# explicitly because project-local configuration discovery is not the proof.
 model = "gpt-5.6-sol"
 model_reasoning_effort = "xhigh"

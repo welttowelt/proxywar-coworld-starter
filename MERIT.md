@@ -4,11 +4,8 @@
 
 | Policy | State | Evidence |
 | --- | --- | --- |
-| `qd1n:v83` | champion | membership `lpm_5c3f41eb-7a50-4342-a136-172466376eb9`; promoted by operator directive 2026-07-18, submission `sub_f25b48b7-1100-4055-805d-7ab9319321b5` |
-| `qd1n:v77` | benched | membership `lpm_6eb28046-ebef-4127-a5b6-7653a72ce73b`; rounds 414-417 placed `9, 2, 9, 9` |
-| `qd1n:v76` | benched | membership `lpm_807274c0-0f71-4c13-8990-3dc932a9f7e5`; round 410 finished official first |
-| `qd1n:v2` | benched | membership `lpm_fb9d79c9-0eb7-4a96-8bea-cf8122fd81bf` |
-| `oli-codex-proxywar:v14` | retired | membership benched after Qd1n promotion |
+| `hrafn-fylking:v5` | champion | live API verification 2026-07-19: policy version `10c32300-4593-408a-a17d-02e1d70e4a2e`, submission `sub_635f34a0-e2c2-4fa6-97aa-9c864e93974c` placed with auto-champion, membership `lpm_e822de7f-1124-4b5f-b0ef-1025d46ae211` competing active and champion |
+| `qd1n:v89` | coalition champion | live API verification 2026-07-19: policy version `ca4a4e76-fd83-4c92-bf9f-f2440d1f867f`, submission `sub_d159efaa-f3f1-4641-acd0-51bba2e04a72` placed, membership `lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6` competing active and champion |
 
 Merit is replay-backed progress toward sustained FFA control. A policy earns no
 credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
