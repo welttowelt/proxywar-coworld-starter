@@ -51,6 +51,19 @@ test("local mirror auditor uses accepted booleans, stable ally IDs, and hold cla
       result: { accepted: true },
       reason: "h0d",
       auditBefore: { playerID: "odin-local" }
+    },
+    {
+      username: "odin free",
+      turnNumber: 700,
+      selectedActionKind: "hold",
+      legalActionIDsByKind: {
+        donate_troops: ["donate_troops:ally-local"],
+        donate_gold: ["donate_gold:ally-local"],
+        hold: ["hold"]
+      },
+      result: { accepted: true },
+      reason: "protected-only",
+      auditBefore: { playerID: "odin-local" }
     }
   ];
   writeFileSync(
@@ -80,10 +93,11 @@ test("local mirror auditor uses accepted booleans, stable ally IDs, and hold cla
   assert.match(report.runs[0].effective_config_sha256, /^[0-9a-f]{64}$/);
   assert.equal(report.runs[0].k1z_identity_map.katanasan, "ally-local");
   assert.equal(candidate.marker_count, 1);
-  assert.equal(candidate.accepted_decisions, 1);
+  assert.equal(candidate.accepted_decisions, 2);
   assert.equal(candidate.rejected_decisions, 1);
   assert.equal(candidate.k1z_harmful_actions, 1);
-  assert.equal(candidate.holds, 1);
+  assert.equal(candidate.holds, 2);
   assert.equal(candidate.unexplained_holds, 1);
   assert.equal(candidate.hold_details[0].classification, "unexplained");
+  assert.equal(candidate.hold_details[1].classification, "protected_k1z_only");
 });

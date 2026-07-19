@@ -153,7 +153,7 @@ const classifyHold = (decision, allyIDs) => {
   }
   const classified = tactical.map((action) => {
     const match = action.id.match(
-      /^(?:attack|target|embargo|alliance|quick_chat|emoji):([^:]+)/,
+      /^(?:attack|target|embargo|alliance|quick_chat|emoji|donate_troops|donate_gold):([^:]+)/,
     );
     const targetID = match?.[1]?.toLowerCase() ?? null;
     return {
