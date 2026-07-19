@@ -1574,3 +1574,38 @@ and replay hashes are recorded in
 The next nuclear experiment must reproduce the official slot-seven selector
 state in a faithful twelve-player fixture or state-replay harness before any
 live-policy change.
+
+## US1 World upgrade-stall escape rejection (2026-07-19)
+
+Round 516 reset Odin's official first-place streak to `0/1000`. Live
+`qd1n:v89` placed tenth at score zero across three World episodes with 37,044
+mean final tiles, one hold, and 194 fallbacks. Daveey won two episodes and
+Richard Higgins won the third.
+
+One Odin seat reached 25,519 tiles by roughly turn 8,000 and stayed flat
+through turn 28,200. It selected 194 upgrades, rotating nine City and Port
+IDs 21-22 times each with zero audit-confirmed level changes. At sampled
+checkpoints, 9-18 naval invasions plus a warship build were legal and the
+naval-control evaluator recommended action.
+
+US1 targeted only exact World below eight-percent territory after four
+consecutive flat upgrades, with a sixteen-decision cooldown. It stayed dormant
+when land attacks, safe builds, neutral boats, growing territory, non-World
+maps, or protected K1Z targets were present. Five focused tests and the full
+`151/151` suite passed. The rebuilt amd64 image passed a `34/34` qualifier
+with zero holds or rejections.
+
+The exact 120-step World seat swap reached US1 once. At turn 11,400, Coworld
+Starter 2 replaced another upgrade with an accepted eight-percent invasion
+toward Coworld Starter 4 at a 4.32 relative troop ratio. The immediate audit
+did not yet expose the transport launch. Across both orientations, candidate
+and parent tied exactly: score `1-1`, survivors `8-8`, and territory
+`651,609-651,609`; all `984/984` candidate decisions were accepted with zero
+holds or rejections.
+
+US1 is rejected at matched advantage. No hosted request, upload, submission,
+membership, or champion change followed. Full Round 516 evidence, hashes, and
+gate results are recorded in
+[`diagnosis-qd1n-world-upgrade-stall-us1-20260719.json`](diagnosis-qd1n-world-upgrade-stall-us1-20260719.json).
+The next arm should target the earlier collapse or pressure boundary, not add
+another late escape action that cannot move territory.

@@ -367,3 +367,26 @@ probe tests geometry and selector reach, not a faithful official outcome. It
 still supplies no causal evidence for PN1. The arm is rejected; no upload,
 submission, membership, or champion change followed, and live `qd1n:v89`
 remains exact.
+
+Round 516 reset the official streak to `0/1000`. On World, live `qd1n:v89`
+placed tenth at score zero across three completed episodes, averaged 37,044
+final tiles, and recorded one hold plus 194 fallbacks. Daveey won two episodes
+and Richard Higgins won one. Daveey leads the overall league at `31.5589`;
+Odin remains second at `22.7959`.
+
+The sharpest World failure was a surviving seat pinned near 25,519 tiles from
+turn 8,000 through 28,200. It selected 194 upgrades, rotating nine City and
+Port IDs 21-22 times each with zero audit-confirmed level changes. At turns
+10,000, 15,000, 20,000, and 27,000, nine to eighteen naval invasions plus a
+warship build remained legal while the policy's own naval-control evaluator
+recommended action.
+
+US1 interrupted only exact-World, sub-eight-percent, four-upgrade flat loops
+when no land attack, safe build, or neutral boat remained. It passed `5/5`
+focused and `151/151` total tests plus a `34/34` qualifier. The exact bounded
+World seat swap reached once: at turn 11,400, US1 replaced another upgrade
+with an accepted eight-percent invasion at a 4.32 troop ratio. The transport
+was not yet visible to the audit, and the matched result stayed identical:
+`1-1` score, `8-8` survivors, and `651,609-651,609` territory. US1 is rejected;
+no upload, hosted extension, submission, membership, or champion change
+followed. Live `qd1n:v89` remains exact.
