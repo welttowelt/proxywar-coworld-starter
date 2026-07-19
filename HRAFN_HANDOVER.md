@@ -15,7 +15,7 @@ the mailbox at `/Users/olifreuler/.stormforge/team-mailbox`.
 
 ## Live deployment truth
 
-Verified against the Coworld/Softmax API at `2026-07-19T09:54:18Z`:
+Verified against the Coworld/Softmax API at `2026-07-19T10:20:39Z`:
 
 - Player: `K1Z Hrafn`
 - Player ID: `ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863`
@@ -33,12 +33,15 @@ Verified against the Coworld/Softmax API at `2026-07-19T09:54:18Z`:
 - Exact live image: linux/amd64
   `sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d`.
 
-Source and deployment remain separate. Repository policy code still matches
-`38fca3074922dba35a5aa6083481f12874b564be` and is present in the local-only
-linux/amd64 image
-`sha256:816b734c205fad2452eaef3c076f27377939c4a78a4336fd63d7ae313b5be410`.
-Its embedded strategy and player SHA-256 values are `3642a1ce...` and
-`16922c32...`. No `hrafn-fylking:v6` upload exists, and that image has not been
+Source and deployment remain separate. The corrected VR1 candidate is source
+commit `7730b7536dcceed9a152cbf2f726f8324ca31ece` and local-only linux/amd64
+image `sha256:41fe4984ba3623f995d188a707c1d28ec72863a9bd782a097d74bf8d1448cc29`.
+Its embedded strategy and player SHA-256 values are `68dee34a...` and
+`16922c32...`. The quick-chat-only control is branch
+`rci/hrafn-v6-quickchat-control`, commit
+`35405a4468c821af7ec1c8f2ef64fb6def4c0c1d`, and local-only linux/amd64 image
+`sha256:b7c6c1fb8e5bbee02d80ba156187bab6bb5ca996b2a4f5ddc8cc871c0989646c`.
+No `hrafn-fylking:v6` upload exists, and neither local candidate has been
 submitted, placed, or made champion.
 
 The player hash above corrects the prior `1154115f...` ledger value, which is
@@ -61,12 +64,31 @@ Current field checkpoint:
   `3,600`: game-authored quick-chat actions were withdrawn, then the retry chose
   hold while attacks and a build remained submission-legal. Any challenger must
   eliminate this retry path without confounding its tactical comparison.
-- Round 530 is still running with v5 sealed. One of four World episodes has
-  completed: daveey won and Hrafn survived with `123` tiles. Hrafn recorded
-  `150/150` accepted decisions, zero holds, fallbacks, rejects, or K1Z harm,
-  `17` `rv3` executions, and two productive `dn1` transfers. The other three
-  episode requests are running, so there is no round verdict yet. Replay
-  SHA-256: `f06a7bafebc925dbc5d4fee9270cc99bf4debf27547283746001d903959f5801`.
+- Round 530 is still running with v5 sealed. Two of four World episodes have
+  completed. Daveey won the first and Hrafn survived with `123` tiles. The
+  second reached turn `50,400` without an outright winner; Hrafn was eliminated
+  with zero tiles while Juryoku held the top score. Across Hrafn's two replays,
+  all `338/338` decisions were accepted with zero holds, fallbacks, rejects, or
+  K1Z harm, `30` `rv3` executions, and `11` productive `dn1` transfers. The
+  other two episode requests are running, so there is no round verdict yet.
+  Replay SHA-256 values: `f06a7baf...` and `7cc46d31...`.
+
+## VR1 corrected pre-run state
+
+Odin returned `REVISE / NO RUN` in mailbox commit `02ea001`. The corrected
+candidate now requires the outsider to lead Hrafn by at least one percentage
+point, and a lock survives only from the immediately prior `vr1` decision.
+Both requested red cases failed before the fix and now pass; the candidate
+suite is `153/153`. The quick-chat-only control suite is `149/149`.
+
+The exact live parent, quick-chat control, and VR1 candidate images are pinned
+by immutable IDs. The canonical Coworld `0.1.8` manifest and seven fresh job
+requests are recorded in
+`experiments/preflight-hrafn-v6-vanguard-lock-vr1.json`. The design compares
+exact v5 against the quick-chat control for withdrawal-hold repair, then the
+control against VR1 for tactical attribution. Current promotion state is
+`SOURCE_READY=true`; `LOCAL_QUALIFIED` and every later state remain false.
+Odin rereview is required before runner acquisition or any qualifier.
 
 Coalition control:
 
@@ -116,7 +138,7 @@ max setting.
 - Public game text stays short leetspeak.
 - Do not leave background episodes without a durable owner and completion
   receipt.
-- Runner status was `free` at `2026-07-19T09:54:18Z`; no local Hrafn episode
+- Runner status was `free` at `2026-07-19T10:20:39Z`; no local Hrafn episode
   started because the v6 pre-run audit gate remains open.
 
 ## Autonomous promotion

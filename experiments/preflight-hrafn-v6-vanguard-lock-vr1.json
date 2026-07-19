@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-llm:hrafn-v6-vr1-amd64",
+    "parent_ref": "proxywar-agent-llm:hrafn-v5-qc-control-amd64",
+    "exact_deltas": [
+      "when an Odin support transfer is legal, replace it with a marked attack only if the strongest outsider leads Hrafn by at least one percentage point and has at least a 1.35 relative troop ratio; retain that exact front only while the immediately prior decision is vr1, the outsider still leads, and the ratio remains at least 1.10"
+    ],
+    "source_commit": "7730b7536dcceed9a152cbf2f726f8324ca31ece",
+    "strategy_sha256": "68dee34a502aa0f09bc0d6baa42986f1455b7592d7396213280cd2649ba44bb4",
+    "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
+    "image_id": "sha256:41fe4984ba3623f995d188a707c1d28ec72863a9bd782a097d74bf8d1448cc29",
+    "architecture": "linux/amd64"
+  },
+  "factorial_control": {
+    "policy_ref": "proxywar-agent-llm:hrafn-v5-qc-control-amd64",
+    "branch": "rci/hrafn-v6-quickchat-control",
+    "source_commit": "35405a4468c821af7ec1c8f2ef64fb6def4c0c1d",
+    "exact_parent_commit": "0c151570f7e650a32a5705ff71692aa930012097",
+    "exact_delta": "suppress game-authored quick-chat and emoji selections while leaving the exact live v5 tactical policy unchanged",
+    "strategy_sha256": "29b54cb3669243276aa4e424f5f3713f4cb05c0479b830cd44aada7aef8a8188",
+    "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
+    "image_id": "sha256:b7c6c1fb8e5bbee02d80ba156187bab6bb5ca996b2a4f5ddc8cc871c0989646c",
+    "architecture": "linux/amd64",
+    "tests_passed": 149
+  },
+  "exact_live_parent": {
+    "policy_ref": "hrafn-fylking:v5",
+    "policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+    "source_commit": "0c151570f7e650a32a5705ff71692aa930012097",
+    "strategy_sha256": "7620684b07c9dc9c633d284e817348c92881b43724291f991296c7a17ac20807",
+    "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
+    "image_id": "sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d",
+    "architecture": "linux/amd64"
+  },
+  "hypothesis": "a bounded leader-ahead vanguard lock converts a legal Odin transfer into pressure on a reachable runaway outsider without targeting a trailing outsider, reviving a stale front, creating a hold or reject, or harming K1Z",
+  "mechanism": {
+    "marker": "vr1",
+    "prior_reachable_decisions": 1,
+    "source": "Round 529 Pangaea turn 7400: Hrafn 30 percent, daveey 46 percent, 1.61 relative troop ratio, legal 10/25/40 attacks, and live v5 donated 338869 troops to Odin",
+    "docker_marker_reach": "pending qualifier"
+  },
+  "runtime": {
+    "coworld_version": "0.1.30",
+    "coworld_id": "cow_15c39dab-eac1-4284-bf3e-bd723d4c2755",
+    "coworld_game_version": "0.1.8",
+    "manifest_path": "/private/tmp/hrafn-vr1-coworld/cow_15c39dab-eac1-4284-bf3e-bd723d4c2755/coworld_manifest.json",
+    "manifest_file_sha256": "f5e6b4dd247b2b2e534a415d293babab7fd655d44b2004db4257a2df3a01dab0",
+    "manifest_canonical_sha256": "a43dafa9bb7e68a5c708b3fc6a44e80097e04e1da07131d62a00b7a8a445d86d",
+    "job_generator": "scripts/generate-hrafn-vr1-jobs.mjs"
+  },
+  "qualifier_setup": {
+    "map": "Pangaea",
+    "seed": 52900,
+    "request_path": "/private/tmp/hrafn-vr1-jobs/qualifier-vr1.json",
+    "request_sha256": "1003d8e0b55538c5ab912a738207280d44f05e984be9ab722b1226e0f8ee8ca2",
+    "game_config_sha256": "bcf5abb8003d86ae91eb37a592175194294a27d87e004aa93e4cdde4cea18451",
+    "required_result": "replay-visible vr1 reach, every Hrafn decision accepted, zero holds, zero rejects, zero fallbacks, and zero K1Z harm",
+    "status": "pending pre-run rereview"
+  },
+  "matched_setup": {
+    "design": "three-arm factorial: exact live v5 versus quick-chat-suppressed control isolates the withdrawal-hold repair; quick-chat-suppressed control versus vr1 candidate isolates the tactical effect",
+    "map": "Pangaea",
+    "orientations": {
+      "a": {
+        "seed": 52901,
+        "game_config_sha256": "424bfb5ba50f7b96b57fcd9ea08317af32315ef6b8555c3e910cd22d8849bff9",
+        "exact_request_sha256": "6a3bb6c1effbd5d01bd522c12b07549313557011688aa6c422844858075fbb64",
+        "control_request_sha256": "c5d911b9aafdb0a07b01f7daf1374fee54586e7e11e5d9176ec6eb446e87403d",
+        "candidate_request_sha256": "e49bfc30bf2ee1bce5b7f7c62d00d82398fa20a8a9dd45f3ea5960ef4bebeb4d"
+      },
+      "b": {
+        "seed": 52902,
+        "game_config_sha256": "a4e3c1b0a978bfda94b8d52a83791c6ff04b11696e2e0c9e23298e32d850727b",
+        "exact_request_sha256": "4a118ed1a42527e4f958f9dd9eeb2f6add11c4769e57e36f632c43c0a8d9fcf8",
+        "control_request_sha256": "dc008fd6e821678cfa095a029e2b3be70b729c2a1b2bcd1855eb02f7357c5d83",
+        "candidate_request_sha256": "bc7bc93dbd0cb1a15b611e20c82a45de2fee59bce2f75b6b3abd4dafa87db3a3"
+      }
+    },
+    "request_directory": "/private/tmp/hrafn-vr1-jobs",
+    "status": "not run"
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "wins": 0,
+    "self_play": false,
+    "evaluated_seats": 1,
+    "accepted_decisions": 0,
+    "holds": 0,
+    "unexplained_holds": 0,
+    "rejections": 0,
+    "mechanism_reached": true,
+    "source_fixture_only": true,
+    "candidate_tests_passed": 153,
+    "red_failures_before_fix": 2,
+    "red_cases": [
+      "vr1 cannot replace a transfer when the outsider trails Hrafn",
+      "vr1 stays terminated after a floor break and sub-opening recovery"
+    ],
+    "qualifier_status": "not run"
+  },
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    },
+    "result": {
+      "status": "pending",
+      "episodes": 0,
+      "wins": 0,
+      "holds": 0,
+      "rejections": 0,
+      "mechanism_executions": 0,
+      "planner_degradation_rule_passed": false
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false,
+    "result": {
+      "status": "pending",
+      "episodes": 0,
+      "wins": 0,
+      "holds": 0,
+      "rejections": 0
+    }
+  },
+  "promotion_states": {
+    "SOURCE_READY": true,
+    "LOCAL_QUALIFIED": false,
+    "DIAGNOSTIC_UPLOADED": false,
+    "HOSTED_PASSED": false,
+    "REGRESSION_PASSED": false,
+    "AUDIT_APPROVED": false,
+    "SUBMITTED": false,
+    "PLACED": false,
+    "CHAMPION_VERIFIED": false,
+    "ROUND_CONFIRMED": false
+  },
+  "stop_conditions": [
+    "Odin does not approve the corrected pre-run packet",
+    "zero replay-visible vr1 reach in the approved qualifier",
+    "any rejected decision, unexplained hold, fallback, or harmful action against K1Z",
+    "any source, image, manifest, game-config, or request hash mismatch",
+    "quick-chat control does not remove the live withdrawal-hold class",
+    "vr1 has no matched finish advantage over the quick-chat control after direct reach"
+  ],
+  "verdict": "SOURCE_READY only: corrected source, isolated control, amd64 images, canonical manifest, and fresh factorial request hashes are pinned for Odin rereview. No qualifier, matched episode, hosted request, upload, submission, membership, or champion action has run."
+}

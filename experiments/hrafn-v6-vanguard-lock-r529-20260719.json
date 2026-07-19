@@ -2,7 +2,7 @@
   "schema_version": 1,
   "record_type": "hrafn_reconciliation_and_pre_run_hypothesis",
   "recorded_at": "2026-07-19T09:15:05Z",
-  "reconciled_at": "2026-07-19T09:54:18Z",
+  "reconciled_at": "2026-07-19T10:20:39Z",
   "lane": "hrafn-fylking",
   "live_baseline": {
     "label": "hrafn-fylking:v5",
@@ -19,26 +19,39 @@
     "is_champion": true
   },
   "candidate": {
-    "local_label": "proxywar-agent-llm:hrafn-v6-amd64",
+    "local_label": "proxywar-agent-llm:hrafn-v6-vr1-amd64",
     "tactical_source_commit": "f35de64ecc2edb7fc5ef7b07741e7cf2cf0c3a4f",
-    "image_source_commit": "38fca3074922dba35a5aa6083481f12874b564be",
-    "operator_head": "bb7d9fffc862e5d51cf24f38d1731630275b4f27",
-    "strategy_sha256": "3642a1ce04244285f71e1c66fa5c37165f276f4660bd4188b42956ff7165c463",
+    "corrected_source_commit": "7730b7536dcceed9a152cbf2f726f8324ca31ece",
+    "image_source_commit": "7730b7536dcceed9a152cbf2f726f8324ca31ece",
+    "operator_head": "7730b7536dcceed9a152cbf2f726f8324ca31ece",
+    "strategy_sha256": "68dee34a502aa0f09bc0d6baa42986f1455b7592d7396213280cd2649ba44bb4",
     "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
-    "image_id": "sha256:816b734c205fad2452eaef3c076f27377939c4a78a4336fd63d7ae313b5be410",
+    "image_id": "sha256:41fe4984ba3623f995d188a707c1d28ec72863a9bd782a097d74bf8d1448cc29",
     "architecture": "linux/amd64",
     "tactical_marker": "vr1",
-    "mandatory_safety_delta": "suppress game-authored quick-chat selections that can violate Hrafn's short-leet public-text contract",
+    "mandatory_safety_delta": "suppress game-authored quick-chat selections that can violate Hrafn's short-leet public-text contract; isolated from VR1 by a dedicated factorial control",
     "uploaded": false,
     "submitted": false,
     "member": false,
     "champion": false
   },
+  "factorial_control": {
+    "local_label": "proxywar-agent-llm:hrafn-v5-qc-control-amd64",
+    "branch": "rci/hrafn-v6-quickchat-control",
+    "source_commit": "35405a4468c821af7ec1c8f2ef64fb6def4c0c1d",
+    "exact_parent_commit": "0c151570f7e650a32a5705ff71692aa930012097",
+    "exact_delta": "suppress game-authored quick-chat and emoji selections while leaving the exact live v5 tactical policy unchanged",
+    "strategy_sha256": "29b54cb3669243276aa4e424f5f3713f4cb05c0479b830cd44aada7aef8a8188",
+    "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
+    "image_id": "sha256:b7c6c1fb8e5bbee02d80ba156187bab6bb5ca996b2a4f5ddc8cc871c0989646c",
+    "architecture": "linux/amd64",
+    "tests_passed": 149
+  },
   "hypothesis": {
-    "guard": "when dn1 is legal, Hrafn is between 6% and 35% share, and the strongest outsider has a legal direct attack at at least 1.35 relative troop ratio, attack that leader before donating; retain the marked front while its ratio stays at least 1.10",
+    "guard": "when dn1 is legal, Hrafn is between 6% and 35% share, and the strongest outsider leads Hrafn by at least one percentage point with a legal direct attack at at least 1.35 relative troop ratio, attack that leader before donating; retain the exact marked front only when the immediately prior decision was vr1, the outsider still leads, and its ratio stays at least 1.10",
     "expected_action_change": "replace an otherwise selected Odin troop donation with a bounded attack on the current outsider leader",
     "observable_marker": "vr1",
-    "success_metric": "replay-visible vr1 reach with zero holds, rejects, fallbacks, or K1Z harm and a mirrored finish advantage over exact v5",
+    "success_metric": "replay-visible vr1 reach with zero holds, rejects, fallbacks, or K1Z harm and a mirrored finish advantage over the quick-chat-only control; exact-v5 versus control separately proves withdrawal-hold repair",
     "failure_condition": "zero vr1 reach, any runtime or coalition-contract failure, or no matched finish advantage after direct reach"
   },
   "field_checkpoint": {
@@ -168,46 +181,99 @@
   "round_530_partial": {
     "round_id": "round_4b1d63a2-8d30-4e3e-936f-e74fb93da962",
     "round_status": "running",
-    "completed_episode_requests": 1,
-    "running_episode_requests": 3,
-    "episode": {
-      "episode_request_id": "ereq_d7f48882-f0af-40f9-a903-53a2e86e03ea",
-      "map": "World",
-      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/ff85b140-7fbc-4fb3-ba68-e2bf3651e89e.replay",
-      "replay_sha256": "f06a7bafebc925dbc5d4fee9270cc99bf4debf27547283746001d903959f5801",
-      "winner": "daveey",
-      "hrafn_slot": 10,
-      "hrafn_tiles": 123,
-      "hrafn_survived": true,
-      "hrafn_decisions": 150,
-      "accepted": 150,
+    "completed_episode_requests": 2,
+    "running_episode_requests": 2,
+    "episodes": [
+      {
+        "episode_request_id": "ereq_d7f48882-f0af-40f9-a903-53a2e86e03ea",
+        "map": "World",
+        "replay_url": "https://softmax-public.s3.amazonaws.com/replays/ff85b140-7fbc-4fb3-ba68-e2bf3651e89e.replay",
+        "replay_sha256": "f06a7bafebc925dbc5d4fee9270cc99bf4debf27547283746001d903959f5801",
+        "winner": "daveey",
+        "hrafn_slot": 10,
+        "hrafn_tiles": 123,
+        "hrafn_survived": true,
+        "hrafn_decisions": 150,
+        "accepted": 150,
+        "holds": 0,
+        "fallbacks": 0,
+        "rejections": 0,
+        "k1z_harm": 0,
+        "productive_dn1": 2,
+        "rv3_executions": 17
+      },
+      {
+        "episode_request_id": "ereq_ad87fcad-ac2b-40a5-b82b-3048228df09c",
+        "map": "World",
+        "replay_url": "https://softmax-public.s3.amazonaws.com/replays/f0d79148-b790-49e2-8fa7-0b5c54a1e4ec.replay",
+        "replay_sha256": "7cc46d311328aec63fdc128de52e555d98fe16565ece400a9ff975906364171d",
+        "winner": null,
+        "turn_count": 50400,
+        "top_score_player": "K1Z juryoku-koku",
+        "hrafn_slot": 9,
+        "hrafn_tiles": 0,
+        "hrafn_survived": false,
+        "hrafn_decisions": 188,
+        "accepted": 188,
+        "holds": 0,
+        "fallbacks": 0,
+        "rejections": 0,
+        "k1z_harm": 0,
+        "productive_dn1": 9,
+        "rv3_executions": 13
+      }
+    ],
+    "aggregate": {
+      "episodes": 2,
+      "hrafn_wins": 0,
+      "accepted": 338,
+      "decisions": 338,
       "holds": 0,
       "fallbacks": 0,
       "rejections": 0,
       "k1z_harm": 0,
-      "productive_dn1": 2,
-      "rv3_executions": 17
+      "productive_dn1": 11,
+      "rv3_executions": 30
     },
     "verdict": "partial live baseline only; no round or promotion verdict"
   },
   "tests": {
-    "passed": 151,
-    "failed": 0
+    "passed": 153,
+    "failed": 0,
+    "red_failures_before_fix": 2,
+    "red_cases": [
+      "vr1 cannot replace a transfer when the outsider trails Hrafn",
+      "vr1 stays terminated after a floor break and sub-opening recovery"
+    ]
   },
   "identity_reconciliation": {
-    "verified_at": "2026-07-19T09:36:57Z",
+    "verified_at": "2026-07-19T10:20:39Z",
     "prior_incorrect_player_sha256": "1154115fdf5ebb89fa170bba6060d5a730615970d4cc23c00dbfa97e42b31563",
     "prior_hash_belongs_to": "llm-player.mjs",
     "verified_hrafn_player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
     "verified_against": [
       "live v5 image sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d",
-      "candidate v6 image sha256:816b734c205fad2452eaef3c076f27377939c4a78a4336fd63d7ae313b5be410",
+      "candidate v6 image sha256:41fe4984ba3623f995d188a707c1d28ec72863a9bd782a097d74bf8d1448cc29",
+      "quick-chat control image sha256:b7c6c1fb8e5bbee02d80ba156187bab6bb5ca996b2a4f5ddc8cc871c0989646c",
       "exact v5 source commit 0c151570f7e650a32a5705ff71692aa930012097",
-      "candidate source commit 38fca3074922dba35a5aa6083481f12874b564be"
+      "candidate source commit 7730b7536dcceed9a152cbf2f726f8324ca31ece",
+      "quick-chat control source commit 35405a4468c821af7ec1c8f2ef64fb6def4c0c1d"
     ]
   },
+  "odin_pre_run_review": {
+    "mailbox_commit": "02ea001",
+    "verdict": "REVISE / NO RUN",
+    "corrections": [
+      "require the outsider to lead Hrafn before VR1 can replace dn1",
+      "terminate the VR1 lock after any intervening decision or failed continuation guard",
+      "isolate quick-chat suppression with an exact-v5/control/candidate factorial design"
+    ],
+    "corrections_applied": true,
+    "rereview_status": "pending"
+  },
+  "preflight_record": "experiments/preflight-hrafn-v6-vanguard-lock-vr1.json",
   "promotion_states": {
-    "SOURCE_READY": false,
+    "SOURCE_READY": true,
     "LOCAL_QUALIFIED": false,
     "DIAGNOSTIC_UPLOADED": false,
     "HOSTED_PASSED": false,
@@ -219,10 +285,10 @@
     "ROUND_CONFIRMED": false
   },
   "blocked_on": [
-    "Odin pre-run verdict and runner coordination",
-    "pinned candidate-versus-exact-v5 A/B requests",
-    "Coworld qualifier and Docker-level vr1 reach",
-    "candidate qualifier and matched proof that quick-chat suppression eliminates the two live-v5 withdrawal holds without confounding the tactical result"
+    "Odin rereview approval and runner coordination",
+    "Coworld qualifier with Docker-level vr1 reach",
+    "exact-v5 versus quick-chat-control proof for the withdrawal-hold repair",
+    "quick-chat-control versus candidate matched tactical advantage after direct vr1 reach"
   ],
-  "verdict": "PRE-RUN ONLY: replay-backed vr1 opportunity and exact images are pinned; NO RUN, NO UPLOAD, NO SUBMIT"
+  "verdict": "SOURCE_READY ONLY: Odin's revisions are applied, isolated images and fresh factorial requests are pinned, and rereview is pending; NO RUN, NO UPLOAD, NO SUBMIT"
 }

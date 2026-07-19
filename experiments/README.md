@@ -3,32 +3,39 @@
 ## Hrafn v6 vanguard-lock preflight, 2026-07-19
 
 The live parent is `hrafn-fylking:v5`, exact source `0c151570`, exact
-linux/amd64 image `sha256:3f427fd3...`. Two completed Round 529 Pangaea
-episodes kept the runtime contract clean (`205/205` accepted, zero holds,
-fallbacks, rejects, or K1Z harm) but produced no Hrafn score. Auri won one;
-daveey won the other.
+linux/amd64 image `sha256:3f427fd3...`. Round 529 supplies a direct tactical
+cell and a separate quick-chat withdrawal-hold defect.
 
 The daveey replay gives `vr1` a direct causal cell. At turn 7,400 Hrafn held
 30% of land, daveey led with 46%, daveey was the only attackable rival at a
 1.61 relative troop ratio, and 10/25/40 attacks were legal. Live v5 instead
-donated 338,869 troops to Odin. The local candidate moves a legal leader attack
-ahead of that donation and emits `vr1`, then retains the front above a 1.10
-continuation floor.
+donated 338,869 troops to Odin. The corrected candidate moves a legal leader
+attack ahead of that donation only when the outsider leads Hrafn by at least
+one percentage point. It retains that exact front only when the immediately
+prior decision was `vr1` and the ratio remains at least 1.10.
 
-The exact evidence and state separation are in
-`hrafn-v6-vanguard-lock-r529-20260719.json`. The candidate is not locally
-qualified: no Coworld qualifier or matched A/B pair has run, Docker-level
-`vr1` reach is unproven, and the local image also contains mandatory public
-quick-chat suppression. Hosted, regression, upload, submission, membership,
-and champion states remain closed.
+Odin's first pre-run verdict was `REVISE / NO RUN`. Both requested red cases
+failed before the correction and now pass. The candidate at commit `7730b753`
+passes `153/153` tests and is pinned to amd64 image `sha256:41fe4984...`.
+Quick-chat suppression is isolated on branch `rci/hrafn-v6-quickchat-control`
+at commit `35405a44`; that control passes `149/149` and is pinned to image
+`sha256:b7c6c1fb...`.
 
-Round 530 added one completed live World replay while the other three episode
-requests remained running. Daveey won; Hrafn survived with 123 tiles. Hrafn's
-`150/150` decisions were accepted with zero holds, fallbacks, rejects, or K1Z
-harm, and the replay contained 17 `rv3` executions plus two productive `dn1`
-transfers. This is partial baseline evidence only and does not clear the v6
-pre-run, qualifier, or matched gates. Replay SHA-256:
-`f06a7bafebc925dbc5d4fee9270cc99bf4debf27547283746001d903959f5801`.
+The canonical Coworld `0.1.8` manifest and fresh requests are pinned in
+`preflight-hrafn-v6-vanguard-lock-vr1.json`. The factorial design compares
+exact v5 against the quick-chat control to isolate withdrawal-hold repair, then
+the control against VR1 to isolate the tactical effect. The candidate is
+`SOURCE_READY` only: Odin rereview, Coworld qualification, matched proof,
+hosted `4/4`, regression `20/20`, upload, submission, membership, and champion
+states remain closed.
+
+Round 530 has two completed live World replays while the other two episode
+requests remain running. Daveey won the first; the second reached turn 50,400
+without an outright winner. Hrafn's `338/338` decisions were accepted with
+zero holds, fallbacks, rejects, or K1Z harm, and the replays contain 30 `rv3`
+executions plus 11 productive `dn1` transfers. This is partial baseline
+evidence only and does not clear the v6 pre-run, qualifier, or matched gates.
+Replay SHA-256 values: `f06a7baf...` and `7cc46d31...`.
 
 ## Pangaea seat-2 A/B, 2026-07-12
 
