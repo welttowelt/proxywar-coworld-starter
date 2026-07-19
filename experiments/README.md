@@ -1708,3 +1708,18 @@ inheritance. The next candidate must originate from a current official replay
 cell that isolates an untested early-opening difference. Full immutable inputs,
 artifact hashes, and result fields are in
 [`audit-qd1n-a1-silent-opening-pangaea-20260720.json`](audit-qd1n-a1-silent-opening-pangaea-20260720.json).
+
+## Opening-commitment overlap check (2026-07-20)
+
+The current engine frequently selects the 10-percent Terra Nullius action while
+20 and 35 percent are legal: 291 cached Odin decisions across 73 replays,
+including 270 calm, tempo-recommended opening states. This is a real behavior,
+but not a fresh candidate. Rejected GR1 already changed the same choice to the
+large legal commitment during that calm opening window (35 percent when the
+menu is 10/20/35), and EF2 separately rejected a flat 35-percent opening
+grind. A 20- or 35-percent reimplementation would therefore duplicate a
+disproved causal variable without a new boundary or replay-derived reason.
+
+No source branch opens from this observation. The immutable census, source
+anchors, overlap checks, and required next evidence are in
+[`audit-qd1n-opening-commitment-overlap-20260720.json`](audit-qd1n-opening-commitment-overlap-20260720.json).

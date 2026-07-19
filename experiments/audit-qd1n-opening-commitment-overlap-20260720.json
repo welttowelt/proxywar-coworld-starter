@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-20",
+  "policy": "qd1n:v89",
+  "status": "NO_NEW_ARM",
+  "question": "Should v89 replace its calm opening 10-percent Terra Nullius choices with a larger commitment?",
+  "current_source": {
+    "function": "chooseNeutralAttack",
+    "cadence": [10, 10, 20, 35],
+    "source_lines": "strategy-engine.mjs:598-603"
+  },
+  "replay_census": {
+    "cache_scope": "all cached Odin replays available on 2026-07-20",
+    "replays_with_case": 73,
+    "selected_10_with_10_20_35_legal": 291,
+    "opening_tempo_recommended": 278,
+    "calm_opening_tempo_recommended": 270,
+    "observation": "The fixed 10-percent choice is frequent and real, not a telemetry artifact."
+  },
+  "prior_direct_test": {
+    "arm": "GR1 large-commitment opening grind",
+    "source_commit": "73ce9aeb",
+    "rejection_commit": "e7b0eb83f140dff1eb998b25355f3312aca82d13",
+    "behavior": "During the same calm opening window, GR1 selected 25, then 35, then 40 percent. When only 10, 20, and 35 were legal, it selected 35 percent.",
+    "result": "Rejected after matched live-coalition regression."
+  },
+  "overlap_checks": [
+    "EF2 already tested a flat 35-percent opening grind and lost its local mirror.",
+    "OE1 already tested early economic and optional-pressure ordering and was rejected.",
+    "EF1 already tested opening probe suppression and was rejected."
+  ],
+  "decision": "Do not create a 20- or 35-percent opening-commitment variant. It changes the same causal variable already tested by GR1 and EF2 without new evidence for a different boundary.",
+  "next_required_evidence": "A recent official loss must identify a different early action variable, its legal replacement, replay marker, expected metric, and disproof condition before a new source branch opens."
+}

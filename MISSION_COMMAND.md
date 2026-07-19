@@ -23,8 +23,12 @@ tiles. `qd1n:v89` remains the sole live control.
 
 The next main effort is replay reconnaissance: identify one early-opening
 action difference in a recent official Odin loss that has not already failed a
-matched gate. No code branch opens before that evidence names the guard,
-marker, expected action change, and stop condition.
+matched gate. The tempting fixed-10-percent neutral-expansion change is closed
+by direct overlap with rejected GR1 and EF2; its census and no-branch decision
+are recorded in
+`experiments/audit-qd1n-opening-commitment-overlap-20260720.json`. No code
+branch opens before new evidence names the guard, marker, expected action
+change, and stop condition.
 
 ## Supporting effort
 
