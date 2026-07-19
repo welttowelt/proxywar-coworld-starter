@@ -1,27 +1,27 @@
 player_name,policy_version,won,rival_attacks,target_switches,switch_rate_pct,mean_attack_ratio,mean_attack_percent
-daveey,22,true,1260,414,33.33,3.68,29.9
+daveey,22,true,1153,383,33.69,3.76,29.7
 Richard Higgins,7,true,591,173,29.62,6.75,31.7
 Auri,42,true,408,134,33.33,4.13,29.4
-odin free,89,true,273,76,28.36,5.86,20.5
+odin free,89,true,281,82,29.71,6.47,20.0
 K1Z juryoku-koku,3,true,263,75,29.41,5.3,36.0
 daveey,24,true,251,69,27.94,5.78,29.3
 Sefirot,28,true,217,94,43.72,2.96,31.1
 Ron @ SWGY,1,true,187,84,45.65,3.5,22.8
 K1Z katanasan,39,true,102,14,14.29,8.14,38.7
 RelhAlpha,3,true,75,16,21.62,5.36,28.6
-Richard Higgins,7,false,5091,1084,21.53,2.08,29.6
-RelhAlpha,3,false,4792,1037,21.99,2.3,30.1
-daveey,22,false,1913,531,28.41,2.11,24.8
-Auri,42,false,1581,457,30.26,2.11,29.3
-Ron @ SWGY,1,false,1575,615,40.95,2.1,18.7
-docxology,1,false,1159,34,3.15,0.55,10.0
-James Boggs,1,false,1135,162,15.23,0.91,10.1
-odin free,89,false,1014,246,25.89,4.44,18.3
-Sefirot,28,false,755,259,35.48,1.9,30.4
+Richard Higgins,7,false,5163,1111,21.75,2.04,29.7
+RelhAlpha,3,false,4810,1043,22.03,2.05,29.9
+daveey,22,false,1785,495,28.4,2.13,24.9
+Auri,42,false,1607,466,30.32,2.2,29.1
+Ron @ SWGY,1,false,1606,631,41.13,2.1,18.7
+docxology,1,false,1149,34,3.17,0.55,10.0
+James Boggs,1,false,1140,162,15.14,0.88,10.1
+odin free,89,false,950,232,26.19,4.13,18.3
+Sefirot,28,false,820,286,36.07,1.96,30.7
 Sefirot,27,false,738,268,37.96,2.6,29.6
-K1Z Hrafn,5,false,579,72,13.21,4.18,13.4
-daveey,24,false,412,139,34.41,7.64,26.1
-K1Z juryoku-koku,3,false,384,74,21.7,5.24,35.9
-Calc,27,false,323,76,26.57,3.26,17.0
-K1Z katanasan,39,false,240,56,27.32,5.21,34.5
-Sefirot,26,false,199,61,32.45,1.86,29.8
+K1Z Hrafn,5,false,649,73,11.93,4.1,13.5
+daveey,24,false,557,170,31.08,6.09,26.3
+K1Z juryoku-koku,3,false,388,76,21.97,5.17,35.4
+Calc,27,false,303,72,26.97,3.37,17.2
+K1Z katanasan,39,false,237,54,26.6,4.15,35.2
+Sefirot,26,false,155,51,34.46,1.79,29.4
