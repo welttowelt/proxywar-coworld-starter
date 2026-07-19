@@ -797,26 +797,62 @@ terminate_recorded_child() {
 }
 
 docker_list_all() {
-  "$DOCKER_BIN" ps -aq
+  # Docker Desktop can retain uninspectable "created" summary rows after the
+  # underlying container object is gone. Keep state and summary mounts only to
+  # identify that narrow 404 case; every inspectable row still uses exact
+  # mount sources from `docker inspect`.
+  "$DOCKER_BIN" ps -a --no-trunc --format '{{.ID}}\t{{.State}}\t{{.Mounts}}'
 }
 
 scan_matching_containers() {
-  local listed container mounts mount output
-  local -a containers mount_lines
+  local listed row remainder container container_state mount_summary
+  local mounts inspect_error mount output
+  local -a rows mount_lines
   MATCHED_CONTAINERS=()
   listed="$(docker_list_all)" || {
     print -r -- "docker list failed; preserving lease" >&2
     return 69
   }
-  containers=("${(@f)listed}")
-  for container in "${containers[@]}"; do
-    [[ -n "$container" ]] || continue
-    mounts="$("$DOCKER_BIN" inspect \
-      --format '{{range .Mounts}}{{println .Source}}{{end}}' \
-      "$container")" || {
-      print -r -- "docker inspect failed:${container}; preserving lease" >&2
+  rows=("${(@f)listed}")
+  for row in "${rows[@]}"; do
+    [[ -n "$row" ]] || continue
+    [[ "$row" == *$'\t'* ]] || {
+      print -r -- "invalid docker list row; preserving lease" >&2
       return 69
     }
+    container="${row%%$'\t'*}"
+    remainder="${row#*$'\t'}"
+    [[ "$remainder" == *$'\t'* ]] || {
+      print -r -- "invalid docker list fields; preserving lease" >&2
+      return 69
+    }
+    container_state="${remainder%%$'\t'*}"
+    mount_summary="${remainder#*$'\t'}"
+    [[ -n "$container" ]] || {
+      print -r -- "empty docker container id; preserving lease" >&2
+      return 69
+    }
+    [[ -n "$container_state" ]] || {
+      print -r -- "empty docker container state; preserving lease" >&2
+      return 69
+    }
+    if ! mounts="$("$DOCKER_BIN" inspect \
+      --format '{{range .Mounts}}{{println .Source}}{{end}}' \
+      "$container" 2>&1)"; then
+      inspect_error="${mounts:l}"
+      # Docker Desktop 29 can list a persistent, mount-free Created row whose
+      # object endpoint returns 404. Ignore only that exact contradiction.
+      # A mount-bearing summary, another state, or another inspect error stays
+      # fail-closed.
+      if [[ -z "$mount_summary" && "$container_state" == "created" &&
+        ( "$inspect_error" == *"no such object"* ||
+          "$inspect_error" == *"no such container"* ) ]]; then
+        emit_event "docker_ghost_ignored" "container=${container[1,12]}"
+        continue
+      fi
+      print -r -- "docker inspect failed:${container}; preserving lease" >&2
+      return 69
+    fi
     mount_lines=("${(@f)mounts}")
     for mount in "${mount_lines[@]}"; do
       for output in "${CLAIM_PATHS[@]}"; do

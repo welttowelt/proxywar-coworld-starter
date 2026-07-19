@@ -93,7 +93,16 @@ function makeFakeDocker({ directory }, containers = [], failure = "") {
     const record = path.join(containerRoot, container.id);
     mkdirSync(record);
     writeFileSync(path.join(record, "mounts"), `${container.mounts.join("\n")}\n`);
+    writeFileSync(
+      path.join(record, "summary-mounts"),
+      `${(container.summaryMounts ?? container.mounts).join(",")}\n`,
+    );
     writeFileSync(path.join(record, "running"), `${container.running}\n`);
+    writeFileSync(
+      path.join(record, "state"),
+      `${container.state ?? (container.running ? "running" : "exited")}\n`,
+    );
+    if (container.inspectFails) writeFileSync(path.join(record, "inspect-fails"), "");
   }
   const executable = path.join(dockerRoot, "docker");
   writeFileSync(executable, `#!/bin/zsh
@@ -105,7 +114,14 @@ case "$command_name" in
   ps)
     [[ "$failure" != "list" ]] || exit 71
     for record in "$root"/containers/*(N); do
-      [[ -d "$record" ]] && print -r -- "\${record:t}"
+      [[ -d "$record" ]] || continue
+      if [[ "$*" == *".Mounts"* ]]; then
+        mount_summary="$(< "$record/summary-mounts")"
+        state="$(< "$record/state")"
+        print -r -- "\${record:t}\t$state\t$mount_summary"
+      else
+        print -r -- "\${record:t}"
+      fi
     done
     ;;
   inspect)
@@ -113,6 +129,10 @@ case "$command_name" in
     [[ "$failure" != "inspect" ]] || exit 72
     record="$root/containers/$container"
     [[ -d "$record" ]] || exit 1
+    if [[ -e "$record/inspect-fails" ]]; then
+      print -r -- "Error response from daemon: No such object: $container" >&2
+      exit 72
+    fi
     if [[ "$*" == *".State.Running"* ]]; then
       cat "$record/running"
     else
@@ -579,6 +599,89 @@ test("Docker list, inspect, stop, and remove failures preserve the exact lock an
       existsSync(path.join(output, ".proxywar-runner-claim")), true, failure);
     const report = JSON.parse(invoke(context.state, ["status", "--json"]).stdout);
     assert.equal(report.state, "reaping", failure);
+  }
+});
+
+test("a Created empty-summary Docker 404 ghost cannot block exact stale cleanup", (t) => {
+  const context = fixture();
+  const { directory, state } = context;
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const output = path.join(directory, "partial-output");
+  writeV2Lock(state, { outputs: [output] });
+  writeFileSync(path.join(output, "data.txt"), "partial");
+  const docker = makeFakeDocker(context, [
+    {
+      id: "desktop-ghost",
+      mounts: [],
+      summaryMounts: [],
+      running: false,
+      state: "created",
+      inspectFails: true,
+    },
+  ]);
+
+  const result = invoke(
+    state, ["reap-stale", "odin", "stale-run", "stale-token"], docker.env);
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /containers=0/);
+  assert.equal(existsSync(path.join(state, "runner.lock")), false);
+  assert.equal(existsSync(output), false);
+  assert.equal(existsSync(path.join(docker.root, "containers", "desktop-ghost")), true);
+  assert.equal(existsSync(docker.log), false);
+});
+
+test("an empty mount summary never hides an exact matching inspected mount", (t) => {
+  const context = fixture();
+  const { directory, state } = context;
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const output = path.join(directory, "partial-output");
+  writeV2Lock(state, { outputs: [output] });
+  const docker = makeFakeDocker(context, [
+    {
+      id: "summary-mismatch",
+      mounts: [output],
+      summaryMounts: [],
+      running: false,
+      state: "exited",
+    },
+  ]);
+
+  const result = invoke(
+    state, ["reap-stale", "odin", "stale-run", "stale-token"], docker.env);
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /containers=1/);
+  assert.equal(existsSync(path.join(state, "runner.lock")), false);
+  assert.match(readFileSync(docker.log, "utf8"), /rm:summary-mismatch/);
+});
+
+test("empty-summary inspect failures outside the narrow Created 404 stay fail-closed", (t) => {
+  const fixtures = [];
+  t.after(() => {
+    for (const item of fixtures) rmSync(item.directory, { recursive: true, force: true });
+  });
+  for (const stateName of ["running", "exited"]) {
+    const context = fixture();
+    fixtures.push(context);
+    const output = path.join(context.directory, `partial-${stateName}`);
+    writeV2Lock(context.state, { outputs: [output] });
+    const docker = makeFakeDocker(context, [
+      {
+        id: `bad-${stateName}`,
+        mounts: [],
+        summaryMounts: [],
+        running: stateName === "running",
+        state: stateName,
+        inspectFails: true,
+      },
+    ]);
+    const result = invoke(
+      context.state,
+      ["reap-stale", "odin", "stale-run", "stale-token"],
+      docker.env,
+    );
+    assert.equal(result.status, 69, `${stateName}: ${result.stderr}`);
+    assert.equal(existsSync(path.join(context.state, "runner.lock")), true);
+    assert.equal(existsSync(output), true);
   }
 });
 
