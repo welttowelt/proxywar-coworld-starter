@@ -1362,6 +1362,219 @@ test("katanasan alliance retries respect the cooldown", () => {
   assert.equal(rested.policyMarker, "kp2");
 });
 
+test("CF1 breaks with Hrafn first when only the coalition remains on Pangaea", () => {
+  const breakHrafn = {
+    ...action("break_alliance:x262ww19", "break_alliance", "Break alliance with K1Z Hrafn"),
+    metadata: { targetID: "x262ww19", targetName: "K1Z Hrafn" },
+  };
+  const breakKatanasan = {
+    ...action("break_alliance:sjh3tur2", "break_alliance", "Break alliance with K1Z katanasan"),
+    metadata: { targetID: "sjh3tur2", targetName: "K1Z katanasan" },
+  };
+  const breakJuryoku = {
+    ...action("break_alliance:2rmhbq4h", "break_alliance", "Break alliance with K1Z juryoku koku"),
+    metadata: { targetID: "2rmhbq4h", targetName: "K1Z juryoku koku" },
+  };
+  const upgrade = action("upgrade:Factory:52", "upgrade_structure", "Upgrade Factory");
+  const selected = choose(
+    [breakKatanasan, upgrade, breakJuryoku, breakHrafn],
+    observation({
+      spawnTile: 266554,
+      tileShare: 0.46,
+      troopRatio: 0.99,
+      rivals: [
+        {
+          id: "sjh3tur2", name: "K1Z katanasan", tileShare: 0.06,
+          relativeTroopRatio: 2.27, isAllied: true,
+        },
+        {
+          id: "2rmhbq4h", name: "K1Z juryoku koku", tileShare: 0.16,
+          relativeTroopRatio: 1.66, isAllied: true,
+        },
+        {
+          id: "x262ww19", name: "K1Z Hrafn", tileShare: 0.3,
+          relativeTroopRatio: 1.18, isAllied: true,
+        },
+      ],
+    }),
+  );
+  assert.equal(selected.id, breakHrafn.id);
+  assert.equal(selected.policyMarker, "cf1");
+});
+
+test("CF1 converts a pending Hrafn pact into a bounded finishing attack", () => {
+  const allianceHrafn = {
+    ...action("alliance:x262ww19", "alliance_request", "Request alliance with K1Z Hrafn"),
+    metadata: { recipientID: "x262ww19", recipientName: "K1Z Hrafn", relation: 2 },
+  };
+  const attackTen = {
+    ...action("attack:x262ww19:10", "attack", "Attack K1Z Hrafn 10%"),
+    metadata: {
+      targetID: "x262ww19", targetName: "K1Z Hrafn",
+      troopPercent: 10, relativeTroopRatio: 1.18,
+    },
+  };
+  const attackTwentyFive = {
+    ...action("attack:x262ww19:25", "attack", "Attack K1Z Hrafn 25%"),
+    metadata: {
+      targetID: "x262ww19", targetName: "K1Z Hrafn",
+      troopPercent: 25, relativeTroopRatio: 1.18,
+    },
+  };
+  const attackForty = {
+    ...action("attack:x262ww19:40", "attack", "Attack K1Z Hrafn 40%"),
+    metadata: {
+      targetID: "x262ww19", targetName: "K1Z Hrafn",
+      troopPercent: 40, relativeTroopRatio: 1.18,
+    },
+  };
+  const selected = choose(
+    [allianceHrafn, attackTen, attackTwentyFive, attackForty],
+    observation({
+      spawnTile: 266554,
+      tileShare: 0.46,
+      troopRatio: 0.99,
+      rivals: [
+        {
+          id: "sjh3tur2", name: "K1Z katanasan", tileShare: 0.06,
+          relativeTroopRatio: 2.27, isAllied: true,
+        },
+        {
+          id: "2rmhbq4h", name: "K1Z juryoku koku", tileShare: 0.16,
+          relativeTroopRatio: 1.66, isAllied: true,
+        },
+        {
+          id: "x262ww19", name: "K1Z Hrafn", tileShare: 0.3,
+          relativeTroopRatio: 1.18,
+        },
+      ],
+    }),
+  );
+  assert.equal(selected.id, attackTwentyFive.id);
+  assert.equal(selected.policyMarker, "cf1");
+});
+
+test("CF1 stays dormant below forty-percent territory", () => {
+  const allianceHrafn = {
+    ...action("alliance:x262ww19", "alliance_request", "Request alliance with K1Z Hrafn"),
+    metadata: { recipientID: "x262ww19", recipientName: "K1Z Hrafn", relation: 2 },
+  };
+  const attackHrafn = {
+    ...action("attack:x262ww19:25", "attack", "Attack K1Z Hrafn 25%"),
+    metadata: {
+      targetID: "x262ww19", targetName: "K1Z Hrafn",
+      troopPercent: 25, relativeTroopRatio: 1.5,
+    },
+  };
+  const selected = choose(
+    [allianceHrafn, attackHrafn],
+    observation({
+      spawnTile: 266554,
+      tileShare: 0.39,
+      troopRatio: 0.99,
+      rivals: [
+        {
+          id: "sjh3tur2", name: "K1Z katanasan", tileShare: 0.06,
+          relativeTroopRatio: 2.27, isAllied: true,
+        },
+        {
+          id: "2rmhbq4h", name: "K1Z juryoku koku", tileShare: 0.16,
+          relativeTroopRatio: 1.66, isAllied: true,
+        },
+        {
+          id: "x262ww19", name: "K1Z Hrafn", tileShare: 0.3,
+          relativeTroopRatio: 1.5,
+        },
+      ],
+    }),
+  );
+  assert.equal(selected.id, allianceHrafn.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("CF1 stays dormant while any non-coalition rival remains", () => {
+  const breakHrafn = {
+    ...action("break_alliance:x262ww19", "break_alliance", "Break alliance with K1Z Hrafn"),
+    metadata: { targetID: "x262ww19", targetName: "K1Z Hrafn" },
+  };
+  const attackOutsider = {
+    ...action("attack:outsider:25", "attack", "Attack Outsider 25%"),
+    metadata: {
+      targetID: "outsider", targetName: "Outsider",
+      troopPercent: 25, relativeTroopRatio: 1.5,
+    },
+  };
+  const selected = choose(
+    [breakHrafn, attackOutsider],
+    observation({
+      spawnTile: 266554,
+      tileShare: 0.46,
+      troopRatio: 0.99,
+      rivals: [
+        {
+          id: "x262ww19", name: "K1Z Hrafn", tileShare: 0.3,
+          relativeTroopRatio: 1.18, isAllied: true,
+        },
+        {
+          id: "outsider", name: "Outsider", tileShare: 0.1,
+          relativeTroopRatio: 1.5,
+        },
+      ],
+    }),
+  );
+  assert.equal(selected.id, attackOutsider.id);
+  assert.notEqual(selected.policyMarker, "cf1");
+});
+
+test("CF1 stays dormant under active incoming pressure", () => {
+  const breakHrafn = {
+    ...action("break_alliance:x262ww19", "break_alliance", "Break alliance with K1Z Hrafn"),
+    metadata: { targetID: "x262ww19", targetName: "K1Z Hrafn" },
+  };
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [breakHrafn, build],
+    observation({
+      spawnTile: 266554,
+      tileShare: 0.46,
+      troopRatio: 0.7,
+      incomingAttacks: [{ attackerID: "x262ww19" }],
+      rivals: [
+        {
+          id: "x262ww19", name: "K1Z Hrafn", tileShare: 0.3,
+          relativeTroopRatio: 1.18, isAllied: true,
+        },
+      ],
+    }),
+  );
+  assert.equal(selected.id, build.id);
+  assert.notEqual(selected.policyMarker, "cf1");
+});
+
+test("CF1 stays dormant outside Pangaea", () => {
+  const breakHrafn = {
+    ...action("break_alliance:x262ww19", "break_alliance", "Break alliance with K1Z Hrafn"),
+    metadata: { targetID: "x262ww19", targetName: "K1Z Hrafn" },
+  };
+  const upgrade = action("upgrade:Factory:52", "upgrade_structure", "Upgrade Factory");
+  const selected = choose(
+    [breakHrafn, upgrade],
+    observation({
+      spawnTile: 494334,
+      tileShare: 0.46,
+      troopRatio: 0.99,
+      rivals: [
+        {
+          id: "x262ww19", name: "K1Z Hrafn", tileShare: 0.3,
+          relativeTroopRatio: 1.18, isAllied: true,
+        },
+      ],
+    }),
+  );
+  assert.equal(selected.id, upgrade.id);
+  assert.notEqual(selected.policyMarker, "cf1");
+});
+
 test("no harmful action of any kind is ever taken against katanasan", () => {
   const harmful = [
     action("attack:katanasan:10", "attack", "Attack katanasan 10%"),

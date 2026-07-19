@@ -30,6 +30,7 @@ const RECIPROCAL_RIVAL_IDS = new Set([
   "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
   "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
 ]);
+const COALITION_FINISH_PRIORITY = ["hrafn", "juryoku koku", "katanasan"];
 const MIN_DESPERATE_INVASION_RATIO = 0.5;
 const MIN_CONVERSION_TILE_SHARE = 0.002;
 const MAP_SPAWN_TILES = new Map([
@@ -576,6 +577,63 @@ function kingmakerAllianceAction(actions, state, history) {
   return null;
 }
 
+function coalitionFinishAction(actions, state, threatCount) {
+  if (
+    state.mapFingerprint !== "Pangaea" ||
+    state.self.tileShare < 0.4 ||
+    state.rivals.length < 1 ||
+    state.rivals.length > 3 ||
+    state.rivals.some((rival) => !isReciprocalRival(rival)) ||
+    state.self.tileShare < state.topRivalTileShare + 0.08 ||
+    threatCount > 0
+  ) {
+    return null;
+  }
+
+  const priority = (rival) => {
+    const index = COALITION_FINISH_PRIORITY.indexOf(normalizedRivalName(rival.name));
+    return index < 0 ? COALITION_FINISH_PRIORITY.length : index;
+  };
+  const targets = [...state.rivals].sort((left, right) =>
+    priority(left) - priority(right) ||
+    left.tileShare - right.tileShare ||
+    left.name.localeCompare(right.name)
+  );
+
+  for (const rival of targets) {
+    if (rival.isAllied) {
+      const sever = safeActions(actions, (action) =>
+        action.kind === "break_alliance" && rivalForAction(action, state)?.id === rival.id
+      )[0];
+      if (sever) return { ...sever, policyMarker: "cf1" };
+      continue;
+    }
+    if (!Number.isFinite(rival.relativeTroopRatio) || rival.relativeTroopRatio < 1.1) {
+      continue;
+    }
+    const attacks = safeActions(actions, (action) =>
+      action.kind === "attack" &&
+      !isNeutralExpansion(action) &&
+      rivalForAction(action, state)?.id === rival.id
+    );
+    const attack = pickPercent(
+      attacks,
+      rival.relativeTroopRatio >= 1.5 ? 40 : 25,
+      new Set(),
+    );
+    if (attack) return { ...attack, policyMarker: "cf1" };
+
+    const boats = safeActions(actions, (action) =>
+      action.kind === "boat" &&
+      !isNeutralBoat(action) &&
+      rivalForAction(action, state)?.id === rival.id
+    );
+    const boat = pickPercent(boats, 16, new Set());
+    if (boat) return { ...boat, policyMarker: "cf1" };
+  }
+  return null;
+}
+
 function chooseAtomBomb(actions, state, history) {
   const candidates = safeActions(actions, (action) =>
     action.kind === "build" && String(action?.metadata?.unit ?? "").toLowerCase() === "atom bomb"
@@ -777,6 +835,9 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (spawn) return spawn;
 
   const threatCount = incomingThreatCount(state.self.incomingAttacks);
+  const coalitionFinish = coalitionFinishAction(actions, state, threatCount);
+  if (coalitionFinish) return coalitionFinish;
+
   const defensiveBuild = threatCount > 0 && state.self.troopRatio < 0.8
     ? chooseBuild(actions, history, true)
     : null;
