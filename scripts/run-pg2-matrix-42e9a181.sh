@@ -224,14 +224,34 @@ fetch_pair() {
   local output=${pod_output[$lane]}
   local remote=${pod_remote[$lane]}
   local home=${pod_home[$lane]}
-  local scp_options=(-i "${pod_key[$lane]}" -P "${pod_port[$lane]}" -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20)
-  scp "${scp_options[@]}" -r "$remote:$home/runs/$pair-a" "$output/runs/"
-  scp "${scp_options[@]}" -r "$remote:$home/runs/$pair-b" "$output/runs/"
-  scp "${scp_options[@]}" -r "$remote:$home/evidence/$pair" "$output/evidence/"
-  scp "${scp_options[@]}" \
-    "$remote:$home/runs/$pair-a.stdout.log" \
-    "$remote:$home/runs/$pair-b.stdout.log" \
-    "$output/runs/"
+  local scp_options=(-i "${pod_key[$lane]}" -P "${pod_port[$lane]}" -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20 -o ServerAliveInterval=20 -o ServerAliveCountMax=9)
+  local attempt staging
+  for attempt in 1 2 3; do
+    staging="$output/fetch-$pair-$attempt"
+    mkdir -p "$staging/runs" "$staging/evidence"
+    if scp "${scp_options[@]}" -r "$remote:$home/runs/$pair-a" "$staging/runs/" &&
+      scp "${scp_options[@]}" -r "$remote:$home/runs/$pair-b" "$staging/runs/" &&
+      scp "${scp_options[@]}" -r "$remote:$home/evidence/$pair" "$staging/evidence/" &&
+      scp "${scp_options[@]}" \
+        "$remote:$home/runs/$pair-a.stdout.log" \
+        "$remote:$home/runs/$pair-b.stdout.log" \
+        "$staging/runs/" &&
+      (
+        cd "$staging"
+        sha256sum -c "evidence/$pair/run-artifacts.sha256"
+      ); then
+      mv "$staging/runs/$pair-a" "$staging/runs/$pair-b" "$output/runs/"
+      mv "$staging/evidence/$pair" "$output/evidence/"
+      mv \
+        "$staging/runs/$pair-a.stdout.log" \
+        "$staging/runs/$pair-b.stdout.log" \
+        "$output/runs/"
+      return 0
+    fi
+    print -u2 "PG2_FETCH_RETRY lane=$lane pair=$pair attempt=$attempt"
+  done
+  print -u2 "PG2_FETCH_FAILED lane=$lane pair=$pair attempts=3"
+  return 1
 }
 
 map_gate() {
