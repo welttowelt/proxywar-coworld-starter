@@ -18,6 +18,7 @@ seed=${7:-20260721}
 archive=/private/tmp/proxywar-pg2-reach-bundle-42e9a181.tar.gz
 extractor=/private/tmp/proxywar-pg2-reach-bundle-42e9a181.tar.gz.extract.py
 archive_sha=d2f2f154a67f43008a9b8f7cc0e2c66d44d825e088434cf165fe3b751240b9cd
+extractor_sha=b15104d711a0e40284bb7c551d9764a7d5953d7134ce68b2560da44ccdfa7d54
 source_root=$(ls -d /private/tmp/proxywar-pg2-matrix-42e9a181-a-20260719-r7.aborted-* | tail -1)
 matrix=$repo/experiments/pg2-matrix-42e9a181.json
 worker=$repo/scripts/run-pg2-matrix-worker-42e9a181.sh
@@ -30,6 +31,7 @@ remote_root=/workspace/pg2-parent-control-replay-${matrix_commit[1,12]}-$(date -
 [[ -d $output_root && -f $output_root/.proxywar-runner-claim ]]
 [[ -d $source_root/specs && -f $archive && -f $extractor && -f $matrix && -f $baseline_registry && -x $worker && -x $auditor ]]
 [[ $(shasum -a 256 "$archive" | awk '{print $1}') == $archive_sha ]]
+[[ $(shasum -a 256 "$extractor" | awk '{print $1}') == $extractor_sha ]]
 [[ $matrix_commit =~ ^[a-f0-9]{40}$ ]]
 mkdir -p "$output_root/specs" "$output_root/runs" "$output_root/evidence"
 cp "$source_root/specs/$pair-a.json" "$source_root/specs/$pair-b.json" "$output_root/specs/"
@@ -42,7 +44,16 @@ ssh_options=(-i "$key" -p "$port" -o BatchMode=yes -o StrictHostKeyChecking=acce
 scp_options=(-i "$key" -P "$port" -o BatchMode=yes -o StrictHostKeyChecking=accept-new -o ConnectTimeout=20 -o ServerAliveInterval=20 -o ServerAliveCountMax=9)
 
 [[ $(ssh "${ssh_options[@]}" "$remote" uname -m) =~ ^(x86_64|amd64)$ ]]
-ssh "${ssh_options[@]}" "$remote" "set -euo pipefail; test ! -e '$remote_root'; mkdir -p '$remote_root/specs' '$remote_stage'; cd '$remote_stage'; printf '%s  %s\n' '$archive_sha' '${archive:t}' | sha256sum -c - >/dev/null; python3 '${extractor:t}' --archive '${archive:t}' --expected-sha256 '$archive_sha' --destination '$remote_root/extracted'"
+ssh "${ssh_options[@]}" "$remote" "set -euo pipefail; test ! -e '$remote_root'; mkdir -p '$remote_root/specs' '$remote_stage'"
+if ! ssh "${ssh_options[@]}" "$remote" "cd '$remote_stage' && test -f '${archive:t}' && printf '%s  %s\n' '$archive_sha' '${archive:t}' | sha256sum -c - >/dev/null"; then
+  scp "${scp_options[@]}" "$archive" "$remote:$remote_stage/${archive:t}.part"
+  ssh "${ssh_options[@]}" "$remote" "cd '$remote_stage'; printf '%s  %s\n' '$archive_sha' '${archive:t}.part' | sha256sum -c -; mv '${archive:t}.part' '${archive:t}'"
+fi
+if ! ssh "${ssh_options[@]}" "$remote" "cd '$remote_stage' && test -f '${extractor:t}' && printf '%s  %s\n' '$extractor_sha' '${extractor:t}' | sha256sum -c - >/dev/null"; then
+  scp "${scp_options[@]}" "$extractor" "$remote:$remote_stage/${extractor:t}.part"
+  ssh "${ssh_options[@]}" "$remote" "cd '$remote_stage'; printf '%s  %s\n' '$extractor_sha' '${extractor:t}.part' | sha256sum -c -; mv '${extractor:t}.part' '${extractor:t}'"
+fi
+ssh "${ssh_options[@]}" "$remote" "set -euo pipefail; cd '$remote_stage'; python3 '${extractor:t}' --archive '${archive:t}' --expected-sha256 '$archive_sha' --destination '$remote_root/extracted'"
 scp "${scp_options[@]}" "$worker" "$matrix" "$output_root/specs/$pair-a.json" "$output_root/specs/$pair-b.json" "$remote:$remote_root/"
 ssh "${ssh_options[@]}" "$remote" "set -euo pipefail; chmod 0755 '$remote_root/${worker:t}'; mv '$remote_root/$pair-a.json' '$remote_root/specs/$pair-a.json'; mv '$remote_root/$pair-b.json' '$remote_root/specs/$pair-b.json'; '$remote_root/${worker:t}' '$remote_root/extracted/proxywar-runpod-bundle' '$remote_root' '$matrix_commit' '$lane' '$wave' '$pair' '$map' '$seed'"
 
