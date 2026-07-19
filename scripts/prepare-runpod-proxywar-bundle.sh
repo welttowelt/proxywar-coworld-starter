@@ -526,7 +526,8 @@ absolute paths, hardlinks, special files, and escaping symlinks. Then run:
 
 The canary-candidate and canary-control files are only the bounded 3-step
 transport/reach fixtures. They are never evaluation evidence. Formal evaluation
-must use the immutable 150-step pair:
+must use the immutable matched pair below; each committed spec is authoritative
+for its exact decision horizon:
 
   specs/gc2-matched-a.json
     sha256 $MATCHED_SPEC_A_SHA
