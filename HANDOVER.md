@@ -9,10 +9,12 @@ the real Kimi K3 through the established mailbox or handoff channel.
 **Hrafn was retired by the user on 2026-07-19.** Its repository, evidence, and
 live historical policy remain readable, but it no longer reviews, runs,
 uploads, submits, or changes league state. Codex Odin is the sole writable game
-operator and owns `qd1n` from this repository. The user granted standing
-authorization for automatic promotion after every gate in
-`AUTONOMOUS_PROMOTION.md` passes; no additional user `GO` is required. Kimi K3
-Max remains advisory and non-mutating.
+operator and owns both `qd1n` from this repository and `hrafn-fylking` from
+`/Users/olifreuler/proxywar-k1z-hrafn`. Each policy family keeps separate
+identity and evidence records, and only one experiment owns the runner at a
+time. The user granted standing authorization for automatic promotion after
+every gate in `AUTONOMOUS_PROMOTION.md` passes; no additional user `GO` is
+required. Kimi K3 Max remains advisory and non-mutating.
 
 New worker: this is the live state and the next work. Read `AGENTS.md`,
 `MERIT.md` (the merit ledger — every arm verdict), and
