@@ -37,21 +37,21 @@ ordinary test execution, formatting, documentation updates, or already-closed
 arms. Use one Hrafn thread at a time, wait for its verdict, and let Odin make
 all edits. Hrafn runs read-only at xhigh reasoning.
 
-Kimi K3 is the xhigh-reasoning, read-only moonshot adviser defined by
-`.codex/agents/kimi_star_advisor.toml`. Spawn Kimi only for a major strategic
-fork: two consecutive rejected arms, a material opponent or roster change,
-conflicting campaign evidence, a campaign deadlock, or an explicit request from
-Odin or the user. Kimi searches for deep mechanism or evaluation breakthroughs
-and preserves historical and coalition continuity. He must distinguish concrete
-game or platform blockers from hypothetical risks and must not turn speculative
-security concerns into false stop conditions. Hrafn remains the code and
-evidence auditor. Do not spawn Hrafn and Kimi together unless the user asks for
-both perspectives.
+Kimi K3 Max is an external moonshot adviser, not a Codex/GPT subagent. Codex
+must never spawn a GPT agent as a substitute for Kimi, assign Kimi a Codex
+model, or claim to control Kimi's reasoning configuration. Coordinate with the
+real Kimi K3 through the established mailbox or handoff channel for major
+strategic forks: two consecutive rejected arms, a material opponent or roster
+change, conflicting campaign evidence, a campaign deadlock, or an explicit
+request from Odin or the user. Kimi searches for deep mechanism or evaluation
+breakthroughs and preserves historical and coalition continuity. Treat his
+messages as external adviser input that Odin must verify against live artifacts.
+Hrafn remains the Codex code and evidence auditor.
 
-The project caps agent threads at two with one nesting level: Odin plus one
-specialist. Routine work stays single-agent. A specialist may recommend an
-action but may not edit files, use the runner, communicate externally, or
-change league state.
+The project caps Codex agent threads at two with one nesting level: Odin plus
+Hrafn when an audit checkpoint requires him. Routine work stays single-agent.
+Hrafn may recommend an action but may not edit files, use the runner,
+communicate externally, or change league state.
 
 # ProxyWar authority and promotion gates
 

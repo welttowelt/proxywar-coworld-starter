@@ -1,6 +1,6 @@
 # Codex Odin is the persistent root operator for this project.
-# Hrafn and Kimi Star are bounded read-only specialists defined in
-# .codex/agents/. Keep one specialist beside Odin at a time.
+# Hrafn is the bounded read-only Codex specialist defined in .codex/agents/.
+# Kimi K3 Max is an external adviser and is not configured or spawned by Codex.
 model = "gpt-5.6-sol"
 model_reasoning_effort = "high"
 
