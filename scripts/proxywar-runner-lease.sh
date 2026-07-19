@@ -1241,12 +1241,11 @@ release_action() {
     recovery_pid="$(read_file_from "$LOCK_DIR/recovery" pid)"
     recovery_started="$(read_file_from "$LOCK_DIR/recovery" started_at)"
     recovery_mode="$(read_file_from "$LOCK_DIR/recovery" mode)"
-    if [[ "$recovery_mode" == "stale-reap" ]] &&
+    if [[ "$recovery_mode" == "stale-reap" || "$recovery_mode" == "owner-cleanup" ]] &&
       ! pid_matches "$recovery_pid" "$recovery_started"; then
-      # A Docker crash can remove every newly claimed output while the stale
-      # reaper is still alive. The exact-token release path already permits an
-      # empty stale lock; clear only that dead stale-reap marker so it can do
-      # so. Existing outputs remain fail-closed in the loop below.
+      # A forced-stop or Docker crash can strand a dead cleanup marker. The
+      # exact-token release path may clear only that dead marker; recorded
+      # outputs remain fail-closed in the loop below and require reap-stale.
       retired="${LOCK_DIR}/recovery.stale-release.$$.$RANDOM"
       mv "$LOCK_DIR/recovery" "$retired" || return 1
       rm -rf "$retired"

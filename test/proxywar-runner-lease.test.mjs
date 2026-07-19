@@ -731,7 +731,7 @@ test("partial-v2 can never use tokenless release while a pure legacy lock can re
   assert.match(result.stdout, /free/);
 });
 
-test("exact release clears only a dead stale-reap marker when every recorded output is absent", (t) => {
+test("exact release clears only a dead cleanup marker when every recorded output is absent", (t) => {
   const context = fixture();
   const { directory, state } = context;
   t.after(() => rmSync(directory, { recursive: true, force: true }));
@@ -741,7 +741,7 @@ test("exact release clears only a dead stale-reap marker when every recorded out
   mkdirSync(recovery);
   writeFileSync(path.join(recovery, "pid"), "999999\n");
   writeFileSync(path.join(recovery, "started_at"), "1\n");
-  writeFileSync(path.join(recovery, "mode"), "stale-reap\n");
+  writeFileSync(path.join(recovery, "mode"), "owner-cleanup\n");
   writeFileSync(path.join(recovery, "ready"), "");
 
   const result = invoke(state, ["release", "odin", "stale-run", "stale-token"]);
