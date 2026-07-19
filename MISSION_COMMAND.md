@@ -31,8 +31,10 @@ harm, and directional paired score.
 
 Only a clean screen with at least one non-negative paired score advances to the
 preregistered 24-pair World, Asia, and Pangaea proof matrix. The full proof
-uses twelve CPU pods in two waves. There are no mid-wave approvals, partial
-map ceremonies, or new policy edits during a proof run. Preserve immutable
+uses up to twelve CPU pods in two waves. If the provider cannot return twelve
+ready endpoints promptly, use the ready pool immediately and add only the
+extra wave required to complete all 24 pairs. There are no mid-wave approvals,
+partial map ceremonies, or new policy edits during a proof run. Preserve immutable
 image, seed, roster, pair audit, and hash verification; use capacity only to
 reduce wall-clock time.
 

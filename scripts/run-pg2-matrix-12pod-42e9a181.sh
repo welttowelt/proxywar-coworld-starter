@@ -2,8 +2,8 @@
 
 set -euo pipefail
 
-if (( $# != 12 )); then
-  print -u2 "usage: $0 OUTPUT_A ... OUTPUT_L"
+if (( $# < 4 || $# > 12 )); then
+  print -u2 "usage: $0 OUTPUT_A ... OUTPUT_N (4 to 12 outputs)"
   exit 64
 fi
 
@@ -23,11 +23,11 @@ pod_ids=(
   sxrtmdyd62n3ia
   67yzvbbp54aizm
   rwvsgeancauyug
-  og13wgkfcmblx9
 )
 outputs=("$@")
 
 [[ -f $matrix && -x $pair_runner && -f $auditor ]]
+(( ${#outputs[@]} <= ${#pod_ids[@]} ))
 for output in $outputs; do
   [[ -d $output && -f $output/.proxywar-runner-claim ]]
 done
@@ -40,11 +40,13 @@ for wave in 1 2 3 4 5 6; do
 done
 (( ${#jobs[@]} == 24 ))
 
-for phase in 1 2; do
-  start=$(( (phase - 1) * 12 + 1 ))
+phase=1
+start=1
+while (( start <= ${#jobs[@]} )); do
   pids=()
-  for index in {1..12}; do
+  for (( index = 1; index <= ${#outputs[@]}; index++ )); do
     job_index=$(( start + index - 1 ))
+    (( job_index > ${#jobs[@]} )) && break
     assignment=${jobs[$job_index]}
     pair=$(jq -r .pair <<<"$assignment")
     lane=$(jq -r .lane <<<"$assignment")
@@ -65,6 +67,8 @@ for phase in 1 2; do
     exit 1
   fi
   print "PG2_MATRIX12_PHASE_COMPLETE phase=$phase"
+  start=$(( start + ${#outputs[@]} ))
+  phase=$(( phase + 1 ))
 done
 
 roots=()
