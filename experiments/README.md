@@ -1341,3 +1341,21 @@ membership `lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6` sole champion.
 v88 (`7c424648`) was uploaded but never submitted (superseded). Smoke4
 end-to-end verification is running at time of writing; standard `4/4` and
 `20/20` gates remain incomplete (operator-and-coalition-directed promotion).
+
+## GC2 fixture-only requalification (2026-07-19)
+
+The first GC2 Docker qualifier completed cleanly but had no K1Z identity in
+its two-seat roster, so no reciprocal request could activate the mechanism.
+That zero-reach receipt remains valid for its fixture and does not qualify the
+candidate. The corrected reach-only fixture keeps GC2 source commit
+`9efe990d` and image `sha256:593eedf...` frozen, then derives a three-decision
+Pangaea Compact request from the already-verified GR1 live-coalition request.
+The only transformations are the Odin image and the bounded reach settings in
+`gc2-live-coalition-requalifier-20260719.jq`.
+
+The expected raw request hash is `f6f834fb...`; its canonical hash is
+`a72d3e86...`. A pass requires the first coalition request to remain `kp2`, a
+later safe accepted replacement to carry `gc2`, and zero rejects, unexplained
+Odin holds, or protected-K1Z harm. This authorizes one local reach qualifier
+only. Matched, hosted, upload, submission, membership, champion, and league
+gates remain closed.

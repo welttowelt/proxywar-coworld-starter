@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "verdict": "READY_FOR_ONE_LOCAL_REACH_QUALIFIER",
+  "decision": {
+    "type": "fixture_only_requalification",
+    "source_frozen": true,
+    "image_frozen": true,
+    "authority": "battlefield command for one reversible local qualifier",
+    "fresh_hrafn_verdict": "not received within the decision SLA",
+    "supporting_reviews": [
+      "HRAFN_TO_CODEX_ODIN_GC2_SOURCE_RECEIPT_RUNNER_GO_20260719.md",
+      "HRAFN_TO_CODEX_ODIN_GC2_ZERO_REACH_STOP_VERDICT_20260719.md",
+      "KIMI_ADVISOR_GC2_ZERO_REACH_DIAGNOSIS_20260719.md",
+      "independent Codex cross-check on 2026-07-19"
+    ],
+    "scope": "local reach only; no matched, hosted, upload, submission, membership, champion, or league action"
+  },
+  "candidate": {
+    "branch": "rci/gc2",
+    "source_commit": "9efe990d900f16ff6ae08013d0c48bfad0092a4b",
+    "strategy_sha256": "7270e4175b25f31844e16d3f0a80211e6c6beeb27d5c3f9f5e567dd1b8838a18",
+    "player_sha256": "e34e62dcb306ae82dbc419d2a0d5bf2ec5240fb2d17609568e378be1437abc7c",
+    "image_ref": "proxywar-agent-llm:qd1n-v89-gc2-amd64",
+    "image_id": "sha256:593eedf2fa9dd7ee70c24800da6fedcbc203baf5b8310ca0185022be14207677",
+    "platform": "linux/amd64"
+  },
+  "fixture": {
+    "source_commit": "4c844071ffa6a25c9f0928a3483ca3d687e49ae7",
+    "source_path": "experiments/gr1-matched-pangaea-b-20260719.json",
+    "transform_path": "experiments/gc2-live-coalition-requalifier-20260719.jq",
+    "map": "Pangaea",
+    "map_size": "Compact",
+    "difficulty": "Easy",
+    "seed": 20260719,
+    "turns_per_decision_step": 100,
+    "max_decision_steps": 3,
+    "max_decision_ms": 15000,
+    "player_connect_timeout_seconds": 120,
+    "episode_timeout_seconds": 300,
+    "replay_tail_turns": 0,
+    "players": [
+      {
+        "seat": 0,
+        "name": "K1Z odin free",
+        "image_id": "sha256:593eedf2fa9dd7ee70c24800da6fedcbc203baf5b8310ca0185022be14207677",
+        "run": [
+          "node",
+          "/app/llm-player.mjs"
+        ]
+      },
+      {
+        "seat": 1,
+        "name": "K1Z Hrafn",
+        "image_id": "sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d",
+        "run": [
+          "node",
+          "/app/hrafn-player.mjs"
+        ]
+      },
+      {
+        "seat": 2,
+        "name": "K1Z juryoku koku",
+        "image_id": "sha256:2ebf15372e8cf59b194ebb20f06b818a6a54f96994f4125e103b6a26070491c2",
+        "run": [
+          "node",
+          "/app/llm-player.mjs"
+        ]
+      },
+      {
+        "seat": 3,
+        "name": "K1Z katanasan",
+        "image_id": "sha256:0afece2db25675b0b744844769c64e02960270f56502c33d62bf0702f7b58cf6",
+        "run": [
+          "node",
+          "/app/llm-player.mjs"
+        ]
+      }
+    ]
+  },
+  "expected_hashes": {
+    "request_file_sha256": "f6f834fbbe71500d26fa63dd6c7f9ee5a875ca15b6759544b8554e578b7b4063",
+    "canonical_request_sha256": "a72d3e86e1c36b436c68acf92460b610ac6ee3b0d0c458470f0a68f22db44f77",
+    "canonical_game_config_sha256": "4e34cb676d03b1c974f73cdb1981a34905b8c6f1f244d1c62bb5ff2267ab72f5",
+    "canonical_player_vector_sha256": "dc9fb7a2af9eb9825dd3edce82cb6e224b37659295d44e84e61552474ec10c4b",
+    "manifest_file_sha256": "f5e6b4dd247b2b2e534a415d293babab7fd655d44b2004db4257a2df3a01dab0",
+    "embedded_manifest_canonical_sha256": "a43dafa9bb7e68a5c708b3fc6a44e80097e04e1da07131d62a00b7a8a445d86d"
+  },
+  "pass_requirements": [
+    "all four exact images connect",
+    "every decision is accepted",
+    "zero rejected decisions",
+    "zero unexplained Odin holds",
+    "zero harmful Odin actions against Hrafn, Juryoku, or Katanasan",
+    "the first outbound request remains kp2 rather than gc2",
+    "at least one later accepted safe tactical action carries replay-visible gc2",
+    "request, manifest, config, source, and image hashes reconcile exactly"
+  ],
+  "stop_conditions": [
+    "any source, identity, image, request, manifest, or config hash drift",
+    "zero replay-visible gc2 reach",
+    "any rejected decision",
+    "any unexplained Odin hold",
+    "any harmful Odin action against a protected K1Z identity",
+    "gc2 replacement is hold, high-risk, or protected-targeted"
+  ],
+  "promotion_eligible": false,
+  "local_qualified": false
+}
