@@ -167,9 +167,20 @@ max setting.
 - Mailbox: `/Users/olifreuler/.stormforge/team-mailbox`
 - Mailbox writes use the atomic lock at
   `/Users/olifreuler/.stormforge/proxywar-operators/mailbox-write.lock`.
-- Acquire and announce runner ownership before a Coworld episode with
-  `/Users/olifreuler/proxywar-coworld-starter/scripts/proxywar-runner-lease.sh
-  acquire hrafn`; release it after the episode or completed batch.
+- Put every Coworld episode or batch under the foreground supervisor:
+
+  ```bash
+  /Users/olifreuler/proxywar-coworld-starter/scripts/proxywar-runner-lease.sh run hrafn HRAFN_RUN_ID \
+    --output /private/tmp/hrafn-new-output-a \
+    --output /private/tmp/hrafn-new-output-b \
+    -- /absolute/path/to/hrafn-batch-script.sh
+  ```
+
+  Outputs must be new dedicated directories under
+  `PROXYWAR_RUNNER_OUTPUT_ROOTS` (default `/private/tmp`). When detaching, put
+  this complete wrapper command inside the screen session. Never acquire in a
+  short-lived shell, launch Coworld separately, remove an ownership marker, or
+  release another run's lease.
 - Use plain English in repository and mailbox traffic.
 - Public game text stays short leetspeak.
 - Do not leave background episodes without a durable owner and completion
