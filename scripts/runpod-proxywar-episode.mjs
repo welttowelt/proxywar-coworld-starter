@@ -147,8 +147,8 @@ The spec contains a game_config without tokens and two to twelve player specs:
   },
   "players": [{
     "name": "K1Z odin free",
-    "policy": "qd1n-gc2",
-    "cwd": "policies/qd1n-gc2/app",
+    "policy": "candidate",
+    "cwd": "policies/candidate/app",
     "run": ["node", "llm-player.mjs"],
     "env": {"POLICY_CODENAME": "s4ntai", "AWS_EC2_METADATA_DISABLED": "true"}
   }]
@@ -894,15 +894,16 @@ export async function verifyBundleManifest(
   }
   const expectedSpecs = new Map([
     [
-      "gc2-matched-a",
-      { role: "candidate", path: "specs/gc2-matched-a.json" },
+      "formal-matched-a",
+      { role: "candidate", path: "specs/formal-matched-a.json" },
     ],
     [
-      "gc2-matched-b",
-      { role: "exact-parent", path: "specs/gc2-matched-b.json" },
+      "formal-matched-b",
+      { role: "exact-parent", path: "specs/formal-matched-b.json" },
     ],
   ]);
   const seenSpecLabels = new Set();
+  const formalHorizons = new Set();
   for (const spec of manifest.experiment_specs) {
     const expected = expectedSpecs.get(spec?.label);
     if (
@@ -912,14 +913,35 @@ export async function verifyBundleManifest(
       expected.role !== spec.role ||
       expected.path !== spec.path ||
       !/^[a-f0-9]{64}$/.test(spec.sha256) ||
+      !Number.isInteger(spec.max_decision_steps) ||
+      spec.max_decision_steps < 1 ||
+      spec.max_decision_steps > 600 ||
       fileEntries.get(spec.path) !== spec.sha256
     ) {
       throw new Error("formal matched experiment spec identity is invalid");
     }
+    let specDocument;
+    try {
+      specDocument = JSON.parse(await readFile(path.join(root, spec.path), "utf8"));
+    } catch {
+      throw new Error("formal matched experiment spec is not valid JSON");
+    }
+    if (
+      specDocument?.game_config?.max_decision_steps !==
+      spec.max_decision_steps
+    ) {
+      throw new Error(
+        "formal matched experiment horizon disagrees with its spec",
+      );
+    }
     seenSpecLabels.add(spec.label);
+    formalHorizons.add(spec.max_decision_steps);
   }
   if (seenSpecLabels.size !== expectedSpecs.size) {
     throw new Error("formal matched experiment pair is incomplete");
+  }
+  if (formalHorizons.size !== 1) {
+    throw new Error("formal matched experiment horizons differ");
   }
   if (
     !Array.isArray(manifest.transport_canaries) ||
@@ -929,14 +951,14 @@ export async function verifyBundleManifest(
   }
   const expectedCanaries = new Map([
     [
-      "gc2-transport-canary-candidate",
+      "transport-canary-candidate",
       {
         role: "candidate",
         path: "specs/canary-candidate-player-specs.json",
       },
     ],
     [
-      "gc2-transport-canary-control",
+      "transport-canary-control",
       {
         role: "exact-parent",
         path: "specs/canary-control-player-specs.json",
@@ -1096,11 +1118,11 @@ export async function bindRunSpec(
     );
   }
   if (
-    relative?.startsWith("specs/gc2-matched-") &&
+    relative?.startsWith("specs/formal-matched-") &&
     relative?.endsWith(".json") &&
     !formal
   ) {
-    throw new Error("undeclared formal GC2 run spec");
+    throw new Error("undeclared formal matched run spec");
   }
   if (formal && transportCanary) {
     throw new Error(

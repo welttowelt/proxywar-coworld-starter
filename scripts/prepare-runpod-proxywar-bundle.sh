@@ -224,6 +224,35 @@ actual_spec_b_sha="$(shasum -a 256 "$MATCHED_SPEC_B" | awk '{print $1}')"
   command echo "matched spec B hash mismatch: $actual_spec_b_sha" >&2
   exit 1
 }
+formal_spec_steps() {
+  node --input-type=module - "$1" <<'NODE'
+import fs from "node:fs";
+
+const specPath = process.argv[2];
+let document;
+try {
+  document = JSON.parse(fs.readFileSync(specPath, "utf8"));
+} catch (error) {
+  console.error(`formal spec is not valid JSON: ${specPath}: ${error.message}`);
+  process.exit(1);
+}
+const steps = document?.game_config?.max_decision_steps;
+if (!Number.isInteger(steps) || steps < 1 || steps > 600) {
+  console.error(
+    `formal spec game_config.max_decision_steps must be an integer from 1 to 600: ${specPath}`,
+  );
+  process.exit(1);
+}
+process.stdout.write(String(steps));
+NODE
+}
+formal_spec_a_steps="$(formal_spec_steps "$MATCHED_SPEC_A")"
+formal_spec_b_steps="$(formal_spec_steps "$MATCHED_SPEC_B")"
+[[ "$formal_spec_a_steps" == "$formal_spec_b_steps" ]] || {
+  command echo "formal matched specs must use the same max_decision_steps: A=$formal_spec_a_steps B=$formal_spec_b_steps" >&2
+  exit 1
+}
+FORMAL_MAX_DECISION_STEPS="$formal_spec_a_steps"
 
 SOURCE_FILES=(
   'scripts/extract_runpod_proxywar_bundle.py'
@@ -298,10 +327,10 @@ cp "$REPO_ROOT/scripts/runpod-proxywar-episode.mjs" \
 cp "$EXTRACTOR_SOURCE" "$BUNDLE_ROOT/bin/extract_runpod_proxywar_bundle.py"
 chmod 0755 "$BUNDLE_ROOT/bin/runpod-proxywar-episode.mjs"
 chmod 0755 "$BUNDLE_ROOT/bin/extract_runpod_proxywar_bundle.py"
-cp "$MATCHED_SPEC_A" "$BUNDLE_ROOT/specs/gc2-matched-a.json"
-cp "$MATCHED_SPEC_B" "$BUNDLE_ROOT/specs/gc2-matched-b.json"
-chmod 0644 "$BUNDLE_ROOT/specs/gc2-matched-a.json" \
-  "$BUNDLE_ROOT/specs/gc2-matched-b.json"
+cp "$MATCHED_SPEC_A" "$BUNDLE_ROOT/specs/formal-matched-a.json"
+cp "$MATCHED_SPEC_B" "$BUNDLE_ROOT/specs/formal-matched-b.json"
+chmod 0644 "$BUNDLE_ROOT/specs/formal-matched-a.json" \
+  "$BUNDLE_ROOT/specs/formal-matched-b.json"
 
 CURRENT_CONTAINER="$(docker create --platform linux/amd64 "$BASE_IMAGE")"
 docker cp "$CURRENT_CONTAINER:/app/integration/." \
@@ -514,24 +543,23 @@ from Odin's out-of-band handoff; never trust only an adjacent sidecar:
   python3 proxywar-bundle.tar.gz.extract.py \\
     --archive proxywar-bundle.tar.gz \\
     --expected-sha256 <OUT_OF_BAND_ARCHIVE_SHA256> \\
-    --destination /workspace/gc2-bundle
+    --destination /workspace/proxywar-evidence-bundle
 
 The extractor requires a new destination and rejects oversize input, traversal,
 absolute paths, hardlinks, special files, and escaping symlinks. Then run:
 
-  /workspace/gc2-bundle/proxywar-runpod-bundle/bin/runpod-proxywar-episode \\
+  /workspace/proxywar-evidence-bundle/proxywar-runpod-bundle/bin/runpod-proxywar-episode \\
     --spec specs/canary-candidate-player-specs.json \\
     --transport-canary \\
     --validate-only
 
 The canary-candidate and canary-control files are only the bounded 3-step
 transport/reach fixtures. They are never evaluation evidence. Formal evaluation
-must use the immutable matched pair below; each committed spec is authoritative
-for its exact decision horizon:
+must use this immutable $FORMAL_MAX_DECISION_STEPS-step matched pair:
 
-  specs/gc2-matched-a.json
+  specs/formal-matched-a.json
     sha256 $MATCHED_SPEC_A_SHA
-  specs/gc2-matched-b.json
+  specs/formal-matched-b.json
     sha256 $MATCHED_SPEC_B_SHA
 
 Set a unique --output-dir for each episode. Keep each formal spec unchanged;
@@ -619,6 +647,7 @@ orchestrator_sha="$(shasum -a 256 \
 node - "$BUNDLE_ROOT/manifest.json" "$BASE_IMAGE" "$files_sha" "$file_count" \
   "$file_bytes" "$links_sha" "$symlink_count" "$orchestrator_sha" \
   "$MATCHED_SPEC_A_SHA" "$MATCHED_SPEC_B_SHA" \
+  "$FORMAL_MAX_DECISION_STEPS" \
   "$canary_candidate_sha" "$canary_control_sha" \
   "$source_commit" "$MATCHED_SPECS_COMMIT" "$preparer_source_sha" \
   "$runner_source_sha" "$extractor_source_sha" "$runner_test_source_sha" \
@@ -637,6 +666,7 @@ const [
   orchestratorSha256,
   matchedSpecASha256,
   matchedSpecBSha256,
+  formalMaxDecisionSteps,
   canaryCandidateSha256,
   canaryControlSha256,
   sourceCommit,
@@ -691,27 +721,29 @@ const manifest = {
   },
   experiment_specs: [
     {
-      label: "gc2-matched-a",
-      path: "specs/gc2-matched-a.json",
+      label: "formal-matched-a",
+      path: "specs/formal-matched-a.json",
       sha256: matchedSpecASha256,
       role: "candidate",
+      max_decision_steps: Number(formalMaxDecisionSteps),
     },
     {
-      label: "gc2-matched-b",
-      path: "specs/gc2-matched-b.json",
+      label: "formal-matched-b",
+      path: "specs/formal-matched-b.json",
       sha256: matchedSpecBSha256,
       role: "exact-parent",
+      max_decision_steps: Number(formalMaxDecisionSteps),
     },
   ],
   transport_canaries: [
     {
-      label: "gc2-transport-canary-candidate",
+      label: "transport-canary-candidate",
       path: "specs/canary-candidate-player-specs.json",
       sha256: canaryCandidateSha256,
       role: "candidate",
     },
     {
-      label: "gc2-transport-canary-control",
+      label: "transport-canary-control",
       path: "specs/canary-control-player-specs.json",
       sha256: canaryControlSha256,
       role: "exact-parent",
@@ -776,6 +808,7 @@ command echo "runner_source_sha256=$runner_source_sha"
 command echo "extractor_source_sha256=$extractor_source_sha"
 command echo "matched_spec_a_sha256=$MATCHED_SPEC_A_SHA"
 command echo "matched_spec_b_sha256=$MATCHED_SPEC_B_SHA"
+command echo "formal_max_decision_steps=$FORMAL_MAX_DECISION_STEPS"
 command echo "canary_candidate_sha256=$canary_candidate_sha"
 command echo "canary_control_sha256=$canary_control_sha"
 command echo "manifest_sha256=$manifest_sha"

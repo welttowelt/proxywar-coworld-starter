@@ -49,8 +49,10 @@ async function manifestFixture() {
   const playerBody = "process.exit(0);\n";
   const orchestratorBody = "export const fixture = true;\n";
   const extractorBody = "print('fixture')\n";
-  const specABody = '{"arm":"candidate"}\n';
-  const specBBody = '{"arm":"exact-parent"}\n';
+  const specABody =
+    '{"arm":"candidate","game_config":{"max_decision_steps":80}}\n';
+  const specBBody =
+    '{"arm":"exact-parent","game_config":{"max_decision_steps":80}}\n';
   const canaryCandidateBody = '{"kind":"canary-candidate"}\n';
   const canaryControlBody = '{"kind":"canary-control"}\n';
   await writeFile(path.join(policyRoot, "player.mjs"), playerBody);
@@ -60,8 +62,14 @@ async function manifestFixture() {
     path.join(root, "bin", "extract_runpod_proxywar_bundle.py"),
     extractorBody,
   );
-  await writeFile(path.join(root, "specs", "gc2-matched-a.json"), specABody);
-  await writeFile(path.join(root, "specs", "gc2-matched-b.json"), specBBody);
+  await writeFile(
+    path.join(root, "specs", "formal-matched-a.json"),
+    specABody,
+  );
+  await writeFile(
+    path.join(root, "specs", "formal-matched-b.json"),
+    specBBody,
+  );
   await writeFile(
     path.join(root, "specs", "canary-candidate-player-specs.json"),
     canaryCandidateBody,
@@ -74,8 +82,8 @@ async function manifestFixture() {
     `${sha256(orchestratorBody)}  bin/orchestrator.mjs`,
     `${sha256(extractorBody)}  bin/extract_runpod_proxywar_bundle.py`,
     `${sha256(playerBody)}  policies/candidate/app/player.mjs`,
-    `${sha256(specABody)}  specs/gc2-matched-a.json`,
-    `${sha256(specBBody)}  specs/gc2-matched-b.json`,
+    `${sha256(specABody)}  specs/formal-matched-a.json`,
+    `${sha256(specBBody)}  specs/formal-matched-b.json`,
     `${sha256(canaryCandidateBody)}  specs/canary-candidate-player-specs.json`,
     `${sha256(canaryControlBody)}  specs/canary-control-player-specs.json`,
   ];
@@ -124,27 +132,29 @@ async function manifestFixture() {
     },
     experiment_specs: [
       {
-        label: "gc2-matched-a",
-        path: "specs/gc2-matched-a.json",
+        label: "formal-matched-a",
+        path: "specs/formal-matched-a.json",
         sha256: sha256(specABody),
         role: "candidate",
+        max_decision_steps: 80,
       },
       {
-        label: "gc2-matched-b",
-        path: "specs/gc2-matched-b.json",
+        label: "formal-matched-b",
+        path: "specs/formal-matched-b.json",
         sha256: sha256(specBBody),
         role: "exact-parent",
+        max_decision_steps: 80,
       },
     ],
     transport_canaries: [
       {
-        label: "gc2-transport-canary-candidate",
+        label: "transport-canary-candidate",
         path: "specs/canary-candidate-player-specs.json",
         sha256: sha256(canaryCandidateBody),
         role: "candidate",
       },
       {
-        label: "gc2-transport-canary-control",
+        label: "transport-canary-control",
         path: "specs/canary-control-player-specs.json",
         sha256: sha256(canaryControlBody),
         role: "exact-parent",
@@ -353,8 +363,11 @@ test("bundle verification accepts a clean selected policy", async () => {
   assert.equal(verified.experiment_specs.length, 2);
   assert.equal(
     verified.experiment_specs[0].sha256,
-    sha256('{"arm":"candidate"}\n'),
+    sha256(
+      '{"arm":"candidate","game_config":{"max_decision_steps":80}}\n',
+    ),
   );
+  assert.equal(verified.experiment_specs[0].max_decision_steps, 80);
   assert.equal(verified.policies[0].key, "candidate");
 });
 
@@ -408,21 +421,89 @@ test("bundle verification rejects duplicate formal experiment identities", async
   );
 });
 
+test("bundle preparer derives the README and manifest horizon from the formal pair", async () => {
+  const source = await readFile(
+    new URL("../scripts/prepare-runpod-proxywar-bundle.sh", import.meta.url),
+    "utf8",
+  );
+  assert.doesNotMatch(source, /\b150-step\b/);
+  assert.match(
+    source,
+    /FORMAL_MAX_DECISION_STEPS="\$formal_spec_a_steps"/,
+  );
+  assert.match(
+    source,
+    /immutable \$FORMAL_MAX_DECISION_STEPS-step matched pair/,
+  );
+  assert.equal(
+    [...source.matchAll(/max_decision_steps: Number\(formalMaxDecisionSteps\)/g)]
+      .length,
+    2,
+  );
+});
+
+test("bundle verification rejects a manifest horizon that differs from its formal spec", async () => {
+  const { root, orchestratorPath, players } = await manifestFixture();
+  const manifestPath = path.join(root, "manifest.json");
+  const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+  manifest.experiment_specs[0].max_decision_steps = 81;
+  const body = `${JSON.stringify(manifest, null, 2)}\n`;
+  await writeFile(manifestPath, body);
+  await writeFile(
+    path.join(root, "manifest.sha256"),
+    `${sha256(body)}  manifest.json\n`,
+  );
+  await assert.rejects(
+    verifyBundleManifest(root, players, { orchestratorPath }),
+    /horizon disagrees with its spec/,
+  );
+});
+
+test("bundle verification rejects different horizons across the formal pair", async () => {
+  const { root, orchestratorPath, players } = await manifestFixture();
+  const specPath = path.join(root, "specs", "formal-matched-b.json");
+  const specBody =
+    '{"arm":"exact-parent","game_config":{"max_decision_steps":81}}\n';
+  await writeFile(specPath, specBody);
+  const fileManifestPath = path.join(root, "files.sha256");
+  const fileManifestBody = (await readFile(fileManifestPath, "utf8")).replace(
+    /^[a-f0-9]{64}  specs\/formal-matched-b\.json$/m,
+    `${sha256(specBody)}  specs/formal-matched-b.json`,
+  );
+  await writeFile(fileManifestPath, fileManifestBody);
+  const manifestPath = path.join(root, "manifest.json");
+  const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+  manifest.file_manifest.sha256 = sha256(fileManifestBody);
+  manifest.experiment_specs[1].sha256 = sha256(specBody);
+  manifest.experiment_specs[1].max_decision_steps = 81;
+  const manifestBody = `${JSON.stringify(manifest, null, 2)}\n`;
+  await writeFile(manifestPath, manifestBody);
+  await writeFile(
+    path.join(root, "manifest.sha256"),
+    `${sha256(manifestBody)}  manifest.json\n`,
+  );
+  await assert.rejects(
+    verifyBundleManifest(root, players, { orchestratorPath }),
+    /formal matched experiment horizons differ/,
+  );
+});
+
 test("formal run spec binds its raw hash and rejects post-verify tampering", async () => {
   const { root, orchestratorPath, players } = await manifestFixture();
   const verification = await verifyBundleManifest(root, players, {
     orchestratorPath,
   });
-  const specPath = path.join(root, "specs", "gc2-matched-a.json");
-  const originalBody = '{"arm":"candidate"}\n';
+  const specPath = path.join(root, "specs", "formal-matched-a.json");
+  const originalBody =
+    '{"arm":"candidate","game_config":{"max_decision_steps":80}}\n';
   const binding = await bindRunSpec(
     specPath,
     root,
     sha256(originalBody),
     verification,
   );
-  assert.equal(binding.relative_path, "specs/gc2-matched-a.json");
-  assert.equal(binding.manifest_label, "gc2-matched-a");
+  assert.equal(binding.relative_path, "specs/formal-matched-a.json");
+  assert.equal(binding.manifest_label, "formal-matched-a");
   assert.equal(binding.manifest_role, "candidate");
   assert.equal(binding.execution_class, "formal_evaluation");
   const tampered = '{"arm":"tampered"}\n';
