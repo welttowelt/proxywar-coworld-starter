@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "arm": "pg2",
+  "candidate_source_commit": "42e9a18193d2fb381f1f0fa6de0e64cb58e3a2f9",
+  "exact_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
+  "base_candidate_spec_sha256": "a2e75d096904e0612d083d9bb58aafc7ab8cae75f0e2f6cc073eb800b6e8341c",
+  "base_parent_spec_sha256": "7df76692757232999644d2deb9d011597ae8bc12be025ebc89cf2815044d6c22",
+  "bundle_archive_sha256": "d2f2f154a67f43008a9b8f7cc0e2c66d44d825e088434cf165fe3b751240b9cd",
+  "approval_mailbox_commit": "0cb04bd9d702e7396469c6be28dc8d7337b8c2c7",
+  "roster": [
+    "K1Z odin free",
+    "K1Z Hrafn",
+    "K1Z juryoku-koku",
+    "K1Z katanasan"
+  ],
+  "assignments": [
+    {"wave":1,"lane":"a","map":"World","seed":20260721,"pair":"world-20260721","candidate_sha256":"7269a383ce82ca7b5effab88c363e6fa3db4a6e31fbc022aa41bd25607b15fdd","parent_sha256":"c6a7567ec7878122b05797a93188f356630e3e8bdac06685644b26235f251be6"},
+    {"wave":1,"lane":"b","map":"World","seed":20260723,"pair":"world-20260723","candidate_sha256":"96501bb523248786cd6bc2f32ac573f1dc8f08ba4bc69130869754dae273c039","parent_sha256":"131a8e02867e43f76cb020cffd5c61259a2fcbee14db86a1e13fd8db31add1b1"},
+    {"wave":1,"lane":"c","map":"World","seed":20260725,"pair":"world-20260725","candidate_sha256":"633328d35a7eeb5870ab8d6345cc3530f33a0fcb64ff7c38e003e3196291bf2e","parent_sha256":"784092622a620e4b6415de31fcd6173c7db3d5194ea76df22e34c842f5b7ee1f"},
+    {"wave":1,"lane":"d","map":"World","seed":20260727,"pair":"world-20260727","candidate_sha256":"61f8b7f82d5a83f3ecf81596b1ada3aba3168052458d39c7b007ac69669a4f0f","parent_sha256":"47f88f0941d82021d4661fb27b46759803d63826db826f04f33b07966611e909"},
+    {"wave":2,"lane":"a","map":"World","seed":20260722,"pair":"world-20260722","candidate_sha256":"1a558053dd0a4c2098df14fbb3ea89af50adb8e96e9a7d20868796b3f08be4f1","parent_sha256":"d3defca90d3783620f51cbbaf3593d4a3b19f01a6de8aa83a720af999bad0c01"},
+    {"wave":2,"lane":"b","map":"World","seed":20260724,"pair":"world-20260724","candidate_sha256":"0552759b9797bb6d1e590047e16304249ac7cf620c233a8103e9150f52a43baf","parent_sha256":"fb9238572cee1f7d1e7459b8bf2c1b35c19f2105549713f6bf12111a3deb6813"},
+    {"wave":2,"lane":"c","map":"World","seed":20260726,"pair":"world-20260726","candidate_sha256":"e31d004a2be1318693e1c29a6ca443504f141fb3bd47efca4576766d9c8dd0ea","parent_sha256":"e1468ce4e2337bc674c39b7fd5f20af1f437519b90b4fde4509543ff709a1a08"},
+    {"wave":2,"lane":"d","map":"World","seed":20260728,"pair":"world-20260728","candidate_sha256":"e09e0c25cf587c5786694d05b478b6e03b600155e343b846178ae6901f515191","parent_sha256":"7cbfcade785d6ddd5a1f33dc465a1c52cd5ff24a40d0e165da0392512ce901d6"},
+    {"wave":3,"lane":"a","map":"Asia","seed":20260721,"pair":"asia-20260721","candidate_sha256":"2b9c245a5db1cf05bb44891f083e7ed50e8d2c88fa4c07c9b07f2faa61f8741e","parent_sha256":"11bdcecb51dc3e23c19365e7c38cf11bcc9f5471aee27a954075ddc68aa03a75"},
+    {"wave":3,"lane":"b","map":"Asia","seed":20260723,"pair":"asia-20260723","candidate_sha256":"f69da1270b5aed3f4ac05587d854e6e1453f08efd19a9b8cf146d84ce94050f0","parent_sha256":"0f08a63f13f5dfcc8257c2daa1b845f3e8ef19a6843b58fabb3f5845e61c5739"},
+    {"wave":3,"lane":"c","map":"Asia","seed":20260725,"pair":"asia-20260725","candidate_sha256":"14b5d2f3e3111328a9d254c94ffc01cc8d634859c0b0b7ac218344df9424b499","parent_sha256":"08ceb7f8e7e3555fcf829c8a683b339944a7d99d8cd73cb9a618c4ff7e45f898"},
+    {"wave":3,"lane":"d","map":"Asia","seed":20260727,"pair":"asia-20260727","candidate_sha256":"bfa09447620e090736b0c68f6bb0b856c765378c31b3c8987b78823054e2658d","parent_sha256":"4f553ed0f159ab0cd04f49681a07f24e64c7eda25d7a53112c5f3e61033a0cb1"},
+    {"wave":4,"lane":"a","map":"Asia","seed":20260722,"pair":"asia-20260722","candidate_sha256":"273c7d62554f2f3d50cbbe12519de5c133febb170ec241b5c78f2868b8d8c9bf","parent_sha256":"3defb0339790521139081bc11a45a579b4b2295e548c73dcb408fc77eadf4208"},
+    {"wave":4,"lane":"b","map":"Asia","seed":20260724,"pair":"asia-20260724","candidate_sha256":"64674d219c8aa8bedd03b855f11cff07c3979aa93b9bb2fb442b49fe0b8d8581","parent_sha256":"03bfc00412814561adef73017ec9a7be64bd1727fdc4ea1ab9157a0a8edac0d1"},
+    {"wave":4,"lane":"c","map":"Asia","seed":20260726,"pair":"asia-20260726","candidate_sha256":"1aa209ec67d38dad4fe6dbbf3a8453d887bcf04951146ddc661a6dc26b695b08","parent_sha256":"2dfda75f5090060327fe30d46d3721f90b61ebc5443b1bb54656eb29aa693a1e"},
+    {"wave":4,"lane":"d","map":"Asia","seed":20260728,"pair":"asia-20260728","candidate_sha256":"63625352caf33df1cce543bad11ae804efec720eed998bc22d8670784860c0a8","parent_sha256":"5ac2674184181e1d46eba8bf7e364a4ddc7009ee1c55f31823cd8366d526419c"},
+    {"wave":5,"lane":"a","map":"Pangaea","seed":20260721,"pair":"pangaea-20260721","candidate_sha256":"0d0e3fef60e46ba7c97aece1b030eb17500b0c71dffefd9499bdb62fb7b96316","parent_sha256":"20f0dfb211968cbf0117ca639fccb67fc1dbc755b14dff889d4eccc6663ec2e8"},
+    {"wave":5,"lane":"b","map":"Pangaea","seed":20260723,"pair":"pangaea-20260723","candidate_sha256":"fdf684ca895c6f61e713ec0b7c73415af47023a72574237f2cc8536de5ded598","parent_sha256":"f523f1a8dd1017732af54a471960d75b7baaceb24fa7f64e5fc6c33737fa4f99"},
+    {"wave":5,"lane":"c","map":"Pangaea","seed":20260725,"pair":"pangaea-20260725","candidate_sha256":"f76ebd4a1e86e4c165b0e679c5f89abf32c31ac26bc40f248b48302f3f057311","parent_sha256":"8a611747d7a033552d630a5d92de4671a07f921e3cdee1948bfb225e8b2edd37"},
+    {"wave":5,"lane":"d","map":"Pangaea","seed":20260727,"pair":"pangaea-20260727","candidate_sha256":"4f7ad3b628d4bbf14f75984dd9e8246d5da074c483dd804164206907e9f2b50d","parent_sha256":"1d8d1e9d6d66ea4f5b82528dc1eb0020220f83ce294c9a609530fdaeae889184"},
+    {"wave":6,"lane":"a","map":"Pangaea","seed":20260722,"pair":"pangaea-20260722","candidate_sha256":"f4cb121874e9129334a1b73887227d0c9f7456953a6b053b8955aa852eee2992","parent_sha256":"0887c3ae6a2fa8da83a9143421775f1b8f5d73b6d4d5b904671aa40795fb6b27"},
+    {"wave":6,"lane":"b","map":"Pangaea","seed":20260724,"pair":"pangaea-20260724","candidate_sha256":"1385dd27c932a000e92c651dad06e51dc1f6abd836c4b50c98ab3d43c9560361","parent_sha256":"0849f1c0550e547c0e3989c015404063d688cfa1e8dec66de9e0b90b5a85c324"},
+    {"wave":6,"lane":"c","map":"Pangaea","seed":20260726,"pair":"pangaea-20260726","candidate_sha256":"2d3ec033df5f6ecba30e7398e47aa118da9ccf31ee8e3823ef4086af1ad82f09","parent_sha256":"e1d26a12daaaa8d4cfc8c972a42a7533b4eeccdf8e9fa73ba43d6dfa8f8b042d"},
+    {"wave":6,"lane":"d","map":"Pangaea","seed":20260728,"pair":"pangaea-20260728","candidate_sha256":"531ec761365cd76b591a19045ac9b0782d082c3e0f5542874adafaf688dab98e","parent_sha256":"915d182aa0626be1676c3d8ba1a2aed35a884999f184ee294e46f813587e4490"}
+  ]
+}
