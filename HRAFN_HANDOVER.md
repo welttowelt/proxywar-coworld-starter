@@ -48,13 +48,14 @@ The player hash above corrects the prior `1154115f...` ledger value, which is
 the SHA-256 of `llm-player.mjs`, not Hrafn's `/app/hrafn-player.mjs`. Both exact
 images and their corresponding source commits agree on `16922c32...`.
 
-Current field checkpoint:
+Current field checkpoint, refreshed at `2026-07-19T11:34:00Z`:
 
-- Hrafn is overall rank `10`, score `1.3639688509793433`, after `20` completed
-  Competition rounds. Daveey leads at `32.849621422869966`; Odin is second at
-  `20.360049965243494`.
+- Hrafn is overall rank `10`, score `1.2785815488352181`, after `21` completed
+  Competition rounds. Daveey leads at `32.86339599903262`; Odin is second at
+  `20.49214816898422`.
 - Round 528 failed. Round 529 completed with Hrafn rank `12`, score `0`; Round
-  530 failed, and Round 531 is running.
+  530 failed; Round 531 completed with Hrafn rank `12`, score `0`; Round 532 is
+  running.
 - Round 529's four Pangaea episodes were outsider wins by Auri, daveey twice,
   and Richard Higgins. Hrafn went `0/4` and finished with `4,142`, `69,786`,
   `3,170`, and `19,827` tiles. All `439/439` decisions were accepted with zero
@@ -74,17 +75,17 @@ Current field checkpoint:
   the fourth when the round failed. Retain the replay evidence, but assign no
   round rank, score, or promotion verdict. Replay SHA-256 values:
   `f06a7baf...` and `7cc46d31...`.
-- Round 531 is running with v5 sealed. Three Pangaea episodes have completed:
-  Odin and daveey won the first two; the third reached turn `50,400` without an
-  outright winner. Hrafn survived with `45,791`, `15,486`, and `191,322` tiles.
-  All `675/675` decisions were accepted with zero fallbacks, rejects, or K1Z
-  harm; Hrafn made `45` `rv3` executions and `38` productive `dn1` transfers.
-  The daveey replay contains three accepted retry holds after withdrawn actions:
-  two `embargo:...:stop` actions at turns `7,800` and `8,000`, then one
-  `quick_chat` action at turn `8,100`, while productive actions remained legal.
-  The isolated quick-chat control covers only the third hold. The two inherited
-  embargo-stop holds block the zero-unexplained-hold pre-run gate. Replay
-  SHA-256 values: `9ed404da...`, `a31b7527...`, and `f0f3838a...`.
+- Round 531 completed with v5 sealed. Odin, daveey, and Richard Higgins won
+  three Pangaea episodes; the other reached turn `50,400` without an outright
+  winner. Hrafn went `0/4`, rank `12`, score `0`, with `45,791`, `15,486`,
+  `191,322`, and `0` tiles. All `793/793` decisions were accepted with zero
+  fallbacks, rejects, or K1Z harm; Hrafn made `45` `rv3` executions and `39`
+  productive `dn1` transfers. There were thirteen accepted retry holds after
+  withdrawn actions: eleven quick-chat holds and two embargo-stop holds. The
+  isolated quick-chat control covers the eleven quick-chat holds, but not the
+  two embargo-stop holds at turns `7,800` and `8,000`. Those inherited holds
+  block the zero-unexplained-hold pre-run gate. Replay SHA-256 values:
+  `9ed404da...`, `a31b7527...`, `f0f3838a...`, and `bf8759e0...`.
 
 ## VR1 corrected pre-run state
 
@@ -167,9 +168,8 @@ max setting.
 - Public game text stays short leetspeak.
 - Do not leave background episodes without a durable owner and completion
   receipt.
-- Runner status was `owned:odin:2026-07-19T11:10:17Z` at the latest check. No
-  local Hrafn episode started because the v6 pre-run evidence gate remains
-  open.
+- Runner status was `free` at `2026-07-19T11:34:00Z`. No local Hrafn episode
+  started because the v6 pre-run evidence gate remains open.
 
 ## Autonomous promotion
 
