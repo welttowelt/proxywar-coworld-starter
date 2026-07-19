@@ -1,0 +1,46 @@
+{
+  "run_id": "eb3-reach-4p-pangaea-20260720",
+  "gate": "qualifier",
+  "arm": "eb3-city-window",
+  "status": "rejected",
+  "parent_image": "proxywar-agent-llm:qd1n-v89-exact-amd64@sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+  "candidate_image": "proxywar-agent-llm:qd1n-v89-eb3-amd64@sha256:8753778b304f74ec89212fd28c2f60d25737ff7572a903a9eb774912afca09e3",
+  "fixture": {
+    "variant": "tournament-4p-pangaea",
+    "map": "Pangaea",
+    "roster": "candidate in slot 0; exact v89 in slots 1-3",
+    "output_path": "/private/tmp/proxywar-eb3-reach-4p-pangaea-20260720",
+    "replay_sha256": "845a0154ce03be16e5999eb09bc7ee5a789a6ff281c473ad7875c683d03716d4"
+  },
+  "transport": {
+    "decision_count": 222,
+    "accepted_decision_count": 222,
+    "fallback_count": 210,
+    "winner_slot": 2,
+    "turn_count": 6100
+  },
+  "candidate_seat": {
+    "username": "Coworld Starter 1",
+    "decision_count": 60,
+    "accepted_decision_count": 60,
+    "marker_count": 0,
+    "holds": 2,
+    "rejections": 0,
+    "hold_turns": [5500, 5800],
+    "harm_to_k1z": 0,
+    "opening_trace": [
+      "400 expand 10%",
+      "500 expand 10%",
+      "600 expand 20%",
+      "700 expand 35%",
+      "800 expand 35%",
+      "900 expand 35%",
+      "1000 build City"
+    ]
+  },
+  "verdict": {
+    "reason": "zero eb3 marker reach and two candidate holds",
+    "root_cause": "The v89 build path already selects the same City immediately after the third 35-percent neutral expansion in this valid fixture. EB3 is behaviorally redundant at the intended decision point, so it cannot establish a distinct causal action change.",
+    "next_action": "Do not run matched mirrors, upload, submit, or alter champion state. Keep qd1n:v89 as the exact live control and return to fresh-replay reconnaissance."
+  }
+}
