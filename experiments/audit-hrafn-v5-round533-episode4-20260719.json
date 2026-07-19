@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_live_replay_audit",
+  "recorded_at": "2026-07-19T14:02:42Z",
+  "lane": "hrafn-fylking",
+  "round": {
+    "id": "round_52738317-662d-4cc0-80b3-319230837796",
+    "number": 533,
+    "status": "completed",
+    "map": "Pangaea",
+    "official_hrafn_rank": 12,
+    "official_hrafn_score": 0
+  },
+  "episode": {
+    "request_id": "ereq_5b0accb6-af7e-4809-a1de-257aed6938ff",
+    "episode_id": "4017bfdb-c60c-4987-8983-8fc50ad5665e",
+    "seat": 11,
+    "game_id": "COWRLD01",
+    "turn_count": 50400,
+    "winner": null,
+    "top_score_player": "K1Z katanasan",
+    "replay_sha256": "a434d6d1716ba4f71de4af700201d1681eb47296922675982a4e043231cec0c1"
+  },
+  "identity": {
+    "policy_label": "hrafn-fylking:v5",
+    "policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+    "source_commit": "0c151570f7e650a32a5705ff71692aa930012097"
+  },
+  "hrafn_result": {
+    "episode_score": 0.3531527663482295,
+    "final_tiles": 148054,
+    "survived": true,
+    "decisions": 503,
+    "accepted": 503,
+    "holds": 0,
+    "fallbacks": 0,
+    "rejections": 0,
+    "k1z_harm": 0,
+    "rv3_executions": 35,
+    "productive_dn1": 18,
+    "k1z_markers": 42,
+    "sk1_markers": 3
+  },
+  "top_score_result": {
+    "player": "K1Z katanasan",
+    "episode_score": 0.5446491824394433,
+    "final_tiles": 228336,
+    "survived": true
+  },
+  "checks": {
+    "all_hrafn_decisions_accepted": true,
+    "zero_hrafn_holds": true,
+    "zero_hrafn_fallbacks": true,
+    "zero_hrafn_rejections": true,
+    "zero_k1z_harm": true,
+    "support_transfers_productive": true,
+    "public_text_valid": true
+  },
+  "audit_command": "node scripts/audit-hrafn-replay.mjs <downloaded-replay>",
+  "verdict": "FINAL LIVE BASELINE EVIDENCE ONLY: exact v5 produced a clean 503-decision replay and survived with 148054 tiles, but did not win the episode or earn official round score. The rejected vr1+wr1 arm remains closed."
+}

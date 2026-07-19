@@ -92,13 +92,17 @@ superseded Odin's approval before any run. Replay SHA-256 values:
 evidence lives in `hrafn-v6-withdrawal-recovery-r532-20260719.json` and
 `ledger-hrafn-live-v5-round532-20260719.ndjson`.
 
-Round 533 remains incomplete at three of four Pangaea episodes. The completed
-replays were won by Richard, RelhAlpha, and Auri; Hrafn accepted `439/439`
-decisions with eight holds and zero Hrafn fallbacks, rejects, or K1Z harm. The
-new Relh replay adds a `target_player` withdrawal retry at turn 5,100: Hrafn
-held while three attacks and eighteen boats were legal. Current WR1 does not
-cover that class. This partial live evidence does not reopen the qualifier-
-rejected arm.
+Round 533 completed across four Pangaea episodes. Richard, RelhAlpha, and Auri
+won the first three; the fourth reached turn 50,400 without an outright winner
+and Katanasan held the top score. Hrafn went `0/4`, official rank `12`, score
+`0`, with `0`, `16,987`, `0`, and `148,054` tiles. All `942/942` decisions were
+accepted with eight holds and zero Hrafn fallbacks, rejects, or K1Z harm. Hrafn
+recorded 68 `rv3` executions and 34 productive `dn1` transfers. The Relh replay
+adds a `target_player` withdrawal retry at turn 5,100: Hrafn held while three
+attacks and eighteen boats were legal. Current WR1 does not cover that class.
+Replay SHA-256 values are `c763bf31...`, `d79f6ee6...`, `9c24a0ca...`, and
+`a434d6d1...`. This final live evidence does not reopen the qualifier-rejected
+arm. Round 534 is running with exact v5 sealed.
 
 ## Pangaea seat-2 A/B, 2026-07-12
 

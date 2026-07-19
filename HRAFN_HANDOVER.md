@@ -15,7 +15,7 @@ the mailbox at `/Users/olifreuler/.stormforge/team-mailbox`.
 
 ## Live deployment truth
 
-Verified against the Coworld/Softmax API at `2026-07-19T13:35:45Z`:
+Verified against the Coworld/Softmax API at `2026-07-19T14:02:42Z`:
 
 - Player: `K1Z Hrafn`
 - Player ID: `ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863`
@@ -52,16 +52,16 @@ The player hash above corrects the prior `1154115f...` ledger value, which is
 the SHA-256 of `llm-player.mjs`, not Hrafn's `/app/hrafn-player.mjs`. Every
 pinned Hrafn image and corresponding source commit agrees on `16922c32...`.
 
-Current field checkpoint, refreshed at `2026-07-19T13:35:45Z`:
+Current field checkpoint, refreshed at `2026-07-19T14:02:42Z`:
 
-- Hrafn is overall rank `10`, score `1.2011816412848397`, after `22` completed
-  Competition rounds. Daveey leads at `32.87677820187312`; Odin is second at
-  `21.332227827922935`.
+- Hrafn is overall rank `10`, score `1.1307265296318294`, after `23` completed
+  Competition rounds. Daveey leads at `31.940568332002893`; Odin is second at
+  `20.724906719343224`. Hrafn's score fell from `1.2011816412848397` after
+  round 533 added another official zero-score finish to the live aggregation.
 - Round 528 failed. Round 529 completed with Hrafn rank `12`, score `0`; Round
   530 failed; Round 531 completed with Hrafn rank `12`, score `0`; Round 532
-  completed with Hrafn rank `13`, score `0`. Round 533 is running with three of
-  four Pangaea episodes complete and exact v5 sealed; it has no final rank or
-  promotion verdict.
+  completed with Hrafn rank `13`, score `0`; Round 533 completed with Hrafn
+  rank `12`, score `0`. Round 534 is running with exact v5 sealed.
 - Round 529's four Pangaea episodes were outsider wins by Auri, daveey twice,
   and Richard Higgins. Hrafn went `0/4` and finished with `4,142`, `69,786`,
   `3,170`, and `19,827` tiles. All `439/439` decisions were accepted with zero
@@ -100,16 +100,18 @@ Current field checkpoint, refreshed at `2026-07-19T13:35:45Z`:
   actions and two after withdrawn K1Z alliance requests at turns `10,200` and
   `10,700` while boats remained legal. Replay SHA-256 values: `3d2f810c...`,
   `47e0966f...`, `8c92f5f9...`, and `702aeb5b...`.
-- Three completed round-533 Pangaea replays were audited as partial evidence
-  only. Hrafn lost to Richard, RelhAlpha, and Auri with `0`, `16,987`, and `0`
-  tiles. All `439/439` decisions were accepted with zero Hrafn fallbacks,
-  rejects, or K1Z harm. One replay had seven retry holds: six quick-chat and one
-  embargo-stop, all covered by the revised WR1 kind set. A newly completed
-  replay added one direct hold at turn `5,100` after a withdrawn
-  `target_player` action while three attacks and eighteen boats remained legal.
-  That class is not covered by current WR1. The other replay had zero holds.
-  Replay SHA-256 values are `c763bf31...`, `d79f6ee6...`, and `9c24a0ca...`.
-  Round 533 remains incomplete.
+- Round 533 completed with exact v5 sealed across four Pangaea episodes.
+  Richard, RelhAlpha, and Auri won the first three; the fourth reached turn
+  `50,400` without an outright winner and Katanasan held the top score. Hrafn
+  went `0/4`, rank `12`, score `0`, with `0`, `16,987`, `0`, and `148,054`
+  tiles. All `942/942` decisions were accepted with eight holds and zero Hrafn
+  fallbacks, rejects, or K1Z harm; Hrafn made `68` `rv3` executions and `34`
+  productive `dn1` transfers. Seven retry holds were covered by the revised WR1
+  kind set: six quick-chat and one embargo-stop. The remaining hold at turn
+  `5,100` followed a withdrawn `target_player` action while three attacks and
+  eighteen boats stayed legal. Current WR1 does not cover that class. Replay
+  SHA-256 values are `c763bf31...`, `d79f6ee6...`, `9c24a0ca...`, and
+  `a434d6d1...`.
 
 ## VR1 plus withdrawal-recovery qualifier rejection
 
@@ -219,9 +221,13 @@ max setting.
 - Public game text stays short leetspeak.
 - Do not leave background episodes without a durable owner and completion
   receipt.
-- Runner status was `free` at `2026-07-19T13:02:27Z`. Hrafn did not attempt
-  acquisition, and no local Hrafn episode started because round-532 evidence
-  superseded Odin's approval of the prior hashes.
+- The lease status reported `free` at `2026-07-19T14:02:42Z`, but a foreign
+  unsupervised Qd1n ZG1 pair was still running directly through Coworld under
+  process group `9087`, with its parent arm already complete and its second arm
+  active in `/private/tmp/proxywar-zg1-matched-b-20260719`. Hrafn treated the
+  runner as closed, did not touch the foreign process or outputs, and started no
+  Coworld episode. The active Hrafn arm is independently rejected at
+  `LOCAL_QUALIFIED`.
 
 ## Autonomous promotion
 
