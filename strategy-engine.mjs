@@ -303,11 +303,17 @@ function reciprocalTrustIntact(state, history, rival) {
   return isReciprocalRival(rival) && recentHostility(state, history, rival, history.length) === 0;
 }
 
-function rivalIsProtected(state, history, rival) {
+function rivalIsProtected(
+  state,
+  history,
+  rival,
+  ignorePendingRequestProtection = false,
+) {
   if (rival.isAllied) return true;
   if (reciprocalTrustIntact(state, history, rival)) return true;
   if (state.self.tileShare >= 0.35) return false;
   if ((state.self.incomingAttackerIDs || []).includes(rival.id.toLowerCase())) return false;
+  if (ignorePendingRequestProtection) return false;
 
   for (let index = history.length - 1; index >= Math.max(0, history.length - 24); index--) {
     const entry = history[index];
@@ -698,6 +704,8 @@ export function chooseBoat(
   avoid,
   allowDesperateInvasion = false,
   forceConversion = false,
+  ignorePendingRequestProtection = false,
+  minimumDesperateRatio = MIN_DESPERATE_INVASION_RATIO,
 ) {
   const candidates = safeActions(actions, (action) => action.kind === "boat");
   if (candidates.length === 0) return null;
@@ -705,7 +713,8 @@ export function chooseBoat(
   const invasionOptions = candidates.map((action) => {
     if (isNeutralBoat(action)) return false;
     const rival = rivalForAction(action, state);
-    return rival && !rivalIsProtected(state, history, rival) &&
+    return rival &&
+      !rivalIsProtected(state, history, rival, ignorePendingRequestProtection) &&
       !boatTargetStalled(state, history, rival) ? { action, rival } : null;
   }).filter(Boolean);
   const favorableInvasions = invasionOptions.filter(({ rival }) =>
@@ -727,7 +736,7 @@ export function chooseBoat(
   } else if (neutral.length === 0 && allowDesperateInvasion && invasionOptions.length > 0) {
     const viable = invasionOptions.filter(({ rival }) =>
       Number.isFinite(rival.relativeTroopRatio) &&
-      rival.relativeTroopRatio >= MIN_DESPERATE_INVASION_RATIO
+      rival.relativeTroopRatio >= minimumDesperateRatio
     );
     const target = [...viable].sort((left, right) =>
       recentBoatTargetCount(history, left.rival) - recentBoatTargetCount(history, right.rival) ||
@@ -876,6 +885,35 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (desperateInvasion) {
     const desperateBoat = chooseBoat(actions, state, history, avoid, true);
     if (desperateBoat) return withDiscipline(desperateBoat);
+  }
+
+  // PE1: on Pangaea, a stale pending pact with a runaway outsider must not
+  // turn terminal isolation into a long HOLD loop. Actual allies and declared
+  // reciprocal K1Z partners remain protected. The age floor keeps this out of
+  // the opening, while the sub-one-percent band confines it to near-elimination.
+  const pendingPactEscape = state.mapFingerprint === "Pangaea" &&
+    state.self.tileShare < 0.01 && activeDecisions >= 40 && desperateInvasion;
+  if (pendingPactEscape) {
+    const escapeAttacks = safeActions(actions, (action) => {
+      if (action.kind !== "attack" || isNeutralExpansion(action)) return false;
+      const rival = rivalForAction(action, state);
+      return rival &&
+        !rivalIsProtected(state, history, rival, true);
+    });
+    const escapeAttack = pickPercent(escapeAttacks, 10, avoid);
+    if (escapeAttack) return { ...escapeAttack, policyMarker: "pe1" };
+
+    const escapeBoat = chooseBoat(
+      actions,
+      state,
+      history,
+      avoid,
+      true,
+      false,
+      true,
+      0,
+    );
+    if (escapeBoat) return { ...escapeBoat, policyMarker: "pe1" };
   }
 
   const donation = safeActions(actions, (action) => {

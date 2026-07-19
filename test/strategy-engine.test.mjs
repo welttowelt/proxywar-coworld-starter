@@ -996,6 +996,156 @@ test("desperate naval fallback rejects a sub-half troop ratio", () => {
   assert.equal(choose(actions, obs).id, "hold");
 });
 
+test("Pangaea terminal isolation breaks a stale outsider pact with a naval escape", () => {
+  const actions = [
+    action("boat:leader:8", "boat", "Boat to Leader 8%"),
+    action("boat:leader:16", "boat", "Boat to Leader 16%"),
+    action("hold", "hold", "Hold"),
+  ];
+  const obs = observation({
+    tileShare: 0.001,
+    spawnTile: 659528,
+    rivals: [{
+      id: "leader",
+      name: "Leader",
+      tileShare: 0.7,
+      relativeTroopRatio: 0.2,
+    }],
+  });
+  const history = [
+    ...Array.from({ length: 40 }, (_, index) => ({
+      actionID: `target:leader:${index}`,
+      kind: "target_player",
+      targetID: "leader",
+      targetName: "Leader",
+      tileShare: 0.001,
+    })),
+    {
+      actionID: "alliance:leader",
+      kind: "alliance_request",
+      targetID: "leader",
+      targetName: "Leader",
+      tileShare: 0.001,
+    },
+  ];
+  const selected = choose(actions, obs, null, history);
+  assert.equal(selected.id, "boat:leader:8");
+  assert.equal(selected.policyMarker, "pe1");
+});
+
+test("Pangaea terminal isolation directly attacks through a stale outsider pact", () => {
+  const actions = [
+    action("attack:leader:10", "attack", "Attack Leader 10%"),
+    action("attack:leader:25", "attack", "Attack Leader 25%"),
+    action("hold", "hold", "Hold"),
+  ];
+  const obs = observation({
+    tileShare: 0.001,
+    spawnTile: 659528,
+    rivals: [{
+      id: "leader",
+      name: "Leader",
+      tileShare: 0.7,
+      relativeTroopRatio: 0.2,
+    }],
+  });
+  const history = [
+    ...Array.from({ length: 40 }, (_, index) => ({
+      actionID: `target:leader:${index}`,
+      kind: "target_player",
+      targetID: "leader",
+      targetName: "Leader",
+      tileShare: 0.001,
+    })),
+    {
+      actionID: "alliance:leader",
+      kind: "alliance_request",
+      targetID: "leader",
+      targetName: "Leader",
+      tileShare: 0.001,
+    },
+  ];
+  const selected = choose(actions, obs, null, history);
+  assert.equal(selected.id, "attack:leader:10");
+  assert.equal(selected.policyMarker, "pe1");
+});
+
+test("Pangaea terminal pact escape never attacks an actual ally", () => {
+  const actions = [
+    action("boat:friend:8", "boat", "Boat to Friend 8%"),
+    action("hold", "hold", "Hold"),
+  ];
+  const obs = observation({
+    tileShare: 0.001,
+    spawnTile: 659528,
+    rivals: [{
+      id: "friend",
+      name: "Friend",
+      tileShare: 0.7,
+      relativeTroopRatio: 0.2,
+      isAllied: true,
+    }],
+  });
+  const history = Array.from({ length: 41 }, (_, index) => ({
+    actionID: `target:friend:${index}`,
+    kind: "target_player",
+    targetID: "friend",
+    targetName: "Friend",
+    tileShare: 0.001,
+  }));
+  assert.equal(choose(actions, obs, null, history).id, "hold");
+});
+
+test("Pangaea terminal pact escape never attacks a reciprocal K1Z partner", () => {
+  const actions = [
+    action("boat:katanasan:8", "boat", "Boat to K1Z katanasan 8%"),
+    action("hold", "hold", "Hold"),
+  ];
+  const obs = observation({
+    tileShare: 0.001,
+    spawnTile: 659528,
+    rivals: [{
+      id: "katanasan",
+      name: "K1Z katanasan",
+      tileShare: 0.7,
+      relativeTroopRatio: 0.2,
+    }],
+  });
+  const history = Array.from({ length: 41 }, (_, index) => ({
+    actionID: `target:katanasan:${index}`,
+    kind: "target_player",
+    targetID: "katanasan",
+    targetName: "K1Z katanasan",
+    tileShare: 0.001,
+  }));
+  assert.equal(choose(actions, obs, null, history).id, "hold");
+});
+
+test("Pangaea pact escape remains off before the terminal age floor", () => {
+  const actions = [
+    action("boat:leader:8", "boat", "Boat to Leader 8%"),
+    action("hold", "hold", "Hold"),
+  ];
+  const obs = observation({
+    tileShare: 0.001,
+    spawnTile: 659528,
+    rivals: [{
+      id: "leader",
+      name: "Leader",
+      tileShare: 0.7,
+      relativeTroopRatio: 0.2,
+    }],
+  });
+  const history = [{
+    actionID: "alliance:leader",
+    kind: "alliance_request",
+    targetID: "leader",
+    targetName: "Leader",
+    tileShare: 0.001,
+  }];
+  assert.equal(choose(actions, obs, null, history).id, "hold");
+});
+
 test("utility precedes a merely desperate naval invasion", () => {
   const actions = [
     action("boat:rival:8", "boat", "Boat to Rival 8%"),
