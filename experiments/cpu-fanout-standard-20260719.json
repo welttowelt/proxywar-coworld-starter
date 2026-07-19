@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "effective_after": "pg2-r7",
+  "scope": "all new full matched ProxyWar matrices",
+  "minimum_cpu_pods": 12,
+  "work_unit": "one complete candidate-versus-exact-parent matched pair per pod",
+  "matrix_size": 24,
+  "waves": 2,
+  "prohibited_shortcuts": [
+    "do not shorten decision horizon solely for throughput",
+    "do not mix seeds, images, or rosters within a pair",
+    "do not accept partial transfer as evidence",
+    "do not begin a later wave until its artifact hashes and pair audits pass"
+  ],
+  "release_rule": "release every pod after its evidence has been fetched and independently verified",
+  "owner": "Codex Odin",
+  "authority": "user-approved RunPod CPU fanout"
+}

@@ -27,6 +27,13 @@ The RunPod CPU fleet is an evidence factory. One clean same-host canary unlocks
 the preregistered 24-pair World, Asia, and Pangaea matrix. Every worker runs
 candidate and exact parent for its assigned cell.
 
+For every new full matrix after the currently running PG2 R7 batch, use at
+least twelve CPU pods: one matched pair per pod, twelve pairs in parallel per
+wave. A 24-pair matrix therefore has two waves rather than six. Preserve the
+same immutable image, seed, roster, pair audit, hash verification, and
+fail-closed map gates; reduce wall-clock time only by adding independent CPU
+capacity. Do not resize or interrupt an already running matrix.
+
 ## Reserve
 
 If PG2 fails any local gate, close it immediately and run A1: suppress
