@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-19",
+  "owner": "Codex Odin",
+  "decision": "single-threaded-offense-sequence",
+  "main_arm": {
+    "id": "pg2",
+    "source_commit": "42e9a18193d2fb381f1f0fa6de0e64cb58e3a2f9",
+    "state": "matrix_r7_running",
+    "required_local_gate": [
+      "independent matrix audit passes",
+      "marker reach",
+      "zero unexplained holds or rejects",
+      "zero K1Z harm",
+      "positive mirrored outcome advantage"
+    ],
+    "on_pass": [
+      "pre-upload RCI audit",
+      "diagnostic upload",
+      "hosted 4/4",
+      "map-and-seat regression 20/20",
+      "final RCI audit",
+      "automatic league submission and champion verification"
+    ],
+    "on_fail": "NO SUBMIT; preserve qd1n:v89 and activate A1"
+  },
+  "only_fallback": {
+    "id": "a1-silent-opening",
+    "source_branch": "origin/rci/a1-silent-opening",
+    "source_commit": "c5a8c101e80bcb2125b0611be0793829544a4e04",
+    "hypothesis": "on Pangaea, voluntary coalition requests before land share reaches 12 percent or the first build exists consume the early neutral-conquest window",
+    "preserved_contract": "accept genuine reciprocal K1Z offers immediately",
+    "first_gate": "Pangaea matched candidate-versus-exact-v89 parent pair",
+    "on_fail": "NO SUBMIT; do not start A2 or A3 without a fresh replay-backed decision"
+  },
+  "frozen": [
+    "a2-no-pileon-discipline",
+    "a3-single-nuke",
+    "new coalition, cadence, support, or guard arms"
+  ],
+  "authority": "standing autonomous promotion authority in AUTONOMOUS_PROMOTION.md; no further user GO required after every gate passes",
+  "retired_operator": "Hrafn"
+}

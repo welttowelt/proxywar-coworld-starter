@@ -10,10 +10,10 @@ research throughput into one binary competitive verdict at a time.
 The current main-effort candidate either:
 
 1. beats exact `qd1n:v89` in controlled matched evidence, passes hosted `4/4`
-   and regression `20/20`, receives independent Hrafn approval, and becomes the
-   verified sole champion automatically; or
-2. is rejected with immutable evidence, after which one full opening-chassis
-   rewrite becomes the only new main effort.
+and regression `20/20`, passes Odin's fail-closed RCI audit, and becomes the
+verified sole champion automatically; or
+2. is rejected with immutable evidence, after which the preregistered A1
+silent-opening ablation becomes the only next main effort.
 
 ## Main effort
 
@@ -29,10 +29,12 @@ candidate and exact parent for its assigned cell.
 
 ## Reserve
 
-If PG2 fails its matched advantage gate, close it immediately. The only
-authorized structural pivot is a full opening-chassis rewrite covering attack
-frequency, commitment, and build/boat timing. Do not open another alliance,
-cadence, reserve, support, or single-guard arm first.
+If PG2 fails any local gate, close it immediately and run A1: suppress
+voluntary coalition requests until land share is at least 12 percent or the
+first build exists, while accepting genuine reciprocal offers immediately.
+Its primary cell is Pangaea, where early deaths are concentrated. A2 and A3
+remain queued diagnostics only; do not use runner time on them unless A1 also
+fails.
 
 ## Frozen work
 
@@ -46,11 +48,8 @@ cadence, reserve, support, or single-guard arm first.
 Codex Odin owns Qd1n source, tests, images, experiments, diagnostic uploads,
 league submissions, memberships, and champion changes. Odin proceeds
 autonomously through the established objective gates and does not wait for a
-new user `GO`.
-
-Hrafn is the independent cross-auditor and owns only the Hrafn lane. Kimi K3
-Max is the external moonshot adviser and does not mutate policies or league
-state.
+new user `GO`. Hrafn is retired as an operator. Kimi K3 Max is the external
+moonshot adviser and does not mutate policies or league state.
 
 ## Stop conditions
 
