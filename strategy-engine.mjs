@@ -670,6 +670,24 @@ export function chooseBuild(actions, history, defend = false) {
   return candidates[0];
 }
 
+function openingCityBootstrap(actions, state, history, threatCount) {
+  if (state.mapFingerprint !== "Pangaea" || threatCount !== 0 || state.self.tileShare >= 0.12) {
+    return null;
+  }
+  const activeDecisions = history.filter((entry) => entry.kind !== "spawn").length;
+  if (activeDecisions >= 14 || territoryCollapsing(state, history)) return null;
+  if (builtUnits(history).some((id) => id.includes("city"))) return null;
+  const largeNeutralExpansions = history.filter((entry) =>
+    entry.kind === "attack" && entry.neutral === true &&
+    actionPercent({ id: entry.actionID }) >= 35,
+  ).length;
+  if (largeNeutralExpansions < 3) return null;
+  const city = chooseBuild(actions, history);
+  return city && actionText(city).includes("city")
+    ? { ...city, policyMarker: "eb3" }
+    : null;
+}
+
 function recentBoatTargetCount(history, rival) {
   const name = rival.name.toLowerCase();
   return history.slice(-8).filter((entry) =>
@@ -783,6 +801,8 @@ export function chooseAction(actions, state, plan = null, history = []) {
     : null;
   if (defensiveBuild) return defensiveBuild;
 
+  const eb3City = openingCityBootstrap(actions, state, history, threatCount);
+
   // gc1: global coalition-request cadence. The per-partner retry cooldown
   // multiplies across partners, so interleaved retries became a permanent
   // social stream (v91 leaders spent 122 and 82 of 503 capped decisions on
@@ -792,16 +812,17 @@ export function chooseAction(actions, state, plan = null, history = []) {
   let gc1Suppress = false;
   let suppressedKingmakerAlliance = null;
   let kingmakerAlliance = kingmakerAllianceAction(actions, state, history);
+  let partnerOfferPending = false;
   if (kingmakerAlliance) {
+    const partners = reciprocalPartners(actions, state);
+    partnerOfferPending = safeActions(actions, (action) =>
+      action.kind === "alliance_reject" &&
+      partners.some((partner) => matchesKingmakerPartner(action, partner, state))
+    ).length > 0;
     const lastCoalitionRequest = decisionsSince(history, (entry) =>
       entry.kind === "alliance_request" && entry.policyMarker === "kp2");
     if (lastCoalitionRequest < GLOBAL_COALITION_COOLDOWN &&
       hasReliableTacticalAction(actions)) {
-      const partners = reciprocalPartners(actions, state);
-      const partnerOfferPending = safeActions(actions, (action) =>
-        action.kind === "alliance_reject" &&
-        partners.some((partner) => matchesKingmakerPartner(action, partner, state))
-      ).length > 0;
       if (!partnerOfferPending) {
         suppressedKingmakerAlliance = kingmakerAlliance;
         kingmakerAlliance = null;
@@ -809,6 +830,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
       }
     }
   }
+  if (kingmakerAlliance && eb3City && !partnerOfferPending) kingmakerAlliance = null;
   if (kingmakerAlliance) return kingmakerAlliance;
 
   const withGc1 = (action) => {
@@ -824,6 +846,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
       policyMarkers,
     };
   };
+  if (eb3City) return withGc1(eb3City);
   const atomBomb = chooseAtomBomb(actions, state, history);
   if (atomBomb) return withGc1(atomBomb);
 

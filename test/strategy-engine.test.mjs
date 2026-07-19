@@ -571,6 +571,100 @@ test("neutral expansion cadence escalates 10, 10, 20, 35 percent", () => {
   ]);
 });
 
+test("eb3 places the first Pangaea City after three large calm land expansions", () => {
+  const city = action("build:City:659528", "build", "Build City");
+  const land = action(
+    "expand:terra-nullius:35",
+    "attack",
+    "Expand into Terra Nullius 35%",
+  );
+  const juryoku = {
+    ...action("alliance:ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335", "alliance_request"),
+    metadata: { recipientID: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335", relation: 2 },
+  };
+  const history = [
+    { actionID: "alliance:other-a", kind: "alliance_request", targetID: "other-a" },
+    { actionID: "alliance:other-b", kind: "alliance_request", targetID: "other-b" },
+    { actionID: "alliance:other-c", kind: "alliance_request", targetID: "other-c" },
+    ...Array.from({ length: 3 }, () => ({
+      actionID: "expand:terra-nullius:35", kind: "attack", neutral: true, tileShare: 0.05,
+    })),
+  ];
+  const selected = choose(
+    [city, land, juryoku],
+    observation({
+      tileShare: 0.05,
+      spawnTile: 659528,
+      rivals: [{
+        id: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+        name: "K1Z juryoku-koku",
+        tileShare: 0.05,
+        relativeTroopRatio: 1,
+      }],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, city.id);
+  assert.equal(selected.policyMarker, "eb3");
+});
+
+test("eb3 is Pangaea-only and leaves the World opening on its parent action", () => {
+  const city = action("build:City:659476", "build", "Build City");
+  const land = action("expand:terra-nullius:35", "attack", "Expand into Terra Nullius 35%");
+  const history = Array.from({ length: 3 }, () => ({
+    actionID: "expand:terra-nullius:35", kind: "attack", neutral: true, tileShare: 0.05,
+  }));
+  const selected = choose(
+    [city, land],
+    observation({ tileShare: 0.05, spawnTile: 659476 }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, land.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("eb3 never delays a pending reciprocal handshake", () => {
+  const city = action("build:City:659528", "build", "Build City");
+  const land = action("expand:terra-nullius:35", "attack", "Expand into Terra Nullius 35%");
+  const ally = {
+    ...action("alliance:ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335", "alliance_request"),
+    metadata: {
+      recipientID: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      recipientName: "K1Z juryoku-koku",
+      relation: 2,
+    },
+  };
+  const reject = {
+    ...action("alliance_reject:ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335", "alliance_reject"),
+    metadata: {
+      recipientID: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      recipientName: "K1Z juryoku-koku",
+    },
+  };
+  const history = Array.from({ length: 3 }, () => ({
+    actionID: "expand:terra-nullius:35", kind: "attack", neutral: true, tileShare: 0.05,
+  }));
+  const selected = choose(
+    [city, land, ally, reject],
+    observation({
+      tileShare: 0.05,
+      spawnTile: 659528,
+      rivals: [{
+        id: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+        name: "K1Z juryoku-koku",
+        tileShare: 0.05,
+        relativeTroopRatio: 1,
+      }],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, ally.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
 test("stalled land expansion switches to a neutral boat", () => {
   const land = {
     ...action("expand:terra-nullius:35", "attack", "Expand into neutral land 35%"),
