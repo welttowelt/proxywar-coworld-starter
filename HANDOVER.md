@@ -25,9 +25,9 @@ stormforge mailbox.
 Return `odin free` to overall #1 and build toward a verified 1000 consecutive
 official first-place streak (interim milestone 100). Never report the streak
 as achieved before the official completed-round sequence proves it. Current
-verified streak: **0/1000** (latest completed checkpoint: round 529, rank 9).
-Daveey leads overall (`32.8496` vs Odin `20.3600`); round 530 was running at
-the 2026-07-19 09:53 UTC audit with exact `qd1n:v89` sealed in its roster.
+verified streak: **0/1000**. The last fully reconciled checkpoint in this
+handover is round 533; refresh the live league and replay artifacts before
+reporting a newer result. Exact `qd1n:v89` remains sealed as Odin's champion.
 
 ## Live deployment truth
 
@@ -60,47 +60,48 @@ produced a matched advantage. Key confirmed diagnoses:
 3. **GC1 generic bypass**: `bestAllianceRequest` issues unmarked generic
    requests after the kp2 gate — v1's requests split 62 tagged + 21 unmarked.
 
-## Current experiment: GC2
+## Current experiment: PG2
 
-GC2 implements the assigned isolated global alliance-request arbitration gate
-over tagged `kp2` and generic `bestAllianceRequest` output. Any outbound
-request resets one eight-decision clock; incoming K1Z reverse handshakes bypass
-the clock; suppression requires a concrete chooser-approved tactical action;
-the request is retained instead of producing hold or protected-K1Z harm.
+GC2, GR1, and ZG1 are closed. PG2 is the sole active Odin arm. It changes only
+the commitment of an already selected productive neutral-land attack during
+the first twenty decisions: when exact v89 selected a legal 10% or 20%
+frontier expansion under the preregistered safety conditions, PG2 selects the
+largest otherwise identical legal option up to 35%. It does not change the
+action class or K1Z priority.
 
-- Branch: `rci/gc2`
-- Commit: `9efe990d900f16ff6ae08013d0c48bfad0092a4b`
-- Exact parent commit: `f1347251834a6283182b631e1336595eb2e08342`
-- Candidate strategy SHA-256:
-  `7270e4175b25f31844e16d3f0a80211e6c6beeb27d5c3f9f5e567dd1b8838a18`
-- Candidate player SHA-256:
-  `e34e62dcb306ae82dbc419d2a0d5bf2ec5240fb2d17609568e378be1437abc7c`
-- Tests: `152/152`
-- Local image: `proxywar-agent-llm:qd1n-v89-gc2-amd64`,
-  `sha256:593eedf2fa9dd7ee70c24800da6fedcbc203baf5b8310ca0185022be14207677`,
-  verified `linux/amd64` with both files byte-identical to the commit.
+- Clean candidate worktree: `/Users/olifreuler/proxywar-qd1n-pg2`
+- Branch and commit: `origin/rci/pg2@42e9a181`
+- Exact parent: `f1347251834a6283182b631e1336595eb2e08342`
+- Strategy SHA-256:
+  `7bd75b1c7f85030083eb6416c0b966508e6c81227ac02c674742cdb2b999540b`
+- Player SHA-256:
+  `1154115fdf5ebb89fa170bba6060d5a730615970d4cc23c00dbfa97e42b31563`
+- Candidate tests: `163/163`
+- Linux/amd64 image:
+  `proxywar-agent-llm:qd1n-v89-pg2-amd64`,
+  `sha256:3f01ffafd10079a3f0a9ead1704481df623bceedad0ad0f7f47fea77344e6b5d`
+- Immutable archive:
+  `/private/tmp/proxywar-pg2-reach-bundle-42e9a181.tar.gz`,
+  SHA-256
+  `d2f2f154a67f43008a9b8f7cc0e2c66d44d825e088434cf165fe3b751240b9cd`
+- Formal A/B request SHA-256:
+  `a2e75d096904e0612d083d9bb58aafc7ab8cae75f0e2f6cc073eb800b6e8341c`
+  and
+  `7df76692757232999644d2deb9d011597ae8bc12be025ebc89cf2815044d6c22`
 
-Hrafn released build and matched Pangaea testing in mailbox commit `551992b`,
-then approved the exact corrected qualifier job at `4d9cb04`. Both qualifier
-seats connected and produced `58/58` accepted decisions with zero holds,
-rejects, or K1Z harm, but the candidate emitted zero replay-visible `gc2`
-markers. That triggered the declared stop condition. The runner was released;
-no matched pair ran. Hosted, upload, submission, membership, champion, and
-league work remain closed.
+The repaired review request is mailbox commit `a0e233f`. Old approval
+`ee7ea9b` covers defective, superseded bytes and grants no run authority.
+Before any execution, require a fresh committed Hrafn approval naming repaired
+commit `42e9a181`, image `3f01ffaf...`, and archive `d2f2f154...`.
 
-Hrafn's setup RCI at mailbox commit `1229a93` supersedes the earlier immediate
-runner release. Keep GC2 source unchanged. Before the qualifier or matched
-pair, validate
-`experiments/preflight-qd1n-global-alliance-arbitration-gc2.json`, use the
-repository mirror auditor, pin `coworld==0.1.30`, record the exact manifest,
-game-config, parent-image, candidate-image, and fresh A/B request hashes, and
-report container marker reach as pending until the matched replay proves it.
-Run GR1 only after the isolated GC2 verdict; never fuse the two arms.
-
-Hrafn approved the zero-reach stop at mailbox commit `4901247`. GC2 remains
-frozen, `LOCAL_QUALIFIED` is false, and the matched pair, GR1, hosted testing,
-upload, submission, membership, and champion paths are closed at this
-checkpoint.
+The first approval can open only a remote linux/amd64 validate-only transport
+check followed by one supervised same-host sequential formal A-then-B reach
+pair. Both arms use seed `20260720`, Pangaea Compact, the same four-policy K1Z
+roster, and an 80-decision horizon. Stop after the pair and request an evidence
+verdict. Zero reach, action-class divergence, unexplained hold/reject, fallback
+regression, K1Z harm, transport drift, or non-positive candidate evidence
+rejects PG2. A positive canary may request the preregistered 24-pair matrix; it
+does not authorize upload, submission, membership, or champion mutation.
 
 ## Coordination protocol (coalition)
 
@@ -188,12 +189,13 @@ checkpoint.
   advances main and dirties `data/` — recheck status before every
   integration, never stage data files, integrate worktree commits via
   cherry-pick or clean file checkout.
-- Candidate worktree: `/Users/olifreuler/proxywar-qd1n-gc2`, branch
-  `rci/gc2`, exact commit `9efe990d`.
-- Tests: `npm test` (`152/152` on GC2).
+- Candidate worktree: `/Users/olifreuler/proxywar-qd1n-pg2`, branch
+  `rci/pg2`, exact commit `42e9a181`.
+- Tests: `npm test` (`163/163` on PG2). Runner/bundle verification is
+  `192/192`.
   Red-first discipline: every guard gets a failing test before the fix.
-- GC2 qualifier and local mirrors: pin `coworld==0.1.30`. Do not substitute
-  another runtime without a new matched preflight.
+- PG2 execution uses the runtime and exact requests embedded in the immutable
+  bundle. Do not substitute another runtime or rebuild from current main.
 - Images: `docker build --platform linux/amd64 --build-arg
   POLICY_CODENAME=s4ntai -t proxywar-agent-llm:<tag> .`; verify with
   `docker run --rm --entrypoint cat <img> /app/strategy-engine.mjs | diff -q

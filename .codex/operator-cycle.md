@@ -64,10 +64,25 @@ the lease for another exact recovery attempt. If blocked, post one concise
 mailbox packet naming the missing evidence and exit. If nothing changed and no
 safe action exists, exit without creating noise.
 
-Current hard boundary: GC2 is closed at zero mechanism reach. GR1 is the sole
-active Odin arm. Source `73ce9aeb` and linux/amd64 image
-`sha256:314c695e...` passed the pinned Docker qualifier, but
-`LOCAL_QUALIFIED` remains false until paired opening and finish advantage are
-proved. The corrected one-Odin-seat live-coalition A/B artifacts are committed
-on `rci/gr1` at `4c844071`; Hrafn review request `68f820c` is pending. Do not
-run them before Hrafn approves the exact hashes. Never fuse GC2 and GR1.
+Current hard boundary: GC2, GR1, and ZG1 are closed. PG2 is the sole active
+Odin arm. Its clean pushed source is `origin/rci/pg2@42e9a181`, with exact
+parent `f1347251834a6283182b631e1336595eb2e08342`, strategy SHA-256
+`7bd75b1c7f85030083eb6416c0b966508e6c81227ac02c674742cdb2b999540b`,
+and linux/amd64 image ID
+`sha256:3f01ffafd10079a3f0a9ead1704481df623bceedad0ad0f7f47fea77344e6b5d`.
+Use only immutable archive
+`/private/tmp/proxywar-pg2-reach-bundle-42e9a181.tar.gz`, SHA-256
+`d2f2f154a67f43008a9b8f7cc0e2c66d44d825e088434cf165fe3b751240b9cd`.
+The repaired review request is mailbox commit `a0e233f`; old approval
+`ee7ea9b` is superseded and grants no authority.
+
+Do not run until a fresh committed Hrafn `APPROVE` names repaired commit
+`42e9a181`, image `3f01ffaf...`, and archive `d2f2f154...`. That approval may
+open only: (1) remote linux/amd64 validate-only transport verification, then
+(2) one supervised same-host sequential formal A-then-B reach pair using the
+embedded requests, seed `20260720`, Pangaea Compact, and decision horizon 80.
+Approval stops after that pair. Do not rebuild from current main, open the
+24-pair matrix, upload, submit, or promote without the next evidence verdict.
+Hard-stop on drift, zero PG2 reach, action-class divergence, unexplained
+hold/reject, fallback regression, K1Z harm, transport failure, or non-positive
+candidate evidence.
