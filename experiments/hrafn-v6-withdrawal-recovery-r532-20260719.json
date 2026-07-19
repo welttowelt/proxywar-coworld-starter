@@ -1,9 +1,10 @@
 {
   "schema_version": 1,
   "record_type": "hrafn_round532_reconciliation_and_withdrawal_recovery_revision",
-  "recorded_at": "2026-07-19T13:02:27Z",
+  "recorded_at": "2026-07-19T13:32:04Z",
   "lane": "hrafn-fylking",
   "live_baseline": {
+    "verified_at": "2026-07-19T13:35:45Z",
     "label": "hrafn-fylking:v5",
     "policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
     "source_commit": "0c151570f7e650a32a5705ff71692aa930012097",
@@ -66,24 +67,36 @@
     "new_failure_class": "two withdrawn K1Z alliance requests retried as hold while boats remained submission-legal"
   },
   "round_533_partial": {
+    "ledger": "experiments/ledger-hrafn-live-v5-round533-partial-20260719.ndjson",
     "status": "running",
-    "completed_episodes": 2,
+    "map": "Pangaea",
+    "completed_episodes": 3,
     "total_episodes": 4,
     "official_rank_or_verdict": null,
-    "completed_winners": ["Richard Higgins", "Auri"],
-    "decisions": 215,
-    "accepted": 215,
-    "holds": 7,
+    "completed_winners": ["Richard Higgins", "RelhAlpha", "Auri"],
+    "final_tiles": [0, 16987, 0],
+    "decisions": 439,
+    "accepted": 439,
+    "holds": 8,
     "fallbacks": 0,
     "rejections": 0,
     "k1z_harm": 0,
     "hold_classes": {
       "quick_chat_withdrawal_retry": 6,
-      "embargo_stop_withdrawal_retry": 1
+      "embargo_stop_withdrawal_retry": 1,
+      "target_player_withdrawal_retry": 1
     },
-    "covered_by_current_wr1": true,
+    "target_player_retry": {
+      "episode_request_id": "ereq_116176da-a7af-4bd2-90f2-f2a930ca440d",
+      "turn": 5100,
+      "withdrawn_action": "target:25ze9gxs",
+      "retry_action": "hold",
+      "submission_legal_recovery": "three attacks and eighteen boats"
+    },
+    "covered_by_current_wr1": false,
     "replay_sha256": [
       "c763bf31bef7a781df9132ad3636e459405232e2ff11f48cc834cc494dd60d04",
+      "d79f6ee68265c5d1c667b7281f9271e3ca844f47bdeac540d0dc2c47373a0126",
       "9c24a0ca4312a74d7f0eecfbbac25dc3946588ebf8a5287d6f331f408a2870c2"
     ]
   },
@@ -134,15 +147,32 @@
     }
   },
   "odin_pre_run_review": {
-    "mailbox_commit": "3bf1661",
+    "mailbox_commit": "66c9752f368a2be18510cbd1016c5c933c07684e",
     "verdict": "APPROVE",
-    "status": "superseded before execution by round-532 alliance-request evidence and changed source, image, and request identities",
-    "fresh_review_required": true
+    "status": "exact revised source, image, manifest, and request identities approved for the bounded qualifier",
+    "fresh_review_required": false
+  },
+  "local_qualifier": {
+    "status": "failed",
+    "run_id": "hrafn-vr1-wr1-r532-qualifier-20260719T1322Z",
+    "request_sha256": "d26705a5c7e7d5e04f6d8fbe3fa7133667f54a3cdf7504716987d61b79e351ef",
+    "replay_sha256": "108f86ab3aee00806076fc86affed5a3fb13edf58bbdef6b88105239be0fbf29",
+    "hrafn_decisions": 303,
+    "hrafn_accepted": 303,
+    "hrafn_holds": 10,
+    "hrafn_fallbacks": 0,
+    "hrafn_rejections": 0,
+    "hrafn_k1z_harm": 0,
+    "vr1_executions": 0,
+    "wr1_executions": 0,
+    "matched_started": false,
+    "audit": "experiments/audit-hrafn-v6-withdrawal-recovery-qualifier-r532-20260719.json"
   },
   "runner": {
     "status": "free",
-    "episode_started": false,
-    "reason": "evidence gate reopened before acquisition"
+    "episode_started": true,
+    "episode_terminal": true,
+    "reason": "exact approved qualifier completed and released; no matched request started after qualifier failure"
   },
   "promotion_states": {
     "SOURCE_READY": true,
@@ -156,5 +186,5 @@
     "CHAMPION_VERIFIED": false,
     "ROUND_CONFIRMED": false
   },
-  "verdict": "SOURCE_READY ONLY: round-532 evidence invalidated the approved old hashes before any run. The alliance-request retry class now has red-first coverage in candidate and isolation control, exact new amd64 images, and regenerated requests. Fresh Odin pre-run approval is required. NO RUN, NO UPLOAD, NO SUBMIT."
+  "verdict": "REJECTED AT LOCAL QUALIFIER: the exact approved qualifier completed under the foreground supervisor, but Hrafn produced 10 holds and zero vr1/wr1 executions. LOCAL_QUALIFIED remains false. NO MATCHED RUN, NO UPLOAD, NO HOSTED TEST, NO SUBMIT, NO MEMBERSHIP CHANGE, NO CHAMPION CHANGE."
 }

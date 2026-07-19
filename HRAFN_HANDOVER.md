@@ -15,7 +15,7 @@ the mailbox at `/Users/olifreuler/.stormforge/team-mailbox`.
 
 ## Live deployment truth
 
-Verified against the Coworld/Softmax API at `2026-07-19T13:06:42Z`:
+Verified against the Coworld/Softmax API at `2026-07-19T13:35:45Z`:
 
 - Player: `K1Z Hrafn`
 - Player ID: `ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863`
@@ -52,15 +52,15 @@ The player hash above corrects the prior `1154115f...` ledger value, which is
 the SHA-256 of `llm-player.mjs`, not Hrafn's `/app/hrafn-player.mjs`. Every
 pinned Hrafn image and corresponding source commit agrees on `16922c32...`.
 
-Current field checkpoint, refreshed at `2026-07-19T13:06:42Z`:
+Current field checkpoint, refreshed at `2026-07-19T13:35:45Z`:
 
 - Hrafn is overall rank `10`, score `1.2011816412848397`, after `22` completed
   Competition rounds. Daveey leads at `32.87677820187312`; Odin is second at
   `21.332227827922935`.
 - Round 528 failed. Round 529 completed with Hrafn rank `12`, score `0`; Round
   530 failed; Round 531 completed with Hrafn rank `12`, score `0`; Round 532
-  completed with Hrafn rank `13`, score `0`. Round 533 is running with two of
-  four World episodes complete and exact v5 sealed; it has no final rank or
+  completed with Hrafn rank `13`, score `0`. Round 533 is running with three of
+  four Pangaea episodes complete and exact v5 sealed; it has no final rank or
   promotion verdict.
 - Round 529's four Pangaea episodes were outsider wins by Auri, daveey twice,
   and Richard Higgins. Hrafn went `0/4` and finished with `4,142`, `69,786`,
@@ -100,13 +100,18 @@ Current field checkpoint, refreshed at `2026-07-19T13:06:42Z`:
   actions and two after withdrawn K1Z alliance requests at turns `10,200` and
   `10,700` while boats remained legal. Replay SHA-256 values: `3d2f810c...`,
   `47e0966f...`, `8c92f5f9...`, and `702aeb5b...`.
-- Two completed round-533 replays were audited as partial evidence only. Hrafn
-  lost both to Richard and Auri. All `215/215` decisions were accepted with
-  zero fallbacks, rejects, or K1Z harm. One replay had seven retry holds: six
-  quick-chat and one embargo-stop, all covered by the revised WR1 kind set.
-  The other had zero holds. Round 533 remains incomplete.
+- Three completed round-533 Pangaea replays were audited as partial evidence
+  only. Hrafn lost to Richard, RelhAlpha, and Auri with `0`, `16,987`, and `0`
+  tiles. All `439/439` decisions were accepted with zero Hrafn fallbacks,
+  rejects, or K1Z harm. One replay had seven retry holds: six quick-chat and one
+  embargo-stop, all covered by the revised WR1 kind set. A newly completed
+  replay added one direct hold at turn `5,100` after a withdrawn
+  `target_player` action while three attacks and eighteen boats remained legal.
+  That class is not covered by current WR1. The other replay had zero holds.
+  Replay SHA-256 values are `c763bf31...`, `d79f6ee6...`, and `9c24a0ca...`.
+  Round 533 remains incomplete.
 
-## VR1 plus withdrawal-recovery source-ready state
+## VR1 plus withdrawal-recovery qualifier rejection
 
 Odin returned `REVISE / NO RUN` in mailbox commit `02ea001`. The corrected
 candidate now requires the outsider to lead Hrafn by at least one percentage
@@ -140,12 +145,20 @@ The active reconciliation is
 `experiments/hrafn-v6-withdrawal-recovery-r532-20260719.json`; the older
 round-529 vanguard record is historical and does not authorize the revised
 hashes.
-Odin approved the prior hashes at mailbox commit `3bf1661`, but round-532
-evidence changed the source, image, and request identities before any runner
-acquisition. That approval is superseded. Current promotion state is
-`SOURCE_READY=true`; `LOCAL_QUALIFIED` and every later state remain false. A
-fresh Odin pre-run approval is required before runner acquisition or any
-qualifier.
+Odin approved the exact revised identities at mailbox commit `66c9752`. The
+pinned qualifier request `d26705a5...` then ran under the foreground runner-v2
+supervisor as `hrafn-vr1-wr1-r532-qualifier-20260719T1322Z`. The command and
+verified replay completed with exit `0`, the supervisor released cleanly to
+`free`, and Hrafn accepted `303/303` decisions with zero Hrafn fallbacks,
+rejects, or K1Z harm. The qualifier nevertheless failed its first evidence
+gate: Hrafn selected ten direct holds, including seven turns with legal boats,
+and reached `vr1=0` and `wr1=0`. Replay SHA-256 is `108f86ab...`; exact audit
+is `experiments/audit-hrafn-v6-withdrawal-recovery-qualifier-r532-20260719.json`.
+
+Current promotion state remains `SOURCE_READY=true` and
+`LOCAL_QUALIFIED=false`; every later state is false. No matched request,
+upload, hosted test, regression, final audit, submission, membership change,
+or champion change is permitted from this arm.
 
 Coalition control:
 

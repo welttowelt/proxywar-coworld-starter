@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_vr1_wr1_local_qualifier_audit",
+  "recorded_at": "2026-07-19T13:32:04Z",
+  "lane": "hrafn-fylking",
+  "verdict": "REJECT",
+  "run": {
+    "run_id": "hrafn-vr1-wr1-r532-qualifier-20260719T1322Z",
+    "supervisor": "/Users/olifreuler/proxywar-coworld-starter/scripts/proxywar-runner-lease.sh",
+    "supervisor_exit": 0,
+    "runner_final_state": "free",
+    "output": "/private/tmp/hrafn-vr1-wr1-r532-qualifier-20260719T1322Z",
+    "request_path": "/private/tmp/hrafn-vr1-wr1-r532-postcommit-20260719T1320Z/qualifier-vr1-wr1.json",
+    "request_sha256": "d26705a5c7e7d5e04f6d8fbe3fa7133667f54a3cdf7504716987d61b79e351ef",
+    "config_sha256": "de6e1bfc3003dde9d916fae35f9cca6a18b9c754339ef49bd7ac93155582b47f",
+    "results_sha256": "4f1349e522899544428e83d8fb5b21c1f9a6ff08147470760b52df6d009dee5e",
+    "replay_sha256": "108f86ab3aee00806076fc86affed5a3fb13edf58bbdef6b88105239be0fbf29",
+    "verified_replay_command_exit": 0,
+    "game_id": "CWAADAGQ",
+    "turn_count": 30400
+  },
+  "approved_identity": {
+    "odin_mailbox_commit": "66c9752f368a2be18510cbd1016c5c933c07684e",
+    "candidate_source": "cfdcd5a673eb3b6a660390db762f499d18376632",
+    "candidate_image": "sha256:02439078ca32f096ee457b4d5dbf80bfcecffd75c0559f1790875b2b6eac03a6",
+    "evidence_commit_before_run": "2b80c38d6afa972ff5bec7149744fe834c0b7aa1"
+  },
+  "result": {
+    "scores": [0.22820440070051168, 0.7717955992994883, 0, 0],
+    "hrafn_tiles": 23325,
+    "hrafn_survived": true,
+    "hrafn_decisions": 303,
+    "hrafn_accepted": 303,
+    "hrafn_rejected": 0,
+    "hrafn_holds": 10,
+    "hrafn_fallbacks": 0,
+    "hrafn_k1z_harm": 0,
+    "vr1_executions": 0,
+    "wr1_executions": 0,
+    "all_decisions": 735,
+    "all_accepted": 735,
+    "all_fallbacks": 423,
+    "odin_fallbacks": 300,
+    "hold_turns": [4900, 5000, 6000, 6200, 6300, 6500, 6700, 7200, 7300, 7700],
+    "hold_reason": "[K1Z] r4vn:h0d",
+    "holds_with_legal_boats": 7,
+    "holds_without_legal_boats": 3
+  },
+  "gate_checks": {
+    "request_identity_exact": true,
+    "source_image_identity_exact": true,
+    "supervised_terminal_run": true,
+    "replay_ready": true,
+    "all_hrafn_decisions_accepted": true,
+    "zero_hrafn_fallbacks": true,
+    "zero_k1z_harm": true,
+    "zero_holds": false,
+    "vr1_reached": false,
+    "wr1_reached": false,
+    "local_qualified": false
+  },
+  "stop_reason": "The pinned qualifier failed mechanism reach and zero-hold requirements. Seven direct holds retained legal boats, so the withdrawal-retry guard did not explain or recover them. Matched requests, upload, hosted testing, regression, final audit, submission, placement, membership, and champion changes remain closed."
+}

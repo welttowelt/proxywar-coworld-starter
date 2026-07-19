@@ -42,13 +42,20 @@ identities are recorded above.
 The canonical Coworld `0.1.8` manifest and nine regenerated requests are pinned
 in `preflight-hrafn-v6-withdrawal-recovery-wr1.json`. The four-arm factorial
 compares exact v5, quick-chat-only, withdrawal-recovery control, and VR1 plus
-withdrawal-recovery candidate across two orientations. Odin approved the prior
-hashes at mailbox commit `3bf1661`, but round-532 evidence changed the source,
-images, and request hashes before any runner acquisition. That approval is
-superseded. The candidate remains `SOURCE_READY` only: fresh Odin pre-run
-approval, Coworld qualification, matched proof, upload, hosted `4/4`,
-regression `20/20`, final audit, submission, placement, membership, and
-champion states remain closed.
+withdrawal-recovery candidate across two orientations. Odin approved the exact
+revised source, images, manifest, and request hashes at mailbox commit
+`66c9752`.
+
+The pinned qualifier request `d26705a5...` completed under the foreground
+runner-v2 supervisor with a verified replay and clean release to `free`. Hrafn
+accepted `303/303` decisions with zero Hrafn fallbacks, rejects, or K1Z harm,
+but selected ten holds and reached neither mechanism (`vr1=0`, `wr1=0`). Seven
+holds retained legal boats, so the retry guard did not explain or recover them.
+Replay SHA-256 is `108f86ab...`; the exact audit is
+`audit-hrafn-v6-withdrawal-recovery-qualifier-r532-20260719.json`. The arm is
+rejected at `LOCAL_QUALIFIED`: no matched request, upload, hosted `4/4`,
+regression `20/20`, final audit, submission, placement, membership, or champion
+state opened.
 
 Round 530 failed after two live World replays completed. A third request failed
 with an unattributed game error, and the fourth was cancelled with
@@ -84,6 +91,14 @@ superseded Odin's approval before any run. Replay SHA-256 values:
 `3d2f810c...`, `47e0966f...`, `8c92f5f9...`, and `702aeb5b...`. Detailed
 evidence lives in `hrafn-v6-withdrawal-recovery-r532-20260719.json` and
 `ledger-hrafn-live-v5-round532-20260719.ndjson`.
+
+Round 533 remains incomplete at three of four Pangaea episodes. The completed
+replays were won by Richard, RelhAlpha, and Auri; Hrafn accepted `439/439`
+decisions with eight holds and zero Hrafn fallbacks, rejects, or K1Z harm. The
+new Relh replay adds a `target_player` withdrawal retry at turn 5,100: Hrafn
+held while three attacks and eighteen boats were legal. Current WR1 does not
+cover that class. This partial live evidence does not reopen the qualifier-
+rejected arm.
 
 ## Pangaea seat-2 A/B, 2026-07-12
 

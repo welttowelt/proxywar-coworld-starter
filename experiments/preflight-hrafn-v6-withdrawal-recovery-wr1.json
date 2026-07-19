@@ -2,7 +2,7 @@
   "schema_version": 1,
   "record_type": "hrafn_withdrawal_recovery_preflight",
   "recorded_at": "2026-07-19T12:13:23Z",
-  "reconciled_at": "2026-07-19T13:02:27Z",
+  "reconciled_at": "2026-07-19T13:32:04Z",
   "lane": "hrafn-fylking",
   "exact_live_parent": {
     "policy_ref": "hrafn-fylking:v5",
@@ -106,7 +106,7 @@
       "request_sha256": "d26705a5c7e7d5e04f6d8fbe3fa7133667f54a3cdf7504716987d61b79e351ef",
       "game_config_sha256": "bcf5abb8003d86ae91eb37a592175194294a27d87e004aa93e4cdde4cea18451",
       "required_result": "replay-visible vr1 and wr1 reach, every Hrafn decision accepted, zero unexplained holds, zero rejects, zero fallbacks, and zero K1Z harm",
-      "status": "not run; Odin approval 3bf1661 covered superseded hashes and was invalidated by round-532 alliance-request evidence; fresh pre-run review pending"
+      "status": "failed under exact-hash Odin approval 66c9752: supervised run exited 0 with verified replay, but Hrafn had 10 holds, vr1=0, and wr1=0; audit experiments/audit-hrafn-v6-withdrawal-recovery-qualifier-r532-20260719.json"
     },
     "matched": {
       "design": "four-arm, two-orientation factorial: exact v5, quick-chat-only control, withdrawal-recovery control, and VR1 plus withdrawal-recovery candidate",
@@ -126,7 +126,7 @@
         "control_request_sha256": "1dd993042ebe7fab953ae902aca1679e6c9daf0277ad1bae6e3269663d87fc95",
         "candidate_request_sha256": "cb983ebc6e8c0d7e80ec99772855fb7853124b096e87846a58fa57ee665281f0"
       },
-      "status": "not run"
+      "status": "not run; closed by failed qualifier"
     }
   },
   "promotion_states": {
@@ -141,5 +141,5 @@
     "CHAMPION_VERIFIED": false,
     "ROUND_CONFIRMED": false
   },
-  "verdict": "SOURCE_READY only: round-532 alliance-request retry evidence is absorbed by a red-first extension, isolated control, exact pushed commits, fresh linux/amd64 images, and regenerated requests. Odin approval 3bf1661 is superseded because it reviewed the prior hashes. Fresh pre-run approval, runner acquisition, Coworld qualification, matched proof, upload, hosted 4/4, regression 20/20, final audit, submission, placement, membership, champion, and completed-round confirmation remain closed."
+  "verdict": "REJECTED AT LOCAL QUALIFIER: Odin approved the exact revised packet at mailbox commit 66c9752 and the supervised run completed with verified replay. Hrafn accepted 303/303 decisions with zero fallbacks and zero K1Z harm, but selected 10 holds and reached neither vr1 nor wr1. LOCAL_QUALIFIED remains false. No matched request, upload, hosted test, regression, final audit, submission, placement, membership, champion, or round-confirmation action is permitted."
 }
