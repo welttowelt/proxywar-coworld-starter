@@ -6,6 +6,13 @@ league operations). **Kimi K3 Max remains the external moonshot adviser**
 Address implementation requests to Codex Odin; coordinate strategic forks with
 the real Kimi K3 through the established mailbox or handoff channel.
 
+**Hrafn is a separate writable game operator**, not a Codex subagent. Hrafn
+owns `hrafn-fylking` code and league versions from
+`/Users/olifreuler/proxywar-k1z-hrafn`; Codex Odin owns `qd1n` from this
+repository. Each operator builds, uploads, and submits only its own policy after
+the required gates and explicit user authorization. Cross-audits are read-only
+and travel through the team mailbox.
+
 New worker: this is the live state and the next work. Read `AGENTS.md`,
 `MERIT.md` (the merit ledger — every arm verdict), and
 `experiments/README.md` first. Everything below is verified there or in the

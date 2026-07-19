@@ -1,10 +1,4 @@
 # Codex Odin is the persistent root operator for this project.
-# Hrafn is the bounded read-only Codex specialist defined in .codex/agents/.
-# Kimi K3 Max is an external adviser and is not configured or spawned by Codex.
+# Hrafn and Kimi K3 Max are external collaborators, not Codex subagents.
 model = "gpt-5.6-sol"
 model_reasoning_effort = "high"
-
-[agents]
-max_threads = 2
-max_depth = 1
-interrupt_message = true

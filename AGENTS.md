@@ -13,29 +13,22 @@ the Coworld/Softmax game simulation.
 
 # Agent operating model
 
-Codex Odin is the persistent root operator and the only writer. Odin owns
-hypothesis selection, implementation, tests, runner coordination, experiment
-records, and authorized league operations. The root project configuration pins
-Odin to the strongest current local model at high reasoning.
+Codex Odin is the persistent writable operator for the Odin/Qd1n lane. Odin
+owns `qd1n` hypothesis selection, implementation, tests, image builds, runner
+coordination, experiment records, and authorized uploads and submissions. Odin
+must not edit or submit Hrafn policy versions unless the user explicitly
+transfers that lane.
 
-Hrafn is the independent red-first auditor defined by
-`.codex/agents/hrafn_audit.toml`. Spawn Hrafn automatically for these bounded
-checkpoints:
+Hrafn is a separate writable game operator working from
+`/Users/olifreuler/proxywar-k1z-hrafn`. Hrafn owns the `hrafn-fylking` policy,
+its tests, images, experiments, uploads, submissions, memberships, and champion
+changes. Hrafn must not edit or submit Odin/Qd1n policy versions unless the user
+explicitly transfers that lane.
 
-1. Before implementing a new policy mechanism: audit the causal hypothesis,
-   authoritative action path, marker, red-test plan, success metric, and stop
-   condition.
-2. After implementation and local tests, before starting a costly Coworld
-   experiment: audit the exact diff, red-first proof, image identity plan,
-   matched design, and hold/harm instrumentation.
-3. After the experiment, before declaring a verdict or requesting promotion:
-   audit reach, accepted decisions, holds, rejects, K1Z harm, confounds,
-   matched outcome, and remaining gates.
-
-Do not spawn Hrafn for mailbox polling, standings refreshes, routine searches,
-ordinary test execution, formatting, documentation updates, or already-closed
-arms. Use one Hrafn thread at a time, wait for its verdict, and let Odin make
-all edits. Hrafn runs read-only at xhigh reasoning.
+Odin and Hrafn cross-audit each other through the established team mailbox.
+Cross-audit is read-only: the reviewing operator returns a verdict and the lane
+owner makes the edits. Coordinate runner ownership before either lane starts a
+Coworld episode.
 
 Kimi K3 Max is an external moonshot adviser, not a Codex/GPT subagent. Codex
 must never spawn a GPT agent as a substitute for Kimi, assign Kimi a Codex
@@ -46,12 +39,8 @@ change, conflicting campaign evidence, a campaign deadlock, or an explicit
 request from Odin or the user. Kimi searches for deep mechanism or evaluation
 breakthroughs and preserves historical and coalition continuity. Treat his
 messages as external adviser input that Odin must verify against live artifacts.
-Hrafn remains the Codex code and evidence auditor.
-
-The project caps Codex agent threads at two with one nesting level: Odin plus
-Hrafn when an audit checkpoint requires him. Routine work stays single-agent.
-Hrafn may recommend an action but may not edit files, use the runner,
-communicate externally, or change league state.
+Kimi does not edit policy code, use the runner, upload policies, submit versions,
+or change league state.
 
 # ProxyWar authority and promotion gates
 
