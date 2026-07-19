@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-19",
+  "experiment": "qd1n large-commitment opening grind GR1",
+  "gate": "qualifier",
+  "verdict": "PASS",
+  "local_qualified": true,
+  "runtime": {
+    "coworld_version": "0.1.30",
+    "coworld_game_version": "0.1.8",
+    "manifest_path": "experiments/gr1-qualifier-canonical-manifest-20260719.json",
+    "manifest_sha256": "f5e6b4dd247b2b2e534a415d293babab7fd655d44b2004db4257a2df3a01dab0",
+    "job_path": "experiments/gr1-qualifier-explicit-player-jobs-20260719.json",
+    "job_sha256": "22da8b37bd94bc54effd7edee5f872955e104c728583059146d20bf291c02d75",
+    "output_path": "/private/tmp/proxywar-qd1n-gr1-amd64-qualifier-20260719",
+    "replay_verified": true
+  },
+  "candidate": {
+    "source_commit": "73ce9aeb2ad6b15c59249ff506e09eb2ff4e1a1a",
+    "image": "proxywar-agent-llm:qd1n-v89-gr1-amd64",
+    "image_id": "sha256:314c695e110c3313c63d089391962d690901053c170953f591c088d96d8296bc",
+    "architecture": "linux/amd64",
+    "decisions": 29,
+    "accepted": 29,
+    "holds": 0,
+    "rejections": 0,
+    "fallbacks": 17,
+    "marker": "gr1",
+    "marker_executions": 4,
+    "score": 0.5066802596984493,
+    "tiles": 9443,
+    "alive": true
+  },
+  "parent": {
+    "source_commit": "f1347251834a6283182b631e1336595eb2e08342",
+    "image": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+    "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+    "architecture": "linux/amd64",
+    "decisions": 29,
+    "accepted": 29,
+    "holds": 0,
+    "rejections": 0,
+    "fallbacks": 17,
+    "marker": "gr1",
+    "marker_executions": 0,
+    "score": 0.4933197403015507,
+    "tiles": 9194,
+    "alive": true
+  },
+  "combined": {
+    "decisions": 58,
+    "accepted": 58,
+    "holds": 0,
+    "rejections": 0,
+    "fallbacks": 34,
+    "degraded": 34,
+    "planner_errors": 2,
+    "k1z_harm": 0,
+    "results_sha256": "b6b97fc3d16084a8dbe93715256d1ddf475b766442ed4999be2c5eae26cc17ba",
+    "replay_sha256": "aa61e509cdf8fa6aef8d6471269516475b8ff934af63c9db588e61bf22c3514a"
+  },
+  "evidence_boundary": "The qualifier proves candidate-only Docker reach and clean accepted replacements. Its same-orientation tile lead is not a matched advantage.",
+  "next_gate": {
+    "type": "matched",
+    "map": "Pangaea",
+    "request_a_sha256": "4d7d3d68719c0664f34475b6eeecd0bc3136f95e84fac82eb0f4e19b0c99f88b",
+    "request_b_sha256": "b67243469433d9d8238ac12f60cf7f8a41c494c71a21fc099f0392408d549717",
+    "candidate_parity_a": "even",
+    "candidate_parity_b": "odd",
+    "approved": false
+  },
+  "promotion_eligible": false
+}

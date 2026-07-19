@@ -20,7 +20,7 @@
     "marker": "gr1",
     "prior_reachable_decisions": 3,
     "source": "test/strategy-engine.test.mjs",
-    "reach_note": "three deterministic selector fixtures execute gr1 and prove the isolated choice changes; Docker-level replay reach remains pending until an approved qualifier"
+    "reach_note": "three deterministic selector fixtures prove the isolated choice change; the pinned Docker qualifier then recorded four accepted candidate-only gr1 executions and zero parent executions"
   },
   "runtime": {
     "coworld_version": "0.1.30",
@@ -44,17 +44,27 @@
   "local": {
     "runs": 1,
     "independent_traces": 1,
-    "run_type": "fresh full node test suite plus red-first exact-parent replay-shaped selector fixtures",
+    "run_type": "fresh full Node test suite, red-first exact-parent replay-shaped selector fixtures, and one pinned candidate-versus-parent Docker qualifier",
     "tests_passed": 148,
     "tests_failed": 0,
     "red_first_parent_failures": 3,
     "red_first_candidate_passes": 3,
     "lock_in_passes": 3,
     "mechanism_fixture_executions": 3,
-    "docker_marker_reach": "pending",
-    "qualifier_status": "not_run_pending_cross_audit",
-    "matched_status": "not_run",
-    "receipt": "experiments/receipt-qd1n-large-commitment-grind-gr1-full-suite-20260719.md"
+    "docker_marker_reach": 4,
+    "qualifier_status": "passed",
+    "qualifier_candidate_decisions": 29,
+    "qualifier_candidate_accepted": 29,
+    "qualifier_candidate_holds": 0,
+    "qualifier_candidate_rejections": 0,
+    "qualifier_parent_decisions": 29,
+    "qualifier_parent_accepted": 29,
+    "qualifier_parent_holds": 0,
+    "qualifier_parent_rejections": 0,
+    "qualifier_replay_sha256": "aa61e509cdf8fa6aef8d6471269516475b8ff934af63c9db588e61bf22c3514a",
+    "matched_status": "not_run_pending_review",
+    "receipt": "experiments/receipt-qd1n-large-commitment-grind-gr1-full-suite-20260719.md",
+    "qualifier_audit": "experiments/audit-qd1n-large-commitment-grind-gr1-qualifier-20260719.json"
   },
   "diagnostic_only": true,
   "matched_baseline": {
@@ -118,6 +128,6 @@
     "no mirrored finish advantage",
     "any source, image, request, runtime, or player-identity hash mismatch"
   ],
-  "sequencing": "GC2 is closed at zero mechanism reach. GR1 is the next isolated arm, but only its source and immutable image exist. Qualifier, matched, hosted, upload, submission, membership, and champion work remain closed until the corresponding reviews and gates pass.",
-  "verdict": "SOURCE_READY candidate awaiting renewed Hrafn review; LOCAL_QUALIFIED is false and promotion is not eligible"
+  "sequencing": "GC2 is closed at zero mechanism reach. GR1 passed its pinned Docker qualifier with direct clean reach. The seat-swapped matched pair is the next gate. Hosted, upload, submission, membership, and champion work remain closed until their separate gates pass.",
+  "verdict": "LOCAL_QUALIFIED is true; matched advantage and every later promotion gate remain unproven"
 }
