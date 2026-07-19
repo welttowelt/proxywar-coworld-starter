@@ -669,6 +669,23 @@ export function chooseBuild(actions, history, defend = false) {
   return candidates[0];
 }
 
+export function choosePangaeaDefensePost(actions, state, history, threatCount) {
+  if (
+    state.mapFingerprint !== "Pangaea" ||
+    threatCount < 1 ||
+    state.self.tileShare < 0.02 ||
+    state.self.tileShare > 0.2 ||
+    state.self.troopRatio > 0.95 ||
+    decisionsSince(history, (entry) => entry.policyMarker === "dp1") < 8
+  ) {
+    return null;
+  }
+  const defensePost = safeActions(actions, (action) =>
+    action.kind === "build" && actionText(action).includes("defense post")
+  )[0];
+  return defensePost ? { ...defensePost, policyMarker: "dp1" } : null;
+}
+
 function recentBoatTargetCount(history, rival) {
   const name = rival.name.toLowerCase();
   return history.slice(-8).filter((entry) =>
@@ -777,6 +794,14 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (spawn) return spawn;
 
   const threatCount = incomingThreatCount(state.self.incomingAttacks);
+  const pangaeaDefensePost = choosePangaeaDefensePost(
+    actions,
+    state,
+    history,
+    threatCount,
+  );
+  if (pangaeaDefensePost) return pangaeaDefensePost;
+
   const defensiveBuild = threatCount > 0 && state.self.troopRatio < 0.8
     ? chooseBuild(actions, history, true)
     : null;

@@ -1069,6 +1069,144 @@ test("a stale Defense Post action is bypassed for a valid counterattack", () => 
   assert.equal(choose(actions, obs).id, "attack:leader:10");
 });
 
+test("DP1 raises a Pangaea Defense Post under bounded incoming pressure", () => {
+  const defense = action("build:Defense Post:307123", "build", "Build Defense Post");
+  const counter = action("attack:leader:10", "attack", "Attack Leader 10%");
+  const selected = choose(
+    [counter, defense],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      incomingAttacks: 1,
+      spawnTile: 659528,
+      rivals: [{ id: "leader", name: "Leader", tileShare: 0.4, relativeTroopRatio: 1.1 }],
+    }),
+  );
+  assert.equal(selected.id, defense.id);
+  assert.equal(selected.policyMarker, "dp1");
+});
+
+test("DP1 does not raise a Defense Post without current incoming pressure", () => {
+  const defense = action("build:Defense Post:307123", "build", "Build Defense Post");
+  const counter = action("attack:leader:10", "attack", "Attack Leader 10%");
+  const selected = choose(
+    [counter, defense],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      spawnTile: 659528,
+      rivals: [{ id: "leader", name: "Leader", tileShare: 0.4, relativeTroopRatio: 1.1 }],
+    }),
+  );
+  assert.equal(selected.id, counter.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("DP1 leaves non-Pangaea pressure on the exact parent route", () => {
+  const defense = action("build:Defense Post:307123", "build", "Build Defense Post");
+  const counter = action("attack:leader:10", "attack", "Attack Leader 10%");
+  const selected = choose(
+    [counter, defense],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      incomingAttacks: 1,
+      spawnTile: 1088580,
+      rivals: [{ id: "leader", name: "Leader", tileShare: 0.4, relativeTroopRatio: 1.1 }],
+    }),
+  );
+  assert.equal(selected.id, counter.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("DP1 enforces an eight-decision Defense Post cooldown", () => {
+  const defense = action("build:Defense Post:307123", "build", "Build Defense Post");
+  const counter = action("attack:leader:10", "attack", "Attack Leader 10%");
+  const history = [
+    {
+      actionID: "build:Defense Post:300000",
+      kind: "build",
+      tileShare: 0.1,
+      policyMarker: "dp1",
+    },
+    ...Array.from({ length: 7 }, (_, index) => ({
+      actionID: `attack:leader:${index}`,
+      kind: "attack",
+      tileShare: 0.1,
+    })),
+  ];
+  const selected = choose(
+    [counter, defense],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      incomingAttacks: 1,
+      spawnTile: 659528,
+      rivals: [{ id: "leader", name: "Leader", tileShare: 0.4, relativeTroopRatio: 1.1 }],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, counter.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("DP1 re-arms after eight intervening decisions", () => {
+  const defense = action("build:Defense Post:307123", "build", "Build Defense Post");
+  const counter = action("attack:leader:10", "attack", "Attack Leader 10%");
+  const history = [
+    {
+      actionID: "build:Defense Post:300000",
+      kind: "build",
+      tileShare: 0.1,
+      policyMarker: "dp1",
+    },
+    ...Array.from({ length: 8 }, (_, index) => ({
+      actionID: `attack:leader:${index}`,
+      kind: "attack",
+      tileShare: 0.1,
+    })),
+  ];
+  const selected = choose(
+    [counter, defense],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      incomingAttacks: 1,
+      spawnTile: 659528,
+      rivals: [{ id: "leader", name: "Leader", tileShare: 0.4, relativeTroopRatio: 1.1 }],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, defense.id);
+  assert.equal(selected.policyMarker, "dp1");
+});
+
+test("DP1 stays dormant outside its land and reserve bands", () => {
+  const defense = action("build:Defense Post:307123", "build", "Build Defense Post");
+  const counter = action("attack:leader:10", "attack", "Attack Leader 10%");
+  const rival = { id: "leader", name: "Leader", tileShare: 0.4, relativeTroopRatio: 1.1 };
+  for (const [tileShare, troopRatio] of [
+    [0.019, 0.9],
+    [0.201, 0.9],
+    [0.1, 0.951],
+  ]) {
+    const selected = choose(
+      [counter, defense],
+      observation({
+        tileShare,
+        troopRatio,
+        incomingAttacks: 1,
+        spawnTile: 659528,
+        rivals: [rival],
+      }),
+    );
+    assert.equal(selected.id, counter.id);
+    assert.equal(selected.policyMarker, undefined);
+  }
+});
+
 test("an exposed transport retreats instead of holding", () => {
   const actions = [
     action("boat_retreat:113", "boat_retreat", "Retreat boat 113"),

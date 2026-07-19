@@ -12,6 +12,7 @@ const PARITY_PULSE_TAG = "[hrafn-s4r:r1ft]";
 const LEADER_SEVER_TAGS = ["[n1dh0ggr:s3vr]", "[f3nr1r:s3vr]"];
 const WIRE_SALVAGE_TAG = "[g4lga-v4rd:w1re]";
 const BANK_BUILD_TAG = "[h3l-v4kt:bank-build]";
+const DEFENSE_POST_TAG = ":bld:dp1";
 const ALLOWED_REPLAY_HOSTS = new Set(["softmax-public.s3.amazonaws.com"]);
 const MAX_REPLAY_BYTES = 64 * 1024 * 1024;
 
@@ -79,6 +80,7 @@ export function auditEpisodeReplay(
   const leaderSeverSelections = [];
   const wireSalvageSelections = [];
   const wireVetoSelections = [];
+  const defensePostSelections = [];
   for (const decision of decisions) {
     const isSpawn = decision.selectedActionKind === "spawn";
     const selectedMetadata = decision.selectedActionMetadata ?? {};
@@ -198,6 +200,16 @@ export function auditEpisodeReplay(
         fallback: decision.fallbackUsed === true,
       });
     }
+    if (String(decision.reason ?? "").includes(DEFENSE_POST_TAG)) {
+      defensePostSelections.push({
+        turn: decision.turnNumber,
+        action_id: decision.selectedLegalActionId ?? null,
+        selected_action_kind: decision.selectedActionKind ?? null,
+        unit: decision.selectedActionMetadata?.unit ?? null,
+        accepted: decision.result?.accepted ?? null,
+        fallback: decision.fallbackUsed === true,
+      });
+    }
     const vetoMatch = String(decision.reason ?? "").match(/wireVeto=([^|]+)\s+\|\|/);
     if (vetoMatch) {
       wireVetoSelections.push({
@@ -240,6 +252,7 @@ export function auditEpisodeReplay(
     leader_sever_selections: leaderSeverSelections,
     wire_salvage_selections: wireSalvageSelections,
     wire_veto_selections: wireVetoSelections,
+    defense_post_selections: defensePostSelections,
   };
 }
 
@@ -265,6 +278,7 @@ export function buildGateReport(
   const leaderSevers = audits.flatMap((audit) => audit.leader_sever_selections ?? []);
   const wireSalvages = audits.flatMap((audit) => audit.wire_salvage_selections ?? []);
   const wireVetoes = audits.flatMap((audit) => audit.wire_veto_selections ?? []);
+  const defensePosts = audits.flatMap((audit) => audit.defense_post_selections ?? []);
   const aligned = opportunities.filter((opportunity) => opportunity.aligned).length;
   const mechanismExercised = openingSelections.length > 0;
   const mechanismPassed = mechanismExercised && aligned === opportunities.length;
@@ -275,7 +289,15 @@ export function buildGateReport(
     zero_holds: holds === 0,
     zero_rejected_decisions: rejected === 0,
   };
-  if (mechanism === "bank-build") {
+  if (mechanism === "defense-post") {
+    checks.defense_post_mechanism_exercised = defensePosts.length > 0;
+    checks.all_defense_posts_accepted_and_exact = defensePosts.length > 0 &&
+      defensePosts.every((selection) =>
+        selection.accepted === true &&
+        selection.selected_action_kind === "build" &&
+        String(selection.action_id).toLowerCase().includes("build:defense post:")
+      );
+  } else if (mechanism === "bank-build") {
     checks.bank_build_mechanism_exercised = bankBuildSelections.length > 0;
     checks.all_bank_build_decisions_productive = bankBuildSelections.length > 0 &&
       bankBuildSelections.every((selection) =>
@@ -356,6 +378,7 @@ export function buildGateReport(
     leader_sever_selections: leaderSevers.length,
     wire_salvage_selections: wireSalvages.length,
     wire_veto_selections: wireVetoes.length,
+    defense_post_selections: defensePosts.length,
     checks,
     passed: Object.values(checks).every(Boolean),
     episode_audits: audits,
@@ -412,11 +435,11 @@ async function main() {
     throw new Error("--opening-decisions must be a positive integer");
   }
   if (!new Set([
-    "bank-build", "leader-sever", "opening-alliance", "opening-reserve", "parity-pulse",
-    "pressure-pulse", "wire-salvage", "wire-veto",
+    "bank-build", "defense-post", "leader-sever", "opening-alliance", "opening-reserve",
+    "parity-pulse", "pressure-pulse", "wire-salvage", "wire-veto",
   ]).has(mechanism)) {
     throw new Error(
-      "--mechanism must be bank-build, opening-alliance, opening-reserve, " +
+      "--mechanism must be bank-build, defense-post, opening-alliance, opening-reserve, " +
       "leader-sever, parity-pulse, pressure-pulse, wire-salvage, or wire-veto",
     );
   }

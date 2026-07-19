@@ -56,7 +56,7 @@ const STRATEGY = [
   "Attack bordered rivals only at relativeTroopRatio 1.3 or better; pressure a runaway leader down to 0.9.",
   "Commit 35% to neutral expansion and finish weakening targets at 40%; never open a second front while under attack.",
   "Build cities, factories, ports, and reliable structures on a regular cadence without interrupting a finish.",
-  "Never select Defense Post; its advertised action IDs can be stale and degrade to HOLD.",
+  "On Pangaea only, a bounded rules-layer Defense Post may answer current incoming pressure.",
   "Use boats for neutral expansion or favorable invasion, but never let boats replace land conversion.",
   "If isolated and only rival boats remain, invade the safest non-allied target instead of holding.",
   "If territory is collapsing, defend, retreat exposed boats, or probe a rival before considering HOLD.",

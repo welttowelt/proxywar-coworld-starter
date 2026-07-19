@@ -370,3 +370,36 @@ test("wire-salvage gate requires an accepted productive replacement", () => {
   assert.equal(report.checks.all_wire_salvages_productive, true);
   assert.equal(report.passed, true);
 });
+
+test("defense-post gate requires an accepted exact DP1 build", () => {
+  const fixture = replay("expand:terra-nullius:10");
+  const decisions = fixture.inlineRunArtifacts["decisions.jsonl"]
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line));
+  decisions[1] = {
+    ...decisions[1],
+    selectedActionKind: "build",
+    selectedLegalActionId: "build:Defense Post:307123",
+    selectedActionMetadata: { unit: "Defense Post" },
+    reason: "rul:bld:dp1",
+    result: { accepted: true },
+    fallbackUsed: true,
+  };
+  fixture.inlineRunArtifacts["decisions.jsonl"] =
+    `${decisions.map((decision) => JSON.stringify(decision)).join("\n")}\n`;
+
+  const audit = auditEpisodeReplay(episode(), fixture);
+  const report = buildGateReport(
+    { id: "xreq-defense-post", status: "completed" },
+    [audit, audit, audit, audit],
+    4,
+    { mechanism: "defense-post" },
+  );
+
+  assert.equal(audit.defense_post_selections.length, 1);
+  assert.equal(report.defense_post_selections, 4);
+  assert.equal(report.checks.defense_post_mechanism_exercised, true);
+  assert.equal(report.checks.all_defense_posts_accepted_and_exact, true);
+  assert.equal(report.passed, true);
+});
