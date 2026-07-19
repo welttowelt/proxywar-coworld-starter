@@ -597,6 +597,33 @@ test("vr1 opens a legal fight against the runaway leader before a troop transfer
   assert.equal(chosen.policyMarker, "vr1");
 });
 
+test("vr1 cannot replace a transfer when the outsider trails Hrafn", () => {
+  const odin = rival({
+    id: K1Z_MEMBERS[0].id,
+    name: "K1Z odin free",
+    tileShare: 0.04,
+    isAllied: true,
+  });
+  const outsider = rival({
+    id: "outsider",
+    name: "Richard Higgins",
+    tileShare: 0.22,
+    relativeTroopRatio: 1.5,
+  });
+  const donation = action(
+    "donate_troops:odin",
+    "donate_troops",
+    "Donate troops to odin free",
+    { recipientID: odin.id, recipientName: odin.name },
+  );
+  const chosen = chooseHrafnAction(
+    [donation, attack(outsider, 25)],
+    observation({ tileShare: 0.3, rivals: [odin, outsider] }),
+  );
+  assert.equal(chosen.id, donation.id);
+  assert.equal(chosen.policyMarker, "dn1");
+});
+
 test("vr1 holds the established leader front instead of switching to a side target", () => {
   const leader = rival({
     id: "leader",
@@ -624,6 +651,58 @@ test("vr1 holds the established leader front instead of switching to a side targ
   );
   assert.equal(chosen.id, "attack:leader:10");
   assert.equal(chosen.policyMarker, "vr1");
+});
+
+test("vr1 stays terminated after a floor break and sub-opening recovery", () => {
+  const odin = rival({
+    id: K1Z_MEMBERS[0].id,
+    name: "K1Z odin free",
+    tileShare: 0.04,
+    isAllied: true,
+  });
+  const leader = rival({
+    id: "leader",
+    name: "Richard Higgins",
+    tileShare: 0.22,
+    relativeTroopRatio: 1.05,
+  });
+  const donation = action(
+    "donate_troops:odin",
+    "donate_troops",
+    "Donate troops to odin free",
+    { recipientID: odin.id, recipientName: odin.name },
+  );
+  const vr1 = {
+    actionID: "attack:leader:25",
+    kind: "attack",
+    targetID: leader.id,
+    targetName: "richard higgins",
+    policyMarker: "vr1",
+  };
+  const broken = chooseHrafnAction(
+    [donation, attack(leader, 10)],
+    observation({ tileShare: 0.12, rivals: [odin, leader] }),
+    [vr1],
+  );
+  assert.equal(broken.id, donation.id);
+
+  const recovered = {
+    ...leader,
+    relativeTroopRatio: 1.2,
+  };
+  const afterBreak = chooseHrafnAction(
+    [donation, attack(recovered, 10)],
+    observation({ tileShare: 0.12, rivals: [odin, recovered] }),
+    [vr1, {
+      actionID: "expand:terra-nullius:35",
+      kind: "attack",
+      targetID: null,
+      targetName: null,
+      policyMarker: "xp1",
+    }],
+  );
+  assert.equal(afterBreak.id, donation.id);
+  assert.equal(afterBreak.policyMarker, "dn1");
 });
 
 test("public quick chat is never selected because its game-authored prose cannot be leet", () => {

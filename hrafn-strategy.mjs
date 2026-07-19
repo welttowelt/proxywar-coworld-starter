@@ -68,6 +68,7 @@ export const HRAFN_DEFAULTS = Object.freeze({
   supportLeadGap: 0.01,
   vanguardLockMinimumRelativeTroopRatio: 1.35,
   vanguardLockContinuingRelativeTroopRatio: 1.1,
+  vanguardLockMinimumLeaderGap: 0.01,
   pressureCooldownDecisions: 12,
 });
 
@@ -327,10 +328,11 @@ function odinSupportAction(actions, state, history, config) {
 }
 
 function vanguardLockedRival(history, state) {
-  const latest = [...history].reverse().find((entry) =>
-    entry.policyMarker === "vr1" && (entry.targetID || entry.targetName)
-  );
-  if (!latest) return null;
+  const latest = history.at(-1);
+  if (
+    latest?.policyMarker !== "vr1" ||
+    (!latest.targetID && !latest.targetName)
+  ) return null;
   return state.rivals.find((rival) =>
     !isProtectedRival(rival) &&
     ((latest.targetID && rival.id.toLowerCase() === latest.targetID) ||
@@ -352,6 +354,10 @@ function vanguardLeaderAttack(groups, state, history, config) {
       right.relativeTroopRatio - left.relativeTroopRatio);
   const target = locked ?? leaders[0] ?? null;
   if (!target) return null;
+  if (
+    target.tileShare <
+    state.own.tileShare + config.vanguardLockMinimumLeaderGap
+  ) return null;
   const group = groups.find(({ rival }) =>
     rival.id.toLowerCase() === target.id.toLowerCase()
   );
@@ -359,9 +365,7 @@ function vanguardLeaderAttack(groups, state, history, config) {
     ? config.vanguardLockContinuingRelativeTroopRatio
     : config.vanguardLockMinimumRelativeTroopRatio;
   if (!group || !Number.isFinite(target.relativeTroopRatio) || target.relativeTroopRatio < floor) return null;
-  const continuing = history.some((entry) =>
-    entry.policyMarker === "vr1" && entry.targetID === target.id.toLowerCase()
-  );
+  const continuing = locked !== null;
   const action = chooseClosestPercent(
     group.actions,
     continuing ? config.pressurePercent : config.openingPercent,
