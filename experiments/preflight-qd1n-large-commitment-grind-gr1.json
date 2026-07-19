@@ -63,15 +63,31 @@
     "qualifier_parent_rejections": 0,
     "qualifier_replay_sha256": "db42be435714ae97c3f39e005c79627338be9aa0448b10fd6842ed0453ca175e",
     "qualifier_secondary_cross_audit_replay_sha256": "aa61e509cdf8fa6aef8d6471269516475b8ff934af63c9db588e61bf22c3514a",
-    "matched_status": "not_run_pending_review",
+    "matched_status": "revised_live_coalition_pair_pending_hrafn_review",
     "receipt": "experiments/receipt-qd1n-large-commitment-grind-gr1-full-suite-20260719.md",
     "qualifier_audit": "experiments/audit-qd1n-large-commitment-grind-gr1-qualifier-20260719.json"
   },
   "diagnostic_only": true,
   "matched_baseline": {
-    "status": "not_created",
-    "same_roster": false,
-    "same_variant": false,
+    "status": "created_pending_hrafn_review",
+    "same_roster": true,
+    "same_variant": true,
+    "map": "Pangaea",
+    "map_size": "Compact",
+    "seed": 20260719,
+    "odin_seat": 0,
+    "max_decision_steps": 150,
+    "request_a_path": "experiments/gr1-matched-pangaea-a-20260719.json",
+    "request_a_sha256": "299ffc7fd5b389e462971b6828e57db59d10f6ed7973ea1d28994126fe8aff2a",
+    "request_b_path": "experiments/gr1-matched-pangaea-b-20260719.json",
+    "request_b_sha256": "d38ddeac7ad00af4464eb71bf48c4904e5c54597fb3f3b264314d48890b70d78",
+    "game_config_sha256": "3aef2f8ab420cc2bdaa8ca431ec1d54c2d4afd5ef4e7f91dab28eb376e387c88",
+    "only_request_delta": "players[0].image: qd1n-v89-gr1-amd64 in A versus qd1n-v89-exact-amd64 in B",
+    "coalition_images": {
+      "hrafn": "sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d",
+      "juryoku": "sha256:2ebf15372e8cf59b194ebb20f06b818a6a54f96994f4125e103b6a26070491c2",
+      "katanasan": "sha256:0afece2db25675b0b744844769c64e02960270f56502c33d62bf0702f7b58cf6"
+    },
     "request_id": null
   },
   "hosted": {
@@ -118,8 +134,8 @@
   },
   "success_metrics": {
     "mechanism": "replay-visible gr1 marker with zero unexplained holds, zero rejected decisions, and zero K1Z harm",
-    "opening": "candidate tiles at decision twenty and decision fifty exceed the exact parent in both seat parities",
-    "finish": "candidate shows mirrored placement and tile advantage at episode finish"
+    "opening": "candidate tiles at decision twenty and decision fifty exceed the exact parent in the paired same-seed, same-seat request",
+    "finish": "candidate shows paired placement and tile advantage at episode finish"
   },
   "stop_conditions": [
     "zero replay-visible gr1 reach",
@@ -129,6 +145,6 @@
     "no mirrored finish advantage",
     "any source, image, request, runtime, or player-identity hash mismatch"
   ],
-  "sequencing": "GC2 is closed at zero mechanism reach. GR1 passed its pinned Docker qualifier with direct clean reach. The seat-swapped matched pair is the next gate. Hosted, upload, submission, membership, and champion work remain closed until their separate gates pass.",
+  "sequencing": "GC2 is closed at zero mechanism reach. GR1 passed its pinned Docker qualifier with direct clean reach. The revised one-Odin-seat live-coalition matched pair is the next gate and awaits Hrafn review. Hosted, upload, submission, membership, and champion work remain closed until their separate gates pass.",
   "verdict": "The Docker qualifier passed with direct GR1 reach and clean accepted decisions. LOCAL_QUALIFIED is false until the separate mirrored candidate-versus-parent advantage gate passes; hosted, upload, submission, membership, champion, and league work remain closed."
 }

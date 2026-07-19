@@ -1365,3 +1365,12 @@ advantage and does not make `LOCAL_QUALIFIED` true. Matched play, hosted
 testing, upload, submission, membership, champion, and league work remain
 closed pending a separate Hrafn review. The receipt is
 `experiments/audit-qd1n-large-commitment-grind-gr1-qualifier-20260719.json`.
+
+The first proposed matched pair at commit `78823aa3` was rejected before use:
+it omitted an explicit seed and filled all eight seats with qd1n clones. The
+revised pair keeps one fixed Odin seat and seats the exact current Hrafn,
+Juryoku, and Katanasan images under seed `20260719`. Its game configuration is
+byte-identical across A and B; the only request delta is Odin's GR1 image
+`sha256:314c695e...` versus exact v89 `sha256:ebd9eed3...`. Request hashes are
+`299ffc7f...` and `d38ddeac...`. No runner work starts until Hrafn approves
+these corrected artifacts.

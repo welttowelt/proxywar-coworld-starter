@@ -759,40 +759,28 @@
     "map": "Pangaea",
     "players": [
       {
-        "name": "Coworld Starter 1"
+        "name": "K1Z odin free"
       },
       {
-        "name": "Coworld Starter 2"
+        "name": "K1Z Hrafn"
       },
       {
-        "name": "katanasan"
+        "name": "K1Z juryoku koku"
       },
       {
-        "name": "Coworld Starter 4"
-      },
-      {
-        "name": "juryoku-koku"
-      },
-      {
-        "name": "Coworld Starter 6"
-      },
-      {
-        "name": "odin free"
-      },
-      {
-        "name": "Coworld Starter 8"
+        "name": "K1Z katanasan"
       }
     ],
-    "map_size": "Normal",
+    "map_size": "Compact",
     "difficulty": "Easy",
-    "num_agents": 8,
+    "num_agents": 4,
     "max_decision_ms": 15000,
     "replay_tail_turns": 500,
-    "max_decision_steps": 400,
-    "episode_timeout_seconds": 3000,
+    "max_decision_steps": 150,
+    "episode_timeout_seconds": 2400,
     "turns_per_decision_step": 100,
     "player_connect_timeout_seconds": 120,
-    "tokens": null
+    "seed": 20260719
   },
   "players": [
     {
@@ -805,7 +793,15 @@
     },
     {
       "type": "player",
-      "image": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+      "image": "proxywar-agent-llm:hrafn-v5-exact-amd64",
+      "run": [
+        "node",
+        "/app/hrafn-player.mjs"
+      ]
+    },
+    {
+      "type": "player",
+      "image": "proxywar-agent-llm:santai-juryoku-v3-hrafn-amd64",
       "run": [
         "node",
         "/app/llm-player.mjs"
@@ -813,47 +809,7 @@
     },
     {
       "type": "player",
-      "image": "proxywar-agent-llm:qd1n-v89-gr1-amd64",
-      "run": [
-        "node",
-        "/app/llm-player.mjs"
-      ]
-    },
-    {
-      "type": "player",
-      "image": "proxywar-agent-llm:qd1n-v89-exact-amd64",
-      "run": [
-        "node",
-        "/app/llm-player.mjs"
-      ]
-    },
-    {
-      "type": "player",
-      "image": "proxywar-agent-llm:qd1n-v89-gr1-amd64",
-      "run": [
-        "node",
-        "/app/llm-player.mjs"
-      ]
-    },
-    {
-      "type": "player",
-      "image": "proxywar-agent-llm:qd1n-v89-exact-amd64",
-      "run": [
-        "node",
-        "/app/llm-player.mjs"
-      ]
-    },
-    {
-      "type": "player",
-      "image": "proxywar-agent-llm:qd1n-v89-gr1-amd64",
-      "run": [
-        "node",
-        "/app/llm-player.mjs"
-      ]
-    },
-    {
-      "type": "player",
-      "image": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+      "image": "proxywar-agent-llm:tsukuyomi-v39-hrafn-amd64",
       "run": [
         "node",
         "/app/llm-player.mjs"
