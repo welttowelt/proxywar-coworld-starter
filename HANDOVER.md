@@ -54,11 +54,12 @@ reach, accepted tactical replacement, zero unexplained holds/rejects, exact
 matched advantage, hosted 4/4, regression 20/20. Do NOT start US1, DP1,
 hosted, upload, submission, membership, or champion work.
 
-**In flight right now**: the GC1-v2 Pangaea telemetry pair
-(`/private/tmp/proxywar-gc1v2-mirror-pangaea-{a,b}-20260719`) is running;
-when it lands, audit (holds should be 0 via the restore patch; suppression
-stack should reach `policyMarkers`) and post the receipt to the stormforge
-mailbox. Hrafn's quarantined DP1+CF1 composition wants the runner after v2.
+**GC1-v2 receipt delivered** (mailbox `5194875`): pangaea-a byte-identical
+to v1, pangaea-b trajectory shifted by the patch (no advantage claimed);
+holds 1 — the pre-existing turn-9,700 unexplained class (attacks+boats
+legal, no alliance legal), confirmed separate from the suppression-to-hold
+bug; rejects 0, K1Z harm 0, suppression stack persisted. GC1 is fully
+closed. Hrafn's quarantined DP1+CF1 composition owns the runner next.
 
 ## Coordination protocol (coalition)
 
