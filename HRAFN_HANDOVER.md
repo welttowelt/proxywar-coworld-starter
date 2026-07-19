@@ -15,7 +15,7 @@ the mailbox at `/Users/olifreuler/.stormforge/team-mailbox`.
 
 ## Live deployment truth
 
-Verified against the Coworld/Softmax API at `2026-07-19T12:24:40Z`:
+Verified against the Coworld/Softmax API at `2026-07-19T13:06:42Z`:
 
 - Player: `K1Z Hrafn`
 - Player ID: `ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863`
@@ -35,13 +35,13 @@ Verified against the Coworld/Softmax API at `2026-07-19T12:24:40Z`:
 
 Source and deployment remain separate. The current VR1 plus withdrawal-recovery
 candidate is pushed source commit
-`af6e6bb799d49c093633e291d2757200b6da9cb3` and local-only linux/amd64 image
-`sha256:93e0e9cfceed81aa16e4b6f458c8a133ac6c0d9f22e7639a0be4db2adcff7b82`.
-Its embedded strategy and player SHA-256 values are `532998c5...` and
+`cfdcd5a673eb3b6a660390db762f499d18376632` and local-only linux/amd64 image
+`sha256:02439078ca32f096ee457b4d5dbf80bfcecffd75c0559f1790875b2b6eac03a6`.
+Its embedded strategy and player SHA-256 values are `c7be79b0...` and
 `16922c32...`. The tactical isolation control is pushed branch
 `rci/hrafn-v6-withdrawal-recovery-control`, commit
-`98791291cb8970ec0e444831aa5c067b3d45d5ed`, and local-only linux/amd64 image
-`sha256:e1cf8a101cb6ba0a0a73e858ba1c13638362ff339208c1969335dcee32604433`.
+`6f1ace3e3bcdbe46a01636cb5661653ea0609c13`, and local-only linux/amd64 image
+`sha256:aa5c15a39681fff79c4db7e380c9d6ac6c573cc8fbb69bb9cc545b079f25a1d7`.
 It carries quick-chat suppression and withdrawal recovery without VR1. The
 older quick-chat-only control remains commit `35405a4468c821af7ec1c8f2ef64fb6def4c0c1d`
 and image `sha256:b7c6c1fb8e5bbee02d80ba156187bab6bb5ca996b2a4f5ddc8cc871c0989646c`.
@@ -52,16 +52,16 @@ The player hash above corrects the prior `1154115f...` ledger value, which is
 the SHA-256 of `llm-player.mjs`, not Hrafn's `/app/hrafn-player.mjs`. Every
 pinned Hrafn image and corresponding source commit agrees on `16922c32...`.
 
-Current field checkpoint, refreshed at `2026-07-19T12:24:40Z`:
+Current field checkpoint, refreshed at `2026-07-19T13:06:42Z`:
 
-- Hrafn is overall rank `10`, score `1.2785815488352181`, after `21` completed
-  Competition rounds. Daveey leads at `32.86339599903262`; Odin is second at
-  `20.49214816898422`.
+- Hrafn is overall rank `10`, score `1.2011816412848397`, after `22` completed
+  Competition rounds. Daveey leads at `32.87677820187312`; Odin is second at
+  `21.332227827922935`.
 - Round 528 failed. Round 529 completed with Hrafn rank `12`, score `0`; Round
-  530 failed; Round 531 completed with Hrafn rank `12`, score `0`; Round 532 is
-  running with three of four World episodes complete. Daveey, Odin, and Auri
-  won those episodes; Hrafn scored zero in each. The fourth episode remains
-  running, so Round 532 has no final rank or promotion verdict.
+  530 failed; Round 531 completed with Hrafn rank `12`, score `0`; Round 532
+  completed with Hrafn rank `13`, score `0`. Round 533 is running with two of
+  four World episodes complete and exact v5 sealed; it has no final rank or
+  promotion verdict.
 - Round 529's four Pangaea episodes were outsider wins by Auri, daveey twice,
   and Richard Higgins. Hrafn went `0/4` and finished with `4,142`, `69,786`,
   `3,170`, and `19,827` tiles. All `439/439` decisions were accepted with zero
@@ -92,6 +92,19 @@ Current field checkpoint, refreshed at `2026-07-19T12:24:40Z`:
   two embargo-stop holds at turns `7,800` and `8,000`. Those inherited holds
   block the zero-unexplained-hold pre-run gate. Replay SHA-256 values:
   `9ed404da...`, `a31b7527...`, `f0f3838a...`, and `bf8759e0...`.
+- Round 532 completed with v5 sealed across four World episodes. Hrafn went
+  `0/4`, rank `13`, score `0`, with `757`, `0`, `86,517`, and `0` tiles. All
+  `961/961` decisions were accepted with zero fallbacks, rejects, or K1Z harm;
+  Hrafn made `49` `rv3` executions and `8` productive `dn1` transfers. One
+  daveey loss contained nine retry holds: seven after withdrawn embargo-stop
+  actions and two after withdrawn K1Z alliance requests at turns `10,200` and
+  `10,700` while boats remained legal. Replay SHA-256 values: `3d2f810c...`,
+  `47e0966f...`, `8c92f5f9...`, and `702aeb5b...`.
+- Two completed round-533 replays were audited as partial evidence only. Hrafn
+  lost both to Richard and Auri. All `215/215` decisions were accepted with
+  zero fallbacks, rejects, or K1Z harm. One replay had seven retry holds: six
+  quick-chat and one embargo-stop, all covered by the revised WR1 kind set.
+  The other had zero holds. Round 533 remains incomplete.
 
 ## VR1 plus withdrawal-recovery source-ready state
 
@@ -110,21 +123,29 @@ and `149/149` for the control. Round 531 then superseded the packet before any
 runner acquisition.
 
 Round 531 separated an inherited embargo-stop withdrawal retry class from the
-quick-chat class. Hrafn now detects a just-withdrawn quick-chat, emoji, or
-embargo-stop action and replaces the otherwise selected hold with a bounded
-non-K1Z attack near 10% or a boat near 8%, marked `wr1`. Two new tests failed
-before the implementation; the combined candidate now passes `156/156`, and
-the recovery control passes `152/152`. Embedded source bytes match both exact
-amd64 images.
+quick-chat class. Round 532 then exposed the same retry path after two withdrawn
+K1Z alliance requests. Hrafn now detects a just-withdrawn quick-chat, emoji,
+embargo-stop, or alliance-request action and replaces the otherwise selected
+hold with a bounded non-K1Z attack near 10% or a boat near 8%, marked `wr1`.
+The new alliance-request case failed red-first on both arms. The combined
+candidate now passes `157/157`, and the recovery control passes `153/153`.
+Embedded source bytes match both exact amd64 images.
 
 The old VR1 packet was never run and is explicitly superseded. The replacement
 four-arm design compares exact v5, quick-chat-only, withdrawal-recovery control,
 and VR1 plus withdrawal-recovery candidate across two orientations. The
 canonical Coworld `0.1.8` manifest and nine regenerated request hashes are
 recorded in `experiments/preflight-hrafn-v6-withdrawal-recovery-wr1.json`.
-Current promotion state is `SOURCE_READY=true`; `LOCAL_QUALIFIED` and every
-later state remain false. Odin pre-run approval is required before runner
-acquisition or any qualifier.
+The active reconciliation is
+`experiments/hrafn-v6-withdrawal-recovery-r532-20260719.json`; the older
+round-529 vanguard record is historical and does not authorize the revised
+hashes.
+Odin approved the prior hashes at mailbox commit `3bf1661`, but round-532
+evidence changed the source, image, and request identities before any runner
+acquisition. That approval is superseded. Current promotion state is
+`SOURCE_READY=true`; `LOCAL_QUALIFIED` and every later state remain false. A
+fresh Odin pre-run approval is required before runner acquisition or any
+qualifier.
 
 Coalition control:
 
@@ -136,9 +157,9 @@ Coalition control:
 
 ## Branch truth
 
-This Hrafn policy branch intentionally diverges from Qd1n main. At the
-2026-07-19 09:36 UTC check it was 106 main commits behind and, including this
-identity correction, 27 commits ahead.
+This Hrafn policy branch intentionally diverges from Qd1n main. Fetch both
+remote refs and compare them before each integration; the exact ahead/behind
+count changes as the two operators record independent evidence.
 Do not merge `origin/main` blindly: Qd1n and Hrafn policy code have separate
 ownership and experimental histories.
 
@@ -185,9 +206,9 @@ max setting.
 - Public game text stays short leetspeak.
 - Do not leave background episodes without a durable owner and completion
   receipt.
-- Runner status returned to `free` at `2026-07-19T12:30:03Z` after Odin's GC2
-  lease was released. Hrafn did not attempt acquisition, and no local Hrafn
-  episode started because the Odin pre-run evidence gate remains open.
+- Runner status was `free` at `2026-07-19T13:02:27Z`. Hrafn did not attempt
+  acquisition, and no local Hrafn episode started because round-532 evidence
+  superseded Odin's approval of the prior hashes.
 
 ## Autonomous promotion
 

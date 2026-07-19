@@ -24,8 +24,8 @@ const EXPECTED_MANIFEST_CANONICAL_SHA256 =
 const images = Object.freeze({
   exact: "sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d",
   quickchat: "sha256:b7c6c1fb8e5bbee02d80ba156187bab6bb5ca996b2a4f5ddc8cc871c0989646c",
-  control: "sha256:e1cf8a101cb6ba0a0a73e858ba1c13638362ff339208c1969335dcee32604433",
-  candidate: "sha256:93e0e9cfceed81aa16e4b6f458c8a133ac6c0d9f22e7639a0be4db2adcff7b82",
+  control: "sha256:aa5c15a39681fff79c4db7e380c9d6ac6c573cc8fbb69bb9cc545b079f25a1d7",
+  candidate: "sha256:02439078ca32f096ee457b4d5dbf80bfcecffd75c0559f1790875b2b6eac03a6",
   odin: "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
   katanasan: "sha256:0afece2db25675b0b744844769c64e02960270f56502c33d62bf0702f7b58cf6",
   gravity: "sha256:2ebf15372e8cf59b194ebb20f06b818a6a54f96994f4125e103b6a26070491c2",

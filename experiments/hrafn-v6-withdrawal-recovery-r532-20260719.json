@@ -1,0 +1,160 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_round532_reconciliation_and_withdrawal_recovery_revision",
+  "recorded_at": "2026-07-19T13:02:27Z",
+  "lane": "hrafn-fylking",
+  "live_baseline": {
+    "label": "hrafn-fylking:v5",
+    "policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+    "source_commit": "0c151570f7e650a32a5705ff71692aa930012097",
+    "image_id": "sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d",
+    "submission_id": "sub_635f34a0-e2c2-4fa6-97aa-9c864e93974c",
+    "submission_status": "placed",
+    "membership_id": "lpm_e822de7f-1124-4b5f-b0ef-1025d46ae211",
+    "membership_status": "competing active",
+    "is_champion": true
+  },
+  "field_checkpoint": {
+    "hrafn_rank": 10,
+    "hrafn_score": 1.2011816412848397,
+    "hrafn_rounds_played": 22,
+    "strongest_opponent": "daveey",
+    "strongest_opponent_rank": 1,
+    "strongest_opponent_score": 32.87677820187312,
+    "last_completed_official_round": 532,
+    "hrafn_last_completed_rank": 13,
+    "hrafn_last_completed_score": 0,
+    "round_533_status": "running",
+    "round_533_policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e"
+  },
+  "round_532": {
+    "round_id": "round_1192a16c-8bff-4255-bdbd-d9ebbff70dd1",
+    "status": "completed",
+    "map": "World",
+    "hrafn_rank": 13,
+    "hrafn_score": 0,
+    "hrafn_wins": 0,
+    "episodes": 4,
+    "final_tiles": [757, 0, 86517, 0],
+    "decisions": 961,
+    "accepted": 961,
+    "holds": 9,
+    "fallbacks": 0,
+    "rejections": 0,
+    "k1z_harm": 0,
+    "productive_dn1": 8,
+    "rv3_executions": 49,
+    "replay_sha256": [
+      "3d2f810cee2af56cd3173f7233d2d3c6e9a81e03062c4b9111aee6ab789735e4",
+      "47e0966f8038ecf6273ca2e73d5281ecae2105864bb2cbc7f17a01a99fcedb17",
+      "8c92f5f9c9ce320bc4c86618b049a5226eb5b8312fea20508855ca10bb32a2b4",
+      "702aeb5baea4b4c368e448e0766c2d612ff1bbb030d17ccd83d765ec33670504"
+    ],
+    "hold_episode_request_id": "ereq_e648d167-bd34-4655-aeee-e38bd504903b",
+    "hold_replay_sha256": "47e0966f8038ecf6273ca2e73d5281ecae2105864bb2cbc7f17a01a99fcedb17",
+    "hold_details": [
+      {"turn": 9900, "withdrawn_kind": "embargo_stop", "withdrawn_action": "embargo:r5o3pta1:stop", "retry_action": "hold"},
+      {"turn": 10000, "withdrawn_kind": "embargo_stop", "withdrawn_action": "embargo:1wy62oh4:stop", "retry_action": "hold"},
+      {"turn": 10100, "withdrawn_kind": "embargo_stop", "withdrawn_action": "embargo:a6xyjvhc:stop", "retry_action": "hold"},
+      {"turn": 10200, "withdrawn_kind": "alliance_request", "withdrawn_action": "alliance:sjh3tur2", "retry_action": "hold"},
+      {"turn": 10400, "withdrawn_kind": "embargo_stop", "withdrawn_action": "embargo:1wy62oh4:stop", "retry_action": "hold"},
+      {"turn": 10500, "withdrawn_kind": "embargo_stop", "withdrawn_action": "embargo:c4o8gv6v:stop", "retry_action": "hold"},
+      {"turn": 10700, "withdrawn_kind": "alliance_request", "withdrawn_action": "alliance:2rmhbq4h", "retry_action": "hold"},
+      {"turn": 11100, "withdrawn_kind": "embargo_stop", "withdrawn_action": "embargo:25ze9gxs:stop", "retry_action": "hold"},
+      {"turn": 11400, "withdrawn_kind": "embargo_stop", "withdrawn_action": "embargo:1wy62oh4:stop", "retry_action": "hold"}
+    ],
+    "new_failure_class": "two withdrawn K1Z alliance requests retried as hold while boats remained submission-legal"
+  },
+  "round_533_partial": {
+    "status": "running",
+    "completed_episodes": 2,
+    "total_episodes": 4,
+    "official_rank_or_verdict": null,
+    "completed_winners": ["Richard Higgins", "Auri"],
+    "decisions": 215,
+    "accepted": 215,
+    "holds": 7,
+    "fallbacks": 0,
+    "rejections": 0,
+    "k1z_harm": 0,
+    "hold_classes": {
+      "quick_chat_withdrawal_retry": 6,
+      "embargo_stop_withdrawal_retry": 1
+    },
+    "covered_by_current_wr1": true,
+    "replay_sha256": [
+      "c763bf31bef7a781df9132ad3636e459405232e2ff11f48cc834cc494dd60d04",
+      "9c24a0ca4312a74d7f0eecfbbac25dc3946588ebf8a5287d6f331f408a2870c2"
+    ]
+  },
+  "candidate": {
+    "policy_ref": "proxywar-agent-llm:hrafn-v6-vr1-wr1-r532-amd64",
+    "branch": "feature/k1z-hrafn-fylking",
+    "source_commit": "cfdcd5a673eb3b6a660390db762f499d18376632",
+    "strategy_sha256": "c7be79b04044b195898190bc32b3cb500c1f082833538f167519eb29a98cea4d",
+    "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
+    "image_id": "sha256:02439078ca32f096ee457b4d5dbf80bfcecffd75c0559f1790875b2b6eac03a6",
+    "architecture": "linux/amd64",
+    "tests_passed": 157,
+    "source_image_bytes_match": true,
+    "uploaded": false,
+    "submitted": false
+  },
+  "withdrawal_recovery_control": {
+    "policy_ref": "proxywar-agent-llm:hrafn-v5-qc-wr1-r532-control-amd64",
+    "branch": "rci/hrafn-v6-withdrawal-recovery-control",
+    "source_commit": "6f1ace3e3bcdbe46a01636cb5661653ea0609c13",
+    "strategy_sha256": "425b72b8387411e6e731a43165337ba2e8008f3a980771b1e6a0b3561d41775e",
+    "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
+    "image_id": "sha256:aa5c15a39681fff79c4db7e380c9d6ac6c573cc8fbb69bb9cc545b079f25a1d7",
+    "architecture": "linux/amd64",
+    "tests_passed": 153,
+    "source_image_bytes_match": true,
+    "uploaded": false,
+    "submitted": false
+  },
+  "red_first": {
+    "new_test": "wr1 replaces a withdrawn K1Z alliance request with the smallest boat",
+    "before_fix": "failed: selected hold instead of boat:635077:8 on both candidate and isolation control",
+    "after_fix": "candidate 157/157; isolation control 153/153"
+  },
+  "request_hashes": {
+    "qualifier": "d26705a5c7e7d5e04f6d8fbe3fa7133667f54a3cdf7504716987d61b79e351ef",
+    "orientation_a": {
+      "exact": "6a3bb6c1effbd5d01bd522c12b07549313557011688aa6c422844858075fbb64",
+      "quickchat": "c5d911b9aafdb0a07b01f7daf1374fee54586e7e11e5d9176ec6eb446e87403d",
+      "control": "1d7716e9f9a77c6646dc13dd0bd301a67b83d06b344cb2b949de0d84864c1fed",
+      "candidate": "d932621ab0d252bc53a24bd4ac4b32166d9a6ede28c66afdf30a6187e913f685"
+    },
+    "orientation_b": {
+      "exact": "4a118ed1a42527e4f958f9dd9eeb2f6add11c4769e57e36f632c43c0a8d9fcf8",
+      "quickchat": "dc008fd6e821678cfa095a029e2b3be70b729c2a1b2bcd1855eb02f7357c5d83",
+      "control": "1dd993042ebe7fab953ae902aca1679e6c9daf0277ad1bae6e3269663d87fc95",
+      "candidate": "cb983ebc6e8c0d7e80ec99772855fb7853124b096e87846a58fa57ee665281f0"
+    }
+  },
+  "odin_pre_run_review": {
+    "mailbox_commit": "3bf1661",
+    "verdict": "APPROVE",
+    "status": "superseded before execution by round-532 alliance-request evidence and changed source, image, and request identities",
+    "fresh_review_required": true
+  },
+  "runner": {
+    "status": "free",
+    "episode_started": false,
+    "reason": "evidence gate reopened before acquisition"
+  },
+  "promotion_states": {
+    "SOURCE_READY": true,
+    "LOCAL_QUALIFIED": false,
+    "DIAGNOSTIC_UPLOADED": false,
+    "HOSTED_PASSED": false,
+    "REGRESSION_PASSED": false,
+    "AUDIT_APPROVED": false,
+    "SUBMITTED": false,
+    "PLACED": false,
+    "CHAMPION_VERIFIED": false,
+    "ROUND_CONFIRMED": false
+  },
+  "verdict": "SOURCE_READY ONLY: round-532 evidence invalidated the approved old hashes before any run. The alliance-request retry class now has red-first coverage in candidate and isolation control, exact new amd64 images, and regenerated requests. Fresh Odin pre-run approval is required. NO RUN, NO UPLOAD, NO SUBMIT."
+}

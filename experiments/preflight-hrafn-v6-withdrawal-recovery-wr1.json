@@ -2,6 +2,7 @@
   "schema_version": 1,
   "record_type": "hrafn_withdrawal_recovery_preflight",
   "recorded_at": "2026-07-19T12:13:23Z",
+  "reconciled_at": "2026-07-19T13:02:27Z",
   "lane": "hrafn-fylking",
   "exact_live_parent": {
     "policy_ref": "hrafn-fylking:v5",
@@ -15,7 +16,7 @@
     "exact_delta": "suppress game-authored quick-chat and emoji selections"
   },
   "hypothesis": {
-    "guard": "the immediately prior recorded action is quick_chat, emoji, or embargo_stop; its exact action ID is absent from the offered retry menu; and a low-commitment boat or non-K1Z rival attack remains legal",
+    "guard": "the immediately prior recorded action is quick_chat, emoji, embargo_stop, or alliance_request; its exact action ID is absent from the offered retry menu; and a low-commitment boat or non-K1Z rival attack remains legal",
     "expected_action_change": "replace an otherwise selected hold with the smallest bounded recovery action, preferring a non-K1Z 10-percent attack and then an 8-percent boat",
     "observable_marker": "wr1",
     "success_metric": "replay-visible wr1 reach with zero unexplained holds, rejects, fallbacks, or K1Z harm; quick-chat control versus wr1 control isolates the retry repair, and wr1 control versus VR1 candidate isolates the tactical mechanism",
@@ -38,7 +39,18 @@
         "retry_action": "hold",
         "submission_legal_recovery": "three rival attacks, nine boat actions, one build, and one alliance request"
       }
-    ]
+    ],
+    "additional_round_532": {
+      "episode_request_id": "ereq_e648d167-bd34-4655-aeee-e38bd504903b",
+      "replay_sha256": "47e0966f8038ecf6273ca2e73d5281ecae2105864bb2cbc7f17a01a99fcedb17",
+      "holds": 9,
+      "withdrawal_classes": {
+        "embargo_stop": 7,
+        "alliance_request": 2
+      },
+      "alliance_request_turns": [10200, 10700],
+      "submission_legal_recovery": "boats remained legal at both alliance-request retries"
+    }
   },
   "factorial_design": [
     "exact live v5 versus quick-chat control isolates public-text suppression",
@@ -46,35 +58,36 @@
     "wr1 control versus VR1 plus wr1 candidate isolates the vanguard tactic"
   ],
   "candidate": {
-    "policy_ref": "proxywar-agent-llm:hrafn-v6-vr1-wr1-amd64",
+    "policy_ref": "proxywar-agent-llm:hrafn-v6-vr1-wr1-r532-amd64",
     "branch": "feature/k1z-hrafn-fylking",
-    "source_commit": "af6e6bb799d49c093633e291d2757200b6da9cb3",
-    "strategy_sha256": "532998c58973a8bc2bc50d305b304b5cbae09fa3f7aa873733ca51bb92e9563f",
+    "source_commit": "cfdcd5a673eb3b6a660390db762f499d18376632",
+    "strategy_sha256": "c7be79b04044b195898190bc32b3cb500c1f082833538f167519eb29a98cea4d",
     "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
-    "image_id": "sha256:93e0e9cfceed81aa16e4b6f458c8a133ac6c0d9f22e7639a0be4db2adcff7b82",
+    "image_id": "sha256:02439078ca32f096ee457b4d5dbf80bfcecffd75c0559f1790875b2b6eac03a6",
     "architecture": "linux/amd64",
-    "tests_passed": 156,
+    "tests_passed": 157,
     "tests_command": "npm test -- --test-concurrency=1",
     "source_image_bytes_match": true,
     "uploaded": false
   },
   "withdrawal_recovery_control": {
-    "policy_ref": "proxywar-agent-llm:hrafn-v5-qc-wr1-control-amd64",
+    "policy_ref": "proxywar-agent-llm:hrafn-v5-qc-wr1-r532-control-amd64",
     "branch": "rci/hrafn-v6-withdrawal-recovery-control",
-    "source_commit": "98791291cb8970ec0e444831aa5c067b3d45d5ed",
-    "strategy_sha256": "918e176a401e36dacb19ece661dd967169fd7ad01aed60651f7d2b6e4ee25847",
+    "source_commit": "6f1ace3e3bcdbe46a01636cb5661653ea0609c13",
+    "strategy_sha256": "425b72b8387411e6e731a43165337ba2e8008f3a980771b1e6a0b3561d41775e",
     "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
-    "image_id": "sha256:e1cf8a101cb6ba0a0a73e858ba1c13638362ff339208c1969335dcee32604433",
+    "image_id": "sha256:aa5c15a39681fff79c4db7e380c9d6ac6c573cc8fbb69bb9cc545b079f25a1d7",
     "architecture": "linux/amd64",
-    "tests_passed": 152,
+    "tests_passed": 153,
     "tests_command": "npm test -- --test-concurrency=1",
     "source_image_bytes_match": true,
     "uploaded": false
   },
   "red_first": {
-    "failures_before_fix": 2,
+    "failures_before_fix": 3,
     "tests": [
       "wr1 replaces a withdrawn embargo-stop retry hold with the smallest boat",
+      "wr1 replaces a withdrawn K1Z alliance request with the smallest boat",
       "wr1 bounds an outsider attack and never targets K1Z"
     ],
     "dormant_guard_passed_before_fix": true,
@@ -86,14 +99,14 @@
     "manifest_file_sha256": "f5e6b4dd247b2b2e534a415d293babab7fd655d44b2004db4257a2df3a01dab0",
     "manifest_canonical_sha256": "a43dafa9bb7e68a5c708b3fc6a44e80097e04e1da07131d62a00b7a8a445d86d",
     "job_generator": "scripts/generate-hrafn-vr1-jobs.mjs",
-    "request_directory": "/private/tmp/hrafn-vr1-wr1-jobs",
+    "request_directory": "/private/tmp/hrafn-vr1-wr1-r532-jobs",
     "qualifier": {
       "name": "qualifier-vr1-wr1",
       "seed": 52900,
-      "request_sha256": "bf5f7f6ebf2ab5df2428e3fe3f40ab7682a376f53ab69ae788e6ac54ed2721cc",
+      "request_sha256": "d26705a5c7e7d5e04f6d8fbe3fa7133667f54a3cdf7504716987d61b79e351ef",
       "game_config_sha256": "bcf5abb8003d86ae91eb37a592175194294a27d87e004aa93e4cdde4cea18451",
       "required_result": "replay-visible vr1 and wr1 reach, every Hrafn decision accepted, zero unexplained holds, zero rejects, zero fallbacks, and zero K1Z harm",
-      "status": "not run; Odin pre-run approval pending"
+      "status": "not run; Odin approval 3bf1661 covered superseded hashes and was invalidated by round-532 alliance-request evidence; fresh pre-run review pending"
     },
     "matched": {
       "design": "four-arm, two-orientation factorial: exact v5, quick-chat-only control, withdrawal-recovery control, and VR1 plus withdrawal-recovery candidate",
@@ -102,16 +115,16 @@
         "game_config_sha256": "424bfb5ba50f7b96b57fcd9ea08317af32315ef6b8555c3e910cd22d8849bff9",
         "exact_request_sha256": "6a3bb6c1effbd5d01bd522c12b07549313557011688aa6c422844858075fbb64",
         "quickchat_request_sha256": "c5d911b9aafdb0a07b01f7daf1374fee54586e7e11e5d9176ec6eb446e87403d",
-        "control_request_sha256": "76340c68fdd5d14a345adb93f650d0521a473ffe1ef4399347832624e6bf4930",
-        "candidate_request_sha256": "466bd25bb76235dd4f09c52e45af68c0bbcd40ef8aa02023a5efe179d8d294ab"
+        "control_request_sha256": "1d7716e9f9a77c6646dc13dd0bd301a67b83d06b344cb2b949de0d84864c1fed",
+        "candidate_request_sha256": "d932621ab0d252bc53a24bd4ac4b32166d9a6ede28c66afdf30a6187e913f685"
       },
       "orientation_b": {
         "seed": 52902,
         "game_config_sha256": "a4e3c1b0a978bfda94b8d52a83791c6ff04b11696e2e0c9e23298e32d850727b",
         "exact_request_sha256": "4a118ed1a42527e4f958f9dd9eeb2f6add11c4769e57e36f632c43c0a8d9fcf8",
         "quickchat_request_sha256": "dc008fd6e821678cfa095a029e2b3be70b729c2a1b2bcd1855eb02f7357c5d83",
-        "control_request_sha256": "6506d325d358ec3313945bb62a9d7dfb9b0c4d601f55a80b980f54c44384048e",
-        "candidate_request_sha256": "a03dfcc51322e6ec90d3810138f679cd4198e34c8cd2e9b1e5b1b45043da4000"
+        "control_request_sha256": "1dd993042ebe7fab953ae902aca1679e6c9daf0277ad1bae6e3269663d87fc95",
+        "candidate_request_sha256": "cb983ebc6e8c0d7e80ec99772855fb7853124b096e87846a58fa57ee665281f0"
       },
       "status": "not run"
     }
@@ -128,5 +141,5 @@
     "CHAMPION_VERIFIED": false,
     "ROUND_CONFIRMED": false
   },
-  "verdict": "SOURCE_READY only: replay-backed guard, red-first proof, isolated control, exact pushed commits, linux/amd64 images, and embedded-source identity are pinned. Odin pre-run approval, runner acquisition, Coworld qualification, matched proof, upload, hosted 4/4, regression 20/20, final audit, submission, placement, membership, champion, and completed-round confirmation remain closed."
+  "verdict": "SOURCE_READY only: round-532 alliance-request retry evidence is absorbed by a red-first extension, isolated control, exact pushed commits, fresh linux/amd64 images, and regenerated requests. Odin approval 3bf1661 is superseded because it reviewed the prior hashes. Fresh pre-run approval, runner acquisition, Coworld qualification, matched proof, upload, hosted 4/4, regression 20/20, final audit, submission, placement, membership, champion, and completed-round confirmation remain closed."
 }

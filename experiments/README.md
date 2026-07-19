@@ -18,29 +18,37 @@ range. It retains that exact front only when the immediately prior decision was
 Odin's first pre-run verdict was `REVISE / NO RUN`. Both requested VR1 red
 cases failed before the correction and now pass. Round 531 then exposed two
 embargo-stop withdrawal retries outside the quick-chat-only control. Two new
-`wr1` recovery cases failed before the fix. The current combined candidate at
-commit `af6e6bb7` passes `156/156` and is pinned to amd64 image
-`sha256:93e0e9cf...`. The tactical isolation control is branch
-`rci/hrafn-v6-withdrawal-recovery-control`, commit `98791291`; it passes
-`152/152` and is pinned to image `sha256:e1cf8a10...`. It includes quick-chat
-suppression and withdrawal recovery but not VR1.
+`wr1` recovery cases failed before the fix. Round 532 subsequently exposed the
+same retry path after two withdrawn K1Z alliance requests, a class the first
+WR1 revision did not cover. A new alliance-request test failed red-first on
+both candidate and isolation control (`hold` instead of the legal 8% boat).
+
+The revised combined candidate is exact source commit `cfdcd5a6`, passes
+`157/157`, and is pinned to amd64 image `sha256:02439078...`. The tactical
+isolation control is branch `rci/hrafn-v6-withdrawal-recovery-control`, commit
+`6f1ace3e`; it passes `153/153` and is pinned to image `sha256:aa5c15a3...`.
+Embedded strategy and Hrafn player bytes match both images. The control includes
+quick-chat suppression and withdrawal recovery but not VR1.
 
 Odin's corrected rereview accepted source, isolation, image, manifest, and job
 identity, then returned a docs-only `REVISE` because this record described a
 6%-35% activation range. Source actually uses `activationTileShare=0.1` and
 `activationCeiling=0.3`. The record and preflight now pin the executable
 10%-30% range. The old packet was never run and is superseded by the recovery
-revision. Fresh serial full-suite runs pass `156/156` for the candidate and
-`152/152` for the withdrawal-recovery control. Embedded source bytes match both
-exact amd64 images.
+revision. The later round-532 extension retains those VR1 boundaries and changes
+only the WR1 withdrawal kind set plus its red test; its current suite and image
+identities are recorded above.
 
-The canonical Coworld `0.1.8` manifest and nine fresh requests are pinned in
-`preflight-hrafn-v6-withdrawal-recovery-wr1.json`. The four-arm factorial
+The canonical Coworld `0.1.8` manifest and nine regenerated requests are pinned
+in `preflight-hrafn-v6-withdrawal-recovery-wr1.json`. The four-arm factorial
 compares exact v5, quick-chat-only, withdrawal-recovery control, and VR1 plus
-withdrawal-recovery candidate across two orientations. The candidate is
-`SOURCE_READY` only: Odin pre-run approval, Coworld qualification, matched
-proof, upload, hosted `4/4`, regression `20/20`, final audit, submission,
-placement, membership, and champion states remain closed.
+withdrawal-recovery candidate across two orientations. Odin approved the prior
+hashes at mailbox commit `3bf1661`, but round-532 evidence changed the source,
+images, and request hashes before any runner acquisition. That approval is
+superseded. The candidate remains `SOURCE_READY` only: fresh Odin pre-run
+approval, Coworld qualification, matched proof, upload, hosted `4/4`,
+regression `20/20`, final audit, submission, placement, membership, and
+champion states remain closed.
 
 Round 530 failed after two live World replays completed. A third request failed
 with an unattributed game error, and the fourth was cancelled with
@@ -63,6 +71,19 @@ holds. The two embargo-stop holds supplied the replay cell for `wr1`; source is
 ready, but the pre-run audit gate remains closed, so no Hrafn runner episode
 started. Replay SHA-256 values:
 `9ed404da...`, `a31b7527...`, `f0f3838a...`, and `bf8759e0...`.
+
+Round 532 completed across four World replays. Hrafn went `0/4`, official rank
+`13`, score `0`, with `757`, `0`, `86,517`, and `0` tiles. Odin topped the
+50,400-turn episode and won another; daveey and Auri won the other two. All
+`961/961` Hrafn decisions were accepted with zero fallbacks, rejects, or K1Z
+harm. Hrafn recorded 49 `rv3` executions and eight productive `dn1` transfers.
+One loss contained nine accepted retry holds: seven after withdrawn
+embargo-stop actions and two after withdrawn K1Z alliance requests at turns
+10,200 and 10,700 while boats remained submission-legal. Those two requests
+superseded Odin's approval before any run. Replay SHA-256 values:
+`3d2f810c...`, `47e0966f...`, `8c92f5f9...`, and `702aeb5b...`. Detailed
+evidence lives in `hrafn-v6-withdrawal-recovery-r532-20260719.json` and
+`ledger-hrafn-live-v5-round532-20260719.ndjson`.
 
 ## Pangaea seat-2 A/B, 2026-07-12
 

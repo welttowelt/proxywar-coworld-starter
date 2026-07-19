@@ -81,6 +81,7 @@ const perPlayer = Object.fromEntries(
       rv2: rows.filter((decision) => String(decision.reason).includes(":rv2")).length,
       rv3: rows.filter((decision) => String(decision.reason).includes(":rv3")).length,
       vr1: rows.filter((decision) => String(decision.reason).includes(":vr1")).length,
+      wr1: rows.filter((decision) => String(decision.reason).includes(":wr1")).length,
       k1z: rows.filter((decision) => String(decision.reason).includes(":k1z")).length,
       sk1: rows.filter((decision) => String(decision.reason).includes(":sk1")).length,
     }];
@@ -139,7 +140,7 @@ const outsiderResults = resultPlayers.filter((player) =>
   !memberNames.has(player.canonical_name)
 );
 const mechanismDecisions = hrafnDecisions.filter((decision) =>
-  /:(?:rv[123]|vr1)(?:$|[^a-z0-9])/i.test(String(decision.reason))
+  /:(?:rv[123]|vr1|wr1)(?:$|[^a-z0-9])/i.test(String(decision.reason))
 );
 const mechanismTargets = Object.values(mechanismDecisions.reduce((targets, decision) => {
   const target = targetIdentity(decision);
@@ -207,6 +208,9 @@ const report = {
   ).length,
   vr1_executions: hrafnDecisions.filter((decision) =>
     /:vr1(?:$|[^a-z0-9])/i.test(String(decision.reason))
+  ).length,
+  wr1_executions: hrafnDecisions.filter((decision) =>
+    /:wr1(?:$|[^a-z0-9])/i.test(String(decision.reason))
   ).length,
   mechanism_executions: mechanismDecisions.length,
   mechanism_targets: mechanismTargets,
