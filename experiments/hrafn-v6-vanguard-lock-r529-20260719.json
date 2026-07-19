@@ -2,7 +2,7 @@
   "schema_version": 1,
   "record_type": "hrafn_reconciliation_and_pre_run_hypothesis",
   "recorded_at": "2026-07-19T09:15:05Z",
-  "reconciled_at": "2026-07-19T10:29:50Z",
+  "reconciled_at": "2026-07-19T11:17:58Z",
   "lane": "hrafn-fylking",
   "live_baseline": {
     "label": "hrafn-fylking:v5",
@@ -68,7 +68,8 @@
     "hrafn_last_completed_score": 0,
     "round_528_status": "failed",
     "round_529_status": "completed",
-    "round_530_status": "running"
+    "round_530_status": "failed",
+    "round_531_status": "running"
   },
   "replay_cell": {
     "map": "Pangaea",
@@ -180,21 +181,33 @@
       "rv3_executions": 29
     }
   },
-  "round_530_partial": {
+  "round_530_final": {
     "round_id": "round_4b1d63a2-8d30-4e3e-936f-e74fb93da962",
-    "round_status": "running",
+    "round_status": "failed",
     "completed_episode_requests": 2,
-    "failed_episode_requests": 1,
-    "running_episode_requests": 1,
-    "failed_episode": {
-      "episode_request_id": "ereq_23f4d63e-47fd-439a-88b4-ae55353badb0",
-      "status": "failed",
-      "error_type": "game_error",
-      "failed_policy_index": null,
-      "failed_agent_index": null,
-      "completed_at": "2026-07-19T10:22:51.483044Z",
-      "attribution": "unattributed; no replay"
-    },
+    "failed_episode_requests": 2,
+    "running_episode_requests": 0,
+    "round_error": "container commissioner round interrupted before completion",
+    "failed_episodes": [
+      {
+        "episode_request_id": "ereq_23f4d63e-47fd-439a-88b4-ae55353badb0",
+        "status": "failed",
+        "error_type": "game_error",
+        "failed_policy_index": null,
+        "failed_agent_index": null,
+        "completed_at": "2026-07-19T10:22:51.483044Z",
+        "attribution": "unattributed; no replay"
+      },
+      {
+        "episode_request_id": "ereq_9398a904-8f9a-4872-8213-f7e2980d6e8d",
+        "status": "failed",
+        "error_type": "round_failed",
+        "failed_policy_index": null,
+        "failed_agent_index": null,
+        "completed_at": "2026-07-19T10:33:15.056024Z",
+        "attribution": "cancelled by failed round; no replay"
+      }
+    ],
     "episodes": [
       {
         "episode_request_id": "ereq_d7f48882-f0af-40f9-a903-53a2e86e03ea",
@@ -247,7 +260,86 @@
       "productive_dn1": 11,
       "rv3_executions": 30
     },
-    "verdict": "partial live baseline only; no round or promotion verdict"
+    "verdict": "official round failed after two completed replays; retain the replay evidence but assign no round rank, score, or promotion verdict"
+  },
+  "round_531_partial": {
+    "round_id": "round_7c23da01-7a3c-4f5f-99dd-fd23a2e49282",
+    "round_status": "running",
+    "completed_episode_requests": 2,
+    "failed_episode_requests": 0,
+    "running_episode_requests": 2,
+    "episodes": [
+      {
+        "episode_request_id": "ereq_f995a3d5-7583-4123-b4d4-60ca80a738fa",
+        "map": "Pangaea",
+        "replay_url": "https://softmax-public.s3.amazonaws.com/replays/f0fe2cfd-b6c2-417e-aa57-59aa9e5dc211.replay",
+        "replay_sha256": "9ed404da84ed71361b893962d6acaaae92399d51f2c8e79c025c5bc080354616",
+        "winner": "K1Z odin free",
+        "hrafn_slot": 8,
+        "hrafn_tiles": 45791,
+        "hrafn_survived": true,
+        "hrafn_decisions": 91,
+        "accepted": 91,
+        "holds": 0,
+        "fallbacks": 0,
+        "rejections": 0,
+        "k1z_harm": 0,
+        "productive_dn1": 4,
+        "rv3_executions": 15
+      },
+      {
+        "episode_request_id": "ereq_b8950867-2e41-468f-91c8-0861b473b704",
+        "map": "Pangaea",
+        "replay_url": "https://softmax-public.s3.amazonaws.com/replays/b124a581-3ee5-4394-a69b-3ff581e7ed81.replay",
+        "replay_sha256": "a31b7527df30f450501838be673c5aa823247043f57d073372d43b2593316f8d",
+        "winner": "daveey",
+        "hrafn_slot": 9,
+        "hrafn_tiles": 15486,
+        "hrafn_survived": true,
+        "hrafn_decisions": 81,
+        "accepted": 81,
+        "holds": 3,
+        "fallbacks": 0,
+        "rejections": 0,
+        "k1z_harm": 0,
+        "productive_dn1": 4,
+        "rv3_executions": 11,
+        "hold_details": [
+          {
+            "turn": 7800,
+            "first_action": "embargo:28k1hctz:stop",
+            "retry_action": "hold",
+            "cause": "embargo-stop action was withdrawn; retry selected hold while eleven boats remained submission-legal"
+          },
+          {
+            "turn": 8000,
+            "first_action": "embargo:a6xyjvhc:stop",
+            "retry_action": "hold",
+            "cause": "embargo-stop action was withdrawn; retry selected hold while attacks, boats, a build, and an alliance request remained submission-legal"
+          },
+          {
+            "turn": 8100,
+            "first_action": "quick_chat:a6xyjvhc:attack.finish",
+            "retry_action": "hold",
+            "cause": "quick-chat action was withdrawn; retry selected hold while attacks, boats, a build, and an alliance request remained submission-legal"
+          }
+        ]
+      }
+    ],
+    "aggregate": {
+      "episodes": 2,
+      "hrafn_wins": 0,
+      "accepted": 172,
+      "decisions": 172,
+      "holds": 3,
+      "fallbacks": 0,
+      "rejections": 0,
+      "k1z_harm": 0,
+      "productive_dn1": 8,
+      "rv3_executions": 26
+    },
+    "gate_effect": "the quick-chat control addresses the turn-8100 hold class only; the two embargo-stop withdrawal retry holds remain inherited and unexplained for a zero-hold challenger",
+    "verdict": "partial live baseline only; round and promotion verdicts remain open, and the newly separated embargo-stop withdrawal class blocks a VR1 run until the pre-run packet is revised or explicitly re-approved"
   },
   "tests": {
     "passed": 153,
@@ -303,9 +395,10 @@
   },
   "blocked_on": [
     "Odin immediate rereview approval and runner coordination",
+    "round 531 embargo-stop withdrawal retry class inherited by the candidate but not covered by the quick-chat-only control",
     "Coworld qualifier with Docker-level vr1 reach",
     "exact-v5 versus quick-chat-control proof for the withdrawal-hold repair",
     "quick-chat-control versus candidate matched tactical advantage after direct vr1 reach"
   ],
-  "verdict": "SOURCE_READY ONLY: Odin's source/design revisions and docs-only 10%-30% range correction are applied, isolated images and fresh factorial requests are pinned, and immediate rereview is pending; NO RUN, NO UPLOAD, NO SUBMIT"
+  "verdict": "SOURCE_READY ONLY: source/design and docs corrections are applied, but new round-531 evidence separates two embargo-stop withdrawal retry holds from the quick-chat class; pre-run rereview must absorb that blocker before any runner work; NO RUN, NO UPLOAD, NO SUBMIT"
 }

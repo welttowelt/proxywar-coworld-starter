@@ -27,8 +27,9 @@ identity, then returned a docs-only `REVISE` because this record described a
 6%-35% activation range. Source actually uses `activationTileShare=0.1` and
 `activationCeiling=0.3`. The record and preflight now pin the executable
 10%-30% range. Fresh serial full-suite runs pass `153/153` for the candidate
-and `149/149` for the quick-chat control; immediate rereview remains required
-before runner acquisition.
+and `149/149` for the quick-chat control. Round 531 subsequently exposed an
+inherited embargo-stop withdrawal retry class outside that control, so the
+pre-run packet requires revision before runner acquisition.
 
 The canonical Coworld `0.1.8` manifest and fresh requests are pinned in
 `preflight-hrafn-v6-vanguard-lock-vr1.json`. The factorial design compares
@@ -38,14 +39,24 @@ the control against VR1 to isolate the tactical effect. The candidate is
 hosted `4/4`, regression `20/20`, upload, submission, membership, and champion
 states remain closed.
 
-Round 530 has two completed live World replays. A third request failed with an
-unattributed game error and the fourth remains running. Daveey won the first;
-the second reached turn 50,400 without an outright winner. Hrafn's `338/338`
-decisions were accepted with zero holds, fallbacks, rejects, or K1Z harm, and
-the replays contain 30 `rv3` executions plus 11 productive `dn1` transfers.
-This is partial baseline evidence only and does not clear the v6 pre-run,
-qualifier, or matched gates. Replay SHA-256 values: `f06a7baf...` and
-`7cc46d31...`.
+Round 530 failed after two live World replays completed. A third request failed
+with an unattributed game error, and the fourth was cancelled with
+`round_failed`. Daveey won the first; the second reached turn 50,400 without an
+outright winner. Hrafn's `338/338` decisions were accepted with zero holds,
+fallbacks, rejects, or K1Z harm, and the replays contain 30 `rv3` executions
+plus 11 productive `dn1` transfers. Retain the replay evidence, but assign no
+official rank, score, or promotion verdict to the failed round. Replay SHA-256
+values: `f06a7baf...` and `7cc46d31...`.
+
+Round 531 remains running after two completed Pangaea replays. Odin and daveey
+won; Hrafn survived with `45,791` and `15,486` tiles. All `172/172` decisions
+were accepted with zero fallbacks, rejects, or K1Z harm, with 26 `rv3`
+executions and 8 productive `dn1` transfers. The daveey replay contains three
+accepted retry holds after withdrawn actions: two embargo-stop actions and one
+quick-chat action while productive actions remained legal. The isolated
+quick-chat control covers only the third hold. The two inherited embargo-stop
+holds block the zero-unexplained-hold pre-run gate, so no Hrafn runner episode
+started. Replay SHA-256 values: `9ed404da...` and `a31b7527...`.
 
 ## Pangaea seat-2 A/B, 2026-07-12
 

@@ -15,7 +15,7 @@ the mailbox at `/Users/olifreuler/.stormforge/team-mailbox`.
 
 ## Live deployment truth
 
-Verified against the Coworld/Softmax API at `2026-07-19T10:20:39Z`:
+Verified against the Coworld/Softmax API at `2026-07-19T11:17:58Z`:
 
 - Player: `K1Z Hrafn`
 - Player ID: `ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863`
@@ -54,7 +54,7 @@ Current field checkpoint:
   Competition rounds. Daveey leads at `32.849621422869966`; Odin is second at
   `20.360049965243494`.
 - Round 528 failed. Round 529 completed with Hrafn rank `12`, score `0`; Round
-  530 is running.
+  530 failed, and Round 531 is running.
 - Round 529's four Pangaea episodes were outsider wins by Auri, daveey twice,
   and Richard Higgins. Hrafn went `0/4` and finished with `4,142`, `69,786`,
   `3,170`, and `19,827` tiles. All `439/439` decisions were accepted with zero
@@ -64,15 +64,26 @@ Current field checkpoint:
   `3,600`: game-authored quick-chat actions were withdrawn, then the retry chose
   hold while attacks and a build remained submission-legal. Any challenger must
   eliminate this retry path without confounding its tactical comparison.
-- Round 530 is still running with v5 sealed. Two of four World episodes have
-  completed. Daveey won the first and Hrafn survived with `123` tiles. The
-  second reached turn `50,400` without an outright winner; Hrafn was eliminated
-  with zero tiles while Juryoku held the top score. Across Hrafn's two replays,
-  all `338/338` decisions were accepted with zero holds, fallbacks, rejects, or
-  K1Z harm, `30` `rv3` executions, and `11` productive `dn1` transfers. The
-  one remaining episode failed with an unattributed game error and the other is
-  still running, so there is no round verdict yet.
-  Replay SHA-256 values: `f06a7baf...` and `7cc46d31...`.
+- Round 530 failed after two of four World episodes completed. Daveey won the
+  first and Hrafn survived with `123` tiles. The second reached turn `50,400`
+  without an outright winner; Hrafn was eliminated with zero tiles while
+  Juryoku held the top score. Across Hrafn's two replays, all `338/338`
+  decisions were accepted with zero holds, fallbacks, rejects, or K1Z harm,
+  `30` `rv3` executions, and `11` productive `dn1` transfers. The third
+  request failed with an unattributed game error, and the commissioner cancelled
+  the fourth when the round failed. Retain the replay evidence, but assign no
+  round rank, score, or promotion verdict. Replay SHA-256 values:
+  `f06a7baf...` and `7cc46d31...`.
+- Round 531 is running with v5 sealed. Two Pangaea episodes have completed:
+  Odin and daveey won, while Hrafn survived with `45,791` and `15,486` tiles.
+  All `172/172` decisions were accepted with zero fallbacks, rejects, or K1Z
+  harm; Hrafn made `26` `rv3` executions and `8` productive `dn1` transfers.
+  The daveey replay contains three accepted retry holds after withdrawn actions:
+  two `embargo:...:stop` actions at turns `7,800` and `8,000`, then one
+  `quick_chat` action at turn `8,100`, while productive actions remained legal.
+  The isolated quick-chat control covers only the third hold. The two inherited
+  embargo-stop holds block the zero-unexplained-hold pre-run gate. Replay
+  SHA-256 values: `9ed404da...` and `a31b7527...`.
 
 ## VR1 corrected pre-run state
 
@@ -90,6 +101,13 @@ now pin the exact 10%-30% range. Immediate rereview remains required; this did
 not authorize a runner acquisition. Fresh serial full-suite runs pass
 `153/153` for the candidate and `149/149` for the control.
 
+New Round 531 evidence now separates an inherited embargo-stop withdrawal
+retry class from the quick-chat class. The control covers the quick-chat hold
+only, so the pre-run packet must absorb this new blocker before any runner
+work. The rereview request is therefore superseded by `REVISE / NO RUN` until
+the mechanism and control design cover that class without confounding tactical
+attribution.
+
 The exact live parent, quick-chat control, and VR1 candidate images are pinned
 by immutable IDs. The canonical Coworld `0.1.8` manifest and seven fresh job
 requests are recorded in
@@ -97,7 +115,8 @@ requests are recorded in
 exact v5 against the quick-chat control for withdrawal-hold repair, then the
 control against VR1 for tactical attribution. Current promotion state is
 `SOURCE_READY=true`; `LOCAL_QUALIFIED` and every later state remain false.
-Odin rereview is required before runner acquisition or any qualifier.
+Odin rereview and closure of the embargo-stop hold class are required before
+runner acquisition or any qualifier.
 
 Coalition control:
 
@@ -147,8 +166,9 @@ max setting.
 - Public game text stays short leetspeak.
 - Do not leave background episodes without a durable owner and completion
   receipt.
-- Runner status was `free` at `2026-07-19T10:29:50Z`; no local Hrafn episode
-  started because the v6 pre-run audit gate remains open.
+- Runner status was `owned:odin:2026-07-19T11:10:17Z` at the latest check. No
+  local Hrafn episode started because the v6 pre-run evidence gate remains
+  open.
 
 ## Autonomous promotion
 
