@@ -2112,3 +2112,57 @@ test("outsiders remain legal nuclear targets beside all three K1Z allies", () =>
   assert.equal(selected.id, bomb.id);
   assert.equal(selected.policyMarker, "nk1");
 });
+
+test("two zero-gain expansions pivot away from neutral attacks", () => {
+  const deadExpansion = action("expand:terra-nullius:35", "attack", "Expand into Terra Nullius 35%");
+  const boat = action("boat:675041:8", "boat", "Boat to Terra Nullius 8%");
+  const history = [
+    { actionID: "expand:terra-nullius:20", kind: "attack", neutral: true, tileShare: 0.045 },
+    { actionID: "expand:terra-nullius:35", kind: "attack", neutral: true, tileShare: 0.045 },
+    { actionID: "expand:terra-nullius:35", kind: "attack", neutral: true, tileShare: 0.045 },
+  ];
+  const selected = choose(
+    [deadExpansion, boat],
+    observation({ tileShare: 0.045 }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, boat.id);
+  assert.equal(selected.policyMarker, "zg1");
+});
+
+test("a single zero-gain expansion does not pivot", () => {
+  const expansion = action("expand:terra-nullius:35", "attack", "Expand into Terra Nullius 35%");
+  const history = [
+    { actionID: "expand:terra-nullius:10", kind: "attack", neutral: true, tileShare: 0.04 },
+    { actionID: "expand:terra-nullius:35", kind: "attack", neutral: true, tileShare: 0.04 },
+    { actionID: "build:City:1", kind: "build", tileShare: 0.04 },
+    { actionID: "expand:terra-nullius:35", kind: "attack", neutral: true, tileShare: 0.04 },
+  ];
+  const selected = choose([expansion], observation({ tileShare: 0.04 }), null, history);
+  assert.equal(selected.id, expansion.id);
+});
+
+test("the pivot needs a real alternative and never strands into a fallback", () => {
+  const expansion = action("expand:terra-nullius:35", "attack", "Expand into Terra Nullius 35%");
+  const history = [
+    { actionID: "expand:terra-nullius:20", kind: "attack", neutral: true, tileShare: 0.045 },
+    { actionID: "expand:terra-nullius:35", kind: "attack", neutral: true, tileShare: 0.045 },
+    { actionID: "expand:terra-nullius:35", kind: "attack", neutral: true, tileShare: 0.045 },
+  ];
+  const selected = choose([expansion], observation({ tileShare: 0.045 }), null, history);
+  assert.equal(selected.id, expansion.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("expansion continues while it still gains territory", () => {
+  const expansion = action("expand:terra-nullius:35", "attack", "Expand into Terra Nullius 35%");
+  const history = [
+    { actionID: "expand:terra-nullius:10", kind: "attack", neutral: true, tileShare: 0.03 },
+    { actionID: "expand:terra-nullius:20", kind: "attack", neutral: true, tileShare: 0.045 },
+    { actionID: "expand:terra-nullius:35", kind: "attack", neutral: true, tileShare: 0.06 },
+  ];
+  const selected = choose([expansion], observation({ tileShare: 0.06 }), null, history);
+  assert.equal(selected.id, expansion.id);
+  assert.equal(selected.policyMarker, undefined);
+});

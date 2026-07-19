@@ -601,6 +601,27 @@ export function chooseNeutralAttack(actions, history, avoid) {
   return pickPercent(candidates, cadence[Math.min(streak, cadence.length - 1)], avoid);
 }
 
+// zg1: zero-gain pivot. Repeated neutral expansion attacks that win no
+// territory mean the reachable land frontier is exhausted (the legal action
+// stays offered even with no neutral neighbors — see the GR1 matched replay,
+// three consecutive 35% expansions at zero gain). Two consecutive zero-gain
+// expansions pivot the selector away from neutral expansion entirely, so the
+// decision goes to conversion, economy, or a boat instead of another dead
+// probe. The marker only appears when a neutral action was actually declined.
+function zeroGainNeutralStreak(history) {
+  let streak = 0;
+  for (let index = history.length - 1; index > 0; index--) {
+    const current = history[index];
+    if (current?.kind !== "attack" || current?.neutral !== true) break;
+    const previousShare = finiteNumber(history[index - 1]?.tileShare, NaN);
+    const currentShare = finiteNumber(current.tileShare, NaN);
+    if (!Number.isFinite(currentShare) || !Number.isFinite(previousShare)) break;
+    if (currentShare > previousShare + 0.000001) break;
+    streak++;
+  }
+  return streak;
+}
+
 export function neutralExpansionStalled(state, history) {
   const currentShare = finiteNumber(state?.self?.tileShare, NaN);
   if (!Number.isFinite(currentShare)) return false;
@@ -790,8 +811,18 @@ export function chooseAction(actions, state, plan = null, history = []) {
 
   const rivalAttack = chooseRivalAttack(actions, state, plan, history, avoid, threatCount);
   const peaceRedirect = rivalAttack?.peaceRedirect === true;
+  const zg1Pivot = zeroGainNeutralStreak(history) >= 2 &&
+    actions.some(isNeutralExpansion) &&
+    actions.some((action) =>
+      !isNeutralExpansion(action) && [
+        "attack", "boat", "boat_retreat", "retreat", "nuke", "upgrade_structure",
+        "warship", "move_warship", "build",
+      ].includes(action.kind)
+    );
+  const withZg1 = (action) =>
+    zg1Pivot && action && !action.policyMarker ? { ...action, policyMarker: "zg1" } : action;
   const withPeace = (action) =>
-    peaceRedirect && action && !action.policyMarker ? { ...action, policyMarker: "kp1" } : action;
+    withZg1(peaceRedirect && action && !action.policyMarker ? { ...action, policyMarker: "kp1" } : action);
   const routedRivalAttack = state.mapFingerprint === "Asia" && rivalAttack?.action &&
     (state.self.incomingAttackerIDs || []).includes(rivalAttack.rival.id.toLowerCase())
     ? { ...rivalAttack.action, policyMarker: "ia1" }
@@ -804,10 +835,10 @@ export function chooseAction(actions, state, plan = null, history = []) {
     rivalAttack.rival.relativeTroopRatio < 1.3 && !pc1Band;
   const disciplinedAttack = pileOnDiscipline ? null : routedRivalAttack;
   const withDiscipline = (action) =>
-    pileOnDiscipline && action && !action.policyMarker
+    withZg1(pileOnDiscipline && action && !action.policyMarker
       ? { ...action, policyMarker: "pd2" }
-      : action;
-  const neutralAttack = chooseNeutralAttack(actions, history, avoid);
+      : action);
+  const neutralAttack = zg1Pivot ? null : chooseNeutralAttack(actions, history, avoid);
   const build = chooseBuild(actions, history);
   const sinceBuild = decisionsSince(history, (entry) =>
     entry.kind === "build" || entry.kind === "upgrade_structure"
