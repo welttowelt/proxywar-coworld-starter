@@ -1,0 +1,155 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_kf1_supporter_source_proof",
+  "recorded_at": "2026-07-19T15:05:15Z",
+  "lane": "hrafn-fylking",
+  "arm": "kf1-supporter",
+  "scope": "source, red-first tests, exact amd64 image, and ordinary-play negative control only; no Coworld episode, upload, submission, membership, or champion action",
+  "operator_contract": {
+    "source": "CODEX_ODIN_TO_K1Z_KF1_RCI_CORRECTION_20260719.md",
+    "hrafn_ack": "HRAFN_TO_CODEX_ODIN_PG2_APPROVE_KF1_ACK_20260719.md",
+    "guard": "gameMode exactly FFA; phase exactly active; safe-integer alivePlayerCount at least two; complete boolean liveness; alivePlayerCount equals confirmed alive visible rivals plus Hrafn; every confirmed survivor has a raw leading K1Z tag, a unique closed canonical name, and Odin is confirmed alive",
+    "expected_action_change": "once the guard passes, select an exact legal troop donation to Odin, otherwise an exact legal gold donation to Odin, otherwise a marked hold; no parent action path may escape",
+    "observable_marker": "kf1",
+    "success_metric": "coalition-only replay-visible kf1 reach, accepted Odin donations or explained marked holds, zero rejects, zero fallbacks, zero K1Z harm, and an Odin finish; mixed-roster controls must show zero kf1 reach",
+    "failure_condition": "any trigger on missing or inconsistent state, any non-Odin donation or other action after activation, any unexplained hold or reject, K1Z harm, zero positive reach, or identity drift"
+  },
+  "exact_parent": {
+    "policy_label": "hrafn-fylking:v5",
+    "policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+    "source_commit": "0c151570f7e650a32a5705ff71692aa930012097",
+    "image_id": "sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d",
+    "architecture": "linux/amd64",
+    "strategy_sha256": "7620684b07c9dc9c633d284e817348c92881b43724291f991296c7a17ac20807",
+    "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52"
+  },
+  "candidate": {
+    "branch": "rci/hrafn-kf1-supporter",
+    "source_commit": "a0d71a6afa7624cc101fd9772e7d342b23b434fa",
+    "policy_ref": "proxywar-agent-llm:hrafn-v5-kf1-supporter-amd64",
+    "image_id": "sha256:2bfd61aa809ea4290db83ae1a40076b7699d204ebd4532b87518cb2adf28ea15",
+    "architecture": "linux/amd64",
+    "strategy_sha256": "99877828a125733954640acbe6cb6c10f01f788d42bbdc854b2bf91225e51fae",
+    "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
+    "source_image_bytes_match": true,
+    "uploaded": false,
+    "submitted": false
+  },
+  "red_first": {
+    "command": "node --test test/hrafn-strategy.test.mjs",
+    "parent_result": "28/32 passed; 4 KF1 positive-path tests failed",
+    "failed_tests": [
+      "KF1 supporter donates troops only to Odin under the exact K1Z-only endgame proof",
+      "KF1 supporter uses a legal gold donation to Odin when troops are unavailable",
+      "KF1 supporter globally holds when no exact Odin donation is legal",
+      "KF1 supporter fails closed if an active trigger has neither Odin donation nor hold"
+    ],
+    "candidate_result": "32/32 passed"
+  },
+  "full_suite": {
+    "command": "node --test --test-concurrency=1",
+    "tests": 155,
+    "passed": 155,
+    "failed": 0
+  },
+  "dormant_controls": {
+    "synthetic_cases": [
+      "non-FFA",
+      "non-active phase",
+      "missing alivePlayerCount",
+      "alive count and list mismatch",
+      "surviving outsider",
+      "Odin absent",
+      "Odin dead",
+      "missing raw K1Z tag",
+      "duplicate canonical survivor name",
+      "unknown liveness"
+    ],
+    "round_533_replays": [
+      {
+        "replay_sha256": "c763bf31bef7a781df9132ad3636e459405232e2ff11f48cc834cc494dd60d04",
+        "hrafn_active_decisions": 71,
+        "necessary_kf1_condition_turns": []
+      },
+      {
+        "replay_sha256": "d79f6ee68265c5d1c667b7281f9271e3ca844f47bdeac540d0dc2c47373a0126",
+        "hrafn_active_decisions": 221,
+        "necessary_kf1_condition_turns": []
+      },
+      {
+        "replay_sha256": "9c24a0ca4312a74d7f0eecfbbac25dc3946588ebf8a5287d6f331f408a2870c2",
+        "hrafn_active_decisions": 138,
+        "necessary_kf1_condition_turns": []
+      },
+      {
+        "replay_sha256": "a434d6d1716ba4f71de4af700201d1681eb47296922675982a4e043231cec0c1",
+        "hrafn_active_decisions": 500,
+        "necessary_kf1_condition_turns": []
+      }
+    ],
+    "round_534_replays": [
+      {
+        "replay_sha256": "03372587874d9c328d8f2325f2d9fbb358b6398ad5a5ed0cbb9084eb99f2de8a",
+        "hrafn_active_decisions": 252,
+        "minimum_outsider_count_at_hrafn_decision": 8,
+        "necessary_kf1_condition_turns": []
+      },
+      {
+        "replay_sha256": "50965cd70624a2bdd6caa2a9b8e552dc370bfb3798bd3d82f47b30491c6b863b",
+        "hrafn_active_decisions": 60,
+        "minimum_outsider_count_at_hrafn_decision": 8,
+        "necessary_kf1_condition_turns": []
+      },
+      {
+        "replay_sha256": "a4ec7d3be8ddcd1c5d5cffbbf9ba55944bf521c1852c454c07e994a17617b915",
+        "hrafn_active_decisions": 500,
+        "minimum_outsider_count_at_hrafn_decision": 8,
+        "necessary_kf1_condition_turns": []
+      },
+      {
+        "replay_sha256": "90521b3222f33e934b2735598b1404be9bf04aecd94ed248e1e0839fe5cc10e4",
+        "hrafn_active_decisions": 52,
+        "minimum_outsider_count_at_hrafn_decision": 8,
+        "necessary_kf1_condition_turns": []
+      }
+    ],
+    "aggregate_hrafn_active_decisions": 1794,
+    "necessary_kf1_condition_reach": 0,
+    "audit": "scripts/audit-hrafn-kf1-ordinary-replay.mjs"
+  },
+  "live_checkpoint": {
+    "verified_at": "2026-07-19T15:05:15Z",
+    "champion_policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+    "membership_id": "lpm_e822de7f-1124-4b5f-b0ef-1025d46ae211",
+    "membership_status": "competing active",
+    "is_champion": true,
+    "submission_id": "sub_635f34a0-e2c2-4fa6-97aa-9c864e93974c",
+    "submission_status": "placed",
+    "round_534_status": "completed; Hrafn rank 12, round score 0; exact v5 appeared in four episodes",
+    "leaderboard": {
+      "hrafn_rank": 10,
+      "hrafn_score": 1.0663473508623538,
+      "completed_rounds": 24,
+      "odin_rank": 2,
+      "odin_score": 22.27009729025311,
+      "daveey_rank": 1,
+      "daveey_score": 31.03102579981558
+    },
+    "runner_state": "free",
+    "local_default_player": "K1Z odin free"
+  },
+  "promotion_states": {
+    "SOURCE_READY": false,
+    "LOCAL_QUALIFIED": false,
+    "DIAGNOSTIC_UPLOADED": false,
+    "HOSTED_PASSED": false,
+    "REGRESSION_PASSED": false,
+    "AUDIT_APPROVED": false,
+    "SUBMITTED": false,
+    "PLACED": false,
+    "CHAMPION_VERIFIED": false,
+    "ROUND_CONFIRMED": false
+  },
+  "next_gate": "Odin must review the committed source, tests, image identity, and negative controls. Only an exact APPROVE may open one supervised coalition-only positive-reach qualifier with fresh request hashes.",
+  "verdict": "SOURCE PROOF COMPLETE, PRE-RUN AUDIT REQUIRED. Positive replay reach is not yet proven, so SOURCE_READY remains false and every later promotion state is false."
+}
