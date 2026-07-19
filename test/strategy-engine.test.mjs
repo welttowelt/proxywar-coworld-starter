@@ -1213,6 +1213,26 @@ test("an Atom Bomb on the runaway leader beats a city build", () => {
   assert.equal(selected.policyMarker, "nk1");
 });
 
+test("a3: a second Atom Bomb is never queued after the first strike", () => {
+  const bomb = {
+    ...action("build:Atom Bomb:1", "build", "Build Atom Bomb"),
+    metadata: { unit: "Atom Bomb", targetID: "leader", targetName: "Leader", targetTileShare: 0.79, targetSamCoverage: 0, nuclearTargetPriority: 267 },
+  };
+  const city = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [bomb, city],
+    observation({
+      tileShare: 0.2,
+      troopRatio: 0.9,
+      rivals: [{ id: "leader", name: "Leader", tileShare: 0.79, relativeTroopRatio: 0.5 }],
+    }),
+    null,
+    [{ actionID: "build:Atom Bomb:0", kind: "build", neutral: false, policyMarker: "nk1" }],
+  );
+  assert.notEqual(selected.id, bomb.id);
+  assert.notEqual(selected.policyMarker, "nk1");
+});
+
 test("an Atom Bomb targeting katanasan is never built", () => {
   const bomb = {
     ...action("build:Atom Bomb:1", "build", "Build Atom Bomb"),

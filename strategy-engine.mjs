@@ -577,6 +577,10 @@ function kingmakerAllianceAction(actions, state, history) {
 }
 
 function chooseAtomBomb(actions, state, history) {
+  // a3: nuclear re-queue deleted. One strategic strike per game; after the
+  // first nk1 order the selector never builds another bomb (R508 losses
+  // carried 182-228 queued nukes, the win carried 5).
+  if (history.some((entry) => entry.policyMarker === "nk1")) return null;
   const candidates = safeActions(actions, (action) =>
     action.kind === "build" && String(action?.metadata?.unit ?? "").toLowerCase() === "atom bomb"
   ).map((action) => ({ action, rival: rivalForAction(action, state) }))
