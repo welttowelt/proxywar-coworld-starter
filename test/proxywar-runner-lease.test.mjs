@@ -396,8 +396,10 @@ test("failed supervised command performs scoped cleanup then quarantines exact o
   const context = fixture();
   const { directory, state } = context;
   t.after(() => rmSync(directory, { recursive: true, force: true }));
-  const docker = makeFakeDocker(context);
   const output = path.join(directory, "partial-output");
+  const docker = makeFakeDocker(context, [
+    { id: "failed-run-container", mounts: [output], running: true },
+  ]);
   const result = invoke(state, [
     "run", "odin", "failed-run", "--output", output, "--",
     "/bin/zsh", "-c", 'print -r -- partial > "$TEST_OUTPUT/data.txt"; exit 7',
@@ -414,6 +416,18 @@ test("failed supervised command performs scoped cleanup then quarantines exact o
   assert.equal(receipt.run_id, "failed-run");
   assert.equal(receipt.reason, "supervised_command_exit_7");
   assert.equal(receipt.evidence_eligible, false);
+  assert.equal(
+    readFileSync(docker.log, "utf8"),
+    "stop:failed-run-container\nrm:failed-run-container\n",
+  );
+  const childExitIndex = result.stderr.indexOf('"event":"child_exited"');
+  const containerCleanupIndex = result.stderr.indexOf('"event":"containers_cleaned"');
+  const quarantineIndex = result.stderr.indexOf('"event":"output_quarantined"');
+  const releaseIndex = result.stderr.indexOf('"event":"lease_released"');
+  assert.ok(childExitIndex >= 0);
+  assert.ok(childExitIndex < containerCleanupIndex);
+  assert.ok(containerCleanupIndex < quarantineIndex);
+  assert.ok(quarantineIndex < releaseIndex);
   assert.match(result.stderr, /"event":"containers_cleaned"/);
 });
 
@@ -823,7 +837,7 @@ test("launcher blocks active, stale, legacy, initializing, reaping, and corrupt 
   }
 });
 
-test("launcher fails closed on invalid status and legacy Hrafn prompt without consuming work", (t) => {
+test("launcher fails closed on invalid status and split-line legacy Hrafn prompt without consuming work", (t) => {
   const fixtures = [];
   t.after(() => {
     for (const item of fixtures) rmSync(item.directory, { recursive: true, force: true });
@@ -856,7 +870,17 @@ test("launcher fails closed on invalid status and legacy Hrafn prompt without co
   const legacyPrompt = fixture();
   fixtures.push(legacyPrompt);
   const hrafnPrompt = path.join(legacyPrompt.directory, "legacy-hrafn.md");
-  writeFileSync(hrafnPrompt, "scripts/proxywar-runner-lease.sh acquire hrafn\n");
+  writeFileSync(hrafnPrompt, [
+    "A migrated example is also present:",
+    "scripts/proxywar-runner-lease.sh run hrafn HRAFN_RUN_1 \\",
+    "  --output /private/tmp/hrafn-new-output \\",
+    "  -- /absolute/path/to/hrafn-batch.sh",
+    "",
+    "Before a Coworld episode, acquire the runner with",
+    "`/Users/olifreuler/proxywar-coworld-starter/scripts/proxywar-runner-lease.sh",
+    "acquire hrafn`; always release it afterward.",
+    "",
+  ].join("\n"));
   const hrafnWake = path.join(legacyPrompt.state, "hrafn.wake");
   const hrafnCursor = path.join(legacyPrompt.state, "hrafn-mailbox-head");
   writeFileSync(hrafnWake, "wake\n");
@@ -878,4 +902,44 @@ test("launcher fails closed on invalid status and legacy Hrafn prompt without co
   assert.equal(shim.status, 78);
   assert.match(shim.stderr, /transition-required:hrafn/);
   assert.equal(existsSync(path.join(legacyPrompt.state, "runner.lock")), false);
+});
+
+test("launcher accepts a multiline migrated Hrafn run prompt before applying runner-state preflight", (t) => {
+  const context = fixture();
+  const { directory, state } = context;
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const prompt = path.join(directory, "migrated-hrafn.md");
+  writeFileSync(prompt, [
+    "Run every Coworld batch through:",
+    "",
+    "```bash",
+    "/Users/olifreuler/proxywar-coworld-starter/scripts/proxywar-runner-lease.sh \\",
+    "  run hrafn HRAFN_RUN_1 \\",
+    "  --output /private/tmp/hrafn-new-output \\",
+    "  -- /absolute/path/to/hrafn-batch.sh",
+    "```",
+    "",
+  ].join("\n"));
+  const lock = path.join(state, "runner.lock");
+  mkdirSync(lock);
+  writeFileSync(path.join(lock, "owner"), "hrafn\n");
+  writeFileSync(path.join(lock, "acquired_at"), "2026-07-19T11:10:17Z\n");
+  const wake = path.join(state, "hrafn.wake");
+  const cursor = path.join(state, "hrafn-mailbox-head");
+  writeFileSync(wake, "wake\n");
+  writeFileSync(cursor, "cursor\n");
+
+  const result = spawnSync("/bin/zsh", [operatorScript, "hrafn"], {
+    cwd: root,
+    encoding: "utf8",
+    env: environment(state, {
+      PROXYWAR_OPERATOR_PROMPT: prompt,
+      PROXYWAR_OPERATOR_REPO: root,
+    }),
+  });
+  assert.equal(result.status, 0, result.stderr);
+  assert.doesNotMatch(result.stderr, /not runner-v2 ready/);
+  assert.equal(existsSync(wake), true);
+  assert.equal(readFileSync(cursor, "utf8"), "cursor\n");
+  assert.equal(existsSync(path.join(state, "hrafn.lock")), false);
 });

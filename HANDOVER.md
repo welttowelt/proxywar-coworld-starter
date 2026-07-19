@@ -147,7 +147,9 @@ checkpoint.
   `acquire` is a fail-closed transition shim and never creates a lock. Before
   deploying v2, Hrafn's lane owner must commit and acknowledge a prompt that
   uses the supervised `run` form. The launcher refuses an old Hrafn `acquire`
-  prompt before touching the mailbox, cursor, or wake marker.
+  prompt before touching the mailbox, cursor, or wake marker, including when
+  the command is line-wrapped. It opens only after positively matching the
+  complete lane-specific `run ... --output ... -- command` protocol.
 - Mailbox writes use the atomic lock at
   `/Users/olifreuler/.stormforge/proxywar-operators/mailbox-write.lock`: acquire,
   pull fast-forward only, write/commit/push, then release.

@@ -1130,14 +1130,18 @@ run_action() {
   emit_event "child_started" "pgid=${CHILD_PGID}"
 
   local child_status=0
-  set +e
-  wait "$CHILD_PID"
-  child_status=$?
-  while pid_matches "$CHILD_PID" "$CHILD_STARTED"; do
-    wait "$CHILD_PID"
+  if wait "$CHILD_PID"; then
+    child_status=0
+  else
     child_status=$?
+  fi
+  while pid_matches "$CHILD_PID" "$CHILD_STARTED"; do
+    if wait "$CHILD_PID"; then
+      child_status=0
+    else
+      child_status=$?
+    fi
   done
-  set -e
   if (( REQUESTED_EXIT != 0 )); then
     child_status="$REQUESTED_EXIT"
   fi

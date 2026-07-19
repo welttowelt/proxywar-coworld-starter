@@ -33,11 +33,36 @@ LAST_RUN="$STATE_ROOT/$LANE-last-run"
 WAKE="$STATE_ROOT/$LANE.wake"
 
 # The old prompt acquired in one short shell and launched work later, which
-# cannot be made ownership-safe. Refuse that transition before consuming a wake
-# marker or mailbox cursor. The lane owner must migrate the prompt to `run`.
-if [[ ! -r "$PROMPT" ]] ||
-  grep -Eq 'proxywar-runner-lease\.sh[[:space:]]+acquire[[:space:]]+(odin|hrafn)' \
-    "$PROMPT"; then
+# cannot be made ownership-safe. Newline-aware negative matching alone is too
+# brittle, so require positive proof of this lane's complete supervised
+# `run ... --output ... -- command` protocol and reject any legacy acquire form.
+prompt_is_runner_v2_ready() {
+  [[ -r "$PROMPT" ]] || return 1
+  PROMPT_LANE="$LANE" /usr/bin/perl -0777 -e '
+    use strict;
+    use warnings;
+
+    my $lane = $ENV{PROMPT_LANE} // q{};
+    my $text = <>;
+    $text =~ s/\\\r?\n/ /g;
+    $text =~ s/\s+/ /g;
+
+    exit 1 if $text =~
+      m{proxywar-runner-lease[.]sh\s+acquire\s+(?:odin|hrafn)(?![A-Za-z0-9._-])}i;
+
+    while ($text =~
+      m{proxywar-runner-lease[.]sh\s+run\s+\Q$lane\E\s+
+        [A-Za-z0-9._-]{1,80}(?![A-Za-z0-9._-])}igx) {
+      my $tail = substr($text, pos($text), 1200);
+      next unless $tail =~ m{--output\s+\S+};
+      next unless $tail =~ m{(?:^|\s)--\s+\S+};
+      exit 0;
+    }
+    exit 1;
+  ' "$PROMPT"
+}
+
+if ! prompt_is_runner_v2_ready; then
   print -r -- "${LANE}: operator prompt is not runner-v2 ready; preserving wake and cursor" >&2
   exit 78
 fi
