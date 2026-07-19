@@ -15,7 +15,7 @@ the mailbox at `/Users/olifreuler/.stormforge/team-mailbox`.
 
 ## Live deployment truth
 
-Verified against the Coworld/Softmax API at `2026-07-19T08:51:09Z`:
+Verified against the Coworld/Softmax API at `2026-07-19T09:15:05Z`:
 
 - Player: `K1Z Hrafn`
 - Player ID: `ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863`
@@ -27,30 +27,36 @@ Verified against the Coworld/Softmax API at `2026-07-19T08:51:09Z`:
   `competing active`, champion `true`
 - Exact live executable source: commit
   `0c151570f7e650a32a5705ff71692aa930012097`; embedded strategy SHA-256
-  `7620684b07c9dc9c633d284e817348c92881b43724291f991296c7a17ac20807`.
+  `7620684b07c9dc9c633d284e817348c92881b43724291f991296c7a17ac20807`;
+  embedded player SHA-256
+  `1154115fdf5ebb89fa170bba6060d5a730615970d4cc23c00dbfa97e42b31563`.
 - Exact live image: linux/amd64
   `sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d`.
 
-Source and deployment remain separate. Repository policy code is unchanged
-from `bb7d9fffc862e5d51cf24f38d1731630275b4f27`; its current Hrafn strategy
-comes from `38fca3074922dba35a5aa6083481f12874b564be` and is present in the
-local-only linux/amd64 image
+Source and deployment remain separate. Repository policy code still matches
+`38fca3074922dba35a5aa6083481f12874b564be` and is present in the local-only
+linux/amd64 image
 `sha256:816b734c205fad2452eaef3c076f27377939c4a78a4336fd63d7ae313b5be410`.
-That image has not been uploaded, submitted, placed, or made champion.
+Its embedded strategy and player SHA-256 values are `3642a1ce...` and
+`1154115f...`. No `hrafn-fylking:v6` upload exists, and that image has not been
+submitted, placed, or made champion.
 
 Current field checkpoint:
 
-- Hrafn is overall rank `10`, score `1.4586056014851456`, after `19` completed
-  Competition rounds. Daveey leads at `32.3469131443621`; Odin is second at
-  `20.956682450012572`.
-- Round 527 completed with Hrafn rank `12`, score `0`. Round 528 failed and does
-  not extend official-round evidence. Round 529 is running.
-- The first two completed Round 529 Pangaea episodes were outsider wins by Auri
-  and daveey. Hrafn scored zero in both and finished with `4,142` and `69,786`
-  tiles. Across `205` Hrafn decisions, all were accepted with zero holds, zero
-  fallbacks, zero rejects, and zero K1Z harm; eleven `dn1` transfers were
-  productive. The live `rv3` mechanism reached fourteen times only in the
-  daveey episode.
+- Hrafn is overall rank `10`, score `1.3639688509793433`, after `20` completed
+  Competition rounds. Daveey leads at `32.849621422869966`; Odin is second at
+  `20.360049965243494`.
+- Round 528 failed. Round 529 completed with Hrafn rank `12`, score `0`; Round
+  530 is running.
+- Round 529's four Pangaea episodes were outsider wins by Auri, daveey twice,
+  and Richard Higgins. Hrafn went `0/4` and finished with `4,142`, `69,786`,
+  `3,170`, and `19,827` tiles. All `439/439` decisions were accepted with zero
+  fallbacks, rejects, or K1Z harm. There were `21` productive `dn1` transfers
+  and `29` live `rv3` executions across the two daveey episodes.
+- The Richard episode contained two accepted Hrafn holds at turns `3,500` and
+  `3,600`: game-authored quick-chat actions were withdrawn, then the retry chose
+  hold while attacks and a build remained submission-legal. Any challenger must
+  eliminate this retry path without confounding its tactical comparison.
 
 Coalition control:
 
@@ -63,9 +69,9 @@ Coalition control:
 ## Branch truth
 
 This Hrafn policy branch intentionally diverges from Qd1n main. At the
-2026-07-19 RCI check it was 94 main commits behind and 22 commits ahead. Do not
-merge `origin/main` blindly: Qd1n and Hrafn policy code have separate ownership
-and experimental histories.
+2026-07-19 09:15 UTC check it was 104 main commits behind and 25 commits ahead.
+Do not merge `origin/main` blindly: Qd1n and Hrafn policy code have separate
+ownership and experimental histories.
 
 Before working:
 

@@ -4,7 +4,7 @@
 
 | Policy | State | Evidence |
 | --- | --- | --- |
-| `hrafn-fylking:v5` | champion | live API verification `2026-07-19T08:51:09Z`: policy version `10c32300-4593-408a-a17d-02e1d70e4a2e`, submission `sub_635f34a0-e2c2-4fa6-97aa-9c864e93974c` placed with auto-champion, membership `lpm_e822de7f-1124-4b5f-b0ef-1025d46ae211` competing active and champion; exact source `0c151570`, linux/amd64 image `sha256:3f427fd3...` |
+| `hrafn-fylking:v5` | champion | live API verification `2026-07-19T09:15:05Z`: policy version `10c32300-4593-408a-a17d-02e1d70e4a2e`, submission `sub_635f34a0-e2c2-4fa6-97aa-9c864e93974c` placed with auto-champion, membership `lpm_e822de7f-1124-4b5f-b0ef-1025d46ae211` competing active and champion; exact source `0c151570`, linux/amd64 image `sha256:3f427fd3...` |
 | `qd1n:v89` | coalition champion | live API verification 2026-07-19: policy version `ca4a4e76-fd83-4c92-bf9f-f2440d1f867f`, submission `sub_d159efaa-f3f1-4641-acd0-51bba2e04a72` placed, membership `lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6` competing active and champion |
 
 Merit is replay-backed progress toward sustained FFA control. A policy earns no
@@ -28,7 +28,7 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 
 | Mark | Evidence | Verdict |
 | --- | --- | --- |
-| hrafn v5 Round 529 checkpoint | two completed Pangaea episodes, Auri and daveey wins; Hrafn tiles `4,142` / `69,786`; `205/205` accepted, zero holds/fallbacks/rejects/K1Z harm; eleven productive `dn1` transfers; `rv3` reached fourteen times only in the daveey episode; replay SHA-256 `87b56e19...` / `ebd76d3d...` | runtime and coalition contract pass; outcome weak, no promotion claim |
+| hrafn v5 Round 529 checkpoint | four completed Pangaea episodes, Auri / daveey / Richard / daveey wins; Hrafn tiles `4,142` / `69,786` / `3,170` / `19,827`; `439/439` accepted, two holds, zero fallbacks/rejects/K1Z harm; `21` productive `dn1` transfers; `rv3` reached `29` times across both daveey episodes; the two holds followed withdrawn quick-chat actions while attacks/build stayed legal; replay SHA-256 `87b56e19...` / `ebd76d3d...` / `5830ee29...` / `ff3b3e1c...` | coalition contract passes, but v5 went `0/4` and retains a quick-chat retry hold defect; baseline only |
 | hrafn v6 `vr1` preflight | live turn 7,400 exposed daveey at `46%` share and `1.61x` relative troop ratio while Hrafn held `30%`, all 10/25/40 attacks were legal, and v5 donated `338,869` troops to Odin; local candidate would mark `vr1`; `151/151` tests; exact amd64 image `sha256:816b734c...` | replay-backed source only; no qualifier, matched pair, hosted `4/4`, regression `20/20`, upload, submission, or league change |
 | v14 champion | only active league membership after stale-seat retirement | hold |
 | v27 local | `4/4`, City 400, Factory 900, 217,296 tiles; same-seat control lost with 699 | mechanism passed locally |
