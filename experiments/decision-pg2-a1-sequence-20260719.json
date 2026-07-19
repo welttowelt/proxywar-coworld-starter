@@ -22,7 +22,8 @@
       "final RCI audit",
       "automatic league submission and champion verification"
     ],
-    "on_fail": "NO SUBMIT; preserve qd1n:v89 and activate A1"
+    "on_parent_control_anomaly": "complete independent pairs, replay the exact matched cell once, and block final promotion until resolved",
+    "on_fail": "candidate, integrity, or matched-advantage failure only: NO SUBMIT; preserve qd1n:v89 and activate A1"
   },
   "only_fallback": {
     "id": "a1-silent-opening",

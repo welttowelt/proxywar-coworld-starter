@@ -36,12 +36,18 @@ capacity. Do not resize or interrupt an already running matrix.
 
 ## Reserve
 
-If PG2 fails any local gate, close it immediately and run A1: suppress
+If PG2 fails a candidate, integrity, or matched-advantage local gate, close it
+immediately and run A1: suppress
 voluntary coalition requests until land share is at least 12 percent or the
 first build exists, while accepting genuine reciprocal offers immediately.
 Its primary cell is Pangaea, where early deaths are concentrated. A2 and A3
 remain queued diagnostics only; do not use runner time on them unless A1 also
 fails.
+
+A parent-only control anomaly is neither a candidate failure nor a promotion
+pass. Record it, complete the remaining independent pairs, and replay that
+exact paired cell once before the final matrix audit. Candidate safety or
+artifact-integrity failures still stop immediately.
 
 ## Frozen work
 
