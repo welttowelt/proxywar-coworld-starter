@@ -23,9 +23,14 @@ import {
   recordDecision,
 } from "./strategy-engine.mjs";
 import { chooseChassisAction } from "./strategy-chassis.mjs";
+import { chooseTpl1Action } from "./tpl1-chassis.mjs";
 
 const chooseAction =
-  process.env.POLICY_ENGINE === "qd2n" ? chooseChassisAction : chooseSelectorAction;
+  process.env.POLICY_ENGINE === "tpl1"
+    ? chooseTpl1Action
+    : process.env.POLICY_ENGINE === "qd2n"
+      ? chooseChassisAction
+      : chooseSelectorAction;
 import { classifyPlannerError, plannerCooldownMs } from "./planner-backoff.mjs";
 
 const url = process.env.COWORLD_PLAYER_WS_URL;

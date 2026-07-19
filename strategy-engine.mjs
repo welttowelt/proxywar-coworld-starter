@@ -12,7 +12,7 @@ const SOCIAL_KINDS = new Set([
 // optional leading [K1Z]/K1Z tag is removed, then lowercase. The game itself
 // also rewrites display names (e.g. "juryoku-koku" -> "juryoku koku"), so every
 // name comparison routes through this canonical form.
-function normalizedRivalName(value) {
+export function normalizedRivalName(value) {
   return String(value ?? "")
     .normalize("NFKC")
     .replace(/[-_.]+/g, " ")
@@ -56,7 +56,7 @@ export function clean(value) {
     .slice(0, 60);
 }
 
-function finiteNumber(value, fallback = 0) {
+export function finiteNumber(value, fallback = 0) {
   const number = Number(value);
   return Number.isFinite(number) ? number : fallback;
 }
@@ -303,7 +303,7 @@ function reciprocalTrustIntact(state, history, rival) {
   return isReciprocalRival(rival) && recentHostility(state, history, rival, history.length) === 0;
 }
 
-function rivalIsProtected(state, history, rival) {
+export function rivalIsProtected(state, history, rival) {
   if (rival.isAllied) return true;
   if (reciprocalTrustIntact(state, history, rival)) return true;
   if (state.self.tileShare >= 0.35) return false;
@@ -388,7 +388,7 @@ export function safeActions(actions, predicate = () => true) {
   return safe.length > 0 ? safe : matching;
 }
 
-function hasReliableTacticalAction(actions) {
+export function hasReliableTacticalAction(actions) {
   return actions.some((action) => {
     if (action.kind === "build") return !actionText(action).includes("defense post");
     return [
@@ -411,7 +411,7 @@ export function pickPercent(candidates, desiredPercent, avoid) {
   })[0];
 }
 
-function targetName(entry) {
+export function targetName(entry) {
   return String(entry?.targetName ?? "").toLowerCase();
 }
 
@@ -502,7 +502,7 @@ const KINGMAKER_RETRY_COOLDOWN = 6;
 // The game offers alliance actions for players fog-of-war hides from
 // visiblePlayers, so the contract must not depend on visibility alone. A
 // partner already visible (allied or not) is never re-added from metadata.
-function reciprocalPartners(actions, state) {
+export function reciprocalPartners(actions, state) {
   const partners = state.rivals.filter((rival) => isReciprocalRival(rival) && !rival.isAllied);
   const seen = new Set();
   for (const rival of state.rivals) {
@@ -537,7 +537,7 @@ function reciprocalPartners(actions, state) {
   return partners;
 }
 
-function matchesKingmakerPartner(action, partner, state) {
+export function matchesKingmakerPartner(action, partner, state) {
   const rival = rivalForAction(action, state);
   if (rival) {
     return isReciprocalRival(rival) &&
@@ -555,7 +555,7 @@ function matchesKingmakerPartner(action, partner, state) {
       normalizedRivalName(recipientName) === normalizedRivalName(partner.name));
 }
 
-function kingmakerAllianceAction(actions, state, history) {
+export function kingmakerAllianceAction(actions, state, history) {
   const partners = reciprocalPartners(actions, state);
   for (const partner of partners) {
     const candidates = safeActions(actions, (action) =>
@@ -576,7 +576,7 @@ function kingmakerAllianceAction(actions, state, history) {
   return null;
 }
 
-function chooseAtomBomb(actions, state, history) {
+export function chooseAtomBomb(actions, state, history) {
   const candidates = safeActions(actions, (action) =>
     action.kind === "build" && String(action?.metadata?.unit ?? "").toLowerCase() === "atom bomb"
   ).map((action) => ({ action, rival: rivalForAction(action, state) }))
