@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  applyAllianceRequestCadence,
   boatConversionStalled,
   buildState,
   chooseAction,
@@ -1333,7 +1334,7 @@ test("an existing katanasan alliance is never broken or re-requested", () => {
   assert.notEqual(selected.id, ally.id);
 });
 
-test("katanasan alliance retries respect the cooldown", () => {
+test("katanasan alliance retries respect the eight-decision global cooldown", () => {
   const ally = {
     ...action("alliance:katanasan:1", "alliance_request", "Request alliance with katanasan"),
     metadata: { recipientID: "katanasan", recipientName: "katanasan", relation: 0 },
@@ -1351,7 +1352,7 @@ test("katanasan alliance retries respect the cooldown", () => {
     actionID: "alliance:katanasan:0", kind: "alliance_request", targetName: "katanasan", targetID: "katanasan",
   }]);
   assert.notEqual(cooling.id, ally.id);
-  const restedHistory = Array.from({ length: 7 }, (_, index) => ({
+  const restedHistory = Array.from({ length: 9 }, (_, index) => ({
     actionID: index === 0 ? "alliance:katanasan:0" : `attack:bystander:${index}`,
     kind: index === 0 ? "alliance_request" : "attack",
     targetName: index === 0 ? "katanasan" : "bystander",
@@ -1853,7 +1854,7 @@ test("an invisible Gravity partner is requested from alliance metadata", () => {
   assert.equal(selected.policyMarker, "kp2");
 });
 
-test("an invisible Gravity retry respects the six-decision cooldown", () => {
+test("an invisible Gravity retry respects the global cooldown", () => {
   const gravityAlly = {
     ...action("alliance:9h8tnrym", "alliance_request", "Send alliance request"),
     metadata: { recipientID: "9h8tnrym", recipientName: "juryoku koku", relation: 0 },
@@ -1886,7 +1887,7 @@ test("an invisible Gravity retry respects the six-decision cooldown", () => {
   assert.equal(selected.id, probe.id);
 });
 
-test("an invisible Gravity is retried once the cooldown lapses", () => {
+test("an invisible Gravity is retried once eight decisions lapse", () => {
   const gravityAlly = {
     ...action("alliance:9h8tnrym", "alliance_request", "Send alliance request"),
     metadata: { recipientID: "9h8tnrym", recipientName: "juryoku koku", relation: 0 },
@@ -1900,7 +1901,7 @@ test("an invisible Gravity is retried once the cooldown lapses", () => {
       targetName: "juryoku koku",
       tileShare: 0.1,
     },
-    ...Array.from({ length: 6 }, (_, index) => ({
+    ...Array.from({ length: 8 }, (_, index) => ({
       actionID: `x${index}`,
       kind: "attack",
       tileShare: 0.1,
@@ -2111,4 +2112,454 @@ test("outsiders remain legal nuclear targets beside all three K1Z allies", () =>
   );
   assert.equal(selected.id, bomb.id);
   assert.equal(selected.policyMarker, "nk1");
+});
+
+test("post-selection gate unit reroutes a supplied generic request after kp2", () => {
+  const genericRequest = {
+    ...action("alliance:outsider:1", "alliance_request", "Request alliance with Outsider"),
+    metadata: { recipientID: "outsider", recipientName: "Outsider", relation: 1 },
+  };
+  const strike = {
+    ...action("attack:raider:10", "attack", "Attack Raider 10%"),
+    metadata: { targetID: "raider", targetName: "Raider", troopPercent: 10 },
+    policyMarker: "ia1",
+  };
+  const history = [{
+    actionID: "alliance:kata:0",
+    kind: "alliance_request",
+    targetID: "katanasan",
+    targetName: "K1Z katanasan",
+    policyMarker: "kp2",
+  }];
+  const actions = [genericRequest, strike];
+  const state = buildState(observation({
+    tileShare: 0.3,
+    rivals: [
+      { id: "outsider", name: "Outsider", tileShare: 0.12, relativeTroopRatio: 1.1 },
+      { id: "raider", name: "Raider", tileShare: 0.15, relativeTroopRatio: 1.8 },
+    ],
+  }), actions, history);
+
+  const selected = applyAllianceRequestCadence(
+    genericRequest,
+    strike,
+    actions,
+    state,
+    history,
+  );
+  assert.equal(selected.id, strike.id);
+  assert.equal(selected.policyMarker, "ia1");
+  assert.deepEqual(selected.policyMarkers, ["gc2", "ia1"]);
+  recordDecision(history, selected, state);
+  assert.deepEqual(history.at(-1).policyMarkers, ["gc2", "ia1"]);
+});
+
+test("post-selection gate unit reroutes a supplied generic request after generic", () => {
+  const genericRequest = {
+    ...action("alliance:second:1", "alliance_request", "Request alliance with Second"),
+    metadata: { recipientID: "second", recipientName: "Second", relation: 1 },
+  };
+  const expansion = {
+    ...action(
+      "expand:terra-nullius:10",
+      "attack",
+      "Expand into Terra Nullius with 10%",
+    ),
+    metadata: { expansion: true, troopPercent: 10 },
+  };
+  const history = [{
+    actionID: "alliance:first:0",
+    kind: "alliance_request",
+    targetID: "first",
+    targetName: "First",
+    policyMarker: null,
+  }];
+  const actions = [genericRequest, expansion];
+  const state = buildState(observation({ tileShare: 0.1 }), actions, history);
+
+  const selected = applyAllianceRequestCadence(
+    genericRequest,
+    expansion,
+    actions,
+    state,
+    history,
+  );
+  assert.equal(selected.id, expansion.id);
+  assert.equal(selected.policyMarker, "gc2");
+  assert.deepEqual(selected.policyMarkers, ["gc2"]);
+});
+
+test("a generic request resets the centralized cadence for a K1Z request", () => {
+  const gravityRequest = {
+    ...action("alliance:gravity:1", "alliance_request", "Request alliance with juryoku koku"),
+    metadata: {
+      recipientID: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      recipientName: "juryoku koku",
+      relation: 2,
+    },
+  };
+  const strike = action("attack:raider:10", "attack", "Attack Raider 10%");
+  const recentGeneric = {
+    actionID: "alliance:outsider:0",
+    kind: "alliance_request",
+    targetID: "outsider",
+    targetName: "Outsider",
+    policyMarker: null,
+  };
+  const coolingHistory = [
+    recentGeneric,
+    ...Array.from({ length: 7 }, (_, index) => ({
+      actionID: `attack:raider:${index}`,
+      kind: "attack",
+      targetID: "raider",
+      targetName: "Raider",
+    })),
+  ];
+  const cooling = choose(
+    [gravityRequest, strike],
+    observation({
+      tileShare: 0.3,
+      troopRatio: 0.9,
+      rivals: [
+        {
+          id: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+          name: "juryoku koku",
+          tileShare: 0.12,
+          relativeTroopRatio: 1.1,
+        },
+        { id: "raider", name: "Raider", tileShare: 0.15, relativeTroopRatio: 1.8 },
+      ],
+    }),
+    null,
+    coolingHistory,
+  );
+  assert.equal(cooling.id, strike.id);
+  assert.equal(cooling.policyMarker, "gc2");
+  assert.deepEqual(cooling.policyMarkers, ["gc2"]);
+
+  const readyHistory = [
+    recentGeneric,
+    ...Array.from({ length: 8 }, (_, index) => ({
+      actionID: `attack:raider:${index}`,
+      kind: "attack",
+      targetID: "raider",
+      targetName: "Raider",
+    })),
+  ];
+  const ready = choose(
+    [gravityRequest, strike],
+    observation({
+      tileShare: 0.3,
+      troopRatio: 0.9,
+      rivals: [
+        {
+          id: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+          name: "juryoku koku",
+          tileShare: 0.12,
+          relativeTroopRatio: 1.1,
+        },
+        { id: "raider", name: "Raider", tileShare: 0.15, relativeTroopRatio: 1.8 },
+      ],
+    }),
+    null,
+    readyHistory,
+  );
+  assert.equal(ready.id, gravityRequest.id);
+  assert.equal(ready.policyMarker, "kp2");
+});
+
+test("gc2 converts an interleaved replay request into neutral tempo and rearms at eight", () => {
+  const ids = {
+    kata: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+    gravity: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+    hrafn: "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+  };
+  const names = {
+    kata: "K1Z katanasan",
+    gravity: "K1Z juryoku-koku",
+    hrafn: "K1Z Hrafn",
+  };
+  const partnerRequest = (partner) => ({
+    ...action(
+      `alliance:${partner}:1`,
+      "alliance_request",
+      `Request alliance with ${names[partner]}`,
+    ),
+    metadata: {
+      recipientID: ids[partner],
+      recipientName: names[partner],
+      relation: 2,
+    },
+  });
+  const expansion = (percent) => ({
+    ...action(
+      `expand:terra-nullius:${percent}`,
+      "attack",
+      `Expand into Terra Nullius ${percent}%`,
+    ),
+    metadata: { expansion: true, troopPercent: percent },
+  });
+  const rivals = Object.keys(ids).map((partner) => ({
+    id: ids[partner],
+    name: names[partner],
+    tileShare: 0.12,
+    relativeTroopRatio: 1.1,
+  }));
+  const obs = observation({ tileShare: 0.1, troopRatio: 0.9, rivals });
+  const history = [];
+
+  const openingActions = [partnerRequest("kata")];
+  const openingState = buildState(obs, openingActions, history);
+  const opening = chooseAction(openingActions, openingState, null, history);
+  assert.equal(opening.id, "alliance:kata:1");
+  assert.equal(opening.policyMarker, "kp2");
+  recordDecision(history, opening, openingState);
+
+  const interleavedActions = [
+    partnerRequest("gravity"),
+    expansion(10),
+    expansion(20),
+    expansion(35),
+    action("build:City:1", "build", "Build City"),
+    action("build:Port:1", "build", "Build Port"),
+  ];
+  const interleavedState = buildState(obs, interleavedActions, history);
+  const interleaved = chooseAction(
+    interleavedActions,
+    interleavedState,
+    null,
+    history,
+  );
+  assert.equal(interleaved.id, "expand:terra-nullius:10");
+  assert.equal(interleaved.policyMarker, "gc2");
+  assert.deepEqual(interleaved.policyMarkers, ["gc2"]);
+  recordDecision(history, interleaved, interleavedState);
+
+  for (let index = 1; index < 8; index++) {
+    history.push({
+      actionID: `expand:terra-nullius:${index + 10}`,
+      kind: "attack",
+      neutral: true,
+      tileShare: 0.1,
+    });
+  }
+  const rearmedActions = [partnerRequest("hrafn"), expansion(10)];
+  const rearmedState = buildState(obs, rearmedActions, history);
+  const rearmed = chooseAction(rearmedActions, rearmedState, null, history);
+  assert.equal(rearmed.id, "alliance:hrafn:1");
+  assert.equal(rearmed.policyMarker, "kp2");
+});
+
+test("a recent request cannot delay an incoming K1Z reverse handshake", () => {
+  const gravityRequest = {
+    ...action("alliance:gravity:1", "alliance_request", "Request alliance with juryoku koku"),
+    metadata: {
+      recipientID: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      recipientName: "juryoku koku",
+      relation: 2,
+    },
+  };
+  const reject = {
+    ...action("alliance_reject:gravity:1", "alliance_reject", "Reject juryoku koku alliance"),
+    metadata: {
+      recipientID: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      recipientName: "juryoku koku",
+    },
+  };
+  const strike = action("attack:raider:10", "attack", "Attack Raider 10%");
+  const history = [{
+    actionID: "alliance:gravity:0",
+    kind: "alliance_request",
+    targetID: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+    targetName: "juryoku koku",
+    policyMarker: "kp2",
+  }];
+  const selected = choose(
+    [gravityRequest, reject, strike],
+    observation({
+      tileShare: 0.3,
+      troopRatio: 0.9,
+      rivals: [
+        {
+          id: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+          name: "juryoku koku",
+          tileShare: 0.12,
+          relativeTroopRatio: 1.1,
+        },
+        { id: "raider", name: "Raider", tileShare: 0.15, relativeTroopRatio: 1.8 },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, gravityRequest.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("an incoming K1Z reverse handshake outranks another partner request", () => {
+  const katanasanRequest = {
+    ...action("alliance:katanasan:1", "alliance_request", "Request alliance with katanasan"),
+    metadata: {
+      recipientID: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+      recipientName: "katanasan",
+      relation: 2,
+    },
+  };
+  const gravityRequest = {
+    ...action("alliance:gravity:1", "alliance_request", "Request alliance with juryoku koku"),
+    metadata: {
+      recipientID: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      recipientName: "juryoku koku",
+      relation: 2,
+    },
+  };
+  const gravityReject = {
+    ...action("alliance_reject:gravity:1", "alliance_reject", "Reject juryoku koku alliance"),
+    metadata: {
+      recipientID: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      recipientName: "juryoku koku",
+    },
+  };
+  const strike = action("attack:raider:10", "attack", "Attack Raider 10%");
+  const selected = choose(
+    [katanasanRequest, gravityRequest, gravityReject, strike],
+    observation({
+      tileShare: 0.3,
+      troopRatio: 0.9,
+      rivals: [
+        {
+          id: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+          name: "katanasan",
+          tileShare: 0.12,
+          relativeTroopRatio: 1.1,
+        },
+        {
+          id: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+          name: "juryoku koku",
+          tileShare: 0.12,
+          relativeTroopRatio: 1.1,
+        },
+        { id: "raider", name: "Raider", tileShare: 0.15, relativeTroopRatio: 1.8 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, gravityRequest.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("gc2 retains a request when the only replacement is hold", () => {
+  const gravityRequest = {
+    ...action("alliance:gravity:1", "alliance_request", "Request alliance with juryoku koku"),
+    metadata: {
+      recipientID: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      recipientName: "juryoku koku",
+      relation: 2,
+    },
+  };
+  const hold = action("hold:1", "hold", "Hold");
+  const history = [{
+    actionID: "alliance:gravity:0",
+    kind: "alliance_request",
+    targetID: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+    targetName: "juryoku koku",
+    policyMarker: "kp2",
+  }];
+  const selected = choose(
+    [gravityRequest, hold],
+    observation({
+      tileShare: 0.3,
+      troopRatio: 0.9,
+      rivals: [{
+        id: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+        name: "juryoku koku",
+        tileShare: 0.12,
+        relativeTroopRatio: 1.1,
+      }],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, gravityRequest.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("gc2 never reroutes onto protected K1Z attacks, boats, or bombs", () => {
+  const gravityRequest = {
+    ...action("alliance:gravity:1", "alliance_request", "Request alliance with juryoku koku"),
+    metadata: {
+      recipientID: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      recipientName: "juryoku koku",
+      relation: 2,
+    },
+  };
+  const protectedAttack = {
+    ...action("attack:katanasan:10", "attack", "Attack K1Z katanasan 10%"),
+    metadata: {
+      targetID: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+      targetName: "K1Z katanasan",
+      troopPercent: 10,
+    },
+  };
+  const protectedBoat = {
+    ...action("boat:hrafn:8", "boat", "Invade K1Z Hrafn 8%"),
+    metadata: {
+      targetID: "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+      targetName: "K1Z Hrafn",
+      troopPercent: 8,
+    },
+  };
+  const protectedBomb = {
+    ...action("build:Atom Bomb:1", "build", "Build Atom Bomb"),
+    metadata: {
+      unit: "Atom Bomb",
+      targetID: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+      targetName: "K1Z katanasan",
+      targetTileShare: 0.12,
+      targetSamCoverage: 0,
+    },
+  };
+  const hold = action("hold:1", "hold", "Hold");
+  const history = [{
+    actionID: "alliance:outsider:0",
+    kind: "alliance_request",
+    targetID: "outsider",
+    targetName: "Outsider",
+    policyMarker: null,
+  }];
+  const selected = choose(
+    [gravityRequest, protectedAttack, protectedBoat, protectedBomb, hold],
+    observation({
+      tileShare: 0.3,
+      troopRatio: 0.9,
+      rivals: [
+        {
+          id: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+          name: "juryoku koku",
+          tileShare: 0.12,
+          relativeTroopRatio: 1.1,
+        },
+        {
+          id: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+          name: "K1Z katanasan",
+          tileShare: 0.12,
+          relativeTroopRatio: 1.8,
+        },
+        {
+          id: "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+          name: "K1Z Hrafn",
+          tileShare: 0.12,
+          relativeTroopRatio: 1.8,
+        },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, gravityRequest.id);
+  assert.notEqual(selected.id, protectedAttack.id);
+  assert.notEqual(selected.id, protectedBoat.id);
+  assert.notEqual(selected.id, protectedBomb.id);
+  assert.equal(selected.policyMarker, "kp2");
 });

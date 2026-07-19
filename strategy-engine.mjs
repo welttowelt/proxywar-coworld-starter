@@ -398,6 +398,40 @@ function hasReliableTacticalAction(actions) {
   });
 }
 
+function replacementTargetsProtectedRival(action, state, history) {
+  const rival = rivalForAction(action, state);
+  if (rival) return rivalIsProtected(state, history, rival);
+
+  const metadataID = clean(
+    action?.metadata?.targetID ?? action?.metadata?.recipientID ?? "",
+  ).toLowerCase();
+  const metadataName = clean(
+    action?.metadata?.targetName ?? action?.metadata?.recipientName ?? "",
+  );
+  const rawTarget = `${metadataID} ${metadataName} ${actionText(action)}`.toLowerCase();
+  if ([...RECIPROCAL_RIVAL_IDS].some((id) => rawTarget.includes(id))) return true;
+
+  const canonicalTarget = normalizedRivalName(`${metadataName} ${actionText(action)}`);
+  return [...RECIPROCAL_RIVALS].some((name) => canonicalTarget.includes(name));
+}
+
+function isSafeTacticalReplacement(action, state, history) {
+  if (!action || action.risk?.level === "high") return false;
+  if (replacementTargetsProtectedRival(action, state, history)) return false;
+  if (action.kind === "build") {
+    if (actionText(action).includes("defense post")) return false;
+    const unit = String(action?.metadata?.unit ?? "").toLowerCase();
+    if (unit === "atom bomb") {
+      return chooseAtomBomb([action], state, history)?.id === action.id;
+    }
+    return true;
+  }
+  return [
+    "attack", "boat", "boat_retreat", "retreat", "nuke", "upgrade_structure",
+    "warship", "move_warship",
+  ].includes(action.kind);
+}
+
 export function pickPercent(candidates, desiredPercent, avoid) {
   if (candidates.length === 0) return null;
   const fresh = candidates.filter((action) => !avoid.has(action.id));
@@ -495,7 +529,7 @@ function chooseRivalAttack(actions, state, plan, history, avoid, threatCount = 0
   };
 }
 
-const KINGMAKER_RETRY_COOLDOWN = 6;
+const GLOBAL_ALLIANCE_REQUEST_COOLDOWN = 8;
 
 // Reciprocal partners come from two channels: visible rivals, and
 // alliance_request metadata when the partner is outside the visible set.
@@ -555,25 +589,74 @@ function matchesKingmakerPartner(action, partner, state) {
       normalizedRivalName(recipientName) === normalizedRivalName(partner.name));
 }
 
-function kingmakerAllianceAction(actions, state, history) {
+function incomingKingmakerReverseHandshake(selected, actions, state) {
+  if (selected?.kind !== "alliance_request") return false;
+  const partner = reciprocalPartners(actions, state)
+    .find((candidate) => matchesKingmakerPartner(selected, candidate, state));
+  if (!partner) return false;
+  return safeActions(actions, (action) =>
+    action.kind === "alliance_reject" &&
+    matchesKingmakerPartner(action, partner, state)
+  ).length > 0;
+}
+
+function kingmakerAllianceAction(actions, state) {
   const partners = reciprocalPartners(actions, state);
+  const options = [];
   for (const partner of partners) {
     const candidates = safeActions(actions, (action) =>
       action.kind === "alliance_request" && matchesKingmakerPartner(action, partner, state)
     );
     if (candidates.length === 0) continue;
-    const lastAttempt = decisionsSince(history, (entry) =>
-      entry.kind === "alliance_request" &&
-      (entry.targetID === partner.id.toLowerCase() ||
-        normalizedRivalName(targetName(entry)) === normalizedRivalName(partner.name)));
-    if (lastAttempt < KINGMAKER_RETRY_COOLDOWN) continue;
-    // metadata.relation is the game's Relation enum (0 Hostile, 1 Distrustful,
-    // 2 Neutral, 3 Friendly), not a pending-state flag: coalition partners are
-    // requested at any relation, and selecting the request also accepts the
-    // partner's own pending offer (reverse handshake).
-    return { ...candidates[0], policyMarker: "kp2" };
+    options.push(candidates);
   }
-  return null;
+
+  for (const candidates of options) {
+    const reverseHandshake = candidates.find((candidate) =>
+      incomingKingmakerReverseHandshake(candidate, actions, state)
+    );
+    if (reverseHandshake) return { ...reverseHandshake, policyMarker: "kp2" };
+  }
+
+  // metadata.relation is the game's Relation enum (0 Hostile, 1 Distrustful,
+  // 2 Neutral, 3 Friendly), not a pending-state flag. The centralized
+  // post-selection cadence decides whether an outbound request can consume
+  // this decision.
+  return options[0]?.[0] ? { ...options[0][0], policyMarker: "kp2" } : null;
+}
+
+function withPolicyMarker(action, marker) {
+  const policyMarkers = [...new Set([
+    marker,
+    ...(Array.isArray(action?.policyMarkers) ? action.policyMarkers : []),
+    action?.policyMarker,
+  ].filter(Boolean))];
+  return {
+    ...action,
+    policyMarker: action?.policyMarker ?? marker,
+    policyMarkers,
+  };
+}
+
+function allianceRequestCadenceActive(selected, actions, state, history) {
+  return selected?.kind === "alliance_request" &&
+    decisionsSince(history, (entry) => entry.kind === "alliance_request") <
+      GLOBAL_ALLIANCE_REQUEST_COOLDOWN &&
+    !incomingKingmakerReverseHandshake(selected, actions, state);
+}
+
+export function applyAllianceRequestCadence(
+  selected,
+  replacement,
+  actions,
+  state,
+  history = [],
+) {
+  if (!allianceRequestCadenceActive(selected, actions, state, history)) return selected;
+  const isLegalReplacement = actions.some((action) => action?.id === replacement?.id);
+  if (!isLegalReplacement ||
+    !isSafeTacticalReplacement(replacement, state, history)) return selected;
+  return withPolicyMarker(replacement, "gc2");
 }
 
 function chooseAtomBomb(actions, state, history) {
@@ -767,7 +850,7 @@ export function chooseUtility(actions, state, plan, history) {
   return null;
 }
 
-export function chooseAction(actions, state, plan = null, history = []) {
+function chooseActionCandidate(actions, state, plan = null, history = []) {
   if (!Array.isArray(actions) || actions.length === 0) {
     throw new Error("decision request had no legal actions");
   }
@@ -782,7 +865,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
     : null;
   if (defensiveBuild) return defensiveBuild;
 
-  const kingmakerAlliance = kingmakerAllianceAction(actions, state, history);
+  const kingmakerAlliance = kingmakerAllianceAction(actions, state);
   if (kingmakerAlliance) return kingmakerAlliance;
 
   const atomBomb = chooseAtomBomb(actions, state, history);
@@ -911,6 +994,19 @@ export function chooseAction(actions, state, plan = null, history = []) {
   return actions.find((action) => action.kind === "hold") ?? actions[0];
 }
 
+export function chooseAction(actions, state, plan = null, history = []) {
+  const selected = chooseActionCandidate(actions, state, plan, history);
+  if (!allianceRequestCadenceActive(selected, actions, state, history)) return selected;
+
+  const withoutOutboundRequests = actions.filter(
+    (action) => action.kind !== "alliance_request",
+  );
+  const replacement = withoutOutboundRequests.length > 0
+    ? chooseActionCandidate(withoutOutboundRequests, state, plan, history)
+    : null;
+  return applyAllianceRequestCadence(selected, replacement, actions, state, history);
+}
+
 export function recordDecision(history, action, state) {
   const rival = rivalForAction(action, state);
   const metadataTargetID = clean(
@@ -935,6 +1031,7 @@ export function recordDecision(history, action, state) {
     incomingAttackerNames,
     mapFingerprint: state.mapFingerprint,
     policyMarker: action.policyMarker ?? null,
+    policyMarkers: Array.isArray(action.policyMarkers) ? [...action.policyMarkers] : [],
   });
   if (history.length > 320) history.shift();
 }
