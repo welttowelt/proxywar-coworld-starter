@@ -1232,10 +1232,29 @@ release_action() {
     print -r -- "active-run:${LANE}:${RUN_ID}:${supervisor_pid}" >&2
     return 1
   fi
-  [[ ! -d "$LOCK_DIR/recovery" ]] || {
-    print -r -- "reap-in-progress:${LANE}:${RUN_ID}" >&2
-    return 1
-  }
+  if [[ -d "$LOCK_DIR/recovery" ]]; then
+    local recovery_pid recovery_started recovery_mode retired
+    [[ ! -L "$LOCK_DIR/recovery" ]] || {
+      print -r -- "reap-in-progress:${LANE}:${RUN_ID}" >&2
+      return 1
+    }
+    recovery_pid="$(read_file_from "$LOCK_DIR/recovery" pid)"
+    recovery_started="$(read_file_from "$LOCK_DIR/recovery" started_at)"
+    recovery_mode="$(read_file_from "$LOCK_DIR/recovery" mode)"
+    if [[ "$recovery_mode" == "stale-reap" ]] &&
+      ! pid_matches "$recovery_pid" "$recovery_started"; then
+      # A Docker crash can remove every newly claimed output while the stale
+      # reaper is still alive. The exact-token release path already permits an
+      # empty stale lock; clear only that dead stale-reap marker so it can do
+      # so. Existing outputs remain fail-closed in the loop below.
+      retired="${LOCK_DIR}/recovery.stale-release.$$.$RANDOM"
+      mv "$LOCK_DIR/recovery" "$retired" || return 1
+      rm -rf "$retired"
+    else
+      print -r -- "reap-in-progress:${LANE}:${RUN_ID}" >&2
+      return 1
+    fi
+  fi
   while IFS= read -r output; do
     if [[ -n "$output" && (-e "$output" || -L "$output") ]]; then
       print -r -- "recorded-output-present:${output}:use-reap-stale" >&2

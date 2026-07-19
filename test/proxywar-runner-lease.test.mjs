@@ -731,6 +731,25 @@ test("partial-v2 can never use tokenless release while a pure legacy lock can re
   assert.match(result.stdout, /free/);
 });
 
+test("exact release clears only a dead stale-reap marker when every recorded output is absent", (t) => {
+  const context = fixture();
+  const { directory, state } = context;
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const output = path.join(directory, "vanished-output");
+  writeV2Lock(state, { outputs: [output], createOutputs: false });
+  const recovery = path.join(state, "runner.lock", "recovery");
+  mkdirSync(recovery);
+  writeFileSync(path.join(recovery, "pid"), "999999\n");
+  writeFileSync(path.join(recovery, "started_at"), "1\n");
+  writeFileSync(path.join(recovery, "mode"), "stale-reap\n");
+  writeFileSync(path.join(recovery, "ready"), "");
+
+  const result = invoke(state, ["release", "odin", "stale-run", "stale-token"]);
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /released:odin:stale-run/);
+  assert.equal(existsSync(path.join(state, "runner.lock")), false);
+});
+
 test("every injected bootstrap failure cleans staging, claims, mutation guard, and runner lock", (t) => {
   const fixtures = [];
   t.after(() => {
