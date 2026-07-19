@@ -9,9 +9,11 @@ the real Kimi K3 through the established mailbox or handoff channel.
 **Hrafn is a separate writable game operator**, not a Codex subagent. Hrafn
 owns `hrafn-fylking` code and league versions from
 `/Users/olifreuler/proxywar-k1z-hrafn`; Codex Odin owns `qd1n` from this
-repository. Each operator builds, uploads, and submits only its own policy after
-the required gates and explicit user authorization. Cross-audits are read-only
-and travel through the team mailbox.
+repository. Each operator builds, uploads, submits, and promotes only its own
+policy. The user granted standing authorization on 2026-07-19 for automatic
+promotion after every gate in `AUTONOMOUS_PROMOTION.md` passes; no additional
+user `GO` is required. Cross-audits are read-only and travel through the team
+mailbox.
 
 New worker: this is the live state and the next work. Read `AGENTS.md`,
 `MERIT.md` (the merit ledger — every arm verdict), and
@@ -85,6 +87,15 @@ GC2 reach, any rejection, unexplained hold, K1Z harm, or absent matched
 advantage. Hosted, upload, submission, membership, champion, and league work
 remain closed.
 
+Hrafn's setup RCI at mailbox commit `1229a93` supersedes the earlier immediate
+runner release. Keep GC2 source unchanged. Before the qualifier or matched
+pair, validate
+`experiments/preflight-qd1n-global-alliance-arbitration-gc2.json`, use the
+repository mirror auditor, pin `coworld==0.1.30`, record the exact manifest,
+game-config, parent-image, candidate-image, and fresh A/B request hashes, and
+report container marker reach as pending until the matched replay proves it.
+Run GR1 only after the isolated GC2 verdict; never fuse the two arms.
+
 ## Coordination protocol (coalition)
 
 - Mailbox: git repo `welttowelt/stormforge-ecdsa-team-mailbox` at
@@ -93,10 +104,34 @@ remain closed.
   polling to Codex Odin. Check explicitly during active work; do not claim a
   background monitor or recreate a scheduler without an operator request.
 - Runner discipline: never start a local Coworld episode while another lane's
-  gate owns the runner; coordinate in the mailbox first.
+  gate owns the runner; coordinate in the mailbox first and use
+  `scripts/proxywar-runner-lease.sh acquire odin|hrafn`. Release the lease after
+  every episode or completed batch.
+- Mailbox writes use the atomic lock at
+  `/Users/olifreuler/.stormforge/proxywar-operators/mailbox-write.lock`: acquire,
+  pull fast-forward only, write/commit/push, then release.
 - Hrafn is a local best friend and an independent auditor — expect red-first
   review of any candidate; they will find your hold paths and confounds.
 - Public in-game text: short leetspeak. Repo/mailbox prose: plain English.
+
+## Automatic operator and promotion protocol
+
+- Odin is launched from this repository, so its project configuration loads
+  `gpt-5.6-sol` at high reasoning. Hrafn is launched from
+  `/Users/olifreuler/proxywar-k1z-hrafn`, which loads xhigh reasoning.
+- The launch agents are event-driven. A mailbox change wakes both lanes; Odin
+  also performs a bounded hourly refresh and Hrafn a bounded four-hour refresh.
+  Lock files prevent overlapping cycles.
+- Operators act only in their own policy lane. At the pre-run,
+  pre-diagnostic-upload, and final-promotion checkpoints, the other operator
+  reviews the committed branch and returns an `APPROVE`, `REVISE`, `REJECT`, or
+  `INSUFFICIENT` mailbox verdict.
+- Diagnostic upload and hosted testing proceed automatically after the local
+  gates and cross-audit pass. League submission and champion promotion proceed
+  automatically after hosted `4/4`, regression `20/20`, final cross-audit, live
+  identity verification, and immutable image verification pass.
+- `AUTONOMOUS_PROMOTION.md` is authoritative for state transitions and failure
+  handling. No current GC2 gate is waived by this authority change.
 
 ## Working setup
 
@@ -109,6 +144,8 @@ remain closed.
   `rci/gc2`, exact commit `9efe990d`.
 - Tests: `npm test` (`152/152` on GC2).
   Red-first discipline: every guard gets a failing test before the fix.
+- GC2 qualifier and local mirrors: pin `coworld==0.1.30`. Do not substitute
+  another runtime without a new matched preflight.
 - Images: `docker build --platform linux/amd64 --build-arg
   POLICY_CODENAME=s4ntai -t proxywar-agent-llm:<tag> .`; verify with
   `docker run --rm --entrypoint cat <img> /app/strategy-engine.mjs | diff -q

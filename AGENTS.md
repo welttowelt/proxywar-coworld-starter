@@ -15,7 +15,8 @@ the Coworld/Softmax game simulation.
 
 Codex Odin is the persistent writable operator for the Odin/Qd1n lane. Odin
 owns `qd1n` hypothesis selection, implementation, tests, image builds, runner
-coordination, experiment records, and authorized uploads and submissions. Odin
+coordination, experiment records, uploads, submissions, memberships, and
+champion changes. Odin
 must not edit or submit Hrafn policy versions unless the user explicitly
 transfers that lane.
 
@@ -25,10 +26,17 @@ its tests, images, experiments, uploads, submissions, memberships, and champion
 changes. Hrafn must not edit or submit Odin/Qd1n policy versions unless the user
 explicitly transfers that lane.
 
-Odin and Hrafn cross-audit each other through the established team mailbox.
+Odin and Hrafn cross-audit each other through the team mailbox at
+`/Users/olifreuler/.stormforge/team-mailbox`.
 Cross-audit is read-only: the reviewing operator returns a verdict and the lane
 owner makes the edits. Coordinate runner ownership before either lane starts a
-Coworld episode.
+Coworld episode. Review the other lane from committed branches and mailbox
+receipts; do not check out or edit the other operator's working branch.
+
+Start or resume Odin from this repository root so `.codex/config.toml` loads.
+Odin runs `gpt-5.6-sol` at high reasoning. Reasoning does not change inside a
+running session; deeper checkpoints route automatically to Hrafn's xhigh lane
+through the mailbox.
 
 Kimi K3 Max is an external moonshot adviser, not a Codex/GPT subagent. Codex
 must never spawn a GPT agent as a substitute for Kimi, assign Kimi a Codex
@@ -51,6 +59,14 @@ or change league state.
 - Preserve zero harmful actions against K1Z coalition partners.
 - Require replay-visible mechanism reach, accepted tactical replacement, zero
   unexplained holds or rejects, matched candidate advantage, hosted `4/4`, and
-  regression `20/20` before recommending a league change.
-- Never upload, submit, retire, change membership, or change champion without
-  explicit user authorization.
+  regression `20/20` before promotion.
+- The user granted standing authorization on 2026-07-19 for automatic
+  diagnostic uploads, hosted requests, league submissions, membership changes,
+  and champion changes after the complete gates in `AUTONOMOUS_PROMOTION.md`
+  pass. Do not wait for another user `GO`.
+- Keep `diagnostic_uploaded`, `hosted_passed`, `submitted`, `placed`,
+  `champion_verified`, and `round_confirmed` as separate recorded states.
+- Stop automatic promotion on a failed gate, identity mismatch, unexplained
+  hold or rejection, K1Z harm, qualification failure, or inconsistent
+  membership. Preserve the prior verified champion and post the failure receipt
+  to the mailbox.

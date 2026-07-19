@@ -40,6 +40,7 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | v29 hosted | `0/4`; new dominance band had no credible strike window | rejected |
 | v30 hosted | `0/4`; veto fired on 230 decisions, 211 productive reranks | mechanism active, policy rejected |
 | RCI protocol | preflight validates reach, trace independence, marker, baseline, `4/4`, and `20/20` | enforced |
+| qd1n GC2 pre-run | exact v89 parent `f1347251`; isolated candidate `9efe990d`; `152/152` tests; candidate image `sha256:593eedf2...`, parent image `sha256:ebd9eed3...`; Hrafn source receipt `551992b` followed by setup RCI `1229a93` requiring a durable preflight, generic ID-based auditor, `coworld==0.1.30`, exact runtime hashes, and fresh A/B request hashes | PRE-RUN only; source frozen; qualifier, matched pair, hosted, upload, submission, membership, and champion work remain blocked until the setup record is complete |
 | v14 current control | `0/4`; Auri `4/4`; reserve 0.48 at Auri's 1.66x turn-1900 entry in every episode | weak-seat opening confirmed |
 | v24 requalified parent | 28 replay-derived reserve interventions; prior `3/4` on the same roster | diagnostic parent only |
 | v31 hosted | `1/4`; opening reserve fired 28 times; bank-build fired zero times; four holds | rejected, no league change |
