@@ -1,0 +1,20 @@
+{
+  "coworld_id": "cow_236e7c2e-acdb-404a-b1b9-41852e5ac658",
+  "variant_id": "tournament-12p-pangaea",
+  "roster": [
+    {"player": {"policy_ref": "co-gas-proxywar-richard:v7"}, "slot": 0},
+    {"player": {"policy_ref": "jamesboggs-warlord:v1"}, "slot": 1},
+    {"player": {"policy_ref": "proxywar-keystone:v42"}, "slot": 2},
+    {"player": {"policy_ref": "daf-proxywar-v2:v1"}, "slot": 3},
+    {"player": {"policy_ref": "ron-frontier-ranker:v1"}, "slot": 4},
+    {"player": {"policy_ref": "co-gas-proxywar-relhalpha:v3"}, "slot": 5},
+    {"player": {"policy_ref": "qd1n:v89"}, "slot": 6},
+    {"player": {"policy_ref": "tsukuyomi-no-kage:v39"}, "slot": 7},
+    {"player": {"policy_ref": "santai-juryoku:v3"}, "slot": 8},
+    {"player": {"policy_ref": "hrafn-fylking:v5"}, "slot": 9},
+    {"player": {"policy_ref": "daveey-proxywar:v24"}, "slot": 10},
+    {"player": {"policy_ref": "my-proxywar-agent:v27"}, "slot": 11}
+  ],
+  "num_episodes": 4,
+  "notes": "DP1 matched parent baseline: exact round 522 running roster and seat, Pangaea, qd1n:v89"
+}

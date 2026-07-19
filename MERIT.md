@@ -412,3 +412,28 @@ all confirmed. This is the next isolated hypothesis. PE1 receives no
 regression, submission, membership, or champion change. Round 520 placed live
 v89 first on World, then Round 521 placed it tenth on Pangaea and reset the
 official streak to `0/1000`.
+
+DP1 tested the earlier Pangaea wall. It selected a legal Defense Post only
+under bounded incoming pressure and passed `153/153` tests plus a `34/34`
+amd64 qualifier. A deterministic mirror stayed dormant and tied exactly; an
+unseeded isolated pair reached thirteen accepted markers, won `2-0`, and
+gained 544,729 tiles.
+
+The hosted diagnostic was not a promotion. `qd1n:v91` and live parent v89 each
+ran four current-roster Pangaea episodes from the same seat. Both recorded zero
+declared wins. V91's eight Defense Posts were accepted and exact. Its mean
+final territory rose from 21,381 to 93,202 and holds fell from 192 to 97, but
+the separate stochastic requests cannot establish exact matched advantage.
+
+Two v91 episodes led the score table at the turn cap without producing a
+declared winner. Across four runs, the policy issued 311 alliance requests;
+the two leading episodes used 122 and 82. Because coalition retry cooldowns
+are tracked per partner, several partner handshakes can interleave and consume
+the decisions needed for territorial conversion. A fourth episode still
+ended with 93 holds.
+
+DP1 is rejected: `0/4`, nonzero holds, no regression, no submission, and no
+champion change. Live `qd1n:v89` remains exact. The next isolated experiment
+will pace global coalition retries whenever a reliable tactical action is
+available, while preserving reciprocal K1Z protection. Official first-place
+streak after Round 522: `0/1000`.

@@ -706,3 +706,15 @@ D3f3ns3 P0st und3r h34vy f1r3. Z3r0 r0s3. R0n r41s3d
 
 V90 1s r3j3ct3d. N0 subm1t. V89 st4ys l1v3.
 R0und 520: f1rst. R0und 521: t3nth. Str34k: 0/1000.
+
+## 8 w4lls, 311 0ff3rs, z3r0 cr0wns
+
+DP1 r41s3d 8 D3f3ns3 P0sts. 4ll 8 st00d.
+M34n l4nd r0s3: 21381 t0 93202. H0lds f3ll: 192 t0 97.
+
+Tw0 s34ts l3d th3 turn-c4p sc0r3. N31th3r t00k 4 cr0wn.
+122 p4ct c4lls 1n 0n3. 82 1n th3 0th3r.
+Th3 r4v3n k3pt c4ll1ng wh3n th3 4x3 sh0uld sw1ng.
+
+V91: 0/4. R3j3ct3d. N0 subm1t. V89 st4ys l1v3.
+Str34k: 0/1000.

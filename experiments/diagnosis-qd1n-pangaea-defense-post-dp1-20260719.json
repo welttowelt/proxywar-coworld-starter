@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-19",
+  "experiment": "qd1n Pangaea bounded Defense Post DP1",
+  "status": "rejected",
+  "causal_basis": {
+    "map": "Pangaea",
+    "live_policy": "qd1n:v89",
+    "source_experiment": "PE1 hosted diagnostic",
+    "finding": "Odin received 46 legal Defense Post actions under at least ten-percent incoming pressure and selected none. Ron and Auri used accepted Defense Posts in winning episodes.",
+    "fresh_live_reach": {
+      "round": 523,
+      "parent_decisions": 159,
+      "exact_dp1_opportunities": 3,
+      "cooldown_adjusted_executions": 2,
+      "examples": [
+        {
+          "turn": 2100,
+          "tile_share": 0.05,
+          "troop_ratio": 0.91,
+          "incoming_troops": 306937,
+          "parent_selection": "boat"
+        },
+        {
+          "turn": 3700,
+          "tile_share": 0.04,
+          "troop_ratio": 0.91,
+          "incoming_troops": 573487,
+          "parent_selection": "Port"
+        }
+      ]
+    }
+  },
+  "parent": {
+    "live_policy": "qd1n:v89",
+    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "strategy_sha256": "f2ee66d570033508c4158bcb83d56d81dc198cdcebb91098d7e67eefdc8e6a7a"
+  },
+  "candidate": {
+    "name": "Pangaea bounded Defense Post DP1",
+    "marker": "dp1",
+    "branch": "rci/dp1",
+    "commits": [
+      "c50fae17",
+      "1bebe237"
+    ],
+    "strategy_sha256": "74ce15256502b9a27c4739ce277e3bcddc98e54d3b52bb1553cb71fa25e841c9",
+    "local_image": "proxywar-agent-llm:qd1n-v89-dp1b-amd64",
+    "local_image_id_prefix": "sha256:b63f",
+    "registry_image_id": 108,
+    "hosted_policy": "qd1n:v91",
+    "hosted_policy_version_id": "395c07ef-c136-449d-a4ba-4023a3164e94",
+    "isolated_delta": "On exact Pangaea with one or more incoming attacks, two-to-twenty-percent territory, troop ratio at most 0.95, and eight decisions since the previous DP1 marker, select one legal Defense Post before the ordinary defensive-build path."
+  },
+  "verification": {
+    "tests": {
+      "full_passed": 153,
+      "failed": 0
+    },
+    "amd64_qualifier": {
+      "decisions": 34,
+      "accepted": 34,
+      "rejected": 0,
+      "holds": 0,
+      "marker_executions": 0
+    },
+    "fixed_seed_complementary_mirror": {
+      "result": "exact tie",
+      "candidate_marker_executions": 0,
+      "finding": "The bounded fixture did not reach the mechanism."
+    },
+    "unseeded_isolated_pair": {
+      "candidate_episode_wins": 2,
+      "parent_episode_wins": 0,
+      "candidate_tile_delta": 544729,
+      "marker_executions": 13,
+      "all_markers_accepted": true,
+      "holds": 1,
+      "finding": "The sole hold was explainable terminal exhaustion. This supplied local reach and exploratory advantage, not a matched deterministic promotion result."
+    },
+    "hosted_current_roster": {
+      "configuration": {
+        "variant": "tournament-12p-pangaea",
+        "episodes_per_arm": 4,
+        "seat": 6,
+        "roster_source": "Exact Round 522 running roster",
+        "only_policy_difference": "qd1n:v89 versus diagnostic-only qd1n:v91"
+      },
+      "parent": {
+        "experience_request_id": "xreq_78e9140f-ff53-468a-8d57-b724cc2ab5a2",
+        "policy": "qd1n:v89",
+        "episodes": 4,
+        "declared_wins": 0,
+        "final_tiles": [
+          3470,
+          76036,
+          0,
+          6016
+        ],
+        "mean_final_tiles": 21380.5,
+        "holds": 192,
+        "rejected": 0,
+        "planner_degraded_decisions": 746,
+        "alliance_selections": 143,
+        "defense_post_selections": 0,
+        "audit_path": "audit-qd1n-v89-dp1-parent-pangaea-current-20260719.json"
+      },
+      "candidate": {
+        "experience_request_id": "xreq_6e39c232-3ce5-498e-ab15-675cd456ba1e",
+        "policy": "qd1n:v91",
+        "episodes": 4,
+        "declared_wins": 0,
+        "final_tiles": [
+          175543,
+          193844,
+          0,
+          3419
+        ],
+        "mean_final_tiles": 93201.5,
+        "holds": 97,
+        "rejected": 0,
+        "planner_degraded_decisions": 1311,
+        "alliance_selections": 311,
+        "defense_post_selections": 8,
+        "all_defense_posts_accepted_and_exact": true,
+        "score_table_leads_at_turn_cap": 2,
+        "audit_path": "audit-qd1n-v91-dp1-pangaea-current-20260719.json"
+      },
+      "exploratory_delta": {
+        "mean_final_tiles": 71821,
+        "holds": -95,
+        "alliance_selections": 168,
+        "declared_wins": 0,
+        "caution": "The arms were separate stochastic four-episode requests. Territory and hold deltas diagnose the mechanism but do not establish exact matched advantage."
+      }
+    }
+  },
+  "promotion_gates": {
+    "mechanism_reach": "passed: eight accepted replay-visible DP1 builds",
+    "accepted_actions": "failed strict gate: zero rejections but 97 holds",
+    "matched_advantage": "not established: fixed mirror was dormant and hosted requests were independent stochastic samples",
+    "hosted_4_of_4": "failed: 0/4 declared wins",
+    "regression_20_of_20": "not run after hosted failure",
+    "live_identity_submission_membership": "unchanged qd1n:v89"
+  },
+  "postmortem": {
+    "finding": "DP1 can preserve large Pangaea positions, but preservation did not convert into a declared win. Two candidate episodes led the score table at the turn cap without a declared winner.",
+    "conversion_signal": {
+      "alliance_selections": 311,
+      "leading_episode_alliance_selections": [
+        122,
+        82
+      ],
+      "retry_cooldown": 6,
+      "finding": "Repeated reciprocal-partner alliance requests consumed late-game decisions while the policy held a leading territorial position. The current cooldown is per partner, so several partner requests can interleave and bypass a global social cadence."
+    },
+    "failure_tail": {
+      "episode_id": "e68644d7-5a07-4cf4-b5a5-48e14fc18e18",
+      "final_tiles": 3419,
+      "holds": 93,
+      "finding": "The shield did not prevent one late action-exhaustion loop."
+    }
+  },
+  "official_checkpoint": {
+    "round": 522,
+    "official_rank": 3,
+    "official_score": 0.3333333333333333,
+    "declared_episode_wins": 1,
+    "official_first_place_streak": "0/1000"
+  },
+  "verdict": {
+    "decision": "reject DP1",
+    "reason": "The mechanism was reachable and improved exploratory survival, but qd1n:v91 won zero of four hosted episodes and failed the strict zero-hold gate.",
+    "live_policy_after": "qd1n:v89",
+    "submission_membership_champion_changes": 0
+  },
+  "next_hypothesis": "Test one isolated global coalition-retry cadence that preserves reciprocal K1Z protection but prevents interleaved handshake loops whenever a reliable tactical action exists. Replay evidence must show those saved decisions converting into land or a declared win before DP1 is recomposed."
+}

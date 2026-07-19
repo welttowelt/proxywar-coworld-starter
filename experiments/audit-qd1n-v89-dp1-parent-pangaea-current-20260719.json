@@ -1,0 +1,1071 @@
+{
+  "schema_version": 1,
+  "experience_request_id": "xreq_78e9140f-ff53-468a-8d57-b724cc2ab5a2",
+  "status": "completed",
+  "policy_version": 89,
+  "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+  "mechanism": "defense-post",
+  "opening_decision_limit": 3,
+  "episodes": 4,
+  "wins": 0,
+  "win_rate_pct": 0,
+  "final_tiles": [
+    3470,
+    76036,
+    0,
+    6016
+  ],
+  "holds": 192,
+  "rejected": 0,
+  "fallbacks": 746,
+  "planner_degraded_decisions": 746,
+  "alliance_selections": 143,
+  "opening_alliance_selections": 12,
+  "opening_alliance_opportunities": 4,
+  "opening_alliance_alignments": 0,
+  "opening_reserve_selections": 0,
+  "bank_build_selections": 0,
+  "pressure_pulse_selections": 0,
+  "parity_pulse_selections": 0,
+  "leader_sever_selections": 0,
+  "wire_salvage_selections": 0,
+  "wire_veto_selections": 0,
+  "defense_post_selections": 0,
+  "checks": {
+    "completed_episode_floor": true,
+    "perfect_episode_wins": false,
+    "zero_holds": false,
+    "zero_rejected_decisions": true,
+    "defense_post_mechanism_exercised": false,
+    "all_defense_posts_accepted_and_exact": false
+  },
+  "passed": false,
+  "episode_audits": [
+    {
+      "episode_request_id": "ereq_f892829a-8e57-45e0-987f-3c0b55cebc11",
+      "episode_id": "0564ad9f-e46e-4032-b364-bc514da243ae",
+      "map": "Pangaea",
+      "seat": 7,
+      "policy_version": 89,
+      "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+      "won": false,
+      "score": 0,
+      "final_tiles": 3470,
+      "is_alive": true,
+      "decisions": 169,
+      "opening_decision_limit": 3,
+      "holds": 1,
+      "rejected": 0,
+      "fallbacks": 98,
+      "profiles": [
+        "opportunistic"
+      ],
+      "alliance_selections": [
+        {
+          "turn": 400,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": true
+        },
+        {
+          "turn": 500,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": true
+        },
+        {
+          "turn": 600,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": true
+        },
+        {
+          "turn": 1300,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 3500,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 3600,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 4500,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 5200,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 6600,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 6700,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 7400,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 7900,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 8200,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 8400,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 8600,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 9100,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 9800,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 11300,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 11700,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 13000,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 13900,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 14000,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 16200,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 16900,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        }
+      ],
+      "opening_alliance_opportunities": [
+        {
+          "turn": 400,
+          "profile": "opportunistic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "alliance:sjh3tur2",
+          "aligned": false
+        }
+      ],
+      "opening_reserve_selections": [],
+      "bank_build_selections": [],
+      "pressure_pulse_selections": [],
+      "parity_pulse_selections": [],
+      "leader_sever_selections": [],
+      "wire_salvage_selections": [],
+      "wire_veto_selections": [],
+      "defense_post_selections": [],
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/d79498e6-480d-4c6a-b235-1f70c3a03902.replay",
+      "replay_sha256": "dc1277f7db76c483b7f702d180b8ae041fbe1733083eec2cb2bf4ae0a0a17f30",
+      "replay_path": "data/cache/replays/0564ad9f-e46e-4032-b364-bc514da243ae.replay"
+    },
+    {
+      "episode_request_id": "ereq_4b73b655-d750-4a6a-9676-53474c178c69",
+      "episode_id": "ea5fdd2e-913e-497f-b028-3529938aa792",
+      "map": "Pangaea",
+      "seat": 7,
+      "policy_version": 89,
+      "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+      "won": false,
+      "score": 0.18140522485983537,
+      "final_tiles": 76036,
+      "is_alive": true,
+      "decisions": 503,
+      "opening_decision_limit": 3,
+      "holds": 190,
+      "rejected": 0,
+      "fallbacks": 415,
+      "profiles": [
+        "opportunistic"
+      ],
+      "alliance_selections": [
+        {
+          "turn": 400,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": true
+        },
+        {
+          "turn": 500,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": true
+        },
+        {
+          "turn": 600,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": true
+        },
+        {
+          "turn": 1300,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 3500,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 3600,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 4500,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 5200,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 5500,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 6200,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 8400,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 8600,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 9300,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 10300,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 11000,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 11600,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 11700,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 12100,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 12300,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 14800,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 15200,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 15500,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 17900,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 18300,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 18700,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 19000,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 19400,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 20100,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 20200,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 20800,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 20900,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 21000,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 21500,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 21600,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 22200,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 22300,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 22900,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 23600,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 24100,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 24300,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 25000,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 25400,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 25700,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 26400,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 27100,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 27200,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 27800,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 28500,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 30300,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 31000,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 31600,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 33400,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 34200,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 34700,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 34900,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 35600,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 36500,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 37800,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 38800,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 39500,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 39600,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 40200,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 40900,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 42700,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 43400,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 44000,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 44100,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 44800,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 45800,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 47100,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 48000,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 48700,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 48900,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 49400,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 50100,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 50200,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        }
+      ],
+      "opening_alliance_opportunities": [
+        {
+          "turn": 400,
+          "profile": "opportunistic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "alliance:sjh3tur2",
+          "aligned": false
+        }
+      ],
+      "opening_reserve_selections": [],
+      "bank_build_selections": [],
+      "pressure_pulse_selections": [],
+      "parity_pulse_selections": [],
+      "leader_sever_selections": [],
+      "wire_salvage_selections": [],
+      "wire_veto_selections": [],
+      "defense_post_selections": [],
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/ba3e47c1-8ea9-440f-a84a-f08d2c3b3f7c.replay",
+      "replay_sha256": "d4e9ca41934e3ecbe3ae13ebda28ce45e9692f4e575670dc9cc80b2cee23363b",
+      "replay_path": "data/cache/replays/ea5fdd2e-913e-497f-b028-3529938aa792.replay"
+    },
+    {
+      "episode_request_id": "ereq_cd4068ca-5d87-4762-9f20-a55c485a6947",
+      "episode_id": "aa99fb99-ab2c-4041-b44e-41cd0d323fdd",
+      "map": "Pangaea",
+      "seat": 7,
+      "policy_version": 89,
+      "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+      "won": false,
+      "score": 0,
+      "final_tiles": 0,
+      "is_alive": false,
+      "decisions": 213,
+      "opening_decision_limit": 3,
+      "holds": 0,
+      "rejected": 0,
+      "fallbacks": 105,
+      "profiles": [
+        "opportunistic"
+      ],
+      "alliance_selections": [
+        {
+          "turn": 400,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": true
+        },
+        {
+          "turn": 500,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": true
+        },
+        {
+          "turn": 600,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": true
+        },
+        {
+          "turn": 1300,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 3500,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 3600,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 4500,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 6600,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 6700,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 7700,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 8400,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 9700,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 9800,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 11600,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 12300,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 12800,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 12900,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 13000,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 13700,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 14400,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 15900,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 16000,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 17600,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 20800,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        }
+      ],
+      "opening_alliance_opportunities": [
+        {
+          "turn": 400,
+          "profile": "opportunistic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "alliance:sjh3tur2",
+          "aligned": false
+        }
+      ],
+      "opening_reserve_selections": [],
+      "bank_build_selections": [],
+      "pressure_pulse_selections": [],
+      "parity_pulse_selections": [],
+      "leader_sever_selections": [],
+      "wire_salvage_selections": [],
+      "wire_veto_selections": [],
+      "defense_post_selections": [],
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/4ce5f259-700b-49d7-bfa7-c947868f53c0.replay",
+      "replay_sha256": "3122c6295430a69447373c10b88dad10dcb79097a5f5943ccdace3d35ecdeb97",
+      "replay_path": "data/cache/replays/aa99fb99-ab2c-4041-b44e-41cd0d323fdd.replay"
+    },
+    {
+      "episode_request_id": "ereq_13264938-0691-4cc1-bbab-d5e51a095e0b",
+      "episode_id": "bd5025a7-7d06-4b9a-b916-10a9d2c306ec",
+      "map": "Pangaea",
+      "seat": 7,
+      "policy_version": 89,
+      "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+      "won": false,
+      "score": 0,
+      "final_tiles": 6016,
+      "is_alive": true,
+      "decisions": 155,
+      "opening_decision_limit": 3,
+      "holds": 1,
+      "rejected": 0,
+      "fallbacks": 128,
+      "profiles": [
+        "opportunistic"
+      ],
+      "alliance_selections": [
+        {
+          "turn": 400,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": true
+        },
+        {
+          "turn": 500,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": true
+        },
+        {
+          "turn": 600,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": true
+        },
+        {
+          "turn": 1300,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 3500,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 3600,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 4500,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 5200,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 6600,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 6700,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 8400,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 9700,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 9800,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 11000,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 11700,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 12400,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 12900,
+          "action_id": "alliance:2rmhbq4h",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 13100,
+          "action_id": "alliance:x262ww19",
+          "accepted": true,
+          "opening": false
+        },
+        {
+          "turn": 14100,
+          "action_id": "alliance:sjh3tur2",
+          "accepted": true,
+          "opening": false
+        }
+      ],
+      "opening_alliance_opportunities": [
+        {
+          "turn": 400,
+          "profile": "opportunistic",
+          "expected_action_id": "alliance:c4o8gv6v",
+          "selected_action_id": "alliance:sjh3tur2",
+          "aligned": false
+        }
+      ],
+      "opening_reserve_selections": [],
+      "bank_build_selections": [],
+      "pressure_pulse_selections": [],
+      "parity_pulse_selections": [],
+      "leader_sever_selections": [],
+      "wire_salvage_selections": [],
+      "wire_veto_selections": [],
+      "defense_post_selections": [],
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/75050f87-4988-44d4-b99f-c940088b62b9.replay",
+      "replay_sha256": "9d6edd9008e117fa234c90b6583d24c6554fa97621dd5ed38485cfd6b67f8b96",
+      "replay_path": "data/cache/replays/bd5025a7-7d06-4b9a-b916-10a9d2c306ec.replay"
+    }
+  ]
+}

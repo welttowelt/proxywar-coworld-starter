@@ -1648,3 +1648,36 @@ Full hashes, replays, and gate evidence are recorded in
 [`diagnosis-qd1n-pangaea-pending-pact-escape-pe1-20260719.json`](diagnosis-qd1n-pangaea-pending-pact-escape-pe1-20260719.json).
 The next isolated arm should test a bounded early Defense Post override before
 collapse, not another terminal escape.
+
+## DP1 Pangaea Defense Post rejection (2026-07-19)
+
+DP1 restored the current Defense Post action only on exact Pangaea with active
+incoming pressure, two-to-twenty-percent territory, troop ratio at most 0.95,
+and an eight-decision marker cooldown. It ran before the ordinary defensive
+build selector and left all other paths identical to live `qd1n:v89`.
+
+The candidate passed the full `153/153` suite and a `34/34` amd64 qualifier.
+Its deterministic complementary mirror was dormant and exactly tied. A
+separate unseeded isolated pair reached thirteen accepted markers, won `2-0`,
+and gained 544,729 tiles, which justified a diagnostic upload but not a live
+promotion.
+
+Diagnostic-only `qd1n:v91` and parent `qd1n:v89` then ran four Pangaea episodes
+each against the exact current twelve-policy roster and seat. Both arms
+recorded zero declared wins. The candidate built eight exact, accepted Defense
+Posts, raised mean final territory from 21,381 to 93,202, and reduced holds
+from 192 to 97. Those were independent stochastic samples, so the deltas are
+diagnostic rather than exact matched advantage.
+
+The candidate also issued 311 alliance requests, including 122 and 82 in the
+two episodes that led the score table at the turn cap. It never converted
+either lead into a declared win, and a fourth episode recorded 93 holds. DP1
+therefore fails the hosted `4/4` and zero-hold gates. It is rejected with no
+regression run, submission, membership, or champion change. Live
+`qd1n:v89` remains exact.
+
+Full request manifests, replay audits, hashes, and the next conversion
+hypothesis are recorded in
+[`diagnosis-qd1n-pangaea-defense-post-dp1-20260719.json`](diagnosis-qd1n-pangaea-defense-post-dp1-20260719.json).
+The next isolated arm should globally pace reciprocal-partner handshakes when
+reliable tactical actions exist, while preserving K1Z protection.
