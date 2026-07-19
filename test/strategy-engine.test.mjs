@@ -550,12 +550,12 @@ test("structured expansion metadata identifies neutral land and boats", () => {
   assert.equal(choose([boat, land], observation()).id, "future-neutral-id:10");
 });
 
-test("neutral expansion cadence escalates 10, 10, 20, 35 percent", () => {
+test("neutral expansion outside gr1 escalates 10, 10, 20, 35 percent", () => {
   const actions = [10, 20, 35].map((percent) =>
     action(`expand:terra-nullius:${percent}`, "attack", `Attack Terra Nullius ${percent}%`)
   );
   const history = [];
-  const obs = observation();
+  const obs = observation({ tileShare: 0.2 });
   const selected = [];
   for (let index = 0; index < 4; index++) {
     const state = buildState(obs, actions, history);
@@ -569,6 +569,87 @@ test("neutral expansion cadence escalates 10, 10, 20, 35 percent", () => {
     "expand:terra-nullius:20",
     "expand:terra-nullius:35",
   ]);
+});
+
+test("gr1 opens calm neutral expansion at 25 percent instead of probing", () => {
+  const actions = [10, 25, 35, 40].map((percent) =>
+    action(
+      `expand:terra-nullius:${percent}`,
+      "attack",
+      `Expand into neutral land with ${percent}% troops`,
+    )
+  );
+  const selected = choose(actions, observation({ tileShare: 0.05 }));
+  assert.equal(selected.id, "expand:terra-nullius:25");
+  assert.equal(selected.policyMarker, "gr1");
+});
+
+test("gr1 escalates consecutive calm neutral grinds from 25 to 35 to 40", () => {
+  const actions = [10, 25, 35, 40].map((percent) =>
+    action(
+      `expand:terra-nullius:${percent}`,
+      "attack",
+      `Expand into neutral land with ${percent}% troops`,
+    )
+  );
+  const history = [];
+  const selected = [];
+  for (let index = 0; index < 3; index++) {
+    const state = buildState(observation({ tileShare: 0.05 }), actions, history);
+    const choice = chooseAction(actions, state, null, history);
+    selected.push([choice.id, choice.policyMarker]);
+    recordDecision(history, choice, state);
+  }
+  assert.deepEqual(selected, [
+    ["expand:terra-nullius:25", "gr1"],
+    ["expand:terra-nullius:35", "gr1"],
+    ["expand:terra-nullius:40", "gr1"],
+  ]);
+});
+
+test("gr1 prefers the next larger commitment when 25 percent is unavailable", () => {
+  const actions = [10, 20, 35].map((percent) =>
+    action(
+      `expand:terra-nullius:${percent}`,
+      "attack",
+      `Expand into neutral land with ${percent}% troops`,
+    )
+  );
+  const selected = choose(actions, observation({ tileShare: 0.05 }));
+  assert.equal(selected.id, "expand:terra-nullius:35");
+  assert.equal(selected.policyMarker, "gr1");
+});
+
+test("gr1 expires after twenty non-spawn decisions and restores the parent cadence", () => {
+  const actions = [10, 25, 35, 40].map((percent) =>
+    action(
+      `expand:terra-nullius:${percent}`,
+      "attack",
+      `Expand into neutral land with ${percent}% troops`,
+    )
+  );
+  const history = Array.from({ length: 20 }, (_, index) => ({
+    actionID: `emoji:${index}`,
+    kind: "emoji",
+    neutral: false,
+    tileShare: 0.05,
+  }));
+  const selected = choose(actions, observation({ tileShare: 0.05 }), null, history);
+  assert.equal(selected.id, "expand:terra-nullius:10");
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("gr1 expires at twenty percent land share and restores the parent cadence", () => {
+  const actions = [10, 25, 35, 40].map((percent) =>
+    action(
+      `expand:terra-nullius:${percent}`,
+      "attack",
+      `Expand into neutral land with ${percent}% troops`,
+    )
+  );
+  const selected = choose(actions, observation({ tileShare: 0.2 }));
+  assert.equal(selected.id, "expand:terra-nullius:10");
+  assert.equal(selected.policyMarker, undefined);
 });
 
 test("stalled land expansion switches to a neutral boat", () => {

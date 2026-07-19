@@ -601,6 +601,29 @@ export function chooseNeutralAttack(actions, history, avoid) {
   return pickPercent(candidates, cadence[Math.min(streak, cadence.length - 1)], avoid);
 }
 
+function chooseOpeningGrind(actions, history, avoid) {
+  const candidates = safeActions(actions, isNeutralExpansion);
+  const streak = consecutive(
+    history,
+    (entry) => entry.neutral === true && entry.kind === "attack",
+  );
+  const cadence = [25, 35, 40];
+  const desired = cadence[Math.min(streak, cadence.length - 1)];
+  const atLeastDesired = candidates.filter((action) => {
+    const percent = actionPercent(action);
+    return Number.isFinite(percent) && percent >= desired;
+  });
+  const selected = pickPercent(
+    atLeastDesired.length > 0 ? atLeastDesired : candidates,
+    desired,
+    avoid,
+  );
+  const parent = chooseNeutralAttack(actions, history, avoid);
+  return selected && selected.id !== parent?.id
+    ? { ...selected, policyMarker: "gr1" }
+    : selected;
+}
+
 export function neutralExpansionStalled(state, history) {
   const currentShare = finiteNumber(state?.self?.tileShare, NaN);
   if (!Number.isFinite(currentShare)) return false;
@@ -807,17 +830,21 @@ export function chooseAction(actions, state, plan = null, history = []) {
     pileOnDiscipline && action && !action.policyMarker
       ? { ...action, policyMarker: "pd2" }
       : action;
-  const neutralAttack = chooseNeutralAttack(actions, history, avoid);
   const build = chooseBuild(actions, history);
   const sinceBuild = decisionsSince(history, (entry) =>
     entry.kind === "build" || entry.kind === "upgrade_structure"
   );
   const activeDecisions = history.filter((entry) => entry.kind !== "spawn").length;
+  const collapsing = territoryCollapsing(state, history);
+  const grindOpening = activeDecisions < 20 && state.self.tileShare < 0.2 &&
+    threatCount === 0 && !collapsing;
+  const neutralAttack = grindOpening
+    ? chooseOpeningGrind(actions, history, avoid)
+    : chooseNeutralAttack(actions, history, avoid);
   const cadenceBuild = build && state.self.tileShare >= 0.08 && activeDecisions >= 6 &&
     sinceBuild >= 14;
   const finishingTarget = rivalAttack && rivalAttack.streak > 0 &&
     rivalAttack.rival.relativeTroopRatio >= 1.5;
-  const collapsing = territoryCollapsing(state, history);
 
   if (collapsing && build && sinceBuild >= 3 && !finishingTarget) return build;
 
