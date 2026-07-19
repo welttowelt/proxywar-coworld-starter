@@ -29,13 +29,14 @@ the control against VR1 to isolate the tactical effect. The candidate is
 hosted `4/4`, regression `20/20`, upload, submission, membership, and champion
 states remain closed.
 
-Round 530 has two completed live World replays while the other two episode
-requests remain running. Daveey won the first; the second reached turn 50,400
-without an outright winner. Hrafn's `338/338` decisions were accepted with
-zero holds, fallbacks, rejects, or K1Z harm, and the replays contain 30 `rv3`
-executions plus 11 productive `dn1` transfers. This is partial baseline
-evidence only and does not clear the v6 pre-run, qualifier, or matched gates.
-Replay SHA-256 values: `f06a7baf...` and `7cc46d31...`.
+Round 530 has two completed live World replays. A third request failed with an
+unattributed game error and the fourth remains running. Daveey won the first;
+the second reached turn 50,400 without an outright winner. Hrafn's `338/338`
+decisions were accepted with zero holds, fallbacks, rejects, or K1Z harm, and
+the replays contain 30 `rv3` executions plus 11 productive `dn1` transfers.
+This is partial baseline evidence only and does not clear the v6 pre-run,
+qualifier, or matched gates. Replay SHA-256 values: `f06a7baf...` and
+`7cc46d31...`.
 
 ## Pangaea seat-2 A/B, 2026-07-12
 

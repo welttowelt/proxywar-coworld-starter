@@ -70,7 +70,8 @@ Current field checkpoint:
   with zero tiles while Juryoku held the top score. Across Hrafn's two replays,
   all `338/338` decisions were accepted with zero holds, fallbacks, rejects, or
   K1Z harm, `30` `rv3` executions, and `11` productive `dn1` transfers. The
-  other two episode requests are running, so there is no round verdict yet.
+  one remaining episode failed with an unattributed game error and the other is
+  still running, so there is no round verdict yet.
   Replay SHA-256 values: `f06a7baf...` and `7cc46d31...`.
 
 ## VR1 corrected pre-run state
@@ -138,7 +139,7 @@ max setting.
 - Public game text stays short leetspeak.
 - Do not leave background episodes without a durable owner and completion
   receipt.
-- Runner status was `free` at `2026-07-19T10:20:39Z`; no local Hrafn episode
+- Runner status was `free` at `2026-07-19T10:29:50Z`; no local Hrafn episode
   started because the v6 pre-run audit gate remains open.
 
 ## Autonomous promotion
