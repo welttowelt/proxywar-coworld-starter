@@ -21,8 +21,9 @@ already selected. It never changes the selected action class.
 The guard requires:
 
 - fewer than 20 non-spawn decisions;
-- exact `tilesOwned` on the current wire observation;
-- own tile share below `0.12`;
+- present, nonblank, finite `tilesOwned` and `tileShare` on the current wire
+  observation and every retained history record;
+- exact current tile share below `0.12`;
 - no current incoming attack from either parent or protocol attribution;
 - no sustained territory collapse;
 - a legal, non-high-risk neutral-land action at 35% or the largest legal
@@ -32,12 +33,18 @@ The guard requires:
 The flat-frontier window examines the two most recent neutral-land attack
 records. PG2 disengages when exact current `tilesOwned` has not exceeded the
 older attack's exact pre-action `tilesOwned`. This is an observation-window
-proxy, not a claim that the engine exposes attack-completion receipts. It fails
-closed if exact tile counts are absent.
+proxy, not a claim that the engine exposes attack-completion receipts. The
+private validity provenance captured with each decision prevents `null`, blank,
+missing, malformed, or nonfinite wire values from being normalized into a
+usable zero.
 
-The selected action receives `policyMarker: "pg2"` only when its parsed
-percentage strictly exceeds the exact-v89 parent's parsed percentage. Missing
-or unparseable percentages return the exact parent action unmarked.
+Every eligible neutral-land action, including the exact-v89 parent and every
+possible replacement, must carry a present, nonblank, finite
+`metadata.troopPercent`. PG2 does not fall back to an action-ID suffix after
+invalid metadata. The selected action receives `policyMarker: "pg2"` only when
+its exact percentage strictly exceeds the parent's exact percentage. Any
+invalid current value, history value, parent percentage, or replacement
+percentage returns the exact parent action unmarked.
 
 The rule is map-general because the conquest-cost and speed-floor mechanics are
 map-general, while `tileShare` is rounded to 1% and the current spawn-tile map
@@ -62,6 +69,10 @@ Decision 20 onward returns to the exact parent percentage cadence.
 7. When exact v89 already selects 35%, PG2 does not add a marker.
 8. Equal, smaller, missing, or unparseable replacement percentages return the
    exact parent action unmarked.
+9. `null`, blank, missing, malformed, and nonfinite current and historical
+   `tilesOwned` or `tileShare` values return the exact parent action unmarked.
+10. The same five invalid forms on the parent or any possible replacement
+    `metadata.troopPercent` return the exact parent action unmarked.
 
 ## Evaluation gates
 

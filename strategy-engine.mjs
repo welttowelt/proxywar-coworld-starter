@@ -40,6 +40,8 @@ const MAP_SPAWN_TILES = new Map([
   ...[659528, 534350, 266554, 687420, 622372, 589302, 450306, 740346]
     .map((tile) => [tile, "Pangaea"]),
 ]);
+const PRODUCTIVE_GRIND_HISTORY_TELEMETRY = Symbol("productiveGrindHistoryTelemetry");
+const productiveGrindStateTelemetry = new WeakMap();
 
 export const PLAN_KINDS = [
   "spawn", "attack", "nuke", "build", "upgrade_structure", "boat", "boat_retreat", "retreat",
@@ -59,6 +61,15 @@ export function clean(value) {
 function finiteNumber(value, fallback = 0) {
   const number = Number(value);
   return Number.isFinite(number) ? number : fallback;
+}
+
+function exactFiniteNumber(value) {
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? value : NaN;
+  }
+  if (typeof value !== "string" || value.trim() === "") return NaN;
+  const number = Number(value);
+  return Number.isFinite(number) ? number : NaN;
 }
 
 function playerID(player) {
@@ -164,6 +175,10 @@ export function avoidActionIDs(history) {
 
 export function buildState(observation, actions, history = []) {
   const own = observation?.ownState || {};
+  const productiveGrindTelemetry = {
+    tileShare: exactFiniteNumber(own.tileShare),
+    tilesOwned: exactFiniteNumber(own.tilesOwned),
+  };
   const mapFingerprint = inferMapFingerprint(observation, history);
   const visiblePlayers = (observation?.visiblePlayers || [])
     .filter((player) => player && player.isAlive);
@@ -205,7 +220,7 @@ export function buildState(observation, actions, history = []) {
     label: clean(action.label),
     risk: clean(action.risk?.level),
   }));
-  return {
+  const state = {
     mapFingerprint,
     phase: clean(observation?.phase),
     decisionNumber: history.length,
@@ -216,6 +231,8 @@ export function buildState(observation, actions, history = []) {
     avoid: avoidActionIDs(history),
     legalActions,
   };
+  productiveGrindStateTelemetry.set(state, productiveGrindTelemetry);
+  return state;
 }
 
 export function rivalForAction(action, state) {
@@ -602,13 +619,39 @@ export function chooseNeutralAttack(actions, history, avoid) {
   return pickPercent(candidates, cadence[Math.min(streak, cadence.length - 1)], avoid);
 }
 
+function productiveGrindPercent(action) {
+  if (
+    !action?.metadata ||
+    !Object.prototype.hasOwnProperty.call(action.metadata, "troopPercent")
+  ) {
+    return NaN;
+  }
+  return exactFiniteNumber(action.metadata.troopPercent);
+}
+
+function productiveGrindTelemetryValid(state, history) {
+  const current = productiveGrindStateTelemetry.get(state);
+  if (
+    !current ||
+    !Number.isFinite(current.tileShare) ||
+    !Number.isFinite(current.tilesOwned)
+  ) {
+    return false;
+  }
+  return history.every((entry) => {
+    if (entry?.[PRODUCTIVE_GRIND_HISTORY_TELEMETRY] === false) return false;
+    return Number.isFinite(exactFiniteNumber(entry?.tileShare)) &&
+      Number.isFinite(exactFiniteNumber(entry?.tilesOwned));
+  });
+}
+
 function productiveGrindFrontierFlat(state, history) {
   const recentLandAttacks = history
     .filter((entry) => entry.kind === "attack" && entry.neutral === true)
     .slice(-2);
   if (recentLandAttacks.length < 2) return false;
-  const currentTiles = finiteNumber(state?.self?.tilesOwned, NaN);
-  const olderPreActionTiles = finiteNumber(recentLandAttacks[0]?.tilesOwned, NaN);
+  const currentTiles = productiveGrindStateTelemetry.get(state)?.tilesOwned;
+  const olderPreActionTiles = exactFiniteNumber(recentLandAttacks[0]?.tilesOwned);
   if (!Number.isFinite(currentTiles) || !Number.isFinite(olderPreActionTiles)) {
     return true;
   }
@@ -617,10 +660,11 @@ function productiveGrindFrontierFlat(state, history) {
 
 function chooseProductiveGrind(actions, state, history, avoid) {
   const parent = chooseNeutralAttack(actions, history, avoid);
+  const telemetry = productiveGrindStateTelemetry.get(state);
   const activeDecisions = history.filter((entry) => entry.kind !== "spawn").length;
   const eligible = activeDecisions < 20 &&
-    Number.isFinite(state.self.tilesOwned) &&
-    state.self.tileShare < 0.12 &&
+    productiveGrindTelemetryValid(state, history) &&
+    telemetry.tileShare < 0.12 &&
     incomingThreatCount(state.self.incomingAttacks) === 0 &&
     (state.self.allProtocolAttackerIDs || []).length === 0 &&
     !territoryCollapsing(state, history) &&
@@ -629,22 +673,25 @@ function chooseProductiveGrind(actions, state, history, avoid) {
 
   const candidates = actions
     .filter((action) => isNeutralExpansion(action) && action.risk?.level !== "high")
-    .map((action) => ({ action, percent: actionPercent(action) }))
-    .filter(({ percent }) => Number.isFinite(percent) && percent <= 35)
-    .sort((left, right) => right.percent - left.percent);
-  const selected = candidates[0]?.action ?? parent;
-  const selectedPercent = actionPercent(selected);
-  const parentPercent = actionPercent(parent);
+    .map((action) => ({ action, percent: productiveGrindPercent(action) }));
+  const parentPercent = productiveGrindPercent(parent);
   if (
-    !selected ||
     !parent ||
-    !Number.isFinite(selectedPercent) ||
     !Number.isFinite(parentPercent) ||
-    selectedPercent <= parentPercent
+    candidates.some(({ percent }) => !Number.isFinite(percent))
   ) {
     return parent;
   }
-  return { ...selected, policyMarker: "pg2" };
+  const selected = candidates
+    .filter(({ percent }) => percent <= 35)
+    .sort((left, right) => right.percent - left.percent)[0];
+  if (
+    !selected ||
+    selected.percent <= parentPercent
+  ) {
+    return parent;
+  }
+  return { ...selected.action, policyMarker: "pg2" };
 }
 
 export function neutralExpansionStalled(state, history) {
@@ -969,7 +1016,7 @@ export function recordDecision(history, action, state) {
   const incomingAttackerNames = state.rivals
     .filter((candidate) => incomingAttackerIDs.includes(candidate.id.toLowerCase()))
     .map((candidate) => candidate.name);
-  history.push({
+  const entry = {
     actionID: action.id,
     kind: action.kind,
     neutral: isNeutralExpansion(action) || isNeutralBoat(action),
@@ -982,6 +1029,16 @@ export function recordDecision(history, action, state) {
     incomingAttackerNames,
     mapFingerprint: state.mapFingerprint,
     policyMarker: action.policyMarker ?? null,
+  };
+  const telemetry = productiveGrindStateTelemetry.get(state);
+  Object.defineProperty(entry, PRODUCTIVE_GRIND_HISTORY_TELEMETRY, {
+    value: Boolean(
+      telemetry &&
+      Number.isFinite(telemetry.tileShare) &&
+      Number.isFinite(telemetry.tilesOwned)
+    ),
+    enumerable: false,
   });
+  history.push(entry);
   if (history.length > 320) history.shift();
 }

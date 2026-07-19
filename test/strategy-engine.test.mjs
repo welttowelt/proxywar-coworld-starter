@@ -585,6 +585,153 @@ function productiveGrindActions() {
   }));
 }
 
+const invalidPg2TelemetryForms = [
+  { label: "null", value: null },
+  { label: "blank", value: "   " },
+  { label: "missing", omit: true },
+  { label: "malformed", value: "not-a-number" },
+  { label: "nonfinite", value: Number.POSITIVE_INFINITY },
+];
+
+function setInvalidForm(target, field, form) {
+  if (form.omit) {
+    delete target[field];
+    return;
+  }
+  target[field] = form.value;
+}
+
+function invalidPercentAction(percent, form) {
+  const candidate = {
+    ...action(
+      `expand:terra-nullius:${percent}`,
+      "attack",
+      `Expand into neutral land ${percent}%`,
+    ),
+    metadata: { expansion: true },
+  };
+  if (!form.omit) candidate.metadata.troopPercent = form.value;
+  return candidate;
+}
+
+test("pg2 returns the exact parent for every invalid current tile telemetry form", () => {
+  const actions = productiveGrindActions();
+  for (const field of ["tileShare", "tilesOwned"]) {
+    for (const form of invalidPg2TelemetryForms) {
+      const obs = observation({ tileShare: 0.05, tilesOwned: 5000 });
+      setInvalidForm(obs.ownState, field, form);
+      const state = buildState(obs, actions, []);
+      const parent = chooseNeutralAttack(actions, [], new Set());
+      const selected = chooseAction(actions, state, null, []);
+      const evidence = `${field}/${form.label}`;
+      assert.equal(selected.id, parent.id, evidence);
+      assert.equal(selected.policyMarker, undefined, evidence);
+    }
+  }
+});
+
+test("pg2 returns the exact parent for every invalid history tile telemetry form", () => {
+  const actions = productiveGrindActions();
+  for (const field of ["tileShare", "tilesOwned"]) {
+    for (const form of invalidPg2TelemetryForms) {
+      const history = [
+        {
+          actionID: "expand:terra-nullius:10",
+          kind: "attack",
+          neutral: true,
+          tileShare: 0.03,
+          tilesOwned: 3000,
+        },
+        {
+          actionID: "expand:terra-nullius:10",
+          kind: "attack",
+          neutral: true,
+          tileShare: 0.04,
+          tilesOwned: 4000,
+        },
+      ];
+      setInvalidForm(history[0], field, form);
+      const state = buildState(
+        observation({ tileShare: 0.06, tilesOwned: 6000 }),
+        actions,
+        history,
+      );
+      const parent = chooseNeutralAttack(actions, history, new Set());
+      const selected = chooseAction(actions, state, null, history);
+      const evidence = `${field}/${form.label}`;
+      assert.equal(selected.id, parent.id, evidence);
+      assert.equal(selected.policyMarker, undefined, evidence);
+    }
+  }
+});
+
+test("pg2 retains fail-closed provenance when invalid wire telemetry enters history", () => {
+  const actions = productiveGrindActions();
+  for (const field of ["tileShare", "tilesOwned"]) {
+    for (const form of invalidPg2TelemetryForms) {
+      const invalidObservation = observation({ tileShare: 0.03, tilesOwned: 3000 });
+      setInvalidForm(invalidObservation.ownState, field, form);
+      const history = [];
+      const invalidState = buildState(invalidObservation, actions, history);
+      const firstParent = chooseNeutralAttack(actions, history, new Set());
+      recordDecision(history, firstParent, invalidState);
+
+      const state = buildState(
+        observation({ tileShare: 0.06, tilesOwned: 6000 }),
+        actions,
+        history,
+      );
+      const parent = chooseNeutralAttack(actions, history, new Set());
+      const selected = chooseAction(actions, state, null, history);
+      const evidence = `${field}/${form.label}`;
+      assert.equal(selected.id, parent.id, evidence);
+      assert.equal(selected.policyMarker, undefined, evidence);
+    }
+  }
+});
+
+test("pg2 returns an invalid-percentage parent unchanged and unmarked", () => {
+  for (const form of invalidPg2TelemetryForms) {
+    const actions = [
+      invalidPercentAction(10, form),
+      ...productiveGrindActions().filter(
+        (candidate) => candidate.metadata.troopPercent > 10,
+      ),
+    ];
+    const state = buildState(
+      observation({ tileShare: 0.05, tilesOwned: 5000 }),
+      actions,
+      [],
+    );
+    const parent = chooseNeutralAttack(actions, [], new Set());
+    const selected = chooseAction(actions, state, null, []);
+    assert.equal(parent.id, "expand:terra-nullius:10", form.label);
+    assert.equal(selected.id, parent.id, form.label);
+    assert.equal(selected.policyMarker, undefined, form.label);
+  }
+});
+
+test("pg2 returns the exact parent when a replacement percentage is invalid", () => {
+  for (const form of invalidPg2TelemetryForms) {
+    const actions = [
+      ...productiveGrindActions().filter(
+        (candidate) => candidate.metadata.troopPercent < 35,
+      ),
+      invalidPercentAction(35, form),
+    ];
+    const state = buildState(
+      observation({ tileShare: 0.05, tilesOwned: 5000 }),
+      actions,
+      [],
+    );
+    const parent = chooseNeutralAttack(actions, [], new Set());
+    const selected = chooseAction(actions, state, null, []);
+    assert.equal(parent.id, "expand:terra-nullius:10", form.label);
+    assert.equal(selected.id, parent.id, form.label);
+    assert.equal(selected.policyMarker, undefined, form.label);
+  }
+});
+
 test("pg2 never preempts a legal coalition contact", () => {
   const alliance = {
     ...action("alliance:katanasan", "alliance_request", "Alliance with K1Z katanasan"),
