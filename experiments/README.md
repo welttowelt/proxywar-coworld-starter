@@ -22,6 +22,14 @@ qualified: no Coworld qualifier or matched A/B pair has run, Docker-level
 quick-chat suppression. Hosted, regression, upload, submission, membership,
 and champion states remain closed.
 
+Round 530 added one completed live World replay while the other three episode
+requests remained running. Daveey won; Hrafn survived with 123 tiles. Hrafn's
+`150/150` decisions were accepted with zero holds, fallbacks, rejects, or K1Z
+harm, and the replay contained 17 `rv3` executions plus two productive `dn1`
+transfers. This is partial baseline evidence only and does not clear the v6
+pre-run, qualifier, or matched gates. Replay SHA-256:
+`f06a7bafebc925dbc5d4fee9270cc99bf4debf27547283746001d903959f5801`.
+
 ## Pangaea seat-2 A/B, 2026-07-12
 
 Goal: test whether preserving an active favorable target finish across a Claude

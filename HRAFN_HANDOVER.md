@@ -15,7 +15,7 @@ the mailbox at `/Users/olifreuler/.stormforge/team-mailbox`.
 
 ## Live deployment truth
 
-Verified against the Coworld/Softmax API at `2026-07-19T09:36:57Z`:
+Verified against the Coworld/Softmax API at `2026-07-19T09:54:18Z`:
 
 - Player: `K1Z Hrafn`
 - Player ID: `ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863`
@@ -61,6 +61,12 @@ Current field checkpoint:
   `3,600`: game-authored quick-chat actions were withdrawn, then the retry chose
   hold while attacks and a build remained submission-legal. Any challenger must
   eliminate this retry path without confounding its tactical comparison.
+- Round 530 is still running with v5 sealed. One of four World episodes has
+  completed: daveey won and Hrafn survived with `123` tiles. Hrafn recorded
+  `150/150` accepted decisions, zero holds, fallbacks, rejects, or K1Z harm,
+  `17` `rv3` executions, and two productive `dn1` transfers. The other three
+  episode requests are running, so there is no round verdict yet. Replay
+  SHA-256: `f06a7bafebc925dbc5d4fee9270cc99bf4debf27547283746001d903959f5801`.
 
 Coalition control:
 
@@ -110,6 +116,8 @@ max setting.
 - Public game text stays short leetspeak.
 - Do not leave background episodes without a durable owner and completion
   receipt.
+- Runner status was `free` at `2026-07-19T09:54:18Z`; no local Hrafn episode
+  started because the v6 pre-run audit gate remains open.
 
 ## Autonomous promotion
 

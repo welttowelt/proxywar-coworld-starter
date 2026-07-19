@@ -2,6 +2,7 @@
   "schema_version": 1,
   "record_type": "hrafn_reconciliation_and_pre_run_hypothesis",
   "recorded_at": "2026-07-19T09:15:05Z",
+  "reconciled_at": "2026-07-19T09:54:18Z",
   "lane": "hrafn-fylking",
   "live_baseline": {
     "label": "hrafn-fylking:v5",
@@ -163,6 +164,31 @@
       "productive_dn1": 21,
       "rv3_executions": 29
     }
+  },
+  "round_530_partial": {
+    "round_id": "round_4b1d63a2-8d30-4e3e-936f-e74fb93da962",
+    "round_status": "running",
+    "completed_episode_requests": 1,
+    "running_episode_requests": 3,
+    "episode": {
+      "episode_request_id": "ereq_d7f48882-f0af-40f9-a903-53a2e86e03ea",
+      "map": "World",
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/ff85b140-7fbc-4fb3-ba68-e2bf3651e89e.replay",
+      "replay_sha256": "f06a7bafebc925dbc5d4fee9270cc99bf4debf27547283746001d903959f5801",
+      "winner": "daveey",
+      "hrafn_slot": 10,
+      "hrafn_tiles": 123,
+      "hrafn_survived": true,
+      "hrafn_decisions": 150,
+      "accepted": 150,
+      "holds": 0,
+      "fallbacks": 0,
+      "rejections": 0,
+      "k1z_harm": 0,
+      "productive_dn1": 2,
+      "rv3_executions": 17
+    },
+    "verdict": "partial live baseline only; no round or promotion verdict"
   },
   "tests": {
     "passed": 151,
