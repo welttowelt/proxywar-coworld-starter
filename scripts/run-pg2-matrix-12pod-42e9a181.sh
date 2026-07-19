@@ -17,13 +17,13 @@ pod_ids=(
   877itccar33zdp
   76stn0v7q81d47
   ne262xferohtdi
-  ctnggpz7t6nj6c
-  rkm013fsjsf87c
-  0l7p9ke95cu6ms
-  vbo7a33nlvsrtf
-  l1evg0fagjmbgn
-  a7dmwmcmh45a4b
-  zadju8y8p6d5r9
+  825a2frvggm1k4
+  lshjhv5avqjsaj
+  szlrnk3ucex44f
+  sxrtmdyd62n3ia
+  67yzvbbp54aizm
+  rwvsgeancauyug
+  o53fd4xem7iev0
 )
 outputs=("$@")
 
@@ -73,4 +73,3 @@ for output in $outputs; do
 done
 node "$auditor" --matrix "$matrix" "${roots[@]}" --output "${outputs[1]}/evidence/matrix-audit.json"
 print "PG2_MATRIX12_COMPLETE"
-
