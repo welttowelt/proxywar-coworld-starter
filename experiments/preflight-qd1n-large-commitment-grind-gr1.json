@@ -1,59 +1,113 @@
 {
   "schema_version": 1,
-  "date": "2026-07-19",
-  "experiment": "qd1n large-commitment opening grind GR1",
-  "status": "SOURCE_READY",
-  "parent": {
-    "policy": "qd1n:v89",
-    "commit": "f1347251834a6283182b631e1336595eb2e08342",
-    "image": "proxywar-agent-llm:qd1n-v89-exact-amd64",
-    "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478"
-  },
   "candidate": {
+    "policy_ref": "proxywar-agent-llm:qd1n-v89-gr1-amd64",
+    "parent_ref": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+    "exact_deltas": [
+      "during the first twenty calm non-spawn decisions below twenty-percent land share, replace only the neutral land attack selected by the exact parent with a 25/35/40 percent commitment, choosing the next larger legal commitment when the exact percentage is unavailable"
+    ],
     "branch": "rci/gr1",
     "source_commit": "73ce9aeb2ad6b15c59249ff506e09eb2ff4e1a1a",
-    "image": "proxywar-agent-llm:qd1n-v89-gr1-amd64",
-    "image_id": "sha256:314c695e110c3313c63d089391962d690901053c170953f591c088d96d8296bc",
-    "architecture": "amd64",
+    "parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
     "strategy_sha256": "48017016da75a4ef42cede05741ae7655c09a52779fb4e66c47d9f48686252af",
     "player_sha256": "1154115fdf5ebb89fa170bba6060d5a730615970d4cc23c00dbfa97e42b31563",
-    "marker": "gr1"
+    "image_id": "sha256:314c695e110c3313c63d089391962d690901053c170953f591c088d96d8296bc",
+    "parent_image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+    "architecture": "amd64"
   },
-  "hypothesis": "During the first twenty calm non-spawn decisions below twenty-percent land share, replacing the parent's 10/10/20 neutral probe cadence with 25/35/40 commitments increases early neutral conquest because neutral per-tile troop cost is flat and conquest speed floors once the attack is sufficiently large.",
-  "isolated_delta": {
-    "guard": "active_decisions < 20 AND tile_share < 0.20 AND incoming_threat_count = 0 AND territory_not_collapsing",
-    "action_change": "When the existing selector chooses a neutral land attack, request 25 percent on the first consecutive grind, 35 percent on the second, and 40 percent thereafter. If the exact requested percentage is absent, choose the nearest legal commitment at or above it; fall back to the largest available commitment.",
-    "unchanged": [
-      "action-family priority",
-      "incoming-pressure handling",
-      "rival attack thresholds",
-      "alliance and K1Z protection",
-      "build and boat timing",
-      "all behavior after decision twenty or at twenty-percent land share"
-    ]
+  "hypothesis": "During the first twenty calm non-spawn decisions below twenty-percent land share, larger neutral commitments increase early conquest because neutral per-tile troop cost is flat and conquest speed reaches its floor once the attack is sufficiently large.",
+  "mechanism": {
+    "marker": "gr1",
+    "prior_reachable_decisions": 3,
+    "source": "test/strategy-engine.test.mjs",
+    "reach_note": "three deterministic selector fixtures execute gr1 and prove the isolated choice changes; Docker-level replay reach remains pending until an approved qualifier"
   },
-  "verification": {
-    "red_first": {
-      "parent_failed": 3,
-      "candidate_passed": 3,
-      "lock_in_passed": 3
+  "runtime": {
+    "coworld_version": "0.1.30",
+    "parent_image_ref": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+    "candidate_image_ref": "proxywar-agent-llm:qd1n-v89-gr1-amd64"
+  },
+  "guard": {
+    "active_decisions_lt": 20,
+    "tile_share_lt": 0.2,
+    "incoming_threat_count": 0,
+    "territory_collapsing": false
+  },
+  "unchanged": [
+    "action-family priority",
+    "incoming-pressure handling",
+    "rival attack thresholds",
+    "alliance requests and K1Z protection",
+    "build and boat timing",
+    "all behavior after decision twenty or at twenty-percent land share"
+  ],
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "run_type": "fresh full node test suite plus red-first exact-parent replay-shaped selector fixtures",
+    "tests_passed": 148,
+    "tests_failed": 0,
+    "red_first_parent_failures": 3,
+    "red_first_candidate_passes": 3,
+    "lock_in_passes": 3,
+    "mechanism_fixture_executions": 3,
+    "docker_marker_reach": "pending",
+    "qualifier_status": "not_run_pending_cross_audit",
+    "matched_status": "not_run",
+    "receipt": "experiments/receipt-qd1n-large-commitment-grind-gr1-full-suite-20260719.md"
+  },
+  "diagnostic_only": true,
+  "matched_baseline": {
+    "status": "not_created",
+    "same_roster": false,
+    "same_variant": false,
+    "request_id": null
+  },
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
     },
-    "full_suite": {
-      "passed": 148,
-      "failed": 0
-    },
-    "image_source_equality": {
-      "strategy": true,
-      "player": true
-    },
-    "qualifier": "pending",
-    "matched_mirrors": "pending",
-    "hosted_4_of_4": "pending",
-    "regression_20_of_20": "pending"
+    "result": {
+      "status": "pending",
+      "episodes": 0,
+      "wins": 0,
+      "holds": 0,
+      "rejections": 0,
+      "mechanism_executions": 0,
+      "planner_degradation_rule_passed": false
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false,
+    "result": {
+      "status": "pending",
+      "episodes": 0,
+      "wins": 0,
+      "holds": 0,
+      "rejections": 0
+    }
+  },
+  "k1z_invariant": {
+    "canonical_names": [
+      "katanasan",
+      "juryoku-koku",
+      "hrafn"
+    ],
+    "stable_player_ids": [
+      "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+      "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863"
+    ],
+    "max_harmful_actions": 0
   },
   "success_metrics": {
     "mechanism": "replay-visible gr1 marker with zero unexplained holds, zero rejected decisions, and zero K1Z harm",
-    "opening": "candidate final tiles at decision 20 and decision 50 exceed the exact parent in both seat parities",
+    "opening": "candidate tiles at decision twenty and decision fifty exceed the exact parent in both seat parities",
     "finish": "candidate shows mirrored placement and tile advantage at episode finish"
   },
   "stop_conditions": [
@@ -62,8 +116,8 @@
     "any harmful action against a K1Z identity",
     "no mirrored opening advantage",
     "no mirrored finish advantage",
-    "any source, image, request, or runtime hash mismatch"
+    "any source, image, request, runtime, or player-identity hash mismatch"
   ],
-  "sequencing": "Source and image are ready. GC2 remains the active evaluated arm; do not run, upload, submit, or promote GR1 until the isolated GC2 verdict closes. Never fuse GC2 and GR1 before both arms independently pass their gates.",
-  "promotion_eligible": false
+  "sequencing": "GC2 is closed at zero mechanism reach. GR1 is the next isolated arm, but only its source and immutable image exist. Qualifier, matched, hosted, upload, submission, membership, and champion work remain closed until the corresponding reviews and gates pass.",
+  "verdict": "SOURCE_READY candidate awaiting renewed Hrafn review; LOCAL_QUALIFIED is false and promotion is not eligible"
 }
