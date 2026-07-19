@@ -46,8 +46,14 @@ function observation({
   incomingAttacks = 0,
   incomingAttackPlayerIDs = [],
   rivals = [],
+  gameMode,
+  phase,
+  alivePlayerCount,
 } = {}) {
   return {
+    ...(gameMode === undefined ? {} : { gameMode }),
+    ...(phase === undefined ? {} : { phase }),
+    ...(alivePlayerCount === undefined ? {} : { alivePlayerCount }),
     ownState: {
       tileShare,
       troopRatio,
@@ -568,6 +574,200 @@ test("dn1 respects its cooldown instead of draining Hrafn every decision", () =>
     history,
   );
   assert.equal(chosen.id, expand.id);
+});
+
+test("KF1 supporter donates troops only to Odin under the exact K1Z-only endgame proof", () => {
+  const odin = rival({
+    id: "odin-match",
+    name: "K1Z odin free",
+    tileShare: 0.3,
+    isAllied: true,
+  });
+  const katanasan = rival({
+    id: "katanasan-match",
+    name: "K1Z katanasan",
+    tileShare: 0.2,
+    isAllied: true,
+  });
+  const donation = action(
+    "donate_troops:odin-match",
+    "donate_troops",
+    "Donate troops to K1Z odin free",
+    { recipientID: odin.id, recipientName: odin.name },
+  );
+  const chosen = chooseHrafnAction(
+    [
+      action("build:city", "build", "Build City"),
+      attack(katanasan, 25),
+      donation,
+      action("hold", "hold", "Hold"),
+    ],
+    observation({
+      gameMode: "FFA",
+      phase: "active",
+      alivePlayerCount: 3,
+      rivals: [odin, katanasan],
+    }),
+  );
+  assert.equal(chosen.id, donation.id);
+  assert.equal(chosen.policyMarker, "kf1");
+  assert.equal(publicHrafnReason(chosen), "[K1Z] r4vn:dnt:kf1");
+});
+
+test("KF1 supporter uses a legal gold donation to Odin when troops are unavailable", () => {
+  const odin = rival({
+    id: "odin-match",
+    name: "[K1Z] Odin Free",
+    isAllied: true,
+  });
+  const gold = action(
+    "donate_gold:odin-match",
+    "donate_gold",
+    "Donate gold to [K1Z] Odin Free",
+    { recipientID: odin.id, recipientName: odin.name },
+  );
+  const chosen = chooseHrafnAction(
+    [gold, action("hold", "hold", "Hold")],
+    observation({
+      gameMode: "FFA",
+      phase: "active",
+      alivePlayerCount: 2,
+      rivals: [odin],
+    }),
+  );
+  assert.equal(chosen.id, gold.id);
+  assert.equal(chosen.policyMarker, "kf1");
+});
+
+test("KF1 supporter globally holds when no exact Odin donation is legal", () => {
+  const odin = rival({
+    id: "odin-match",
+    name: "K1Z odin free",
+    isAllied: true,
+  });
+  const katanasan = rival({
+    id: "katanasan-match",
+    name: "K1Z katanasan",
+    isAllied: true,
+  });
+  const hold = action("hold", "hold", "Hold");
+  const chosen = chooseHrafnAction(
+    [
+      action(
+        "donate_troops:katanasan-match",
+        "donate_troops",
+        "Donate troops to K1Z katanasan",
+        { recipientID: katanasan.id, recipientName: katanasan.name },
+      ),
+      attack(katanasan, 25),
+      action("build:city", "build", "Build City"),
+      action("retreat:land", "retreat", "Retreat"),
+      action("alliance:odin-match", "alliance_request", "Renew Odin alliance", {
+        recipientID: odin.id,
+        recipientName: odin.name,
+      }),
+      hold,
+    ],
+    observation({
+      gameMode: "FFA",
+      phase: "active",
+      alivePlayerCount: 3,
+      rivals: [odin, katanasan],
+    }),
+  );
+  assert.equal(chosen.id, hold.id);
+  assert.equal(chosen.policyMarker, "kf1");
+  assert.equal(publicHrafnReason(chosen), "[K1Z] r4vn:h0d:kf1");
+});
+
+test("KF1 supporter fails closed if an active trigger has neither Odin donation nor hold", () => {
+  const odin = rival({
+    id: "odin-match",
+    name: "K1Z odin free",
+    isAllied: true,
+  });
+  assert.throws(
+    () => chooseHrafnAction(
+      [action("build:city", "build", "Build City")],
+      observation({
+        gameMode: "FFA",
+        phase: "active",
+        alivePlayerCount: 2,
+        rivals: [odin],
+      }),
+    ),
+    /KF1 supporter trigger had no legal Odin donation or hold/,
+  );
+});
+
+test("KF1 supporter stays byte-path dormant across every fail-closed counterexample", () => {
+  const odin = rival({
+    id: "odin-match",
+    name: "K1Z odin free",
+    tileShare: 0.04,
+    isAllied: true,
+  });
+  const katanasan = rival({
+    id: "katanasan-match",
+    name: "K1Z katanasan",
+    isAllied: true,
+  });
+  const outsider = rival({ id: "outsider", name: "Outsider" });
+  const expand = action(
+    "expand:terra-nullius:35",
+    "attack",
+    "Expand Terra Nullius 35%",
+    { expansion: true, troopPercent: 35 },
+  );
+  const hold = action("hold", "hold", "Hold");
+  const cases = [
+    ["non-FFA", { gameMode: "Team", phase: "active", alivePlayerCount: 2, rivals: [odin] }],
+    ["non-active", { gameMode: "FFA", phase: "spawn", alivePlayerCount: 2, rivals: [odin] }],
+    ["missing count", { gameMode: "FFA", phase: "active", rivals: [odin] }],
+    ["count/list mismatch", { gameMode: "FFA", phase: "active", alivePlayerCount: 3, rivals: [odin] }],
+    ["outsider alive", { gameMode: "FFA", phase: "active", alivePlayerCount: 3, rivals: [odin, outsider] }],
+    ["Odin absent", { gameMode: "FFA", phase: "active", alivePlayerCount: 2, rivals: [katanasan] }],
+    ["Odin dead", { gameMode: "FFA", phase: "active", alivePlayerCount: 2, rivals: [{ ...odin, isAlive: false }] }],
+    ["raw tag missing", { gameMode: "FFA", phase: "active", alivePlayerCount: 2, rivals: [{ ...odin, name: "odin free" }] }],
+    ["duplicate canonical name", { gameMode: "FFA", phase: "active", alivePlayerCount: 3, rivals: [odin, { ...odin, id: "odin-copy" }] }],
+    ["unknown liveness", { gameMode: "FFA", phase: "active", alivePlayerCount: 2, rivals: [{ ...odin, isAlive: undefined }] }],
+  ];
+  for (const [label, input] of cases) {
+    const chosen = chooseHrafnAction(
+      [expand, hold],
+      observation({ tileShare: 0.05, ...input }),
+    );
+    assert.equal(chosen.id, expand.id, label);
+    assert.notEqual(chosen.policyMarker, "kf1", label);
+  }
+});
+
+test("KF1 stays dormant in a live-style mixed roster and preserves the v5 parent action", () => {
+  const odin = rival({
+    id: "odin-match",
+    name: "K1Z odin free",
+    tileShare: 0.04,
+    isAllied: true,
+  });
+  const outsider = rival({ id: "outsider", name: "Auri", tileShare: 0.3 });
+  const expand = action(
+    "expand:terra-nullius:35",
+    "attack",
+    "Expand Terra Nullius 35%",
+    { expansion: true, troopPercent: 35 },
+  );
+  const chosen = chooseHrafnAction(
+    [expand, action("hold", "hold", "Hold")],
+    observation({
+      tileShare: 0.05,
+      gameMode: "FFA",
+      phase: "active",
+      alivePlayerCount: 13,
+      rivals: [odin, outsider],
+    }),
+  );
+  assert.equal(chosen.id, expand.id);
+  assert.notEqual(chosen.policyMarker, "kf1");
 });
 
 test("a fresh harmless social action beats hold when tactics are exhausted", () => {

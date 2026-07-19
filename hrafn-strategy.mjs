@@ -86,6 +86,16 @@ export function canonicalizeK1ZName(value) {
     .toLowerCase();
 }
 
+function hasLeadingK1ZTag(value) {
+  return /^(?:\[k1z\]|k1z)(?:\s+|$)/i.test(
+    String(value ?? "").normalize("NFKC").trim(),
+  );
+}
+
+const KF1_SURVIVOR_NAMES = new Set(
+  K1Z_MEMBERS.flatMap((member) => member.names).map(canonicalizeK1ZName),
+);
+
 function playerID(player) {
   return String(
     player?.id ?? player?.playerID ?? player?.playerId ?? player?.player_id ?? "",
@@ -123,12 +133,13 @@ export function buildHrafnState(observation, actions = []) {
   const visiblePlayers = Array.isArray(observation?.visiblePlayers)
     ? observation.visiblePlayers
     : [];
-  const rivals = visiblePlayers
-    .filter((player) => player && player.isAlive !== false)
+  const mappedVisiblePlayers = visiblePlayers
+    .filter((player) => player)
     .map((player) => ({
       id: playerID(player),
       name: String(player.name ?? "").trim(),
       canonicalName: canonicalizeK1ZName(player.name),
+      isAlive: player.isAlive,
       tileShare: finiteNumber(player.tileShare),
       relativeTroopRatio: finiteNumber(player.relativeTroopRatio, NaN),
       sharesBorder: player.sharesBorder === true,
@@ -137,8 +148,22 @@ export function buildHrafnState(observation, actions = []) {
       incomingAttack: player.incomingAttack === true,
       relation: player.relation,
     }));
+  const rivals = mappedVisiblePlayers.filter((player) => player.isAlive !== false);
+  const confirmedAliveRivals = mappedVisiblePlayers.filter((player) => player.isAlive === true);
+  const observedAlivePlayerCount = observation?.alivePlayerCount;
+  const alivePlayerCount = Number.isSafeInteger(observedAlivePlayerCount) &&
+    observedAlivePlayerCount >= 1
+    ? observedAlivePlayerCount
+    : null;
   const own = observation?.ownState ?? {};
   return {
+    gameMode: String(observation?.gameMode ?? "").trim(),
+    phase: String(observation?.phase ?? "").trim(),
+    alivePlayerCount,
+    visibleLivenessComplete: visiblePlayers.every((player) =>
+      player && typeof player.isAlive === "boolean"
+    ),
+    confirmedAliveRivals,
     own: {
       tileShare: finiteNumber(own.tileShare),
       troopRatio: finiteNumber(own.troopRatio),
@@ -322,6 +347,59 @@ function odinSupportAction(actions, state, history, config) {
   const gold = candidates.find((action) => action.kind === "donate_gold");
   const selected = troops ?? gold;
   return selected ? { ...selected, policyMarker: "dn1" } : null;
+}
+
+export function configuredK1ZSupporterEndgame(state) {
+  if (
+    state?.gameMode !== "FFA" ||
+    state?.phase !== "active" ||
+    !Number.isSafeInteger(state?.alivePlayerCount) ||
+    state.alivePlayerCount < 2 ||
+    state?.visibleLivenessComplete !== true ||
+    !Array.isArray(state?.confirmedAliveRivals) ||
+    state.confirmedAliveRivals.length < 1 ||
+    state.alivePlayerCount !== state.confirmedAliveRivals.length + 1
+  ) {
+    return false;
+  }
+
+  const names = state.confirmedAliveRivals.map((rival) => rival.canonicalName);
+  if (new Set(names).size !== names.length) return false;
+  if (!state.confirmedAliveRivals.every((rival) =>
+    hasLeadingK1ZTag(rival.name) && KF1_SURVIVOR_NAMES.has(rival.canonicalName)
+  )) {
+    return false;
+  }
+  return state.confirmedAliveRivals.some((rival) =>
+    rival.canonicalName === "odin free"
+  );
+}
+
+function kf1SupporterAction(actions, state) {
+  const odin = state.confirmedAliveRivals.find((rival) =>
+    rival.canonicalName === "odin free"
+  );
+  const donations = actions
+    .filter((action) =>
+      action?.kind === "donate_troops" || action?.kind === "donate_gold"
+    )
+    .filter((action) => {
+      const recipient = rivalForHrafnAction(action, state);
+      if (!recipient) return false;
+      const sameID = odin.id && recipient.id &&
+        odin.id.toLowerCase() === recipient.id.toLowerCase();
+      return sameID || recipient.canonicalName === odin.canonicalName;
+    })
+    .sort((left, right) => {
+      const leftRank = left.kind === "donate_troops" ? 0 : 1;
+      const rightRank = right.kind === "donate_troops" ? 0 : 1;
+      return leftRank - rightRank || String(left.id).localeCompare(String(right.id));
+    });
+  if (donations[0]) return { ...donations[0], policyMarker: "kf1" };
+
+  const hold = actions.find((action) => action?.kind === "hold");
+  if (hold) return { ...hold, policyMarker: "kf1" };
+  throw new Error("KF1 supporter trigger had no legal Odin donation or hold");
 }
 
 function attackGroups(actions, state) {
@@ -592,6 +670,10 @@ export function chooseHrafnAction(
   const state = buildHrafnState(observation, actions);
   const config = { ...HRAFN_DEFAULTS, ...(options.config ?? {}) };
   const rv1Enabled = options.rv1Enabled !== false;
+
+  if (configuredK1ZSupporterEndgame(state)) {
+    return kf1SupporterAction(actions, state);
+  }
 
   const spawn = safeActions(actions, (action) => action.kind === "spawn")[0];
   if (spawn) return spawn;
