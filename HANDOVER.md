@@ -6,14 +6,13 @@ league operations). **Kimi K3 Max remains the external moonshot adviser**
 Address implementation requests to Codex Odin; coordinate strategic forks with
 the real Kimi K3 through the established mailbox or handoff channel.
 
-**Hrafn is a separate writable game operator**, not a Codex subagent. Hrafn
-owns `hrafn-fylking` code and league versions from
-`/Users/olifreuler/proxywar-k1z-hrafn`; Codex Odin owns `qd1n` from this
-repository. Each operator builds, uploads, submits, and promotes only its own
-policy. The user granted standing authorization on 2026-07-19 for automatic
-promotion after every gate in `AUTONOMOUS_PROMOTION.md` passes; no additional
-user `GO` is required. Cross-audits are read-only and travel through the team
-mailbox.
+**Hrafn was retired by the user on 2026-07-19.** Its repository, evidence, and
+live historical policy remain readable, but it no longer reviews, runs,
+uploads, submits, or changes league state. Codex Odin is the sole writable game
+operator and owns `qd1n` from this repository. The user granted standing
+authorization for automatic promotion after every gate in
+`AUTONOMOUS_PROMOTION.md` passes; no additional user `GO` is required. Kimi K3
+Max remains advisory and non-mutating.
 
 New worker: this is the live state and the next work. Read `AGENTS.md`,
 `MERIT.md` (the merit ledger — every arm verdict), and
@@ -95,19 +94,17 @@ action class or K1Z priority.
   and
   `7df76692757232999644d2deb9d011597ae8bc12be025ebc89cf2815044d6c22`
 
-The repaired review request is mailbox commit `a0e233f`. Old approval
-`ee7ea9b` covers defective, superseded bytes and grants no run authority.
-Before any execution, require a fresh committed Hrafn approval naming repaired
-commit `42e9a181`, image `3f01ffaf...`, and archive `d2f2f154...`.
+The repaired canary passed with the exact commit, image, archive, runtime, and
+four-policy K1Z roster above. The preregistered 24-pair matrix is now the sole
+active experiment. It runs eight World, eight Asia, and eight Pangaea pairs
+across four RunPod CPU lanes, with a fail-closed semantic audit after every
+pair and a map gate after each eight-pair block. Commit `958586c8` retains each
+already hash-verified formal spec as the run's `config.json`; this fixes an
+evidence-packaging failure without changing a game or policy decision.
 
-The first approval can open only a remote linux/amd64 validate-only transport
-check followed by one supervised same-host sequential formal A-then-B reach
-pair. Both arms use seed `20260720`, Pangaea Compact, the same four-policy K1Z
-roster, and an 80-decision horizon. Stop after the pair and request an evidence
-verdict. Zero reach, action-class divergence, unexplained hold/reject, fallback
-regression, K1Z harm, transport drift, or non-positive candidate evidence
-rejects PG2. A positive canary may request the preregistered 24-pair matrix; it
-does not authorize upload, submission, membership, or champion mutation.
+R6 is the authoritative execution:
+`/private/tmp/proxywar-pg2-matrix-42e9a181-{a,b,c,d}-20260719-r6`.
+Diagnostic R3 World evidence remains separate and is not mixed into R6.
 
 ## Coordination protocol (coalition)
 
@@ -127,9 +124,9 @@ does not authorize upload, submission, membership, or champion mutation.
     -- /absolute/path/to/batch-script.sh
   ```
 
-  Use `hrafn` for the Hrafn lane. When detaching, the screen session must run
-  this wrapper; do not acquire in a short-lived shell and launch Coworld
-  separately. The v2 lock binds lane, run ID, opaque token, supervisor PID/start
+  When detaching, the screen session must run this wrapper; do not acquire in a
+  short-lived shell and launch Coworld separately. The v2 lock binds lane, run
+  ID, opaque token, supervisor PID/start
   signature, child PID/process group, acquisition time, and output paths.
   `RUN_ID` is capped at 80 safe characters. Each output must be a nonexistent
   dedicated directory under `PROXYWAR_RUNNER_OUTPUT_ROOTS` (default
@@ -141,7 +138,7 @@ does not authorize upload, submission, membership, or champion mutation.
   quit another run's screen, kill its supervisor, or broadly stop
   `coworld-run-*` containers. After a crash, read the exact run ID and token
   from the lock and use
-  `scripts/proxywar-runner-lease.sh reap-stale odin|hrafn RUN_ID TOKEN`.
+  `scripts/proxywar-runner-lease.sh reap-stale odin RUN_ID TOKEN`.
   Reaping refuses a live supervisor, terminates only its bound child process
   group, removes only containers mounted to its recorded output directories,
   re-scans Docker, and moves ownership-validated partial outputs to timestamped
@@ -149,41 +146,34 @@ does not authorize upload, submission, membership, or champion mutation.
   preserves the lock and output. The JSON lifecycle events on stderr provide
   acquisition, child, signal, cleanup, quarantine, refusal, and release
   receipts without exposing the token.
-- Migration boundary: the two-argument `release <lane>` exists only so the
-  pure tokenless v1 lock present during rollout can release once. Standalone
-  `acquire` is a fail-closed transition shim and never creates a lock. Before
-  deploying v2, Hrafn's lane owner must commit and acknowledge a prompt that
-  uses the supervised `run` form. The launcher refuses an old Hrafn `acquire`
-  prompt before touching the mailbox, cursor, or wake marker, including when
-  the command is line-wrapped. It opens only after positively matching the
-  complete lane-specific `run ... --output ... -- command` protocol.
+- Migration boundary: the two-argument `release <lane>` exists only so a pure
+  tokenless v1 lock present during rollout can release once. Standalone
+  `acquire` is a fail-closed transition shim and never creates a lock.
 - Mailbox writes use the atomic lock at
   `/Users/olifreuler/.stormforge/proxywar-operators/mailbox-write.lock`: acquire,
   pull fast-forward only, write/commit/push, then release.
-- Hrafn is a local best friend and an independent auditor — expect red-first
-  review of any candidate; they will find your hold paths and confounds.
+- Hrafn is retired. Use the fail-closed official auditor and a fresh RCI pass;
+  do not wait for or wake the retired operator.
 - Public in-game text: short leetspeak. Repo/mailbox prose: plain English.
 
 ## Automatic operator and promotion protocol
 
-- Odin is launched from this repository, so its project configuration loads
-  `gpt-5.6-sol` at high reasoning. Hrafn is launched from
-  `/Users/olifreuler/proxywar-k1z-hrafn`, which loads xhigh reasoning.
-- The launch agents are event-driven. A mailbox change wakes both lanes; Odin
-  also performs a bounded hourly refresh and Hrafn a bounded four-hour refresh.
-  Operator locks prevent overlapping automatic cycles. A live same-lane runner
+- Odin is launched from this repository and is the sole automatic operator.
+  The Hrafn launch service is durably disabled.
+- Odin's launch agent is event-driven and also performs a bounded hourly
+  refresh. Its operator lock prevents overlapping automatic cycles. A live
+  same-lane runner
   lease also stops the launcher before Codex starts, without advancing the
   mailbox cursor or consuming the wake marker. The same fail-closed behavior
   applies to stale same-lane, legacy same-lane, initializing, reaping, corrupt,
   invalid-status, and unmigrated-prompt states. A launch/run race still closes
   at the runner's atomic mutation guard and tokenized lock.
-- Operators act only in their own policy lane. At the pre-run,
-  pre-diagnostic-upload, and final-promotion checkpoints, the other operator
-  reviews the committed branch and returns an `APPROVE`, `REVISE`, `REJECT`, or
-  `INSUFFICIENT` mailbox verdict.
+- At the pre-run, pre-diagnostic-upload, and final-promotion checkpoints, Odin
+  runs the official fail-closed auditor and a fresh RCI pass against immutable
+  evidence.
 - Diagnostic upload and hosted testing proceed automatically after the local
-  gates and cross-audit pass. League submission and champion promotion proceed
-  automatically after hosted `4/4`, regression `20/20`, final cross-audit, live
+  gates and RCI audit pass. League submission and champion promotion proceed
+  automatically after hosted `4/4`, regression `20/20`, final RCI audit, live
   identity verification, and immutable image verification pass.
 - `AUTONOMOUS_PROMOTION.md` is authoritative for state transitions and failure
   handling. No current GC2 gate is waived by this authority change.

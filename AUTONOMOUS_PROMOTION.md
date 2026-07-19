@@ -2,16 +2,17 @@
 
 ## Standing authority
 
-On 2026-07-19 the user granted Codex Odin and Hrafn standing authority to
-promote their own ProxyWar policies automatically after every gate below
-passes. No additional user `GO` is required.
+On 2026-07-19 the user granted standing authority for automatic promotion
+after every gate below passes. No additional user `GO` is required. Later that
+day the user retired Hrafn and assigned the full operating lane to Codex Odin.
 
 This authority applies only to the sanctioned Coworld/Softmax ProxyWar league:
 
 - Codex Odin may mutate only `qd1n` submissions, memberships, and champion
   state.
-- Hrafn may mutate only `hrafn-fylking` submissions, memberships, and champion
-  state.
+- Hrafn is retired. Its code, evidence, and live historical policy remain
+  readable, but it performs no review, runner, upload, submission, membership,
+  or champion action.
 - Kimi K3 Max is advisory and performs no league mutations.
 
 ## Required states
@@ -44,10 +45,12 @@ healthy process as proof of a later state.
 5. `REGRESSION_PASSED`
    - separate map-and-seat regression finishes `20/20`;
    - no unresolved regression or identity discrepancy remains.
-6. `AUDIT_APPROVED`
-   - the other lane reviews the committed source and complete evidence packet;
-   - the mailbox verdict is `APPROVE`;
-   - `REVISE`, `REJECT`, `INSUFFICIENT`, or no verdict blocks promotion.
+6. `RCI_AUDIT_PASSED`
+   - the committed source and complete evidence packet pass the official
+     fail-closed auditor with zero unresolved violations;
+   - Codex Odin independently re-verifies source, image, roster, runtime,
+     marker, safety, and outcome identities from the immutable packet;
+   - Kimi advice is incorporated when available but is not a blocking gate.
 7. `SUBMITTED`
    - the lane owner submits its own candidate to the league with automatic
      champion selection;
@@ -67,9 +70,9 @@ healthy process as proof of a later state.
 ## Automatic action sequence
 
 The lane owner proceeds automatically from one verified state to the next.
-Diagnostic upload is allowed after `LOCAL_QUALIFIED` and a pre-upload
-cross-audit. League submission and champion promotion are allowed only after
-`HOSTED_PASSED`, `REGRESSION_PASSED`, and final `AUDIT_APPROVED`.
+Diagnostic upload is allowed after `LOCAL_QUALIFIED` and a pre-upload RCI
+audit. League submission and champion promotion are allowed only after
+`HOSTED_PASSED`, `REGRESSION_PASSED`, and final `RCI_AUDIT_PASSED`.
 
 Before any upload or submission:
 
