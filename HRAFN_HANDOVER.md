@@ -31,10 +31,10 @@ Verified against the Coworld/Softmax API at `2026-07-19T08:51:09Z`:
 - Exact live image: linux/amd64
   `sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d`.
 
-Source and deployment remain separate. Repository HEAD is
-`bb7d9fffc862e5d51cf24f38d1731630275b4f27`; its current Hrafn strategy comes
-from `38fca3074922dba35a5aa6083481f12874b564be` and is present in the local-only
-linux/amd64 image
+Source and deployment remain separate. Repository policy code is unchanged
+from `bb7d9fffc862e5d51cf24f38d1731630275b4f27`; its current Hrafn strategy
+comes from `38fca3074922dba35a5aa6083481f12874b564be` and is present in the
+local-only linux/amd64 image
 `sha256:816b734c205fad2452eaef3c076f27377939c4a78a4336fd63d7ae313b5be410`.
 That image has not been uploaded, submitted, placed, or made champion.
 
