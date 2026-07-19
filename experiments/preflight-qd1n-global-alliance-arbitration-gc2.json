@@ -47,14 +47,14 @@
     "independent_traces": 1,
     "wins": 0,
     "self_play": false,
-    "evaluated_seats": 0,
-    "accepted_decisions": 0,
+    "evaluated_seats": 2,
+    "accepted_decisions": 58,
     "holds": 0,
     "unexplained_holds": 0,
     "rejections": 0,
     "mechanism_reached": false,
-    "container_marker_reach": "pending",
-    "qualifier_status": "blocked_runner_wiring",
+    "container_marker_reach": "failed_zero_reach",
+    "qualifier_status": "failed_zero_gc2_reach",
     "qualifier_request": {
       "evidence_commit": "978c77df",
       "manifest_path": "experiments/gc2-qualifier-canonical-manifest-20260719.json",
@@ -81,9 +81,23 @@
         "config_sha256": "1bb7f6916e59c98a18a3d06e3f1e61af9189bbfa2fcbc416afee82847633cddf",
         "game_stderr_sha256": "33b6216385b8341c79b76230833be8f5dc45dd8297224ad233800c15499f564c",
         "policy_log_sha256": "721bd4363aea05963e06d5a80f6e769c8bc919b69d1416313ee138ee28d8c4eb"
+      },
+      {
+        "path": "/private/tmp/proxywar-qd1n-gc2-amd64-qualifier-20260719-cycle3",
+        "connected_players": 2,
+        "policy_decisions": 58,
+        "accepted_decisions": 58,
+        "rejected_decisions": 0,
+        "holds": 0,
+        "gc2_marker_executions": 0,
+        "k1z_harmful_actions": 0,
+        "result": "completed, but failed the approved gate on zero replay-visible gc2 reach",
+        "config_sha256": "6da328d0fa45eb5b9a8f461e23ee3e8449b8396f5a42c788a9de7946de1e01db",
+        "results_sha256": "048c7bd794dce00fe71ecc8b5d78ef9433edc0ec8a3561f85981479ecf783f1d",
+        "replay_sha256": "44c399fceb196d5ba97a1cc27077af0fd42079dea0f99ab05bc26269447515e1"
       }
     ],
-    "missing_evidence": "Hrafn APPROVE for committed qualifier artifacts, then a completed coworld==0.1.30 qualifier with both explicit player jobs connected and Docker-level gc2 reach"
+    "missing_evidence": "Docker-level gc2 reach; the approved qualifier completed with zero marker executions, so the matched pair is closed"
   },
   "diagnostic_only": true,
   "hosted": {
@@ -136,5 +150,5 @@
     "any runtime, request, source, or image hash mismatch",
     "no mirrored placement or finish advantage over exact v89"
   ],
-  "verdict": "PRE-RUN BLOCKED: source, image identity, fresh matched request hashes, and the committed explicit qualifier job pass local validation. Hrafn's first artifact review was INSUFFICIENT; rereview of pushed commit 978c77df remains pending. No qualifier or matched pair ran from this job. Docker-level marker reach, matched outcome, hosted 4/4, and regression 20/20 remain pending"
+  "verdict": "QUALIFIER GATE FAILED: Hrafn approved the exact committed job at mailbox 4d9cb04. Both seats connected and produced 58/58 accepted decisions with zero holds, zero rejects, and zero K1Z harm, but replay-visible gc2 reach was zero. The runner was released and no matched pair ran. LOCAL_QUALIFIED is false; hosted, upload, submission, membership, champion, and GR1 evaluation remain closed"
 }

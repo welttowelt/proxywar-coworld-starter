@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "candidate_commit": "9efe990d900f16ff6ae08013d0c48bfad0092a4b",
+  "parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
+  "artifact_commit": "978c77df",
+  "hrafn_approval_mailbox_commit": "4d9cb04",
+  "runtime": "coworld==0.1.30",
+  "output_path": "/private/tmp/proxywar-qd1n-gc2-amd64-qualifier-20260719-cycle3",
+  "request": {
+    "manifest_file_sha256": "f5e6b4dd247b2b2e534a415d293babab7fd655d44b2004db4257a2df3a01dab0",
+    "request_file_sha256": "04c9eb52c145c7ba5ebf6a81ad066d2cfb61faab2649681c42c4489dec122975",
+    "canonical_request_sha256": "22162a04e7f5977d622f11aea561a9010d165fbb8de12536b698b47f99ec1458",
+    "canonical_effective_config_sha256": "c014924752ee05b25e6d6366a9d5ee0f10c88bb1b49f5c56d239fc2db4048a8c"
+  },
+  "artifacts": {
+    "effective_config_sha256": "6da328d0fa45eb5b9a8f461e23ee3e8449b8396f5a42c788a9de7946de1e01db",
+    "redacted_effective_config_sha256": "c014924752ee05b25e6d6366a9d5ee0f10c88bb1b49f5c56d239fc2db4048a8c",
+    "results_sha256": "048c7bd794dce00fe71ecc8b5d78ef9433edc0ec8a3561f85981479ecf783f1d",
+    "replay_sha256": "44c399fceb196d5ba97a1cc27077af0fd42079dea0f99ab05bc26269447515e1",
+    "game_stderr_sha256": "3f5869868693e1732831dc285abfde12fc7d0793b5d7460b5f77a68b406613cf",
+    "candidate_log_sha256": "764c642adf1880ead5c79aa8bcf880f442ed72e24bdb2716c62248021c4fc8d9",
+    "parent_log_sha256": "764c642adf1880ead5c79aa8bcf880f442ed72e24bdb2716c62248021c4fc8d9"
+  },
+  "result": {
+    "connected_players": 2,
+    "decisions": 58,
+    "accepted_decisions": 58,
+    "rejected_decisions": 0,
+    "holds": 0,
+    "fallbacks": 34,
+    "fallback_class": "planner connection error; deterministic policy fallback",
+    "gc2_marker_executions": 0,
+    "k1z_references": 0,
+    "k1z_harmful_actions": 0,
+    "players": [
+      {
+        "name": "GC2 candidate",
+        "decisions": 29,
+        "accepted_decisions": 29,
+        "holds": 0,
+        "rejected_decisions": 0,
+        "fallbacks": 17,
+        "gc2_marker_executions": 0,
+        "score": 0.48757488351453293,
+        "tiles": 8790,
+        "alive": true
+      },
+      {
+        "name": "Exact v89 parent",
+        "decisions": 29,
+        "accepted_decisions": 29,
+        "holds": 0,
+        "rejected_decisions": 0,
+        "fallbacks": 17,
+        "gc2_marker_executions": 0,
+        "score": 0.5124251164854671,
+        "tiles": 9238,
+        "alive": true
+      }
+    ]
+  },
+  "stop_trigger": "zero replay-visible gc2 reach",
+  "verdict": "QUALIFIER GATE FAILED; NO MATCHED PAIR; LOCAL_QUALIFIED false; no hosted, upload, submission, membership, or champion action"
+}

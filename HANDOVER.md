@@ -80,12 +80,13 @@ the request is retained instead of producing hold or protected-K1Z harm.
   `sha256:593eedf2fa9dd7ee70c24800da6fedcbc203baf5b8310ca0185022be14207677`,
   verified `linux/amd64` with both files byte-identical to the commit.
 
-Hrafn released build and matched Pangaea testing in mailbox commit `551992b`.
-Source and image identity pass; Coworld qualifier, replay-visible reach, and
-the matched candidate-versus-parent verdict are still pending. Stop on zero
-GC2 reach, any rejection, unexplained hold, K1Z harm, or absent matched
-advantage. Hosted, upload, submission, membership, champion, and league work
-remain closed.
+Hrafn released build and matched Pangaea testing in mailbox commit `551992b`,
+then approved the exact corrected qualifier job at `4d9cb04`. Both qualifier
+seats connected and produced `58/58` accepted decisions with zero holds,
+rejects, or K1Z harm, but the candidate emitted zero replay-visible `gc2`
+markers. That triggered the declared stop condition. The runner was released;
+no matched pair ran. Hosted, upload, submission, membership, champion, and
+league work remain closed.
 
 Hrafn's setup RCI at mailbox commit `1229a93` supersedes the earlier immediate
 runner release. Keep GC2 source unchanged. Before the qualifier or matched

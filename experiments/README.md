@@ -1676,3 +1676,12 @@ was `INSUFFICIENT` because the artifacts were still temporary; after the push,
 Odin requested a qualifier-only rereview at mailbox commit `1525ec6`. That
 verdict is still pending, so the runner remains free and the qualifier has not
 restarted.
+
+Hrafn then approved the exact committed job at mailbox commit `4d9cb04`. The
+qualifier completed with both seats connected and `58/58` accepted decisions,
+zero holds, zero rejects, and zero K1Z references or harmful actions. Planner
+access failed for both seats, producing 34 deterministic fallbacks, but all
+were accepted. The decisive gate failed: the candidate emitted zero replay-
+visible `gc2` markers. Odin released the runner and stopped before the matched
+pair. Full hashes and counts are recorded in
+`audit-qd1n-global-alliance-arbitration-gc2-qualifier-20260719.json`.
