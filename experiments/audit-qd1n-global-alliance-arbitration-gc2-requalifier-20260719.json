@@ -1,0 +1,118 @@
+{
+  "schema_version": 1,
+  "candidate_source_commit": "9efe990d900f16ff6ae08013d0c48bfad0092a4b",
+  "fixture_commit": "e64749b82fba8bf59b586c48831af9c678d5ccc5",
+  "runtime": "coworld==0.1.30",
+  "started_at": "2026-07-19T13:52:06+02:00",
+  "completed_at": "2026-07-19T13:52:33+02:00",
+  "output_path": "/private/tmp/proxywar-gc2-live-coalition-requalifier-20260719-cycle1",
+  "request": {
+    "request_file_sha256": "f6f834fbbe71500d26fa63dd6c7f9ee5a875ca15b6759544b8554e578b7b4063",
+    "canonical_request_sha256": "a72d3e86e1c36b436c68acf92460b610ac6ee3b0d0c458470f0a68f22db44f77",
+    "canonical_game_config_sha256": "4e34cb676d03b1c974f73cdb1981a34905b8c6f1f244d1c62bb5ff2267ab72f5",
+    "canonical_player_vector_sha256": "dc9fb7a2af9eb9825dd3edce82cb6e224b37659295d44e84e61552474ec10c4b",
+    "manifest_file_sha256": "f5e6b4dd247b2b2e534a415d293babab7fd655d44b2004db4257a2df3a01dab0",
+    "embedded_manifest_canonical_sha256": "a43dafa9bb7e68a5c708b3fc6a44e80097e04e1da07131d62a00b7a8a445d86d",
+    "runtime_config_redacted_canonical_sha256": "4e34cb676d03b1c974f73cdb1981a34905b8c6f1f244d1c62bb5ff2267ab72f5"
+  },
+  "images": [
+    {
+      "seat": 0,
+      "name": "K1Z odin free",
+      "image_id": "sha256:593eedf2fa9dd7ee70c24800da6fedcbc203baf5b8310ca0185022be14207677",
+      "connected": true
+    },
+    {
+      "seat": 1,
+      "name": "K1Z Hrafn",
+      "image_id": "sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d",
+      "connected": true
+    },
+    {
+      "seat": 2,
+      "name": "K1Z juryoku koku",
+      "image_id": "sha256:2ebf15372e8cf59b194ebb20f06b818a6a54f96994f4125e103b6a26070491c2",
+      "connected": true
+    },
+    {
+      "seat": 3,
+      "name": "K1Z katanasan",
+      "image_id": "sha256:0afece2db25675b0b744844769c64e02960270f56502c33d62bf0702f7b58cf6",
+      "connected": true
+    }
+  ],
+  "result": {
+    "seed": 20260719,
+    "turn_count": 700,
+    "decisions": 24,
+    "accepted_decisions": 24,
+    "rejected_decisions": 0,
+    "holds": 0,
+    "fallbacks": 3,
+    "degraded": 3,
+    "replay_verified": true,
+    "odin": {
+      "decisions": 6,
+      "accepted_decisions": 6,
+      "rejected_decisions": 0,
+      "holds": 0,
+      "unexplained_holds": 0,
+      "protected_k1z_harmful_actions": 0,
+      "kp2_executions": 1,
+      "gc2_executions": 2,
+      "trace": [
+        {
+          "turn": 400,
+          "kind": "alliance_request",
+          "action_id": "alliance:z8mwt9n4",
+          "recipient": "K1Z Hrafn",
+          "reason": "rul:4ly:kp2",
+          "accepted": true
+        },
+        {
+          "turn": 500,
+          "kind": "attack",
+          "action_id": "expand:terra-nullius:10",
+          "target": "Terra Nullius",
+          "reason": "rul:atk:gc2",
+          "accepted": true
+        },
+        {
+          "turn": 600,
+          "kind": "attack",
+          "action_id": "expand:terra-nullius:10",
+          "target": "Terra Nullius",
+          "reason": "rul:atk:gc2",
+          "accepted": true
+        }
+      ]
+    },
+    "scores_are_gate_irrelevant": true
+  },
+  "artifacts": {
+    "results_sha256": "927c447e4737979b5f2ea11093174397c571e60d56cf51433603712e874bf2fb",
+    "replay_sha256": "c95367b931c1fe60d56a6be25e72971fe78659f9c2a2c26d202f8f839db38aa4",
+    "runtime_config_sha256": "c15c3c8e482dc264d42f19e5f7ff686ccf66fa43e1f16fb87d90e67013edf35b",
+    "decisions_sha256": "8f90ae7b7660963bb87290b1a9af0645225cd100adabb40bbbe4b41b00257423",
+    "game_record_sha256": "450c2f677fc11526113915d0853a5dc1a508c846d6e220fb95badef0d9f2c0fa",
+    "spectator_telemetry_sha256": "a85cc08940d94f7a4ca26103c8afcc41bc2c351ccc254c0adff40d4ba4cbeb53",
+    "runner_log_sha256": "064057a9e1920899eaa33a9b2429036949ab91547d2c7d3ab7e71790c5fa11dd",
+    "game_stderr_sha256": "f681060f857961651d52865592852d565cf841b0f31fc063cabae87b35e5b78a",
+    "candidate_log_sha256": "6c6cb5c5c61f4635dc5a1cfd963ef319b6aae3a0d372a23f7b064dd5d07eebc9"
+  },
+  "pass_requirements": {
+    "all_images_connected": true,
+    "all_decisions_accepted": true,
+    "zero_rejections": true,
+    "zero_unexplained_odin_holds": true,
+    "zero_protected_k1z_harm": true,
+    "first_request_retained_kp2": true,
+    "later_safe_action_replay_visible_gc2": true,
+    "hashes_reconciled": true
+  },
+  "verdict": "PASS_REACH_ONLY",
+  "next_gate": "separately reviewed immutable matched candidate-versus-exact-v89 live-coalition pair",
+  "local_qualified": false,
+  "promotion_eligible": false,
+  "external_action_allowed": false
+}

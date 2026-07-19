@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "verdict": "READY_FOR_ONE_LOCAL_REACH_QUALIFIER",
+  "verdict": "REACH_PASSED_MATCHED_REVIEW_REQUIRED",
   "decision": {
     "type": "fixture_only_requalification",
     "source_frozen": true,
@@ -103,6 +103,19 @@
     "any harmful Odin action against a protected K1Z identity",
     "gc2 replacement is hold, high-risk, or protected-targeted"
   ],
+  "reach_result": {
+    "audit_path": "experiments/audit-qd1n-global-alliance-arbitration-gc2-requalifier-20260719.json",
+    "status": "passed",
+    "decisions": 24,
+    "accepted_decisions": 24,
+    "rejected_decisions": 0,
+    "holds": 0,
+    "odin_kp2_executions": 1,
+    "odin_gc2_executions": 2,
+    "protected_k1z_harmful_actions": 0,
+    "replay_verified": true,
+    "next_gate": "separately reviewed immutable matched candidate-versus-exact-v89 live-coalition pair"
+  },
   "promotion_eligible": false,
   "local_qualified": false
 }

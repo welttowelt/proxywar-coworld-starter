@@ -1359,3 +1359,12 @@ later safe accepted replacement to carry `gc2`, and zero rejects, unexplained
 Odin holds, or protected-K1Z harm. This authorizes one local reach qualifier
 only. Matched, hosted, upload, submission, membership, champion, and league
 gates remain closed.
+
+The corrected qualifier passed at 13:52 CEST: all four exact images connected,
+`24/24` decisions were accepted, and Odin produced `kp2` at turn 400 followed
+by accepted neutral-expansion `gc2` actions at turns 500 and 600. Odin had zero
+holds, rejects, or protected-K1Z harmful actions; replay verification passed.
+The receipt is
+`audit-qd1n-global-alliance-arbitration-gc2-requalifier-20260719.json`.
+Reach alone does not establish outcome advantage, so `LOCAL_QUALIFIED` remains
+false pending a separately reviewed candidate-versus-exact-v89 matched pair.
