@@ -608,6 +608,23 @@ test("wr1 replaces an embargo-stop withdrawal hold with the smallest boat", () =
   assert.equal(chosen.policyMarker, "wr1");
 });
 
+test("wr1 replaces a withdrawn K1Z alliance request with the smallest boat", () => {
+  const actions = [
+    action("boat:635077:8", "boat", "Launch boat 8%"),
+    action("boat:635077:16", "boat", "Launch boat 16%"),
+    action("hold", "hold", "Hold"),
+  ];
+  const history = [{
+    actionID: `alliance:${K1Z_MEMBERS[1].id}`,
+    kind: "alliance_request",
+    targetID: K1Z_MEMBERS[1].id,
+    targetName: "K1Z katanasan",
+  }];
+  const chosen = chooseHrafnAction(actions, observation(), history);
+  assert.equal(chosen.id, "boat:635077:8");
+  assert.equal(chosen.policyMarker, "wr1");
+});
+
 test("wr1 uses a bounded outsider attack and never targets K1Z", () => {
   const odin = rival({
     id: K1Z_MEMBERS[0].id,

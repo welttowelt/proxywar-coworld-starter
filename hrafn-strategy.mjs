@@ -584,6 +584,7 @@ const WITHDRAWABLE_SOCIAL_KINDS = new Set([
   "quick_chat",
   "emoji",
   "embargo_stop",
+  "alliance_request",
 ]);
 
 function withdrawalRecoveryAction(actions, state, history) {
