@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "run_id": "pg2-matrix-42e9a181-20260719-r1",
+  "approval_commit": "0cb04bd9d702e7396469c6be28dc8d7337b8c2c7",
+  "base_archive": {
+    "sha256": "d2f2f154a67f43008a9b8f7cc0e2c66d44d825e088434cf165fe3b751240b9cd"
+  },
+  "candidate": {
+    "commit": "42e9a18193d2fb381f1f0fa6de0e64cb58e3a2f9",
+    "image_id": "sha256:3f01ffafd10079a3f0a9ead1704481df623bceedad0ad0f7f47fea77344e6b5d",
+    "policy": "qd1n-pg2"
+  },
+  "parent": {
+    "commit": "f1347251834a6283182b631e1336595eb2e08342",
+    "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+    "policy": "qd1n-v89"
+  },
+  "coalition": [
+    {
+      "policy": "hrafn-v5",
+      "image_id": "sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d"
+    },
+    {
+      "policy": "juryoku-v3",
+      "image_id": "sha256:2ebf15372e8cf59b194ebb20f06b818a6a54f96994f4125e103b6a26070491c2"
+    },
+    {
+      "policy": "katanasan-v39",
+      "image_id": "sha256:0afece2db25675b0b744844769c64e02960270f56502c33d62bf0702f7b58cf6"
+    }
+  ],
+  "maps": [
+    "World",
+    "Asia",
+    "Pangaea"
+  ],
+  "seeds": [
+    20260721,
+    20260722,
+    20260723,
+    20260724,
+    20260725,
+    20260726,
+    20260727,
+    20260728
+  ],
+  "workers": {
+    "storm-lazy-a": [
+      20260721,
+      20260725
+    ],
+    "storm-lazy-b": [
+      20260722,
+      20260726
+    ],
+    "storm-lazy-c": [
+      20260723,
+      20260727
+    ],
+    "storm-lazy-d": [
+      20260724,
+      20260728
+    ]
+  },
+  "game": {
+    "seat": 0,
+    "map_size": "Compact",
+    "max_decision_steps": 80,
+    "arm_order": [
+      "candidate",
+      "parent"
+    ]
+  },
+  "stop_rules": [
+    "hash_or_roster_drift",
+    "k1z_harm",
+    "rejection",
+    "unexplained_hold",
+    "marker_outside_guard",
+    "non_neutral_action_class_divergence",
+    "runner_ownership_failure"
+  ],
+  "pass_rules": {
+    "minimum_reached_pairs_per_map": 6,
+    "positive_per_map_median_tile_delta_at_decisions": [
+      20,
+      50
+    ],
+    "positive_per_map_median_final_score_delta": true,
+    "minimum_positive_final_score_pairs_overall": 15,
+    "candidate_declared_wins_not_lower_overall_or_per_map": true
+  },
+  "authority": {
+    "local_matrix": true,
+    "hosted": false,
+    "upload": false,
+    "submission": false,
+    "membership": false,
+    "champion_change": false
+  }
+}

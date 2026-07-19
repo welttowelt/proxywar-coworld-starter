@@ -888,20 +888,51 @@ export async function verifyBundleManifest(
   }
   if (
     !Array.isArray(manifest.experiment_specs) ||
-    manifest.experiment_specs.length !== 2
+    manifest.experiment_specs.length < 2 ||
+    manifest.experiment_specs.length > 64 ||
+    manifest.experiment_specs.length % 2 !== 0
   ) {
-    throw new Error("bundle must declare the formal matched experiment pair");
+    throw new Error(
+      "bundle must declare one to 32 complete formal matched experiment pairs",
+    );
   }
-  const expectedSpecs = new Map([
-    [
-      "formal-matched-a",
-      { role: "candidate", path: "specs/formal-matched-a.json" },
-    ],
-    [
-      "formal-matched-b",
-      { role: "exact-parent", path: "specs/formal-matched-b.json" },
-    ],
-  ]);
+  const expectedSpecs = new Map();
+  const expectedPairs = new Map();
+  for (const spec of manifest.experiment_specs) {
+    const legacy = spec?.label?.match(/^formal-matched-([ab])$/);
+    const matrix = spec?.label?.match(
+      /^formal-matched-([a-z0-9]+(?:-[a-z0-9]+)*)-([ab])$/,
+    );
+    const match = legacy ?? matrix;
+    if (!match) {
+      throw new Error("formal matched experiment spec identity is invalid");
+    }
+    const arm = legacy ? legacy[1] : matrix[2];
+    const pairID = legacy ? "__legacy__" : matrix[1];
+    const expected = {
+      role: arm === "a" ? "candidate" : "exact-parent",
+      path: `specs/${spec.label}.json`,
+      pairID,
+      arm,
+    };
+    if (expectedSpecs.has(spec.label)) {
+      throw new Error("formal matched experiment spec identity is invalid");
+    }
+    expectedSpecs.set(spec.label, expected);
+    const pair = expectedPairs.get(pairID) ?? new Set();
+    if (pair.has(arm)) {
+      throw new Error("formal matched experiment spec identity is invalid");
+    }
+    pair.add(arm);
+    expectedPairs.set(pairID, pair);
+  }
+  if (
+    [...expectedPairs.values()].some(
+      (arms) => arms.size !== 2 || !arms.has("a") || !arms.has("b"),
+    )
+  ) {
+    throw new Error("formal matched experiment pair is incomplete");
+  }
   const seenSpecLabels = new Set();
   const formalHorizons = new Set();
   for (const spec of manifest.experiment_specs) {
@@ -937,7 +968,10 @@ export async function verifyBundleManifest(
     seenSpecLabels.add(spec.label);
     formalHorizons.add(spec.max_decision_steps);
   }
-  if (seenSpecLabels.size !== expectedSpecs.size) {
+  if (
+    seenSpecLabels.size !== expectedSpecs.size ||
+    expectedPairs.size * 2 !== expectedSpecs.size
+  ) {
     throw new Error("formal matched experiment pair is incomplete");
   }
   if (formalHorizons.size !== 1) {

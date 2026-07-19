@@ -371,6 +371,111 @@ test("bundle verification accepts a clean selected policy", async () => {
   assert.equal(verified.policies[0].key, "candidate");
 });
 
+test("bundle verification accepts multiple complete hash-bound formal pairs", async () => {
+  const { root, orchestratorPath, players } = await manifestFixture();
+  const extraSpecs = [
+    {
+      label: "formal-matched-world-20260721-a",
+      role: "candidate",
+      body: '{"arm":"candidate","game_config":{"max_decision_steps":80}}\n',
+    },
+    {
+      label: "formal-matched-world-20260721-b",
+      role: "exact-parent",
+      body: '{"arm":"exact-parent","game_config":{"max_decision_steps":80}}\n',
+    },
+  ];
+  for (const spec of extraSpecs) {
+    await writeFile(path.join(root, "specs", `${spec.label}.json`), spec.body);
+  }
+  const fileManifestPath = path.join(root, "files.sha256");
+  const originalFileManifest = await readFile(fileManifestPath, "utf8");
+  const extraLines = extraSpecs
+    .map(
+      (spec) =>
+        `${sha256(spec.body)}  specs/${spec.label}.json`,
+    )
+    .join("\n");
+  const fileManifestBody = `${originalFileManifest}${extraLines}\n`;
+  await writeFile(fileManifestPath, fileManifestBody);
+  const manifestPath = path.join(root, "manifest.json");
+  const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+  manifest.file_manifest.sha256 = sha256(fileManifestBody);
+  manifest.file_manifest.file_count += extraSpecs.length;
+  manifest.experiment_specs.push(
+    ...extraSpecs.map((spec) => ({
+      label: spec.label,
+      path: `specs/${spec.label}.json`,
+      sha256: sha256(spec.body),
+      role: spec.role,
+      max_decision_steps: 80,
+    })),
+  );
+  const manifestBody = `${JSON.stringify(manifest, null, 2)}\n`;
+  await writeFile(manifestPath, manifestBody);
+  await writeFile(
+    path.join(root, "manifest.sha256"),
+    `${sha256(manifestBody)}  manifest.json\n`,
+  );
+  const verified = await verifyBundleManifest(root, players, {
+    orchestratorPath,
+  });
+  assert.equal(verified.experiment_specs.length, 4);
+});
+
+test("bundle verification rejects mismatched additional formal pair identities", async () => {
+  const { root, orchestratorPath, players } = await manifestFixture();
+  const manifestPath = path.join(root, "manifest.json");
+  const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+  manifest.experiment_specs.push(
+    {
+      label: "formal-matched-world-20260721-a",
+      path: "specs/formal-matched-world-20260721-a.json",
+      sha256: "a".repeat(64),
+      role: "candidate",
+      max_decision_steps: 80,
+    },
+    {
+      label: "formal-matched-asia-20260721-b",
+      path: "specs/formal-matched-asia-20260721-b.json",
+      sha256: "b".repeat(64),
+      role: "exact-parent",
+      max_decision_steps: 80,
+    },
+  );
+  const body = `${JSON.stringify(manifest, null, 2)}\n`;
+  await writeFile(manifestPath, body);
+  await writeFile(
+    path.join(root, "manifest.sha256"),
+    `${sha256(body)}  manifest.json\n`,
+  );
+  await assert.rejects(
+    verifyBundleManifest(root, players, { orchestratorPath }),
+    /formal matched experiment pair is incomplete/,
+  );
+});
+
+test("bundle verification cannot pair a legacy arm with a matrix legacy ID", async () => {
+  const { root, orchestratorPath, players } = await manifestFixture();
+  const manifestPath = path.join(root, "manifest.json");
+  const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+  manifest.experiment_specs[1] = {
+    ...manifest.experiment_specs[1],
+    label: "formal-matched-legacy-b",
+    path: "specs/formal-matched-legacy-b.json",
+  };
+  const body = `${JSON.stringify(manifest, null, 2)}\n`;
+  await writeFile(manifestPath, body);
+  await writeFile(
+    path.join(root, "manifest.sha256"),
+    `${sha256(body)}  manifest.json\n`,
+  );
+  await assert.rejects(
+    verifyBundleManifest(root, players, { orchestratorPath }),
+    /formal matched experiment pair is incomplete/,
+  );
+});
+
 test("bundle verification rejects a tampered selected policy file", async () => {
   const { root, policyRoot, orchestratorPath, players } =
     await manifestFixture();
