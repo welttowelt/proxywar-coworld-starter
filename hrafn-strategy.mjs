@@ -580,6 +580,47 @@ function fallbackRivalAttack(groups, state, history) {
     : null;
 }
 
+const WITHDRAWABLE_SOCIAL_KINDS = new Set([
+  "quick_chat",
+  "emoji",
+  "embargo_stop",
+]);
+
+function withdrawalRecoveryAction(actions, state, history) {
+  const previous = history.at(-1);
+  if (
+    !WITHDRAWABLE_SOCIAL_KINDS.has(previous?.kind) ||
+    actions.some((action) => action.id === previous.actionID)
+  ) {
+    return null;
+  }
+
+  const rivalAttack = chooseClosestPercent(
+    safeActions(actions, (action) => {
+      if (action.kind !== "attack" || isNeutralAction(action)) return false;
+      const rival = rivalForHrafnAction(action, state);
+      return rival && !isProtectedRival(rival);
+    }),
+    10,
+    25,
+  );
+  if (rivalAttack) return { ...rivalAttack, policyMarker: "wr1" };
+
+  // Retry menus can strip the expansion metadata from boat actions. A numeric
+  // tile destination has no explicit player target; retain the smallest
+  // commitment and fail closed whenever the action resolves to a K1Z rival.
+  const boat = chooseClosestPercent(
+    safeActions(actions, (action) => {
+      if (action.kind !== "boat") return false;
+      const rival = rivalForHrafnAction(action, state);
+      return !rival || !isProtectedRival(rival);
+    }),
+    8,
+    25,
+  );
+  return boat ? { ...boat, policyMarker: "wr1" } : null;
+}
+
 export function chooseHrafnAction(
   actions,
   observation,
@@ -752,6 +793,9 @@ export function chooseHrafnAction(
     action.kind === "retreat" || action.kind === "boat_retreat"
   )[0];
   if (retreat) return retreat;
+
+  const withdrawalRecovery = withdrawalRecoveryAction(actions, state, history);
+  if (withdrawalRecovery) return withdrawalRecovery;
 
   const recentActionIDs = new Set(history.slice(-6).map((entry) => entry.actionID));
   // Quick-chat text is authored by the game, not by the player response.

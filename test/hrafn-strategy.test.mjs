@@ -591,6 +591,70 @@ test("public quick chat stays suppressed after a prior public signal", () => {
   assert.equal(chosen.id, hold.id);
 });
 
+test("wr1 replaces an embargo-stop withdrawal hold with the smallest boat", () => {
+  const actions = [
+    action("boat:260373:8", "boat", "Launch boat 8%"),
+    action("boat:260373:16", "boat", "Launch boat 16%"),
+    action("hold", "hold", "Hold"),
+  ];
+  const history = [{
+    actionID: "embargo:28k1hctz:stop",
+    kind: "embargo_stop",
+    targetID: "28k1hctz",
+    targetName: "daveey",
+  }];
+  const chosen = chooseHrafnAction(actions, observation(), history);
+  assert.equal(chosen.id, "boat:260373:8");
+  assert.equal(chosen.policyMarker, "wr1");
+});
+
+test("wr1 uses a bounded outsider attack and never targets K1Z", () => {
+  const odin = rival({
+    id: K1Z_MEMBERS[0].id,
+    name: "K1Z odin free",
+    relativeTroopRatio: 4,
+  });
+  const outsider = rival({
+    id: "outsider",
+    name: "daveey",
+    relativeTroopRatio: 1,
+  });
+  const history = [{
+    actionID: "embargo:outsider:stop",
+    kind: "embargo_stop",
+    targetID: outsider.id,
+    targetName: outsider.name,
+  }];
+  const chosen = chooseHrafnAction(
+    [attack(odin, 10), attack(outsider, 10), action("hold", "hold", "Hold")],
+    observation({ rivals: [odin, outsider] }),
+    history,
+  );
+  assert.equal(chosen.id, "attack:outsider:10");
+  assert.equal(chosen.policyMarker, "wr1");
+});
+
+test("wr1 stays dormant while the prior embargo-stop action remains offered", () => {
+  const embargoStop = action(
+    "embargo:outsider:stop",
+    "embargo_stop",
+    "Stop embargo outsider",
+  );
+  const history = [{
+    actionID: embargoStop.id,
+    kind: embargoStop.kind,
+    targetID: "outsider",
+    targetName: "daveey",
+  }];
+  const chosen = chooseHrafnAction(
+    [embargoStop, action("boat:260373:8", "boat"), action("hold", "hold", "Hold")],
+    observation(),
+    history,
+  );
+  assert.equal(chosen.id, "hold");
+  assert.equal(chosen.policyMarker, undefined);
+});
+
 test("recorded rv1 decisions retain the campaign identity", () => {
   const foe = rival({ id: "foe", name: "Foe" });
   const chosen = {
