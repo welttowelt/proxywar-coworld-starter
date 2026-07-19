@@ -1341,3 +1341,27 @@ membership `lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6` sole champion.
 v88 (`7c424648`) was uploaded but never submitted (superseded). Smoke4
 end-to-end verification is running at time of writing; standard `4/4` and
 `20/20` gates remain incomplete (operator-and-coalition-directed promotion).
+
+## GR1 large-commitment grind qualifier (2026-07-19)
+
+GR1 is isolated from the closed GC2 arm. It changes only calm neutral land
+attacks during the first twenty non-spawn decisions below twenty percent land
+share, escalating the exact parent's chosen neutral attack to the next legal
+25, 35, or 40 percent commitment. Source commit `73ce9aeb` is based on exact
+v89 parent `f1347251`; the current preflight validates and the suite passes
+`148/148`. Hrafn approved one pinned Docker qualifier at mailbox `d015b1f`.
+
+The Coworld `0.1.30` Pangaea qualifier used the canonical ProxyWar `0.1.8`
+manifest, exact linux/amd64 GR1 image `sha256:314c695e...`, and exact-v89
+parent image `sha256:ebd9eed3...`. Both seats connected. All `58/58` decisions
+were accepted with zero holds and zero rejections. The GR1 seat emitted four
+replay-visible `gr1` markers and finished alive with 9,443 tiles; the parent
+finished alive with 9,194. No K1Z identities were seated. Planner connection
+errors produced 34 deterministic fallbacks, all accepted.
+
+This clears boot, marker-reach, decision-acceptance, and hold/rejection checks.
+It is one seat orientation, so it does not establish mirrored outcome
+advantage and does not make `LOCAL_QUALIFIED` true. Matched play, hosted
+testing, upload, submission, membership, champion, and league work remain
+closed pending a separate Hrafn review. The receipt is
+`experiments/audit-qd1n-large-commitment-grind-gr1-qualifier-20260719.json`.

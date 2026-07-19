@@ -4,7 +4,7 @@
   "experiment": "qd1n large-commitment opening grind GR1",
   "gate": "qualifier",
   "verdict": "PASS",
-  "local_qualified": true,
+  "local_qualified": false,
   "runtime": {
     "coworld_version": "0.1.30",
     "coworld_game_version": "0.1.8",
@@ -12,8 +12,9 @@
     "manifest_sha256": "f5e6b4dd247b2b2e534a415d293babab7fd655d44b2004db4257a2df3a01dab0",
     "job_path": "experiments/gr1-qualifier-explicit-player-jobs-20260719.json",
     "job_sha256": "22da8b37bd94bc54effd7edee5f872955e104c728583059146d20bf291c02d75",
-    "output_path": "/private/tmp/proxywar-qd1n-gr1-amd64-qualifier-20260719",
-    "replay_verified": true
+    "output_path": "/private/tmp/proxywar-qd1n-gr1-amd64-qualifier-20260719-cycle1.3Xm8ms",
+    "replay_audited": true,
+    "replay_verified": false
   },
   "candidate": {
     "source_commit": "73ce9aeb2ad6b15c59249ff506e09eb2ff4e1a1a",
@@ -55,9 +56,11 @@
     "fallbacks": 34,
     "degraded": 34,
     "planner_errors": 2,
+    "k1z_identities_present": 0,
     "k1z_harm": 0,
     "results_sha256": "b6b97fc3d16084a8dbe93715256d1ddf475b766442ed4999be2c5eae26cc17ba",
-    "replay_sha256": "aa61e509cdf8fa6aef8d6471269516475b8ff934af63c9db588e61bf22c3514a"
+    "replay_sha256": "db42be435714ae97c3f39e005c79627338be9aa0448b10fd6842ed0453ca175e",
+    "secondary_cross_audit_replay_sha256": "aa61e509cdf8fa6aef8d6471269516475b8ff934af63c9db588e61bf22c3514a"
   },
   "evidence_boundary": "The qualifier proves candidate-only Docker reach and clean accepted replacements. Its same-orientation tile lead is not a matched advantage.",
   "next_gate": {
@@ -69,5 +72,6 @@
     "candidate_parity_b": "odd",
     "approved": false
   },
-  "promotion_eligible": false
+  "promotion_eligible": false,
+  "promotion_state_note": "The qualifier passes boot, marker-reach, accepted-decision, hold, and rejection checks. LOCAL_QUALIFIED requires the still-unrun mirrored candidate-versus-parent advantage gate."
 }

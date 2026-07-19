@@ -61,7 +61,8 @@
     "qualifier_parent_accepted": 29,
     "qualifier_parent_holds": 0,
     "qualifier_parent_rejections": 0,
-    "qualifier_replay_sha256": "aa61e509cdf8fa6aef8d6471269516475b8ff934af63c9db588e61bf22c3514a",
+    "qualifier_replay_sha256": "db42be435714ae97c3f39e005c79627338be9aa0448b10fd6842ed0453ca175e",
+    "qualifier_secondary_cross_audit_replay_sha256": "aa61e509cdf8fa6aef8d6471269516475b8ff934af63c9db588e61bf22c3514a",
     "matched_status": "not_run_pending_review",
     "receipt": "experiments/receipt-qd1n-large-commitment-grind-gr1-full-suite-20260719.md",
     "qualifier_audit": "experiments/audit-qd1n-large-commitment-grind-gr1-qualifier-20260719.json"
@@ -129,5 +130,5 @@
     "any source, image, request, runtime, or player-identity hash mismatch"
   ],
   "sequencing": "GC2 is closed at zero mechanism reach. GR1 passed its pinned Docker qualifier with direct clean reach. The seat-swapped matched pair is the next gate. Hosted, upload, submission, membership, and champion work remain closed until their separate gates pass.",
-  "verdict": "LOCAL_QUALIFIED is true; matched advantage and every later promotion gate remain unproven"
+  "verdict": "The Docker qualifier passed with direct GR1 reach and clean accepted decisions. LOCAL_QUALIFIED is false until the separate mirrored candidate-versus-parent advantage gate passes; hosted, upload, submission, membership, champion, and league work remain closed."
 }
