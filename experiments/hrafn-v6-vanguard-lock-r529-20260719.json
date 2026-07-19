@@ -2,7 +2,7 @@
   "schema_version": 1,
   "record_type": "hrafn_reconciliation_and_pre_run_hypothesis",
   "recorded_at": "2026-07-19T09:15:05Z",
-  "reconciled_at": "2026-07-19T11:17:58Z",
+  "reconciled_at": "2026-07-19T11:28:51Z",
   "lane": "hrafn-fylking",
   "live_baseline": {
     "label": "hrafn-fylking:v5",
@@ -265,9 +265,9 @@
   "round_531_partial": {
     "round_id": "round_7c23da01-7a3c-4f5f-99dd-fd23a2e49282",
     "round_status": "running",
-    "completed_episode_requests": 2,
+    "completed_episode_requests": 3,
     "failed_episode_requests": 0,
-    "running_episode_requests": 2,
+    "running_episode_requests": 1,
     "episodes": [
       {
         "episode_request_id": "ereq_f995a3d5-7583-4123-b4d4-60ca80a738fa",
@@ -324,19 +324,39 @@
             "cause": "quick-chat action was withdrawn; retry selected hold while attacks, boats, a build, and an alliance request remained submission-legal"
           }
         ]
+      },
+      {
+        "episode_request_id": "ereq_ffd0f127-724f-4cfd-8bb4-f70e3a74cc9a",
+        "map": "Pangaea",
+        "replay_url": "https://softmax-public.s3.amazonaws.com/replays/85515f31-3d36-43a0-b9f6-3f6c193100ee.replay",
+        "replay_sha256": "f0f3838a1cc19d2bcc87068fcd89bcc55f166dc2d221589a8b0cc46b23a58cb8",
+        "winner": null,
+        "turn_count": 50400,
+        "top_score_player": "K1Z juryoku-koku",
+        "hrafn_slot": 10,
+        "hrafn_tiles": 191322,
+        "hrafn_survived": true,
+        "hrafn_decisions": 503,
+        "accepted": 503,
+        "holds": 0,
+        "fallbacks": 0,
+        "rejections": 0,
+        "k1z_harm": 0,
+        "productive_dn1": 30,
+        "rv3_executions": 19
       }
     ],
     "aggregate": {
-      "episodes": 2,
+      "episodes": 3,
       "hrafn_wins": 0,
-      "accepted": 172,
-      "decisions": 172,
+      "accepted": 675,
+      "decisions": 675,
       "holds": 3,
       "fallbacks": 0,
       "rejections": 0,
       "k1z_harm": 0,
-      "productive_dn1": 8,
-      "rv3_executions": 26
+      "productive_dn1": 38,
+      "rv3_executions": 45
     },
     "gate_effect": "the quick-chat control addresses the turn-8100 hold class only; the two embargo-stop withdrawal retry holds remain inherited and unexplained for a zero-hold challenger",
     "verdict": "partial live baseline only; round and promotion verdicts remain open, and the newly separated embargo-stop withdrawal class blocks a VR1 run until the pre-run packet is revised or explicitly re-approved"

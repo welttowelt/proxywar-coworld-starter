@@ -48,15 +48,17 @@ plus 11 productive `dn1` transfers. Retain the replay evidence, but assign no
 official rank, score, or promotion verdict to the failed round. Replay SHA-256
 values: `f06a7baf...` and `7cc46d31...`.
 
-Round 531 remains running after two completed Pangaea replays. Odin and daveey
-won; Hrafn survived with `45,791` and `15,486` tiles. All `172/172` decisions
-were accepted with zero fallbacks, rejects, or K1Z harm, with 26 `rv3`
-executions and 8 productive `dn1` transfers. The daveey replay contains three
+Round 531 remains running after three completed Pangaea replays. Odin and
+daveey won the first two; the third reached turn 50,400 without an outright
+winner. Hrafn survived with `45,791`, `15,486`, and `191,322` tiles. All
+`675/675` decisions were accepted with zero fallbacks, rejects, or K1Z harm,
+with 45 `rv3` executions and 38 productive `dn1` transfers. The daveey replay contains three
 accepted retry holds after withdrawn actions: two embargo-stop actions and one
 quick-chat action while productive actions remained legal. The isolated
 quick-chat control covers only the third hold. The two inherited embargo-stop
 holds block the zero-unexplained-hold pre-run gate, so no Hrafn runner episode
-started. Replay SHA-256 values: `9ed404da...` and `a31b7527...`.
+started. Replay SHA-256 values: `9ed404da...`, `a31b7527...`, and
+`f0f3838a...`.
 
 ## Pangaea seat-2 A/B, 2026-07-12
 

@@ -74,16 +74,17 @@ Current field checkpoint:
   the fourth when the round failed. Retain the replay evidence, but assign no
   round rank, score, or promotion verdict. Replay SHA-256 values:
   `f06a7baf...` and `7cc46d31...`.
-- Round 531 is running with v5 sealed. Two Pangaea episodes have completed:
-  Odin and daveey won, while Hrafn survived with `45,791` and `15,486` tiles.
-  All `172/172` decisions were accepted with zero fallbacks, rejects, or K1Z
-  harm; Hrafn made `26` `rv3` executions and `8` productive `dn1` transfers.
+- Round 531 is running with v5 sealed. Three Pangaea episodes have completed:
+  Odin and daveey won the first two; the third reached turn `50,400` without an
+  outright winner. Hrafn survived with `45,791`, `15,486`, and `191,322` tiles.
+  All `675/675` decisions were accepted with zero fallbacks, rejects, or K1Z
+  harm; Hrafn made `45` `rv3` executions and `38` productive `dn1` transfers.
   The daveey replay contains three accepted retry holds after withdrawn actions:
   two `embargo:...:stop` actions at turns `7,800` and `8,000`, then one
   `quick_chat` action at turn `8,100`, while productive actions remained legal.
   The isolated quick-chat control covers only the third hold. The two inherited
   embargo-stop holds block the zero-unexplained-hold pre-run gate. Replay
-  SHA-256 values: `9ed404da...` and `a31b7527...`.
+  SHA-256 values: `9ed404da...`, `a31b7527...`, and `f0f3838a...`.
 
 ## VR1 corrected pre-run state
 
