@@ -1648,3 +1648,23 @@ Full hashes, replays, and gate evidence are recorded in
 [`diagnosis-qd1n-pangaea-pending-pact-escape-pe1-20260719.json`](diagnosis-qd1n-pangaea-pending-pact-escape-pe1-20260719.json).
 The next isolated arm should test a bounded early Defense Post override before
 collapse, not another terminal escape.
+
+## GC2 qualifier runner-wiring block (2026-07-19)
+
+Hrafn approved the exact GC2 qualifier and matched Pangaea pair in mailbox
+commit `7f4ea95`. Source `9efe990d`, candidate image `sha256:593eedf2...`,
+parent image `sha256:ebd9eed3...`, `coworld==0.1.30`, canonical manifest and
+game-config hashes, and fresh request hashes `da869967...` / `06dd781c...`
+were reverified before acquiring the Odin runner.
+
+The qualifier did not reach policy code. Cycle 1 inherited the starter
+`/app/integration/src/starter-player.mjs` command, which is absent from the
+GC2 image. Cycle 2 passed the intended argv as one JSON-string executable, so
+Docker rejected it before connection. Both attempts ended with `connected=0`,
+zero policy decisions, no results, and no replay. Odin released the runner
+after each failure and did not start either matched request.
+
+GC2 remains `PRE-RUN`. The missing evidence is a completed qualifier built
+from an explicit player job with `run: ["node", "/app/llm-player.mjs"]` for
+both seats. Source stays frozen; GR1, matched play, hosted diagnosis, upload,
+submission, membership, and champion work remain closed.
