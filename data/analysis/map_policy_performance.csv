@@ -1,22 +1,23 @@
 map,player_name,policy_version,matches,declared_wins,episode_points,point_rate_pct,mean_final_tiles,rival_attacks_per_100_decisions,neutral_attacks_per_100_decisions,neutral_boats_per_100_decisions,holds
-Pangaea,Auri,42,43,5,5,11.63,46647.2,27.01,22.44,5.85,53
-Pangaea,Calc,27,32,0,0,0.0,194.8,4.17,14.66,4.91,132
-Pangaea,James Boggs,1,37,0,0,0.0,217.5,30.13,7.78,8.41,0
-Pangaea,K1Z Hrafn,5,38,0,0,0.0,38502.7,5.89,17.39,4.38,106
-Pangaea,K1Z juryoku-koku,3,43,3,4,9.3,48603.6,3.72,13.47,2.25,57
-Pangaea,K1Z katanasan,39,43,2,5,11.63,32654.6,2.71,9.8,3.59,297
-Pangaea,RelhAlpha,3,43,1,1,2.33,11870.3,49.64,33.82,0.35,32
-Pangaea,Richard Higgins,7,32,5,6,18.75,64828.2,52.64,18.17,0.62,85
-Pangaea,Ron @ SWGY,1,43,3,3,6.98,25826.7,21.0,6.14,14.64,3
-Pangaea,Sefirot,27,8,0,0,0.0,12398.6,26.24,32.62,6.03,0
+Pangaea,Auri,42,43,6,6,13.95,54726.9,28.65,22.1,4.96,39
+Pangaea,Calc,27,32,0,0,0.0,194.8,4.38,14.04,4.71,158
+Pangaea,James Boggs,1,37,0,0,0.0,189.0,30.41,7.61,8.16,0
+Pangaea,K1Z Hrafn,5,39,0,0,0.0,38397.9,6.02,16.97,4.32,112
+Pangaea,K1Z juryoku-koku,3,43,3,4,9.3,49309.4,3.61,12.77,2.09,52
+Pangaea,K1Z katanasan,39,43,2,6,13.95,37908.5,2.73,9.75,3.5,297
+Pangaea,RelhAlpha,3,43,2,2,4.65,19551.3,50.78,32.19,0.23,34
+Pangaea,Richard Higgins,7,32,5,6,18.75,67028.8,52.89,17.1,0.62,70
+Pangaea,Ron @ SWGY,1,43,2,2,4.65,17754.2,19.86,5.96,14.98,4
+Pangaea,Sefirot,27,4,0,0,0.0,15326.5,32.13,33.73,6.43,0
 Pangaea,Sefirot,28,18,2,2,11.11,41384.2,37.46,15.47,6.68,1
 Pangaea,Sefirot,31,3,0,0,0.0,2459.7,40.8,10.45,6.47,0
 Pangaea,Sefirot,32,3,0,0,0.0,10528.3,48.68,7.17,5.66,0
 Pangaea,Sefirot,34,4,0,0,0.0,0.0,38.42,6.21,6.21,4
-Pangaea,daveey,22,20,4,4,20.0,78935.6,25.79,13.46,9.79,382
-Pangaea,daveey,24,20,6,6,30.0,129518.3,24.15,16.8,10.31,439
-Pangaea,docxology,1,43,0,0,0.0,0.0,72.01,16.88,0.0,0
-Pangaea,odin free,89,43,2,7,16.28,50824.0,7.8,9.46,12.01,391
+Pangaea,Sefirot,36,4,0,0,0.0,0.0,32.11,5.69,8.7,0
+Pangaea,daveey,22,16,3,3,18.75,75224.6,25.77,12.89,10.9,312
+Pangaea,daveey,24,23,6,6,26.09,113437.2,22.62,16.08,10.07,586
+Pangaea,docxology,1,43,0,0,0.0,0.0,72.39,16.65,0.0,0
+Pangaea,odin free,89,43,2,6,13.95,44236.9,7.36,9.12,11.41,330
 World,Auri,42,32,5,6,18.75,96883.9,15.14,16.29,7.56,75
 World,Calc,27,23,0,0,0.0,605.0,4.61,19.56,4.21,498
 World,James Boggs,1,30,0,0,0.0,0.0,42.9,9.81,7.62,6
