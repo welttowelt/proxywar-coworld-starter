@@ -1,29 +1,28 @@
 player_name,policy_version,won,rival_attacks,target_switches,switch_rate_pct,mean_attack_ratio,mean_attack_percent
-daveey,22,true,1357,452,33.81,3.81,29.9
+daveey,22,true,1260,414,33.33,3.68,29.9
 Richard Higgins,7,true,742,245,33.38,7.5,32.6
-Auri,42,true,474,153,32.76,4.11,29.5
-K1Z juryoku-koku,3,true,223,61,28.24,5.49,36.1
-odin free,89,true,218,59,27.7,13.71,21.3
+Auri,42,true,408,134,33.33,4.13,29.4
+odin free,89,true,298,88,30.14,12.05,20.4
+K1Z juryoku-koku,3,true,263,75,29.41,5.3,36.0
 daveey,24,true,213,53,25.24,4.87,29.6
 K1Z katanasan,39,true,114,20,18.35,7.54,38.4
 Sefirot,28,true,102,45,44.55,3.42,31.5
 RelhAlpha,3,true,75,16,21.62,5.36,28.6
 Ron @ SWGY,1,true,59,15,25.86,3.15,22.7
-Richard Higgins,7,false,4726,1011,21.66,2.15,29.7
-RelhAlpha,3,false,4724,1061,22.83,2.43,30.2
-daveey,22,false,2184,618,28.96,2.12,24.5
-Ron @ SWGY,1,false,1559,610,41.11,2.08,18.5
-Auri,42,false,1477,446,31.7,2.18,28.9
-docxology,1,false,1125,31,2.96,0.55,10.0
-James Boggs,1,false,1113,172,16.51,0.91,10.1
-odin free,89,false,945,225,25.48,4.57,18.3
+Richard Higgins,7,false,4986,1077,21.85,2.11,29.7
+RelhAlpha,3,false,4854,1037,21.71,2.29,30.0
+daveey,22,false,2040,582,29.22,2.15,24.6
+Ron @ SWGY,1,false,1591,617,40.7,2.07,18.5
+Auri,42,false,1563,467,31.3,2.15,28.8
+James Boggs,1,false,1142,170,15.87,0.9,10.1
+docxology,1,false,1134,31,2.94,0.55,10.0
+odin free,89,false,1022,249,25.99,4.46,18.3
 Sefirot,27,false,738,268,37.96,2.6,29.6
-Sefirot,28,false,550,199,37.55,1.98,30.2
-K1Z Hrafn,5,false,463,65,14.98,4.47,13.8
-K1Z juryoku-koku,3,false,396,77,21.88,5.22,36.0
-Calc,27,false,314,80,28.78,3.02,16.5
-Sefirot,25,false,305,126,42.42,3.24,31.5
-K1Z katanasan,39,false,226,59,31.22,5.82,34.8
+Sefirot,28,false,710,236,34.35,1.87,30.5
+K1Z Hrafn,5,false,562,68,12.85,4.18,13.5
+K1Z juryoku-koku,3,false,392,78,22.35,5.27,36.1
+daveey,24,false,377,126,33.96,8.18,26.6
+Calc,27,false,316,75,26.79,3.16,16.9
 Sefirot,26,false,199,61,32.45,1.86,29.8
-daveey,24,false,171,68,40.48,16.22,26.6
-odin free,87,false,81,22,28.57,2.71,21.9
+K1Z katanasan,39,false,197,47,29.01,5.91,34.5
+Sefirot,25,false,107,35,33.98,1.57,29.9
