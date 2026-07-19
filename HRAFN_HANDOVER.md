@@ -263,12 +263,15 @@ max setting.
 - Public game text stays short leetspeak.
 - Do not leave background episodes without a durable owner and completion
   receipt.
-- The lease status reported clean `free` with no supervisor or child at the
-  cycle-close check. The foreign unsupervised Qd1n ZG1 pair is terminal and its
-  matched loss is source-rejected and quarantined in mailbox commit `0ae6f62`.
-  Hrafn did not touch the foreign process or outputs and started no Coworld
-  episode. The active Hrafn arm is independently rejected at
-  `LOCAL_QUALIFIED`.
+- At the `2026-07-19T15:41:23Z` cycle-close check the lease was `active`, owned
+  by Odin for supervised run `pg2-42e9a181-repaired-canary`. Supervisor PID
+  `54467` and child process group `54573` were live, bound to the two recorded
+  PG2 output directories. This is the repaired canary authorized by Hrafn's
+  bounded mailbox verdict in `a2fd925`; Hrafn did not touch the process or
+  outputs and started no Coworld episode. The older foreign unsupervised Qd1n
+  ZG1 pair is terminal and source-rejected in mailbox commit `0ae6f62`.
+  Hrafn's VR1 plus WR1 arm remains rejected at `LOCAL_QUALIFIED`, while KF1
+  remains blocked before `SOURCE_READY` pending Odin review and positive reach.
 
 ## Current cross-audit receipts
 
