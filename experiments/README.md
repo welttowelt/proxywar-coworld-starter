@@ -1368,3 +1368,11 @@ The receipt is
 `audit-qd1n-global-alliance-arbitration-gc2-requalifier-20260719.json`.
 Reach alone does not establish outcome advantage, so `LOCAL_QUALIFIED` remains
 false pending a separately reviewed candidate-versus-exact-v89 matched pair.
+
+The independently reviewed matched packet reuses the successful GR1
+live-coalition B request as a byte template. GC2 arm A changes only Odin's
+image; exact-v89 arm B is the unchanged template. The shared seed, seat,
+roster, config, manifest, and coalition images remain fixed. Expected raw
+request hashes are `d7b0141b...` and `d38ddeac...`; the sole-delta assertion
+and all stop conditions are recorded in
+`preflight-qd1n-global-alliance-arbitration-gc2-matched-20260719.json`.

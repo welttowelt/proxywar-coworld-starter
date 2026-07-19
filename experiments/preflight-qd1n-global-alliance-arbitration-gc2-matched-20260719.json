@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "verdict": "READY_FOR_EXACT_MATCHED_PAIR",
+  "candidate": {
+    "source_commit": "9efe990d900f16ff6ae08013d0c48bfad0092a4b",
+    "artifact_parent_commit": "ccf9a68b",
+    "strategy_sha256": "7270e4175b25f31844e16d3f0a80211e6c6beeb27d5c3f9f5e567dd1b8838a18",
+    "player_sha256": "e34e62dcb306ae82dbc419d2a0d5bf2ec5240fb2d17609568e378be1437abc7c",
+    "image_ref": "proxywar-agent-llm:qd1n-v89-gc2-amd64",
+    "image_id": "sha256:593eedf2fa9dd7ee70c24800da6fedcbc203baf5b8310ca0185022be14207677"
+  },
+  "parent": {
+    "source_commit": "f1347251834a6283182b631e1336595eb2e08342",
+    "image_ref": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+    "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478"
+  },
+  "reach_gate": {
+    "audit_path": "experiments/audit-qd1n-global-alliance-arbitration-gc2-requalifier-20260719.json",
+    "artifact_commit": "ccf9a68b",
+    "verdict": "PASS_REACH_ONLY",
+    "candidate_gc2_executions": 2,
+    "parent_expected_gc2_executions": 0
+  },
+  "review": {
+    "independent_cross_audit": "PASS",
+    "hrafn_source_receipt": "HRAFN_TO_CODEX_ODIN_GC2_SOURCE_RECEIPT_RUNNER_GO_20260719.md",
+    "fresh_hrafn_fixture_verdict": "not received within the decision SLA",
+    "battlefield_decision": "authorize exactly this reversible local A/B pair after request hashes reconcile",
+    "external_action_authorized": false
+  },
+  "template": {
+    "source_commit": "4c844071ffa6a25c9f0928a3483ca3d687e49ae7",
+    "source_path": "experiments/gr1-matched-pangaea-b-20260719.json",
+    "arm_a_transform_path": "experiments/gc2-matched-live-coalition-a-20260719.jq",
+    "arm_b_transform": "identity",
+    "only_request_delta": "players[0].image",
+    "map": "Pangaea",
+    "map_size": "Compact",
+    "difficulty": "Easy",
+    "seed": 20260719,
+    "odin_seat": 0,
+    "num_agents": 4,
+    "max_decision_steps": 150,
+    "turns_per_decision_step": 100,
+    "max_decision_ms": 15000,
+    "replay_tail_turns": 500,
+    "episode_timeout_seconds": 2400,
+    "player_connect_timeout_seconds": 120
+  },
+  "roster": [
+    {
+      "seat": 0,
+      "name": "K1Z odin free",
+      "arm_a_image_id": "sha256:593eedf2fa9dd7ee70c24800da6fedcbc203baf5b8310ca0185022be14207677",
+      "arm_b_image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+      "run": [
+        "node",
+        "/app/llm-player.mjs"
+      ]
+    },
+    {
+      "seat": 1,
+      "name": "K1Z Hrafn",
+      "image_id": "sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d",
+      "run": [
+        "node",
+        "/app/hrafn-player.mjs"
+      ]
+    },
+    {
+      "seat": 2,
+      "name": "K1Z juryoku koku",
+      "image_id": "sha256:2ebf15372e8cf59b194ebb20f06b818a6a54f96994f4125e103b6a26070491c2",
+      "run": [
+        "node",
+        "/app/llm-player.mjs"
+      ]
+    },
+    {
+      "seat": 3,
+      "name": "K1Z katanasan",
+      "image_id": "sha256:0afece2db25675b0b744844769c64e02960270f56502c33d62bf0702f7b58cf6",
+      "run": [
+        "node",
+        "/app/llm-player.mjs"
+      ]
+    }
+  ],
+  "expected_hashes": {
+    "arm_a_request_file_sha256": "d7b0141be7aca444de8cf367712aafa344df5dc1aef15e335831f2db1f822e05",
+    "arm_b_request_file_sha256": "d38ddeac7ad00af4464eb71bf48c4904e5c54597fb3f3b264314d48890b70d78",
+    "arm_a_canonical_request_sha256": "f18cc7237d4336125e24bab09be89bd34848afa82020d708f0cccc35f1a2e28f",
+    "arm_b_canonical_request_sha256": "9609c08bf443521e913be0a0a41bcf5392d7c363e05e3d7146eb953218ca6fb1",
+    "shared_canonical_game_config_sha256": "a75e3a675bb7041005c8575d8b8d21f4ad10ba897e5298f9a1e725cc6c34e7ea",
+    "shared_pretty_game_config_sha256": "3aef2f8ab420cc2bdaa8ca431ec1d54c2d4afd5ef4e7f91dab28eb376e387c88",
+    "arm_a_canonical_player_vector_sha256": "dc9fb7a2af9eb9825dd3edce82cb6e224b37659295d44e84e61552474ec10c4b",
+    "arm_b_canonical_player_vector_sha256": "bb4726a131d898d902d7f70662a8638240f2e9079b02dccdf5fdd347a4a141cf",
+    "manifest_file_sha256": "f5e6b4dd247b2b2e534a415d293babab7fd655d44b2004db4257a2df3a01dab0",
+    "embedded_manifest_canonical_sha256": "a43dafa9bb7e68a5c708b3fc6a44e80097e04e1da07131d62a00b7a8a445d86d"
+  },
+  "stop_conditions": [
+    "any source, image, architecture, request, config, manifest, seed, seat, roster, or runtime drift",
+    "zero gc2 reach in arm A",
+    "any gc2 marker in arm B",
+    "any rejected decision or unexplained Odin hold",
+    "any harmful Odin action against a protected K1Z identity",
+    "candidate hold or degradation regression versus parent",
+    "no paired Odin finish advantage: placement first; if tied, score and final tiles must improve without worse survival"
+  ],
+  "next_gate_if_passed": "separate hosted review only",
+  "local_qualified": false,
+  "promotion_eligible": false,
+  "external_action_allowed": false
+}
