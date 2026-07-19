@@ -128,13 +128,13 @@ test("productive boat growth does not trigger conversion mode", () => {
   assert.equal(boatConversionStalled(state, history), false);
 });
 
-test("World low-share upgrade stall escapes through a credible naval invasion", () => {
+test("World low-share four-upgrade stall escapes through a credible naval invasion", () => {
   const invasion = {
     ...action("boat:rival:16", "boat", "Boat to Rival 16%"),
     metadata: { targetID: "rival", targetName: "Rival", troopPercent: 16 },
   };
   const upgrade = action("upgrade:city:1", "upgrade_structure", "Upgrade City");
-  const history = Array.from({ length: 8 }, (_, index) => ({
+  const history = Array.from({ length: 4 }, (_, index) => ({
     actionID: `upgrade:city:${index}`,
     kind: "upgrade_structure",
     tileShare: 0.04,
@@ -166,7 +166,7 @@ test("World upgrade-stall escape preserves a legal neutral land frontier", () =>
     metadata: { targetID: "rival", targetName: "Rival", troopPercent: 16 },
   };
   const upgrade = action("upgrade:city:1", "upgrade_structure", "Upgrade City");
-  const history = Array.from({ length: 8 }, (_, index) => ({
+  const history = Array.from({ length: 4 }, (_, index) => ({
     actionID: `upgrade:city:${index}`,
     kind: "upgrade_structure",
     tileShare: 0.04,
@@ -193,7 +193,7 @@ test("Pangaea does not inherit the World upgrade-stall escape", () => {
     metadata: { targetID: "rival", targetName: "Rival", troopPercent: 16 },
   };
   const upgrade = action("upgrade:city:1", "upgrade_structure", "Upgrade City");
-  const history = Array.from({ length: 8 }, (_, index) => ({
+  const history = Array.from({ length: 4 }, (_, index) => ({
     actionID: `upgrade:city:${index}`,
     kind: "upgrade_structure",
     tileShare: 0.04,
@@ -220,10 +220,10 @@ test("World upgrade-stall escape stays dormant while territory is growing", () =
     metadata: { targetID: "rival", targetName: "Rival", troopPercent: 16 },
   };
   const upgrade = action("upgrade:city:1", "upgrade_structure", "Upgrade City");
-  const history = Array.from({ length: 8 }, (_, index) => ({
+  const history = Array.from({ length: 4 }, (_, index) => ({
     actionID: `upgrade:city:${index}`,
     kind: "upgrade_structure",
-    tileShare: 0.02 + index * 0.003,
+    tileShare: 0.035 + index * 0.003,
   }));
   const selected = choose(
     [invasion, upgrade],
@@ -251,7 +251,7 @@ test("World upgrade-stall escape never invades a protected K1Z warrior", () => {
     },
   };
   const upgrade = action("upgrade:city:1", "upgrade_structure", "Upgrade City");
-  const history = Array.from({ length: 8 }, (_, index) => ({
+  const history = Array.from({ length: 4 }, (_, index) => ({
     actionID: `upgrade:city:${index}`,
     kind: "upgrade_structure",
     tileShare: 0.04,

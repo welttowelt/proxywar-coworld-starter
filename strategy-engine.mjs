@@ -651,9 +651,9 @@ export function upgradeLoopStalled(state, history) {
   ) {
     return false;
   }
-  const recent = history.slice(-8);
+  const recent = history.slice(-4);
   if (
-    recent.length < 8 ||
+    recent.length < 4 ||
     recent.some((entry) => entry.kind !== "upgrade_structure")
   ) {
     return false;
@@ -661,7 +661,7 @@ export function upgradeLoopStalled(state, history) {
   const shares = recent
     .map((entry) => finiteNumber(entry?.tileShare, NaN))
     .filter(Number.isFinite);
-  if (shares.length < 8) return false;
+  if (shares.length < 4) return false;
   return currentShare <= shares[0] + 0.001;
 }
 
