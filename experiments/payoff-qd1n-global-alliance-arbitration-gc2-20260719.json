@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-19",
+  "pair_id": "gc2-live-coalition-seed-20260719",
+  "candidate_arm": "global-alliance-arbitration-gc2",
+  "parent_arm": "exact-v89",
+  "same_seed": true,
+  "same_seat": true,
+  "same_roster": true,
+  "only_request_delta": "players[0].image",
+  "candidate": {
+    "decision_20_tiles": 27909,
+    "decision_50_tiles": 29135,
+    "decision_100_tiles": 29877,
+    "finish_rank": 2,
+    "score": 0.2923070902349062,
+    "final_tiles": 29877,
+    "degraded": 147
+  },
+  "parent": {
+    "decision_20_tiles": 28109,
+    "decision_50_tiles": 29200,
+    "decision_100_tiles": 30130,
+    "finish_rank": 2,
+    "score": 0.2947823619766953,
+    "final_tiles": 30130,
+    "degraded": 146
+  },
+  "candidate_minus_parent": {
+    "decision_20_tiles": -200,
+    "decision_50_tiles": -65,
+    "decision_100_tiles": -253,
+    "finish_rank": 0,
+    "score": -0.0024752717417890757,
+    "final_tiles": -253,
+    "degraded": 1
+  },
+  "matched_advantage": false,
+  "reliability_non_regression": false,
+  "verdict": "REJECT"
+}

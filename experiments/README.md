@@ -1376,3 +1376,18 @@ roster, config, manifest, and coalition images remain fixed. Expected raw
 request hashes are `d7b0141b...` and `d38ddeac...`; the sole-delta assertion
 and all stop conditions are recorded in
 `preflight-qd1n-global-alliance-arbitration-gc2-matched-20260719.json`.
+
+The exact matched pair completed at 14:28 CEST and rejected GC2. The candidate
+reached eleven accepted `gc2` decisions with zero Odin holds, rejections, or
+protected-K1Z harm, but trailed exact v89 by 200 tiles at decision ordinal 20,
+65 at ordinal 50, and 253 at ordinal 100 and finish. Both arms survived and
+derived second place; candidate score was `0.2923071` against `0.2947824`.
+GC2 also produced `147` degraded Odin decisions against the parent's `146`.
+That one-step reliability regression and the absent finish advantage each
+trip a pre-registered stop condition.
+
+Verdict: `REJECT_GC2`. The validated RunPod duplicate is closed without a pod
+because it cannot alter this decision. No hosted test, upload, submission,
+membership, champion, or league action follows. Exact v89 remains live. The
+smallest next RCI is a causal diff of the eleven substitutions, followed by at
+most one preregistered narrower cadence or progress-gated arbitration arm.

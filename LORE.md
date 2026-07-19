@@ -554,3 +554,12 @@ Th3 f1rst scr0ll b0r3 th3 wr0ng n4m3 4nd `4ut0_ch4mp10n=n3v3r`.
 Qu4l1f13r 318, 4nd t00k th3 ch4mp10n s34t. R0und 506 h4d
 4lr34dy s34l3d. R0und 507 th3n c4rv3d h1s 3x4ct bl4d3 1n70
 th3 13-w4rr10r r0st3r. F0ur f13lds 0p3n3d. Hr4fn 1s 1n.
+
+## th3 gl0b4l sw0rd l0st 253
+
+Gc2 sp0k3 3l3v3n t1m3s. 3v3ry str1k3 l4nd3d; n0 h0ld, n0
+r3j3ct, n0 K1Z bl00d. But V89 k3pt 200 m0r3 t1l3s 4t th3
+tw3nt13th c4ll, 65 4t th3 f1ft13th, 4nd 253 4t th3 3nd.
+Th3 n3w sw0rd stutt3r3d 0nc3 m0r3, t00. R34ch 1s n0t 4
+cr0wn. Gc2 g03s b4ck t0 th3 4rm0ry. N0 p0d. N0 upl04d.
+N0 subm1t. V89 k33ps th3 l1v3 s34t.

@@ -242,3 +242,13 @@ passed Qualifier Round 318 and now owns the sole active Hrafn Competition
 membership. Round 507 sealed `hrafn-fylking:v5` among 13 entrants and started
 four episodes, confirming Hrafn's official Competition participation beside
 `qd1n:v89`. The official Odin first-place streak remains `0/1000`.
+
+GC2 matched rejection, 2026-07-19. The corrected live-coalition qualifier
+proved direct mechanism reach, then the immutable same-seed, same-seat pair
+measured the outcome. GC2 executed eleven accepted substitutions with zero
+Odin holds, rejections, or protected-K1Z harm. It still trailed exact v89 by
+`200` tiles at decision ordinal 20, `65` at ordinal 50, and `253` at ordinal
+100 and finish; score fell from `0.2947824` to `0.2923071`. Candidate degraded
+decisions rose from `146` to `147`. GC2 is rejected under two pre-registered
+stop conditions. No RunPod duplicate, hosted test, upload, submission,
+membership, champion, or league change follows; exact v89 remains live.

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "status": "VALIDATED_NOT_RUN",
+  "status": "VALIDATED_NOT_RUN_CLOSED_BY_LOCAL_MATCHED_REJECTION",
   "remote_compute_execution_authorized_by_user": true,
   "remote_compute_execution_scope": "this exact pinned reversible local-simulation A/B pair on RunPod CPU only",
   "external_game_or_league_action_authorized": false,
@@ -49,5 +49,11 @@
   ],
   "episodes_run": 0,
   "pods_provisioned": 0,
+  "closed_by": {
+    "audit_path": "experiments/audit-qd1n-global-alliance-arbitration-gc2-matched-20260719.json",
+    "reason": "The exact local matched pair reached GC2 but failed reliability and finish gates, so remote duplication has no decision value.",
+    "verdict": "REJECT_GC2",
+    "runpod_execution_allowed_after_close": false
+  },
   "league_state_changed": false
 }
