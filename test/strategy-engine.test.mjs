@@ -23,8 +23,12 @@ function observation({
   spawnTile = null,
   profile = "",
   objective = null,
+  alivePlayerCount = null,
+  gameMode = "FFA",
 } = {}) {
   return {
+    gameMode,
+    ...(alivePlayerCount === null ? {} : { alivePlayerCount }),
     phase: "active",
     profile,
     objective,
@@ -2111,4 +2115,457 @@ test("outsiders remain legal nuclear targets beside all three K1Z allies", () =>
   );
   assert.equal(selected.id, bomb.id);
   assert.equal(selected.policyMarker, "nk1");
+});
+
+function k1zRival({
+  id,
+  name,
+  tileShare,
+  relativeTroopRatio = 2,
+  isAllied = false,
+}) {
+  return { id, name, tileShare, relativeTroopRatio, isAllied };
+}
+
+function targetedAction(id, kind, target, percent, risk = lowRisk) {
+  return {
+    ...action(id, kind, id, risk),
+    metadata: {
+      targetID: target.id,
+      targetName: target.name,
+      ...(percent === null ? {} : { troopPercent: percent }),
+    },
+  };
+}
+
+test("KF1 breaks the weakest alliance when Odin plus configured K1Z are the only survivors", () => {
+  const katanasan = k1zRival({
+    id: "kata", name: "K1Z katanasan", tileShare: 0.04, isAllied: true,
+  });
+  const juryoku = k1zRival({
+    id: "grav", name: "K1Z juryoku koku", tileShare: 0.1, isAllied: true,
+  });
+  const hrafn = k1zRival({
+    id: "hrafn", name: "K1Z Hrafn", tileShare: 0.2, isAllied: true,
+  });
+  const breakKatanasan = targetedAction(
+    "break_alliance:kata",
+    "break_alliance",
+    katanasan,
+    null,
+    { level: "high" },
+  );
+  const breakJuryoku = targetedAction(
+    "break_alliance:grav",
+    "break_alliance",
+    juryoku,
+    null,
+    { level: "high" },
+  );
+  const breakHrafn = targetedAction(
+    "break_alliance:hrafn",
+    "break_alliance",
+    hrafn,
+    null,
+    { level: "high" },
+  );
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [breakHrafn, breakJuryoku, build, breakKatanasan],
+    observation({
+      alivePlayerCount: 4,
+      rivals: [katanasan, juryoku, hrafn],
+    }),
+  );
+  assert.equal(selected.id, breakKatanasan.id);
+  assert.equal(selected.policyMarker, "kf1");
+});
+
+test("KF1 uses the largest legal land commitment against the easiest K1Z target", () => {
+  const katanasan = k1zRival({
+    id: "kata", name: "K1Z katanasan", tileShare: 0.04, relativeTroopRatio: 2.5,
+  });
+  const hrafn = k1zRival({
+    id: "hrafn", name: "K1Z Hrafn", tileShare: 0.2, relativeTroopRatio: 1.2,
+  });
+  const attacks = [10, 25, 40].flatMap((percent) => [
+    targetedAction(`attack:kata:${percent}`, "attack", katanasan, percent),
+    targetedAction(`attack:hrafn:${percent}`, "attack", hrafn, percent),
+  ]);
+  const selected = choose(
+    attacks,
+    observation({
+      alivePlayerCount: 3,
+      incomingAttacks: [{ attackerID: "hrafn" }],
+      rivals: [hrafn, katanasan],
+    }),
+  );
+  assert.equal(selected.id, "attack:kata:40");
+  assert.equal(selected.policyMarker, "kf1");
+});
+
+test("KF1 uses the largest legal naval commitment when no K1Z land attack is legal", () => {
+  const hrafn = k1zRival({
+    id: "hrafn", name: "K1Z Hrafn", tileShare: 0.2, relativeTroopRatio: 1.2,
+  });
+  const selected = choose(
+    [
+      targetedAction("boat:hrafn:8", "boat", hrafn, 8),
+      targetedAction("boat:hrafn:16", "boat", hrafn, 16),
+      action("upgrade:Port:1", "upgrade_structure", "Upgrade Port"),
+    ],
+    observation({
+      alivePlayerCount: 2,
+      rivals: [{ ...hrafn, sharesBorder: false, canAttack: false }],
+    }),
+  );
+  assert.equal(selected.id, "boat:hrafn:16");
+  assert.equal(selected.policyMarker, "kf1");
+});
+
+test("KF1 suppresses coalition re-alliance and ordinary economy while waiting", () => {
+  const hrafn = k1zRival({
+    id: "hrafn", name: "K1Z Hrafn", tileShare: 0.2, relativeTroopRatio: 1.2,
+  });
+  const request = {
+    ...action("alliance:hrafn", "alliance_request", "Request alliance with K1Z Hrafn"),
+    metadata: {
+      recipientID: hrafn.id,
+      recipientName: hrafn.name,
+      relation: 2,
+    },
+  };
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [request, build, action("hold", "hold", "Hold")],
+    observation({ alivePlayerCount: 2, rivals: [hrafn] }),
+  );
+  assert.equal(selected.id, "hold");
+  assert.notEqual(selected.id, request.id);
+});
+
+test("KF1 prefers hold over renewing a K1Z alliance when no finishing action exists", () => {
+  const hrafn = k1zRival({
+    id: "hrafn", name: "K1Z Hrafn", tileShare: 0.2, relativeTroopRatio: 1.2,
+  });
+  const request = {
+    ...action("alliance:hrafn", "alliance_request", "Request alliance with K1Z Hrafn"),
+    metadata: {
+      recipientID: hrafn.id,
+      recipientName: hrafn.name,
+      relation: 2,
+    },
+  };
+  const hold = action("hold", "hold", "Hold");
+  const selected = choose(
+    [request, hold],
+    observation({ alivePlayerCount: 2, rivals: [hrafn] }),
+  );
+  assert.equal(selected.id, hold.id);
+});
+
+test("KF1 stays dormant when survivor count implies a hidden outsider", () => {
+  const hrafn = k1zRival({
+    id: "hrafn", name: "K1Z Hrafn", tileShare: 0.2, relativeTroopRatio: 2,
+  });
+  const strike = targetedAction("attack:hrafn:40", "attack", hrafn, 40);
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [strike, build],
+    observation({ alivePlayerCount: 3, rivals: [hrafn] }),
+  );
+  assert.equal(selected.id, build.id);
+  assert.notEqual(selected.policyMarker, "kf1");
+});
+
+test("KF1 stays dormant when alivePlayerCount is missing", () => {
+  const hrafn = k1zRival({
+    id: "hrafn", name: "K1Z Hrafn", tileShare: 0.2, relativeTroopRatio: 2,
+  });
+  const strike = targetedAction("attack:hrafn:40", "attack", hrafn, 40);
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose([strike, build], observation({ rivals: [hrafn] }));
+  assert.equal(selected.id, build.id);
+  assert.notEqual(selected.policyMarker, "kf1");
+});
+
+test("KF1 stays dormant outside FFA", () => {
+  const hrafn = k1zRival({
+    id: "hrafn", name: "K1Z Hrafn", tileShare: 0.2, relativeTroopRatio: 2,
+  });
+  const strike = targetedAction("attack:hrafn:40", "attack", hrafn, 40);
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [strike, build],
+    observation({ alivePlayerCount: 2, gameMode: "Team", rivals: [hrafn] }),
+  );
+  assert.equal(selected.id, build.id);
+  assert.notEqual(selected.policyMarker, "kf1");
+});
+
+test("KF1 stays dormant while any outsider remains", () => {
+  const hrafn = k1zRival({
+    id: "hrafn", name: "K1Z Hrafn", tileShare: 0.2, relativeTroopRatio: 2,
+  });
+  const outsider = {
+    id: "outsider", name: "Outsider", tileShare: 0.1, relativeTroopRatio: 2,
+  };
+  const hrafnStrike = targetedAction("attack:hrafn:40", "attack", hrafn, 40);
+  const outsiderStrike = targetedAction("attack:outsider:10", "attack", outsider, 10);
+  const selected = choose(
+    [hrafnStrike, outsiderStrike],
+    observation({ alivePlayerCount: 3, rivals: [hrafn, outsider] }),
+  );
+  assert.equal(selected.id, outsiderStrike.id);
+  assert.notEqual(selected.policyMarker, "kf1");
+});
+
+test("an unregistered K1Z label cannot activate KF1", () => {
+  const newcomer = {
+    id: "newcomer",
+    name: "K1Z newcomer",
+    tileShare: 0.1,
+    relativeTroopRatio: 2,
+  };
+  const strike = targetedAction("attack:newcomer:40", "attack", newcomer, 40);
+  const selected = choose(
+    [strike, action("hold", "hold", "Hold")],
+    observation({ alivePlayerCount: 2, rivals: [newcomer] }),
+  );
+  assert.equal(selected.id, strike.id);
+  assert.notEqual(selected.policyMarker, "kf1");
+});
+
+test("a league K1Z player ID cannot activate KF1 under an unknown match display name", () => {
+  const hrafn = k1zRival({
+    id: "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    name: "Northern Raven",
+    tileShare: 0.2,
+    relativeTroopRatio: 2,
+  });
+  const strike = targetedAction("attack:raven:40", "attack", hrafn, 40);
+  const selected = choose(
+    [strike, action("build:City:1", "build", "Build City")],
+    observation({ alivePlayerCount: 2, rivals: [hrafn] }),
+  );
+  assert.equal(selected.id, "build:City:1");
+  assert.notEqual(selected.policyMarker, "kf1");
+});
+
+test("KF1 treats risk metadata as advisory and still takes the largest legal strike", () => {
+  const hrafn = k1zRival({
+    id: "hrafn", name: "K1Z Hrafn", tileShare: 0.2, relativeTroopRatio: 2,
+  });
+  const selected = choose(
+    [
+      targetedAction("attack:hrafn:10", "attack", hrafn, 10, { level: "low" }),
+      targetedAction("attack:hrafn:25", "attack", hrafn, 25, { level: "medium" }),
+      targetedAction("attack:hrafn:40", "attack", hrafn, 40, { level: "high" }),
+    ],
+    observation({ alivePlayerCount: 2, rivals: [hrafn] }),
+  );
+  assert.equal(selected.id, "attack:hrafn:40");
+  assert.equal(selected.policyMarker, "kf1");
+});
+
+test("KF1 keeps its live target lock instead of opening a second K1Z front", () => {
+  const katanasan = k1zRival({
+    id: "kata", name: "K1Z katanasan", tileShare: 0.03, relativeTroopRatio: 3,
+  });
+  const hrafn = k1zRival({
+    id: "hrafn", name: "K1Z Hrafn", tileShare: 0.2, relativeTroopRatio: 1.2,
+  });
+  const history = [{
+    actionID: "boat:hrafn:25",
+    kind: "boat",
+    targetID: "hrafn",
+    targetName: "K1Z Hrafn",
+    policyMarker: "kf1",
+  }];
+  const selected = choose(
+    [
+      targetedAction("attack:kata:40", "attack", katanasan, 40),
+      targetedAction("attack:hrafn:40", "attack", hrafn, 40),
+    ],
+    observation({ alivePlayerCount: 3, rivals: [katanasan, hrafn] }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, "attack:hrafn:40");
+  assert.equal(selected.policyMarker, "kf1");
+});
+
+test("KF1 releases a target lock after that K1Z player dies", () => {
+  const katanasan = k1zRival({
+    id: "kata", name: "K1Z katanasan", tileShare: 0.03, relativeTroopRatio: 3,
+  });
+  const history = [{
+    actionID: "attack:hrafn:40",
+    kind: "attack",
+    targetID: "hrafn",
+    targetName: "K1Z Hrafn",
+    policyMarker: "kf1",
+  }];
+  const selected = choose(
+    [targetedAction("attack:kata:40", "attack", katanasan, 40)],
+    observation({ alivePlayerCount: 2, rivals: [katanasan] }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, "attack:kata:40");
+  assert.equal(selected.policyMarker, "kf1");
+});
+
+test("KF1 never falls through to donations while a locked alliance cannot yet break", () => {
+  const hrafn = k1zRival({
+    id: "hrafn",
+    name: "K1Z Hrafn",
+    tileShare: 0.2,
+    relativeTroopRatio: 1.2,
+    isAllied: true,
+  });
+  const donation = targetedAction("donate_troops:hrafn", "donate_troops", hrafn, null);
+  const hold = action("hold", "hold", "Hold");
+  const selected = choose(
+    [donation, hold],
+    observation({ alivePlayerCount: 2, rivals: [hrafn] }),
+    { focus: "ally" },
+  );
+  assert.equal(selected.id, hold.id);
+});
+
+test("KF1 uses maximum neutral land while waiting for K1Z reach", () => {
+  const hrafn = k1zRival({
+    id: "hrafn",
+    name: "K1Z Hrafn",
+    tileShare: 0.2,
+    relativeTroopRatio: 1.2,
+    isAllied: true,
+  });
+  const selected = choose(
+    [
+      action("expand:terra-nullius:10", "attack", "Expand Terra Nullius 10%"),
+      action("expand:terra-nullius:40", "attack", "Expand Terra Nullius 40%"),
+      action("hold", "hold", "Hold"),
+    ],
+    observation({ alivePlayerCount: 2, rivals: [hrafn] }),
+  );
+  assert.equal(selected.id, "expand:terra-nullius:40");
+  assert.equal(selected.policyMarker, "kf1");
+});
+
+test("KF1 builds a Port as its only reach-enabling fallback", () => {
+  const hrafn = k1zRival({
+    id: "hrafn",
+    name: "K1Z Hrafn",
+    tileShare: 0.2,
+    relativeTroopRatio: 1.2,
+    isAllied: true,
+  });
+  const port = {
+    ...action("build:Port:1", "build", "Build Port"),
+    metadata: { unit: "Port" },
+  };
+  const selected = choose(
+    [
+      action("build:City:1", "build", "Build City"),
+      port,
+      action("hold", "hold", "Hold"),
+    ],
+    observation({ alivePlayerCount: 2, rivals: [hrafn] }),
+  );
+  assert.equal(selected.id, port.id);
+  assert.equal(selected.policyMarker, "kf1");
+});
+
+test("untagged coalition names cannot activate KF1", () => {
+  const hrafn = k1zRival({
+    id: "hrafn", name: "Hrafn", tileShare: 0.2, relativeTroopRatio: 2,
+  });
+  const strike = targetedAction("attack:hrafn:40", "attack", hrafn, 40);
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [strike, build],
+    observation({ alivePlayerCount: 2, rivals: [hrafn] }),
+  );
+  assert.equal(selected.id, build.id);
+  assert.notEqual(selected.policyMarker, "kf1");
+});
+
+test("KF1 stays dormant outside the active phase", () => {
+  const hrafn = k1zRival({
+    id: "hrafn", name: "K1Z Hrafn", tileShare: 0.2, relativeTroopRatio: 2,
+  });
+  for (const phase of ["spawn", "finished"]) {
+    const obs = observation({ alivePlayerCount: 2, rivals: [hrafn] });
+    obs.phase = phase;
+    const selected = choose(
+      [
+        targetedAction("attack:hrafn:40", "attack", hrafn, 40),
+        action("build:City:1", "build", "Build City"),
+      ],
+      obs,
+    );
+    assert.equal(selected.id, "build:City:1");
+    assert.notEqual(selected.policyMarker, "kf1");
+  }
+});
+
+test("sole-survivor Odin takes maximum neutral land until the eighty-percent win check", () => {
+  const selected = choose(
+    [
+      action("expand:terra-nullius:10", "attack", "Expand Terra Nullius 10%"),
+      action("expand:terra-nullius:25", "attack", "Expand Terra Nullius 25%"),
+      action("expand:terra-nullius:40", "attack", "Expand Terra Nullius 40%"),
+      action("hold", "hold", "Hold"),
+    ],
+    observation({ alivePlayerCount: 1, tileShare: 0.75, rivals: [] }),
+  );
+  assert.equal(selected.id, "expand:terra-nullius:40");
+  assert.equal(selected.policyMarker, "kf1");
+});
+
+test("sole-survivor Odin waits for the win check after eighty percent", () => {
+  const selected = choose(
+    [
+      action("expand:terra-nullius:40", "attack", "Expand Terra Nullius 40%"),
+      action("hold", "hold", "Hold"),
+    ],
+    observation({ alivePlayerCount: 1, tileShare: 0.81, rivals: [] }),
+  );
+  assert.equal(selected.id, "hold");
+  assert.equal(selected.policyMarker, "kf1");
+});
+
+test("duplicate canonical K1Z names cannot satisfy the KF1 roster proof", () => {
+  const first = k1zRival({
+    id: "hrafn-a", name: "K1Z Hrafn", tileShare: 0.1, relativeTroopRatio: 2,
+  });
+  const second = k1zRival({
+    id: "hrafn-b", name: "[K1Z] Hrafn", tileShare: 0.2, relativeTroopRatio: 2,
+  });
+  const selected = choose(
+    [
+      targetedAction("attack:hrafn-a:40", "attack", first, 40),
+      action("build:City:1", "build", "Build City"),
+    ],
+    observation({ alivePlayerCount: 3, rivals: [first, second] }),
+  );
+  assert.equal(selected.id, "build:City:1");
+  assert.notEqual(selected.policyMarker, "kf1");
+});
+
+test("an untagged exact coalition name cannot satisfy the KF1 roster proof", () => {
+  const katanasan = k1zRival({
+    id: "kata", name: "katanasan", tileShare: 0.1, relativeTroopRatio: 2,
+  });
+  const selected = choose(
+    [
+      targetedAction("attack:kata:40", "attack", katanasan, 40),
+      action("build:City:1", "build", "Build City"),
+    ],
+    observation({ alivePlayerCount: 2, rivals: [katanasan] }),
+  );
+  assert.equal(selected.id, "build:City:1");
+  assert.notEqual(selected.policyMarker, "kf1");
 });

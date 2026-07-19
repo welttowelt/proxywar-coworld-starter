@@ -22,6 +22,12 @@ function normalizedRivalName(value) {
     .toLowerCase();
 }
 
+function hasLeadingK1ZTag(value) {
+  return /^(?:\[k1z\]|k1z)(?:\s+|$)/i.test(
+    String(value ?? "").normalize("NFKC").trim(),
+  );
+}
+
 const RECIPROCAL_RIVALS = new Set(
   ["katanasan", "juryoku-koku", "hrafn"].map(normalizedRivalName),
 );
@@ -165,6 +171,11 @@ export function avoidActionIDs(history) {
 export function buildState(observation, actions, history = []) {
   const own = observation?.ownState || {};
   const mapFingerprint = inferMapFingerprint(observation, history);
+  const observedAlivePlayerCount = observation?.alivePlayerCount;
+  const alivePlayerCount = Number.isSafeInteger(observedAlivePlayerCount) &&
+    observedAlivePlayerCount >= 1
+    ? observedAlivePlayerCount
+    : null;
   const visiblePlayers = (observation?.visiblePlayers || [])
     .filter((player) => player && player.isAlive);
   const baseIncomingAttackerIDs = incomingAttackerIDs(own.incomingAttacks);
@@ -206,6 +217,8 @@ export function buildState(observation, actions, history = []) {
   }));
   return {
     mapFingerprint,
+    gameMode: clean(observation?.gameMode),
+    alivePlayerCount,
     phase: clean(observation?.phase),
     decisionNumber: history.length,
     self,
@@ -576,6 +589,125 @@ function kingmakerAllianceAction(actions, state, history) {
   return null;
 }
 
+export function configuredK1ZOnlyEndgame(state) {
+  if (
+    state?.gameMode !== "FFA" ||
+    state?.phase !== "active" ||
+    !Number.isSafeInteger(state?.alivePlayerCount) ||
+    state.alivePlayerCount < 2 ||
+    state.rivals.length < 1 ||
+    state.alivePlayerCount !== state.rivals.length + 1
+  ) {
+    return false;
+  }
+  const names = state.rivals.map((rival) => normalizedRivalName(rival?.name));
+  return new Set(names).size === names.length &&
+    state.rivals.every((rival) =>
+      hasLeadingK1ZTag(rival?.name) &&
+      RECIPROCAL_RIVALS.has(normalizedRivalName(rival?.name))
+    );
+}
+
+function soleOdinEndgame(state) {
+  return state?.gameMode === "FFA" &&
+    state?.phase === "active" &&
+    state?.alivePlayerCount === 1 &&
+    state.rivals.length === 0;
+}
+
+function easiestK1ZTargets(state, allied) {
+  return state.rivals
+    .filter((rival) => rival.isAllied === allied)
+    .sort((left, right) =>
+      left.tileShare - right.tileShare ||
+      finiteNumber(right.relativeTroopRatio, -1) -
+        finiteNumber(left.relativeTroopRatio, -1) ||
+      left.name.localeCompare(right.name)
+    );
+}
+
+function largestCommitment(actions) {
+  return [...actions].sort((left, right) => {
+    const leftPercent = actionPercent(left);
+    const rightPercent = actionPercent(right);
+    const leftValue = Number.isFinite(leftPercent) ? leftPercent : -Infinity;
+    const rightValue = Number.isFinite(rightPercent) ? rightPercent : -Infinity;
+    return rightValue - leftValue || left.id.localeCompare(right.id);
+  })[0] ?? null;
+}
+
+function lockedK1ZTarget(state, history) {
+  for (let index = history.length - 1; index >= 0; index--) {
+    const entry = history[index];
+    if (entry?.policyMarker !== "kf1") continue;
+    const canonical = normalizedRivalName(entry?.targetName);
+    if (!RECIPROCAL_RIVALS.has(canonical)) continue;
+    return state.rivals.find((rival) =>
+      (entry?.targetID && rival.id.toLowerCase() === String(entry.targetID).toLowerCase()) ||
+      normalizedRivalName(rival.name) === canonical
+    ) ?? null;
+  }
+  return null;
+}
+
+function k1zFinishAction(actions, state, history) {
+  if (!configuredK1ZOnlyEndgame(state)) return null;
+
+  const locked = lockedK1ZTarget(state, history);
+  const openTargets = locked
+    ? (locked.isAllied ? [] : [locked])
+    : easiestK1ZTargets(state, false);
+  for (const rival of openTargets) {
+    const land = largestCommitment(actions.filter((action) =>
+      action.kind === "attack" &&
+      !isNeutralExpansion(action) &&
+      rivalForAction(action, state)?.id === rival.id
+    ));
+    if (land) return { ...land, policyMarker: "kf1" };
+  }
+
+  for (const rival of openTargets) {
+    const naval = largestCommitment(actions.filter((action) =>
+      action.kind === "boat" &&
+      !isNeutralBoat(action) &&
+      rivalForAction(action, state)?.id === rival.id
+    ));
+    if (naval) return { ...naval, policyMarker: "kf1" };
+  }
+
+  const alliedTargets = locked
+    ? (locked.isAllied ? [locked] : [])
+    : easiestK1ZTargets(state, true);
+  for (const rival of alliedTargets) {
+    const sever = actions.filter((action) =>
+      action.kind === "break_alliance" &&
+      rivalForAction(action, state)?.id === rival.id
+    )[0];
+    if (sever) return { ...sever, policyMarker: "kf1" };
+  }
+
+  return null;
+}
+
+function kf1FallbackAction(actions, state) {
+  if (state.self.tileShare <= 0.8) {
+    const neutralLand = largestCommitment(actions.filter(isNeutralExpansion));
+    if (neutralLand) return { ...neutralLand, policyMarker: "kf1" };
+
+    const neutralBoat = largestCommitment(actions.filter(isNeutralBoat));
+    if (neutralBoat) return { ...neutralBoat, policyMarker: "kf1" };
+
+    const port = actions.find((action) =>
+      action.kind === "build" &&
+      String(action?.metadata?.unit ?? "").toLowerCase() === "port"
+    );
+    if (port) return { ...port, policyMarker: "kf1" };
+  }
+
+  const hold = actions.find((action) => action.kind === "hold");
+  return hold ? { ...hold, policyMarker: "kf1" } : null;
+}
+
 function chooseAtomBomb(actions, state, history) {
   const candidates = safeActions(actions, (action) =>
     action.kind === "build" && String(action?.metadata?.unit ?? "").toLowerCase() === "atom bomb"
@@ -776,13 +908,28 @@ export function chooseAction(actions, state, plan = null, history = []) {
     .find((action) => !avoid.has(action.id));
   if (spawn) return spawn;
 
+  const k1zOnlyEndgame = configuredK1ZOnlyEndgame(state);
+  const soleOdinFinish = soleOdinEndgame(state);
+  if (k1zOnlyEndgame) {
+    const k1zFinish = k1zFinishAction(actions, state, history);
+    if (k1zFinish) return k1zFinish;
+    const fallback = kf1FallbackAction(actions, state);
+    if (fallback) return fallback;
+  }
+  if (soleOdinFinish) {
+    const fallback = kf1FallbackAction(actions, state);
+    if (fallback) return fallback;
+  }
+
   const threatCount = incomingThreatCount(state.self.incomingAttacks);
   const defensiveBuild = threatCount > 0 && state.self.troopRatio < 0.8
     ? chooseBuild(actions, history, true)
     : null;
   if (defensiveBuild) return defensiveBuild;
 
-  const kingmakerAlliance = kingmakerAllianceAction(actions, state, history);
+  const kingmakerAlliance = k1zOnlyEndgame
+    ? null
+    : kingmakerAllianceAction(actions, state, history);
   if (kingmakerAlliance) return kingmakerAlliance;
 
   const atomBomb = chooseAtomBomb(actions, state, history);
@@ -821,14 +968,16 @@ export function chooseAction(actions, state, plan = null, history = []) {
 
   if (collapsing && build && sinceBuild >= 3 && !finishingTarget) return build;
 
-  const allianceMove = chooseAllianceMove(
-    actions,
-    state,
-    history,
-    threatCount,
-    collapsing,
-    activeDecisions,
-  );
+  const allianceMove = k1zOnlyEndgame
+    ? null
+    : chooseAllianceMove(
+        actions,
+        state,
+        history,
+        threatCount,
+        collapsing,
+        activeDecisions,
+      );
   if (
     allianceMove && !finishingTarget &&
     (allianceMove.kind === "break_alliance" || !hasReliableTacticalAction(actions))
@@ -841,7 +990,14 @@ export function chooseAction(actions, state, plan = null, history = []) {
     (entry) => entry.policyMarker === "cv1",
   ) >= 6;
   if (!collapsing && conversionReady && boatConversionStalled(state, history)) {
-    const conversion = disciplinedAttack || chooseUtility(actions, state, plan, history) ||
+    const conversion = disciplinedAttack || chooseUtility(
+      k1zOnlyEndgame
+        ? actions.filter((action) => action.kind !== "alliance_request")
+        : actions,
+      state,
+      plan,
+      history,
+    ) ||
       (sinceBuild >= 3 ? build : null) ||
       chooseBoat(actions, state, history, avoid, false, true);
     if (conversion) return { ...conversion, policyMarker: "cv1" };
@@ -869,7 +1025,14 @@ export function chooseAction(actions, state, plan = null, history = []) {
   const boat = chooseBoat(actions, state, history, avoid);
   if (boat) return withDiscipline(withPeace(boat));
 
-  const utility = chooseUtility(actions, state, plan, history);
+  const utility = chooseUtility(
+    k1zOnlyEndgame
+      ? actions.filter((action) => action.kind !== "alliance_request")
+      : actions,
+    state,
+    plan,
+    history,
+  );
   if (utility) return withDiscipline(withPeace(utility));
 
   const desperateInvasion = !neutralAttack && !rivalAttack?.action && !build;
@@ -900,7 +1063,9 @@ export function chooseAction(actions, state, plan = null, history = []) {
   const emergencyAttack = pickPercent(emergencyAttacks, 10, avoid);
   if (emergencyAttack) return emergencyAttack;
 
-  const survivalAlliance = bestAllianceRequest(actions, state, history);
+  const survivalAlliance = k1zOnlyEndgame
+    ? null
+    : bestAllianceRequest(actions, state, history);
   if (survivalAlliance) return survivalAlliance;
   const pressure = safeActions(actions, (action) => action.kind === "target_player")
     .map((action) => ({ action, rival: rivalForAction(action, state) }))
@@ -908,7 +1073,11 @@ export function chooseAction(actions, state, plan = null, history = []) {
     .sort((left, right) => right.rival.tileShare - left.rival.tileShare)[0]?.action;
   if (pressure) return pressure;
 
-  return actions.find((action) => action.kind === "hold") ?? actions[0];
+  return actions.find((action) => action.kind === "hold") ??
+    (k1zOnlyEndgame
+      ? actions.find((action) => action.kind !== "alliance_request")
+      : null) ??
+    actions[0];
 }
 
 export function recordDecision(history, action, state) {
