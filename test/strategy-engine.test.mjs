@@ -1260,7 +1260,7 @@ test("an alliance offer from katanasan is accepted on sight", () => {
   const selected = choose(
     [ally, probe],
     observation({
-      tileShare: 0.1,
+      tileShare: 0.13,
       troopRatio: 0.9,
       rivals: [
         { id: "katanasan", name: "katanasan", tileShare: 0.12, relativeTroopRatio: 1.1 },
@@ -1299,6 +1299,68 @@ test("a pending katanasan offer is accepted through the transient action", () =>
   );
   assert.equal(selected.id, ally.id);
   assert.equal(selected.policyMarker, "kp2");
+});
+
+test("a1 defers a voluntary coalition request before the land base", () => {
+  const ally = {
+    ...action("alliance:katanasan:1", "alliance_request", "Request alliance with katanasan"),
+    metadata: { recipientID: "katanasan", recipientName: "katanasan", relation: 2 },
+  };
+  const neutral = action("expand:terra-nullius:10", "attack", "Attack Terra Nullius 10%");
+  const selected = choose(
+    [ally, neutral],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      rivals: [{ id: "katanasan", name: "katanasan", tileShare: 0.12, relativeTroopRatio: 1.1 }],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, neutral.id);
+  assert.equal(selected.policyMarker, "a1");
+});
+
+test("a1 accepts a genuine reverse handshake during the silent opening", () => {
+  const ally = {
+    ...action("alliance:katanasan:1", "alliance_request", "Request alliance with katanasan"),
+    metadata: { recipientID: "katanasan", recipientName: "katanasan", relation: 2 },
+  };
+  const reject = {
+    ...action("alliance_reject:katanasan:1", "alliance_reject", "Reject katanasan alliance"),
+    metadata: { recipientID: "katanasan", recipientName: "katanasan" },
+  };
+  const neutral = action("expand:terra-nullius:10", "attack", "Attack Terra Nullius 10%");
+  const selected = choose(
+    [ally, reject, neutral],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      rivals: [{ id: "katanasan", name: "katanasan", tileShare: 0.12, relativeTroopRatio: 1.1 }],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, ally.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("a1 resumes voluntary requests after the threshold or first build", () => {
+  const ally = {
+    ...action("alliance:katanasan:1", "alliance_request", "Request alliance with katanasan"),
+    metadata: { recipientID: "katanasan", recipientName: "katanasan", relation: 2 },
+  };
+  const neutral = action("expand:terra-nullius:10", "attack", "Attack Terra Nullius 10%");
+  const rivals = [{ id: "katanasan", name: "katanasan", tileShare: 0.12, relativeTroopRatio: 1.1 }];
+  const pastThreshold = choose(
+    [ally, neutral], observation({ tileShare: 0.13, troopRatio: 0.9, rivals }), null, [],
+  );
+  assert.equal(pastThreshold.id, ally.id);
+  const afterBuild = choose(
+    [ally, neutral], observation({ tileShare: 0.1, troopRatio: 0.9, rivals }), null,
+    [{ actionID: "build:City:1", kind: "build", neutral: false }],
+  );
+  assert.equal(afterBuild.id, ally.id);
 });
 
 test("an existing katanasan alliance is never broken or re-requested", () => {
@@ -1340,7 +1402,7 @@ test("katanasan alliance retries respect the cooldown", () => {
   };
   const probe = action("attack:bystander:10", "attack", "Attack Bystander 10%");
   const obs = observation({
-    tileShare: 0.1,
+    tileShare: 0.13,
     troopRatio: 0.9,
     rivals: [
       { id: "katanasan", name: "katanasan", tileShare: 0.12, relativeTroopRatio: 1.1 },
@@ -1531,7 +1593,7 @@ test("a Gravity alliance request is accepted with the same priority as katanasan
   const selected = choose(
     [gravityAlly, probe],
     observation({
-      tileShare: 0.1,
+      tileShare: 0.13,
       troopRatio: 0.9,
       rivals: [
         { id: "juryoku-koku", name: "juryoku-koku", tileShare: 0.12, relativeTroopRatio: 1.1 },
@@ -1579,7 +1641,7 @@ test("alliance requests stop only for the confirmed ally, not the pending one", 
   const selected = choose(
     [gravityAlly, katAlly, build],
     observation({
-      tileShare: 0.1,
+      tileShare: 0.13,
       troopRatio: 0.9,
       rivals: [
         { id: "katanasan", name: "katanasan", tileShare: 0.12, relativeTroopRatio: 1.1, isAllied: true },
@@ -1670,7 +1732,7 @@ test("a Gravity alliance is accepted under the spaced display name", () => {
   const selected = choose(
     [gravityAlly, probe],
     observation({
-      tileShare: 0.1,
+      tileShare: 0.13,
       troopRatio: 0.9,
       rivals: [
         { id: "juryokukoku", name: "juryoku koku", tileShare: 0.12, relativeTroopRatio: 1.1 },
@@ -1718,7 +1780,7 @@ test("a K1Z-tagged katanasan alliance offer is accepted on sight", () => {
   const selected = choose(
     [taggedAlly, probe],
     observation({
-      tileShare: 0.1,
+      tileShare: 0.13,
       troopRatio: 0.9,
       rivals: [
         {
@@ -1840,7 +1902,7 @@ test("an invisible Gravity partner is requested from alliance metadata", () => {
   const selected = choose(
     [gravityAlly, probe],
     observation({
-      tileShare: 0.1,
+      tileShare: 0.13,
       troopRatio: 0.9,
       rivals: [
         { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
@@ -1909,7 +1971,7 @@ test("an invisible Gravity is retried once the cooldown lapses", () => {
   const selected = choose(
     [gravityAlly, probe],
     observation({
-      tileShare: 0.1,
+      tileShare: 0.13,
       troopRatio: 0.9,
       rivals: [
         { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
@@ -1967,7 +2029,7 @@ test("a Neutral-relation Gravity partner is requested immediately", () => {
   const selected = choose(
     [gravityAlly, probe],
     observation({
-      tileShare: 0.1,
+      tileShare: 0.13,
       troopRatio: 0.9,
       rivals: [
         {
@@ -2021,7 +2083,7 @@ test("a Hrafn alliance offer is accepted on sight", () => {
   const selected = choose(
     [hrafnAlly, probe],
     observation({
-      tileShare: 0.1,
+      tileShare: 0.13,
       troopRatio: 0.9,
       rivals: [
         {
