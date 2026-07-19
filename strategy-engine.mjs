@@ -789,24 +789,9 @@ export function chooseAction(actions, state, plan = null, history = []) {
   // requests and froze at peak territory). While any reliable tactical action
   // is legal, a fresh partner retry must wait out the global cadence window;
   // a genuine pending reverse handshake is still accepted on sight.
-  let a1Suppress = false;
-  let kingmakerAlliance = kingmakerAllianceAction(actions, state, history);
-  if (
-    kingmakerAlliance && state.self.tileShare < 0.12 &&
-    !history.some((entry) => entry.kind === "build")
-  ) {
-    const partners = reciprocalPartners(actions, state);
-    const partnerOfferPending = safeActions(actions, (action) =>
-      action.kind === "alliance_reject" &&
-      partners.some((partner) => matchesKingmakerPartner(action, partner, state))
-    ).length > 0;
-    if (!partnerOfferPending) {
-      kingmakerAlliance = null;
-      a1Suppress = true;
-    }
-  }
   let gc1Suppress = false;
   let suppressedKingmakerAlliance = null;
+  let kingmakerAlliance = kingmakerAllianceAction(actions, state, history);
   if (kingmakerAlliance) {
     const lastCoalitionRequest = decisionsSince(history, (entry) =>
       entry.kind === "alliance_request" && entry.policyMarker === "kp2");
@@ -839,27 +824,13 @@ export function chooseAction(actions, state, plan = null, history = []) {
       policyMarkers,
     };
   };
-  const withA1 = (action) => {
-    const routed = withGc1(action);
-    if (!a1Suppress || !routed) return routed;
-    const policyMarkers = [...new Set([
-      "a1",
-      ...(Array.isArray(routed.policyMarkers) ? routed.policyMarkers : []),
-      routed.policyMarker,
-    ].filter(Boolean))];
-    return {
-      ...routed,
-      policyMarker: routed.policyMarker ?? "a1",
-      policyMarkers,
-    };
-  };
   const atomBomb = chooseAtomBomb(actions, state, history);
-  if (atomBomb) return withA1(atomBomb);
+  if (atomBomb) return withGc1(atomBomb);
 
   const rivalAttack = chooseRivalAttack(actions, state, plan, history, avoid, threatCount);
   const peaceRedirect = rivalAttack?.peaceRedirect === true;
   const withPeace = (action) =>
-    withA1(peaceRedirect && action && !action.policyMarker ? { ...action, policyMarker: "kp1" } : action);
+    withGc1(peaceRedirect && action && !action.policyMarker ? { ...action, policyMarker: "kp1" } : action);
   const routedRivalAttack = state.mapFingerprint === "Asia" && rivalAttack?.action &&
     (state.self.incomingAttackerIDs || []).includes(rivalAttack.rival.id.toLowerCase())
     ? { ...rivalAttack.action, policyMarker: "ia1" }
@@ -872,7 +843,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
     rivalAttack.rival.relativeTroopRatio < 1.3 && !pc1Band;
   const disciplinedAttack = pileOnDiscipline ? null : routedRivalAttack;
   const withDiscipline = (action) =>
-    withA1(pileOnDiscipline && action && !action.policyMarker
+    withGc1(pileOnDiscipline && action && !action.policyMarker
       ? { ...action, policyMarker: "pd2" }
       : action);
   const neutralAttack = chooseNeutralAttack(actions, history, avoid);
@@ -887,7 +858,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
     rivalAttack.rival.relativeTroopRatio >= 1.5;
   const collapsing = territoryCollapsing(state, history);
 
-  if (collapsing && build && sinceBuild >= 3 && !finishingTarget) return withA1(build);
+  if (collapsing && build && sinceBuild >= 3 && !finishingTarget) return withGc1(build);
 
   const allianceMove = chooseAllianceMove(
     actions,
@@ -901,7 +872,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
     allianceMove && !finishingTarget &&
     (allianceMove.kind === "break_alliance" || !hasReliableTacticalAction(actions))
   ) {
-    return withA1(allianceMove);
+    return withGc1(allianceMove);
   }
 
   const conversionReady = decisionsSince(
@@ -912,11 +883,11 @@ export function chooseAction(actions, state, plan = null, history = []) {
     const conversion = disciplinedAttack || chooseUtility(actions, state, plan, history) ||
       (sinceBuild >= 3 ? build : null) ||
       chooseBoat(actions, state, history, avoid, false, true);
-    if (conversion) return withA1({ ...conversion, policyMarker: "cv1" });
+    if (conversion) return withGc1({ ...conversion, policyMarker: "cv1" });
   }
 
   if (neutralExpansionStalled(state, history)) {
-    if (disciplinedAttack) return withA1(disciplinedAttack);
+    if (disciplinedAttack) return withGc1(disciplinedAttack);
     const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
     if (boatStreak >= 2 && build) return withDiscipline(withPeace(build));
     const escapeBoat = chooseBoat(actions, state, history, avoid);
@@ -926,9 +897,9 @@ export function chooseAction(actions, state, plan = null, history = []) {
 
   if (cadenceBuild && !finishingTarget) return withDiscipline(withPeace(build));
   if (state.self.tileShare < 0.12 && neutralAttack && threatCount === 0 && !collapsing) {
-    return withA1(neutralAttack);
+    return withGc1(neutralAttack);
   }
-  if (disciplinedAttack) return withA1(disciplinedAttack);
+  if (disciplinedAttack) return withGc1(disciplinedAttack);
   if (neutralAttack) return withDiscipline(withPeace(neutralAttack));
   if (build && sinceBuild >= 5) return withDiscipline(withPeace(build));
 
@@ -951,7 +922,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
     const rival = rivalForAction(action, state);
     return plan?.focus === "ally" && rival?.isAllied === true;
   })[0];
-  if (donation) return withA1(donation);
+  if (donation) return withGc1(donation);
 
   // Holding while legal tactical actions remain turns a weak position into a certain loss.
   if (build) return withDiscipline(withPeace(build));
@@ -966,21 +937,21 @@ export function chooseAction(actions, state, plan = null, history = []) {
     return rival && !rivalIsProtected(state, history, rival);
   });
   const emergencyAttack = pickPercent(emergencyAttacks, 10, avoid);
-  if (emergencyAttack) return withA1(emergencyAttack);
+  if (emergencyAttack) return withGc1(emergencyAttack);
 
   // The tactical precheck is deliberately broad. If every apparent alternative
   // is later rejected by the full safety selectors, restore the eligible
   // coalition request instead of turning a false positive into a hold.
   if (suppressedKingmakerAlliance) return suppressedKingmakerAlliance;
   const survivalAlliance = bestAllianceRequest(actions, state, history);
-  if (survivalAlliance) return withA1(survivalAlliance);
+  if (survivalAlliance) return withGc1(survivalAlliance);
   const pressure = safeActions(actions, (action) => action.kind === "target_player")
     .map((action) => ({ action, rival: rivalForAction(action, state) }))
     .filter(({ rival }) => rival && !rivalIsProtected(state, history, rival))
     .sort((left, right) => right.rival.tileShare - left.rival.tileShare)[0]?.action;
-  if (pressure) return withA1(pressure);
+  if (pressure) return withGc1(pressure);
 
-  return withA1(actions.find((action) => action.kind === "hold") ?? actions[0]);
+  return withGc1(actions.find((action) => action.kind === "hold") ?? actions[0]);
 }
 
 export function recordDecision(history, action, state) {
