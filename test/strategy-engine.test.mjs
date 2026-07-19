@@ -1432,7 +1432,7 @@ function pileOnObs({ spawnTile, bystanderRatio = 1.2, attackerCount = 2 } = {}) 
   });
 }
 
-test("Pangaea pile-on discipline suppresses a near-parity rival attack", () => {
+test("a2: the near-parity attack is taken once pile-on discipline is deleted", () => {
   const attacks = [10, 25, 40].map((percent) =>
     action(`attack:bystander:${percent}`, "attack", `Attack Bystander ${percent}%`));
   const build = action("build:City:1", "build", "Build City");
@@ -1442,11 +1442,11 @@ test("Pangaea pile-on discipline suppresses a near-parity rival attack", () => {
     null,
     [],
   );
-  assert.equal(selected.id, build.id);
-  assert.equal(selected.policyMarker, "pd2");
+  assert.equal(selected.id, "attack:bystander:10");
+  assert.equal(selected.policyMarker, "a2");
 });
 
-test("Asia pile-on discipline suppresses even a current attacker below 1.3", () => {
+test("a2: Asia still routes the attacker marker above the deleted gate", () => {
   const attacks = [10, 25, 40].map((percent) =>
     action(`attack:aggressor:${percent}`, "attack", `Attack Aggressor ${percent}%`));
   const build = action("build:City:1", "build", "Build City");
@@ -1466,8 +1466,9 @@ test("Asia pile-on discipline suppresses even a current attacker below 1.3", () 
     null,
     [],
   );
-  assert.equal(selected.id, build.id);
-  assert.equal(selected.policyMarker, "pd2");
+  assert.equal(selected.id, "attack:aggressor:10");
+  assert.equal(selected.policyMarker, "ia1");
+  assert.ok((selected.policyMarkers ?? []).includes("a2"));
 });
 
 test("World near-parity counter survives the pile-on discipline band", () => {

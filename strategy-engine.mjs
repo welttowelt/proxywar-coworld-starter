@@ -802,11 +802,21 @@ export function chooseAction(actions, state, plan = null, history = []) {
   const pileOnDiscipline = recentDistinctAttackerCount(state, history) >= 2 &&
     rivalAttack?.action && Number.isFinite(rivalAttack.rival.relativeTroopRatio) &&
     rivalAttack.rival.relativeTroopRatio < 1.3 && !pc1Band;
-  const disciplinedAttack = pileOnDiscipline ? null : routedRivalAttack;
-  const withDiscipline = (action) =>
-    pileOnDiscipline && action && !action.policyMarker
-      ? { ...action, policyMarker: "pd2" }
-      : action;
+  // a2: pile-on discipline deleted. The sub-1.3 attack the pd2 gate would
+  // have suppressed is taken anyway; the a2 marker records where the deleted
+  // gate would have fired, stacked under any route marker.
+  const disciplinedAttack = pileOnDiscipline && routedRivalAttack
+    ? {
+      ...routedRivalAttack,
+      policyMarker: routedRivalAttack.policyMarker ?? "a2",
+      policyMarkers: [...new Set([
+        "a2",
+        ...(Array.isArray(routedRivalAttack.policyMarkers) ? routedRivalAttack.policyMarkers : []),
+        routedRivalAttack.policyMarker,
+      ].filter(Boolean))],
+    }
+    : routedRivalAttack;
+  const withDiscipline = (action) => action;
   const neutralAttack = chooseNeutralAttack(actions, history, avoid);
   const build = chooseBuild(actions, history);
   const sinceBuild = decisionsSince(history, (entry) =>
