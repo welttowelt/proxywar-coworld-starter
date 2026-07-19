@@ -2,19 +2,19 @@
 
 set -euo pipefail
 
-if (( $# != 2 )); then
-  print -u2 "usage: $0 POD_ID OUTPUT_ROOT"
+if (( $# != 2 && $# != 7 )); then
+  print -u2 "usage: $0 POD_ID OUTPUT_ROOT [PAIR LANE WAVE MAP SEED]"
   exit 64
 fi
 
 pod_id=$1
 output_root=$2
 repo=/Users/olifreuler/proxywar-coworld-starter
-pair=asia-20260721
-lane=a
-wave=3
-map=Asia
-seed=20260721
+pair=${3:-asia-20260721}
+lane=${4:-a}
+wave=${5:-3}
+map=${6:-Asia}
+seed=${7:-20260721}
 archive=/private/tmp/proxywar-pg2-reach-bundle-42e9a181.tar.gz
 extractor=/private/tmp/proxywar-pg2-reach-bundle-42e9a181.tar.gz.extract.py
 archive_sha=d2f2f154a67f43008a9b8f7cc0e2c66d44d825e088434cf165fe3b751240b9cd
@@ -22,12 +22,13 @@ source_root=$(ls -d /private/tmp/proxywar-pg2-matrix-42e9a181-a-20260719-r7.abor
 matrix=$repo/experiments/pg2-matrix-42e9a181.json
 worker=$repo/scripts/run-pg2-matrix-worker-42e9a181.sh
 auditor=$repo/scripts/audit-pg2-matrix-pair.py
+baseline_registry=$repo/experiments/pg2-parent-control-baselines-42e9a181.json
 matrix_commit=$(git -C "$repo" rev-parse HEAD)
 remote_stage=/workspace/pg2-repaired-42e9a181
 remote_root=/workspace/pg2-parent-control-replay-${matrix_commit[1,12]}-$(date -u +%Y%m%dT%H%M%SZ)-$$
 
 [[ -d $output_root && -f $output_root/.proxywar-runner-claim ]]
-[[ -d $source_root/specs && -f $archive && -f $extractor && -f $matrix && -x $worker && -x $auditor ]]
+[[ -d $source_root/specs && -f $archive && -f $extractor && -f $matrix && -f $baseline_registry && -x $worker && -x $auditor ]]
 [[ $(shasum -a 256 "$archive" | awk '{print $1}') == $archive_sha ]]
 [[ $matrix_commit =~ ^[a-f0-9]{40}$ ]]
 mkdir -p "$output_root/specs" "$output_root/runs" "$output_root/evidence"
@@ -58,8 +59,7 @@ mv "$staging/runs/$pair-a" "$staging/runs/$pair-b" "$staging/runs/$pair-a.stdout
 mv "$staging/evidence/$pair" "$output_root/evidence/"
 rmdir "$staging/runs" "$staging/evidence" "$staging"
 
-"$auditor" --candidate "$output_root/runs/$pair-a" --parent "$output_root/runs/$pair-b" --candidate-spec "$output_root/specs/$pair-a.json" --parent-spec "$output_root/specs/$pair-b.json" --matrix-manifest "$matrix" --matrix-commit "$matrix_commit" --lane "$lane" --wave "$wave" --output "$output_root/evidence/$pair/audit.json"
+"$auditor" --candidate "$output_root/runs/$pair-a" --parent "$output_root/runs/$pair-b" --candidate-spec "$output_root/specs/$pair-a.json" --parent-spec "$output_root/specs/$pair-b.json" --matrix-manifest "$matrix" --baseline-registry "$baseline_registry" --matrix-commit "$matrix_commit" --lane "$lane" --wave "$wave" --output "$output_root/evidence/$pair/audit.json"
 verdict=$(jq -r .verdict "$output_root/evidence/$pair/audit.json")
 [[ $verdict == CONTINUE || $verdict == REPLAY_REQUIRED ]]
 print "PG2_PARENT_CONTROL_REPLAY_COMPLETE pair=$pair verdict=$verdict output=$output_root"
-

@@ -182,9 +182,9 @@ async function main() {
   const matrixPath = optionValues("matrix")[0];
   const roots = optionValues("root");
   const outputPath = optionValues("output")[0];
-  if (!matrixPath || roots.length !== 4) {
+  if (!matrixPath || roots.length < 1) {
     throw new Error(
-      "usage: node scripts/audit-pg2-matrix.mjs --matrix PATH --root PATH --root PATH --root PATH --root PATH [--output PATH]",
+      "usage: node scripts/audit-pg2-matrix.mjs --matrix PATH --root PATH [--root PATH ...] [--output PATH]",
     );
   }
   const matrix = JSON.parse(await readFile(matrixPath, "utf8"));
