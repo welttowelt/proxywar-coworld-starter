@@ -36,10 +36,13 @@ output_path = sys.argv[3]
 audits = [json.load(open(path, encoding="utf-8")) for path in audit_paths]
 failures = []
 scores = []
+control_replays = []
 for audit in audits:
     candidate = audit.get("candidate", {})
     pair = audit.get("pair")
-    if audit.get("verdict") != "CONTINUE":
+    if audit.get("verdict") == "REPLAY_REQUIRED":
+        control_replays.append(pair)
+    elif audit.get("verdict") != "CONTINUE":
         failures.append(f"{pair}: pair verdict {audit.get('verdict')}")
     for key in ("violations", "rejected_decisions", "unexplained_holds", "k1z_harmful_actions"):
         if candidate.get(key):
@@ -55,6 +58,9 @@ for audit in audits:
 if failures:
     verdict = "STOP"
     reason = "candidate integrity or safety failure"
+elif control_replays:
+    verdict = "REPLAY_REQUIRED"
+    reason = "parent control anomaly requires one exact replay"
 elif all(score < 0 for score in scores):
     verdict = "STOP"
     reason = "negative paired final score in both screen cells"
@@ -72,6 +78,7 @@ report = {
     "pair_audits": audit_paths,
     "paired_final_scores": scores,
     "failures": failures,
+    "control_replays": control_replays,
 }
 with open(output_path, "w", encoding="utf-8") as handle:
     json.dump(report, handle, indent=2, sort_keys=True)
