@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "record_type": "hrafn_withdrawal_recovery_preflight",
-  "recorded_at": "2026-07-19T12:01:18Z",
+  "recorded_at": "2026-07-19T12:13:23Z",
   "lane": "hrafn-fylking",
   "exact_live_parent": {
     "policy_ref": "hrafn-fylking:v5",
@@ -46,19 +46,78 @@
     "wr1 control versus VR1 plus wr1 candidate isolates the vanguard tactic"
   ],
   "candidate": {
-    "source_commit": null,
-    "image_id": null,
+    "policy_ref": "proxywar-agent-llm:hrafn-v6-vr1-wr1-amd64",
+    "branch": "feature/k1z-hrafn-fylking",
+    "source_commit": "af6e6bb799d49c093633e291d2757200b6da9cb3",
+    "strategy_sha256": "532998c58973a8bc2bc50d305b304b5cbae09fa3f7aa873733ca51bb92e9563f",
+    "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
+    "image_id": "sha256:93e0e9cfceed81aa16e4b6f458c8a133ac6c0d9f22e7639a0be4db2adcff7b82",
     "architecture": "linux/amd64",
-    "tests_passed": 0
+    "tests_passed": 156,
+    "tests_command": "npm test -- --test-concurrency=1",
+    "source_image_bytes_match": true,
+    "uploaded": false
   },
   "withdrawal_recovery_control": {
-    "source_commit": null,
-    "image_id": null,
+    "policy_ref": "proxywar-agent-llm:hrafn-v5-qc-wr1-control-amd64",
+    "branch": "rci/hrafn-v6-withdrawal-recovery-control",
+    "source_commit": "98791291cb8970ec0e444831aa5c067b3d45d5ed",
+    "strategy_sha256": "918e176a401e36dacb19ece661dd967169fd7ad01aed60651f7d2b6e4ee25847",
+    "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
+    "image_id": "sha256:e1cf8a101cb6ba0a0a73e858ba1c13638362ff339208c1969335dcee32604433",
     "architecture": "linux/amd64",
-    "tests_passed": 0
+    "tests_passed": 152,
+    "tests_command": "npm test -- --test-concurrency=1",
+    "source_image_bytes_match": true,
+    "uploaded": false
+  },
+  "red_first": {
+    "failures_before_fix": 2,
+    "tests": [
+      "wr1 replaces a withdrawn embargo-stop retry hold with the smallest boat",
+      "wr1 bounds an outsider attack and never targets K1Z"
+    ],
+    "dormant_guard_passed_before_fix": true,
+    "green_after_fix": true
+  },
+  "pinned_execution": {
+    "coworld_game_version": "0.1.8",
+    "manifest_path": "/private/tmp/hrafn-vr1-coworld/cow_15c39dab-eac1-4284-bf3e-bd723d4c2755/coworld_manifest.json",
+    "manifest_file_sha256": "f5e6b4dd247b2b2e534a415d293babab7fd655d44b2004db4257a2df3a01dab0",
+    "manifest_canonical_sha256": "a43dafa9bb7e68a5c708b3fc6a44e80097e04e1da07131d62a00b7a8a445d86d",
+    "job_generator": "scripts/generate-hrafn-vr1-jobs.mjs",
+    "request_directory": "/private/tmp/hrafn-vr1-wr1-jobs",
+    "qualifier": {
+      "name": "qualifier-vr1-wr1",
+      "seed": 52900,
+      "request_sha256": "bf5f7f6ebf2ab5df2428e3fe3f40ab7682a376f53ab69ae788e6ac54ed2721cc",
+      "game_config_sha256": "bcf5abb8003d86ae91eb37a592175194294a27d87e004aa93e4cdde4cea18451",
+      "required_result": "replay-visible vr1 and wr1 reach, every Hrafn decision accepted, zero unexplained holds, zero rejects, zero fallbacks, and zero K1Z harm",
+      "status": "not run; Odin pre-run approval pending"
+    },
+    "matched": {
+      "design": "four-arm, two-orientation factorial: exact v5, quick-chat-only control, withdrawal-recovery control, and VR1 plus withdrawal-recovery candidate",
+      "orientation_a": {
+        "seed": 52901,
+        "game_config_sha256": "424bfb5ba50f7b96b57fcd9ea08317af32315ef6b8555c3e910cd22d8849bff9",
+        "exact_request_sha256": "6a3bb6c1effbd5d01bd522c12b07549313557011688aa6c422844858075fbb64",
+        "quickchat_request_sha256": "c5d911b9aafdb0a07b01f7daf1374fee54586e7e11e5d9176ec6eb446e87403d",
+        "control_request_sha256": "76340c68fdd5d14a345adb93f650d0521a473ffe1ef4399347832624e6bf4930",
+        "candidate_request_sha256": "466bd25bb76235dd4f09c52e45af68c0bbcd40ef8aa02023a5efe179d8d294ab"
+      },
+      "orientation_b": {
+        "seed": 52902,
+        "game_config_sha256": "a4e3c1b0a978bfda94b8d52a83791c6ff04b11696e2e0c9e23298e32d850727b",
+        "exact_request_sha256": "4a118ed1a42527e4f958f9dd9eeb2f6add11c4769e57e36f632c43c0a8d9fcf8",
+        "quickchat_request_sha256": "dc008fd6e821678cfa095a029e2b3be70b729c2a1b2bcd1855eb02f7357c5d83",
+        "control_request_sha256": "6506d325d358ec3313945bb62a9d7dfb9b0c4d601f55a80b980f54c44384048e",
+        "candidate_request_sha256": "a03dfcc51322e6ec90d3810138f679cd4198e34c8cd2e9b1e5b1b45043da4000"
+      },
+      "status": "not run"
+    }
   },
   "promotion_states": {
-    "SOURCE_READY": false,
+    "SOURCE_READY": true,
     "LOCAL_QUALIFIED": false,
     "DIAGNOSTIC_UPLOADED": false,
     "HOSTED_PASSED": false,
@@ -69,5 +128,5 @@
     "CHAMPION_VERIFIED": false,
     "ROUND_CONFIRMED": false
   },
-  "verdict": "PREREGISTERED ONLY: replay-backed guard and factorial design are pinned; red-first source proof, exact control, images, Odin pre-run approval, and every execution or promotion gate remain pending"
+  "verdict": "SOURCE_READY only: replay-backed guard, red-first proof, isolated control, exact pushed commits, linux/amd64 images, and embedded-source identity are pinned. Odin pre-run approval, runner acquisition, Coworld qualification, matched proof, upload, hosted 4/4, regression 20/20, final audit, submission, placement, membership, champion, and completed-round confirmation remain closed."
 }

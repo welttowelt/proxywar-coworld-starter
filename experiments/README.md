@@ -15,29 +15,32 @@ one percentage point and Hrafn is inside the executable 10%-30% activation
 range. It retains that exact front only when the immediately prior decision was
 `vr1` and the ratio remains at least 1.10.
 
-Odin's first pre-run verdict was `REVISE / NO RUN`. Both requested red cases
-failed before the correction and now pass. The candidate at commit `7730b753`
-passes `153/153` tests and is pinned to amd64 image `sha256:41fe4984...`.
-Quick-chat suppression is isolated on branch `rci/hrafn-v6-quickchat-control`
-at commit `35405a44`; that control passes `149/149` and is pinned to image
-`sha256:b7c6c1fb...`.
+Odin's first pre-run verdict was `REVISE / NO RUN`. Both requested VR1 red
+cases failed before the correction and now pass. Round 531 then exposed two
+embargo-stop withdrawal retries outside the quick-chat-only control. Two new
+`wr1` recovery cases failed before the fix. The current combined candidate at
+commit `af6e6bb7` passes `156/156` and is pinned to amd64 image
+`sha256:93e0e9cf...`. The tactical isolation control is branch
+`rci/hrafn-v6-withdrawal-recovery-control`, commit `98791291`; it passes
+`152/152` and is pinned to image `sha256:e1cf8a10...`. It includes quick-chat
+suppression and withdrawal recovery but not VR1.
 
 Odin's corrected rereview accepted source, isolation, image, manifest, and job
 identity, then returned a docs-only `REVISE` because this record described a
 6%-35% activation range. Source actually uses `activationTileShare=0.1` and
 `activationCeiling=0.3`. The record and preflight now pin the executable
-10%-30% range. Fresh serial full-suite runs pass `153/153` for the candidate
-and `149/149` for the quick-chat control. Round 531 subsequently exposed an
-inherited embargo-stop withdrawal retry class outside that control, so the
-pre-run packet requires revision before runner acquisition.
+10%-30% range. The old packet was never run and is superseded by the recovery
+revision. Fresh serial full-suite runs pass `156/156` for the candidate and
+`152/152` for the withdrawal-recovery control. Embedded source bytes match both
+exact amd64 images.
 
-The canonical Coworld `0.1.8` manifest and fresh requests are pinned in
-`preflight-hrafn-v6-vanguard-lock-vr1.json`. The factorial design compares
-exact v5 against the quick-chat control to isolate withdrawal-hold repair, then
-the control against VR1 to isolate the tactical effect. The candidate is
-`SOURCE_READY` only: Odin rereview, Coworld qualification, matched proof,
-hosted `4/4`, regression `20/20`, upload, submission, membership, and champion
-states remain closed.
+The canonical Coworld `0.1.8` manifest and nine fresh requests are pinned in
+`preflight-hrafn-v6-withdrawal-recovery-wr1.json`. The four-arm factorial
+compares exact v5, quick-chat-only, withdrawal-recovery control, and VR1 plus
+withdrawal-recovery candidate across two orientations. The candidate is
+`SOURCE_READY` only: Odin pre-run approval, Coworld qualification, matched
+proof, upload, hosted `4/4`, regression `20/20`, final audit, submission,
+placement, membership, and champion states remain closed.
 
 Round 530 failed after two live World replays completed. A third request failed
 with an unattributed game error, and the fourth was cancelled with
@@ -56,8 +59,9 @@ fallbacks, rejects, or K1Z harm, with 45 `rv3` executions and 39 productive
 `dn1` transfers. Thirteen accepted retry holds followed withdrawn actions:
 eleven quick-chat actions and two embargo-stop actions while productive actions
 remained legal. The isolated quick-chat control covers the eleven quick-chat
-holds. The two inherited embargo-stop holds block the zero-unexplained-hold
-pre-run gate, so no Hrafn runner episode started. Replay SHA-256 values:
+holds. The two embargo-stop holds supplied the replay cell for `wr1`; source is
+ready, but the pre-run audit gate remains closed, so no Hrafn runner episode
+started. Replay SHA-256 values:
 `9ed404da...`, `a31b7527...`, `f0f3838a...`, and `bf8759e0...`.
 
 ## Pangaea seat-2 A/B, 2026-07-12

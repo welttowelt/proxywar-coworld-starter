@@ -2,7 +2,7 @@
   "schema_version": 1,
   "record_type": "hrafn_reconciliation_and_pre_run_hypothesis",
   "recorded_at": "2026-07-19T09:15:05Z",
-  "reconciled_at": "2026-07-19T11:34:00Z",
+  "reconciled_at": "2026-07-19T12:24:40Z",
   "lane": "hrafn-fylking",
   "live_baseline": {
     "label": "hrafn-fylking:v5",
@@ -19,42 +19,42 @@
     "is_champion": true
   },
   "candidate": {
-    "local_label": "proxywar-agent-llm:hrafn-v6-vr1-amd64",
+    "local_label": "proxywar-agent-llm:hrafn-v6-vr1-wr1-amd64",
     "tactical_source_commit": "f35de64ecc2edb7fc5ef7b07741e7cf2cf0c3a4f",
-    "corrected_source_commit": "7730b7536dcceed9a152cbf2f726f8324ca31ece",
-    "image_source_commit": "7730b7536dcceed9a152cbf2f726f8324ca31ece",
-    "operator_head": "7730b7536dcceed9a152cbf2f726f8324ca31ece",
-    "strategy_sha256": "68dee34a502aa0f09bc0d6baa42986f1455b7592d7396213280cd2649ba44bb4",
+    "corrected_source_commit": "af6e6bb799d49c093633e291d2757200b6da9cb3",
+    "image_source_commit": "af6e6bb799d49c093633e291d2757200b6da9cb3",
+    "operator_head": "af6e6bb799d49c093633e291d2757200b6da9cb3",
+    "strategy_sha256": "532998c58973a8bc2bc50d305b304b5cbae09fa3f7aa873733ca51bb92e9563f",
     "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
-    "image_id": "sha256:41fe4984ba3623f995d188a707c1d28ec72863a9bd782a097d74bf8d1448cc29",
+    "image_id": "sha256:93e0e9cfceed81aa16e4b6f458c8a133ac6c0d9f22e7639a0be4db2adcff7b82",
     "architecture": "linux/amd64",
     "tactical_marker": "vr1",
-    "mandatory_safety_delta": "suppress game-authored quick-chat selections that can violate Hrafn's short-leet public-text contract; isolated from VR1 by a dedicated factorial control",
+    "mandatory_safety_delta": "suppress game-authored quick-chat and emoji selections, then recover from a withdrawn quick-chat, emoji, or embargo-stop action with a bounded non-K1Z attack or boat; isolated from VR1 by a dedicated recovery control",
     "uploaded": false,
     "submitted": false,
     "member": false,
     "champion": false
   },
   "factorial_control": {
-    "local_label": "proxywar-agent-llm:hrafn-v5-qc-control-amd64",
-    "branch": "rci/hrafn-v6-quickchat-control",
-    "source_commit": "35405a4468c821af7ec1c8f2ef64fb6def4c0c1d",
+    "local_label": "proxywar-agent-llm:hrafn-v5-qc-wr1-control-amd64",
+    "branch": "rci/hrafn-v6-withdrawal-recovery-control",
+    "source_commit": "98791291cb8970ec0e444831aa5c067b3d45d5ed",
     "exact_parent_commit": "0c151570f7e650a32a5705ff71692aa930012097",
-    "exact_delta": "suppress game-authored quick-chat and emoji selections while leaving the exact live v5 tactical policy unchanged",
-    "strategy_sha256": "29b54cb3669243276aa4e424f5f3713f4cb05c0479b830cd44aada7aef8a8188",
+    "exact_delta": "suppress game-authored quick-chat and emoji selections and add bounded recovery after a withdrawn quick-chat, emoji, or embargo-stop action while leaving the exact live v5 tactical policy unchanged",
+    "strategy_sha256": "918e176a401e36dacb19ece661dd967169fd7ad01aed60651f7d2b6e4ee25847",
     "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
-    "image_id": "sha256:b7c6c1fb8e5bbee02d80ba156187bab6bb5ca996b2a4f5ddc8cc871c0989646c",
+    "image_id": "sha256:e1cf8a101cb6ba0a0a73e858ba1c13638362ff339208c1969335dcee32604433",
     "architecture": "linux/amd64",
-    "tests_passed": 149,
-    "tests_rerun_at": "2026-07-19T11:06:34Z",
+    "tests_passed": 152,
+    "tests_rerun_at": "2026-07-19T12:13:23Z",
     "tests_rerun_command": "npm test -- --test-concurrency=1"
   },
   "hypothesis": {
     "guard": "when dn1 is legal, Hrafn is between 10% and 30% share, and the strongest outsider leads Hrafn by at least one percentage point with a legal direct attack at at least 1.35 relative troop ratio, attack that leader before donating; retain the exact marked front only when the immediately prior decision was vr1, the outsider still leads, and its ratio stays at least 1.10",
     "expected_action_change": "replace an otherwise selected Odin troop donation with a bounded attack on the current outsider leader",
     "observable_marker": "vr1",
-    "success_metric": "replay-visible vr1 reach with zero holds, rejects, fallbacks, or K1Z harm and a mirrored finish advantage over the quick-chat-only control; exact-v5 versus control separately proves withdrawal-hold repair",
-    "failure_condition": "zero vr1 reach, any runtime or coalition-contract failure, or no matched finish advantage after direct reach"
+    "success_metric": "replay-visible vr1 and wr1 reach with zero unexplained holds, rejects, fallbacks, or K1Z harm and a mirrored finish advantage over the withdrawal-recovery control; exact-v5 versus quick-chat-only versus recovery-control separately attributes the withdrawal repair",
+    "failure_condition": "zero vr1 or wr1 reach, any runtime or coalition-contract failure, or no matched finish advantage after direct reach"
   },
   "field_checkpoint": {
     "hrafn_rank": 10,
@@ -70,7 +70,12 @@
     "round_529_status": "completed",
     "round_530_status": "failed",
     "round_531_status": "completed",
-    "round_532_status": "running"
+    "round_532_status": "running",
+    "round_532_completed_episodes": 3,
+    "round_532_total_episodes": 4,
+    "round_532_completed_winners": ["daveey", "K1Z odin free", "Auri"],
+    "round_532_hrafn_completed_scores": [0, 0, 0],
+    "round_532_pending_episode_request_id": "ereq_2007e35b-e3e6-4ce2-b212-619bc6f4af3c"
   },
   "replay_cell": {
     "map": "Pangaea",
@@ -389,31 +394,35 @@
       "productive_dn1": 39,
       "rv3_executions": 45
     },
-    "gate_effect": "the quick-chat control addresses all eleven quick-chat withdrawal retry holds; the two embargo-stop withdrawal retry holds remain inherited and unexplained for a zero-hold challenger",
-    "verdict": "official rank 12 and score 0; Hrafn went 0/4, and the newly separated embargo-stop withdrawal class blocks a VR1 run until the pre-run packet is revised and re-approved"
+    "gate_effect": "the quick-chat control addresses all eleven quick-chat withdrawal retry holds; the two embargo-stop withdrawal retry holds forced a separate red-first withdrawal-recovery guard and isolation control",
+    "verdict": "official rank 12 and score 0; Hrafn went 0/4, and the newly separated embargo-stop withdrawal class blocked the old VR1 packet. Replacement source is ready, but Odin has not approved a run."
   },
   "tests": {
-    "passed": 153,
+    "passed": 156,
     "failed": 0,
-    "rerun_at": "2026-07-19T11:06:34Z",
+    "rerun_at": "2026-07-19T12:13:23Z",
     "rerun_command": "npm test -- --test-concurrency=1",
-    "red_failures_before_fix": 2,
+    "red_failures_before_fix": 4,
     "red_cases": [
       "vr1 cannot replace a transfer when the outsider trails Hrafn",
-      "vr1 stays terminated after a floor break and sub-opening recovery"
+      "vr1 stays terminated after a floor break and sub-opening recovery",
+      "wr1 replaces a withdrawn embargo-stop retry hold with the smallest boat",
+      "wr1 bounds an outsider attack and never targets K1Z"
     ]
   },
   "identity_reconciliation": {
-    "verified_at": "2026-07-19T10:20:39Z",
+    "verified_at": "2026-07-19T12:13:23Z",
     "prior_incorrect_player_sha256": "1154115fdf5ebb89fa170bba6060d5a730615970d4cc23c00dbfa97e42b31563",
     "prior_hash_belongs_to": "llm-player.mjs",
     "verified_hrafn_player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
     "verified_against": [
       "live v5 image sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d",
-      "candidate v6 image sha256:41fe4984ba3623f995d188a707c1d28ec72863a9bd782a097d74bf8d1448cc29",
+      "candidate v6 image sha256:93e0e9cfceed81aa16e4b6f458c8a133ac6c0d9f22e7639a0be4db2adcff7b82",
+      "withdrawal-recovery control image sha256:e1cf8a101cb6ba0a0a73e858ba1c13638362ff339208c1969335dcee32604433",
       "quick-chat control image sha256:b7c6c1fb8e5bbee02d80ba156187bab6bb5ca996b2a4f5ddc8cc871c0989646c",
       "exact v5 source commit 0c151570f7e650a32a5705ff71692aa930012097",
-      "candidate source commit 7730b7536dcceed9a152cbf2f726f8324ca31ece",
+      "candidate source commit af6e6bb799d49c093633e291d2757200b6da9cb3",
+      "withdrawal-recovery control source commit 98791291cb8970ec0e444831aa5c067b3d45d5ed",
       "quick-chat control source commit 35405a4468c821af7ec1c8f2ef64fb6def4c0c1d"
     ]
   },
@@ -429,9 +438,10 @@
     "rereview_mailbox_commit": "52f2414",
     "rereview_verdict": "REVISE / DOCS-ONLY FIX / NO RUN",
     "rereview_correction": "record and preflight now pin the executable VR1 activation range at 10%-30%",
-    "rereview_status": "docs-only range correction applied; immediate rereview pending"
+    "rereview_status": "superseded by Round 531 embargo-stop evidence; replacement four-arm pre-run packet pending Odin verdict"
   },
-  "preflight_record": "experiments/preflight-hrafn-v6-vanguard-lock-vr1.json",
+  "preflight_record": "experiments/preflight-hrafn-v6-withdrawal-recovery-wr1.json",
+  "superseded_preflight_record": "experiments/preflight-hrafn-v6-vanguard-lock-vr1.json",
   "promotion_states": {
     "SOURCE_READY": true,
     "LOCAL_QUALIFIED": false,
@@ -445,11 +455,11 @@
     "ROUND_CONFIRMED": false
   },
   "blocked_on": [
-    "Odin immediate rereview approval and runner coordination",
-    "round 531 embargo-stop withdrawal retry class inherited by the candidate but not covered by the quick-chat-only control",
-    "Coworld qualifier with Docker-level vr1 reach",
-    "exact-v5 versus quick-chat-control proof for the withdrawal-hold repair",
-    "quick-chat-control versus candidate matched tactical advantage after direct vr1 reach"
+    "Odin approval of the replacement pre-run packet and runner coordination",
+    "Coworld qualifier with Docker-level vr1 and wr1 reach",
+    "exact-v5 versus quick-chat-only proof for public-text suppression",
+    "quick-chat-only versus withdrawal-recovery-control proof for the retry repair",
+    "withdrawal-recovery-control versus candidate matched tactical advantage after direct vr1 reach"
   ],
-  "verdict": "SOURCE_READY ONLY: source/design and docs corrections are applied, but new round-531 evidence separates two embargo-stop withdrawal retry holds from the quick-chat class; pre-run rereview must absorb that blocker before any runner work; NO RUN, NO UPLOAD, NO SUBMIT"
+  "verdict": "SOURCE_READY ONLY: Round 531 embargo-stop evidence is absorbed by a red-first recovery guard, pushed candidate and isolated control commits, exact amd64 images, and regenerated four-arm requests. Odin pre-run approval remains required before any runner work; NO RUN, NO UPLOAD, NO SUBMIT."
 }

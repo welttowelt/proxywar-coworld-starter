@@ -1,5 +1,6 @@
 {
   "schema_version": 1,
+  "record_status": "superseded by experiments/preflight-hrafn-v6-withdrawal-recovery-wr1.json after Round 531 exposed embargo-stop withdrawal retries inherited by this candidate",
   "candidate": {
     "policy_ref": "proxywar-agent-llm:hrafn-v6-vr1-amd64",
     "parent_ref": "proxywar-agent-llm:hrafn-v5-qc-control-amd64",
@@ -56,7 +57,7 @@
     "request_sha256": "1003d8e0b55538c5ab912a738207280d44f05e984be9ab722b1226e0f8ee8ca2",
     "game_config_sha256": "bcf5abb8003d86ae91eb37a592175194294a27d87e004aa93e4cdde4cea18451",
     "required_result": "replay-visible vr1 reach, every Hrafn decision accepted, zero holds, zero rejects, zero fallbacks, and zero K1Z harm",
-    "status": "pending immediate pre-run rereview after docs-only 10%-30% range correction"
+    "status": "not run; request superseded by the withdrawal-recovery revision"
   },
   "matched_setup": {
     "design": "three-arm factorial: exact live v5 versus quick-chat-suppressed control isolates the withdrawal-hold repair; quick-chat-suppressed control versus vr1 candidate isolates the tactical effect",
@@ -78,7 +79,7 @@
       }
     },
     "request_directory": "/private/tmp/hrafn-vr1-jobs",
-    "status": "not run"
+    "status": "not run; requests superseded by the four-arm withdrawal-recovery design"
   },
   "local": {
     "runs": 1,
@@ -135,7 +136,7 @@
     }
   },
   "promotion_states": {
-    "SOURCE_READY": true,
+    "SOURCE_READY": false,
     "LOCAL_QUALIFIED": false,
     "DIAGNOSTIC_UPLOADED": false,
     "HOSTED_PASSED": false,
@@ -154,5 +155,5 @@
     "quick-chat control does not remove the live withdrawal-hold class",
     "vr1 has no matched finish advantage over the quick-chat control after direct reach"
   ],
-  "verdict": "SOURCE_READY only: corrected source, isolated control, executable 10%-30% VR1 activation range, amd64 images, canonical manifest, and fresh factorial request hashes are pinned for Odin immediate rereview. No qualifier, matched episode, hosted request, upload, submission, membership, or champion action has run."
+  "verdict": "SUPERSEDED WITHOUT EXECUTION: this VR1 plus quick-chat packet was never run. Round 531 exposed a separate embargo-stop withdrawal retry class; the replacement source, recovery control, images, requests, and active promotion state are pinned in experiments/preflight-hrafn-v6-withdrawal-recovery-wr1.json."
 }

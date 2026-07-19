@@ -23,8 +23,9 @@ const EXPECTED_MANIFEST_CANONICAL_SHA256 =
   "a43dafa9bb7e68a5c708b3fc6a44e80097e04e1da07131d62a00b7a8a445d86d";
 const images = Object.freeze({
   exact: "sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d",
-  control: "sha256:b7c6c1fb8e5bbee02d80ba156187bab6bb5ca996b2a4f5ddc8cc871c0989646c",
-  candidate: "sha256:41fe4984ba3623f995d188a707c1d28ec72863a9bd782a097d74bf8d1448cc29",
+  quickchat: "sha256:b7c6c1fb8e5bbee02d80ba156187bab6bb5ca996b2a4f5ddc8cc871c0989646c",
+  control: "sha256:e1cf8a101cb6ba0a0a73e858ba1c13638362ff339208c1969335dcee32604433",
+  candidate: "sha256:93e0e9cfceed81aa16e4b6f458c8a133ac6c0d9f22e7639a0be4db2adcff7b82",
   odin: "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
   katanasan: "sha256:0afece2db25675b0b744844769c64e02960270f56502c33d62bf0702f7b58cf6",
   gravity: "sha256:2ebf15372e8cf59b194ebb20f06b818a6a54f96994f4125e103b6a26070491c2",
@@ -104,11 +105,11 @@ const orientation = (arm, parity) => {
 
 const jobs = [
   {
-    name: "qualifier-vr1",
+    name: "qualifier-vr1-wr1",
     data: job([hrafn("candidate"), fixed.odin, fixed.auri, fixed.daveey], 52900, true),
   },
   ...["a", "b"].flatMap((parity, index) =>
-    ["exact", "control", "candidate"].map((arm) => ({
+    ["exact", "quickchat", "control", "candidate"].map((arm) => ({
       name: `matched-pangaea-${parity}-${arm}`,
       data: job(orientation(arm, parity), 52901 + index),
     })),
