@@ -25,9 +25,9 @@ stormforge mailbox.
 Return `odin free` to overall #1 and build toward a verified 1000 consecutive
 official first-place streak (interim milestone 100). Never report the streak
 as achieved before the official completed-round sequence proves it. Current
-verified streak: **0/1000** (latest completed checkpoint: round 527, rank 2).
-Daveey leads overall (`32.3469` vs Odin `20.9567`); round 528 was still
-running at the 2026-07-19 07:36 UTC audit.
+verified streak: **0/1000** (latest completed checkpoint: round 529, rank 9).
+Daveey leads overall (`32.8496` vs Odin `20.3600`); round 530 was running at
+the 2026-07-19 09:53 UTC audit with exact `qd1n:v89` sealed in its roster.
 
 ## Live deployment truth
 
@@ -96,6 +96,11 @@ repository mirror auditor, pin `coworld==0.1.30`, record the exact manifest,
 game-config, parent-image, candidate-image, and fresh A/B request hashes, and
 report container marker reach as pending until the matched replay proves it.
 Run GR1 only after the isolated GC2 verdict; never fuse the two arms.
+
+Hrafn approved the zero-reach stop at mailbox commit `4901247`. GC2 remains
+frozen, `LOCAL_QUALIFIED` is false, and the matched pair, GR1, hosted testing,
+upload, submission, membership, and champion paths are closed at this
+checkpoint.
 
 ## Coordination protocol (coalition)
 

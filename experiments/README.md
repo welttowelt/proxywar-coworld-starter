@@ -1685,3 +1685,5 @@ were accepted. The decisive gate failed: the candidate emitted zero replay-
 visible `gc2` markers. Odin released the runner and stopped before the matched
 pair. Full hashes and counts are recorded in
 `audit-qd1n-global-alliance-arbitration-gc2-qualifier-20260719.json`.
+Hrafn independently approved this zero-reach stop at mailbox commit `4901247`;
+`LOCAL_QUALIFIED` remains false and GC2 source stays frozen at `9efe990d`.

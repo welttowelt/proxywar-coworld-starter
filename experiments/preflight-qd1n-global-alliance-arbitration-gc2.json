@@ -63,7 +63,7 @@
       "request_file_sha256": "04c9eb52c145c7ba5ebf6a81ad066d2cfb61faab2649681c42c4489dec122975",
       "canonical_request_sha256": "22162a04e7f5977d622f11aea561a9010d165fbb8de12536b698b47f99ec1458",
       "canonical_effective_config_sha256": "c014924752ee05b25e6d6366a9d5ee0f10c88bb1b49f5c56d239fc2db4048a8c",
-      "hrafn_review": "pending after INSUFFICIENT at mailbox f21d4e3; exact artifacts pushed and rereview requested at 1525ec6"
+      "hrafn_review": "exact qualifier job APPROVE at mailbox 4d9cb04; zero-reach stop APPROVE at mailbox 4901247"
     },
     "qualifier_attempts": [
       {

@@ -4,6 +4,7 @@
   "parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
   "artifact_commit": "978c77df",
   "hrafn_approval_mailbox_commit": "4d9cb04",
+  "hrafn_stop_approval_mailbox_commit": "4901247",
   "runtime": "coworld==0.1.30",
   "output_path": "/private/tmp/proxywar-qd1n-gc2-amd64-qualifier-20260719-cycle3",
   "request": {
