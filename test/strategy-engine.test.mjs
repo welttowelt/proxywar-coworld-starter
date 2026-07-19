@@ -500,6 +500,103 @@ test("opening neutral expansion overrides a boat-heavy plan", () => {
   assert.equal(selected.id, "expand:terra-nullius:10");
 });
 
+test("opening chassis commits 40 percent before optional coalition, build, and boat actions", () => {
+  const alliance = {
+    ...action("alliance:katanasan", "alliance_request", "Alliance with katanasan"),
+    metadata: { recipientID: "katanasan", recipientName: "katanasan", relation: 0 },
+  };
+  const actions = [
+    alliance,
+    action("build:City:1", "build", "Build City"),
+    action("boat:terra:8", "boat", "Boat to Terra Nullius 8%"),
+    ...[10, 25, 35, 40].map((percent) => ({
+      ...action(
+        `expand:terra-nullius:${percent}`,
+        "attack",
+        `Expand into Terra Nullius ${percent}%`,
+      ),
+      metadata: { expansion: true, troopPercent: percent },
+    })),
+  ];
+  const selected = choose(actions, observation({
+    tileShare: 0.25,
+    rivals: [{ id: "katanasan", name: "katanasan", tileShare: 0.1 }],
+  }));
+  assert.equal(selected.id, "expand:terra-nullius:40");
+  assert.equal(selected.policyMarker, "oc1");
+});
+
+test("opening chassis expires after twenty active decisions", () => {
+  const alliance = {
+    ...action("alliance:katanasan", "alliance_request", "Alliance with katanasan"),
+    metadata: { recipientID: "katanasan", recipientName: "katanasan", relation: 0 },
+  };
+  const neutral = {
+    ...action("expand:terra-nullius:40", "attack", "Expand into Terra Nullius 40%"),
+    metadata: { expansion: true, troopPercent: 40 },
+  };
+  const history = Array.from({ length: 20 }, (_, index) => ({
+    actionID: `expand:terra-nullius:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare: 0.25,
+  }));
+  const selected = choose(
+    [alliance, neutral],
+    observation({
+      tileShare: 0.25,
+      rivals: [{ id: "katanasan", name: "katanasan", tileShare: 0.1 }],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, alliance.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("opening chassis yields immediately to incoming pressure", () => {
+  const neutral = {
+    ...action("expand:terra-nullius:40", "attack", "Expand into Terra Nullius 40%"),
+    metadata: { expansion: true, troopPercent: 40 },
+  };
+  const counter = action("attack:threat:10", "attack", "Attack Threat 10%");
+  const selected = choose(
+    [neutral, counter],
+    observation({
+      tileShare: 0.25,
+      incomingAttacks: [{ attackerID: "threat" }],
+      rivals: [{
+        id: "threat",
+        name: "Threat",
+        tileShare: 0.1,
+        relativeTroopRatio: 1.2,
+      }],
+    }),
+  );
+  assert.equal(selected.id, counter.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("opening chassis does not force a commitment outside the 25 to 40 percent band", () => {
+  const alliance = {
+    ...action("alliance:katanasan", "alliance_request", "Alliance with katanasan"),
+    metadata: { recipientID: "katanasan", recipientName: "katanasan", relation: 0 },
+  };
+  const neutral = {
+    ...action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%"),
+    metadata: { expansion: true, troopPercent: 10 },
+  };
+  const selected = choose(
+    [alliance, neutral],
+    observation({
+      tileShare: 0.25,
+      rivals: [{ id: "katanasan", name: "katanasan", tileShare: 0.1 }],
+    }),
+  );
+  assert.equal(selected.id, alliance.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
 test("a diplomatic opening objective does not override reliable expansion", () => {
   const alliance = {
     ...action("alliance:richard", "alliance_request", "Untrusted rival label"),
@@ -550,7 +647,7 @@ test("structured expansion metadata identifies neutral land and boats", () => {
   assert.equal(choose([boat, land], observation()).id, "future-neutral-id:10");
 });
 
-test("neutral expansion cadence escalates 10, 10, 20, 35 percent", () => {
+test("opening chassis keeps the largest legal commitment in the 25 to 40 percent band", () => {
   const actions = [10, 20, 35].map((percent) =>
     action(`expand:terra-nullius:${percent}`, "attack", `Attack Terra Nullius ${percent}%`)
   );
@@ -564,9 +661,9 @@ test("neutral expansion cadence escalates 10, 10, 20, 35 percent", () => {
     recordDecision(history, choice, state);
   }
   assert.deepEqual(selected, [
-    "expand:terra-nullius:10",
-    "expand:terra-nullius:10",
-    "expand:terra-nullius:20",
+    "expand:terra-nullius:35",
+    "expand:terra-nullius:35",
+    "expand:terra-nullius:35",
     "expand:terra-nullius:35",
   ]);
 });

@@ -241,24 +241,24 @@ test("chassis probes instead of holding when tactical actions remain", () => {
   assert.equal(selected.id, probe.id);
 });
 
-test("chassis delegates World to the proven mx3 route", () => {
+test("chassis applies the opening rewrite on World", () => {
   const selected = choose(
     neutralActions(),
     observation({ tileShare: 0.08, troopRatio: 0.9, spawnTile: 1088580 }),
     null,
     [],
   );
-  assert.equal(selected.id, "expand:terra-nullius:10");
-  assert.equal(selected.policyMarker, undefined);
+  assert.equal(selected.id, "expand:terra-nullius:35");
+  assert.equal(selected.policyMarker, "oc1");
 });
 
-test("chassis delegates unknown maps to the proven mx3 route", () => {
+test("chassis applies the opening rewrite on unknown maps", () => {
   const selected = choose(
     neutralActions(),
     observation({ tileShare: 0.08, troopRatio: 0.9, spawnTile: 42 }),
     null,
     [],
   );
-  assert.equal(selected.id, "expand:terra-nullius:10");
-  assert.equal(selected.policyMarker, undefined);
+  assert.equal(selected.id, "expand:terra-nullius:35");
+  assert.equal(selected.policyMarker, "oc1");
 });

@@ -601,6 +601,24 @@ export function chooseNeutralAttack(actions, history, avoid) {
   return pickPercent(candidates, cadence[Math.min(streak, cadence.length - 1)], avoid);
 }
 
+export function chooseOpeningChassis(actions, state, history, avoid) {
+  const activeDecisions = history.filter((entry) => entry.kind !== "spawn").length;
+  if (
+    activeDecisions >= 20 ||
+    incomingThreatCount(state.self.incomingAttacks) > 0 ||
+    territoryCollapsing(state, history) ||
+    neutralExpansionStalled(state, history)
+  ) {
+    return null;
+  }
+  const candidates = safeActions(actions, isNeutralExpansion).filter((action) => {
+    const percent = actionPercent(action);
+    return Number.isFinite(percent) && percent >= 25 && percent <= 40;
+  });
+  const selected = pickPercent(candidates, 40, avoid);
+  return selected ? { ...selected, policyMarker: "oc1" } : null;
+}
+
 export function neutralExpansionStalled(state, history) {
   const currentShare = finiteNumber(state?.self?.tileShare, NaN);
   if (!Number.isFinite(currentShare)) return false;
@@ -781,6 +799,9 @@ export function chooseAction(actions, state, plan = null, history = []) {
     ? chooseBuild(actions, history, true)
     : null;
   if (defensiveBuild) return defensiveBuild;
+
+  const openingAttack = chooseOpeningChassis(actions, state, history, avoid);
+  if (openingAttack) return openingAttack;
 
   const kingmakerAlliance = kingmakerAllianceAction(actions, state, history);
   if (kingmakerAlliance) return kingmakerAlliance;
