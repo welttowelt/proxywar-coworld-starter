@@ -1,0 +1,63 @@
+{
+  "arm": "eb3-city-window",
+  "status": "source_ready_not_qualified",
+  "date": "2026-07-20",
+  "parent": {
+    "policy": "qd1n:v89",
+    "image": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+    "image_sha256": "ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478"
+  },
+  "candidate": {
+    "source_commit": "9f1c38167527e4faf86ac14eef78d0b7d6d8e7ab",
+    "image": "proxywar-agent-llm:qd1n-v89-eb3-amd64",
+    "image_sha256": "8753778b304f74ec89212fd28c2f60d25737ff7572a903a9eb774912afca09e3",
+    "architecture": "linux/amd64"
+  },
+  "official_replay_basis": {
+    "round": 545,
+    "round_id": "round_875b4e6d-ce2e-4633-9751-4b1dbd66a65e",
+    "cell": "Pangaea Normal, 12-player official losses for qd1n:v89",
+    "episodes": [
+      {
+        "episode_id": "6b815759-d7a5-4465-9c3e-98292282f034",
+        "winner": "daveey",
+        "replay_url": "https://softmax-public.s3.amazonaws.com/replays/c936fa68-13a3-48e7-8fc3-bd3d3d9ee4cb.replay",
+        "replay_sha256": "a66ee7d27908fb673ac3ac0203ce0cd5d5dfdff26eea5f72b8e4f5780baa1267",
+        "observation": "Odin opened alliance, alliance, alliance, 10, 10, 20, then 35-percent neutral expansion. Daveey made five 35-percent neutral expansions, built City at turn 900, then resumed 35-percent expansions and boats."
+      },
+      {
+        "episode_id": "0c9c89a2-016c-4baf-ab86-5fa37f71f16e",
+        "winner": "daveey",
+        "replay_url": "https://softmax-public.s3.amazonaws.com/replays/278cbf16-b19d-404a-b5e8-42d5a83e351e.replay",
+        "replay_sha256": "b78377c77defe78e0d27d50cdb1a91ab34fe968f23c366ab588f9c01e8c0691c",
+        "observation": "Daveey made five 35-percent neutral expansions, then built City at turn 800 before returning to expansion."
+      },
+      {
+        "episode_id": "9d4c63fc-2e57-491a-8718-c8620e1d347e",
+        "winner": "Richard Higgins",
+        "replay_url": "https://softmax-public.s3.amazonaws.com/replays/f468f868-618d-4294-9146-1196b8babd0c.replay",
+        "replay_sha256": "44236a684d1eb11793780865d9ac6b5d4c0f7a42e33b23d73312e6d99d5fa4a5",
+        "observation": "Richard made eleven consecutive 35-percent neutral expansions without a City. This falsifies a universal City-timing claim."
+      }
+    ]
+  },
+  "hypothesis": {
+    "claim": "In calm Pangaea openings, one early City after three large neutral conquests is a distinct daveey-style timing variable worth isolating; it is not a universal opener.",
+    "guard": "Pangaea only; calm, non-collapsing state; under 12 percent land; under 14 active decisions; no City already built; at least three prior neutral attacks at 35 percent or more.",
+    "replacement": "Choose the first legal City build before a voluntary coalition retry or another neutral expansion.",
+    "preserved": "Actual reverse alliance handshakes retain priority; all v89 K1Z protection, attacks, boats, and normal neutral cadence remain unchanged.",
+    "marker": "eb3"
+  },
+  "pre_registered_gate": {
+    "qualifier": "marker reach, accepted decisions, zero unexplained holds or rejections, zero K1Z harm",
+    "fast_screen": "exact v89 candidate-parent Pangaea pair plus World identity pair",
+    "advance": "at least one non-negative paired score with clean reach and safety",
+    "stop": [
+      "zero eb3 marker reach",
+      "candidate unexplained hold or rejection",
+      "K1Z harm",
+      "both fast-screen cells negative"
+    ],
+    "promotion": "Only after matched advantage, hosted 4/4, regression 20/20, and live identity verification. No upload or league change at source-ready status."
+  }
+}
