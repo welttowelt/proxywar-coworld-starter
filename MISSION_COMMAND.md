@@ -23,16 +23,18 @@ flat-cost, speed-floor conquest mechanism without changing action class.
 
 ## Supporting effort
 
-The RunPod CPU fleet is an evidence factory. One clean same-host canary unlocks
-the preregistered 24-pair World, Asia, and Pangaea matrix. Every worker runs
-candidate and exact parent for its assigned cell.
+The RunPod CPU fleet is an evidence factory, not a second policy system. Every
+new arm first runs a two-pair screen: one World and one Pangaea matched
+candidate-parent pair. The screen checks exact images, replay-visible reach,
+accepted decisions, zero unexplained candidate holds or rejects, zero K1Z
+harm, and directional paired score.
 
-For every new full matrix after the currently running PG2 R7 batch, use at
-least twelve CPU pods: one matched pair per pod, twelve pairs in parallel per
-wave. A 24-pair matrix therefore has two waves rather than six. Preserve the
-same immutable image, seed, roster, pair audit, hash verification, and
-fail-closed map gates; reduce wall-clock time only by adding independent CPU
-capacity. Do not resize or interrupt an already running matrix.
+Only a clean screen with at least one non-negative paired score advances to the
+preregistered 24-pair World, Asia, and Pangaea proof matrix. The full proof
+uses twelve CPU pods in two waves. There are no mid-wave approvals, partial
+map ceremonies, or new policy edits during a proof run. Preserve immutable
+image, seed, roster, pair audit, and hash verification; use capacity only to
+reduce wall-clock time.
 
 ## Reserve
 
@@ -69,7 +71,8 @@ moonshot adviser and does not mutate policies or league state.
 Stop the current arm on any:
 
 - zero mechanism reach;
-- non-positive matched advantage;
+- negative score in both fast-screen cells, or non-positive full-matrix
+  matched advantage;
 - unexplained hold or rejection;
 - K1Z harm;
 - action-class divergence;
