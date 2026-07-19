@@ -496,6 +496,7 @@ function chooseRivalAttack(actions, state, plan, history, avoid, threatCount = 0
 }
 
 const KINGMAKER_RETRY_COOLDOWN = 6;
+const GC2_NL1_ALLIANCE_COOLDOWN = 8;
 
 // Reciprocal partners come from two channels: visible rivals, and
 // alliance_request metadata when the partner is outside the visible set.
@@ -574,6 +575,100 @@ function kingmakerAllianceAction(actions, state, history) {
     return { ...candidates[0], policyMarker: "kp2" };
   }
   return null;
+}
+
+function actionTargetsReciprocal(action, state) {
+  const rival = rivalForAction(action, state);
+  if (rival && isReciprocalRival(rival)) return true;
+  const recipientID = clean(
+    action?.metadata?.recipientID ?? action?.metadata?.targetID ?? "",
+  ).toLowerCase();
+  const recipientName = normalizedRivalName(
+    action?.metadata?.recipientName ?? action?.metadata?.targetName ?? "",
+  );
+  return RECIPROCAL_RIVAL_IDS.has(recipientID) ||
+    RECIPROCAL_RIVALS.has(recipientName);
+}
+
+function allianceRequestTargetsReciprocal(action, state) {
+  return action?.kind === "alliance_request" && actionTargetsReciprocal(action, state);
+}
+
+function sameAllianceTarget(left, right, state) {
+  const leftRival = rivalForAction(left, state);
+  const rightRival = rivalForAction(right, state);
+  if (leftRival && rightRival) {
+    return leftRival.id.toLowerCase() === rightRival.id.toLowerCase() ||
+      normalizedRivalName(leftRival.name) === normalizedRivalName(rightRival.name);
+  }
+  const leftID = clean(
+    left?.metadata?.recipientID ?? left?.metadata?.targetID ?? "",
+  ).toLowerCase();
+  const rightID = clean(
+    right?.metadata?.recipientID ?? right?.metadata?.targetID ?? "",
+  ).toLowerCase();
+  if (leftID && rightID && leftID === rightID) return true;
+  const leftName = normalizedRivalName(
+    left?.metadata?.recipientName ?? left?.metadata?.targetName ?? "",
+  );
+  const rightName = normalizedRivalName(
+    right?.metadata?.recipientName ?? right?.metadata?.targetName ?? "",
+  );
+  return leftName.length > 0 && leftName === rightName;
+}
+
+function isIncomingAllianceHandshake(selected, actions, state) {
+  return selected?.kind === "alliance_request" && actions.some((action) =>
+    action?.kind === "alliance_reject" && sameAllianceTarget(selected, action, state)
+  );
+}
+
+function gc2Nl1CadenceActive(selected, actions, state, history) {
+  return selected?.kind === "alliance_request" &&
+    !allianceRequestTargetsReciprocal(selected, state) &&
+    !isIncomingAllianceHandshake(selected, actions, state) &&
+    decisionsSince(history, (entry) => entry.kind === "alliance_request") <
+      GC2_NL1_ALLIANCE_COOLDOWN;
+}
+
+function isEligibleGc2Nl1Land(replacement, actions, state, history) {
+  if (!replacement || replacement.kind !== "attack") return false;
+  if (replacement?.metadata?.expansion !== true || !isNeutralExpansion(replacement)) {
+    return false;
+  }
+  if (
+    replacement.risk?.level === "high" ||
+    rivalForAction(replacement, state) ||
+    actionTargetsReciprocal(replacement, state)
+  ) {
+    return false;
+  }
+  if (state.self.tileShare >= 0.12 || territoryCollapsing(state, history)) return false;
+  if (
+    incomingThreatCount(state.self.incomingAttacks) > 0 ||
+    (state.self.allProtocolAttackerIDs || []).length > 0
+  ) {
+    return false;
+  }
+  const legalNeutralLand = actions.some((action) =>
+    action?.id === replacement.id &&
+    action?.kind === "attack" &&
+    action?.metadata?.expansion === true &&
+    isNeutralExpansion(action)
+  );
+  return legalNeutralLand;
+}
+
+export function applyGc2Nl1Cadence(
+  selected,
+  replacement,
+  actions,
+  state,
+  history = [],
+) {
+  if (!gc2Nl1CadenceActive(selected, actions, state, history)) return selected;
+  if (!isEligibleGc2Nl1Land(replacement, actions, state, history)) return selected;
+  return { ...replacement, policyMarker: "gc2nl1" };
 }
 
 function chooseAtomBomb(actions, state, history) {
@@ -767,7 +862,7 @@ export function chooseUtility(actions, state, plan, history) {
   return null;
 }
 
-export function chooseAction(actions, state, plan = null, history = []) {
+function chooseActionCandidate(actions, state, plan = null, history = []) {
   if (!Array.isArray(actions) || actions.length === 0) {
     throw new Error("decision request had no legal actions");
   }
@@ -909,6 +1004,14 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (pressure) return pressure;
 
   return actions.find((action) => action.kind === "hold") ?? actions[0];
+}
+
+export function chooseAction(actions, state, plan = null, history = []) {
+  const selected = chooseActionCandidate(actions, state, plan, history);
+  if (!gc2Nl1CadenceActive(selected, actions, state, history)) return selected;
+  const avoid = new Set(avoidActionIDs(history));
+  const replacement = chooseNeutralAttack(actions, history, avoid);
+  return applyGc2Nl1Cadence(selected, replacement, actions, state, history);
 }
 
 export function recordDecision(history, action, state) {

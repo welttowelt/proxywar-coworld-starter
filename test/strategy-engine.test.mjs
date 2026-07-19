@@ -2,6 +2,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  applyGc2Nl1Cadence,
   boatConversionStalled,
   buildState,
   chooseAction,
@@ -2111,4 +2112,261 @@ test("outsiders remain legal nuclear targets beside all three K1Z allies", () =>
   );
   assert.equal(selected.id, bomb.id);
   assert.equal(selected.policyMarker, "nk1");
+});
+
+function gc2Nl1Alliance(name = "Outsider") {
+  const slug = name.toLowerCase().replace(/\s+/g, "-");
+  return {
+    ...action(
+      `alliance:${slug}:1`,
+      "alliance_request",
+      `Request alliance with ${name}`,
+    ),
+    metadata: { recipientID: slug, recipientName: name, relation: 1 },
+  };
+}
+
+function gc2Nl1Land(percent = 10) {
+  return {
+    ...action(
+      `expand:terra-nullius:${percent}`,
+      "attack",
+      `Expand into Terra Nullius ${percent}%`,
+    ),
+    metadata: { expansion: true, troopPercent: percent },
+  };
+}
+
+function gc2Nl1RecentRequestHistory(extraDecisions = 0, tileShare = 0.1) {
+  return [
+    {
+      actionID: "alliance:first:0",
+      kind: "alliance_request",
+      targetID: "first",
+      targetName: "First",
+      tileShare,
+    },
+    ...Array.from({ length: extraDecisions }, (_, index) => ({
+      actionID: `attack:terra:${index}`,
+      kind: "attack",
+      neutral: true,
+      tileShare,
+    })),
+  ];
+}
+
+function applyGc2Nl1({
+  selected = gc2Nl1Alliance(),
+  replacement = gc2Nl1Land(),
+  actions = null,
+  tileShare = 0.1,
+  incomingAttacks = [],
+  incomingAttackPlayerIDs = [],
+  rivals = [{ id: "outsider", name: "Outsider", tileShare: 0.2, relativeTroopRatio: 1 }],
+  history = gc2Nl1RecentRequestHistory(),
+} = {}) {
+  const legalActions = actions ?? [selected, replacement];
+  const state = buildState(observation({
+    tileShare,
+    incomingAttacks,
+    incomingAttackPlayerIDs,
+    rivals,
+  }), legalActions, history);
+  return applyGc2Nl1Cadence(
+    selected,
+    replacement,
+    legalActions,
+    state,
+    history,
+  );
+}
+
+test("gc2nl1 reroutes an eligible outbound request to neutral land", () => {
+  const selected = gc2Nl1Alliance();
+  const replacement = gc2Nl1Land(10);
+  const result = applyGc2Nl1({ selected, replacement });
+  assert.equal(result.id, replacement.id);
+  assert.equal(result.kind, "attack");
+  assert.equal(result.metadata.expansion, true);
+  assert.equal(result.policyMarker, "gc2nl1");
+});
+
+test("gc2nl1 does not reroute at or above twelve percent land", () => {
+  const selected = gc2Nl1Alliance();
+  const result = applyGc2Nl1({ selected, tileShare: 0.12 });
+  assert.equal(result.id, selected.id);
+  assert.equal(result.policyMarker, undefined);
+});
+
+test("gc2nl1 never substitutes boats, builds, warships, upgrades, or metadata-free land", async (t) => {
+  const selected = gc2Nl1Alliance();
+  const replacements = [
+    {
+      ...action("boat:terra:8", "boat", "Boat to Terra Nullius 8%"),
+      metadata: { expansion: true, troopPercent: 8 },
+    },
+    action("build:City:1", "build", "Build City"),
+    action("warship:1", "warship", "Build Warship"),
+    action("upgrade:port:1", "upgrade_structure", "Upgrade Port"),
+    action(
+      "expand:terra-nullius:10",
+      "attack",
+      "Expand into Terra Nullius 10%",
+    ),
+  ];
+  for (const replacement of replacements) {
+    await t.test(replacement.kind, () => {
+      const result = applyGc2Nl1({ selected, replacement });
+      assert.equal(result.id, selected.id);
+      assert.equal(result.policyMarker, undefined);
+    });
+  }
+});
+
+test("gc2nl1 never substitutes a K1Z-targeted attack", () => {
+  const selected = gc2Nl1Alliance();
+  const replacement = {
+    ...action(
+      "attack:katanasan:10",
+      "attack",
+      "Attack K1Z katanasan through Terra Nullius 10%",
+    ),
+    metadata: {
+      expansion: true,
+      targetID: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+      targetName: "K1Z katanasan",
+      troopPercent: 10,
+    },
+  };
+  const result = applyGc2Nl1({
+    selected,
+    replacement,
+    rivals: [
+      { id: "outsider", name: "Outsider", tileShare: 0.2, relativeTroopRatio: 1 },
+    ],
+  });
+  assert.equal(result.id, selected.id);
+  assert.equal(result.policyMarker, undefined);
+});
+
+test("gc2nl1 preserves an incoming reverse handshake", () => {
+  const selected = gc2Nl1Alliance();
+  const reject = {
+    ...action(
+      "alliance_reject:outsider:1",
+      "alliance_reject",
+      "Reject alliance with Outsider",
+    ),
+    metadata: { recipientID: "outsider", recipientName: "Outsider" },
+  };
+  const result = applyGc2Nl1({
+    selected,
+    actions: [selected, reject, gc2Nl1Land()],
+  });
+  assert.equal(result.id, selected.id);
+  assert.equal(result.policyMarker, undefined);
+});
+
+test("gc2nl1 leaves a K1Z request at top priority", () => {
+  const selected = {
+    ...gc2Nl1Alliance("K1Z Hrafn"),
+    metadata: {
+      recipientID: "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+      recipientName: "K1Z Hrafn",
+      relation: 2,
+    },
+    policyMarker: "kp2",
+  };
+  const result = applyGc2Nl1({
+    selected,
+    rivals: [{
+      id: "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+      name: "K1Z Hrafn",
+      tileShare: 0.1,
+      relativeTroopRatio: 1.1,
+    }],
+  });
+  assert.equal(result.id, selected.id);
+  assert.equal(result.policyMarker, "kp2");
+});
+
+test("gc2nl1 stays closed under incoming threat or territory collapse", async (t) => {
+  const selected = gc2Nl1Alliance();
+  await t.test("incoming threat", () => {
+    const result = applyGc2Nl1({
+      selected,
+      incomingAttacks: [{ attackerID: "raider" }],
+      incomingAttackPlayerIDs: ["raider"],
+      rivals: [
+        { id: "outsider", name: "Outsider", tileShare: 0.2, relativeTroopRatio: 1 },
+        { id: "raider", name: "Raider", tileShare: 0.2, relativeTroopRatio: 1 },
+      ],
+    });
+    assert.equal(result.id, selected.id);
+  });
+  await t.test("territory collapse", () => {
+    const history = [
+      ...gc2Nl1RecentRequestHistory(0, 0.11),
+      { actionID: "attack:terra:1", kind: "attack", neutral: true, tileShare: 0.11 },
+      { actionID: "attack:terra:2", kind: "attack", neutral: true, tileShare: 0.105 },
+      { actionID: "attack:terra:3", kind: "attack", neutral: true, tileShare: 0.1 },
+    ];
+    const result = applyGc2Nl1({ selected, tileShare: 0.08, history });
+    assert.equal(result.id, selected.id);
+  });
+});
+
+test("gc2nl1 cadence cools for eight decisions and then rearms", async (t) => {
+  const selected = gc2Nl1Alliance();
+  await t.test("no prior request", () => {
+    const result = applyGc2Nl1({ selected, history: [] });
+    assert.equal(result.id, selected.id);
+  });
+  await t.test("seven decisions elapsed", () => {
+    const result = applyGc2Nl1({
+      selected,
+      history: gc2Nl1RecentRequestHistory(7),
+    });
+    assert.equal(result.id, "expand:terra-nullius:10");
+    assert.equal(result.policyMarker, "gc2nl1");
+  });
+  await t.test("eight decisions elapsed", () => {
+    const result = applyGc2Nl1({
+      selected,
+      history: gc2Nl1RecentRequestHistory(8),
+    });
+    assert.equal(result.id, selected.id);
+    assert.equal(result.policyMarker, undefined);
+  });
+});
+
+test("gc2nl1 wrapper cannot displace a legal K1Z request", () => {
+  const hrafnRequest = {
+    ...action(
+      "alliance:hrafn:1",
+      "alliance_request",
+      "Request alliance with K1Z Hrafn",
+    ),
+    metadata: {
+      recipientID: "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+      recipientName: "K1Z Hrafn",
+      relation: 2,
+    },
+  };
+  const selected = choose(
+    [hrafnRequest, gc2Nl1Land()],
+    observation({
+      tileShare: 0.1,
+      rivals: [{
+        id: "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+        name: "K1Z Hrafn",
+        tileShare: 0.1,
+        relativeTroopRatio: 1.1,
+      }],
+    }),
+    null,
+    gc2Nl1RecentRequestHistory(),
+  );
+  assert.equal(selected.id, hrafnRequest.id);
+  assert.equal(selected.policyMarker, "kp2");
 });
