@@ -1398,3 +1398,11 @@ the required exact-hash pre-run approval. Hrafn later returned `INSUFFICIENT`
 at mailbox commit `4b3da75`. Both outputs therefore remain quarantined and
 ineligible for qualification or promotion. Their regressions can only support
 the conservative rejection above; they cannot advance GC2.
+
+The decision-level follow-up is recorded in
+`diagnosis-qd1n-global-alliance-arbitration-gc2-20260719.md`. Only the first
+turn-500 substitution is causally clean; it briefly improves territory and
+troops. The later boat, Warship, and upgrade substitutions are downstream
+confounded and coincide with the finish regression. The next source arm, if
+tested, is therefore `GC2-NL1`: neutral land only, below twelve-percent tile
+share, no incoming threat or collapse, with all later action families excluded.
