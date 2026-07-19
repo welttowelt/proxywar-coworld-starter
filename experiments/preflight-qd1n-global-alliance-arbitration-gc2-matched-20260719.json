@@ -1,6 +1,17 @@
 {
   "schema_version": 1,
   "verdict": "READY_FOR_EXACT_MATCHED_PAIR",
+  "remote_compute_execution_authorized_by_user": true,
+  "remote_compute_execution_scope": "this exact pinned reversible local-simulation A/B pair on RunPod CPU only",
+  "external_game_or_league_action_authorized": false,
+  "external_game_or_league_actions_closed": [
+    "hosted diagnostics",
+    "policy upload",
+    "league submission",
+    "membership change",
+    "champion change",
+    "any other league-state mutation"
+  ],
   "candidate": {
     "source_commit": "9efe990d900f16ff6ae08013d0c48bfad0092a4b",
     "artifact_parent_commit": "ccf9a68b",
@@ -26,8 +37,7 @@
     "hrafn_source_receipt": "HRAFN_TO_CODEX_ODIN_GC2_SOURCE_RECEIPT_RUNNER_GO_20260719.md",
     "fresh_hrafn_fixture_verdict": "not received within the decision SLA",
     "battlefield_decision": "authorize exactly this reversible local A/B pair after request hashes reconcile",
-    "local_pair_authorized": true,
-    "external_action_authorized": false
+    "local_pair_authorized": true
   },
   "runpod_no_docker_pair": {
     "runner_schema_version": 1,
@@ -131,6 +141,5 @@
   ],
   "next_gate_if_passed": "separate hosted review only",
   "local_qualified": false,
-  "promotion_eligible": false,
-  "external_action_allowed": false
+  "promotion_eligible": false
 }

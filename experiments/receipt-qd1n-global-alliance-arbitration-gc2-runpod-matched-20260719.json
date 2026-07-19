@@ -1,6 +1,17 @@
 {
   "schema_version": 1,
   "status": "VALIDATED_NOT_RUN",
+  "remote_compute_execution_authorized_by_user": true,
+  "remote_compute_execution_scope": "this exact pinned reversible local-simulation A/B pair on RunPod CPU only",
+  "external_game_or_league_action_authorized": false,
+  "external_game_or_league_actions_closed": [
+    "hosted diagnostics",
+    "policy upload",
+    "league submission",
+    "membership change",
+    "champion change",
+    "any other league-state mutation"
+  ],
   "arm_a": {
     "path": "experiments/runpod-gc2-live-coalition-matched-a-20260719.json",
     "file_sha256": "6d85a4b572519a08a940c46da6b5bf44e15ec9e3bf430d53fb0ec2ca1e24f5db",
