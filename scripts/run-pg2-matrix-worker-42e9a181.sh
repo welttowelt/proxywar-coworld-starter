@@ -34,23 +34,42 @@ matrix_manifest=$matrix_home/pg2-matrix-42e9a181.json
 [[ ! -e $working_bundle ]]
 [[ ! -e $run_root/$pair-a && ! -e $run_root/$pair-b ]]
 
-manifest_entry=$(jq -ec \
-  --arg lane "$lane" \
-  --argjson wave "$wave" \
-  --arg pair "$pair" \
-  --arg map "$map" \
-  --argjson seed "$seed" \
-  '
-    .assignments[]
-    | select(
-        .lane == $lane
-        and .wave == $wave
-        and .pair == $pair
-        and .map == $map
-        and .seed == $seed
-      )
-  ' "$matrix_manifest")
-[[ -n $manifest_entry ]]
+manifest_hashes=$(python3 - \
+  "$matrix_manifest" \
+  "$lane" \
+  "$wave" \
+  "$pair" \
+  "$map" \
+  "$seed" <<'PY'
+import json
+import sys
+
+manifest_path, lane, wave, pair, map_name, seed = sys.argv[1:]
+with open(manifest_path, encoding="utf-8") as handle:
+    manifest = json.load(handle)
+
+matches = [
+    assignment
+    for assignment in manifest["assignments"]
+    if assignment.get("lane") == lane
+    and assignment.get("wave") == int(wave)
+    and assignment.get("pair") == pair
+    and assignment.get("map") == map_name
+    and assignment.get("seed") == int(seed)
+]
+if len(matches) != 1:
+    raise SystemExit(
+        f"expected one matrix assignment, found {len(matches)}"
+    )
+
+entry = matches[0]
+print(entry["candidate_sha256"], entry["parent_sha256"], sep="\t")
+PY
+)
+IFS=$'\t' read -r expected_candidate_sha expected_parent_sha \
+  <<< "$manifest_hashes"
+[[ $expected_candidate_sha =~ ^[a-f0-9]{64}$ ]]
+[[ $expected_parent_sha =~ ^[a-f0-9]{64}$ ]]
 
 mkdir -p "$run_root" "$evidence_root" "${working_bundle%/*}"
 cp -al "$base_bundle" "$working_bundle"
@@ -65,8 +84,8 @@ cp "$spec_root/$pair-a.json" "$working_bundle/specs/formal-matched-a.json"
 cp "$spec_root/$pair-b.json" "$working_bundle/specs/formal-matched-b.json"
 candidate_sha=$(sha256sum "$working_bundle/specs/formal-matched-a.json" | awk '{print $1}')
 parent_sha=$(sha256sum "$working_bundle/specs/formal-matched-b.json" | awk '{print $1}')
-[[ $candidate_sha == $(jq -r .candidate_sha256 <<<"$manifest_entry") ]]
-[[ $parent_sha == $(jq -r .parent_sha256 <<<"$manifest_entry") ]]
+[[ $candidate_sha == "$expected_candidate_sha" ]]
+[[ $parent_sha == "$expected_parent_sha" ]]
 
 awk \
   '$2 != "specs/formal-matched-a.json" && $2 != "specs/formal-matched-b.json"' \
@@ -81,35 +100,61 @@ rm "$working_bundle/files.sha256.unsorted"
 files_sha=$(sha256sum "$working_bundle/files.sha256" | awk '{print $1}')
 matrix_manifest_sha=$(sha256sum "$matrix_manifest" | awk '{print $1}')
 
-jq \
-  --arg commit "$matrix_commit" \
-  --arg manifest_sha "$matrix_manifest_sha" \
-  --arg pair "$pair" \
-  --arg lane "$lane" \
-  --argjson wave "$wave" \
-  --arg map "$map" \
-  --argjson seed "$seed" \
-  --arg candidate_sha "$candidate_sha" \
-  --arg parent_sha "$parent_sha" \
-  --arg files_sha "$files_sha" \
-  '
-    .experiment_specs[0].sha256 = $candidate_sha
-    | .experiment_specs[1].sha256 = $parent_sha
-    | .file_manifest.sha256 = $files_sha
-    | .matrix_derivation = {
-        schema_version: 1,
-        generator_commit: $commit,
-        matrix_manifest_path: "experiments/pg2-matrix-42e9a181.json",
-        matrix_manifest_sha256: $manifest_sha,
-        lane: $lane,
-        wave: $wave,
-        pair: $pair,
-        map: $map,
-        seed: $seed,
-        candidate_spec_sha256: $candidate_sha,
-        parent_spec_sha256: $parent_sha
-      }
-  ' "$base_bundle/manifest.json" > "$working_bundle/manifest.json"
+python3 - \
+  "$base_bundle/manifest.json" \
+  "$working_bundle/manifest.json" \
+  "$matrix_commit" \
+  "$matrix_manifest_sha" \
+  "$pair" \
+  "$lane" \
+  "$wave" \
+  "$map" \
+  "$seed" \
+  "$candidate_sha" \
+  "$parent_sha" \
+  "$files_sha" <<'PY'
+import json
+import sys
+
+(
+    source_path,
+    output_path,
+    commit,
+    manifest_sha,
+    pair,
+    lane,
+    wave,
+    map_name,
+    seed,
+    candidate_sha,
+    parent_sha,
+    files_sha,
+) = sys.argv[1:]
+
+with open(source_path, encoding="utf-8") as handle:
+    manifest = json.load(handle)
+
+manifest["experiment_specs"][0]["sha256"] = candidate_sha
+manifest["experiment_specs"][1]["sha256"] = parent_sha
+manifest["file_manifest"]["sha256"] = files_sha
+manifest["matrix_derivation"] = {
+    "schema_version": 1,
+    "generator_commit": commit,
+    "matrix_manifest_path": "experiments/pg2-matrix-42e9a181.json",
+    "matrix_manifest_sha256": manifest_sha,
+    "lane": lane,
+    "wave": int(wave),
+    "pair": pair,
+    "map": map_name,
+    "seed": int(seed),
+    "candidate_spec_sha256": candidate_sha,
+    "parent_spec_sha256": parent_sha,
+}
+
+with open(output_path, "w", encoding="utf-8") as handle:
+    json.dump(manifest, handle, indent=2)
+    handle.write("\n")
+PY
 manifest_sha=$(sha256sum "$working_bundle/manifest.json" | awk '{print $1}')
 printf '%s  manifest.json\n' "$manifest_sha" > "$working_bundle/manifest.sha256"
 
