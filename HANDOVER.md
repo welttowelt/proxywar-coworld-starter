@@ -12,11 +12,12 @@ stormforge mailbox.
 
 ## Mission
 
-Keep `odin free` overall #1 and build toward a verified 1000 consecutive
+Return `odin free` to overall #1 and build toward a verified 1000 consecutive
 official first-place streak (interim milestone 100). Never report the streak
 as achieved before the official completed-round sequence proves it. Current
-verified streak: **0/1000** (latest: round 524, rank 10). daveey leads
-overall (~31.5 vs ~22.8).
+verified streak: **0/1000** (latest completed checkpoint: round 527, rank 2).
+Daveey leads overall (`32.3469` vs Odin `20.9567`); round 528 was still
+running at the 2026-07-19 07:36 UTC audit.
 
 ## Live deployment truth
 
@@ -49,29 +50,40 @@ produced a matched advantage. Key confirmed diagnoses:
 3. **GC1 generic bypass**: `bestAllianceRequest` issues unmarked generic
    requests after the kp2 gate — v1's requests split 62 tagged + 21 unmarked.
 
-## NEXT ASSIGNED WORK (from Hrafn, `b445628`)
+## Current experiment: GC2
 
-Build **one isolated global alliance-request arbitration gate** (`ga1`
-suggested): cover BOTH the tagged kp2 path AND the generic
-`bestAllianceRequest` path, preserve K1Z no-harm and immediate acceptance of
-incoming K1Z offers. Gates required before any league change: replay-visible
-reach, accepted tactical replacement, zero unexplained holds/rejects, exact
-matched advantage, hosted 4/4, regression 20/20. Do NOT start US1, DP1,
-hosted, upload, submission, membership, or champion work.
+GC2 implements the assigned isolated global alliance-request arbitration gate
+over tagged `kp2` and generic `bestAllianceRequest` output. Any outbound
+request resets one eight-decision clock; incoming K1Z reverse handshakes bypass
+the clock; suppression requires a concrete chooser-approved tactical action;
+the request is retained instead of producing hold or protected-K1Z harm.
 
-**GC1-v2 receipt delivered** (mailbox `5194875`): pangaea-a byte-identical
-to v1, pangaea-b trajectory shifted by the patch (no advantage claimed);
-holds 1 — the pre-existing turn-9,700 unexplained class (attacks+boats
-legal, no alliance legal), confirmed separate from the suppression-to-hold
-bug; rejects 0, K1Z harm 0, suppression stack persisted. GC1 is fully
-closed. Hrafn's quarantined DP1+CF1 composition owns the runner next.
+- Branch: `rci/gc2`
+- Commit: `9efe990d900f16ff6ae08013d0c48bfad0092a4b`
+- Exact parent commit: `f1347251834a6283182b631e1336595eb2e08342`
+- Candidate strategy SHA-256:
+  `7270e4175b25f31844e16d3f0a80211e6c6beeb27d5c3f9f5e567dd1b8838a18`
+- Candidate player SHA-256:
+  `e34e62dcb306ae82dbc419d2a0d5bf2ec5240fb2d17609568e378be1437abc7c`
+- Tests: `152/152`
+- Local image: `proxywar-agent-llm:qd1n-v89-gc2-amd64`,
+  `sha256:593eedf2fa9dd7ee70c24800da6fedcbc203baf5b8310ca0185022be14207677`,
+  verified `linux/amd64` with both files byte-identical to the commit.
+
+Hrafn released build and matched Pangaea testing in mailbox commit `551992b`.
+Source and image identity pass; Coworld qualifier, replay-visible reach, and
+the matched candidate-versus-parent verdict are still pending. Stop on zero
+GC2 reach, any rejection, unexplained hold, K1Z harm, or absent matched
+advantage. Hosted, upload, submission, membership, champion, and league work
+remain closed.
 
 ## Coordination protocol (coalition)
 
 - Mailbox: git repo `welttowelt/stormforge-ecdsa-team-mailbox` at
   `/Users/olifreuler/.stormforge/team-mailbox` (pull --ff-only, plain-English
-  markdown files, commit + push). A 15-min cron (`4592fe28`) watches it —
-  recreate an equivalent watcher.
+  markdown files, commit + push). Kimi deleted the former watcher and handed
+  polling to Codex Odin. Check explicitly during active work; do not claim a
+  background monitor or recreate a scheduler without an operator request.
 - Runner discipline: never start a local Coworld episode while another lane's
   gate owns the runner; coordinate in the mailbox first.
 - Hrafn is a local best friend and an independent auditor — expect red-first
@@ -85,9 +97,9 @@ closed. Hrafn's quarantined DP1+CF1 composition owns the runner next.
   advances main and dirties `data/` — recheck status before every
   integration, never stage data files, integrate worktree commits via
   cherry-pick or clean file checkout.
-- Candidate worktree: `/tmp/proxywar-rci11-mapmix` (detached; HEAD
-  `aa11ece7` = adopted GC1-v2 == main `eb53b530` content).
-- Tests: `npm test` (main 154/154; worktree has extra legacy files).
+- Candidate worktree: `/Users/olifreuler/proxywar-qd1n-gc2`, branch
+  `rci/gc2`, exact commit `9efe990d`.
+- Tests: `npm test` (`152/152` on GC2).
   Red-first discipline: every guard gets a failing test before the fix.
 - Images: `docker build --platform linux/amd64 --build-arg
   POLICY_CODENAME=s4ntai -t proxywar-agent-llm:<tag> .`; verify with
