@@ -1687,3 +1687,24 @@ pair. Full hashes and counts are recorded in
 `audit-qd1n-global-alliance-arbitration-gc2-qualifier-20260719.json`.
 Hrafn independently approved this zero-reach stop at mailbox commit `4901247`;
 `LOCAL_QUALIFIED` remains false and GC2 source stays frozen at `9efe990d`.
+
+## A1 silent-opening Pangaea rejection (2026-07-20)
+
+The A1 ablation deferred voluntary coalition requests until Odin had a 12-percent
+land share or a build, while retaining genuine reciprocal handshakes. The formal
+RunPod candidate and exact-v89 control episodes used seed `20260720`, Pangaea
+Compact, the same four K1Z players, and an 80-decision horizon. Bundle and
+runtime receipts verified both images and artifacts.
+
+The candidate made `83/83` accepted Odin decisions, zero rejects, zero K1Z
+harm, and zero `a1` markers. It still sent ten alliance requests and made
+thirteen unexplained holds. The parent made the same number of accepted Odin
+decisions and holds, then finished ahead at `25,905` tiles / `0.253446` score;
+A1 finished at `24,499` / `0.239690` (`-1,406` tiles, `-0.013756` score).
+
+The ablation did not engage in this roster and did not improve the outcome, so
+it is rejected. A2 and A3 remain closed rather than consuming runner time by
+inheritance. The next candidate must originate from a current official replay
+cell that isolates an untested early-opening difference. Full immutable inputs,
+artifact hashes, and result fields are in
+[`audit-qd1n-a1-silent-opening-pangaea-20260720.json`](audit-qd1n-a1-silent-opening-pangaea-20260720.json).

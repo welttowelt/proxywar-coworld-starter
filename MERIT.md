@@ -417,3 +417,20 @@ all confirmed. This is the next isolated hypothesis. PE1 receives no
 regression, submission, membership, or champion change. Round 520 placed live
 v89 first on World, then Round 521 placed it tenth on Pangaea and reset the
 official streak to `0/1000`.
+
+## A1 silent-opening rejection (2026-07-20)
+
+A1 suppressed only voluntary coalition requests before a 12-percent land share
+or the first build, preserving genuine reciprocal offers. Its verified RunPod
+Pangaea candidate-parent pair used the same seed, Compact map, four K1Z roster,
+and 80-decision horizon. The candidate recorded `83/83` accepted Odin decisions
+and no K1Z harm, but emitted zero `a1` markers, still selected ten alliance
+requests, and accumulated thirteen unexplained holds. Exact v89 also made
+`83/83` accepted decisions with thirteen holds, but finished ahead: `25,905`
+tiles / `0.253446` score versus A1's `24,499` / `0.239690`.
+
+A1 is rejected: zero mechanism reach, no hold improvement, and a negative
+paired score delta (`-0.013756`, `-1,406` tiles). No upload, submission,
+membership, or champion change followed. The v89 control remains live. The
+formal receipts and replay hashes are in
+[`audit-qd1n-a1-silent-opening-pangaea-20260720.json`](experiments/audit-qd1n-a1-silent-opening-pangaea-20260720.json).

@@ -12,14 +12,19 @@ The current main-effort candidate either:
 1. beats exact `qd1n:v89` in controlled matched evidence, passes hosted `4/4`
 and regression `20/20`, passes Odin's fail-closed RCI audit, and becomes the
 verified sole champion automatically; or
-2. is rejected with immutable evidence, after which the preregistered A1
-silent-opening ablation becomes the only next main effort.
+2. is rejected with immutable evidence, after which one fresh replay-backed
+opening hypothesis becomes the only next main effort.
 
 ## Main effort
 
-`PG2`: increase the commitment of an already selected productive neutral-land
-attack during the first twenty decisions. This isolates the verified
-flat-cost, speed-floor conquest mechanism without changing action class.
+`A1 silent-opening` is closed. Its immutable Pangaea pair reached zero `a1`
+markers, retained thirteen unexplained holds, and trailed exact v89 by 1,406
+tiles. `qd1n:v89` remains the sole live control.
+
+The next main effort is replay reconnaissance: identify one early-opening
+action difference in a recent official Odin loss that has not already failed a
+matched gate. No code branch opens before that evidence names the guard,
+marker, expected action change, and stop condition.
 
 ## Supporting effort
 
@@ -40,13 +45,10 @@ reduce wall-clock time.
 
 ## Reserve
 
-If PG2 fails a candidate, integrity, or matched-advantage local gate, close it
-immediately and run A1: suppress
-voluntary coalition requests until land share is at least 12 percent or the
-first build exists, while accepting genuine reciprocal offers immediately.
-Its primary cell is Pangaea, where early deaths are concentrated. A2 and A3
-remain queued diagnostics only; do not use runner time on them unless A1 also
-fails.
+PG2 has no recoverable terminal evidence and A1 is rejected. A2 and A3 remain
+closed: neither has a fresh replay-backed causal case. Do not spend runner time
+on a pre-queued name. The next arm must begin with the smallest current replay
+cell that distinguishes Odin's opening from the winning policy.
 
 A parent-only control anomaly is neither a candidate failure nor a promotion
 pass. Record it, complete the remaining independent pairs, and replay that
