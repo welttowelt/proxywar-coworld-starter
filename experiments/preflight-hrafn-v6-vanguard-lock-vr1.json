@@ -4,7 +4,7 @@
     "policy_ref": "proxywar-agent-llm:hrafn-v6-vr1-amd64",
     "parent_ref": "proxywar-agent-llm:hrafn-v5-qc-control-amd64",
     "exact_deltas": [
-      "when an Odin support transfer is legal, replace it with a marked attack only if the strongest outsider leads Hrafn by at least one percentage point and has at least a 1.35 relative troop ratio; retain that exact front only while the immediately prior decision is vr1, the outsider still leads, and the ratio remains at least 1.10"
+      "while Hrafn's tile share is within the executable 10%-30% activation range, when an Odin support transfer is legal, replace it with a marked attack only if the strongest outsider leads Hrafn by at least one percentage point and has at least a 1.35 relative troop ratio; retain that exact front only while the immediately prior decision is vr1, the outsider still leads, and the ratio remains at least 1.10"
     ],
     "source_commit": "7730b7536dcceed9a152cbf2f726f8324ca31ece",
     "strategy_sha256": "68dee34a502aa0f09bc0d6baa42986f1455b7592d7396213280cd2649ba44bb4",
@@ -56,7 +56,7 @@
     "request_sha256": "1003d8e0b55538c5ab912a738207280d44f05e984be9ab722b1226e0f8ee8ca2",
     "game_config_sha256": "bcf5abb8003d86ae91eb37a592175194294a27d87e004aa93e4cdde4cea18451",
     "required_result": "replay-visible vr1 reach, every Hrafn decision accepted, zero holds, zero rejects, zero fallbacks, and zero K1Z harm",
-    "status": "pending pre-run rereview"
+    "status": "pending immediate pre-run rereview after docs-only 10%-30% range correction"
   },
   "matched_setup": {
     "design": "three-arm factorial: exact live v5 versus quick-chat-suppressed control isolates the withdrawal-hold repair; quick-chat-suppressed control versus vr1 candidate isolates the tactical effect",
@@ -93,6 +93,10 @@
     "mechanism_reached": true,
     "source_fixture_only": true,
     "candidate_tests_passed": 153,
+    "candidate_tests_rerun_at": "2026-07-19T11:06:34Z",
+    "candidate_tests_rerun_command": "npm test -- --test-concurrency=1",
+    "factorial_control_tests_passed": 149,
+    "factorial_control_tests_rerun_at": "2026-07-19T11:06:34Z",
     "red_failures_before_fix": 2,
     "red_cases": [
       "vr1 cannot replace a transfer when the outsider trails Hrafn",
@@ -150,5 +154,5 @@
     "quick-chat control does not remove the live withdrawal-hold class",
     "vr1 has no matched finish advantage over the quick-chat control after direct reach"
   ],
-  "verdict": "SOURCE_READY only: corrected source, isolated control, amd64 images, canonical manifest, and fresh factorial request hashes are pinned for Odin rereview. No qualifier, matched episode, hosted request, upload, submission, membership, or champion action has run."
+  "verdict": "SOURCE_READY only: corrected source, isolated control, executable 10%-30% VR1 activation range, amd64 images, canonical manifest, and fresh factorial request hashes are pinned for Odin immediate rereview. No qualifier, matched episode, hosted request, upload, submission, membership, or champion action has run."
 }

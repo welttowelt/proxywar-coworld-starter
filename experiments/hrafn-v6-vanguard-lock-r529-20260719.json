@@ -45,10 +45,12 @@
     "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
     "image_id": "sha256:b7c6c1fb8e5bbee02d80ba156187bab6bb5ca996b2a4f5ddc8cc871c0989646c",
     "architecture": "linux/amd64",
-    "tests_passed": 149
+    "tests_passed": 149,
+    "tests_rerun_at": "2026-07-19T11:06:34Z",
+    "tests_rerun_command": "npm test -- --test-concurrency=1"
   },
   "hypothesis": {
-    "guard": "when dn1 is legal, Hrafn is between 6% and 35% share, and the strongest outsider leads Hrafn by at least one percentage point with a legal direct attack at at least 1.35 relative troop ratio, attack that leader before donating; retain the exact marked front only when the immediately prior decision was vr1, the outsider still leads, and its ratio stays at least 1.10",
+    "guard": "when dn1 is legal, Hrafn is between 10% and 30% share, and the strongest outsider leads Hrafn by at least one percentage point with a legal direct attack at at least 1.35 relative troop ratio, attack that leader before donating; retain the exact marked front only when the immediately prior decision was vr1, the outsider still leads, and its ratio stays at least 1.10",
     "expected_action_change": "replace an otherwise selected Odin troop donation with a bounded attack on the current outsider leader",
     "observable_marker": "vr1",
     "success_metric": "replay-visible vr1 reach with zero holds, rejects, fallbacks, or K1Z harm and a mirrored finish advantage over the quick-chat-only control; exact-v5 versus control separately proves withdrawal-hold repair",
@@ -250,6 +252,8 @@
   "tests": {
     "passed": 153,
     "failed": 0,
+    "rerun_at": "2026-07-19T11:06:34Z",
+    "rerun_command": "npm test -- --test-concurrency=1",
     "red_failures_before_fix": 2,
     "red_cases": [
       "vr1 cannot replace a transfer when the outsider trails Hrafn",
@@ -279,7 +283,10 @@
       "isolate quick-chat suppression with an exact-v5/control/candidate factorial design"
     ],
     "corrections_applied": true,
-    "rereview_status": "pending"
+    "rereview_mailbox_commit": "52f2414",
+    "rereview_verdict": "REVISE / DOCS-ONLY FIX / NO RUN",
+    "rereview_correction": "record and preflight now pin the executable VR1 activation range at 10%-30%",
+    "rereview_status": "docs-only range correction applied; immediate rereview pending"
   },
   "preflight_record": "experiments/preflight-hrafn-v6-vanguard-lock-vr1.json",
   "promotion_states": {
@@ -295,10 +302,10 @@
     "ROUND_CONFIRMED": false
   },
   "blocked_on": [
-    "Odin rereview approval and runner coordination",
+    "Odin immediate rereview approval and runner coordination",
     "Coworld qualifier with Docker-level vr1 reach",
     "exact-v5 versus quick-chat-control proof for the withdrawal-hold repair",
     "quick-chat-control versus candidate matched tactical advantage after direct vr1 reach"
   ],
-  "verdict": "SOURCE_READY ONLY: Odin's revisions are applied, isolated images and fresh factorial requests are pinned, and rereview is pending; NO RUN, NO UPLOAD, NO SUBMIT"
+  "verdict": "SOURCE_READY ONLY: Odin's source/design revisions and docs-only 10%-30% range correction are applied, isolated images and fresh factorial requests are pinned, and immediate rereview is pending; NO RUN, NO UPLOAD, NO SUBMIT"
 }

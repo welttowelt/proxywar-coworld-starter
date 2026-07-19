@@ -11,8 +11,9 @@ The daveey replay gives `vr1` a direct causal cell. At turn 7,400 Hrafn held
 1.61 relative troop ratio, and 10/25/40 attacks were legal. Live v5 instead
 donated 338,869 troops to Odin. The corrected candidate moves a legal leader
 attack ahead of that donation only when the outsider leads Hrafn by at least
-one percentage point. It retains that exact front only when the immediately
-prior decision was `vr1` and the ratio remains at least 1.10.
+one percentage point and Hrafn is inside the executable 10%-30% activation
+range. It retains that exact front only when the immediately prior decision was
+`vr1` and the ratio remains at least 1.10.
 
 Odin's first pre-run verdict was `REVISE / NO RUN`. Both requested red cases
 failed before the correction and now pass. The candidate at commit `7730b753`
@@ -20,6 +21,14 @@ passes `153/153` tests and is pinned to amd64 image `sha256:41fe4984...`.
 Quick-chat suppression is isolated on branch `rci/hrafn-v6-quickchat-control`
 at commit `35405a44`; that control passes `149/149` and is pinned to image
 `sha256:b7c6c1fb...`.
+
+Odin's corrected rereview accepted source, isolation, image, manifest, and job
+identity, then returned a docs-only `REVISE` because this record described a
+6%-35% activation range. Source actually uses `activationTileShare=0.1` and
+`activationCeiling=0.3`. The record and preflight now pin the executable
+10%-30% range. Fresh serial full-suite runs pass `153/153` for the candidate
+and `149/149` for the quick-chat control; immediate rereview remains required
+before runner acquisition.
 
 The canonical Coworld `0.1.8` manifest and fresh requests are pinned in
 `preflight-hrafn-v6-vanguard-lock-vr1.json`. The factorial design compares

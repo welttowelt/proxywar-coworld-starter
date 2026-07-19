@@ -82,6 +82,14 @@ point, and a lock survives only from the immediately prior `vr1` decision.
 Both requested red cases failed before the fix and now pass; the candidate
 suite is `153/153`. The quick-chat-only control suite is `149/149`.
 
+Odin's next rereview at mailbox commit `52f2414` closed the source, isolation,
+image, manifest, and request-identity blockers but returned a docs-only
+`REVISE`: the experiment record said `6%-35%` while executable source uses
+`activationTileShare=0.1` and `activationCeiling=0.3`. The record and preflight
+now pin the exact 10%-30% range. Immediate rereview remains required; this did
+not authorize a runner acquisition. Fresh serial full-suite runs pass
+`153/153` for the candidate and `149/149` for the control.
+
 The exact live parent, quick-chat control, and VR1 candidate images are pinned
 by immutable IDs. The canonical Coworld `0.1.8` manifest and seven fresh job
 requests are recorded in
