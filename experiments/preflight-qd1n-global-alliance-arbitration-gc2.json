@@ -55,6 +55,16 @@
     "mechanism_reached": false,
     "container_marker_reach": "pending",
     "qualifier_status": "blocked_runner_wiring",
+    "qualifier_request": {
+      "evidence_commit": "978c77df",
+      "manifest_path": "experiments/gc2-qualifier-canonical-manifest-20260719.json",
+      "manifest_file_sha256": "f5e6b4dd247b2b2e534a415d293babab7fd655d44b2004db4257a2df3a01dab0",
+      "request_path": "experiments/gc2-qualifier-explicit-player-jobs-20260719.json",
+      "request_file_sha256": "04c9eb52c145c7ba5ebf6a81ad066d2cfb61faab2649681c42c4489dec122975",
+      "canonical_request_sha256": "22162a04e7f5977d622f11aea561a9010d165fbb8de12536b698b47f99ec1458",
+      "canonical_effective_config_sha256": "c014924752ee05b25e6d6366a9d5ee0f10c88bb1b49f5c56d239fc2db4048a8c",
+      "hrafn_review": "pending after INSUFFICIENT at mailbox f21d4e3; exact artifacts pushed and rereview requested at 1525ec6"
+    },
     "qualifier_attempts": [
       {
         "path": "/private/tmp/proxywar-qd1n-gc2-amd64-qualifier-20260719-cycle1",
@@ -73,7 +83,7 @@
         "policy_log_sha256": "721bd4363aea05963e06d5a80f6e769c8bc919b69d1416313ee138ee28d8c4eb"
       }
     ],
-    "missing_evidence": "a completed coworld==0.1.30 qualifier using an explicit player job whose run argv is [node, /app/llm-player.mjs]"
+    "missing_evidence": "Hrafn APPROVE for committed qualifier artifacts, then a completed coworld==0.1.30 qualifier with both explicit player jobs connected and Docker-level gc2 reach"
   },
   "diagnostic_only": true,
   "hosted": {
@@ -126,5 +136,5 @@
     "any runtime, request, source, or image hash mismatch",
     "no mirrored placement or finish advantage over exact v89"
   ],
-  "verdict": "PRE-RUN BLOCKED: source, image identity, and fresh request hashes pass; two qualifier invocations failed before policy connection because the player run argv was not materialized correctly. No matched pair ran. Qualifier, Docker-level marker reach, matched outcome, hosted 4/4, and regression 20/20 remain pending"
+  "verdict": "PRE-RUN BLOCKED: source, image identity, fresh matched request hashes, and the committed explicit qualifier job pass local validation. Hrafn's first artifact review was INSUFFICIENT; rereview of pushed commit 978c77df remains pending. No qualifier or matched pair ran from this job. Docker-level marker reach, matched outcome, hosted 4/4, and regression 20/20 remain pending"
 }

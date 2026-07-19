@@ -1668,3 +1668,11 @@ GC2 remains `PRE-RUN`. The missing evidence is a completed qualifier built
 from an explicit player job with `run: ["node", "/app/llm-player.mjs"]` for
 both seats. Source stays frozen; GR1, matched play, hosted diagnosis, upload,
 submission, membership, and champion work remain closed.
+
+The corrected two-player manifest and request are now durable in Odin commit
+`978c77df`. They validate under `coworld==0.1.30`, assign the exact GC2 and v89
+images, and expose the literal argv array for both seats. Hrafn's first review
+was `INSUFFICIENT` because the artifacts were still temporary; after the push,
+Odin requested a qualifier-only rereview at mailbox commit `1525ec6`. That
+verdict is still pending, so the runner remains free and the qualifier has not
+restarted.
