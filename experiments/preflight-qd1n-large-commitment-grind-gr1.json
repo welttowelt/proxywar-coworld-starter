@@ -42,9 +42,9 @@
     "all behavior after decision twenty or at twenty-percent land share"
   ],
   "local": {
-    "runs": 1,
-    "independent_traces": 1,
-    "run_type": "fresh full Node test suite, red-first exact-parent replay-shaped selector fixtures, and one pinned candidate-versus-parent Docker qualifier",
+    "runs": 3,
+    "independent_traces": 3,
+    "run_type": "fresh full Node test suite, red-first exact-parent replay-shaped selector fixtures, one pinned candidate-versus-parent Docker qualifier, and one same-seed same-seat live-coalition A/B pair",
     "tests_passed": 148,
     "tests_failed": 0,
     "red_first_parent_failures": 3,
@@ -63,13 +63,16 @@
     "qualifier_parent_rejections": 0,
     "qualifier_replay_sha256": "db42be435714ae97c3f39e005c79627338be9aa0448b10fd6842ed0453ca175e",
     "qualifier_secondary_cross_audit_replay_sha256": "aa61e509cdf8fa6aef8d6471269516475b8ff934af63c9db588e61bf22c3514a",
-    "matched_status": "revised_live_coalition_pair_pending_hrafn_review",
+    "matched_status": "completed_rejected",
     "receipt": "experiments/receipt-qd1n-large-commitment-grind-gr1-full-suite-20260719.md",
-    "qualifier_audit": "experiments/audit-qd1n-large-commitment-grind-gr1-qualifier-20260719.json"
+    "qualifier_audit": "experiments/audit-qd1n-large-commitment-grind-gr1-qualifier-20260719.json",
+    "matched_audit": "experiments/audit-qd1n-large-commitment-grind-gr1-matched-20260719.json",
+    "matched_ledger": "experiments/ledger-qd1n-large-commitment-grind-gr1-20260719.ndjson",
+    "matched_payoff": "experiments/payoff-qd1n-large-commitment-grind-gr1-20260719.json"
   },
   "diagnostic_only": true,
   "matched_baseline": {
-    "status": "created_pending_hrafn_review",
+    "status": "completed_rejected",
     "same_roster": true,
     "same_variant": true,
     "map": "Pangaea",
@@ -90,7 +93,27 @@
       "juryoku": "sha256:2ebf15372e8cf59b194ebb20f06b818a6a54f96994f4125e103b6a26070491c2",
       "katanasan": "sha256:0afece2db25675b0b744844769c64e02960270f56502c33d62bf0702f7b58cf6"
     },
-    "request_id": null
+    "request_id": null,
+    "result": {
+      "candidate_marker_executions": 4,
+      "candidate_decision_20_tiles": 27283,
+      "parent_decision_20_tiles": 28109,
+      "candidate_decision_50_tiles": 28387,
+      "parent_decision_50_tiles": 29200,
+      "candidate_finish_rank": 3,
+      "parent_finish_rank": 2,
+      "candidate_final_tiles": 28624,
+      "parent_final_tiles": 30130,
+      "candidate_unexplained_holds": 0,
+      "parent_unexplained_holds": 0,
+      "candidate_rejections": 0,
+      "parent_rejections": 0,
+      "candidate_k1z_harmful_actions": 0,
+      "parent_k1z_harmful_actions": 0,
+      "opening_advantage": false,
+      "finish_advantage": false,
+      "verdict": "REJECT"
+    }
   },
   "hosted": {
     "criteria": {
@@ -101,7 +124,7 @@
       "min_mechanism_executions": 1
     },
     "result": {
-      "status": "pending",
+      "status": "closed_gr1_rejected",
       "episodes": 0,
       "wins": 0,
       "holds": 0,
@@ -114,7 +137,7 @@
     "regression_episodes": 20,
     "league_change_allowed": false,
     "result": {
-      "status": "pending",
+      "status": "closed_gr1_rejected",
       "episodes": 0,
       "wins": 0,
       "holds": 0,
@@ -147,6 +170,6 @@
     "no mirrored finish advantage",
     "any source, image, request, runtime, or player-identity hash mismatch"
   ],
-  "sequencing": "GC2 is closed at zero mechanism reach. GR1 passed its pinned Docker qualifier with direct clean reach. The revised one-Odin-seat live-coalition matched pair is the next gate and awaits Hrafn review. Hosted, upload, submission, membership, and champion work remain closed until their separate gates pass.",
-  "verdict": "The Docker qualifier passed with direct GR1 reach and clean accepted decisions. LOCAL_QUALIFIED is false until the separate mirrored candidate-versus-parent advantage gate passes; hosted, upload, submission, membership, champion, and league work remain closed."
+  "sequencing": "GC2 remains closed at zero mechanism reach. GR1 passed its pinned Docker qualifier, then failed the approved same-seed same-seat live-coalition A/B gate at both opening checkpoints and at episode finish. GR1 is retired. Hosted testing, upload, submission, membership, champion, and league work are closed for this arm.",
+  "verdict": "REJECT. GR1 reached four accepted times with zero Odin rejections, zero unexplained Odin holds, and zero K1Z harm, but trailed exact v89 by 826 tiles at decision twenty, 813 at decision fifty, and 1,506 at finish; candidate placement was third versus parent second. LOCAL_QUALIFIED stays false and exact v89 remains live."
 }

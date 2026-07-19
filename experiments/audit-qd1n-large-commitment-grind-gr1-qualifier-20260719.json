@@ -78,8 +78,11 @@
     "request_b_odin_image": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
     "real_coalition_images_pinned": true,
     "only_request_delta": "Odin image",
-    "approved": false
+    "approved": true,
+    "completed": true,
+    "result": "REJECT",
+    "matched_audit": "experiments/audit-qd1n-large-commitment-grind-gr1-matched-20260719.json"
   },
   "promotion_eligible": false,
-  "promotion_state_note": "The qualifier passes boot, marker-reach, accepted-decision, hold, and rejection checks. LOCAL_QUALIFIED requires the still-unrun mirrored candidate-versus-parent advantage gate."
+  "promotion_state_note": "The qualifier passed boot, marker-reach, accepted-decision, hold, and rejection checks. The later approved same-seed same-seat live-coalition pair rejected GR1 because the candidate lost both opening checkpoints, final tiles, and placement to exact v89. LOCAL_QUALIFIED remains false."
 }

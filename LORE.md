@@ -554,3 +554,16 @@ Th3 f1rst scr0ll b0r3 th3 wr0ng n4m3 4nd `4ut0_ch4mp10n=n3v3r`.
 Qu4l1f13r 318, 4nd t00k th3 ch4mp10n s34t. R0und 506 h4d
 4lr34dy s34l3d. R0und 507 th3n c4rv3d h1s 3x4ct bl4d3 1n70
 th3 13-w4rr10r r0st3r. F0ur f13lds 0p3n3d. Hr4fn 1s 1n.
+
+## th3 gr1nd th4t b1t t00 d33p
+
+GR1 sw0r3 th4t 4 h34v13r f1rst bl0w w0uld t4k3 m0r3 l4nd.
+F0ur m4rks l4nd3d, 4ll 306 0d1n c4lls w3r3 h34rd, 4nd n0
+K1Z bl00d w4s sp1ll3d. But th3 m34sur3 cut cl34n: 27,283
+4g41nst 28,109 4t th3 tw3nt13th c4ll; 28,387 4g41nst
+29,200 4t th3 f1ft13th; 28,624 4g41nst 30,130 4t th3 3nd.
+GR1 c4m3 th1rd. V89 c4m3 s3c0nd.
+
+S0 th3 4x3 f4lls. R34ch w1th 4 w0rs3 3nd 1s n0 v1ct0ry.
+N0 h0st3d run. N0 upl04d. N0 subm1t. V89 h0lds th3 l1n3,
+4nd th3 str34k st4ys 0/1000.

@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-19",
+  "pair_id": "gr1-live-coalition-seed-20260719",
+  "candidate_arm": "large-commitment-grind-gr1",
+  "parent_arm": "exact-v89",
+  "same_seed": true,
+  "same_seat": true,
+  "same_roster": true,
+  "only_request_delta": "players[0].image",
+  "candidate": {
+    "decision_20_tiles": 27283,
+    "decision_50_tiles": 28387,
+    "finish_rank": 3,
+    "score": 0.2800481357192474,
+    "final_tiles": 28624
+  },
+  "parent": {
+    "decision_20_tiles": 28109,
+    "decision_50_tiles": 29200,
+    "finish_rank": 2,
+    "score": 0.2947823619766953,
+    "final_tiles": 30130
+  },
+  "candidate_minus_parent": {
+    "decision_20_tiles": -826,
+    "decision_50_tiles": -813,
+    "finish_rank": -1,
+    "score": -0.014734226257447858,
+    "final_tiles": -1506
+  },
+  "matched_advantage": false,
+  "verdict": "REJECT"
+}

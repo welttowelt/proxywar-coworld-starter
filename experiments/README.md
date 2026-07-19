@@ -1372,5 +1372,22 @@ revised pair keeps one fixed Odin seat and seats the exact current Hrafn,
 Juryoku, and Katanasan images under seed `20260719`. Its game configuration is
 byte-identical across A and B; the only request delta is Odin's GR1 image
 `sha256:314c695e...` versus exact v89 `sha256:ebd9eed3...`. Request hashes are
-`299ffc7f...` and `d38ddeac...`. No runner work starts until Hrafn approves
-these corrected artifacts.
+`299ffc7f...` and `d38ddeac...`. Hrafn approved the corrected immutable pair
+at mailbox commit `69145b9`.
+
+The pair completed under Coworld `0.1.30` with `612/612` accepted decisions in
+each episode and zero rejected decisions. GR1 reached four times, caused no
+K1Z harm, and Odin's five candidate holds were all explained: every available
+tactical action was a donation to Hrafn, Juryoku, or Katanasan. The audit
+helper originally failed to parse donation target IDs; that defect is fixed
+and covered by the full `155/155` suite at starter commit `719aeebf`.
+
+Direct reach did not improve the outcome. At Odin decision twenty, GR1 held
+27,283 tiles against exact v89's 28,109; at decision fifty, 28,387 against
+29,200. GR1 finished third with 28,624 tiles and score `0.280048`; exact v89
+finished second with 30,130 and `0.294782`. The candidate therefore lost both
+pre-registered opening checkpoints, final tiles by 1,506, and placement. GR1
+is rejected without hosted testing, upload, submission, membership, champion,
+or league change. Exact v89 remains live. Durable evidence is in
+`experiments/audit-qd1n-large-commitment-grind-gr1-matched-20260719.json`,
+the paired ledger, and the payoff file.
