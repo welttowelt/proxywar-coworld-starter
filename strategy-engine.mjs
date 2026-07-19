@@ -496,6 +496,7 @@ function chooseRivalAttack(actions, state, plan, history, avoid, threatCount = 0
 }
 
 const KINGMAKER_RETRY_COOLDOWN = 6;
+const GLOBAL_COALITION_COOLDOWN = 8;
 
 // Reciprocal partners come from two channels: visible rivals, and
 // alliance_request metadata when the partner is outside the visible set.
@@ -782,7 +783,30 @@ export function chooseAction(actions, state, plan = null, history = []) {
     : null;
   if (defensiveBuild) return defensiveBuild;
 
-  const kingmakerAlliance = kingmakerAllianceAction(actions, state, history);
+  // gc1: global coalition-request cadence. The per-partner retry cooldown
+  // multiplies across partners, so interleaved retries became a permanent
+  // social stream (v91 leaders spent 122 and 82 of 503 capped decisions on
+  // requests and froze at peak territory). While any reliable tactical action
+  // is legal, a fresh partner retry must wait out the global cadence window;
+  // a genuine pending reverse handshake is still accepted on sight.
+  let gc1Suppress = false;
+  let kingmakerAlliance = kingmakerAllianceAction(actions, state, history);
+  if (kingmakerAlliance) {
+    const lastCoalitionRequest = decisionsSince(history, (entry) =>
+      entry.kind === "alliance_request" && entry.policyMarker === "kp2");
+    if (lastCoalitionRequest < GLOBAL_COALITION_COOLDOWN &&
+      hasReliableTacticalAction(actions)) {
+      const partners = reciprocalPartners(actions, state);
+      const partnerOfferPending = safeActions(actions, (action) =>
+        action.kind === "alliance_reject" &&
+        partners.some((partner) => matchesKingmakerPartner(action, partner, state))
+      ).length > 0;
+      if (!partnerOfferPending) {
+        kingmakerAlliance = null;
+        gc1Suppress = true;
+      }
+    }
+  }
   if (kingmakerAlliance) return kingmakerAlliance;
 
   const atomBomb = chooseAtomBomb(actions, state, history);
@@ -790,8 +814,10 @@ export function chooseAction(actions, state, plan = null, history = []) {
 
   const rivalAttack = chooseRivalAttack(actions, state, plan, history, avoid, threatCount);
   const peaceRedirect = rivalAttack?.peaceRedirect === true;
+  const withGc1 = (action) =>
+    gc1Suppress && action && !action.policyMarker ? { ...action, policyMarker: "gc1" } : action;
   const withPeace = (action) =>
-    peaceRedirect && action && !action.policyMarker ? { ...action, policyMarker: "kp1" } : action;
+    withGc1(peaceRedirect && action && !action.policyMarker ? { ...action, policyMarker: "kp1" } : action);
   const routedRivalAttack = state.mapFingerprint === "Asia" && rivalAttack?.action &&
     (state.self.incomingAttackerIDs || []).includes(rivalAttack.rival.id.toLowerCase())
     ? { ...rivalAttack.action, policyMarker: "ia1" }
@@ -804,9 +830,9 @@ export function chooseAction(actions, state, plan = null, history = []) {
     rivalAttack.rival.relativeTroopRatio < 1.3 && !pc1Band;
   const disciplinedAttack = pileOnDiscipline ? null : routedRivalAttack;
   const withDiscipline = (action) =>
-    pileOnDiscipline && action && !action.policyMarker
+    withGc1(pileOnDiscipline && action && !action.policyMarker
       ? { ...action, policyMarker: "pd2" }
-      : action;
+      : action);
   const neutralAttack = chooseNeutralAttack(actions, history, avoid);
   const build = chooseBuild(actions, history);
   const sinceBuild = decisionsSince(history, (entry) =>
@@ -819,7 +845,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
     rivalAttack.rival.relativeTroopRatio >= 1.5;
   const collapsing = territoryCollapsing(state, history);
 
-  if (collapsing && build && sinceBuild >= 3 && !finishingTarget) return build;
+  if (collapsing && build && sinceBuild >= 3 && !finishingTarget) return withGc1(build);
 
   const allianceMove = chooseAllianceMove(
     actions,
@@ -848,7 +874,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
   }
 
   if (neutralExpansionStalled(state, history)) {
-    if (disciplinedAttack) return disciplinedAttack;
+    if (disciplinedAttack) return withGc1(disciplinedAttack);
     const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
     if (boatStreak >= 2 && build) return withDiscipline(withPeace(build));
     const escapeBoat = chooseBoat(actions, state, history, avoid);
@@ -858,9 +884,9 @@ export function chooseAction(actions, state, plan = null, history = []) {
 
   if (cadenceBuild && !finishingTarget) return withDiscipline(withPeace(build));
   if (state.self.tileShare < 0.12 && neutralAttack && threatCount === 0 && !collapsing) {
-    return neutralAttack;
+    return withGc1(neutralAttack);
   }
-  if (disciplinedAttack) return disciplinedAttack;
+  if (disciplinedAttack) return withGc1(disciplinedAttack);
   if (neutralAttack) return withDiscipline(withPeace(neutralAttack));
   if (build && sinceBuild >= 5) return withDiscipline(withPeace(build));
 

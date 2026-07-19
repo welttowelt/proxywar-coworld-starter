@@ -2112,3 +2112,184 @@ test("outsiders remain legal nuclear targets beside all three K1Z allies", () =>
   assert.equal(selected.id, bomb.id);
   assert.equal(selected.policyMarker, "nk1");
 });
+
+test("an interleaved coalition retry waits out the global cadence", () => {
+  const gravAlly = {
+    ...action("alliance:grav:1", "alliance_request", "Request alliance with K1Z juryoku-koku"),
+    metadata: {
+      recipientID: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      recipientName: "K1Z juryoku-koku",
+      relation: 2,
+    },
+  };
+  const strike = action("attack:raider:10", "attack", "Attack Raider 10%");
+  const history = [
+    { actionID: "x0", kind: "attack", tileShare: 0.3 },
+    { actionID: "x1", kind: "attack", tileShare: 0.3 },
+    { actionID: "x2", kind: "attack", tileShare: 0.3 },
+    {
+      actionID: "alliance:kata:0",
+      kind: "alliance_request",
+      targetID: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+      targetName: "K1Z katanasan",
+      tileShare: 0.3,
+      policyMarker: "kp2",
+    },
+  ];
+  const selected = choose(
+    [gravAlly, strike],
+    observation({
+      tileShare: 0.3,
+      troopRatio: 0.9,
+      rivals: [
+        {
+          id: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+          name: "K1Z juryoku-koku",
+          tileShare: 0.12,
+          relativeTroopRatio: 1.1,
+        },
+        { id: "raider", name: "Raider", tileShare: 0.15, relativeTroopRatio: 1.8 },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, strike.id);
+  assert.equal(selected.policyMarker, "gc1");
+});
+
+test("a coalition retry fires once the global cadence lapses", () => {
+  const gravAlly = {
+    ...action("alliance:grav:1", "alliance_request", "Request alliance with K1Z juryoku-koku"),
+    metadata: {
+      recipientID: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      recipientName: "K1Z juryoku-koku",
+      relation: 2,
+    },
+  };
+  const strike = action("attack:raider:10", "attack", "Attack Raider 10%");
+  const history = [
+    {
+      actionID: "alliance:kata:0",
+      kind: "alliance_request",
+      targetID: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+      targetName: "K1Z katanasan",
+      tileShare: 0.3,
+      policyMarker: "kp2",
+    },
+    ...Array.from({ length: 8 }, (_, index) => ({
+      actionID: `x${index}`,
+      kind: "attack",
+      tileShare: 0.3,
+    })),
+  ];
+  const selected = choose(
+    [gravAlly, strike],
+    observation({
+      tileShare: 0.3,
+      troopRatio: 0.9,
+      rivals: [
+        {
+          id: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+          name: "K1Z juryoku-koku",
+          tileShare: 0.12,
+          relativeTroopRatio: 1.1,
+        },
+        { id: "raider", name: "Raider", tileShare: 0.15, relativeTroopRatio: 1.8 },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, gravAlly.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("a pending reverse handshake bypasses the global cadence", () => {
+  const gravAlly = {
+    ...action("alliance:grav:1", "alliance_request", "Request alliance with K1Z juryoku-koku"),
+    metadata: {
+      recipientID: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      recipientName: "K1Z juryoku-koku",
+      relation: 2,
+    },
+  };
+  const gravReject = {
+    ...action("alliance_reject:grav:1", "alliance_reject", "Reject K1Z juryoku-koku alliance"),
+    metadata: {
+      recipientID: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      recipientName: "K1Z juryoku-koku",
+    },
+  };
+  const strike = action("attack:raider:10", "attack", "Attack Raider 10%");
+  const history = [
+    {
+      actionID: "alliance:kata:0",
+      kind: "alliance_request",
+      targetID: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+      targetName: "K1Z katanasan",
+      tileShare: 0.3,
+      policyMarker: "kp2",
+    },
+  ];
+  const selected = choose(
+    [gravAlly, gravReject, strike],
+    observation({
+      tileShare: 0.3,
+      troopRatio: 0.9,
+      rivals: [
+        {
+          id: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+          name: "K1Z juryoku-koku",
+          tileShare: 0.12,
+          relativeTroopRatio: 1.1,
+        },
+        { id: "raider", name: "Raider", tileShare: 0.15, relativeTroopRatio: 1.8 },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, gravAlly.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("the cadence never suppresses a request without a reliable alternative", () => {
+  const gravAlly = {
+    ...action("alliance:grav:1", "alliance_request", "Request alliance with K1Z juryoku-koku"),
+    metadata: {
+      recipientID: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      recipientName: "K1Z juryoku-koku",
+      relation: 2,
+    },
+  };
+  const hold = action("hold:1", "hold", "Hold");
+  const history = [
+    { actionID: "x0", kind: "attack", tileShare: 0.3 },
+    {
+      actionID: "alliance:kata:0",
+      kind: "alliance_request",
+      targetID: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+      targetName: "K1Z katanasan",
+      tileShare: 0.3,
+      policyMarker: "kp2",
+    },
+  ];
+  const selected = choose(
+    [gravAlly, hold],
+    observation({
+      tileShare: 0.3,
+      troopRatio: 0.9,
+      rivals: [{
+        id: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+        name: "K1Z juryoku-koku",
+        tileShare: 0.12,
+        relativeTroopRatio: 1.1,
+      }],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, gravAlly.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
