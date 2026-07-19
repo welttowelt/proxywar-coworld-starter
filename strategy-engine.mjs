@@ -790,6 +790,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
   // is legal, a fresh partner retry must wait out the global cadence window;
   // a genuine pending reverse handshake is still accepted on sight.
   let gc1Suppress = false;
+  let suppressedKingmakerAlliance = null;
   let kingmakerAlliance = kingmakerAllianceAction(actions, state, history);
   if (kingmakerAlliance) {
     const lastCoalitionRequest = decisionsSince(history, (entry) =>
@@ -802,6 +803,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
         partners.some((partner) => matchesKingmakerPartner(action, partner, state))
       ).length > 0;
       if (!partnerOfferPending) {
+        suppressedKingmakerAlliance = kingmakerAlliance;
         kingmakerAlliance = null;
         gc1Suppress = true;
       }
@@ -809,13 +811,24 @@ export function chooseAction(actions, state, plan = null, history = []) {
   }
   if (kingmakerAlliance) return kingmakerAlliance;
 
+  const withGc1 = (action) => {
+    if (!gc1Suppress || !action) return action;
+    const policyMarkers = [...new Set([
+      "gc1",
+      ...(Array.isArray(action.policyMarkers) ? action.policyMarkers : []),
+      action.policyMarker,
+    ].filter(Boolean))];
+    return {
+      ...action,
+      policyMarker: action.policyMarker ?? "gc1",
+      policyMarkers,
+    };
+  };
   const atomBomb = chooseAtomBomb(actions, state, history);
-  if (atomBomb) return atomBomb;
+  if (atomBomb) return withGc1(atomBomb);
 
   const rivalAttack = chooseRivalAttack(actions, state, plan, history, avoid, threatCount);
   const peaceRedirect = rivalAttack?.peaceRedirect === true;
-  const withGc1 = (action) =>
-    gc1Suppress && action && !action.policyMarker ? { ...action, policyMarker: "gc1" } : action;
   const withPeace = (action) =>
     withGc1(peaceRedirect && action && !action.policyMarker ? { ...action, policyMarker: "kp1" } : action);
   const routedRivalAttack = state.mapFingerprint === "Asia" && rivalAttack?.action &&
@@ -859,7 +872,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
     allianceMove && !finishingTarget &&
     (allianceMove.kind === "break_alliance" || !hasReliableTacticalAction(actions))
   ) {
-    return allianceMove;
+    return withGc1(allianceMove);
   }
 
   const conversionReady = decisionsSince(
@@ -870,7 +883,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
     const conversion = disciplinedAttack || chooseUtility(actions, state, plan, history) ||
       (sinceBuild >= 3 ? build : null) ||
       chooseBoat(actions, state, history, avoid, false, true);
-    if (conversion) return { ...conversion, policyMarker: "cv1" };
+    if (conversion) return withGc1({ ...conversion, policyMarker: "cv1" });
   }
 
   if (neutralExpansionStalled(state, history)) {
@@ -909,7 +922,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
     const rival = rivalForAction(action, state);
     return plan?.focus === "ally" && rival?.isAllied === true;
   })[0];
-  if (donation) return donation;
+  if (donation) return withGc1(donation);
 
   // Holding while legal tactical actions remain turns a weak position into a certain loss.
   if (build) return withDiscipline(withPeace(build));
@@ -924,17 +937,21 @@ export function chooseAction(actions, state, plan = null, history = []) {
     return rival && !rivalIsProtected(state, history, rival);
   });
   const emergencyAttack = pickPercent(emergencyAttacks, 10, avoid);
-  if (emergencyAttack) return emergencyAttack;
+  if (emergencyAttack) return withGc1(emergencyAttack);
 
+  // The tactical precheck is deliberately broad. If every apparent alternative
+  // is later rejected by the full safety selectors, restore the eligible
+  // coalition request instead of turning a false positive into a hold.
+  if (suppressedKingmakerAlliance) return suppressedKingmakerAlliance;
   const survivalAlliance = bestAllianceRequest(actions, state, history);
-  if (survivalAlliance) return survivalAlliance;
+  if (survivalAlliance) return withGc1(survivalAlliance);
   const pressure = safeActions(actions, (action) => action.kind === "target_player")
     .map((action) => ({ action, rival: rivalForAction(action, state) }))
     .filter(({ rival }) => rival && !rivalIsProtected(state, history, rival))
     .sort((left, right) => right.rival.tileShare - left.rival.tileShare)[0]?.action;
-  if (pressure) return pressure;
+  if (pressure) return withGc1(pressure);
 
-  return actions.find((action) => action.kind === "hold") ?? actions[0];
+  return withGc1(actions.find((action) => action.kind === "hold") ?? actions[0]);
 }
 
 export function recordDecision(history, action, state) {
@@ -961,6 +978,7 @@ export function recordDecision(history, action, state) {
     incomingAttackerNames,
     mapFingerprint: state.mapFingerprint,
     policyMarker: action.policyMarker ?? null,
+    policyMarkers: Array.isArray(action.policyMarkers) ? [...action.policyMarkers] : [],
   });
   if (history.length > 320) history.shift();
 }
