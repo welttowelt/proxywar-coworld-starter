@@ -448,6 +448,7 @@ await writeFile(
   `${JSON.stringify(receipt, null, 2)}\n`,
   { mode: 0o600 },
 );
+await rm(buildRoot, { recursive: true, force: true });
 console.log(
   `PG2_MATRIX_BUNDLE_BUILT archive_sha256=${archiveSha} manifest_sha256=${manifestSha} pairs=${pairs.length}`,
 );
