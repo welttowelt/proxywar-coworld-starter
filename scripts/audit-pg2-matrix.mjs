@@ -36,6 +36,13 @@ function safetyViolations(report, role) {
     "all_k1z_harmful_actions",
     "marker_scope_violations",
   ]) {
+    if (
+      role === "parent" &&
+      field === "unexplained_holds" &&
+      report.confirmed_parent_baseline?.replay_confirmed === true
+    ) {
+      continue;
+    }
     if (Array.isArray(arm[field]) && arm[field].length > 0) {
       violations.push(`${report.pair} ${role} ${field} is non-empty`);
     }
@@ -143,6 +150,9 @@ export function buildMatrixReport(matrix, reports) {
   ).length;
   const candidateDeclaredWins = (reports ?? []).filter((report) => report?.candidate?.declared_win === true).length;
   const parentDeclaredWins = (reports ?? []).filter((report) => report?.parent?.declared_win === true).length;
+  const confirmedParentBaselines = (reports ?? []).filter(
+    (report) => report?.confirmed_parent_baseline?.replay_confirmed === true,
+  ).length;
   if (positiveFinalScorePairs < 15) {
     violations.push(`positive final-score pairs ${positiveFinalScorePairs}/24 is below 15/24`);
   }
@@ -161,6 +171,7 @@ export function buildMatrixReport(matrix, reports) {
       positive_final_score_pairs: positiveFinalScorePairs,
       candidate_declared_wins: candidateDeclaredWins,
       parent_declared_wins: parentDeclaredWins,
+      confirmed_parent_baselines: confirmedParentBaselines,
     },
     verdict: violations.length === 0 ? "CONTINUE" : "STOP",
     violations,

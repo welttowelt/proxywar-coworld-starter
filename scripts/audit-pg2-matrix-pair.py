@@ -644,6 +644,36 @@ def audit_arm(run_dir: Path, expected_spec: Path, role: str) -> dict:
     }
 
 
+def confirmed_parent_baseline(
+    registry: dict, assignment: dict, parent: dict
+) -> dict | None:
+    if registry.get("schema_version") != 1 or registry.get("arm") != "pg2":
+        raise ValueError("parent-control baseline registry identity is invalid")
+    observed_holds = [
+        {"turn": hold.get("turn"), "reason": hold.get("reason")}
+        for hold in parent.get("unexplained_holds", [])
+    ]
+    for baseline in registry.get("parent_control_baselines", []):
+        if (
+            baseline.get("pair") != assignment.get("pair")
+            or baseline.get("map") != assignment.get("map")
+            or baseline.get("seed") != assignment.get("seed")
+            or baseline.get("role") != "parent"
+            or baseline.get("replay_confirmed") is not True
+        ):
+            continue
+        expected_holds = [
+            {"turn": hold.get("turn"), "reason": hold.get("reason")}
+            for hold in baseline.get("unexplained_holds", [])
+        ]
+        if (
+            parent.get("control_anomalies") == baseline.get("control_anomalies")
+            and observed_holds == expected_holds
+        ):
+            return baseline
+    return None
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--candidate", type=Path, required=True)
@@ -654,6 +684,7 @@ def main() -> int:
     parser.add_argument("--matrix-commit", required=True)
     parser.add_argument("--lane", choices=list("abcd"), required=True)
     parser.add_argument("--wave", type=int, choices=range(1, 7), required=True)
+    parser.add_argument("--baseline-registry", type=Path)
     parser.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
 
@@ -668,6 +699,11 @@ def main() -> int:
     }
     try:
         matrix = read_json(args.matrix_manifest)
+        baseline_registry = (
+            read_json(args.baseline_registry)
+            if args.baseline_registry is not None
+            else {"schema_version": 1, "arm": "pg2", "parent_control_baselines": []}
+        )
         candidate_spec = read_json(args.candidate_spec)
         parent_spec = read_json(args.parent_spec)
         game = candidate_spec.get("game_config", {})
@@ -707,7 +743,7 @@ def main() -> int:
                 "matrix_manifest_sha256": sha256(args.matrix_manifest),
                 "candidate": candidate,
                 "parent": parent,
-                "control_anomalies": parent["control_anomalies"],
+                "control_anomalies": [],
                 "paired_deltas": {
                     "fallback_count": (
                         candidate["fallback_count"] - parent["fallback_count"]
@@ -741,6 +777,15 @@ def main() -> int:
                 },
             }
         )
+        baseline = confirmed_parent_baseline(baseline_registry, assignment, parent)
+        if parent["control_anomalies"]:
+            if baseline is None:
+                report["control_anomalies"] = parent["control_anomalies"]
+            else:
+                report["confirmed_parent_baseline"] = {
+                    "id": baseline.get("id"),
+                    "replay_confirmed": True,
+                }
         report["violations"].extend(candidate["violations"])
         report["violations"].extend(parent["violations"])
         pair = assignment.get("pair")

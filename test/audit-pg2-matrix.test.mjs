@@ -85,3 +85,16 @@ test("PG2 matrix auditor blocks promotion but preserves a parent-control replay 
   assert.equal(result.verdict, "STOP");
   assert.match(result.violations.join("\n"), /targeted parent-control replay/);
 });
+
+test("PG2 matrix auditor permits one replay-confirmed parent baseline hold", () => {
+  const matrix = { schema_version: 1, arm: "pg2", assignments };
+  const reports = assignments.map(audit);
+  reports[0].parent.unexplained_holds.push({ turn: 4400, reason: "dgd:err:h0d" });
+  reports[0].confirmed_parent_baseline = {
+    id: "asia-20260721-parent-hold",
+    replay_confirmed: true,
+  };
+  const result = buildMatrixReport(matrix, reports);
+  assert.equal(result.verdict, "CONTINUE");
+  assert.equal(result.overall.confirmed_parent_baselines, 1);
+});

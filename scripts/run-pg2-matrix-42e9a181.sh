@@ -19,6 +19,7 @@ parent_spec_sha=7df76692757232999644d2deb9d011597ae8bc12be025ebc89cf2815044d6c22
 worker=$repo/scripts/run-pg2-matrix-worker-42e9a181.sh
 auditor=$repo/scripts/audit-pg2-matrix-pair.py
 matrix_manifest=$repo/experiments/pg2-matrix-42e9a181.json
+baseline_registry=$repo/experiments/pg2-parent-control-baselines-42e9a181.json
 remote_stage=/workspace/pg2-repaired-42e9a181
 expected_run_id=pg2-matrix-42e9a181
 state_root=/Users/olifreuler/.stormforge/proxywar-operators/runner.lock
@@ -37,7 +38,7 @@ matrix_commit=$(git -C "$repo" rev-parse HEAD)
 [[ $matrix_commit =~ ^[a-f0-9]{40}$ ]]
 execution_id="pg2-42e9a181-${matrix_commit[1,12]}-$(date -u +%Y%m%dT%H%M%SZ)-$$"
 
-[[ -f $archive && -f $extractor && -f $candidate_spec && -f $parent_spec ]]
+[[ -f $archive && -f $extractor && -f $candidate_spec && -f $parent_spec && -f $baseline_registry ]]
 [[ -x $worker && -x $auditor ]]
 [[ $(shasum -a 256 "$archive" | awk '{print $1}') == $archive_sha ]]
 [[ $(shasum -a 256 "$extractor" | awk '{print $1}') == $extractor_sha ]]
@@ -407,6 +408,7 @@ for wave in {1..6}; do
       --candidate-spec "${pod_output[$lane]}/specs/$pair-a.json" \
       --parent-spec "${pod_output[$lane]}/specs/$pair-b.json" \
       --matrix-manifest "$matrix_manifest" \
+      --baseline-registry "$baseline_registry" \
       --matrix-commit "$matrix_commit" \
       --lane "$lane" \
       --wave "$wave" \

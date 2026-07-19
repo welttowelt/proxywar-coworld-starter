@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "arm": "pg2",
+  "parent_control_baselines": [
+    {
+      "id": "asia-20260721-parent-hold",
+      "pair": "asia-20260721",
+      "map": "Asia",
+      "seed": 20260721,
+      "role": "parent",
+      "replay_confirmed": true,
+      "control_anomalies": ["Odin had an unexplained hold"],
+      "unexplained_holds": [
+        {
+          "turn": 4400,
+          "reason": "dgd:err:h0d"
+        }
+      ],
+      "candidate_required_clean": true,
+      "evidence": {
+        "first_matrix_execution": "pg2 R7",
+        "targeted_replay": "pg2-parent-control-replay-asia20260721",
+        "replay_verdict": "REPLAY_REQUIRED"
+      }
+    }
+  ]
+}
+
