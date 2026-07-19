@@ -15,7 +15,7 @@ the mailbox at `/Users/olifreuler/.stormforge/team-mailbox`.
 
 ## Live deployment truth
 
-Verified against the Coworld/Softmax API at `2026-07-19T09:15:05Z`:
+Verified against the Coworld/Softmax API at `2026-07-19T09:36:57Z`:
 
 - Player: `K1Z Hrafn`
 - Player ID: `ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863`
@@ -29,7 +29,7 @@ Verified against the Coworld/Softmax API at `2026-07-19T09:15:05Z`:
   `0c151570f7e650a32a5705ff71692aa930012097`; embedded strategy SHA-256
   `7620684b07c9dc9c633d284e817348c92881b43724291f991296c7a17ac20807`;
   embedded player SHA-256
-  `1154115fdf5ebb89fa170bba6060d5a730615970d4cc23c00dbfa97e42b31563`.
+  `16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52`.
 - Exact live image: linux/amd64
   `sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d`.
 
@@ -38,8 +38,12 @@ Source and deployment remain separate. Repository policy code still matches
 linux/amd64 image
 `sha256:816b734c205fad2452eaef3c076f27377939c4a78a4336fd63d7ae313b5be410`.
 Its embedded strategy and player SHA-256 values are `3642a1ce...` and
-`1154115f...`. No `hrafn-fylking:v6` upload exists, and that image has not been
+`16922c32...`. No `hrafn-fylking:v6` upload exists, and that image has not been
 submitted, placed, or made champion.
+
+The player hash above corrects the prior `1154115f...` ledger value, which is
+the SHA-256 of `llm-player.mjs`, not Hrafn's `/app/hrafn-player.mjs`. Both exact
+images and their corresponding source commits agree on `16922c32...`.
 
 Current field checkpoint:
 
@@ -69,7 +73,8 @@ Coalition control:
 ## Branch truth
 
 This Hrafn policy branch intentionally diverges from Qd1n main. At the
-2026-07-19 09:15 UTC check it was 104 main commits behind and 25 commits ahead.
+2026-07-19 09:36 UTC check it was 106 main commits behind and, including this
+identity correction, 27 commits ahead.
 Do not merge `origin/main` blindly: Qd1n and Hrafn policy code have separate
 ownership and experimental histories.
 

@@ -8,7 +8,7 @@
     "policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
     "source_commit": "0c151570f7e650a32a5705ff71692aa930012097",
     "strategy_sha256": "7620684b07c9dc9c633d284e817348c92881b43724291f991296c7a17ac20807",
-    "player_sha256": "1154115fdf5ebb89fa170bba6060d5a730615970d4cc23c00dbfa97e42b31563",
+    "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
     "image_id": "sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d",
     "architecture": "linux/amd64",
     "submission_id": "sub_635f34a0-e2c2-4fa6-97aa-9c864e93974c",
@@ -23,7 +23,7 @@
     "image_source_commit": "38fca3074922dba35a5aa6083481f12874b564be",
     "operator_head": "bb7d9fffc862e5d51cf24f38d1731630275b4f27",
     "strategy_sha256": "3642a1ce04244285f71e1c66fa5c37165f276f4660bd4188b42956ff7165c463",
-    "player_sha256": "1154115fdf5ebb89fa170bba6060d5a730615970d4cc23c00dbfa97e42b31563",
+    "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
     "image_id": "sha256:816b734c205fad2452eaef3c076f27377939c4a78a4336fd63d7ae313b5be410",
     "architecture": "linux/amd64",
     "tactical_marker": "vr1",
@@ -167,6 +167,18 @@
   "tests": {
     "passed": 151,
     "failed": 0
+  },
+  "identity_reconciliation": {
+    "verified_at": "2026-07-19T09:36:57Z",
+    "prior_incorrect_player_sha256": "1154115fdf5ebb89fa170bba6060d5a730615970d4cc23c00dbfa97e42b31563",
+    "prior_hash_belongs_to": "llm-player.mjs",
+    "verified_hrafn_player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
+    "verified_against": [
+      "live v5 image sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d",
+      "candidate v6 image sha256:816b734c205fad2452eaef3c076f27377939c4a78a4336fd63d7ae313b5be410",
+      "exact v5 source commit 0c151570f7e650a32a5705ff71692aa930012097",
+      "candidate source commit 38fca3074922dba35a5aa6083481f12874b564be"
+    ]
   },
   "promotion_states": {
     "SOURCE_READY": false,
