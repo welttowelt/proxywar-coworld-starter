@@ -25,9 +25,15 @@ stormforge mailbox.
 Return `odin free` to overall #1 and build toward a verified 1000 consecutive
 official first-place streak (interim milestone 100). Never report the streak
 as achieved before the official completed-round sequence proves it. Current
-verified streak: **0/1000**. The last fully reconciled checkpoint in this
-handover is round 533; refresh the live league and replay artifacts before
-reporting a newer result. Exact `qd1n:v89` remains sealed as Odin's champion.
+verified streak: **1/1000**. Round 534 completed with Odin rank 1 at `0.75`:
+three episode wins from
+four appearances, including two outright wins and one turn-cap top score. The
+previous round 533 was rank 10, so the streak starts at round 534. Overall
+Competition standings after round 534 are daveey `31.03102579981558` and Odin
+`22.27009729025311`, a gap of `8.760928509562472`. Round 535 was running at
+the 2026-07-19 15:11 UTC audit and does not count yet. Refresh live state
+before reporting a later result. Exact `qd1n:v89` remains sealed as Odin's
+champion.
 
 ## Live deployment truth
 
