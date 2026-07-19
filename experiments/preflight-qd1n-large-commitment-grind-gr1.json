@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-19",
+  "experiment": "qd1n large-commitment opening grind GR1",
+  "status": "SOURCE_READY",
+  "parent": {
+    "policy": "qd1n:v89",
+    "commit": "f1347251834a6283182b631e1336595eb2e08342",
+    "image": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+    "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478"
+  },
+  "candidate": {
+    "branch": "rci/gr1",
+    "source_commit": "73ce9aeb2ad6b15c59249ff506e09eb2ff4e1a1a",
+    "image": "proxywar-agent-llm:qd1n-v89-gr1-amd64",
+    "image_id": "sha256:314c695e110c3313c63d089391962d690901053c170953f591c088d96d8296bc",
+    "architecture": "amd64",
+    "strategy_sha256": "48017016da75a4ef42cede05741ae7655c09a52779fb4e66c47d9f48686252af",
+    "player_sha256": "1154115fdf5ebb89fa170bba6060d5a730615970d4cc23c00dbfa97e42b31563",
+    "marker": "gr1"
+  },
+  "hypothesis": "During the first twenty calm non-spawn decisions below twenty-percent land share, replacing the parent's 10/10/20 neutral probe cadence with 25/35/40 commitments increases early neutral conquest because neutral per-tile troop cost is flat and conquest speed floors once the attack is sufficiently large.",
+  "isolated_delta": {
+    "guard": "active_decisions < 20 AND tile_share < 0.20 AND incoming_threat_count = 0 AND territory_not_collapsing",
+    "action_change": "When the existing selector chooses a neutral land attack, request 25 percent on the first consecutive grind, 35 percent on the second, and 40 percent thereafter. If the exact requested percentage is absent, choose the nearest legal commitment at or above it; fall back to the largest available commitment.",
+    "unchanged": [
+      "action-family priority",
+      "incoming-pressure handling",
+      "rival attack thresholds",
+      "alliance and K1Z protection",
+      "build and boat timing",
+      "all behavior after decision twenty or at twenty-percent land share"
+    ]
+  },
+  "verification": {
+    "red_first": {
+      "parent_failed": 3,
+      "candidate_passed": 3,
+      "lock_in_passed": 3
+    },
+    "full_suite": {
+      "passed": 148,
+      "failed": 0
+    },
+    "image_source_equality": {
+      "strategy": true,
+      "player": true
+    },
+    "qualifier": "pending",
+    "matched_mirrors": "pending",
+    "hosted_4_of_4": "pending",
+    "regression_20_of_20": "pending"
+  },
+  "success_metrics": {
+    "mechanism": "replay-visible gr1 marker with zero unexplained holds, zero rejected decisions, and zero K1Z harm",
+    "opening": "candidate final tiles at decision 20 and decision 50 exceed the exact parent in both seat parities",
+    "finish": "candidate shows mirrored placement and tile advantage at episode finish"
+  },
+  "stop_conditions": [
+    "zero replay-visible gr1 reach",
+    "any unexplained hold or rejected decision",
+    "any harmful action against a K1Z identity",
+    "no mirrored opening advantage",
+    "no mirrored finish advantage",
+    "any source, image, request, or runtime hash mismatch"
+  ],
+  "sequencing": "Source and image are ready. GC2 remains the active evaluated arm; do not run, upload, submit, or promote GR1 until the isolated GC2 verdict closes. Never fuse GC2 and GR1 before both arms independently pass their gates.",
+  "promotion_eligible": false
+}
