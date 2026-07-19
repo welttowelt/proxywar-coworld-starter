@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_withdrawal_recovery_preflight",
+  "recorded_at": "2026-07-19T12:01:18Z",
+  "lane": "hrafn-fylking",
+  "exact_live_parent": {
+    "policy_ref": "hrafn-fylking:v5",
+    "policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+    "source_commit": "0c151570f7e650a32a5705ff71692aa930012097",
+    "image_id": "sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d"
+  },
+  "quick_chat_control": {
+    "source_commit": "35405a4468c821af7ec1c8f2ef64fb6def4c0c1d",
+    "image_id": "sha256:b7c6c1fb8e5bbee02d80ba156187bab6bb5ca996b2a4f5ddc8cc871c0989646c",
+    "exact_delta": "suppress game-authored quick-chat and emoji selections"
+  },
+  "hypothesis": {
+    "guard": "the immediately prior recorded action is quick_chat, emoji, or embargo_stop; its exact action ID is absent from the offered retry menu; and a low-commitment boat or non-K1Z rival attack remains legal",
+    "expected_action_change": "replace an otherwise selected hold with the smallest bounded recovery action, preferring a non-K1Z 10-percent attack and then an 8-percent boat",
+    "observable_marker": "wr1",
+    "success_metric": "replay-visible wr1 reach with zero unexplained holds, rejects, fallbacks, or K1Z harm; quick-chat control versus wr1 control isolates the retry repair, and wr1 control versus VR1 candidate isolates the tactical mechanism",
+    "failure_condition": "zero wr1 reach in the pinned Docker qualifier, any K1Z-targeted recovery, any unexplained hold or reject, or any source/image/request identity mismatch"
+  },
+  "replay_basis": {
+    "round": 531,
+    "episode_request_id": "ereq_b8950867-2e41-468f-91c8-0861b473b704",
+    "replay_sha256": "a31b7527df30f450501838be673c5aa823247043f57d073372d43b2593316f8d",
+    "holds": [
+      {
+        "turn": 7800,
+        "withdrawn_action": "embargo:28k1hctz:stop",
+        "retry_action": "hold",
+        "submission_legal_recovery": "eleven boat actions"
+      },
+      {
+        "turn": 8000,
+        "withdrawn_action": "embargo:a6xyjvhc:stop",
+        "retry_action": "hold",
+        "submission_legal_recovery": "three rival attacks, nine boat actions, one build, and one alliance request"
+      }
+    ]
+  },
+  "factorial_design": [
+    "exact live v5 versus quick-chat control isolates public-text suppression",
+    "quick-chat control versus wr1 control isolates withdrawal recovery",
+    "wr1 control versus VR1 plus wr1 candidate isolates the vanguard tactic"
+  ],
+  "candidate": {
+    "source_commit": null,
+    "image_id": null,
+    "architecture": "linux/amd64",
+    "tests_passed": 0
+  },
+  "withdrawal_recovery_control": {
+    "source_commit": null,
+    "image_id": null,
+    "architecture": "linux/amd64",
+    "tests_passed": 0
+  },
+  "promotion_states": {
+    "SOURCE_READY": false,
+    "LOCAL_QUALIFIED": false,
+    "DIAGNOSTIC_UPLOADED": false,
+    "HOSTED_PASSED": false,
+    "REGRESSION_PASSED": false,
+    "AUDIT_APPROVED": false,
+    "SUBMITTED": false,
+    "PLACED": false,
+    "CHAMPION_VERIFIED": false,
+    "ROUND_CONFIRMED": false
+  },
+  "verdict": "PREREGISTERED ONLY: replay-backed guard and factorial design are pinned; red-first source proof, exact control, images, Odin pre-run approval, and every execution or promotion gate remain pending"
+}
