@@ -30,8 +30,13 @@ Odin and Hrafn cross-audit each other through the team mailbox at
 `/Users/olifreuler/.stormforge/team-mailbox`.
 Cross-audit is read-only: the reviewing operator returns a verdict and the lane
 owner makes the edits. Coordinate runner ownership before either lane starts a
-Coworld episode. Review the other lane from committed branches and mailbox
-receipts; do not check out or edit the other operator's working branch.
+Coworld episode. Every episode or batch must stay in the foreground of
+`scripts/proxywar-runner-lease.sh run <lane> <run-id> ... -- <command>` so the
+token, run ID, supervisor, child process group, and claimed output directories
+remain bound for the whole run. Output arguments must be new dedicated
+directories; the wrapper creates and marks them before the child starts.
+Review the other lane from committed branches and mailbox receipts; do not
+check out or edit the other operator's working branch.
 
 Start or resume Odin from this repository root so `.codex/config.toml` loads.
 Odin runs `gpt-5.6-sol` at high reasoning. Reasoning does not change inside a
@@ -54,6 +59,11 @@ or change league state.
 
 - Coordinate runner ownership in the team mailbox before starting a local
   Coworld episode.
+- Treat another run's lease, supervisor, screen, containers, and recorded
+  outputs as immutable. Never use lane-only release or broad Coworld-container
+  cleanup. Recover a stale v2 lease only through its exact-token `reap-stale`
+  path after the supervisor is proved dead. If Docker or output ownership
+  cannot be proved, preserve the lease and artifacts.
 - Keep scoreboard truth, replay truth, source truth, and deployment truth
   separate.
 - Preserve zero harmful actions against K1Z coalition partners.

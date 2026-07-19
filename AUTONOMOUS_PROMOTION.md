@@ -77,7 +77,12 @@ Before any upload or submission:
 - verify the active player identity and league ID;
 - rebuild or inspect the exact immutable image;
 - verify source hashes, architecture, policy name, and parent identity;
-- confirm that no other operator owns the runner or the lane mutation lock.
+- confirm through `scripts/proxywar-runner-lease.sh status --json` that no other
+  operator owns the runner or the lane mutation lock. Run local Coworld work
+  only through the tokenized foreground `run` wrapper; never release, stop, or
+  reap another live supervisor. A new run requires `status --json` state
+  `free`; initializing, reaping, corrupt, or same-lane stale/legacy states stay
+  closed until exact recovery succeeds.
 
 After submission, poll until terminal placement state and then independently
 query memberships. Post a plain-English receipt to the mailbox and update the

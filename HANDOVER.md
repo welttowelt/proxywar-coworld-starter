@@ -110,9 +110,44 @@ checkpoint.
   polling to Codex Odin. Check explicitly during active work; do not claim a
   background monitor or recreate a scheduler without an operator request.
 - Runner discipline: never start a local Coworld episode while another lane's
-  gate owns the runner; coordinate in the mailbox first and use
-  `scripts/proxywar-runner-lease.sh acquire odin|hrafn`. Release the lease after
-  every episode or completed batch.
+  gate owns the runner. Coordinate in the mailbox, then put the complete
+  episode or batch under the long-lived supervisor:
+
+  ```bash
+  scripts/proxywar-runner-lease.sh run odin RUN_ID \
+    --output /private/tmp/new-output-a \
+    --output /private/tmp/new-output-b \
+    -- /absolute/path/to/batch-script.sh
+  ```
+
+  Use `hrafn` for the Hrafn lane. When detaching, the screen session must run
+  this wrapper; do not acquire in a short-lived shell and launch Coworld
+  separately. The v2 lock binds lane, run ID, opaque token, supervisor PID/start
+  signature, child PID/process group, acquisition time, and output paths.
+  `RUN_ID` is capped at 80 safe characters. Each output must be a nonexistent
+  dedicated directory under `PROXYWAR_RUNNER_OUTPUT_ROOTS` (default
+  `/private/tmp`); the supervisor pre-creates it with a token/inode ownership
+  marker. Same-lane and cross-lane re-entry are strictly busy, and a successful
+  foreground batch releases only its own exact lease.
+- Inspect runner state with
+  `scripts/proxywar-runner-lease.sh status --json`. Never delete `runner.lock`,
+  quit another run's screen, kill its supervisor, or broadly stop
+  `coworld-run-*` containers. After a crash, read the exact run ID and token
+  from the lock and use
+  `scripts/proxywar-runner-lease.sh reap-stale odin|hrafn RUN_ID TOKEN`.
+  Reaping refuses a live supervisor, terminates only its bound child process
+  group, removes only containers mounted to its recorded output directories,
+  re-scans Docker, and moves ownership-validated partial outputs to timestamped
+  `aborted` paths with non-evidence receipts. Docker or ownership uncertainty
+  preserves the lock and output. The JSON lifecycle events on stderr provide
+  acquisition, child, signal, cleanup, quarantine, refusal, and release
+  receipts without exposing the token.
+- Migration boundary: the two-argument `release <lane>` exists only so the
+  pure tokenless v1 lock present during rollout can release once. Standalone
+  `acquire` is a fail-closed transition shim and never creates a lock. Before
+  deploying v2, Hrafn's lane owner must commit and acknowledge a prompt that
+  uses the supervised `run` form. The launcher refuses an old Hrafn `acquire`
+  prompt before touching the mailbox, cursor, or wake marker.
 - Mailbox writes use the atomic lock at
   `/Users/olifreuler/.stormforge/proxywar-operators/mailbox-write.lock`: acquire,
   pull fast-forward only, write/commit/push, then release.
@@ -127,7 +162,12 @@ checkpoint.
   `/Users/olifreuler/proxywar-k1z-hrafn`, which loads xhigh reasoning.
 - The launch agents are event-driven. A mailbox change wakes both lanes; Odin
   also performs a bounded hourly refresh and Hrafn a bounded four-hour refresh.
-  Lock files prevent overlapping cycles.
+  Operator locks prevent overlapping automatic cycles. A live same-lane runner
+  lease also stops the launcher before Codex starts, without advancing the
+  mailbox cursor or consuming the wake marker. The same fail-closed behavior
+  applies to stale same-lane, legacy same-lane, initializing, reaping, corrupt,
+  invalid-status, and unmigrated-prompt states. A launch/run race still closes
+  at the runner's atomic mutation guard and tokenized lock.
 - Operators act only in their own policy lane. At the pre-run,
   pre-diagnostic-upload, and final-promotion checkpoints, the other operator
   reviews the committed branch and returns an `APPROVE`, `REVISE`, `REJECT`, or
