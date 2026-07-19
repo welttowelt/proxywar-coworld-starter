@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "status": "VALIDATED_NOT_RUN",
+  "arm_a": {
+    "path": "experiments/runpod-gc2-live-coalition-matched-a-20260719.json",
+    "file_sha256": "6d85a4b572519a08a940c46da6b5bf44e15ec9e3bf430d53fb0ec2ca1e24f5db",
+    "canonical_spec_sha256": "debb432012c2fd018f56bed314ad36267f8662b8cda819dbe499ce50e573356e",
+    "canonical_player_vector_sha256": "2f8da078ee01d78ea6346ae3b27ac13efee6fb834bcccc5a040da23fe4d0e85f"
+  },
+  "arm_b": {
+    "path": "experiments/runpod-gc2-live-coalition-matched-b-20260719.json",
+    "file_sha256": "713cb4de63026e882e9ee891ff9e2e92de88278068c99aca178c83d7694035b0",
+    "canonical_spec_sha256": "10273fecfbdf06390d088b269408850f62d8a64cd44d8ae5804b54a06bd81c37",
+    "canonical_player_vector_sha256": "4cbf33a0c6cbc002793b27a9eff0c7f1f0db2131dca8a38ca872d537aa1be1c1"
+  },
+  "shared_canonical_game_config_sha256": "66442d3ab2243b03ea18b752f6108798d6b07d1c9e8df154c6fbef7a8980d3ca",
+  "sole_delta": {
+    "paths": [
+      "players[0].cwd",
+      "players[0].policy"
+    ],
+    "arm_a": {
+      "cwd": "policies/qd1n-gc2/app",
+      "policy": "qd1n-gc2"
+    },
+    "arm_b": {
+      "cwd": "policies/qd1n-v89/app",
+      "policy": "qd1n-v89"
+    }
+  },
+  "stop_conditions": [
+    "any spec, config, seed, map, seat, roster, policy artifact, runtime, or hash drift",
+    "zero gc2 reach in arm A or any gc2 marker in arm B",
+    "any rejected decision or unexplained Odin hold",
+    "any harmful Odin action against a protected K1Z identity",
+    "candidate hold or degradation regression versus parent",
+    "no paired Odin finish advantage by placement, then score and final tiles without worse survival"
+  ],
+  "episodes_run": 0,
+  "pods_provisioned": 0,
+  "league_state_changed": false
+}
