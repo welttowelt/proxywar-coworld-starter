@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "local:qd1n-v89-gc2-nl1",
+    "parent_ref": "local:qd1n-v89-exact",
+    "exact_deltas": [
+      "during the eight-decision cooldown after any alliance request, suppress only a selected outbound non-K1Z alliance request when its legal replacement is a low-risk metadata-confirmed Terra Nullius land attack below twelve-percent tile share with zero incoming threat and no territory collapse"
+    ],
+    "branch": "rci/gc2-nl1",
+    "source_commit": "37f2646cc93daa9f7083ac4ee445deecc37216cb",
+    "parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
+    "broad_gc2_source_commit": "9efe990d900f16ff6ae08013d0c48bfad0092a4b",
+    "strategy_sha256": "fb6964a22745877263bff8fb8181b310dcff4f9832e5009313b68a22903aa274",
+    "player_sha256": "1154115fdf5ebb89fa170bba6060d5a730615970d4cc23c00dbfa97e42b31563",
+    "strategy_test_sha256": "28a512e3b02bc235ae4ded477be3fbdfe08a2d426fedb021ef590348e4bcc8f0",
+    "image_id": null,
+    "architecture": null
+  },
+  "hypothesis": "Broad GC2 lost tempo because it replaced every safe tactical action during a global alliance cooldown. Restricting the substitution to calm sub-twelve-percent Terra Nullius land expansion after an outbound non-K1Z request may preserve opening growth without displacing K1Z requests, reverse handshakes, combat, boats, economy, upgrades, or utility actions.",
+  "causal_source": {
+    "audit": "experiments/audit-qd1n-global-alliance-arbitration-gc2-matched-20260719.json",
+    "audit_worktree": "/Users/olifreuler/proxywar-qd1n-gc2",
+    "broad_candidate_marker_executions": 11,
+    "broad_parent_marker_executions": 0,
+    "broad_candidate_minus_parent": {
+      "decision_20_tiles": -200,
+      "decision_50_tiles": -65,
+      "decision_100_tiles": -253,
+      "final_tiles": -253,
+      "score": -0.0024752717417890757,
+      "degraded_decisions": 1
+    },
+    "broad_verdict": "REJECT_GC2_RELIABILITY_REGRESSION_AND_NO_FINISH_ADVANTAGE"
+  },
+  "mechanism": {
+    "marker": "gc2nl1",
+    "prior_reachable_decisions": 2,
+    "source": "test/strategy-engine.test.mjs",
+    "reach_note": "two direct post-selection fixtures emit gc2nl1: the basic eligible neutral-land replacement and the seven-decisions-elapsed cooldown boundary",
+    "authoritative_selector_reach": "unproven",
+    "reach_concern": "Exact v89 normally ranks legal calm sub-twelve-percent neutral land ahead of generic non-K1Z alliance requests. The post-selection hook is wired, but a full decision-request trace must emit gc2nl1 before any outcome run is interpretable."
+  },
+  "guard": {
+    "selected_kind": "alliance_request",
+    "selected_direction": "outbound",
+    "selected_partner": "non-K1Z",
+    "reverse_handshake": false,
+    "decisions_since_any_alliance_request_lt": 8,
+    "replacement_kind": "attack",
+    "replacement_terra_nullius": true,
+    "replacement_metadata_expansion": true,
+    "replacement_boat": false,
+    "replacement_high_risk": false,
+    "replacement_targets_visible_rival": false,
+    "replacement_targets_k1z_name_or_stable_id": false,
+    "tile_share_lt": 0.12,
+    "incoming_threat_count": 0,
+    "protocol_attacker_ids": 0,
+    "territory_collapsing": false,
+    "legal_neutral_land_actions_min": 1
+  },
+  "unchanged": [
+    "K1Z alliance request priority and the existing six-decision per-partner retry rule",
+    "incoming reverse-handshake acceptance for K1Z and non-K1Z partners",
+    "all first alliance requests and every request after eight intervening decisions",
+    "all behavior at or above twelve-percent tile share",
+    "all behavior under incoming pressure or territory collapse",
+    "boats, builds, warships, upgrades, rival attacks, nukes, retreats, utility actions, and holds",
+    "K1Z protection by canonical name and stable player ID",
+    "llm-player public reason encoding"
+  ],
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "run_type": "red-first focused selector fixtures plus the full Node test suite",
+    "focused_assertions_passed": 19,
+    "tests_passed": 162,
+    "tests_failed": 0,
+    "red_first_failures": 2,
+    "mechanism_fixture_executions": 2,
+    "docker_built": false,
+    "docker_runs": 0,
+    "replays": 0,
+    "accepted_decisions": 0,
+    "holds": 0,
+    "unexplained_holds": 0,
+    "rejections": 0,
+    "k1z_harmful_actions": 0
+  },
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    },
+    "result": {
+      "status": "not_run",
+      "episodes": 0,
+      "wins": 0,
+      "holds": 0,
+      "rejections": 0,
+      "mechanism_executions": 0,
+      "planner_degradation_rule_passed": false
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false,
+    "result": {
+      "status": "not_run",
+      "episodes": 0,
+      "wins": 0,
+      "holds": 0,
+      "rejections": 0
+    }
+  },
+  "success_metrics": {
+    "reach": "at least one replay-visible gc2nl1 marker in the candidate and zero in exact v89",
+    "integrity": "zero unexplained holds, zero rejected decisions, zero K1Z harm, and no planner-degradation regression versus exact v89",
+    "opening": "candidate tiles at decisions twenty, fifty, and one hundred do not trail exact v89",
+    "finish": "candidate improves paired placement; if placement ties, score and final tiles both improve without worse survival"
+  },
+  "stop_conditions": [
+    "any source, image, architecture, request, config, manifest, seed, seat, roster, runtime, or player-identity drift",
+    "zero replay-visible gc2nl1 reach in the candidate",
+    "any gc2nl1 marker in exact v89",
+    "any gc2nl1 marker on a boat, build, warship, upgrade, rival attack, K1Z-targeted action, reverse handshake, K1Z request, threatened state, collapsing state, or state at or above twelve-percent tile share",
+    "any rejected decision or unexplained Odin hold",
+    "any harmful Odin action against a protected K1Z identity",
+    "candidate hold or planner-degradation regression versus exact v89",
+    "no paired Odin finish advantage: placement first; if tied, score and final tiles must improve without worse survival"
+  ],
+  "sequencing": "Source and unit evidence only. No Docker build, Coworld episode, mailbox action, push, upload, hosted request, submission, membership, champion, or league action occurred. A later operator must prove marker reach in an immutable qualifier before any matched outcome run.",
+  "verdict": "DIAGNOSTIC_SOURCE_READY_ONLY. The narrow guard is red-first tested and the full suite passes, but authoritative decision-request reach and all replay, matched, hosted, regression, and promotion gates remain open."
+}
