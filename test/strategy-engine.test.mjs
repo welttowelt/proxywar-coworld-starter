@@ -5,6 +5,7 @@ import {
   boatConversionStalled,
   buildState,
   chooseAction,
+  chooseNeutralAttack,
   recordDecision,
 } from "../strategy-engine.mjs";
 
@@ -16,6 +17,7 @@ function action(id, kind, label = id, risk = lowRisk) {
 
 function observation({
   tileShare = 0.05,
+  tilesOwned,
   troopRatio = 0.8,
   rivals = [],
   incomingAttacks = [],
@@ -30,6 +32,7 @@ function observation({
     objective,
     ownState: {
       tileShare,
+      ...(tilesOwned === undefined ? {} : { tilesOwned }),
       troopRatio,
       troops: 500000,
       gold: 250000,
@@ -550,7 +553,7 @@ test("structured expansion metadata identifies neutral land and boats", () => {
   assert.equal(choose([boat, land], observation()).id, "future-neutral-id:10");
 });
 
-test("neutral expansion cadence escalates 10, 10, 20, 35 percent", () => {
+test("the parent neutral expansion cadence remains 10, 10, 20, 35 percent", () => {
   const actions = [10, 20, 35].map((percent) =>
     action(`expand:terra-nullius:${percent}`, "attack", `Attack Terra Nullius ${percent}%`)
   );
@@ -559,7 +562,7 @@ test("neutral expansion cadence escalates 10, 10, 20, 35 percent", () => {
   const selected = [];
   for (let index = 0; index < 4; index++) {
     const state = buildState(obs, actions, history);
-    const choice = chooseAction(actions, state, null, history);
+    const choice = chooseNeutralAttack(actions, history, new Set());
     selected.push(choice.id);
     recordDecision(history, choice, state);
   }
@@ -569,6 +572,352 @@ test("neutral expansion cadence escalates 10, 10, 20, 35 percent", () => {
     "expand:terra-nullius:20",
     "expand:terra-nullius:35",
   ]);
+});
+
+function productiveGrindActions() {
+  return [10, 20, 35].map((percent) => ({
+    ...action(
+      `expand:terra-nullius:${percent}`,
+      "attack",
+      `Expand into neutral land ${percent}%`,
+    ),
+    metadata: { expansion: true, troopPercent: percent },
+  }));
+}
+
+test("pg2 never preempts a legal coalition contact", () => {
+  const alliance = {
+    ...action("alliance:katanasan", "alliance_request", "Alliance with K1Z katanasan"),
+    metadata: {
+      recipientID: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+      recipientName: "K1Z katanasan",
+      relation: 2,
+    },
+  };
+  const selected = choose(
+    [alliance, ...productiveGrindActions()],
+    observation({
+      spawnTile: 659528,
+      rivals: [{
+        id: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+        name: "K1Z katanasan",
+        tileShare: 0.04,
+        relativeTroopRatio: 1,
+      }],
+    }),
+  );
+  assert.equal(selected.id, alliance.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("pg2 preserves all three sequential coalition contacts before grinding", () => {
+  const partners = [
+    {
+      id: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+      name: "K1Z katanasan",
+    },
+    {
+      id: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      name: "K1Z juryoku koku",
+    },
+    {
+      id: "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+      name: "K1Z Hrafn",
+    },
+  ];
+  const alliances = partners.map((partner) => ({
+    ...action(
+      `alliance:${partner.id}`,
+      "alliance_request",
+      `Alliance with ${partner.name}`,
+    ),
+    metadata: {
+      recipientID: partner.id,
+      recipientName: partner.name,
+      relation: 2,
+    },
+  }));
+  const actions = [...alliances, ...productiveGrindActions()];
+  const obs = observation({
+    tileShare: 0.05,
+    tilesOwned: 5000,
+    spawnTile: 659528,
+    rivals: partners.map((partner) => ({
+      ...partner,
+      tileShare: 0.04,
+      relativeTroopRatio: 1,
+    })),
+  });
+  const history = [];
+  for (const expected of alliances) {
+    const state = buildState(obs, actions, history);
+    const selected = chooseAction(actions, state, null, history);
+    assert.equal(selected.id, expected.id);
+    assert.equal(selected.policyMarker, "kp2");
+    recordDecision(history, selected, state);
+  }
+  const state = buildState(obs, actions, history);
+  const grind = chooseAction(actions, state, null, history);
+  assert.equal(grind.id, "expand:terra-nullius:35");
+  assert.equal(grind.policyMarker, "pg2");
+});
+
+test("pg2 raises a parent-selected neutral probe to 35 percent", () => {
+  const selected = choose(
+    productiveGrindActions(),
+    observation({ tileShare: 0.05, tilesOwned: 5000, spawnTile: 659528 }),
+  );
+  assert.equal(selected.id, "expand:terra-nullius:35");
+  assert.equal(selected.policyMarker, "pg2");
+});
+
+test("pg2 reaches below twelve percent share and releases at the boundary", () => {
+  const below = choose(
+    productiveGrindActions(),
+    observation({ tileShare: 0.11, tilesOwned: 11000, spawnTile: 659528 }),
+  );
+  const boundary = choose(
+    productiveGrindActions(),
+    observation({ tileShare: 0.12, tilesOwned: 12000, spawnTile: 659528 }),
+  );
+  assert.equal(below.id, "expand:terra-nullius:35");
+  assert.equal(below.policyMarker, "pg2");
+  assert.equal(boundary.id, "expand:terra-nullius:10");
+  assert.equal(boundary.policyMarker, undefined);
+});
+
+test("pg2 releases after a two-attack flat frontier observation window", () => {
+  const history = [
+    {
+      actionID: "expand:terra-nullius:35",
+      kind: "attack",
+      neutral: true,
+      tileShare: 0.05,
+      tilesOwned: 5000,
+      mapFingerprint: "Pangaea",
+    },
+    {
+      actionID: "expand:terra-nullius:35",
+      kind: "attack",
+      neutral: true,
+      tileShare: 0.05,
+      tilesOwned: 5000,
+      mapFingerprint: "Pangaea",
+    },
+  ];
+  const selected = choose(
+    productiveGrindActions(),
+    observation({ tileShare: 0.05, tilesOwned: 5000, spawnTile: 659528 }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, "expand:terra-nullius:20");
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("pg2 remains active when the two-attack window gained territory", () => {
+  const history = [
+    {
+      actionID: "expand:terra-nullius:35",
+      kind: "attack",
+      neutral: true,
+      tileShare: 0.05,
+      tilesOwned: 5000,
+      mapFingerprint: "Pangaea",
+    },
+    {
+      actionID: "expand:terra-nullius:35",
+      kind: "attack",
+      neutral: true,
+      tileShare: 0.051,
+      tilesOwned: 5050,
+      mapFingerprint: "Pangaea",
+    },
+  ];
+  const selected = choose(
+    productiveGrindActions(),
+    observation({ tileShare: 0.052, tilesOwned: 5200, spawnTile: 659528 }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, "expand:terra-nullius:35");
+  assert.equal(selected.policyMarker, "pg2");
+});
+
+test("pg2 fails closed when exact tile history is absent", () => {
+  const history = [
+    {
+      actionID: "expand:terra-nullius:10",
+      kind: "attack",
+      neutral: true,
+      tileShare: 0.05,
+    },
+    {
+      actionID: "expand:terra-nullius:10",
+      kind: "attack",
+      neutral: true,
+      tileShare: 0.05,
+    },
+  ];
+  const selected = choose(
+    productiveGrindActions(),
+    observation({ tileShare: 0.05, tilesOwned: 5000 }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, "expand:terra-nullius:20");
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("pg2 does not replace an active counterattack", () => {
+  const rival = {
+    id: "threat",
+    name: "Threat",
+    tileShare: 0.08,
+    relativeTroopRatio: 1.2,
+  };
+  const counter = action("attack:threat:10", "attack", "Attack Threat 10%");
+  const selected = choose(
+    [...productiveGrindActions(), counter],
+    observation({
+      tileShare: 0.05,
+      tilesOwned: 5000,
+      spawnTile: 659528,
+      rivals: [rival],
+      incomingAttacks: [{ attackerID: "threat" }],
+    }),
+  );
+  assert.equal(selected.id, counter.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("pg2 respects protocol-only incoming pressure outside the parent map route", () => {
+  const selected = choose(
+    productiveGrindActions(),
+    observation({
+      tileShare: 0.05,
+      tilesOwned: 5000,
+      spawnTile: 659528,
+      incomingAttackPlayerIDs: ["threat"],
+    }),
+  );
+  assert.equal(selected.id, "expand:terra-nullius:10");
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("pg2 applies the map-general grind math and expires at decision twenty", () => {
+  for (const spawnTile of [1088580, 1180588, 659528, 185226]) {
+    const selected = choose(
+      productiveGrindActions(),
+      observation({ tileShare: 0.05, tilesOwned: 5000, spawnTile }),
+    );
+    assert.equal(selected.id, "expand:terra-nullius:35");
+    assert.equal(selected.policyMarker, "pg2");
+  }
+
+  const history = Array.from({ length: 20 }, (_, index) => ({
+    actionID: `emoji:${index}`,
+    kind: "emoji",
+    neutral: false,
+    tileShare: 0.05,
+    tilesOwned: 5000,
+    mapFingerprint: "Pangaea",
+  }));
+  const expired = choose(
+    productiveGrindActions(),
+    observation({ tileShare: 0.05, tilesOwned: 5000, spawnTile: 659528 }),
+    null,
+    history,
+  );
+  assert.equal(expired.id, "expand:terra-nullius:10");
+  assert.equal(expired.policyMarker, undefined);
+});
+
+test("pg2 does not mark an unchanged parent 35-percent selection", () => {
+  const history = [10, 10, 20].map((percent, index) => ({
+    actionID: `expand:terra-nullius:${percent}`,
+    kind: "attack",
+    neutral: true,
+    tileShare: 0.02 + index * 0.02,
+    tilesOwned: 2000 + index * 2000,
+    mapFingerprint: "Pangaea",
+  }));
+  const selected = choose(
+    productiveGrindActions(),
+    observation({ tileShare: 0.08, tilesOwned: 8000, spawnTile: 659528 }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, "expand:terra-nullius:35");
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("pg2 never replaces the parent with an equal or smaller percentage", () => {
+  const actions = productiveGrindActions().filter(
+    (candidate) => candidate.metadata.troopPercent <= 20,
+  );
+  const history = [
+    {
+      actionID: "expand:terra-nullius:10",
+      kind: "attack",
+      neutral: true,
+      tileShare: 0.02,
+      tilesOwned: 2000,
+    },
+    {
+      actionID: "expand:terra-nullius:10",
+      kind: "attack",
+      neutral: true,
+      tileShare: 0.04,
+      tilesOwned: 4000,
+    },
+  ];
+  const selected = choose(
+    actions,
+    observation({ tileShare: 0.06, tilesOwned: 6000 }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, "expand:terra-nullius:20");
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("pg2 preserves an unparseable parent percentage instead of coercing it", () => {
+  const unparseable = {
+    ...action(
+      "expand:terra-nullius:dynamic",
+      "attack",
+      "Expand into neutral land dynamically",
+    ),
+    metadata: { expansion: true },
+  };
+  const thirtyFive = productiveGrindActions().find(
+    (candidate) => candidate.metadata.troopPercent === 35,
+  );
+  const history = [
+    {
+      actionID: thirtyFive.id,
+      kind: "attack",
+      neutral: true,
+      tileShare: 0.02,
+      tilesOwned: 2000,
+    },
+    {
+      actionID: thirtyFive.id,
+      kind: "attack",
+      neutral: true,
+      tileShare: 0.04,
+      tilesOwned: 4000,
+    },
+  ];
+  const selected = choose(
+    [unparseable, thirtyFive],
+    observation({ tileShare: 0.06, tilesOwned: 6000 }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, unparseable.id);
+  assert.equal(selected.policyMarker, undefined);
 });
 
 test("stalled land expansion switches to a neutral boat", () => {

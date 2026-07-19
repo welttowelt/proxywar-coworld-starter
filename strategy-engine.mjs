@@ -180,6 +180,7 @@ export function buildState(observation, actions, history = []) {
     : baseIncomingAttackerIDs;
   const self = {
     tileShare: finiteNumber(own.tileShare),
+    tilesOwned: finiteNumber(own.tilesOwned, NaN),
     troops: finiteNumber(own.troops),
     troopRatio: finiteNumber(own.troopRatio),
     gold: own.gold,
@@ -601,6 +602,51 @@ export function chooseNeutralAttack(actions, history, avoid) {
   return pickPercent(candidates, cadence[Math.min(streak, cadence.length - 1)], avoid);
 }
 
+function productiveGrindFrontierFlat(state, history) {
+  const recentLandAttacks = history
+    .filter((entry) => entry.kind === "attack" && entry.neutral === true)
+    .slice(-2);
+  if (recentLandAttacks.length < 2) return false;
+  const currentTiles = finiteNumber(state?.self?.tilesOwned, NaN);
+  const olderPreActionTiles = finiteNumber(recentLandAttacks[0]?.tilesOwned, NaN);
+  if (!Number.isFinite(currentTiles) || !Number.isFinite(olderPreActionTiles)) {
+    return true;
+  }
+  return currentTiles <= olderPreActionTiles;
+}
+
+function chooseProductiveGrind(actions, state, history, avoid) {
+  const parent = chooseNeutralAttack(actions, history, avoid);
+  const activeDecisions = history.filter((entry) => entry.kind !== "spawn").length;
+  const eligible = activeDecisions < 20 &&
+    Number.isFinite(state.self.tilesOwned) &&
+    state.self.tileShare < 0.12 &&
+    incomingThreatCount(state.self.incomingAttacks) === 0 &&
+    (state.self.allProtocolAttackerIDs || []).length === 0 &&
+    !territoryCollapsing(state, history) &&
+    !productiveGrindFrontierFlat(state, history);
+  if (!eligible) return parent;
+
+  const candidates = actions
+    .filter((action) => isNeutralExpansion(action) && action.risk?.level !== "high")
+    .map((action) => ({ action, percent: actionPercent(action) }))
+    .filter(({ percent }) => Number.isFinite(percent) && percent <= 35)
+    .sort((left, right) => right.percent - left.percent);
+  const selected = candidates[0]?.action ?? parent;
+  const selectedPercent = actionPercent(selected);
+  const parentPercent = actionPercent(parent);
+  if (
+    !selected ||
+    !parent ||
+    !Number.isFinite(selectedPercent) ||
+    !Number.isFinite(parentPercent) ||
+    selectedPercent <= parentPercent
+  ) {
+    return parent;
+  }
+  return { ...selected, policyMarker: "pg2" };
+}
+
 export function neutralExpansionStalled(state, history) {
   const currentShare = finiteNumber(state?.self?.tileShare, NaN);
   if (!Number.isFinite(currentShare)) return false;
@@ -807,7 +853,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
     pileOnDiscipline && action && !action.policyMarker
       ? { ...action, policyMarker: "pd2" }
       : action;
-  const neutralAttack = chooseNeutralAttack(actions, history, avoid);
+  const neutralAttack = chooseProductiveGrind(actions, state, history, avoid);
   const build = chooseBuild(actions, history);
   const sinceBuild = decisionsSince(history, (entry) =>
     entry.kind === "build" || entry.kind === "upgrade_structure"
@@ -930,6 +976,7 @@ export function recordDecision(history, action, state) {
     targetName: rival?.name ?? (metadataTargetName || null),
     targetID: rival?.id?.toLowerCase() ?? (metadataTargetID || null),
     tileShare: state.self.tileShare,
+    tilesOwned: state.self.tilesOwned,
     incomingAttackerIDs,
     allProtocolAttackerIDs: state.self.allProtocolAttackerIDs || [],
     incomingAttackerNames,
