@@ -15,7 +15,7 @@ the mailbox at `/Users/olifreuler/.stormforge/team-mailbox`.
 
 ## Live deployment truth
 
-Verified against the Coworld/Softmax API at `2026-07-19T14:02:42Z`:
+Verified against the Coworld/Softmax API at `2026-07-19T15:19:15Z`:
 
 - Player: `K1Z Hrafn`
 - Player ID: `ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863`
@@ -52,16 +52,16 @@ The player hash above corrects the prior `1154115f...` ledger value, which is
 the SHA-256 of `llm-player.mjs`, not Hrafn's `/app/hrafn-player.mjs`. Every
 pinned Hrafn image and corresponding source commit agrees on `16922c32...`.
 
-Current field checkpoint, refreshed at `2026-07-19T14:02:42Z`:
+Current field checkpoint, refreshed at `2026-07-19T15:19:15Z`:
 
-- Hrafn is overall rank `10`, score `1.1307265296318294`, after `23` completed
-  Competition rounds. Daveey leads at `31.940568332002893`; Odin is second at
-  `20.724906719343224`. Hrafn's score fell from `1.2011816412848397` after
-  round 533 added another official zero-score finish to the live aggregation.
+- Hrafn is overall rank `10`, score `1.0663473508623538`, after `24` completed
+  Competition rounds. Daveey leads at `31.03102579981558`; Odin is second at
+  `22.27009729025311`. Hrafn's score fell from `1.1307265296318294` after
+  round 534 added another official zero-score finish to the live aggregation.
 - Round 528 failed. Round 529 completed with Hrafn rank `12`, score `0`; Round
   530 failed; Round 531 completed with Hrafn rank `12`, score `0`; Round 532
   completed with Hrafn rank `13`, score `0`; Round 533 completed with Hrafn
-  rank `12`, score `0`. Round 534 is running with exact v5 sealed.
+  rank `12`, score `0`; Round 534 completed with Hrafn rank `12`, score `0`.
 - Round 529's four Pangaea episodes were outsider wins by Auri, daveey twice,
   and Richard Higgins. Hrafn went `0/4` and finished with `4,142`, `69,786`,
   `3,170`, and `19,827` tiles. All `439/439` decisions were accepted with zero
@@ -112,6 +112,17 @@ Current field checkpoint, refreshed at `2026-07-19T14:02:42Z`:
   eighteen boats stayed legal. Current WR1 does not cover that class. Replay
   SHA-256 values are `c763bf31...`, `d79f6ee6...`, `9c24a0ca...`, and
   `a434d6d1...`.
+- Round 534 completed with exact v5 sealed across four World episodes. Odin won
+  two, one reached turn `50,400` without an outright winner with Odin holding
+  the top score, and Auri won the fourth. Hrafn went `0/4`, rank `12`, score
+  `0`, with `1,024`, `0`, `115,747`, and `0` tiles. All `876/876` decisions
+  were accepted with seven holds and zero Hrafn fallbacks, rejects, or K1Z
+  harm; Hrafn made `43` `rv3` executions and five productive `dn1` transfers.
+  The seven holds followed one withdrawn K1Z alliance request and six withdrawn
+  quick-chat actions while productive alternatives stayed legal. Current WR1
+  covers those classes, but the already-run qualifier reached neither WR1 nor
+  VR1 and remains rejected. Replay SHA-256 values are `03372587...`,
+  `50965cd7...`, `a4ec7d3b...`, and `90521b32...`.
 
 ## VR1 plus withdrawal-recovery qualifier rejection
 
@@ -161,6 +172,28 @@ Current promotion state remains `SOURCE_READY=true` and
 `LOCAL_QUALIFIED=false`; every later state is false. No matched request,
 upload, hosted test, regression, final audit, submission, membership change,
 or champion change is permitted from this arm.
+
+## KF1 supporter source proof
+
+The separate KF1 supporter arm is pushed on `rci/hrafn-kf1-supporter`.
+Candidate code commit `a0d71a6a` is an exact-parent single delta from live v5;
+evidence commit `6245f546` pins linux/amd64 image `sha256:2bfd61aa...`, strategy
+SHA-256 `99877828...`, unchanged player SHA-256 `16922c32...`, four red-first
+positive cases, and a passing `155/155` serial suite.
+
+KF1 requires exact FFA and active phase, a safe integer survivor count,
+complete boolean liveness, count/list equality, raw leading K1Z tags, unique
+closed canonical survivor names, and confirmed-live Odin. After activation it
+can only donate exact legal troops or gold to Odin, otherwise mark a `kf1`
+hold. Ten malformed or mixed-survivor controls stay dormant. Eight ordinary
+field replays from rounds 533 and 534 provide `1,794` Hrafn active-turn
+observations with zero necessary-condition turns and zero KF1 reach; every
+round-534 observation retained at least eight outsiders.
+
+This arm remains `SOURCE_READY=false`; all later states are false. Mailbox
+commit `a2fd925` asks Odin for source review and authorizes no episode. An
+approval there permits only preparation of immutable matched qualifier specs
+for a second exact-hash review. Positive replay reach remains missing.
 
 Coalition control:
 
@@ -243,6 +276,15 @@ max setting.
   sequence: strict fail-closed survivor proof, donation only to Odin when an
   exact legal donation exists, otherwise marked hold. KF1 remains a separate,
   not-yet-started arm; supporter versions precede Odin KF1.
+- Odin's repaired PG2 request in mailbox commit `a0e233f` superseded the prior
+  approval because source, image, bundle, and spec hashes changed. Hrafn
+  returned fresh `APPROVE` in `a2fd925` after committed-source, `163/163`,
+  image, formal-pair, archive, manifest, and runner review. That verdict opens
+  only amd64 transport validation followed by one sequential 80-decision
+  A-then-B canary.
+- The same `a2fd925` receipt requests Odin review of committed KF1 source and
+  negative controls. It names positive reach and immutable qualifier hashes as
+  missing evidence and keeps every run and promotion state closed.
 
 ## Autonomous promotion
 

@@ -102,7 +102,29 @@ adds a `target_player` withdrawal retry at turn 5,100: Hrafn held while three
 attacks and eighteen boats were legal. Current WR1 does not cover that class.
 Replay SHA-256 values are `c763bf31...`, `d79f6ee6...`, `9c24a0ca...`, and
 `a434d6d1...`. This final live evidence does not reopen the qualifier-rejected
-arm. Round 534 is running with exact v5 sealed.
+arm.
+
+Round 534 completed across four World episodes. Odin won two, one reached turn
+50,400 without an outright winner with Odin top, and Auri won the fourth.
+Hrafn went `0/4`, official rank `12`, score `0`, with `1,024`, `0`, `115,747`,
+and `0` tiles. All `876/876` decisions were accepted with seven holds and zero
+Hrafn fallbacks, rejects, or K1Z harm. Hrafn recorded 43 `rv3` executions and
+five productive `dn1` transfers. The seven holds followed one withdrawn K1Z
+alliance request and six withdrawn quick-chat actions. Replay SHA-256 values
+are `03372587...`, `50965cd7...`, `a4ec7d3b...`, and `90521b32...`. Exact
+episode and aggregate evidence lives in
+`audit-hrafn-v5-round534-20260719.json` and
+`ledger-hrafn-live-v5-round534-20260719.ndjson`.
+
+The separate KF1 supporter source proof is committed on
+`rci/hrafn-kf1-supporter`: code `a0d71a6a`, evidence `6245f546`, exact
+linux/amd64 image `sha256:2bfd61aa...`, four red-first positive cases, and
+`155/155`. Ten malformed or mixed-survivor controls stay dormant. Round 533
+and Round 534 add eight ordinary-field replays with `1,794` Hrafn active-turn
+observations and zero necessary KF1 condition turns. Mailbox `a2fd925` requests
+Odin source review and authorizes no episode. `SOURCE_READY` and every later
+promotion state remain false until source review, immutable qualifier hashes,
+and positive replay reach are supplied.
 
 ## Pangaea seat-2 A/B, 2026-07-12
 
