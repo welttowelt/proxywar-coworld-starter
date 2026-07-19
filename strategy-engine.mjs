@@ -641,6 +641,30 @@ export function boatConversionStalled(state, history) {
   return currentShare <= shares[0] + 0.002;
 }
 
+export function upgradeLoopStalled(state, history) {
+  const currentShare = finiteNumber(state?.self?.tileShare, NaN);
+  if (
+    state?.mapFingerprint !== "World" ||
+    !Number.isFinite(currentShare) ||
+    currentShare >= 0.08 ||
+    decisionsSince(history, (entry) => entry.policyMarker === "us1") < 16
+  ) {
+    return false;
+  }
+  const recent = history.slice(-8);
+  if (
+    recent.length < 8 ||
+    recent.some((entry) => entry.kind !== "upgrade_structure")
+  ) {
+    return false;
+  }
+  const shares = recent
+    .map((entry) => finiteNumber(entry?.tileShare, NaN))
+    .filter(Number.isFinite);
+  if (shares.length < 8) return false;
+  return currentShare <= shares[0] + 0.001;
+}
+
 function builtUnits(history) {
   return history
     .filter((entry) => entry.kind === "build")
@@ -809,6 +833,21 @@ export function chooseAction(actions, state, plan = null, history = []) {
       : action;
   const neutralAttack = chooseNeutralAttack(actions, history, avoid);
   const build = chooseBuild(actions, history);
+  const upgradeStallEscape = upgradeLoopStalled(state, history) &&
+    !rivalAttack?.action &&
+    !neutralAttack &&
+    !build &&
+    safeActions(actions, isNeutralBoat).length === 0
+    ? chooseBoat(actions, state, history, avoid, false, true) ||
+      safeActions(actions, (action) => {
+        if (action.kind !== "warship" && action.kind !== "move_warship") return false;
+        const rival = rivalForAction(action, state);
+        return !rival || !rivalIsProtected(state, history, rival);
+      })[0]
+    : null;
+  if (upgradeStallEscape) {
+    return { ...upgradeStallEscape, policyMarker: "us1" };
+  }
   const sinceBuild = decisionsSince(history, (entry) =>
     entry.kind === "build" || entry.kind === "upgrade_structure"
   );

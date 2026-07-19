@@ -128,6 +128,155 @@ test("productive boat growth does not trigger conversion mode", () => {
   assert.equal(boatConversionStalled(state, history), false);
 });
 
+test("World low-share upgrade stall escapes through a credible naval invasion", () => {
+  const invasion = {
+    ...action("boat:rival:16", "boat", "Boat to Rival 16%"),
+    metadata: { targetID: "rival", targetName: "Rival", troopPercent: 16 },
+  };
+  const upgrade = action("upgrade:city:1", "upgrade_structure", "Upgrade City");
+  const history = Array.from({ length: 8 }, (_, index) => ({
+    actionID: `upgrade:city:${index}`,
+    kind: "upgrade_structure",
+    tileShare: 0.04,
+  }));
+  const selected = choose(
+    [invasion, upgrade],
+    observation({
+      tileShare: 0.04,
+      spawnTile: 1088580,
+      rivals: [
+        { id: "rival", name: "Rival", tileShare: 0.24, relativeTroopRatio: 1.2 },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, invasion.id);
+  assert.equal(selected.policyMarker, "us1");
+});
+
+test("World upgrade-stall escape preserves a legal neutral land frontier", () => {
+  const neutral = action(
+    "expand:terra-nullius:35",
+    "attack",
+    "Expand into Terra Nullius with 35%",
+  );
+  const invasion = {
+    ...action("boat:rival:16", "boat", "Boat to Rival 16%"),
+    metadata: { targetID: "rival", targetName: "Rival", troopPercent: 16 },
+  };
+  const upgrade = action("upgrade:city:1", "upgrade_structure", "Upgrade City");
+  const history = Array.from({ length: 8 }, (_, index) => ({
+    actionID: `upgrade:city:${index}`,
+    kind: "upgrade_structure",
+    tileShare: 0.04,
+  }));
+  const selected = choose(
+    [neutral, invasion, upgrade],
+    observation({
+      tileShare: 0.04,
+      spawnTile: 1088580,
+      rivals: [
+        { id: "rival", name: "Rival", tileShare: 0.24, relativeTroopRatio: 1.2 },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, neutral.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("Pangaea does not inherit the World upgrade-stall escape", () => {
+  const invasion = {
+    ...action("boat:rival:16", "boat", "Boat to Rival 16%"),
+    metadata: { targetID: "rival", targetName: "Rival", troopPercent: 16 },
+  };
+  const upgrade = action("upgrade:city:1", "upgrade_structure", "Upgrade City");
+  const history = Array.from({ length: 8 }, (_, index) => ({
+    actionID: `upgrade:city:${index}`,
+    kind: "upgrade_structure",
+    tileShare: 0.04,
+  }));
+  const selected = choose(
+    [invasion, upgrade],
+    observation({
+      tileShare: 0.04,
+      spawnTile: 659528,
+      rivals: [
+        { id: "rival", name: "Rival", tileShare: 0.24, relativeTroopRatio: 1.2 },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, upgrade.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("World upgrade-stall escape stays dormant while territory is growing", () => {
+  const invasion = {
+    ...action("boat:rival:16", "boat", "Boat to Rival 16%"),
+    metadata: { targetID: "rival", targetName: "Rival", troopPercent: 16 },
+  };
+  const upgrade = action("upgrade:city:1", "upgrade_structure", "Upgrade City");
+  const history = Array.from({ length: 8 }, (_, index) => ({
+    actionID: `upgrade:city:${index}`,
+    kind: "upgrade_structure",
+    tileShare: 0.02 + index * 0.003,
+  }));
+  const selected = choose(
+    [invasion, upgrade],
+    observation({
+      tileShare: 0.044,
+      spawnTile: 1088580,
+      rivals: [
+        { id: "rival", name: "Rival", tileShare: 0.24, relativeTroopRatio: 1.2 },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, upgrade.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("World upgrade-stall escape never invades a protected K1Z warrior", () => {
+  const protectedInvasion = {
+    ...action("boat:katanasan:16", "boat", "Boat to K1Z katanasan 16%"),
+    metadata: {
+      targetID: "katanasan",
+      targetName: "K1Z katanasan",
+      troopPercent: 16,
+    },
+  };
+  const upgrade = action("upgrade:city:1", "upgrade_structure", "Upgrade City");
+  const history = Array.from({ length: 8 }, (_, index) => ({
+    actionID: `upgrade:city:${index}`,
+    kind: "upgrade_structure",
+    tileShare: 0.04,
+  }));
+  const selected = choose(
+    [protectedInvasion, upgrade],
+    observation({
+      tileShare: 0.04,
+      spawnTile: 1088580,
+      rivals: [
+        {
+          id: "katanasan",
+          name: "K1Z katanasan",
+          tileShare: 0.24,
+          relativeTroopRatio: 1.2,
+        },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, upgrade.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
 test("alliance selection rejects a recent attacker when a peaceful rival is legal", () => {
   const attackerAlliance = {
     ...action("alliance:attacker", "alliance_request", "Alliance with Attacker"),
