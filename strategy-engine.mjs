@@ -40,8 +40,9 @@ const MAP_SPAWN_TILES = new Map([
   ...[659528, 534350, 266554, 687420, 622372, 589302, 450306, 740346]
     .map((tile) => [tile, "Pangaea"]),
 ]);
-const PRODUCTIVE_GRIND_HISTORY_TELEMETRY = Symbol("productiveGrindHistoryTelemetry");
+const PRODUCTIVE_GRIND_HISTORY_TILES_VALID = Symbol("productiveGrindHistoryTilesValid");
 const productiveGrindStateTelemetry = new WeakMap();
+const DECIMAL_FINITE_PATTERN = /^[+-]?(?:\d+(?:\.\d*)?|\.\d+)(?:e[+-]?\d+)?$/i;
 
 export const PLAN_KINDS = [
   "spawn", "attack", "nuke", "build", "upgrade_structure", "boat", "boat_retreat", "retreat",
@@ -67,9 +68,18 @@ function exactFiniteNumber(value) {
   if (typeof value === "number") {
     return Number.isFinite(value) ? value : NaN;
   }
-  if (typeof value !== "string" || value.trim() === "") return NaN;
-  const number = Number(value);
+  if (typeof value !== "string") return NaN;
+  const trimmed = value.trim();
+  if (trimmed === "" || !DECIMAL_FINITE_PATTERN.test(trimmed)) return NaN;
+  const number = Number(trimmed);
   return Number.isFinite(number) ? number : NaN;
+}
+
+function exactFiniteRange(value, minimum, maximum = Number.POSITIVE_INFINITY) {
+  const number = exactFiniteNumber(value);
+  return Number.isFinite(number) && number >= minimum && number <= maximum
+    ? number
+    : NaN;
 }
 
 function playerID(player) {
@@ -176,8 +186,8 @@ export function avoidActionIDs(history) {
 export function buildState(observation, actions, history = []) {
   const own = observation?.ownState || {};
   const productiveGrindTelemetry = {
-    tileShare: exactFiniteNumber(own.tileShare),
-    tilesOwned: exactFiniteNumber(own.tilesOwned),
+    tileShare: exactFiniteRange(own.tileShare, 0, 1),
+    tilesOwned: exactFiniteRange(own.tilesOwned, 0),
   };
   const mapFingerprint = inferMapFingerprint(observation, history);
   const visiblePlayers = (observation?.visiblePlayers || [])
@@ -626,23 +636,24 @@ function productiveGrindPercent(action) {
   ) {
     return NaN;
   }
-  return exactFiniteNumber(action.metadata.troopPercent);
+  const percent = exactFiniteNumber(action.metadata.troopPercent);
+  return Number.isFinite(percent) && percent > 0 && percent <= 100
+    ? percent
+    : NaN;
 }
 
-function productiveGrindTelemetryValid(state, history) {
+function productiveGrindCurrentTelemetryValid(state) {
   const current = productiveGrindStateTelemetry.get(state);
-  if (
-    !current ||
-    !Number.isFinite(current.tileShare) ||
-    !Number.isFinite(current.tilesOwned)
-  ) {
-    return false;
-  }
-  return history.every((entry) => {
-    if (entry?.[PRODUCTIVE_GRIND_HISTORY_TELEMETRY] === false) return false;
-    return Number.isFinite(exactFiniteNumber(entry?.tileShare)) &&
-      Number.isFinite(exactFiniteNumber(entry?.tilesOwned));
-  });
+  return Boolean(
+    current &&
+    Number.isFinite(current.tileShare) &&
+    Number.isFinite(current.tilesOwned)
+  );
+}
+
+function productiveGrindHistoryTilesValid(entry) {
+  if (entry?.[PRODUCTIVE_GRIND_HISTORY_TILES_VALID] === false) return false;
+  return Number.isFinite(exactFiniteRange(entry?.tilesOwned, 0));
 }
 
 function productiveGrindFrontierFlat(state, history) {
@@ -650,8 +661,11 @@ function productiveGrindFrontierFlat(state, history) {
     .filter((entry) => entry.kind === "attack" && entry.neutral === true)
     .slice(-2);
   if (recentLandAttacks.length < 2) return false;
+  if (recentLandAttacks.some((entry) => !productiveGrindHistoryTilesValid(entry))) {
+    return true;
+  }
   const currentTiles = productiveGrindStateTelemetry.get(state)?.tilesOwned;
-  const olderPreActionTiles = exactFiniteNumber(recentLandAttacks[0]?.tilesOwned);
+  const olderPreActionTiles = exactFiniteRange(recentLandAttacks[0]?.tilesOwned, 0);
   if (!Number.isFinite(currentTiles) || !Number.isFinite(olderPreActionTiles)) {
     return true;
   }
@@ -663,7 +677,7 @@ function chooseProductiveGrind(actions, state, history, avoid) {
   const telemetry = productiveGrindStateTelemetry.get(state);
   const activeDecisions = history.filter((entry) => entry.kind !== "spawn").length;
   const eligible = activeDecisions < 20 &&
-    productiveGrindTelemetryValid(state, history) &&
+    productiveGrindCurrentTelemetryValid(state) &&
     telemetry.tileShare < 0.12 &&
     incomingThreatCount(state.self.incomingAttacks) === 0 &&
     (state.self.allProtocolAttackerIDs || []).length === 0 &&
@@ -1031,12 +1045,8 @@ export function recordDecision(history, action, state) {
     policyMarker: action.policyMarker ?? null,
   };
   const telemetry = productiveGrindStateTelemetry.get(state);
-  Object.defineProperty(entry, PRODUCTIVE_GRIND_HISTORY_TELEMETRY, {
-    value: Boolean(
-      telemetry &&
-      Number.isFinite(telemetry.tileShare) &&
-      Number.isFinite(telemetry.tilesOwned)
-    ),
+  Object.defineProperty(entry, PRODUCTIVE_GRIND_HISTORY_TILES_VALID, {
+    value: Boolean(telemetry && Number.isFinite(telemetry.tilesOwned)),
     enumerable: false,
   });
   history.push(entry);

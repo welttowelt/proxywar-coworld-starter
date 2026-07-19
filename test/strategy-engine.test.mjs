@@ -586,11 +586,20 @@ function productiveGrindActions() {
 }
 
 const invalidPg2TelemetryForms = [
-  { label: "null", value: null },
-  { label: "blank", value: "   " },
   { label: "missing", omit: true },
-  { label: "malformed", value: "not-a-number" },
-  { label: "nonfinite", value: Number.POSITIVE_INFINITY },
+  { label: "undefined", value: undefined },
+  { label: "null", value: null },
+  { label: "empty", value: "" },
+  { label: "whitespace", value: "   " },
+  { label: "nonnumeric", value: "not-a-number" },
+  { label: "hex", value: "0x10" },
+  { label: "boolean", value: true },
+  { label: "array", value: [] },
+  { label: "object", value: {} },
+  { label: "negative", value: -1 },
+  { label: "nan", value: Number.NaN },
+  { label: "positive-infinity", value: Number.POSITIVE_INFINITY },
+  { label: "negative-infinity", value: Number.NEGATIVE_INFINITY },
 ];
 
 function setInvalidForm(target, field, form) {
@@ -630,9 +639,9 @@ test("pg2 returns the exact parent for every invalid current tile telemetry form
   }
 });
 
-test("pg2 returns the exact parent for every invalid history tile telemetry form", () => {
+test("pg2 returns the exact parent for invalid tiles in either relevant attack record", () => {
   const actions = productiveGrindActions();
-  for (const field of ["tileShare", "tilesOwned"]) {
+  for (const historyIndex of [0, 1]) {
     for (const form of invalidPg2TelemetryForms) {
       const history = [
         {
@@ -650,7 +659,7 @@ test("pg2 returns the exact parent for every invalid history tile telemetry form
           tilesOwned: 4000,
         },
       ];
-      setInvalidForm(history[0], field, form);
+      setInvalidForm(history[historyIndex], "tilesOwned", form);
       const state = buildState(
         observation({ tileShare: 0.06, tilesOwned: 6000 }),
         actions,
@@ -658,44 +667,84 @@ test("pg2 returns the exact parent for every invalid history tile telemetry form
       );
       const parent = chooseNeutralAttack(actions, history, new Set());
       const selected = chooseAction(actions, state, null, history);
-      const evidence = `${field}/${form.label}`;
+      const evidence = `history[${historyIndex}].tilesOwned/${form.label}`;
       assert.equal(selected.id, parent.id, evidence);
       assert.equal(selected.policyMarker, undefined, evidence);
     }
   }
 });
 
-test("pg2 retains fail-closed provenance when invalid wire telemetry enters history", () => {
+test("pg2 retains fail-closed tile provenance when invalid wire telemetry enters history", () => {
   const actions = productiveGrindActions();
-  for (const field of ["tileShare", "tilesOwned"]) {
-    for (const form of invalidPg2TelemetryForms) {
-      const invalidObservation = observation({ tileShare: 0.03, tilesOwned: 3000 });
-      setInvalidForm(invalidObservation.ownState, field, form);
-      const history = [];
-      const invalidState = buildState(invalidObservation, actions, history);
-      const firstParent = chooseNeutralAttack(actions, history, new Set());
-      recordDecision(history, firstParent, invalidState);
+  for (const form of invalidPg2TelemetryForms) {
+    const invalidObservation = observation({ tileShare: 0.03, tilesOwned: 3000 });
+    setInvalidForm(invalidObservation.ownState, "tilesOwned", form);
+    const history = [];
+    const invalidState = buildState(invalidObservation, actions, history);
+    const firstParent = chooseNeutralAttack(actions, history, new Set());
+    recordDecision(history, firstParent, invalidState);
 
-      const state = buildState(
-        observation({ tileShare: 0.06, tilesOwned: 6000 }),
-        actions,
-        history,
-      );
-      const parent = chooseNeutralAttack(actions, history, new Set());
-      const selected = chooseAction(actions, state, null, history);
-      const evidence = `${field}/${form.label}`;
-      assert.equal(selected.id, parent.id, evidence);
-      assert.equal(selected.policyMarker, undefined, evidence);
-    }
+    const validState = buildState(
+      observation({ tileShare: 0.04, tilesOwned: 4000 }),
+      actions,
+      history,
+    );
+    const secondParent = chooseNeutralAttack(actions, history, new Set());
+    recordDecision(history, secondParent, validState);
+
+    const state = buildState(
+      observation({ tileShare: 0.06, tilesOwned: 6000 }),
+      actions,
+      history,
+    );
+    const parent = chooseNeutralAttack(actions, history, new Set());
+    const selected = chooseAction(actions, state, null, history);
+    const evidence = `recorded tilesOwned/${form.label}`;
+    assert.equal(selected.id, parent.id, evidence);
+    assert.equal(selected.policyMarker, undefined, evidence);
   }
+});
+
+test("pg2 bootstraps before a second relevant attack record exists", () => {
+  const actions = productiveGrindActions();
+  const history = [{
+    actionID: "expand:terra-nullius:10",
+    kind: "attack",
+    neutral: true,
+    tileShare: 0.03,
+  }];
+  const selected = choose(
+    actions,
+    observation({ tileShare: 0.05, tilesOwned: 5000 }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, "expand:terra-nullius:35");
+  assert.equal(selected.policyMarker, "pg2");
+});
+
+test("pg2 accepts explicit decimal numeric strings without widening legacy parsing", () => {
+  const actions = productiveGrindActions().map((candidate) => ({
+    ...candidate,
+    metadata: {
+      ...candidate.metadata,
+      troopPercent: String(candidate.metadata.troopPercent),
+    },
+  }));
+  const selected = choose(
+    actions,
+    observation({ tileShare: "0.05", tilesOwned: "5000" }),
+  );
+  assert.equal(selected.id, "expand:terra-nullius:35");
+  assert.equal(selected.policyMarker, "pg2");
 });
 
 test("pg2 returns an invalid-percentage parent unchanged and unmarked", () => {
   for (const form of invalidPg2TelemetryForms) {
     const actions = [
       invalidPercentAction(10, form),
-      ...productiveGrindActions().filter(
-        (candidate) => candidate.metadata.troopPercent > 10,
+      productiveGrindActions().find(
+        (candidate) => candidate.metadata.troopPercent === 35,
       ),
     ];
     const state = buildState(
@@ -715,7 +764,7 @@ test("pg2 returns the exact parent when a replacement percentage is invalid", ()
   for (const form of invalidPg2TelemetryForms) {
     const actions = [
       ...productiveGrindActions().filter(
-        (candidate) => candidate.metadata.troopPercent < 35,
+        (candidate) => candidate.metadata.troopPercent <= 20,
       ),
       invalidPercentAction(35, form),
     ];
