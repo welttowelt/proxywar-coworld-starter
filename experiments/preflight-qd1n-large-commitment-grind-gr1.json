@@ -81,7 +81,9 @@
     "request_a_sha256": "299ffc7fd5b389e462971b6828e57db59d10f6ed7973ea1d28994126fe8aff2a",
     "request_b_path": "experiments/gr1-matched-pangaea-b-20260719.json",
     "request_b_sha256": "d38ddeac7ad00af4464eb71bf48c4904e5c54597fb3f3b264314d48890b70d78",
-    "game_config_sha256": "3aef2f8ab420cc2bdaa8ca431ec1d54c2d4afd5ef4e7f91dab28eb376e387c88",
+    "manifest_sha256": "a43dafa9bb7e68a5c708b3fc6a44e80097e04e1da07131d62a00b7a8a445d86d",
+    "game_config_sha256": "a75e3a675bb7041005c8575d8b8d21f4ad10ba897e5298f9a1e725cc6c34e7ea",
+    "hash_method": "sha256(JSON.stringify(recursively-key-sorted value) + newline)",
     "only_request_delta": "players[0].image: qd1n-v89-gr1-amd64 in A versus qd1n-v89-exact-amd64 in B",
     "coalition_images": {
       "hrafn": "sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d",
