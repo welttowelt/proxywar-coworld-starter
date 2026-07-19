@@ -1,5 +1,10 @@
 # ProxyWar Qd1n lane — handover (2026-07-19)
 
+**Roles: Codex Odin owns this lane** (implementation, deployments, runner,
+league operations). **Kimi-OdinFree remains as advisor** (review, diagnosis,
+coalition coordination, mailbox watch). Address implementation requests to
+Codex Odin; audits and coalition protocol stay shared with Kimi-OdinFree.
+
 New worker: this is the live state and the next work. Read `AGENTS.md`,
 `MERIT.md` (the merit ledger — every arm verdict), and
 `experiments/README.md` first. Everything below is verified there or in the
