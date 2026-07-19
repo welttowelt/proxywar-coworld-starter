@@ -52,7 +52,7 @@ The player hash above corrects the prior `1154115f...` ledger value, which is
 the SHA-256 of `llm-player.mjs`, not Hrafn's `/app/hrafn-player.mjs`. Every
 pinned Hrafn image and corresponding source commit agrees on `16922c32...`.
 
-Current field checkpoint, refreshed at `2026-07-19T15:19:15Z`:
+Current field checkpoint, refreshed at `2026-07-19T15:35:56Z`:
 
 - Hrafn is overall rank `10`, score `1.0663473508623538`, after `24` completed
   Competition rounds. Daveey leads at `31.03102579981558`; Odin is second at
@@ -123,6 +123,15 @@ Current field checkpoint, refreshed at `2026-07-19T15:19:15Z`:
   covers those classes, but the already-run qualifier reached neither WR1 nor
   VR1 and remains rejected. Replay SHA-256 values are `03372587...`,
   `50965cd7...`, `a4ec7d3b...`, and `90521b32...`.
+- Round 535 remains running on Pangaea. Two of four replay payloads were
+  complete at the checkpoint. Across those two replays Hrafn accepted `576/576`
+  decisions with zero holds, fallbacks, rejects, or K1Z harm, made `55` `rv3`
+  executions and `20` productive `dn1` transfers, and finished with `125,167`
+  and `0` tiles. One episode reached turn `50,400` with Odin top; Ron won the
+  other. KF1 remained unreachable across `570` Hrafn active turns with at least
+  eight outsiders. Replay SHA-256 values are `534bea86...` and `009436cd...`.
+  This is partial replay evidence only; assign no official round rank, score,
+  or promotion verdict until the round closes.
 
 ## VR1 plus withdrawal-recovery qualifier rejection
 

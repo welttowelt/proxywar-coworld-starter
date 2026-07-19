@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_live_round_partial_replay_audit",
+  "recorded_at": "2026-07-19T15:35:56Z",
+  "round": {
+    "id": "round_0ce35ee5-cde0-4913-8e26-0a395e414339",
+    "number": 535,
+    "status": "running",
+    "started_at": "2026-07-19T14:57:28.100721Z",
+    "completed_at": null,
+    "map": "Pangaea",
+    "episode_requests": 4,
+    "completed_replays": 2,
+    "running_requests": 2,
+    "official_hrafn_rank": null,
+    "official_hrafn_score": null
+  },
+  "policy": {
+    "label": "hrafn-fylking:v5",
+    "policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+    "source_commit": "0c151570f7e650a32a5705ff71692aa930012097",
+    "image_id": "sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d",
+    "strategy_sha256": "7620684b07c9dc9c633d284e817348c92881b43724291f991296c7a17ac20807",
+    "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52"
+  },
+  "episodes": [
+    {
+      "request_id": "ereq_604f6eab-1c1b-438f-9658-8fffea05c8d4",
+      "episode_id": "c94542f1-5142-4b4d-8d74-d2d248344ffa",
+      "seat": 9,
+      "winner": null,
+      "top_score_player": "K1Z odin free",
+      "turn_count": 50400,
+      "hrafn_score": 0.30019810623866766,
+      "hrafn_tiles": 125167,
+      "hrafn_survived": true,
+      "hrafn_decisions": 503,
+      "accepted": 503,
+      "holds": 0,
+      "fallbacks": 0,
+      "rejects": 0,
+      "rv3": 47,
+      "productive_dn1": 15,
+      "k1z_harm": 0,
+      "replay_sha256": "534bea861644814f8e3ff60fb922834dd9749e64e899776744f1a1fd45b859f1",
+      "kf1_negative_control": {
+        "hrafn_active_decisions": 500,
+        "minimum_outsider_count_at_hrafn_decision": 8,
+        "necessary_condition_turns": []
+      }
+    },
+    {
+      "request_id": "ereq_8c12824a-20e5-4fc1-a75e-afa06cbbad49",
+      "episode_id": "eeb86d46-8121-459d-868a-118b2144bd24",
+      "seat": 8,
+      "winner": "Ron @ SWGY",
+      "turn_count": 11100,
+      "hrafn_score": 0,
+      "hrafn_tiles": 0,
+      "hrafn_survived": false,
+      "hrafn_decisions": 73,
+      "accepted": 73,
+      "holds": 0,
+      "fallbacks": 0,
+      "rejects": 0,
+      "rv3": 8,
+      "productive_dn1": 5,
+      "k1z_harm": 0,
+      "replay_sha256": "009436cdd1f875e88aab9f864c5266d318ff7b4f3dd5070e879243e2b8e0ea5c",
+      "kf1_negative_control": {
+        "hrafn_active_decisions": 70,
+        "minimum_outsider_count_at_hrafn_decision": 8,
+        "necessary_condition_turns": []
+      }
+    }
+  ],
+  "aggregate": {
+    "completed_replays": 2,
+    "hrafn_decisions": 576,
+    "accepted": 576,
+    "holds": 0,
+    "fallbacks": 0,
+    "rejects": 0,
+    "rv3": 55,
+    "productive_dn1": 20,
+    "k1z_harm": 0
+  },
+  "kf1_ordinary_negative_control": {
+    "candidate_branch": "rci/hrafn-kf1-supporter",
+    "candidate_code_commit": "a0d71a6afa7624cc101fd9772e7d342b23b434fa",
+    "hrafn_active_decisions": 570,
+    "minimum_outsider_count_at_hrafn_decision": 8,
+    "necessary_kf1_condition_turns": [],
+    "kf1_reach": 0,
+    "scope": "auxiliary completed-replay evidence only; the immutable source-review packet at 6245f546 is unchanged"
+  },
+  "promotion_effect": {
+    "SOURCE_READY": false,
+    "LOCAL_QUALIFIED": false,
+    "DIAGNOSTIC_UPLOADED": false,
+    "HOSTED_PASSED": false,
+    "REGRESSION_PASSED": false,
+    "AUDIT_APPROVED": false,
+    "SUBMITTED": false,
+    "PLACED": false,
+    "CHAMPION_VERIFIED": false,
+    "ROUND_CONFIRMED": false
+  },
+  "verdict": "PARTIAL REPLAY EVIDENCE ONLY. Round 535 remains running, so these completed replays receive no official round rank, score, or promotion verdict. They do not reopen VR1 plus WR1 or advance KF1."
+}

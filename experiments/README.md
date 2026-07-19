@@ -116,6 +116,18 @@ episode and aggregate evidence lives in
 `audit-hrafn-v5-round534-20260719.json` and
 `ledger-hrafn-live-v5-round534-20260719.ndjson`.
 
+Round 535 is still running on Pangaea. Two of four replay payloads were complete
+at the `2026-07-19T15:35:56Z` checkpoint. Hrafn accepted `576/576` decisions
+with zero holds, fallbacks, rejects, or K1Z harm, recorded 55 `rv3` executions
+and 20 productive `dn1` transfers, and finished with `125,167` and `0` tiles.
+One episode reached turn 50,400 with Odin top; Ron won the other. KF1 stayed
+unreachable across 570 Hrafn active turns with at least eight outsiders.
+Replay SHA-256 values are `534bea86...` and `009436cd...`. This is partial
+replay evidence only and carries no official round rank, score, or promotion
+verdict. Exact evidence lives in
+`audit-hrafn-v5-round535-partial-20260719.json` and
+`ledger-hrafn-live-v5-round535-partial-20260719.ndjson`.
+
 The separate KF1 supporter source proof is committed on
 `rci/hrafn-kf1-supporter`: code `a0d71a6a`, evidence `6245f546`, exact
 linux/amd64 image `sha256:2bfd61aa...`, four red-first positive cases, and
