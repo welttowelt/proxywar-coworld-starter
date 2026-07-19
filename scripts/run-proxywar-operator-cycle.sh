@@ -100,13 +100,8 @@ export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"
   -C "$REPO" \
   - < "$PROMPT"
 
-if acquire_mailbox_lock && git -C "$MAILBOX" pull --ff-only >/dev/null 2>&1; then
-  git -C "$MAILBOX" rev-parse HEAD > "$CURSOR"
-  release_mailbox_lock
-else
-  if [[ "$MAILBOX_LOCK_HELD" == "1" ]]; then
-    release_mailbox_lock
-  fi
-  printf '%s\n' "$HEAD" > "$CURSOR"
-fi
+# Advance only through the mailbox head that triggered this cycle. A message
+# arriving while Codex is working must remain unread so the next launch runs
+# immediately instead of silently consuming it.
+printf '%s\n' "$HEAD" > "$CURSOR"
 date +%s > "$LAST_RUN"
