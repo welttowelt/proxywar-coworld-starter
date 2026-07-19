@@ -13,24 +13,17 @@ the Coworld/Softmax game simulation.
 
 # Agent operating model
 
-Codex Odin is the persistent writable operator for the Odin/Qd1n lane. Odin
-owns `qd1n` hypothesis selection, implementation, tests, image builds, runner
-coordination, experiment records, uploads, submissions, memberships, and
-champion changes. Odin
-must not edit or submit Hrafn policy versions unless the user explicitly
-transfers that lane.
+Codex Odin is the sole persistent writable ProxyWar operator. Odin owns
+`qd1n` and the retired `hrafn-fylking` policy family: hypothesis selection,
+implementation, tests, image builds, runner coordination, experiment records,
+uploads, submissions, memberships, and champion changes. The user retired
+Hrafn on 2026-07-19. Its repository and historical live policy remain readable
+under Odin's control; no independent Hrafn worker reviews, runs, uploads,
+submits, or changes league state.
 
-Hrafn is a separate writable game operator working from
-`/Users/olifreuler/proxywar-k1z-hrafn`. Hrafn owns the `hrafn-fylking` policy,
-its tests, images, experiments, uploads, submissions, memberships, and champion
-changes. Hrafn must not edit or submit Odin/Qd1n policy versions unless the user
-explicitly transfers that lane.
-
-Odin and Hrafn cross-audit each other through the team mailbox at
-`/Users/olifreuler/.stormforge/team-mailbox`.
-Cross-audit is read-only: the reviewing operator returns a verdict and the lane
-owner makes the edits. Coordinate runner ownership before either lane starts a
-Coworld episode. Every episode or batch must stay in the foreground of
+Coordinate runner ownership through the team mailbox at
+`/Users/olifreuler/.stormforge/team-mailbox`. Every episode or batch must stay
+in the foreground of
 `scripts/proxywar-runner-lease.sh run <lane> <run-id> ... -- <command>` so the
 token, run ID, supervisor, child process group, and claimed output directories
 remain bound for the whole run. Output arguments must be new dedicated
@@ -40,8 +33,8 @@ check out or edit the other operator's working branch.
 
 Start or resume Odin from this repository root so `.codex/config.toml` loads.
 Odin runs `gpt-5.6-sol` at high reasoning. Reasoning does not change inside a
-running session; deeper checkpoints route automatically to Hrafn's xhigh lane
-through the mailbox.
+running session; deeper checkpoints use a fresh fail-closed RCI audit rather
+than a retired-worker approval.
 
 Kimi K3 Max is an external moonshot adviser, not a Codex/GPT subagent. Codex
 must never spawn a GPT agent as a substitute for Kimi, assign Kimi a Codex
