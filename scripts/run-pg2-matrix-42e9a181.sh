@@ -29,9 +29,9 @@ tracked=(
   scripts/audit-pg2-matrix-pair.py
   experiments/pg2-matrix-42e9a181.json
 )
-for path in $tracked; do
-  git -C "$repo" ls-files --error-unmatch "$path" >/dev/null
-  git -C "$repo" diff --quiet HEAD -- "$path"
+for tracked_path in $tracked; do
+  git -C "$repo" ls-files --error-unmatch "$tracked_path" >/dev/null
+  git -C "$repo" diff --quiet HEAD -- "$tracked_path"
 done
 matrix_commit=$(git -C "$repo" rev-parse HEAD)
 [[ $matrix_commit =~ ^[a-f0-9]{40}$ ]]
@@ -63,8 +63,8 @@ pod_output=(a "$1" b "$2" c "$3" d "$4")
 
 runner_owned() {
   local label=${1:-}
-  local status
-  status=$("$repo/scripts/proxywar-runner-lease.sh" status --json)
+  local lease_status
+  lease_status=$("$repo/scripts/proxywar-runner-lease.sh" status --json)
   jq -e \
     --arg run_id "$expected_run_id" \
     --arg a "${pod_output[a]}" \
@@ -83,9 +83,9 @@ runner_owned() {
       and (.outputs | index($b) != null)
       and (.outputs | index($c) != null)
       and (.outputs | index($d) != null)
-    ' <<<"$status" >/dev/null
+    ' <<<"$lease_status" >/dev/null
   if [[ -n $label ]]; then
-    print -r -- "$status" > "${pod_output[a]}/evidence/runner-$label.json"
+    print -r -- "$lease_status" > "${pod_output[a]}/evidence/runner-$label.json"
   fi
   [[ -f $state_root/owner && -f $state_root/run_id && -f $state_root/ready ]]
   [[ $(<$state_root/owner) == odin ]]
