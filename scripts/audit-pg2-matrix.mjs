@@ -178,6 +178,18 @@ async function main() {
   }
   const unique = new Map(reports.map((report) => [report.pair, report]));
   const result = buildMatrixReport(matrix, [...unique.values()]);
+  if (unique.size !== reports.length) {
+    const counts = new Map();
+    for (const report of reports) {
+      counts.set(report.pair, (counts.get(report.pair) ?? 0) + 1);
+    }
+    result.violations.push(
+      ...[...counts.entries()]
+        .filter(([, count]) => count > 1)
+        .map(([pair, count]) => `${pair} has ${count} audit artifacts across roots`),
+    );
+    result.verdict = "STOP";
+  }
   if (outputPath) {
     await mkdir(path.dirname(path.resolve(outputPath)), { recursive: true });
     await writeFile(outputPath, `${JSON.stringify(result, null, 2)}\n`);
