@@ -1,0 +1,141 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_reconciliation_and_pre_run_hypothesis",
+  "recorded_at": "2026-07-19T08:51:09Z",
+  "lane": "hrafn-fylking",
+  "live_baseline": {
+    "label": "hrafn-fylking:v5",
+    "policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+    "source_commit": "0c151570f7e650a32a5705ff71692aa930012097",
+    "strategy_sha256": "7620684b07c9dc9c633d284e817348c92881b43724291f991296c7a17ac20807",
+    "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
+    "image_id": "sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d",
+    "architecture": "linux/amd64",
+    "submission_id": "sub_635f34a0-e2c2-4fa6-97aa-9c864e93974c",
+    "submission_status": "placed",
+    "membership_id": "lpm_e822de7f-1124-4b5f-b0ef-1025d46ae211",
+    "membership_status": "competing active",
+    "is_champion": true
+  },
+  "candidate": {
+    "local_label": "proxywar-agent-llm:hrafn-v6-amd64",
+    "tactical_source_commit": "f35de64ecc2edb7fc5ef7b07741e7cf2cf0c3a4f",
+    "image_source_commit": "38fca3074922dba35a5aa6083481f12874b564be",
+    "operator_head": "bb7d9fffc862e5d51cf24f38d1731630275b4f27",
+    "strategy_sha256": "3642a1ce04244285f71e1c66fa5c37165f276f4660bd4188b42956ff7165c463",
+    "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
+    "image_id": "sha256:816b734c205fad2452eaef3c076f27377939c4a78a4336fd63d7ae313b5be410",
+    "architecture": "linux/amd64",
+    "tactical_marker": "vr1",
+    "mandatory_safety_delta": "suppress game-authored quick-chat selections that can violate Hrafn's short-leet public-text contract",
+    "uploaded": false,
+    "submitted": false,
+    "member": false,
+    "champion": false
+  },
+  "hypothesis": {
+    "guard": "when dn1 is legal, Hrafn is between 6% and 35% share, and the strongest outsider has a legal direct attack at at least 1.35 relative troop ratio, attack that leader before donating; retain the marked front while its ratio stays at least 1.10",
+    "expected_action_change": "replace an otherwise selected Odin troop donation with a bounded attack on the current outsider leader",
+    "observable_marker": "vr1",
+    "success_metric": "replay-visible vr1 reach with zero holds, rejects, fallbacks, or K1Z harm and a mirrored finish advantage over exact v5",
+    "failure_condition": "zero vr1 reach, any runtime or coalition-contract failure, or no matched finish advantage after direct reach"
+  },
+  "field_checkpoint": {
+    "hrafn_rank": 10,
+    "hrafn_score": 1.4586056014851456,
+    "hrafn_rounds_played": 19,
+    "strongest_opponent": "daveey",
+    "strongest_opponent_rank": 1,
+    "strongest_opponent_score": 32.3469131443621,
+    "last_completed_official_round": 527,
+    "hrafn_last_completed_rank": 12,
+    "hrafn_last_completed_score": 0,
+    "round_528_status": "failed",
+    "round_529_status": "running"
+  },
+  "replay_cell": {
+    "map": "Pangaea",
+    "roster_size": 12,
+    "episodes": [
+      {
+        "episode_request_id": "ereq_e2928af0-77bf-4ee7-9e90-a5eab883e9a0",
+        "replay_url": "https://softmax-public.s3.amazonaws.com/replays/cfe54614-e00e-405f-858d-a4c7709b209d.replay",
+        "replay_sha256": "87b56e1991a8c94883135d24e595417efddad8bc0483be0c04e57711e2172b05",
+        "winner": "Auri",
+        "hrafn_slot": 10,
+        "hrafn_tiles": 4142,
+        "hrafn_survived": true,
+        "hrafn_decisions": 95,
+        "accepted": 95,
+        "holds": 0,
+        "fallbacks": 0,
+        "rejections": 0,
+        "k1z_harm": 0,
+        "productive_dn1": 3,
+        "rv3_executions": 0
+      },
+      {
+        "episode_request_id": "ereq_c3b64b2a-3bff-4901-8fd5-0f53b3d83bee",
+        "replay_url": "https://softmax-public.s3.amazonaws.com/replays/47a25d94-5718-4a8b-8e31-3cef678dfb08.replay",
+        "replay_sha256": "ebd76d3d8ec7d2dbd1a38b1f81bc5e03c017fb7c91f956e4adda00d320c6d41a",
+        "winner": "daveey",
+        "hrafn_slot": 9,
+        "hrafn_tiles": 69786,
+        "hrafn_survived": true,
+        "hrafn_decisions": 110,
+        "accepted": 110,
+        "holds": 0,
+        "fallbacks": 0,
+        "rejections": 0,
+        "k1z_harm": 0,
+        "productive_dn1": 8,
+        "rv3_executions": 14,
+        "direct_vr1_opportunity": {
+          "turn": 7400,
+          "hrafn_tile_share": 0.30,
+          "leader": "daveey",
+          "leader_tile_share": 0.46,
+          "leader_relative_troop_ratio": 1.61,
+          "legal_attack_percents": [10, 25, 40],
+          "live_selected_action": "donate_troops:idjkf73n",
+          "live_donation_troops": 338869
+        }
+      }
+    ],
+    "aggregate": {
+      "episodes": 2,
+      "hrafn_wins": 0,
+      "accepted": 205,
+      "decisions": 205,
+      "holds": 0,
+      "fallbacks": 0,
+      "rejections": 0,
+      "k1z_harm": 0,
+      "productive_dn1": 11,
+      "rv3_executions": 14
+    }
+  },
+  "tests": {
+    "passed": 151,
+    "failed": 0
+  },
+  "promotion_states": {
+    "SOURCE_READY": false,
+    "LOCAL_QUALIFIED": false,
+    "DIAGNOSTIC_UPLOADED": false,
+    "HOSTED_PASSED": false,
+    "REGRESSION_PASSED": false,
+    "AUDIT_APPROVED": false,
+    "SUBMITTED": false,
+    "PLACED": false,
+    "CHAMPION_VERIFIED": false,
+    "ROUND_CONFIRMED": false
+  },
+  "blocked_on": [
+    "Odin pre-run verdict and runner coordination",
+    "pinned candidate-versus-exact-v5 A/B requests",
+    "Coworld qualifier and Docker-level vr1 reach",
+    "proof that mandatory quick-chat suppression does not create unexplained holds or confound the matched tactical result"
+  ],
+  "verdict": "PRE-RUN ONLY: replay-backed vr1 opportunity and exact images are pinned; NO RUN, NO UPLOAD, NO SUBMIT"
+}

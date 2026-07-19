@@ -1,5 +1,27 @@
 # Hosted policy experiments
 
+## Hrafn v6 vanguard-lock preflight, 2026-07-19
+
+The live parent is `hrafn-fylking:v5`, exact source `0c151570`, exact
+linux/amd64 image `sha256:3f427fd3...`. Two completed Round 529 Pangaea
+episodes kept the runtime contract clean (`205/205` accepted, zero holds,
+fallbacks, rejects, or K1Z harm) but produced no Hrafn score. Auri won one;
+daveey won the other.
+
+The daveey replay gives `vr1` a direct causal cell. At turn 7,400 Hrafn held
+30% of land, daveey led with 46%, daveey was the only attackable rival at a
+1.61 relative troop ratio, and 10/25/40 attacks were legal. Live v5 instead
+donated 338,869 troops to Odin. The local candidate moves a legal leader attack
+ahead of that donation and emits `vr1`, then retains the front above a 1.10
+continuation floor.
+
+The exact evidence and state separation are in
+`hrafn-v6-vanguard-lock-r529-20260719.json`. The candidate is not locally
+qualified: no Coworld qualifier or matched A/B pair has run, Docker-level
+`vr1` reach is unproven, and the local image also contains mandatory public
+quick-chat suppression. Hosted, regression, upload, submission, membership,
+and champion states remain closed.
+
 ## Pangaea seat-2 A/B, 2026-07-12
 
 Goal: test whether preserving an active favorable target finish across a Claude

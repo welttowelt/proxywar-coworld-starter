@@ -15,7 +15,7 @@ the mailbox at `/Users/olifreuler/.stormforge/team-mailbox`.
 
 ## Live deployment truth
 
-Verified against the Coworld/Softmax API on 2026-07-19:
+Verified against the Coworld/Softmax API at `2026-07-19T08:51:09Z`:
 
 - Player: `K1Z Hrafn`
 - Player ID: `ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863`
@@ -25,6 +25,32 @@ Verified against the Coworld/Softmax API on 2026-07-19:
   auto-champion `always`
 - Membership: `lpm_e822de7f-1124-4b5f-b0ef-1025d46ae211`, status
   `competing active`, champion `true`
+- Exact live executable source: commit
+  `0c151570f7e650a32a5705ff71692aa930012097`; embedded strategy SHA-256
+  `7620684b07c9dc9c633d284e817348c92881b43724291f991296c7a17ac20807`.
+- Exact live image: linux/amd64
+  `sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d`.
+
+Source and deployment remain separate. Repository HEAD is
+`bb7d9fffc862e5d51cf24f38d1731630275b4f27`; its current Hrafn strategy comes
+from `38fca3074922dba35a5aa6083481f12874b564be` and is present in the local-only
+linux/amd64 image
+`sha256:816b734c205fad2452eaef3c076f27377939c4a78a4336fd63d7ae313b5be410`.
+That image has not been uploaded, submitted, placed, or made champion.
+
+Current field checkpoint:
+
+- Hrafn is overall rank `10`, score `1.4586056014851456`, after `19` completed
+  Competition rounds. Daveey leads at `32.3469131443621`; Odin is second at
+  `20.956682450012572`.
+- Round 527 completed with Hrafn rank `12`, score `0`. Round 528 failed and does
+  not extend official-round evidence. Round 529 is running.
+- The first two completed Round 529 Pangaea episodes were outsider wins by Auri
+  and daveey. Hrafn scored zero in both and finished with `4,142` and `69,786`
+  tiles. Across `205` Hrafn decisions, all were accepted with zero holds, zero
+  fallbacks, zero rejects, and zero K1Z harm; eleven `dn1` transfers were
+  productive. The live `rv3` mechanism reached fourteen times only in the
+  daveey episode.
 
 Coalition control:
 
