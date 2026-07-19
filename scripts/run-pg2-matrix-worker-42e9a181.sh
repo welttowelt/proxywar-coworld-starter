@@ -187,6 +187,9 @@ run_candidate() {
     --output-dir "$run_root/$pair-a" \
     --run-id "pg2-matrix-$pair-a" \
     | tee "$run_root/$pair-a.stdout.log"
+  cp \
+    "$working_bundle/specs/formal-matched-a.json" \
+    "$run_root/$pair-a/config.json"
 }
 
 run_parent() {
@@ -195,6 +198,9 @@ run_parent() {
     --output-dir "$run_root/$pair-b" \
     --run-id "pg2-matrix-$pair-b" \
     | tee "$run_root/$pair-b.stdout.log"
+  cp \
+    "$working_bundle/specs/formal-matched-b.json" \
+    "$run_root/$pair-b/config.json"
 }
 
 if (( seed % 2 == 1 )); then
