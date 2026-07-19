@@ -75,3 +75,13 @@ test("PG2 matrix auditor rejects an incomplete map before an overall total can p
   assert.match(result.violations.join("\n"), /expected 24 pair audits/);
   assert.match(result.violations.join("\n"), /World has 7\/8/);
 });
+
+test("PG2 matrix auditor blocks promotion but preserves a parent-control replay receipt", () => {
+  const matrix = { schema_version: 1, arm: "pg2", assignments };
+  const reports = assignments.map(audit);
+  reports[0].verdict = "REPLAY_REQUIRED";
+  reports[0].parent.control_anomalies = ["Odin had an unexplained hold"];
+  const result = buildMatrixReport(matrix, reports);
+  assert.equal(result.verdict, "STOP");
+  assert.match(result.violations.join("\n"), /targeted parent-control replay/);
+});

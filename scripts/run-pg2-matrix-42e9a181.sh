@@ -264,11 +264,23 @@ from pathlib import Path
 
 map_name, final_text, report_root, *roots = sys.argv[1:]
 runs = []
+control_replays = []
 for root in roots:
     for path in Path(root, "evidence").glob("*/audit.json"):
         report = json.loads(path.read_text())
-        if report.get("map") == map_name and report.get("verdict") == "CONTINUE":
+        if report.get("map") != map_name:
+            continue
+        if report.get("verdict") in {"CONTINUE", "REPLAY_REQUIRED"}:
             runs.append(report)
+        if report.get("verdict") == "REPLAY_REQUIRED":
+            control_replays.append(
+                {
+                    "pair": report.get("pair"),
+                    "lane": report.get("lane"),
+                    "wave": report.get("wave"),
+                    "anomalies": report.get("control_anomalies") or [],
+                }
+            )
 
 violations = []
 if len(runs) != 8:
@@ -302,7 +314,7 @@ if final_text == "true":
     for root in roots:
         for path in Path(root, "evidence").glob("*/audit.json"):
             report = json.loads(path.read_text())
-            if report.get("verdict") == "CONTINUE":
+            if report.get("verdict") in {"CONTINUE", "REPLAY_REQUIRED"}:
                 overall.append(report)
     if len(overall) != 24:
         violations.append(f"expected 24 total pairs, found {len(overall)}")
@@ -330,13 +342,23 @@ report = {
     "candidate_declared_wins": candidate_wins,
     "parent_declared_wins": parent_wins,
     "final_matrix_check": final_text == "true",
-    "verdict": "CONTINUE" if not violations else "STOP",
+    "control_replays": control_replays,
+    "verdict": (
+        "STOP"
+        if violations
+        else "REPLAY_REQUIRED"
+        if control_replays
+        else "CONTINUE"
+    ),
     "violations": violations,
 }
 target = Path(report_root, f"map-{map_name.lower()}-gate.json")
 target.write_text(json.dumps(report, indent=2) + "\n")
-print(f"PG2_MAP_GATE={report['verdict']} map={map_name} violations={len(violations)}")
-raise SystemExit(0 if not violations else 1)
+print(
+    f"PG2_MAP_GATE={report['verdict']} map={map_name} "
+    f"violations={len(violations)} control_replays={len(control_replays)}"
+)
+raise SystemExit(1 if report["verdict"] == "STOP" else 0)
 PY
 }
 

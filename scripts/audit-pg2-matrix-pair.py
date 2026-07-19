@@ -457,6 +457,7 @@ def audit_arm(run_dir: Path, expected_spec: Path, role: str) -> dict:
         raise ValueError(f"{run_dir}: no K1Z odin free decisions")
 
     violations = []
+    control_anomalies = []
     spec_hash = sha256(expected_spec)
     if config != spec:
         violations.append("effective config differs from expected spec")
@@ -566,12 +567,18 @@ def audit_arm(run_dir: Path, expected_spec: Path, role: str) -> dict:
     marker_count = sum(has_marker(decision) for decision in odin)
     if role == "parent" and marker_count:
         violations.append("exact parent emitted a PG2 marker")
+    def behavioral_violation(message: str) -> None:
+        if role == "parent":
+            control_anomalies.append(message)
+        else:
+            violations.append(message)
+
     if harmful:
-        violations.append("Odin selected a harmful K1Z action")
+        behavioral_violation("Odin selected a harmful K1Z action")
     if rejected:
-        violations.append("Odin had a rejected or unconfirmed decision")
+        behavioral_violation("Odin had a rejected or unconfirmed decision")
     if holds:
-        violations.append("Odin had an unexplained hold")
+        behavioral_violation("Odin had an unexplained hold")
     if marker_violations:
         violations.append("PG2 marker appeared outside its guard")
     all_rejected = [
@@ -580,10 +587,10 @@ def audit_arm(run_dir: Path, expected_spec: Path, role: str) -> dict:
         if (decision.get("result") or {}).get("accepted") is not True
     ]
     if all_rejected:
-        violations.append("the all-K1Z run contained a rejected decision")
+        behavioral_violation("the all-K1Z run contained a rejected decision")
     global_harm = scan_k1z_harm(decisions, ids)
     if global_harm:
-        violations.append("the all-K1Z run contained a harmful coalition action")
+        behavioral_violation("the all-K1Z run contained a harmful coalition action")
     if results.get("decision_count") != len(decisions):
         violations.append("results decision_count differs from decisions.jsonl")
     accepted_count = sum(
@@ -627,6 +634,7 @@ def audit_arm(run_dir: Path, expected_spec: Path, role: str) -> dict:
         "k1z_harmful_actions": harmful,
         "all_k1z_harmful_actions": global_harm,
         "marker_scope_violations": marker_violations,
+        "control_anomalies": control_anomalies,
         "tile_at_decision_20": tile_checkpoint(odin, 20),
         "tile_at_decision_50": tile_checkpoint(odin, 50),
         "final_score": odin_result.get("score"),
@@ -656,6 +664,7 @@ def main() -> int:
         "wave": args.wave,
         "verdict": "STOP",
         "violations": [],
+        "control_anomalies": [],
     }
     try:
         matrix = read_json(args.matrix_manifest)
@@ -698,6 +707,7 @@ def main() -> int:
                 "matrix_manifest_sha256": sha256(args.matrix_manifest),
                 "candidate": candidate,
                 "parent": parent,
+                "control_anomalies": parent["control_anomalies"],
                 "paired_deltas": {
                     "fallback_count": (
                         candidate["fallback_count"] - parent["fallback_count"]
@@ -897,7 +907,9 @@ def main() -> int:
         except (KeyError, TypeError, ValueError):
             report["violations"].append("receipt execution timestamps were invalid")
         if not report["violations"]:
-            report["verdict"] = "CONTINUE"
+            report["verdict"] = (
+                "REPLAY_REQUIRED" if report["control_anomalies"] else "CONTINUE"
+            )
     except Exception as error:  # fail closed and retain the reason in the artifact
         report["violations"].append(f"{type(error).__name__}: {error}")
 
@@ -906,9 +918,10 @@ def main() -> int:
     print(
         f"PG2_PAIR_AUDIT={report['verdict']} "
         f"lane={args.lane} wave={args.wave} "
-        f"violations={len(report['violations'])}"
+        f"violations={len(report['violations'])} "
+        f"control_anomalies={len(report['control_anomalies'])}"
     )
-    return 0 if report["verdict"] == "CONTINUE" else 1
+    return 0 if report["verdict"] in {"CONTINUE", "REPLAY_REQUIRED"} else 1
 
 
 if __name__ == "__main__":

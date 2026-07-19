@@ -67,7 +67,11 @@ export function buildMatrixReport(matrix, reports) {
       violations.push("pair audit is not an object");
       continue;
     }
-    if (report.arm !== "pg2" || report.verdict !== "CONTINUE") {
+    if (report.arm !== "pg2") {
+      violations.push(`${report.pair ?? "unknown"} did not pass its semantic audit`);
+      continue;
+    }
+    if (report.verdict !== "CONTINUE" && report.verdict !== "REPLAY_REQUIRED") {
       violations.push(`${report.pair ?? "unknown"} did not pass its semantic audit`);
       continue;
     }
@@ -78,6 +82,14 @@ export function buildMatrixReport(matrix, reports) {
     }
     if (seen.has(report.pair)) violations.push(`${report.pair} appears more than once`);
     seen.add(report.pair);
+    if (report.verdict === "REPLAY_REQUIRED") {
+      const anomalies = report.parent?.control_anomalies ?? [];
+      violations.push(
+        `${report.pair} requires targeted parent-control replay${
+          anomalies.length ? `: ${anomalies.join("; ")}` : ""
+        }`,
+      );
+    }
     for (const field of ["lane", "wave", "map", "seed"]) {
       if (report[field] !== assignment[field]) {
         violations.push(`${report.pair} ${field} differs from the matrix manifest`);
