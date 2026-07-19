@@ -434,3 +434,27 @@ paired score delta (`-0.013756`, `-1,406` tiles). No upload, submission,
 membership, or champion change followed. The v89 control remains live. The
 formal receipts and replay hashes are in
 [`audit-qd1n-a1-silent-opening-pangaea-20260720.json`](experiments/audit-qd1n-a1-silent-opening-pangaea-20260720.json).
+
+## EB3 Pangaea City-window rejection (2026-07-20)
+
+EB3 isolated one fresh Round 545 observation: daveey built a first City after
+five 35-percent neutral conquests in two official Pangaea wins, while Richard
+won a separate episode with no City, so the hypothesis was explicitly
+daveey-style rather than universal. EB3 therefore chose a City only in a calm
+Pangaea opening below 12-percent land and before decision 14, after three
+35-percent-or-larger neutral conquests; reciprocal alliance acceptance and all
+v89 coalition protection retained priority.
+
+The stock qualifier was fixture-insufficient (only five active decisions), so
+the valid gate used the canonical four-player Pangaea fixture: EB3 in slot zero
+against three exact v89 controls. It completed `222/222` accepted decisions.
+The candidate followed `10, 10, 20, 35, 35, 35, City` at turns 400-1000 but
+emitted zero `eb3` markers: the unmodified v89 build path already selects the
+same City at that point. It also selected holds at turns 5500 and 5800.
+
+EB3 is rejected as redundant, not mirrored: zero distinct mechanism reach and
+two candidate holds fail the preregistered gate. No upload, submission,
+membership, or champion change followed; `qd1n:v89` remains the exact live
+control. Evidence is retained on branch `rci/eb3-city-window` in
+`experiments/audit-qd1n-eb3-city-window-pangaea-20260720.json` (replay
+`845a0154ce03be16e5999eb09bc7ee5a789a6ff281c473ad7875c683d03716d4`).
