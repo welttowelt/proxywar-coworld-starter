@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T20:01:49Z",
+  "updated_at": "2026-07-20T20:11:34Z",
   "cycle_id": "odin-kiz1-gravity-20260720",
   "lane": "odin",
   "arm": {
@@ -11,7 +11,7 @@
     "candidate_source_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
     "closed": false
   },
-  "state": "source_ready_local_screen_preregistered",
+  "state": "local_mechanism_verified_waiting_preupload_rci",
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
     "player_name": "K1Z odin free",
@@ -36,9 +36,15 @@
     "policy_engine": "",
     "contract": "experiments/contract-qd1n-kiz1-gravity-local-screen-20260720.json"
   },
+  "local_evidence": {
+    "verdict": "PASS_LOCAL_MECHANISM",
+    "receipt": "experiments/audit-qd1n-kiz1-gravity-local-screen-20260720.json",
+    "qualifier": "34/34 accepted",
+    "mechanism": "39/39 accepted, 6 Gravity kp2, 0 Gravity harm, 0 candidate fallback/degradation/holds/rejects, Odin win"
+  },
   "gates": {
     "source_ready": true,
-    "local_mechanism_verified": false,
+    "local_mechanism_verified": true,
     "diagnostic_uploaded": false,
     "hosted_4_of_4": false,
     "regression_20_of_20": false,
@@ -52,6 +58,6 @@
     "os1": "closed_without_run_as_recombined_complexity",
     "id1": "closed_directional_only_no_dynamic_llm_proof"
   },
-  "next_automatic_transition": "Run the immutable qualifier and preregistered Gravity mechanism screen under the Odin foreground runner lease. Any failure closes KIZ1 and preserves qd1n:v89; a clean pass advances only to pre-upload RCI.",
+  "next_automatic_transition": "Run the independent pre-upload RCI audit. A PASS permits a diagnostic-only qd1n upload through the mutation wrapper; any failure closes KIZ1 and preserves qd1n:v89.",
   "prior_verified_champion_preserved": true
 }
