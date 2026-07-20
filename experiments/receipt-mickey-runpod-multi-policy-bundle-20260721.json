@@ -1,0 +1,232 @@
+{
+  "schema_version": 1,
+  "kind": "mickey_runpod_multi_policy_bundle_receipt",
+  "created_at": "2026-07-20T23:27:33Z",
+  "evidence_scope": "diagnostic_only",
+  "source": {
+    "repository": "https://github.com/welttowelt/proxywar-coworld-starter",
+    "branch": "codex/mickey-multi-policy-bundle",
+    "bundle_source_commit": "5d0709d3105a619b448e490c6c54b79e56ea4489",
+    "policy_source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
+    "source_reach_receipt": {
+      "path": "experiments/mickey-static-intent-source-reach-20260721.json",
+      "sha256": "127d60ee51f4e4b2d50c7b6908d1e571ce8f9e40f1939f61c25e3cdb4abaa129"
+    },
+    "pair_index": {
+      "path": "experiments/mickey-fanout-pair-index-20260721.json",
+      "sha256": "49aaf58d15c3824f07eb9e86560ba803ee00c7f01e7dbe25c87c2ee0781ae2ac"
+    }
+  },
+  "artifact": {
+    "archive": {
+      "path": "/private/tmp/proxywar-mickey-multi-policy-26c36eca-20260721.tar.gz",
+      "sha256": "5c834b02b1648ee4a0a6badf35b29d7e473e60c3208c980b7fd9f8605689d349",
+      "bytes": 343827445
+    },
+    "extractor": {
+      "path": "/private/tmp/proxywar-mickey-multi-policy-26c36eca-20260721.tar.gz.extract.py",
+      "sha256": "b15104d711a0e40284bb7c551d9764a7d5953d7134ce68b2560da44ccdfa7d54"
+    },
+    "manifest": {
+      "path": "/private/tmp/proxywar-mickey-multi-policy-26c36eca-20260721.tar.gz.manifest.json",
+      "sha256": "e00b41982b87dee05196c9d714b745b40007a3bcd626c946142a742374d6d5ee"
+    },
+    "input": {
+      "path": "/private/tmp/proxywar-mickey-multi-policy-26c36eca-20260721.tar.gz.input.json",
+      "sha256": "43e37b73c01af27b9211a6df88d5ee1bc33c3eaea09dc79e8ca5094baa5d2f0f"
+    },
+    "fanout_fragment": {
+      "path": "/private/tmp/proxywar-mickey-multi-policy-26c36eca-20260721.tar.gz.fanout-fragment.json",
+      "sha256": "516720b922efec2b46e089180afa63147ccd81f1e161789185d51e30341dcacb"
+    },
+    "runtime": {
+      "image": "public.ecr.aws/q5f4m8t9/cogames@sha256:88d166c6c33609ec5b0dc1f70799001a1f1f34e1cd852ddbfc17a2eb43969ea1",
+      "architecture": "amd64",
+      "node_version": "24.18.0",
+      "node_sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+    },
+    "file_manifest": {
+      "sha256": "fe51897b046d8eb3d0590e2ff1869e45cf1a7aa533a5bc66332996818a38253e",
+      "file_count": 55891,
+      "uncompressed_file_bytes": 1270390619
+    },
+    "deduplication": {
+      "unique_node_modules_trees": 1,
+      "linked_policy_trees": 7
+    },
+    "contains_credentials": false,
+    "invokes_runpod_api": false
+  },
+  "policies": {
+    "evaluation": [
+      {
+        "arm": "m0",
+        "local_reference": "proxywar-agent-llm:mickey-m0-26c36eca-amd64",
+        "image_id": "sha256:63395b042d6247520b5b8ebcdfb75470ac54750a6aadf2e5b712cbb66061e230"
+      },
+      {
+        "arm": "grow-opening",
+        "local_reference": "proxywar-agent-llm:mickey-grow-opening-26c36eca-amd64",
+        "image_id": "sha256:3cf9874143eed7b7592228532a41353cc0f724127287f682584814dc214e83c1"
+      },
+      {
+        "arm": "grow-low-share",
+        "local_reference": "proxywar-agent-llm:mickey-grow-low-share-26c36eca-amd64",
+        "image_id": "sha256:917165e843949009cfcc4d23cd96a27314cb373e63427245b41d13eec70bbbe6"
+      },
+      {
+        "arm": "convert-weakest",
+        "local_reference": "proxywar-agent-llm:mickey-convert-weakest-26c36eca-amd64",
+        "image_id": "sha256:a1de9d15e302a3181f6638edc37f697ea305427c15b9ddb80e6a7706b54a1380"
+      },
+      {
+        "arm": "convert-largest",
+        "local_reference": "proxywar-agent-llm:mickey-convert-largest-26c36eca-amd64",
+        "image_id": "sha256:647e29657e47b76a24946baf1fd8837e94d69616a4084a5ff572f281694abe7f"
+      }
+    ],
+    "opponents": [
+      {
+        "key": "opponent-qd1n-v89",
+        "local_reference": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+        "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+        "note": "Repeated under unique player names as an explicit synthetic control; not represented as a private opponent clone."
+      },
+      {
+        "key": "opponent-gravity-kiz1-selector",
+        "local_reference": "proxywar-kiz1-mechanism:gravity-1ccaff73-amd64",
+        "image_id": "sha256:39548883b562262c5bdbe6bcc0fcc6115d330bd1a099308fcea33723b0150194"
+      }
+    ],
+    "identity_gates": [
+      "image_id",
+      "architecture",
+      "image_user",
+      "working_dir",
+      "container_entrypoint",
+      "container_cmd",
+      "evaluation_label",
+      "upload_label"
+    ],
+    "upload_eligible": false
+  },
+  "matrix": {
+    "candidate_arms": [
+      "grow-opening",
+      "grow-low-share",
+      "convert-weakest",
+      "convert-largest"
+    ],
+    "paired_cells_per_arm": 4,
+    "pair_count": 16,
+    "experiment_spec_count": 24,
+    "max_decision_steps": 80,
+    "grow": {
+      "roster_class": "all-k1z-grow",
+      "maps": [
+        "Pangaea",
+        "Asia"
+      ],
+      "seats": [
+        0,
+        2
+      ],
+      "seeds": [
+        20260721,
+        20260722
+      ]
+    },
+    "convert": {
+      "roster_class": "mixed-outsider-convert",
+      "maps": [
+        "World",
+        "Asia"
+      ],
+      "seats": [
+        0,
+        2
+      ],
+      "seeds": [
+        20260723,
+        20260724
+      ],
+      "explicit_outsider_name": "outsider-control-v89",
+      "outsiders_per_roster": 1
+    },
+    "matched_pair_invariants": {
+      "candidate_and_m0_game_config_equal": true,
+      "non_tested_players_equal": true,
+      "tested_name_and_environment_equal": true,
+      "true_mirror_seed_equal_per_map": true,
+      "true_mirror_roster_identity_set_equal": true
+    }
+  },
+  "validation": {
+    "targeted_node_tests": {
+      "command": "node --test test/prepare-mickey-runpod-bundle.test.mjs test/runpod-proxywar-episode.test.mjs",
+      "passed": 23,
+      "failed": 0,
+      "output_path": "/private/tmp/mickey-final-targeted-node-tests-20260721.txt",
+      "output_sha256": "446a029dda6f8c2c349b450f0895278387aea9f68f1e9ed30f282a4c5ffcdc5a"
+    },
+    "extractor_tests": {
+      "command": "python3 -m unittest test/test_extract_runpod_proxywar_bundle.py",
+      "passed": 5,
+      "failed": 0,
+      "output_path": "/private/tmp/mickey-final-python-extractor-tests-20260721.txt",
+      "output_sha256": "4c979c0d06f0e9e2109df48cae7f69ac5d403754045b4cfe404fe744e7390b47"
+    },
+    "safe_extraction": {
+      "destination": "/private/tmp/proxywar-mickey-multi-policy-verify-20260721",
+      "archive_sha256_verified": true,
+      "compressed_bytes": 343827445,
+      "expanded_bytes": 1279652858,
+      "member_count": 55963
+    },
+    "file_hash_check": {
+      "command": "shasum -a 256 -c files.sha256",
+      "verified_lines": 55891,
+      "failed_lines": 0,
+      "output_path": "/private/tmp/mickey-final-files-sha256-check-20260721.txt",
+      "output_sha256": "f24adb7ae12665ce5e7a950e30b542a422c15b317229961f40d75d25683406cb"
+    },
+    "amd64_validate_only": {
+      "network": "none",
+      "passed": 4,
+      "failed": 0,
+      "specs": [
+        "grow-opening-pangaea-s0-a-candidate.json",
+        "all-k1z-grow-pangaea-s0-a-m0.json",
+        "convert-weakest-world-s0-a-candidate.json",
+        "mixed-outsider-convert-world-s0-a-m0.json"
+      ]
+    },
+    "independent_pair_contract_verifier": {
+      "verifier_path": "/private/tmp/proxywar-mickey-incubator-integration-20260721/scripts/verify-mickey-cpu-fanout-bundle.mjs",
+      "verifier_sha256": "d71c9c468c4924ee534b7e316634cb867cf05ee406b85b2efa3dd329854b3973",
+      "contracts_path": "/private/tmp/mickey-pair-contracts-final2-20260721",
+      "contract_index_sha256": "f84bbe552e2bc3d20496630874a4c170be4533b9c279f6f6bf2be8569f46a87d",
+      "verified_receipts_digest": "378d75db9da03dab72822ac31990bfabf33912bfb6a0bb7ee0d34c04d9944783",
+      "passed": 16,
+      "failed": 0
+    },
+    "git_diff_check": "passed",
+    "full_npm_suite": {
+      "status": "not_claimed_green",
+      "note": "A broader earlier run encountered one timing-sensitive runner signal test; the bundle-specific and extractor suites above are green."
+    }
+  },
+  "safety": {
+    "runpod_pod_created": false,
+    "runpod_pod_deleted": false,
+    "runner_lease_acquired": false,
+    "coworld_api_called": false,
+    "episode_executed": false,
+    "policy_uploaded": false,
+    "league_state_changed": false,
+    "mailbox_changed": false,
+    "storm_resource_changed": false,
+    "local_fanout_can_promote": false,
+    "upload_allowed": false
+  }
+}
