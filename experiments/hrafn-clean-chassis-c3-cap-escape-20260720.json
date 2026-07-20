@@ -1,0 +1,179 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_clean_chassis_preregistration",
+  "recorded_at": "2026-07-20T14:29:49Z",
+  "arm": "hrafn-clean-chassis-c3-cap-escape",
+  "scope": "Hrafn only",
+  "exact_parent": {
+    "arm": "hrafn-clean-chassis-c2-runtime-liveness",
+    "source_commit": "9c9ae7b6b3a978d971cde24688aba3995a88bdea",
+    "source_evidence_commit": "7231e67420367b079052dcab1daa7b9c95bf8df2",
+    "audit_baseline_commit": "ab3eea34b4a9514321e059631d5e59adf0d17f65",
+    "player_source_sha256": "39e3a658dcbaeea5e7c576b654838dcc1e646b4e44b82bb8b67db1130aa70054",
+    "control_rule": "C3 inherits C2's ping-only runtime byte-for-byte. C3 changes only the action selected when the two-launch naval budget is latched, every existing strategy and generic utility selector returned null, and the exact parent would hold."
+  },
+  "latest_parent_reach": {
+    "source": "The first two completed C1 v8 hosted replays. C2 changes transport liveness only, so their Hrafn strategy state and cap-hold menus are exact-parent strategy evidence.",
+    "replay_sha256": [
+      "7f8339c14df0d06e9c7dd6c2c2c35aa32817d0eeb76cbd163c5c08f100078217",
+      "126ea24ba3b16f660c26b221463aaa744d0f277e3d8ab4ce7e858b35b8ed0e3f"
+    ],
+    "naval_launch_turns": [
+      4600,
+      4900
+    ],
+    "first_cap_hold_turns": [
+      10800,
+      8200
+    ],
+    "hncap_holds": 196,
+    "menus_with_legal_warship": 174,
+    "breakdown": [
+      {
+        "holds": 128,
+        "warship_offered": 109
+      },
+      {
+        "holds": 68,
+        "warship_offered": 65
+      }
+    ],
+    "observed_trapped_state": {
+      "structures": [
+        "City",
+        "Factory",
+        "Port"
+      ],
+      "warships": 0,
+      "transports": 0,
+      "repeated_warship_action_id": "build:Warship:500241"
+    },
+    "causal_limit": "The source replays prove legal branch reach for a Warship build while the parent held. They do not prove the counterfactual outcome after a build or later Warship movement."
+  },
+  "single_delta": {
+    "name": "bounded naval-cap escape",
+    "config": {
+      "enableCapEscape": true,
+      "navalCapWarshipBuildLimit": 1
+    },
+    "persistent_state": {
+      "field": "naval.capEscapeBuilds",
+      "initial": 0,
+      "increment": "Only a fresh hks1 Warship build committed after a successful decision-response send increments the counter; replay evidence separately requires server acceptance.",
+      "duplicate_rule": "A duplicate request replays the cached action without a second increment."
+    },
+    "insertion_point": "After every existing strategy and generic utility selector, immediately before the final hold.",
+    "selection_order": [
+      "A fresh safe move_warship action, ordered by risk and then action ID.",
+      "A fresh safe warship action when capEscapeBuilds is below one and no Warship is observed.",
+      "The existing hncap fail-closed hold."
+    ],
+    "latch_rule": "Never clear or reopen the two-launch naval budget.",
+    "build_bound": "At most one cap-escape Warship build per process match.",
+    "move_cooldown": "none; the current legal menu and fresh-action guard remain authoritative.",
+    "donations_enabled": false,
+    "donation_boundary": "Odin, Katanasan, and Gravity donations remain outside C3. Support spending is a separate mechanism and cannot be coupled to the naval latch.",
+    "excluded_actions": [
+      "all donations",
+      "delete_unit",
+      "quick_chat",
+      "emoji",
+      "outsider diplomacy",
+      "harmful or ambiguously targeted actions",
+      "another neutral or hostile boat launch"
+    ]
+  },
+  "marker_contract": {
+    "primary": "hks1",
+    "required_evidence": "hncap",
+    "phase": "RECOVERY",
+    "allowed_kinds": [
+      "warship",
+      "move_warship"
+    ],
+    "public_reasons": {
+      "warship": "[K1Z] r4vn:w4r:hks1.hncap",
+      "move_warship": "[K1Z] r4vn:mvw:hks1.hncap"
+    },
+    "target": null,
+    "ownership_boundary": "Current move_warship metadata exposes unitCount, targetTile, and legalReason but no player owner. Do not infer owner identity from tile or prose. If future metadata exposes a player identity, require unique resolution and reject protected or ambiguous targets."
+  },
+  "red_first_gate": {
+    "required_parent_failures": [
+      "After two hn16 launches and four non-naval decisions, a menu containing Warship, blocked boats, and hold makes exact C2 hold.",
+      "With an observed Warship and a legal move plus build, exact C2 does not take the cap escape.",
+      "The exact C2 replay auditor does not recognize hks1 semantics."
+    ],
+    "required_candidate_passes": [
+      "The Warship fixture selects the fresh Warship with hks1.hncap.",
+      "The existing-Warship fixture selects move_warship before build.",
+      "The first cap-escape build increments capEscapeBuilds once and a second build is blocked.",
+      "Without a latched cap, C3 is action-identical to C2 and emits no hks1.",
+      "With enableCapEscape false, C3 is action-identical to the exact C2 hold.",
+      "Donations never enter the C3 selector.",
+      "Ambiguous or K1Z boats, destructive actions, and social actions remain excluded.",
+      "Duplicate request replay cannot increment capEscapeBuilds twice.",
+      "hks1 on a hold, donation, ordinary build, or pre-cap decision fails marker validation.",
+      "Normalized turn-10800 and turn-8200 fixtures retain full replay hashes and an explicit counterfactual normalization caveat."
+    ]
+  },
+  "replay_audit_gate": {
+    "requirements": [
+      "Count accepted hn16 and hni25 launches and establish an independent cap antecedent after two.",
+      "Require every hks1 decision to follow the cap antecedent.",
+      "Require selected kind, public kind code, action ID, and submitted intent to match the Warship build or move schema.",
+      "Permit at most one hks1 Warship build.",
+      "Report hks1 builds, moves, first reach, cap antecedent, and owner-attribution availability.",
+      "Continue treating Warship, move_warship, and donations as productive alternatives when independently auditing a hold.",
+      "Do not weaken the existing hold proof to make C3 pass."
+    ],
+    "promotion_wrapper": "Zero total holds, rejects, fallbacks, planner degradation, or K1Z harm remains mandatory."
+  },
+  "falsification": {
+    "immediate_reject": [
+      "Any C2 runtime-file drift.",
+      "Any donation selection.",
+      "A second cap-escape Warship build.",
+      "hks1 before the independent cap antecedent.",
+      "A stale or withdrawn selected action.",
+      "Any K1Z harm or ambiguous harmful target.",
+      "Any first-active-decision timeout.",
+      "Any hold while a legal productive alternative remains.",
+      "No accepted hks1 reach in the registered local or hosted sample."
+    ],
+    "next_loop_if_rejected": "Close C3 as NO SUBMIT. Diagnose the residual held menus and preregister one new mechanism; do not widen C3 after observing results."
+  },
+  "qualification": {
+    "source": [
+      "Red-first tests, marker tests, replay-auditor tests, C2 liveness tests, and all Hrafn tests pass.",
+      "Exact source and auditor commits are pushed before image build.",
+      "The C2 player wrapper hash remains 39e3a658dcbaeea5e7c576b654838dcc1e646b4e44b82bb8b67db1130aa70054."
+    ],
+    "local": [
+      "linux/amd64 image identity and source hashes are recorded.",
+      "A foreground runner lease wraps every local Coworld command.",
+      "Replay-visible hks1 reach changes the action ID from an exact-C2 hold.",
+      "Zero holds, rejects, fallbacks, planner degradation, first-turn timeout, or K1Z harm.",
+      "A matched exact-C2 control shows candidate advantage."
+    ],
+    "hosted": [
+      "A fresh matched current-roster exact-C2 control uses the same Coworld, variant, map, seat, roster, game config, and episode count.",
+      "Candidate finishes 4/4 with accepted hks1 reach and all zero-failure conditions.",
+      "A separate map-and-seat regression finishes 20/20.",
+      "The final cross-audit returns APPROVE before any submission."
+    ]
+  },
+  "promotion_state": {
+    "SOURCE_READY": false,
+    "LOCAL_QUALIFIED": false,
+    "DIAGNOSTIC_UPLOADED": false,
+    "HOSTED_PASSED": false,
+    "REGRESSION_PASSED": false,
+    "AUDIT_APPROVED": false,
+    "SUBMITTED": false,
+    "PLACED": false,
+    "CHAMPION_VERIFIED": false,
+    "ROUND_CONFIRMED": false
+  },
+  "verdict": "PREREGISTERED: implement and falsify the bounded naval-cap escape only. v5 remains champion; no upload, submission, membership change, or champion change is authorized by this record."
+}
