@@ -111,6 +111,14 @@ with an asynchronous plan refresh every eight decisions.
 This supports a selector-side experiment, not a pure-LLM rewrite. It does not
 identify Daveey's private implementation.
 
+On 2026-07-20 Auri added a small model ablation from an earlier agent: local
+Fable-versus-Opus-versus-Sonnet games showed little outcome influence from the
+LLM in his implementation, with Fable performing poorly. He explicitly said
+the agent was an older version and should be retested. Treat this as supporting
+operator testimony, not a controlled result. It strengthens the current
+priority: improve the exact-action selector first; spend model capacity on
+occasional diagnosis rather than every decision.
+
 ### Daveey runtime signature
 
 Eight hosted public replays add stronger implementation evidence. Daveey's 881

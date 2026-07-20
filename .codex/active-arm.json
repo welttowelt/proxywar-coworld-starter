@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T20:26:22Z",
+  "updated_at": "2026-07-20T20:31:21Z",
   "cycle_id": "odin-kiz1-gravity-20260720",
   "lane": "odin",
   "arm": {
@@ -11,7 +11,7 @@
     "candidate_source_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
     "closed": false
   },
-  "state": "diagnostic_uploaded_waiting_hosted_pair",
+  "state": "hosted_pair_dispatched",
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
     "player_name": "K1Z odin free",
@@ -44,6 +44,14 @@
     "receipt": "experiments/audit-qd1n-kiz1-gravity-local-screen-20260720.json",
     "qualifier": "34/34 accepted",
     "mechanism": "39/39 accepted, 6 Gravity kp2, 0 Gravity harm, 0 candidate fallback/degradation/holds/rejects, Odin win"
+  },
+  "hosted_evidence": {
+    "source_round": 581,
+    "variant": "tournament-12p-pangaea",
+    "candidate_request": "xreq_41f198c5-8ecf-4c1b-82bb-7628d949b672",
+    "parent_request": "xreq_38a50cf3-0476-470e-b357-877cbf6285e7",
+    "episodes_per_request": 4,
+    "status": "submitted"
   },
   "gates": {
     "source_ready": true,

@@ -56,9 +56,15 @@
       "sha256": "8a8499746a0e52f7578c542304ae0c55dc123b99d648c1d6a03bfa3c5323b4fe"
     }
   },
-  "matched_baseline": null,
-  "diagnostic_only": true,
+  "matched_baseline": {
+    "policy_ref": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+    "request_id": "xreq_38a50cf3-0476-470e-b357-877cbf6285e7",
+    "same_roster": true,
+    "same_variant": true
+  },
+  "diagnostic_only": false,
   "hosted": {
+    "request_id": "xreq_41f198c5-8ecf-4c1b-82bb-7628d949b672",
     "criteria": {
       "win_rate_pct": 100,
       "max_holds": 0,
