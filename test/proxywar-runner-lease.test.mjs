@@ -384,15 +384,13 @@ test("supervised run is strict-busy, exact-release protected, private, and clean
   assert.equal(stdout.includes(token), false);
   assert.equal(stderr.includes(token), false);
 
-  for (const lane of ["odin", "hrafn"]) {
-    const contenderOutput = path.join(directory, `contender-${lane}`);
-    const contender = invoke(state, [
-      "run", lane, `run-${lane}`, "--output", contenderOutput, "--", "/usr/bin/true",
-    ], docker.env);
-    assert.equal(contender.status, 1, contender.stderr);
-    assert.match(contender.stderr, /busy:odin:run-a/);
-    assert.equal(existsSync(contenderOutput), false);
-  }
+  const contenderOutput = path.join(directory, "contender-odin");
+  const contender = invoke(state, [
+    "run", "odin", "run-odin", "--output", contenderOutput, "--", "/usr/bin/true",
+  ], docker.env);
+  assert.equal(contender.status, 1, contender.stderr);
+  assert.match(contender.stderr, /busy:odin:run-a/);
+  assert.equal(existsSync(contenderOutput), false);
 
   const wrongRelease = invoke(state, ["release", "odin", "run-a", "wrong-token"]);
   assert.equal(wrongRelease.status, 1);
@@ -1085,6 +1083,55 @@ test("launcher fails closed on invalid status and rejects the retired Hrafn lane
   assert.equal(shim.status, 78);
   assert.match(shim.stderr, /transition-required:hrafn/);
   assert.equal(existsSync(path.join(legacyPrompt.state, "runner.lock")), false);
+});
+
+test("runner rejects new Hrafn work but preserves exact-token recovery commands", (t) => {
+  const context = fixture();
+  const { directory, state } = context;
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+
+  const output = path.join(directory, "retired-hrafn-run");
+  const run = invoke(state, [
+    "run", "hrafn", "retired-run", "--output", output, "--", "/usr/bin/true",
+  ]);
+  assert.equal(run.status, 64);
+  assert.match(run.stderr, /retired-lane:hrafn/);
+  assert.equal(existsSync(output), false);
+
+  const staleOutput = path.join(directory, "old-hrafn-output");
+  writeV2Lock(state, {
+    lane: "hrafn",
+    runId: "old-run",
+    token: "old-token",
+    outputs: [staleOutput],
+  });
+  const docker = makeFakeDocker(context);
+  const reap = invoke(
+    state,
+    ["reap-stale", "hrafn", "old-run", "old-token"],
+    docker.env,
+  );
+  assert.equal(reap.status, 0, reap.stderr);
+  assert.match(reap.stdout, /reaped:hrafn:old-run/);
+  assert.equal(existsSync(path.join(state, "runner.lock")), false);
+  assert.equal(existsSync(staleOutput), false);
+});
+
+test("runner cannot start while the shared Qd1n mutation lock exists", (t) => {
+  const context = fixture();
+  const { directory, state } = context;
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  mkdirSync(path.join(state, "qd1n.mutation.lock"));
+  const output = path.join(directory, "blocked-by-mutation");
+
+  const result = invoke(state, [
+    "run", "odin", "blocked-run", "--output", output, "--", "/usr/bin/true",
+  ]);
+  assert.equal(result.status, 1);
+  assert.match(result.stderr, /busy:qd1n:external-mutation/);
+  assert.equal(existsSync(output), false);
+  assert.equal(existsSync(path.join(state, "runner.lock")), false);
+  assert.equal(existsSync(path.join(state, "runner.mutation.lock")), false);
 });
 
 test("launcher rejects a migrated Hrafn prompt before applying runner-state preflight", (t) => {

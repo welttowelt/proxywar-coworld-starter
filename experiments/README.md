@@ -1724,22 +1724,31 @@ No source branch opens from this observation. The immutable census, source
 anchors, overlap checks, and required next evidence are in
 [`audit-qd1n-opening-commitment-overlap-20260720.json`](audit-qd1n-opening-commitment-overlap-20260720.json).
 
-## ODC1 clean-dispatcher local qualification (2026-07-20)
+## ODC1 clean-dispatcher RCI2 mechanism verification (2026-07-20)
 
 ODC1 replaces the accumulated post-selection stack with one planner-free Odin
-dispatcher while retaining the exact v89 coalition identity and protection
-primitives. It passed red-first regression, `163/163` tests, independent RCI,
-linux/amd64 byte checks, and a `34/34` accepted qualifier with zero holds,
-rejections, fallbacks, or degradation.
+dispatcher while retaining exact-v89 coalition identity and protection
+primitives. RCI2 closes production action-shape gaps, protects every configured
+K1Z identity unconditionally, removes unrestricted chat and raw-action
+fallbacks, marks protection-only holds, and leaves K1Z endgame attacks disabled
+because visible rivals are not authoritative survivor evidence. Source
+`23ada8a8` passed `173/173` tests and independent RCI. The exact amd64 image
+`sha256:3af909f3...` passed a `34/34` qualifier.
 
-The explicit-seed Pangaea Compact A/B screen produced the same separation after
-the seat swap. ODC1 scored `0.689791` and `0.690768` against exact v89 scores
-of `0.310209` and `0.309232`; combined tiles were `139,444` versus `62,567`.
-All `624/624` ODC1 decisions were accepted with 111 causal transitions and zero
-holds, rejections, fallbacks, degradation, illegal actions, or K1Z harm.
+The original `576283d4` A/B result is not competitive evidence: the control
+planner degraded, the roster had no K1Z partner, and its 111 route executions
+were mislabeled causal transitions. That receipt remains as a historical
+no-plan baseline.
 
-This is a local qualification, not a league win: both players survived the
-decision cap. It unlocks one explicit-seed current-roster coalition gate. ODC1
-receives no upload, submission, membership, or champion change unless that
-gate, hosted `4/4`, and `20/20` regression all pass. The durable receipt is
+The corrected 60-step Pangaea mechanism screen included K1Z katanasan and
+pinned both image IDs. ODC1 executed ten route markers, including `odec1`, with
+all `66/66` decisions accepted and zero illegal actions, fallback, degradation,
+unexplained holds, rejects, unresolved harmful targets, or K1Z harm. Its verdict
+is `PASS_MECHANISM_SCREEN` with `competitive_evidence:false`. Hosted `4/4` is
+the first outcome gate; no league submission, membership, or champion change
+can occur before hosted `4/4`, separate `20/20`, and final RCI pass.
+
+The durable receipt is
+[`audit-qd1n-odc1-rci2-mechanism-20260720.json`](audit-qd1n-odc1-rci2-mechanism-20260720.json).
+The superseded baseline is
 [`audit-qd1n-odc1-clean-dispatcher-seeded-20260720.json`](audit-qd1n-odc1-clean-dispatcher-seeded-20260720.json).

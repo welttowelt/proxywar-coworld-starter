@@ -5,6 +5,7 @@ ACTION="${1:-status}"
 STATE_ROOT="${PROXYWAR_OPERATOR_STATE_ROOT:-/Users/olifreuler/.stormforge/proxywar-operators}"
 LOCK_DIR="$STATE_ROOT/runner.lock"
 MUTATION_DIR="$STATE_ROOT/runner.mutation.lock"
+QD1N_MUTATION_DIR="${PROXYWAR_QD1N_MUTATION_DIR:-$STATE_ROOT/qd1n.mutation.lock}"
 STAGING_PREFIX="$STATE_ROOT/.runner.lock.staging"
 JQ_BIN="${PROXYWAR_JQ_BIN:-jq}"
 DOCKER_BIN="${PROXYWAR_DOCKER_BIN:-docker}"
@@ -33,10 +34,13 @@ usage() {
   cat >&2 <<'EOF'
 usage:
   proxywar-runner-lease.sh status [--json]
-  proxywar-runner-lease.sh run odin|hrafn RUN_ID --output ABS_DIR [--output ABS_DIR ...] -- COMMAND [ARG ...]
+  proxywar-runner-lease.sh run odin RUN_ID --output ABS_DIR [--output ABS_DIR ...] -- COMMAND [ARG ...]
   proxywar-runner-lease.sh release odin|hrafn RUN_ID TOKEN
   proxywar-runner-lease.sh release odin|hrafn
   proxywar-runner-lease.sh reap-stale odin|hrafn RUN_ID TOKEN
+
+New Hrafn runs are disabled because that lane is retired. Exact-token release
+and reap-stale remain available for recovering an old Hrafn lease.
 
 The two-argument release form exists only for a pure tokenless v1 lock already
 present during migration. New standalone acquisition is deliberately disabled:
@@ -46,6 +50,10 @@ EOF
 
 valid_lane() {
   [[ "$1" == "odin" || "$1" == "hrafn" ]]
+}
+
+valid_run_lane() {
+  [[ "$1" == "odin" ]]
 }
 
 valid_run_id() {
@@ -1088,7 +1096,10 @@ forward_signal() {
 run_action() {
   LANE="${2:-}"
   RUN_ID="${3:-}"
-  valid_lane "$LANE" || {
+  valid_run_lane "$LANE" || {
+    if [[ "$LANE" == "hrafn" ]]; then
+      print -r -- "retired-lane:hrafn:new runs are disabled; exact-token recovery only" >&2
+    fi
     usage
     return 64
   }
@@ -1150,6 +1161,10 @@ run_action() {
   TOKEN="$(new_token)"
 
   mutation_acquire
+  if [[ -e "$QD1N_MUTATION_DIR" || -L "$QD1N_MUTATION_DIR" ]]; then
+    print -r -- "busy:qd1n:external-mutation" >&2
+    return 1
+  fi
   if [[ -e "$LOCK_DIR" ]]; then
     local existing_owner existing_run
     existing_owner="$(read_lock_file owner)"

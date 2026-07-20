@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import { spawnSync } from "node:child_process";
-import { mkdtempSync, writeFileSync } from "node:fs";
+import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -28,6 +29,7 @@ function fixture() {
         win_rate_pct: 100,
         max_holds: 0,
         max_rejections: 0,
+        max_k1z_harm: 0,
         planner_degradation_rule: "no_unexplained_regression_vs_parent",
         min_mechanism_executions: 1,
       },
@@ -70,8 +72,9 @@ test("preflight fails when mechanism reach is unproven", () => {
 test("promotion mode fails a diagnostic-only candidate", () => {
   const result = validate(fixture(), "--require-promotion");
   assert.equal(result.status, 1);
-  assert.equal(result.report.valid, true);
+  assert.equal(result.report.valid, false);
   assert.equal(result.report.promotion_eligible, false);
+  assert.match(result.report.errors.join(" "), /promotion preflight cannot be diagnostic-only/);
 });
 
 test("matched evidence is hosted-gate ready but not promotion eligible", () => {
@@ -109,6 +112,7 @@ test("promotion eligibility requires completed perfect hosted and regression res
     wins: 4,
     holds: 0,
     rejections: 0,
+    k1z_harm: 0,
     mechanism_executions: 3,
     planner_degradation_rule_passed: true,
   };
@@ -118,11 +122,288 @@ test("promotion eligibility requires completed perfect hosted and regression res
     wins: 20,
     holds: 0,
     rejections: 0,
+    k1z_harm: 0,
   };
-  const result = validate(value, "--require-promotion");
+  const result = validate(value);
 
   assert.equal(result.status, 0);
   assert.equal(result.report.hosted_gate_passed, true);
   assert.equal(result.report.regression_passed, true);
   assert.equal(result.report.promotion_eligible, true);
+});
+
+function sha256(file) {
+  return createHash("sha256").update(readFileSync(file)).digest("hex");
+}
+
+function receipt(directory, name, value) {
+  const file = path.join(directory, name);
+  writeFileSync(file, JSON.stringify(value));
+  return { path: file, sha256: sha256(file) };
+}
+
+function strictDiagnosticFixture() {
+  const directory = mkdtempSync(path.join(tmpdir(), "strict-preflight-"));
+  const value = fixture();
+  const source = "a".repeat(40);
+  const image = `sha256:${"b".repeat(64)}`;
+  value.candidate.source_commit = source;
+  value.candidate.parent_commit = "c".repeat(40);
+  value.candidate.image_id = image;
+  value.local.runs = 2;
+  value.local.independent_traces = 2;
+  value.local.contract_sha256 = "e".repeat(64);
+  value.local.audit_receipt = receipt(directory, "local.json", {
+    schema_version: 2,
+    verdict: "PASS_LOCAL_SCREEN",
+    failures: [],
+    candidate_source_commit: source,
+    candidate_image_id: image,
+    parent_source_commit: value.candidate.parent_commit,
+    contract_sha256: value.local.contract_sha256,
+    required_coalition_roles: ["katanasan"],
+    differential_unit_proof: {
+      same_fixture: true,
+      test_exit_code: 0,
+      parent: {
+        source_commit: value.candidate.parent_commit,
+        selected_action_id: "parent-action",
+      },
+      candidate: {
+        source_commit: source,
+        selected_action_id: "candidate-action",
+      },
+    },
+    runs: ["A", "B"].map((orientation, index) => ({
+      orientation,
+      replay_sha256: String(index + 1).repeat(64),
+      coalition_roles_present: ["odin", "katanasan"],
+      resolved_images: {
+        images: { candidate: { image_id: image } },
+      },
+      candidate: {
+        decision_count: 10,
+        accepted: 10,
+        illegal_turns: [],
+        rejected_turns: [],
+        fallback_turns: [],
+        degradation_turns: [],
+        unexplained_holds: [],
+        harmful_k1z_actions: [],
+        unresolved_harmful_targets: [],
+        marker_counts: { "wireveto=": 1 },
+        route_execution_count: 1,
+      },
+      orientation_advantage: { score_delta: 0.1, tile_delta: 10 },
+    })),
+  });
+  value.preupload_rci = {
+    receipt: receipt(directory, "preupload-rci.json", {
+      status: "passed",
+      unresolved_violations: [],
+      candidate_source_commit: source,
+      candidate_image_id: image,
+    }),
+  };
+  return { directory, value, source, image };
+}
+
+function addStrictPromotionEvidence(context) {
+  const { directory, value, source, image } = context;
+  const policyId = "11111111-1111-4111-8111-111111111111";
+  const odin = "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c";
+  value.diagnostic_only = false;
+  value.candidate.uploaded_label = "qd1n:v100";
+  value.candidate.policy_version_id = policyId;
+  value.candidate.upload_receipt = receipt(directory, "upload.json", {
+    mode: "diagnostic",
+    status: "completed",
+    candidate_source_commit: source,
+    candidate_image_id: image,
+    candidate_policy_ref: value.candidate.policy_ref,
+    uploaded_label: value.candidate.uploaded_label,
+    policy_version_id: policyId,
+  });
+  value.matched_baseline = {
+    policy_ref: value.candidate.parent_ref,
+    request_id: "xreq_parent",
+    same_roster: true,
+    same_variant: true,
+  };
+  const hostedEpisodes = Array.from({ length: 4 }, (_, index) => ({
+    episode_id: `hosted-${index}`,
+    replay_sha256: (index + 1).toString(16).repeat(64),
+    winner_player_id: odin,
+    candidate_policy_version_id: policyId,
+    marker_executions: 1,
+    holds: 0,
+    rejections: 0,
+    k1z_harm: 0,
+    planner_degradation_passed: true,
+  }));
+  value.hosted.request_id = "xreq_child";
+  value.hosted.audit_receipt = receipt(directory, "hosted.json", {
+    verdict: "PASS_HOSTED",
+    candidate_source_commit: source,
+    candidate_image_id: image,
+    candidate_policy_version_id: policyId,
+    request_id: "xreq_child",
+    baseline_request_id: "xreq_parent",
+    roster_sha256: "d".repeat(64),
+    variant: "12p-pangaea",
+    episodes: hostedEpisodes,
+  });
+  value.hosted.result = {
+    status: "completed",
+    episodes: 4,
+    wins: 4,
+    holds: 0,
+    rejections: 0,
+    k1z_harm: 0,
+    mechanism_executions: 4,
+    planner_degradation_rule_passed: true,
+  };
+  const regressionEpisodes = Array.from({ length: 20 }, (_, index) => ({
+    episode_id: `regression-${index}`,
+    replay_sha256: createHash("sha256")
+      .update(`regression-${index}`)
+      .digest("hex"),
+    winner_player_id: odin,
+    candidate_policy_version_id: policyId,
+    marker_executions: 0,
+    holds: 0,
+    rejections: 0,
+    k1z_harm: 0,
+    map: index % 2 ? "World" : "Pangaea",
+    seat: index % 4,
+  }));
+  value.promotion.request_id = "xreq_regression";
+  value.promotion.regression_audit_receipt = receipt(
+    directory,
+    "regression.json",
+    {
+      verdict: "PASS_REGRESSION",
+      candidate_source_commit: source,
+      candidate_image_id: image,
+      candidate_policy_version_id: policyId,
+      request_id: "xreq_regression",
+      episodes: regressionEpisodes,
+    },
+  );
+  value.promotion.result = {
+    status: "completed",
+    episodes: 20,
+    wins: 20,
+    holds: 0,
+    rejections: 0,
+    k1z_harm: 0,
+  };
+  value.final_rci = {
+    receipt: receipt(directory, "final-rci.json", {
+      status: "passed",
+      unresolved_violations: [],
+      candidate_source_commit: source,
+      candidate_image_id: image,
+      candidate_policy_version_id: policyId,
+      checks: {
+        source_identity: true,
+        image_identity: true,
+        roster_identity: true,
+        runtime_identity: true,
+        marker_integrity: true,
+        k1z_safety: true,
+        outcome_identity: true,
+      },
+    }),
+  };
+}
+
+test("strict diagnostic mode requires hash-bound local and pre-upload RCI receipts", () => {
+  const context = strictDiagnosticFixture();
+  const passed = validate(context.value, "--require-diagnostic");
+  assert.equal(passed.status, 0, passed.stderr);
+  assert.equal(passed.report.strict_mode, "diagnostic");
+
+  context.value.local.audit_receipt.sha256 = "0".repeat(64);
+  const tampered = validate(context.value, "--require-diagnostic");
+  assert.equal(tampered.status, 1);
+  assert.match(tampered.report.errors.join(" "), /local.audit_receipt SHA-256/);
+});
+
+test("strict diagnostic accepts a safe mechanism screen without a lift claim", () => {
+  const context = strictDiagnosticFixture();
+  const localBinding = context.value.local.audit_receipt;
+  const local = JSON.parse(readFileSync(localBinding.path, "utf8"));
+  local.verdict = "PASS_MECHANISM_SCREEN";
+  local.screen_mode = "mechanism";
+  local.competitive_evidence = false;
+  local.runs = [local.runs[0]];
+  delete local.runs[0].orientation_advantage;
+  writeFileSync(localBinding.path, JSON.stringify(local));
+  localBinding.sha256 = sha256(localBinding.path);
+  context.value.local.runs = 1;
+  context.value.local.independent_traces = 1;
+
+  const passed = validate(context.value, "--require-diagnostic");
+  assert.equal(passed.status, 0, passed.stderr);
+
+  local.runs[0].candidate.marker_counts = { "other-marker": 1 };
+  writeFileSync(localBinding.path, JSON.stringify(local));
+  localBinding.sha256 = sha256(localBinding.path);
+  const wrongMarker = validate(context.value, "--require-diagnostic");
+  assert.equal(wrongMarker.status, 1);
+  assert.match(wrongMarker.report.errors.join(" "), /preflight mechanism marker/);
+
+  local.runs[0].candidate.marker_counts = { "wireveto=": 1 };
+  local.runs[0].coalition_roles_present = ["odin"];
+  writeFileSync(localBinding.path, JSON.stringify(local));
+  localBinding.sha256 = sha256(localBinding.path);
+  const unsafe = validate(context.value, "--require-diagnostic");
+  assert.equal(unsafe.status, 1);
+  assert.match(unsafe.report.errors.join(" "), /coalition presence failed/);
+});
+
+test("strict promotion rejects self-attested counters without immutable receipts", () => {
+  const value = fixture();
+  value.diagnostic_only = false;
+  value.matched_baseline = {
+    policy_ref: "agent:v29",
+    request_id: "xreq_parent",
+    same_roster: true,
+    same_variant: true,
+  };
+  const result = validate(value, "--require-promotion");
+  assert.equal(result.status, 1);
+  assert.match(result.report.errors.join(" "), /local.audit_receipt/);
+  assert.match(result.report.errors.join(" "), /final_rci.receipt/);
+});
+
+test("strict promotion verifies final RCI, K1Z safety, and distinct replay evidence", () => {
+  const context = strictDiagnosticFixture();
+  addStrictPromotionEvidence(context);
+  const passed = validate(context.value, "--require-promotion");
+  assert.equal(passed.status, 0, passed.stderr);
+  assert.equal(passed.report.promotion_eligible, true);
+
+  const regressionBinding = context.value.promotion.regression_audit_receipt;
+  const regression = JSON.parse(readFileSync(regressionBinding.path, "utf8"));
+  const hostedBinding = context.value.hosted.audit_receipt;
+  const hosted = JSON.parse(readFileSync(hostedBinding.path, "utf8"));
+  const originalRegressionReplay = regression.episodes[0].replay_sha256;
+  regression.episodes[0].replay_sha256 = hosted.episodes[0].replay_sha256;
+  writeFileSync(regressionBinding.path, JSON.stringify(regression));
+  regressionBinding.sha256 = sha256(regressionBinding.path);
+  const reused = validate(context.value, "--require-promotion");
+  assert.equal(reused.status, 1);
+  assert.match(reused.report.errors.join(" "), /replay hashes are not disjoint/);
+
+  regression.episodes[0].replay_sha256 = originalRegressionReplay;
+  writeFileSync(regressionBinding.path, JSON.stringify(regression));
+  regressionBinding.sha256 = sha256(regressionBinding.path);
+  hosted.episodes[1].replay_sha256 = hosted.episodes[0].replay_sha256;
+  writeFileSync(hostedBinding.path, JSON.stringify(hosted));
+  hostedBinding.sha256 = sha256(hostedBinding.path);
+  const duplicated = validate(context.value, "--require-promotion");
+  assert.equal(duplicated.status, 1);
+  assert.match(duplicated.report.errors.join(" "), /replay hashes.*duplicated/);
 });

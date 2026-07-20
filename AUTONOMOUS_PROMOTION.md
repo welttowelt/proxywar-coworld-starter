@@ -27,12 +27,16 @@ healthy process as proof of a later state.
    - red test fails on the exact parent and passes with the candidate;
    - full suite passes;
    - source commit and parent commit are immutable and pushed.
-2. `LOCAL_QUALIFIED`
+2. `LOCAL_MECHANISM_VERIFIED`
    - exact linux/amd64 image matches committed source byte-for-byte;
    - qualifier boots and produces accepted decisions;
-   - marker reaches in replay;
-   - zero unexplained holds, zero rejects, and zero K1Z harm;
-   - mirrored candidate-versus-parent comparison shows the declared advantage.
+   - a hash-bound local trace contains the configured coalition partner;
+   - marker reaches with zero illegal actions, fallback, degradation,
+     unexplained holds, rejects, unresolved harmful targets, or K1Z harm;
+   - the differential fixture proves a real candidate-parent action change;
+   - local competitive lift is recorded when the exact parent can run under the
+     same runtime, but it is supplementary. Never substitute a degraded parent
+     or proxy opponent to manufacture an outcome comparison.
 3. `DIAGNOSTIC_UPLOADED`
    - the lane owner verifies the active Softmax player identity;
    - the candidate is uploaded for hosted diagnosis;
@@ -71,7 +75,7 @@ healthy process as proof of a later state.
 ## Automatic action sequence
 
 The lane owner proceeds automatically from one verified state to the next.
-Diagnostic upload is allowed after `LOCAL_QUALIFIED` and a pre-upload RCI
+Diagnostic upload is allowed after `LOCAL_MECHANISM_VERIFIED` and a pre-upload RCI
 audit. League submission and champion promotion are allowed only after
 `HOSTED_PASSED`, `REGRESSION_PASSED`, and final `RCI_AUDIT_PASSED`.
 

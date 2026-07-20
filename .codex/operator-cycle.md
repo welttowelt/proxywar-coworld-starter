@@ -33,14 +33,15 @@ Complete exactly one of these, in order:
 An active-arm verdict preempts KF1, supporter work, housekeeping, lore,
 scoreboard narration, and new hypotheses. Do not open a second arm. Follow
 `MISSION_COMMAND.md` and `.codex/active-arm.json`; never dispatch a successor
-from an older mailbox packet or stale handover. PG2, A1, A2, and A3 are closed.
-PR1 is also closed because it duplicates the rejected DP1 Defense Post family.
-NB1 is closed after zero Pangaea reach and zero World outcome lift. No active
-micro-guard exists. ODC1 is the active clean-dispatcher candidate at
-`PASS_LOCAL_QUALIFIED`; its source is frozen at `576283d4`. The only authorized
-transition is one explicit-seed current-roster coalition matched gate. Failure
-closes ODC1. Success advances it to hosted `4/4` and then `20/20` regression
-under `AUTONOMOUS_PROMOTION.md`; do not open or tune another arm first.
+from an older mailbox packet or stale handover. Dynamic candidate state,
+commits, verdicts, and next transitions live only in `.codex/active-arm.json`.
+Do not infer them from this prompt.
+
+Never invent a local current-roster gate that requires unavailable competitor
+images or planner credentials. After a candidate passes its smallest
+hash-bound mechanism/K1Z-safety screen and pre-upload RCI, the authorized path
+in `AUTONOMOUS_PROMOTION.md` is diagnostic upload followed by the pinned hosted
+current-roster `4/4`, then the separate `20/20` regression and final RCI.
 
 ## Execution
 
@@ -64,6 +65,8 @@ remove a lease, or clean broad Coworld containers.
 Use the standing automatic authority in `AUTONOMOUS_PROMOTION.md`. Do not ask
 for a user `GO` after objective gates pass. Keep upload, hosted result,
 submission, placement, membership, and champion identity as distinct states.
+Run every diagnostic upload or league submission through
+`scripts/proxywar-qd1n-mutation.sh`; direct mutation commands are forbidden.
 
 ## Budget and receipts
 
