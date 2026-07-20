@@ -243,6 +243,24 @@ function minimalWinningReplay() {
   };
 }
 
+function auditControlReplay(replay) {
+  const episode = minimalCompletedEpisode();
+  episode.participants[0].policy_version_id =
+    CONTROL_POLICY_VERSION_ID;
+  episode.scores[0].policy_version_id = CONTROL_POLICY_VERSION_ID;
+  return auditHrafnControlXpEpisode(
+    episode,
+    replay,
+    Buffer.from(JSON.stringify(replay)),
+    {
+      expectedPlayerName: EXPECTED_PLAYER_NAME,
+      expectedPolicyVersionID: CONTROL_POLICY_VERSION_ID,
+      expectedPlayerID: EXPECTED_PLAYER_ID,
+      expectedPolicyID: EXPECTED_POLICY_ID,
+    },
+  );
+}
+
 const PAIR_POSITION = 1;
 
 function pairParticipants(policyVersionID, label, version) {
@@ -420,8 +438,11 @@ function pairControlAudit(index) {
     runtime_player_id: "runtime-hrafn",
     result_runtime_player_id: "runtime-hrafn",
     final_runtime_player_id: "runtime-hrafn",
+    result_runtime_id_schema: "all_rows_identified",
     result_runtime_name_match_count: 1,
     final_runtime_name_match_count: 1,
+    result_runtime_exact_match_count: 1,
+    final_runtime_exact_match_count: 1,
     decision_runtime_evidence_failures: [],
     decision_runtime_binding_complete: true,
     audit_error: null,
@@ -1097,6 +1118,17 @@ test("decision agent binding rejects arbitrary prefixes and multiple IDs", () =>
 });
 
 test("control evidence gates the decision-to-runtime identity binding", () => {
+  const idless = pairData("control");
+  for (const episode of idless.episodeAudits) {
+    episode.result_runtime_id_schema = "all_rows_idless";
+    episode.result_runtime_player_id = null;
+  }
+  let result = pairReport(pairData("candidate"), idless);
+  assert.equal(
+    result.control_evidence.checks.decision_runtime_bound_each_episode,
+    true,
+  );
+
   const control = pairData("control");
   control.episodeAudits[0].decision_runtime_binding_complete = false;
   control.episodeAudits[0].decision_runtime_evidence_failures = [{
@@ -1107,7 +1139,7 @@ test("control evidence gates the decision-to-runtime identity binding", () => {
       player_id: "runtime-outsider",
     }],
   }];
-  let result = pairReport(pairData("candidate"), control);
+  result = pairReport(pairData("candidate"), control);
   assert.equal(
     result.control_evidence.checks.decision_runtime_bound_each_episode,
     false,
@@ -1123,6 +1155,14 @@ test("control evidence gates the decision-to-runtime identity binding", () => {
     false,
   );
   assert.equal(result.passed, false);
+
+  const mixed = pairData("control");
+  mixed.episodeAudits[0].result_runtime_id_schema = "mixed_or_partial";
+  result = pairReport(pairData("candidate"), mixed);
+  assert.equal(
+    result.control_evidence.checks.decision_runtime_bound_each_episode,
+    false,
+  );
 });
 
 test("candidate and control replay result slots bind to participant position", () => {
@@ -1260,6 +1300,127 @@ test("generic control decisions must bind to the unique Hrafn runtime ID", () =>
   assert.equal(result.decision_runtime_binding_complete, false);
 });
 
+test("control binds an all-result-rows-ID-less replay to the exact final runtime identity", () => {
+  const replay = minimalWinningReplay();
+  for (const player of replay.results.players) {
+    delete player.playerID;
+  }
+  const result = auditControlReplay(replay);
+  assert.equal(result.result_runtime_id_schema, "all_rows_idless");
+  assert.equal(result.result_runtime_exact_match_count, 1);
+  assert.equal(result.final_runtime_exact_match_count, 1);
+  assert.equal(result.result_runtime_player_id, null);
+  assert.equal(result.final_runtime_player_id, "runtime-hrafn");
+  assert.equal(result.runtime_player_id, "runtime-hrafn");
+  assert.deepEqual(result.decision_runtime_evidence_failures, []);
+  assert.equal(result.decision_runtime_binding_complete, true);
+});
+
+test("control rejects mixed or partial result runtime IDs", () => {
+  for (const identifiedIndex of [0, 1]) {
+    const replay = minimalWinningReplay();
+    delete replay.results.players[1 - identifiedIndex].playerID;
+    const result = auditControlReplay(replay);
+    assert.equal(
+      result.result_runtime_id_schema,
+      "mixed_or_partial",
+    );
+    assert.equal(result.runtime_player_id, null);
+    assert.equal(result.decision_runtime_binding_complete, false);
+  }
+});
+
+test("all-identified results retain strict two-surface runtime ID equality", () => {
+  const replay = minimalWinningReplay();
+  replay.results.players[0].playerID = "runtime-result-mismatch";
+  const result = auditControlReplay(replay);
+  assert.equal(
+    result.result_runtime_id_schema,
+    "all_rows_identified",
+  );
+  assert.equal(
+    result.result_runtime_player_id,
+    "runtime-result-mismatch",
+  );
+  assert.equal(result.final_runtime_player_id, "runtime-hrafn");
+  assert.equal(result.runtime_player_id, null);
+  assert.equal(result.decision_runtime_binding_complete, false);
+});
+
+test("control runtime binding rejects duplicate names and runtime IDs", () => {
+  const adversarialReplays = [
+    {
+      label: "duplicate result name",
+      mutate(replay) {
+        replay.results.players[1].name = EXPECTED_PLAYER_NAME;
+      },
+    },
+    {
+      label: "duplicate final name",
+      mutate(replay) {
+        replay.finalState.players[1].username = EXPECTED_PLAYER_NAME;
+      },
+    },
+    {
+      label: "duplicate result runtime ID",
+      mutate(replay) {
+        replay.results.players[1].playerID = "runtime-hrafn";
+      },
+    },
+    {
+      label: "duplicate final runtime ID",
+      mutate(replay) {
+        replay.finalState.players[1].playerID = "runtime-hrafn";
+      },
+    },
+  ];
+  for (const { label, mutate } of adversarialReplays) {
+    const replay = minimalWinningReplay();
+    mutate(replay);
+    const result = auditControlReplay(replay);
+    assert.equal(
+      result.decision_runtime_binding_complete,
+      false,
+      label,
+    );
+  }
+});
+
+test("control runtime binding requires the exact Hrafn slot on both replay surfaces", () => {
+  const wrongResultSlot = minimalWinningReplay();
+  wrongResultSlot.results.players[0].slot = 1;
+  let result = auditControlReplay(wrongResultSlot);
+  assert.equal(result.result_runtime_exact_match_count, 0);
+  assert.equal(result.decision_runtime_binding_complete, false);
+
+  const wrongFinalSlot = minimalWinningReplay();
+  wrongFinalSlot.finalState.players.reverse();
+  result = auditControlReplay(wrongFinalSlot);
+  assert.equal(result.final_runtime_exact_match_count, 0);
+  assert.equal(result.decision_runtime_binding_complete, false);
+});
+
+test("every available decision runtime row must match the final runtime ID", () => {
+  const replay = minimalWinningReplay();
+  const first = JSON.parse(
+    replay.inlineRunArtifacts["decisions.jsonl"].trim(),
+  );
+  first.auditAfter = { playerID: "runtime-hrafn" };
+  const second = structuredClone(first);
+  second.turnNumber = 200;
+  second.auditAfter.playerID = "runtime-outsider";
+  replay.inlineRunArtifacts["decisions.jsonl"] =
+    `${JSON.stringify(first)}\n${JSON.stringify(second)}\n`;
+  const result = auditControlReplay(replay);
+  assert.equal(result.runtime_player_id, "runtime-hrafn");
+  assert.equal(result.decision_runtime_evidence_failures.length, 1);
+  assert.equal(
+    result.decision_runtime_evidence_failures[0].turn,
+    200,
+  );
+  assert.equal(result.decision_runtime_binding_complete, false);
+});
+
 test("control accepts a consistent fractional terminal draw but candidate does not", () => {
   const controlEpisode = minimalCompletedEpisode();
   controlEpisode.participants[0].policy_version_id =
@@ -1390,4 +1551,17 @@ test("replay retrieval enforces a streaming hard byte cap", async () => {
     ),
     /exceeds byte limit 5/,
   );
+});
+
+test("default replay cap admits the observed 77,295,841-byte replay envelope", async () => {
+  const bytes = await downloadReplay(
+    "https://softmax-public.s3.amazonaws.com/replays/observed.replay",
+    {
+      fetchImpl: async () => fakeReplayResponse({
+        contentLength: 77_295_841,
+        chunks: [Buffer.from("{}")],
+      }),
+    },
+  );
+  assert.deepEqual(bytes, Buffer.from("{}"));
 });

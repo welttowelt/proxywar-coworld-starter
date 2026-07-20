@@ -24,7 +24,7 @@ const EXACT_V5_POLICY_VERSION_ID =
 const ALLOWED_REPLAY_HOSTS = new Set([
   "softmax-public.s3.amazonaws.com",
 ]);
-const MAX_REPLAY_BYTES = 64 * 1024 * 1024;
+const MAX_REPLAY_BYTES = 128 * 1024 * 1024;
 const REQUIRED_AUTHORITATIVE_CHECKS = [
   "hrafn_identity_verified",
   "decisions_present",
@@ -291,6 +291,21 @@ function runtimePlayerName(player) {
   return player?.name ?? player?.username ?? null;
 }
 
+function runtimePlayerSlot(player, index, { requireExplicit = false } = {}) {
+  if (Number.isInteger(player?.slot)) return player.slot;
+  return requireExplicit ? null : index;
+}
+
+function resultRuntimeIDSchema(players) {
+  if (players.length === 0) return "invalid";
+  const identifiedRows = players.filter((player) =>
+    runtimePlayerID(player).length > 0
+  ).length;
+  if (identifiedRows === 0) return "all_rows_idless";
+  if (identifiedRows === players.length) return "all_rows_identified";
+  return "mixed_or_partial";
+}
+
 function uniqueRuntimePlayerBinding(
   replay,
   expectedPlayerName,
@@ -308,36 +323,63 @@ function uniqueRuntimePlayerBinding(
   const finalNameMatches = finalPlayers.filter((player) =>
     runtimePlayerName(player) === expectedPlayerName
   );
-  const resultPlayer = Number.isInteger(expectedParticipantPosition)
-    ? resultPlayers[expectedParticipantPosition] ?? null
+  const resultExactMatches = resultPlayers.filter((player, index) =>
+    runtimePlayerName(player) === expectedPlayerName &&
+    runtimePlayerSlot(player, index, { requireExplicit: true }) ===
+      expectedParticipantPosition
+  );
+  const finalExactMatches = finalPlayers.filter((player, index) =>
+    runtimePlayerName(player) === expectedPlayerName &&
+    runtimePlayerSlot(player, index) === expectedParticipantPosition
+  );
+  const resultPlayer = resultExactMatches.length === 1
+    ? resultExactMatches[0]
     : null;
-  const finalPlayer = Number.isInteger(expectedParticipantPosition)
-    ? finalPlayers[expectedParticipantPosition] ?? null
+  const finalPlayer = finalExactMatches.length === 1
+    ? finalExactMatches[0]
     : null;
   const resultRuntimeID = runtimePlayerID(resultPlayer);
   const finalRuntimeID = runtimePlayerID(finalPlayer);
-  const runtimeID = (
-    resultNameMatches.length === 1 &&
-    finalNameMatches.length === 1 &&
-    resultNameMatches[0] === resultPlayer &&
-    finalNameMatches[0] === finalPlayer &&
-    resultRuntimeID.length > 0 &&
-    resultRuntimeID === finalRuntimeID &&
+  const resultIDSchema = resultRuntimeIDSchema(resultPlayers);
+  const resultIDUnique = resultRuntimeID.length > 0 &&
     resultPlayers.filter((player) =>
       runtimePlayerID(player) === resultRuntimeID
-    ).length === 1 &&
+    ).length === 1;
+  const finalIDUnique = finalRuntimeID.length > 0 &&
     finalPlayers.filter((player) =>
-      runtimePlayerID(player) === resultRuntimeID
-    ).length === 1
+      runtimePlayerID(player) === finalRuntimeID
+    ).length === 1;
+  const exactSurfacesBound = (
+    Number.isInteger(expectedParticipantPosition) &&
+    expectedParticipantPosition >= 0 &&
+    resultNameMatches.length === 1 &&
+    finalNameMatches.length === 1 &&
+    resultExactMatches.length === 1 &&
+    finalExactMatches.length === 1 &&
+    finalIDUnique
+  );
+  const runtimeID = (
+    exactSurfacesBound &&
+    (
+      resultIDSchema === "all_rows_idless" ||
+      (
+        resultIDSchema === "all_rows_identified" &&
+        resultIDUnique &&
+        resultRuntimeID === finalRuntimeID
+      )
+    )
   )
-    ? resultRuntimeID
+    ? finalRuntimeID
     : null;
   return {
     runtimeID,
     resultRuntimeID: resultRuntimeID || null,
     finalRuntimeID: finalRuntimeID || null,
+    resultRuntimeIDSchema: resultIDSchema,
     resultNameMatchCount: resultNameMatches.length,
     finalNameMatchCount: finalNameMatches.length,
+    resultExactMatchCount: resultExactMatches.length,
+    finalExactMatchCount: finalExactMatches.length,
     complete: runtimeID !== null,
   };
 }
@@ -485,10 +527,15 @@ function genericDecisionEvidence(
     runtime_player_id: runtimeBinding.runtimeID,
     result_runtime_player_id: runtimeBinding.resultRuntimeID,
     final_runtime_player_id: runtimeBinding.finalRuntimeID,
+    result_runtime_id_schema: runtimeBinding.resultRuntimeIDSchema,
     result_runtime_name_match_count:
       runtimeBinding.resultNameMatchCount,
     final_runtime_name_match_count:
       runtimeBinding.finalNameMatchCount,
+    result_runtime_exact_match_count:
+      runtimeBinding.resultExactMatchCount,
+    final_runtime_exact_match_count:
+      runtimeBinding.finalExactMatchCount,
     decision_runtime_evidence_failures: decisionRuntimeEvidenceFailures,
     decision_runtime_binding_complete:
       runtimeBinding.complete &&
@@ -823,8 +870,11 @@ function unavailableEpisodeAudit(
     runtime_player_id: null,
     result_runtime_player_id: null,
     final_runtime_player_id: null,
+    result_runtime_id_schema: "invalid",
     result_runtime_name_match_count: 0,
     final_runtime_name_match_count: 0,
+    result_runtime_exact_match_count: 0,
+    final_runtime_exact_match_count: 0,
     decision_runtime_evidence_failures: [],
     decision_runtime_binding_complete: false,
     audit_error: String(error),
@@ -1532,10 +1582,22 @@ export function buildHrafnControlEvidenceReport(
       episode?.decision_runtime_binding_complete === true &&
       typeof episode?.runtime_player_id === "string" &&
       episode.runtime_player_id.length > 0 &&
-      episode?.result_runtime_player_id === episode.runtime_player_id &&
+      (
+        (
+          episode?.result_runtime_id_schema ===
+            "all_rows_identified" &&
+          episode?.result_runtime_player_id === episode.runtime_player_id
+        ) ||
+        (
+          episode?.result_runtime_id_schema === "all_rows_idless" &&
+          episode?.result_runtime_player_id === null
+        )
+      ) &&
       episode?.final_runtime_player_id === episode.runtime_player_id &&
       episode?.result_runtime_name_match_count === 1 &&
       episode?.final_runtime_name_match_count === 1 &&
+      episode?.result_runtime_exact_match_count === 1 &&
+      episode?.final_runtime_exact_match_count === 1 &&
       Array.isArray(episode?.decision_runtime_evidence_failures) &&
       episode.decision_runtime_evidence_failures.length === 0
     ),
@@ -1976,7 +2038,7 @@ export async function freshReplayBytes(
     throw new Error("replay downloader did not return a Buffer");
   }
   if (bytes.length > MAX_REPLAY_BYTES) {
-    throw new Error("replay downloader exceeded the hard 64 MiB limit");
+    throw new Error("replay downloader exceeded the hard 128 MiB limit");
   }
   await writeFile(destination, bytes);
   return { bytes, destination };
