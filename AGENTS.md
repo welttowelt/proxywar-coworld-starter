@@ -16,11 +16,14 @@ the Coworld/Softmax game simulation.
 Codex Odin is the sole persistent writable `qd1n` operator: hypothesis
 selection, implementation, tests, image builds, runner coordination,
 experiment records, uploads, submissions, memberships, and champion changes.
-Hrafn runs as a separate operator for `hrafn-fylking` only. Hrafn cannot mutate
-`qd1n`, and Odin does not edit or run Hrafn's working branch. Hrafn may use the
-shared foreground runner under its own `hrafn` lease for separately
-user-authorized local experiments. This runner access grants no Hrafn upload,
-submission, membership, or champion authority.
+Hrafn runs on Studio as a separate operator for `hrafn-fylking` only. Hrafn
+cannot mutate `qd1n`, and Odin does not edit or run Hrafn's working branch.
+Mickey owns this Mac's local `mickey-mouse-intent` source, evaluation, and CPU
+fanout lane. Mickey cannot mutate `qd1n` or `hrafn-fylking`; it uses only a
+separately named `mickey` runner lease. Until Studio posts the terminal Hrafn
+migration receipt, Mickey has no Softmax identity, upload, submission,
+membership, or champion authority. Local source builds and offline evaluation
+remain allowed.
 
 Coordinate runner ownership through the team mailbox at
 `/Users/olifreuler/.stormforge/team-mailbox`. Every episode or batch must stay
