@@ -1143,7 +1143,7 @@ test("recurring economy builds wait fourteen decisions", () => {
   assert.equal(choose(actions, obs, null, baseHistory).id, "build:Factory:99");
 });
 
-test("donations require an allied recipient and ally focus", () => {
+test("legacy tactical planner fields cannot trigger donations", () => {
   const actions = [
     action("donate_gold:friend:1000", "donate_gold", "Donate gold to Friend"),
     action("hold", "hold", "Hold"),
@@ -1151,7 +1151,7 @@ test("donations require an allied recipient and ally focus", () => {
   const rival = { id: "friend", name: "Friend", tileShare: 0.1, relativeTroopRatio: 2 };
   assert.equal(choose(actions, observation({ rivals: [rival] }), { focus: "ally" }).kind, "hold");
   rival.isAllied = true;
-  assert.equal(choose(actions, observation({ rivals: [rival] }), { focus: "ally" }).kind, "donate_gold");
+  assert.equal(choose(actions, observation({ rivals: [rival] }), { focus: "ally" }).kind, "hold");
 });
 
 

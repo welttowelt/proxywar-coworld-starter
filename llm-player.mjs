@@ -16,13 +16,17 @@
 import { WebSocket } from "ws";
 import { AnthropicBedrock } from "@anthropic-ai/bedrock-sdk";
 import {
-  PLAN_INTENTS,
-  PLAN_KINDS,
   buildState,
   chooseAction as chooseSelectorAction,
   clean,
   recordDecision,
 } from "./strategy-engine.mjs";
+import {
+  buildIntentSnapshot,
+  executableIntentPlan,
+  intentRefreshInterval,
+  normalizeIntentDirective,
+} from "./intent-controller.mjs";
 import { chooseChassisAction } from "./strategy-chassis.mjs";
 
 const chooseAction =
@@ -44,14 +48,17 @@ const MODELS = [
 let bedrock = null;
 try { bedrock = new AnthropicBedrock({ awsRegion: REGION }); } catch (e) { bedrock = null; }
 let lockedModel = null;
+const TEST_INTENT_DIRECTIVE = process.env.NODE_ENV === "test"
+  ? process.env.INTENT_TEST_DIRECTIVE
+  : null;
 
 // -- YOUR STRATEGY -- edit this to change how your agent thinks ---------------
 const STRATEGY = [
   "You command an autonomous nation in ProxyWar. Win by owning the most land.",
-  "INTENT: choose one outcome for the next few decisions: grow, convert, stabilize, support, or finish.",
+  "INTENT: choose one outcome for the next few decisions: grow or convert.",
   "CONSTRAINTS: never harm protected K1Z partners; preserve survival under active attack; use only offered action kinds.",
   "SUCCESS: increase our chance of finishing with the most territory; name a rival only when it advances the intent.",
-  "FREEDOM: do not prescribe action IDs, percentages, or turn timing. The deterministic selector chooses the exact legal move.",
+  "FREEDOM: do not prescribe action IDs, action kinds, percentages, or turn timing. The deterministic selector chooses the exact legal move.",
 ].join(" ");
 const PLAN_EVERY = Math.max(1, Number(process.env.PLAN_EVERY) || 8);
 const PLAN_TIMEOUT_MS = Math.max(1000, Number(process.env.PLAN_TIMEOUT_MS) || 12000);
@@ -86,20 +93,23 @@ function extractJson(text) {
 }
 
 async function askBedrock(state, signal) {
+  if (TEST_INTENT_DIRECTIVE) {
+    return { text: TEST_INTENT_DIRECTIVE, model: "intent-test-fixture" };
+  }
   if (!bedrock) throw new Error("bedrock client did not initialize");
   const prompt =
     STRATEGY + "\n" + SECURITY + "\n" +
-    'Reply with ONLY JSON: {"intent":"<one of ' + PLAN_INTENTS.join("|") + '>","focus":"<one of expand|economy|attack|defend|ally>",' +
-    '"preferKinds":["<action kinds from this list, best first: ' + PLAN_KINDS.join("|") + '>"],' +
-    '"target":"<exact rival name to pressure, or null>","avoidTargets":["<rival names not to attack>"],' +
-    '"reason":"<one short sentence>"}\n' +
-    "GAME:\n" + JSON.stringify(state);
+    'Reply with ONLY JSON and exactly these three keys. Use one shape: ' +
+    '{"intent":"grow","targetID":null,"horizon":4} or ' +
+    '{"intent":"convert","targetID":"<exact visible rival ID>","horizon":4}. ' +
+    'Horizon must be an integer from 2 through 12.\n' +
+    "GAME:\n" + JSON.stringify(buildIntentSnapshot(state));
   const candidates = [...new Set([lockedModel, ...MODELS].filter(Boolean))];
   let lastErr;
   for (const model of candidates) {
     try {
       const r = await bedrock.messages.create(
-        { model, max_tokens: 180, messages: [{ role: "user", content: prompt }] },
+        { model, max_tokens: 100, messages: [{ role: "user", content: prompt }] },
         { signal, timeout: Math.min(8000, PLAN_TIMEOUT_MS), maxRetries: 0 },
       );
       lockedModel = model;
@@ -109,20 +119,8 @@ async function askBedrock(state, signal) {
   throw lastErr || new Error("no bedrock model responded");
 }
 
-const STATIC_INTENT = process.env.POLICY_ENGINE === "id1"
-  ? {
-      intent: "grow",
-      focus: "expand",
-      preferKinds: ["attack"],
-      target: null,
-      avoidTargets: [],
-      reason: "Gain territory while the selector enforces constraints.",
-      model: "static-id1",
-    }
-  : null;
-
 // -- the PLAN: written by the model in the background, executed instantly -----
-let plan = STATIC_INTENT;  // { intent, focus, preferKinds, target, avoidTargets, reason, model }
+let plan = null;          // { intent, targetID, horizon, model }
 let planDecisionAge = 0;  // decisions answered since the last successful refresh
 let planRefreshInFlight = false;
 let lastPlanError = null; // set when the most recent refresh failed (loud degradation)
@@ -131,7 +129,6 @@ let planFailureCount = 0;
 let nextPlanRefreshAt = 0;
 
 function refreshPlanInBackground(state) {
-  if (STATIC_INTENT) return;
   if (planRefreshInFlight || Date.now() < nextPlanRefreshAt) return;
   planRefreshInFlight = true;
   const controller = new AbortController();
@@ -139,19 +136,9 @@ function refreshPlanInBackground(state) {
     .then(({ text, model }) => {
       const parsed = extractJson(text);
       if (!parsed || typeof parsed !== "object") throw new Error("plan reply had no JSON");
-      const preferKinds = Array.isArray(parsed.preferKinds)
-        ? parsed.preferKinds.filter((k) => PLAN_KINDS.includes(k))
-        : [];
-      const requestedIntent = clean(parsed.intent).toLowerCase();
-      plan = {
-        intent: PLAN_INTENTS.includes(requestedIntent) ? requestedIntent : null,
-        focus: clean(parsed.focus) || "expand",
-        preferKinds,
-        target: parsed.target ? clean(parsed.target) : null,
-        avoidTargets: Array.isArray(parsed.avoidTargets) ? parsed.avoidTargets.map(clean) : [],
-        reason: clean(parsed.reason).slice(0, 120),
-        model,
-      };
+      const nextPlan = normalizeIntentDirective(parsed, state, model);
+      if (!nextPlan) throw new Error("plan reply had no valid intent");
+      plan = nextPlan;
       planDecisionAge = 0;
       lastPlanError = null;
       lastPlanErrorClass = null;
@@ -229,13 +216,14 @@ function handleMessage(activeSocket, data) {
 
   // Keep the plan fresh WITHOUT blocking — the answer below never waits on Bedrock.
   planDecisionAge += 1;
-  if (!STATIC_INTENT && (plan === null || planDecisionAge >= PLAN_EVERY)) {
+  if (plan === null || planDecisionAge >= intentRefreshInterval(plan, PLAN_EVERY)) {
     refreshPlanInBackground(state);
   }
 
-  const chosen = chooseAction(actions, state, plan, history);
   const degraded = lastPlanError !== null;
-  const reason = publicReason(chosen, plan !== null, degraded, lastPlanErrorClass);
+  const executionPlan = executableIntentPlan(plan, planDecisionAge, degraded);
+  const chosen = chooseAction(actions, state, executionPlan, history);
+  const reason = publicReason(chosen, executionPlan !== null, degraded, lastPlanErrorClass);
 
   recordDecision(history, chosen, state);
   const response = JSON.stringify({
@@ -243,9 +231,9 @@ function handleMessage(activeSocket, data) {
     requestID: message.requestID,
     selectedLegalActionId: chosen.id,
     reason: reason.slice(0, 48),
-    confidence: plan !== null ? (degraded ? 0.5 : 0.75) : 0.4,
-    fallbackUsed: plan === null || degraded,
-    llmPlannerDegraded: plan === null || degraded,
+    confidence: executionPlan !== null ? 0.75 : 0.4,
+    fallbackUsed: executionPlan === null,
+    llmPlannerDegraded: executionPlan === null,
   });
   if (activeSocket.readyState !== WebSocket.OPEN) return;
   activeSocket.send(response, (error) => {

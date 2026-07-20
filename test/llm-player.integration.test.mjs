@@ -194,7 +194,7 @@ test("deployed player reconnects after an unexpected match socket close", async 
   );
 });
 
-test("planner contract communicates intent instead of a tactical playbook", async () => {
+test("planner contract asks only for intent, target ID, and horizon", async () => {
   const { readFile } = await import("node:fs/promises");
   const source = await readFile(playerPath, "utf8");
   assert.match(source, /INTENT:/);
@@ -202,69 +202,84 @@ test("planner contract communicates intent instead of a tactical playbook", asyn
   assert.match(source, /SUCCESS:/);
   assert.match(source, /FREEDOM:/);
   assert.match(source, /"intent":/);
+  assert.match(source, /"targetID":/);
+  assert.match(source, /"horizon":/);
+  assert.doesNotMatch(source, /"focus":/);
+  assert.doesNotMatch(source, /"preferKinds":/);
+  assert.doesNotMatch(source, /"avoidTargets":/);
   assert.doesNotMatch(source, /relativeTroopRatio 1\.3/);
   assert.doesNotMatch(source, /Commit 35% to neutral expansion/);
 });
 
-test("id1 wiring executes a static grow intent without waiting for Bedrock", async () => {
+test("a normalized nondegraded intent reaches the deployed MM1 selector", async () => {
   const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
   await new Promise((resolve) => server.once("listening", resolve));
   const { port } = server.address();
   const lowRisk = { level: "low" };
-  const requests = [
-    request("intent-grow", [
-      {
-        id: "alliance:katanasan",
-        kind: "alliance_request",
-        label: "Alliance with K1Z katanasan",
-        risk: lowRisk,
-        metadata: {
-          recipientID: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
-          recipientName: "K1Z katanasan",
-          relation: 2,
-        },
+  const legalActions = [
+    {
+      id: "alliance:katanasan",
+      kind: "alliance_request",
+      label: "Alliance with K1Z katanasan",
+      risk: lowRisk,
+      metadata: {
+        recipientID: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+        recipientName: "K1Z katanasan",
+        relation: 2,
       },
-      {
-        id: "expand:terra-nullius:10",
-        kind: "attack",
-        label: "Expand into neutral land with 10% troops",
-        risk: lowRisk,
-        metadata: { expansion: true, troopPercent: 10 },
-      },
-    ], {
-      phase: "active",
-      ownState: {
-        tileShare: 0.05,
-        troopRatio: 0.8,
-        troops: 500000,
-        gold: 250000,
-        borderTiles: 100,
-        incomingAttacks: [],
-      },
-      visiblePlayers: [{
-        id: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
-        name: "K1Z katanasan",
-        isAlive: true,
-        tileShare: 0.08,
-        relativeTroopRatio: 1.2,
-        sharesBorder: true,
-        canAttack: true,
-        isAllied: false,
-      }],
-    }),
+    },
+    {
+      id: "expand:terra-nullius:10",
+      kind: "attack",
+      label: "Expand Terra Nullius 10%",
+      risk: lowRisk,
+      metadata: { expansion: true, troopPercent: 10 },
+    },
   ];
+  const obs = {
+    phase: "active",
+    ownState: {
+      tileShare: 0.05,
+      troopRatio: 0.8,
+      troops: 500000,
+      gold: 250000,
+      borderTiles: 100,
+      incomingAttacks: [],
+    },
+    visiblePlayers: [{
+      id: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+      name: "K1Z katanasan",
+      isAlive: true,
+      tileShare: 0.08,
+      relativeTroopRatio: 1.2,
+      sharesBorder: true,
+      canAttack: true,
+      isAllied: false,
+    }],
+  };
+  const spawnActions = [
+    { id: "spawn:100", kind: "spawn", label: "Spawn 100", risk: lowRisk },
+    { id: "hold", kind: "hold", label: "Hold", risk: lowRisk },
+  ];
+  const spawnObservation = {
+    phase: "spawn",
+    ownState: { ...obs.ownState, tileShare: 0 },
+    visiblePlayers: [],
+  };
 
   const responses = [];
   let stderr = "";
   const child = spawn(process.execPath, [playerPath], {
     env: {
       ...process.env,
+      NODE_ENV: "test",
+      INTENT_TEST_DIRECTIVE: JSON.stringify({
+        intent: "grow",
+        targetID: null,
+        horizon: 4,
+      }),
       COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
-      POLICY_ENGINE: "id1",
-      AWS_ACCESS_KEY_ID: "test",
-      AWS_SECRET_ACCESS_KEY: "test",
       AWS_EC2_METADATA_DISABLED: "true",
-      BEDROCK_MODEL: "invalid-test-model",
     },
     stdio: ["ignore", "pipe", "pipe"],
   });
@@ -273,13 +288,22 @@ test("id1 wiring executes a static grow intent without waiting for Bedrock", asy
   const completed = new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
       child.kill("SIGKILL");
-      reject(new Error(`id1 wiring test timed out: ${stderr}`));
+      reject(new Error(`intent wiring test timed out: ${stderr}`));
     }, 8000);
     server.once("connection", (socket) => {
-      socket.send(JSON.stringify(requests[0]));
+      // Planning is deliberately nonblocking. Spawn uses the exact parent while
+      // the fixture resolves; the first active decision then proves that the
+      // normalized directive reaches MM1 without a prior social cooldown.
+      socket.send(JSON.stringify(request("intent-1", spawnActions, spawnObservation)));
       socket.on("message", (data) => {
         responses.push(JSON.parse(String(data)));
-        socket.send(JSON.stringify({ type: "final" }));
+        if (responses.length === 1) {
+          setTimeout(() => {
+            socket.send(JSON.stringify(request("intent-2", legalActions, obs)));
+          }, 20);
+        } else {
+          socket.send(JSON.stringify({ type: "final" }));
+        }
       });
     });
     child.once("error", reject);
@@ -296,9 +320,11 @@ test("id1 wiring executes a static grow intent without waiting for Bedrock", asy
     await new Promise((resolve) => server.close(resolve));
   }
 
-  assert.equal(responses[0].selectedLegalActionId, "expand:terra-nullius:10");
-  assert.match(responses[0].reason, /id1/);
-  assert.equal(responses[0].fallbackUsed, false);
+  assert.equal(responses[0].selectedLegalActionId, "spawn:100");
+  assert.equal(responses[0].fallbackUsed, true);
+  assert.equal(responses[1].selectedLegalActionId, "expand:terra-nullius:10");
+  assert.equal(responses[1].fallbackUsed, false);
+  assert.match(responses[1].reason, /mm1g/);
 });
 
 test("qd2n engine wiring grinds the opening at 35 percent", async () => {

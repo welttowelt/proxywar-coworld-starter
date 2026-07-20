@@ -23,12 +23,13 @@ function normalizedRivalName(value) {
 }
 
 const RECIPROCAL_RIVALS = new Set(
-  ["katanasan", "juryoku-koku", "hrafn"].map(normalizedRivalName),
+  ["katanasan", "juryoku-koku", "gravity", "hrafn", "odin free"].map(normalizedRivalName),
 );
 const RECIPROCAL_RIVAL_IDS = new Set([
   "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
   "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
   "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+  "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
 ]);
 const MIN_DESPERATE_INVASION_RATIO = 0.5;
 const MIN_CONVERSION_TILE_SHARE = 0.002;
@@ -49,7 +50,7 @@ export const PLAN_KINDS = [
 ];
 
 export const PLAN_INTENTS = [
-  "grow", "convert", "stabilize", "support", "finish",
+  "grow", "convert",
 ];
 
 export function clean(value) {
@@ -230,6 +231,24 @@ export function rivalForAction(action, state) {
     action?.metadata?.targetName ?? action?.metadata?.recipientName ?? "",
   );
   const canonicalMetadataName = normalizedRivalName(metadataName);
+
+  // Server-supplied target IDs are authoritative. Resolve them before touching
+  // rival-controlled display names or action labels, which can deliberately
+  // collide with generic words such as "Attack".
+  if (metadataID.length > 0) {
+    const exactID = state.rivals.find((rival) =>
+      clean(rival.id).toLowerCase() === metadataID
+    );
+    if (exactID) return exactID;
+  }
+
+  if (canonicalMetadataName.length > 0) {
+    const exactName = state.rivals.find((rival) =>
+      normalizedRivalName(rival.name) === canonicalMetadataName
+    );
+    if (exactName) return exactName;
+  }
+
   return state.rivals.find((rival) => {
     const canonicalName = normalizedRivalName(rival.name);
     const nameMatches = rival.name && (
@@ -237,10 +256,7 @@ export function rivalForAction(action, state) {
       (canonicalName.length >= 3 && text.includes(canonicalName))
     );
     const idMatches = rival.id && text.includes(rival.id.toLowerCase());
-    const metadataNameMatches = canonicalName.length > 0 &&
-      canonicalMetadataName === canonicalName;
-    const metadataIDMatches = rival.id && metadataID === rival.id.toLowerCase();
-    return metadataNameMatches || metadataIDMatches || nameMatches || idMatches;
+    return nameMatches || idMatches;
   });
 }
 
@@ -915,7 +931,7 @@ function chooseParentAction(actions, state, plan = null, history = []) {
   return actions.find((action) => action.kind === "hold") ?? actions[0];
 }
 
-const ID1_OPENING_DECISIONS = 20;
+const MM1_OPENING_DECISIONS = 20;
 
 function activeDecisionCount(history) {
   return history.filter((entry) => entry.kind !== "spawn").length;
@@ -943,34 +959,73 @@ function pendingReciprocalHandshake(actions, state) {
   return null;
 }
 
-// ID1 is an intent adapter, not another opening script. The commander states
-// the outcome ("grow"); the existing selector still owns the exact legal move.
-// During the bounded opening cell, safe land may replace a proactive coalition
-// request. That is the only parent branch reachable before neutral conquest.
-// Tactical, economic, pressured, stalled, and post-window states remain the
-// exact v89 parent.
+function validIntentPlan(plan) {
+  return plan &&
+    ["grow", "convert"].includes(plan.intent) &&
+    Number.isInteger(plan.horizon) &&
+    plan.horizon >= 2 &&
+    plan.horizon <= 12 &&
+    (plan.intent === "grow" ? plan.targetID === null : typeof plan.targetID === "string");
+}
+
+function exactIntentTarget(state, targetID) {
+  const normalized = clean(targetID).toLowerCase();
+  return state.rivals.find((rival) => rival.id.toLowerCase() === normalized) ?? null;
+}
+
+function intentTargetActions(actions, state, target) {
+  return actions.filter((action) => {
+    if (action.risk?.level === "high" || !["attack", "boat"].includes(action.kind)) {
+      return false;
+    }
+    if (isNeutralExpansion(action) || isNeutralBoat(action)) return false;
+    const metadataTargetID = clean(
+      action?.metadata?.targetID ?? action?.metadata?.recipientID ?? "",
+    ).toLowerCase();
+    return metadataTargetID.length > 0 &&
+      !RECIPROCAL_RIVAL_IDS.has(metadataTargetID) &&
+      metadataTargetID === target.id.toLowerCase();
+  });
+}
+
+// MM1 is a narrow mission-command adapter. The model provides only grow or
+// convert, an exact visible player ID, and a bounded decision horizon. The
+// proven selector first computes the full-menu baseline. An intent may then
+// expose a smaller safe menu, but the same selector still chooses the exact
+// server-offered action. Invalid, pressured, stale, protected, or unavailable
+// intent always returns to the full-menu baseline.
 export function chooseAction(actions, state, plan = null, history = []) {
-  const parent = chooseParentAction(actions, state, plan, history);
-  if (
-    plan?.intent !== "grow" ||
-    parent.kind === "spawn" ||
-    parent.kind !== "alliance_request" ||
-    activeDecisionCount(history) >= ID1_OPENING_DECISIONS ||
-    hasCurrentPressure(state) ||
-    territoryCollapsing(state, history) ||
-    neutralExpansionStalled(state, history)
-  ) {
-    return parent;
-  }
+  const baseline = chooseParentAction(actions, state, null, history);
+  if (!validIntentPlan(plan) || baseline.kind === "spawn" || hasCurrentPressure(state) ||
+      territoryCollapsing(state, history)) return baseline;
 
   const reverseHandshake = pendingReciprocalHandshake(actions, state);
   if (reverseHandshake) return reverseHandshake;
 
-  const avoid = new Set(avoidActionIDs(history));
-  const safeLand = actions.filter((action) => action.risk?.level !== "high");
-  const neutral = chooseNeutralAttack(safeLand, history, avoid);
-  if (!neutral || neutral.id === parent.id) return parent;
-  return { ...neutral, policyMarker: "id1" };
+  if (plan.intent === "grow") {
+    if (baseline.kind !== "alliance_request" ||
+        activeDecisionCount(history) >= MM1_OPENING_DECISIONS ||
+        neutralExpansionStalled(state, history)) return baseline;
+    const avoid = new Set(avoidActionIDs(history));
+    const safeLand = actions.filter((action) => action.risk?.level !== "high");
+    const neutral = chooseNeutralAttack(safeLand, history, avoid);
+    if (!neutral || neutral.id === baseline.id) return baseline;
+    return { ...neutral, policyMarker: "mm1g" };
+  }
+
+  const target = exactIntentTarget(state, plan.targetID);
+  if (!target || rivalIsProtected(state, history, target) ||
+      state.self.tileShare < 0.12 || !Number.isFinite(target.relativeTroopRatio) ||
+      target.relativeTroopRatio < 1.3) return baseline;
+  const targeted = intentTargetActions(actions, state, target);
+  if (targeted.length === 0) return baseline;
+  const holds = actions.filter((action) => action.kind === "hold");
+  const chosen = chooseParentAction([...targeted, ...holds], state, {
+    target: target.name,
+  }, history);
+  if (chosen.kind === "hold" || !targeted.some((action) => action.id === chosen.id) ||
+      chosen.id === baseline.id) return baseline;
+  return { ...chosen, policyMarker: "mm1c" };
 }
 
 export function recordDecision(history, action, state) {
