@@ -485,6 +485,85 @@ test("marked hold intent is separated from independent replay proof", () => {
   assert.equal(report.checks.hold_evidence_complete, false);
 });
 
+test("naval-cap hold is verified when replay proves recovery options exhausted", () => {
+  const capped = decision({
+    turn: 560,
+    id: "hold",
+    kind: "hold",
+    reason: "[K1Z] r4vn:h0d:hncap",
+    legal: [
+      "attack:runtime-outsider:10",
+      "boat:100:16",
+      "target:runtime-outsider",
+      "hold",
+    ],
+    legalByKind: {
+      attack: ["attack:runtime-outsider:10"],
+      boat: ["boat:100:16"],
+      target_player: ["target:runtime-outsider"],
+      hold: ["hold"],
+    },
+  });
+  capped.tacticalAffordances = {
+    frontierConversionTiming: {
+      hostileAttackActionCount: 1,
+      favorableHostileAttackActionCount: 0,
+    },
+  };
+  const report = auditHrafnChassisReplay(replayWith([capped]));
+  assert.equal(report.verified_holds.length, 1);
+  assert.equal(report.hold_evidence_gaps.length, 0);
+  assert.equal(report.checks.hold_evidence_complete, true);
+});
+
+test("naval-cap hold fails proof if land, utility, or favorable combat remains", () => {
+  const cases = [
+    {
+      id: "expand:terra-nullius:35",
+      kind: "attack",
+      conversion: {
+        hostileAttackActionCount: 0,
+        favorableHostileAttackActionCount: 0,
+      },
+    },
+    {
+      id: "build:City:100",
+      kind: "build",
+      conversion: {
+        hostileAttackActionCount: 0,
+        favorableHostileAttackActionCount: 0,
+      },
+    },
+    {
+      id: "attack:runtime-outsider:10",
+      kind: "attack",
+      conversion: {
+        hostileAttackActionCount: 1,
+        favorableHostileAttackActionCount: 1,
+      },
+    },
+  ];
+  for (const [index, alternative] of cases.entries()) {
+    const capped = decision({
+      turn: 565 + index,
+      id: "hold",
+      kind: "hold",
+      reason: "[K1Z] r4vn:h0d:hncap",
+      legal: ["hold", alternative.id],
+      legalByKind: {
+        hold: ["hold"],
+        [alternative.kind]: [alternative.id],
+      },
+    });
+    capped.tacticalAffordances = {
+      frontierConversionTiming: alternative.conversion,
+    };
+    const report = auditHrafnChassisReplay(replayWith([capped]));
+    assert.equal(report.verified_holds.length, 0);
+    assert.equal(report.hold_evidence_gaps.length, 1);
+  }
+});
+
 test("hold verification fails closed when by-kind coverage is absent", () => {
   const incomplete = decision({
     turn: 575,

@@ -521,6 +521,55 @@ function legalActionCoverage(decision) {
   };
 }
 
+function navalCapHoldProof(decision, coverage) {
+  if (!coverage.complete) return null;
+  const byKind = decision?.legalActionIDsByKind ?? {};
+  const productiveKinds = new Set([
+    "build",
+    "upgrade_structure",
+    "retreat",
+    "boat_retreat",
+    "warship",
+    "move_warship",
+    "donate_troops",
+    "donate_gold",
+  ]);
+  const offeredProductiveKinds = coverage.nonHoldKinds.filter((kind) =>
+    productiveKinds.has(kind)
+  );
+  const neutralLandIDs = coverage.nonHoldIDs.filter((id) =>
+    id.startsWith("expand:")
+  );
+  const hostileAttackIDs = Array.isArray(byKind.attack)
+    ? byKind.attack.filter((id) => !String(id).startsWith("expand:"))
+    : [];
+  const conversion =
+    decision?.tacticalAffordances?.frontierConversionTiming;
+  const hostileEvidenceComplete =
+    hostileAttackIDs.length === 0 ||
+    (
+      Number.isInteger(conversion?.hostileAttackActionCount) &&
+      conversion.hostileAttackActionCount === hostileAttackIDs.length &&
+      Number.isInteger(conversion?.favorableHostileAttackActionCount) &&
+      conversion.favorableHostileAttackActionCount === 0
+    );
+  if (
+    offeredProductiveKinds.length > 0 ||
+    neutralLandIDs.length > 0 ||
+    !hostileEvidenceComplete
+  ) {
+    return null;
+  }
+  return {
+    proof: "naval cap recovery menu exhausted",
+    offered_productive_kinds: offeredProductiveKinds,
+    neutral_land_ids: neutralLandIDs,
+    hostile_attack_ids: hostileAttackIDs,
+    favorable_hostile_attack_count:
+      conversion?.favorableHostileAttackActionCount ?? null,
+  };
+}
+
 export function auditHrafnChassisReplay(
   replay,
   replayBytes = null,
@@ -682,12 +731,21 @@ export function auditHrafnChassisReplay(
         parsed.primaryMarker === "hncap"
       ) {
         explainedHolds.push(row);
+        const capProof = parsed.primaryMarker === "hncap"
+          ? navalCapHoldProof(decision, coverage)
+          : null;
         if (
-          row.legal_kind_coverage_complete &&
-          row.offered_non_hold_ids.length === 0 &&
-          row.offered_non_hold_kinds.length === 0
+          (
+            row.legal_kind_coverage_complete &&
+            row.offered_non_hold_ids.length === 0 &&
+            row.offered_non_hold_kinds.length === 0
+          ) ||
+          capProof
         ) {
-          verifiedHolds.push(row);
+          verifiedHolds.push({
+            ...row,
+            ...(capProof ?? { proof: "hold was the only offered action" }),
+          });
         } else {
           holdEvidenceGaps.push({
             ...row,
