@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "record_type": "qd1n_os1_local_screen_job_spec_addendum",
+  "created_at": "2026-07-20T19:54:26Z",
+  "cycle_id": "odin-20260720T195217Z-79660",
+  "contract": "experiments/contract-qd1n-os1-local-screen-20260720.json",
+  "contract_sha256": "e174b07d77380450e40679346838d069c955768fbd44b203af4b6958c05633da",
+  "preconditions": {
+    "runner": "free",
+    "active_player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "active_player_name": "K1Z odin free",
+    "hrafn_active": false,
+    "candidate_source_commit": "316c7a111aeebed4ebce00032287773492e39912",
+    "parent_source_commit": "f1347251834a6283182b631e1336595eb2e08342"
+  },
+  "jobs": [
+    {
+      "path": "experiments/job-qd1n-os1-pangaea-a-20260720.json",
+      "sha256": "3274ae62f3525a5804c15e2cd65a74e105a500ad90918cb3107be7014ea952c0",
+      "candidate_seat": 0,
+      "parent_seat": 1
+    },
+    {
+      "path": "experiments/job-qd1n-os1-pangaea-b-20260720.json",
+      "sha256": "30b13296326b222d0895ef487bdd67679944f206507e40a996d1428d087868e7",
+      "candidate_seat": 1,
+      "parent_seat": 0
+    }
+  ],
+  "pair_invariant": "The two job specifications pin the same runtime, base request hash, game configuration, seed, map, map size, decision limits, player names, image identities, source commits, strategy bytes, and commands. Orientation B changes only the job ID and the candidate/parent seat mapping with its corresponding ordered names and player records.",
+  "candidate_image_guard": "The recorded candidate image ID is an observation from the quarantined non-evidence attempt, not accepted evidence. The supervised run must rebuild from the clean candidate commit and byte-verify /app/strategy-engine.mjs against the pinned source hash before either orientation starts.",
+  "runner_started": false,
+  "promotion_evidence_claimed": false,
+  "next_transition": "Acquire the Odin foreground runner lease with fresh dedicated qualifier and two-orientation output directories, verify the rebuilt candidate image and accepted qualifier, then execute exactly these two hash-bound jobs."
+}

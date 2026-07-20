@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "job_id": "qd1n-os1-pangaea-b-20260720",
+  "screen_contract": "experiments/contract-qd1n-os1-local-screen-20260720.json",
+  "runtime": {
+    "coworld_version": "0.1.28",
+    "base_job_source": "/private/tmp/proxywar-ht1-screen-a-48d57e95/jobs/candidate.json",
+    "base_job_source_sha256": "d4e4c6c2e47ffd0478b0737829a4113f1931a96b411f4f7d663551bdd202822b",
+    "episode_timeout_seconds": 1800
+  },
+  "game_config": {
+    "difficulty": "Easy",
+    "episode_timeout_seconds": 1200,
+    "map": "Pangaea",
+    "map_size": "Normal",
+    "max_decision_ms": 15000,
+    "max_decision_steps": 80,
+    "num_agents": 2,
+    "player_connect_timeout_seconds": 120,
+    "players": [
+      { "name": "OS1 exact parent" },
+      { "name": "K1Z odin free" }
+    ],
+    "replay_tail_turns": 0,
+    "seed": 20260720,
+    "turns_per_decision_step": 100
+  },
+  "players": [
+    {
+      "role": "parent",
+      "seat": 0,
+      "name": "OS1 exact parent",
+      "image": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+      "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+      "source_commit": "f1347251834a6283182b631e1336595eb2e08342",
+      "strategy_engine_sha256": "f2ee66d570033508c4158bcb83d56d81dc198cdcebb91098d7e67eefdc8e6a7a",
+      "run": ["node", "/app/llm-player.mjs"],
+      "type": "player"
+    },
+    {
+      "role": "candidate",
+      "seat": 1,
+      "name": "K1Z odin free",
+      "image": "proxywar-agent-llm:qd1n-v89-os1-316c7a11-amd64",
+      "observed_pre_run_image_id": "sha256:ab8dcdd2064a71885c922cd4ba8634028359881aae8c42874d7452dc7e4ab032",
+      "source_commit": "316c7a111aeebed4ebce00032287773492e39912",
+      "strategy_engine_sha256": "d0e398ab080f516f8f09a593e3d973de2c9c9d1627624f0fe42543204bc6e10a",
+      "run": ["node", "/app/llm-player.mjs"],
+      "type": "player"
+    }
+  ]
+}

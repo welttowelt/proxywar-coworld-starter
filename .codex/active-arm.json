@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T18:52:12Z",
-  "cycle_id": "odin-os1-source-20260720",
+  "updated_at": "2026-07-20T19:54:26Z",
+  "cycle_id": "odin-20260720T195217Z-79660",
   "lane": "odin",
   "authority": {
     "persistent_operator": "Codex Odin",
@@ -17,7 +17,7 @@
     "marker_family": "os1",
     "closed": false
   },
-  "state": "source_ready_waiting_hrafn_c4_local_run_and_identity_return_after_quarantined_non_evidence_attempt",
+  "state": "job_specs_ready_waiting_odin_foreground_runner",
   "live_control": {
     "checked_at": "2026-07-20T18:23:19Z",
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
@@ -29,14 +29,14 @@
     "is_champion": true
   },
   "locks": {
-    "checked_at": "2026-07-20T18:52:12Z",
-    "runner": "active_hrafn",
-    "runner_owner": "hrafn",
-    "runner_run_id": "hrafn-c4-xo-a-r2-20260720",
+    "checked_at": "2026-07-20T19:54:26Z",
+    "runner": "free",
+    "runner_owner": null,
+    "runner_run_id": null,
     "qd1n_mutation": "free",
-    "active_player": "K1Z Hrafn",
-    "active_player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
-    "identity_window": "hrafn_c4_local_only",
+    "active_player": "K1Z odin free",
+    "active_player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "identity_window": "odin_default_active_hrafn_inactive",
     "identity_window_mailbox_commit": "1b8b2b6add8100c69b2f228de7283b374242c548"
   },
   "candidate": {
@@ -54,13 +54,11 @@
     "submitted": false
   },
   "runner": {
-    "status": "active_hrafn_local_only",
-    "owner": "hrafn",
-    "run_id": "hrafn-c4-xo-a-r2-20260720",
-    "acquired_at": "2026-07-20T18:52:12Z",
-    "output_roots": [
-      "/private/tmp/hrafn-c4-crossover-20260720-r1/candidate-first-output"
-    ],
+    "status": "free_after_hrafn_completed_exit_0",
+    "owner": null,
+    "run_id": null,
+    "acquired_at": null,
+    "output_roots": [],
     "qd1n_or_league_authority": false
   },
   "evidence": {
@@ -90,6 +88,12 @@
       "receipt": "experiments/receipt-qd1n-os1-aborted-local-attempt-20260720.json",
       "receipt_sha256": "26f857af22a59c2c56ee5f9df0b58371941cf46068edd658d899359aec1e6cdb",
       "terminal_state": "QUARANTINED_NON_EVIDENCE"
+    },
+    "job_spec_addendum": {
+      "receipt": "experiments/addendum-qd1n-os1-local-screen-jobs-20260720.json",
+      "job_a_sha256": "3274ae62f3525a5804c15e2cd65a74e105a500ad90918cb3107be7014ea952c0",
+      "job_b_sha256": "30b13296326b222d0895ef487bdd67679944f206507e40a996d1428d087868e7",
+      "runner_started": false
     }
   },
   "gates": {
@@ -115,7 +119,7 @@
     "daveey_private_endpoint_proved": false,
     "k1z_only_finish": "disabled_until_authoritative_alive_roster_signal"
   },
-  "next_automatic_transition": "Wait for Hrafn to finish or stop its bounded C4 local window and restore the shared identity to K1Z odin free. Then commit and push an immutable addendum containing the exact two OS1 job specifications and their hashes before acquiring the Odin runner lease. Use fresh outputs for a byte-verified image, accepted qualifier, and both Pangaea orientations. Audit exactly against experiments/contract-qd1n-os1-local-screen-20260720.json. Any missing field or failure closes OS1 and preserves qd1n:v89. A pass advances to pre-upload RCI; do not begin another arm.",
+  "next_automatic_transition": "Acquire the Odin foreground runner lease using fresh dedicated qualifier and two-orientation outputs. Byte-verify the rebuilt candidate image, require an accepted qualifier, and execute only the two hash-bound Pangaea jobs in experiments/addendum-qd1n-os1-local-screen-jobs-20260720.json. Audit exactly against experiments/contract-qd1n-os1-local-screen-20260720.json. Any missing field or failure closes OS1 and preserves qd1n:v89. A pass advances to pre-upload RCI; do not begin another arm.",
   "prior_verified_champion_preserved": true,
   "prior_verified_champion": "qd1n:v89"
 }
