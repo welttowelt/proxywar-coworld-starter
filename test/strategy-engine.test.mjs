@@ -619,6 +619,24 @@ test("rising raw tiles veto a rounded-share stall and keep neutral land", () => 
   assert.equal(selected.policyMarker, "rs1");
 });
 
+test("raw tiles stay selector-private and do not change the planner prompt", () => {
+  const state = buildState(
+    observation({ tileShare: 0.045, tilesOwned: 12_345 }),
+    [],
+    [],
+  );
+  assert.equal(state.self.tilesOwned, 12_345);
+  assert.equal(
+    Object.prototype.propertyIsEnumerable.call(state.self, "tilesOwned"),
+    false,
+  );
+  assert.equal(JSON.stringify(state).includes('"tilesOwned"'), false);
+
+  const history = [];
+  recordDecision(history, action("hold", "hold", "Hold"), state);
+  assert.equal(history[0].tilesOwned, 12_345);
+});
+
 test("flat raw tiles retain the neutral escape branch", () => {
   const land = {
     ...action("expand:terra-nullius:35", "attack", "Expand into neutral land 35%"),

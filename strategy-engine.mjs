@@ -188,7 +188,6 @@ export function buildState(observation, actions, history = []) {
   const tilesOwned = validTileCount(own.tilesOwned);
   const self = {
     tileShare: finiteNumber(own.tileShare),
-    ...(tilesOwned === null ? {} : { tilesOwned }),
     troops: finiteNumber(own.troops),
     troopRatio: finiteNumber(own.troopRatio),
     gold: own.gold,
@@ -197,6 +196,12 @@ export function buildState(observation, actions, history = []) {
     incomingAttackerIDs: activeIncomingAttackerIDs,
     allProtocolAttackerIDs: currentProtocolIncomingAttackerIDs,
   };
+  if (tilesOwned !== null) {
+    Object.defineProperty(self, "tilesOwned", {
+      value: tilesOwned,
+      enumerable: false,
+    });
+  }
   const rivals = visiblePlayers.map((player) => ({
       id: playerID(player),
       name: clean(player.name),
