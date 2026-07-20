@@ -796,6 +796,16 @@ terminate_recorded_child() {
   fi
 }
 
+child_group_lost_recorded_leader() {
+  local child_pid child_started child_pgid
+  child_pid="$(read_lock_file child_pid)"
+  child_started="$(read_lock_file child_started_at)"
+  child_pgid="$(read_lock_file child_pgid)"
+  [[ "$child_pid" == <-> && "$child_pgid" == "$child_pid" &&
+    "$child_pgid" -gt 1 && -n "$child_started" ]] || return 1
+  process_group_alive "$child_pgid" && ! pid_matches "$child_pid" "$child_started"
+}
+
 docker_list_all() {
   # Docker Desktop can retain uninspectable "created" summary rows after the
   # underlying container object is gone. Keep state and summary mounts only to
@@ -1295,14 +1305,22 @@ reap_action() {
     emit_event "recovery_refused" "output-ownership"
     return 74
   }
-  terminate_recorded_child || {
-    emit_event "recovery_refused" "child-group-uncertain"
-    return 75
-  }
+  local leaderless_group=0
+  if ! terminate_recorded_child; then
+    child_group_lost_recorded_leader || {
+      emit_event "recovery_refused" "child-group-uncertain"
+      return 75
+    }
+    leaderless_group=1
+    emit_event "leaderless-group-preserved" "container-cleanup-only"
+  fi
   scoped_container_cleanup || {
     emit_event "recovery_refused" "docker-uncertain"
     return 69
   }
+  if (( leaderless_group == 1 )); then
+    emit_event "leaderless-group-containers-cleared" "containers=${CLEANED_CONTAINER_COUNT:-0}"
+  fi
   quarantine_claimed_outputs "stale_supervisor" || return
   release_exact_internal "$LANE" "$RUN_ID" "$TOKEN" || return 75
   emit_event "stale_reap_completed" "containers=${CLEANED_CONTAINER_COUNT:-0}"

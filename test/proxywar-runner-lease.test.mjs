@@ -542,6 +542,45 @@ test("SIGKILL leaves a stale lease whose reaper terminates the recorded orphan g
   orphanPid = 0;
 });
 
+test("stale reaping clears only exact mounted containers when an orphaned group lost its leader", async (t) => {
+  const context = fixture();
+  const { directory, state } = context;
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const output = path.join(directory, "leaderless-output");
+  const group = spawn("/bin/zsh", ["-c", "sleep 30 & wait"], {
+    detached: true,
+    stdio: "ignore",
+  });
+  let groupPid = group.pid;
+  t.after(() => {
+    if (groupPid > 1) {
+      try { process.kill(-groupPid, "SIGKILL"); } catch {}
+    }
+  });
+  await waitFor(() => processStart(groupPid).length > 0, "orphan group leader start");
+  const groupStart = processStart(groupPid);
+  group.kill("SIGKILL");
+  await exitPromise(group);
+  const docker = makeFakeDocker(context, [{ id: "ours", mounts: [output], running: true }]);
+  writeV2Lock(state, {
+    runId: "leaderless-run",
+    token: "leaderless-token",
+    outputs: [output],
+    childPid: String(groupPid),
+    childStartedAt: groupStart,
+    childPgid: String(groupPid),
+  });
+
+  const result = invoke(
+    state, ["reap-stale", "odin", "leaderless-run", "leaderless-token"], docker.env);
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /reaped:odin:leaderless-run:containers=1/);
+  assert.match(readFileSync(docker.log, "utf8"), /stop:ours/);
+  assert.match(readFileSync(docker.log, "utf8"), /rm:ours/);
+  assert.equal(existsSync(path.join(state, "runner.lock")), false);
+  groupPid = 0;
+});
+
 test("stale reaping removes only exact mounted running and exited containers, then verifies again", (t) => {
   const context = fixture();
   const { directory, state } = context;
