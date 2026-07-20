@@ -47,7 +47,7 @@ export function hrafnCoworldEnvironment(environment = process.env) {
     if (
       !stat.isDirectory() ||
       stat.isSymbolicLink() ||
-      path.normalize(requestedHome) !== isolatedHome
+      requestedHome !== isolatedHome
     ) {
       throw new Error("not canonical");
     }

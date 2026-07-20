@@ -136,13 +136,24 @@ test("Hrafn Coworld identity probe rejects shared-home aliases", (t) => {
 });
 
 test("Hrafn Coworld identity probe requires a canonical absolute directory", (t) => {
-  const hostHome = mkdtempSync(`${tmpdir()}/hrafn-host-home-`);
-  t.after(() => rmSync(hostHome, { recursive: true, force: true }));
+  const root = mkdtempSync(`${tmpdir()}/hrafn-canonical-home-`);
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const hostHome = path.join(root, "host-home");
+  const coworldHome = path.join(root, "coworld-home");
+  mkdirSync(hostHome);
+  mkdirSync(coworldHome);
 
   assert.throws(
     () => hrafnCoworldEnvironment({
       HOME: hostHome,
       HRAFN_SOFTMAX_HOME: "relative",
+    }),
+    /must be an absolute canonical directory/,
+  );
+  assert.throws(
+    () => hrafnCoworldEnvironment({
+      HOME: hostHome,
+      HRAFN_SOFTMAX_HOME: path.join(coworldHome, "..", "coworld-home"),
     }),
     /must be an absolute canonical directory/,
   );
