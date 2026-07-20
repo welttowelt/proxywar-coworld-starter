@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T09:56:07Z",
+  "updated_at": "2026-07-20T09:59:00Z",
   "cycle_id": "odin-nb1-20260720",
   "lane": "odin",
   "arm": {
@@ -69,7 +69,8 @@
   "dispatch_checkpoint": {
     "priority_packet": null,
     "classification": "nb1_terminal_stop_waiting_structural_kimi_review",
-    "mailbox_message_written": false,
+    "mailbox_message_written": true,
+    "mailbox_commit": "0e0460e",
     "checkpoint_reason": "NB1 was safe and reached seven times on World, but Pangaea reach was zero and candidate-control outcome deltas were exactly zero. No tuning or successor micro-guard is authorized."
   },
   "next_automatic_transition": "Send the compact NB1 terminal receipt and request one structural, replay-backed mechanism review from Kimi K3 Max. Do not mutate source or open another micro-guard until that review names one causal action change and stop condition.",
