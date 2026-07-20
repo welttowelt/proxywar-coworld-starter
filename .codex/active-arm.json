@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T22:20:58Z",
+  "updated_at": "2026-07-20T22:37:26Z",
   "cycle_id": "odin-20260720T220201Z-40724",
   "lane": "odin",
   "arm": {
@@ -12,7 +12,7 @@
     "candidate_source_commit": "ddb980e389c61915fafaa1c91fea282937ad85b5",
     "closed": false
   },
-  "state": "blocked_hrafn_source_revise_waiting_studio_reseal",
+  "state": "blocked_hrafn_studio_reseal_and_migration",
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
     "player_name": "K1Z odin free",
@@ -27,8 +27,8 @@
     "active_player": "K1Z Hrafn (live verified 2026-07-20T22:03:52Z)",
     "hrafn_identity_window": "open_advisory_only",
     "mailbox_commit": "b648a04",
-    "hrafn_pickup": "Hrafn source and future execution moved to Studio. A bounded Studio reseal is repairing odin-000016; no valid execution window remains. The local Hrafn Softmax identity stays untouched until Studio posts a terminal migration receipt.",
-    "mickey_local_slot": "authorized for local source, evaluation, and CPU fanout only; no live identity or league authority before the Hrafn terminal migration receipt"
+    "hrafn_pickup": "Hrafn source and future execution moved to Studio. Source correction 67ae7362 passed independent audit and is pushed; Studio is resealing its later identity-isolation source and artifacts. No valid execution window remains. The local Hrafn Softmax identity stays untouched until Studio posts a terminal migration receipt.",
+    "mickey_local_slot": "source, five-arm evaluation, linux/amd64 images, and CPU fanout ready; no live identity or league authority before the Hrafn terminal migration receipt"
   },
   "operator_topology": {
     "odin": "local qd1n owner",
@@ -37,6 +37,10 @@
     "authority_receipt": "team-mailbox b648a04",
     "mickey_source_worktree": "/private/tmp/proxywar-mickey-cpu-surrogates-20260721",
     "mickey_ops_worktree": "/private/tmp/proxywar-mickey-cpu-fanout-ops-20260721",
+    "mickey_source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
+    "mickey_source_receipt_commit": "068afee40b55ee80e00b55966905c0e3f3c3df10",
+    "mickey_ops_commit": "0ff0dbe563807a4c9bd16972eeb69e62df4a7153",
+    "mickey_state": "five distinct arms; 184/184; zero K1Z harm; six linux/amd64 images verified; waiting only on migration and dedicated identity",
     "live_identity_guard": "K1Z Hrafn remains active locally until the Studio terminal migration receipt"
   },
   "candidate": {
@@ -93,7 +97,7 @@
     "oi2": "closed_before_edit as redundant with HI1",
     "os1": "closed_without_run_as_recombined_complexity"
   },
-  "next_automatic_transition": "In parallel, Mickey completes its local evaluation-only intent surrogate without touching league state, while Hrafn fixes permissive Coworld envelope extraction on Studio and reseals every source/image/job binding. After Studio posts the terminal Hrafn migration receipt and restores K1Z odin free locally, run the preregistered RS1 slot-0 control first. Run the candidate only if the control reproduces the trace-proven opportunity; reject on zero reach, pre-marker divergence, any unexplained hold/reject/K1Z harm, or nonpositive AUC25 lift.",
+  "next_automatic_transition": "Studio finishes Hrafn's reseal and terminal migration receipt. Then restore K1Z odin free locally and run the preregistered RS1 slot-0 control first; Mickey may separately preregister one M0-versus-one-arm local screen under the mickey lease after its dedicated identity is verified. Reject either lane on zero reach, pre-marker divergence, any unexplained hold/reject/K1Z harm, or nonpositive measured lift.",
   "prior_verified_champion_preserved": true,
   "live_identity_checkpoint": {
     "cycle_id": "odin-20260720T220201Z-40724",
