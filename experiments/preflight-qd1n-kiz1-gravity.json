@@ -8,7 +8,13 @@
     ],
     "source_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
     "parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
-    "image_id": "sha256:de2a15be36a86cf8f74029539f6576b0559554c89ac5800ebf4814c6b863677e"
+    "image_id": "sha256:de2a15be36a86cf8f74029539f6576b0559554c89ac5800ebf4814c6b863677e",
+    "uploaded_label": "qd1n:v94",
+    "policy_version_id": "e141216a-5a79-47a2-b885-7538b5d0003e",
+    "upload_receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/receipt-qd1n-kiz1-gravity-diagnostic-upload-20260720.json",
+      "sha256": "08668084d17608b5421fa96d778078d9d9bd9296bbd1ed572db85f38d35828bc"
+    }
   },
   "hypothesis": "Recognizing the renamed K1Z Gravity restores the existing reciprocal handshake and prevents attacks, boats, and nukes against Gravity while preserving offense against outsiders and retaliation after betrayal.",
   "mechanism": {
