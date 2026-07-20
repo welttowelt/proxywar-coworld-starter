@@ -1,0 +1,76 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_clean_chassis_source_image_readiness",
+  "recorded_at": "2026-07-20T18:12:22Z",
+  "arm": "hrafn-clean-chassis-c4-cap-escape-precedence",
+  "scope": "Hrafn only",
+  "authority": {
+    "formal_approver": "Codex Odin",
+    "formal_approval_status": "not requested before local matched evidence",
+    "slack_interaction": false
+  },
+  "source": {
+    "branch": "feature/k1z-hrafn-fylking",
+    "commit": "9d2921cab1f1815f0cdc36862189dd22e3886f39",
+    "pushed_before_build": true,
+    "parent_arm": "hrafn-clean-chassis-c2",
+    "parent_source_commit": "9c9ae7b6b3a978d971cde24688aba3995a88bdea",
+    "scope_change": "C4 runs the bounded hks1.hncap Warship escape before ordinary post-cap Defense Post and stalled neutral-35 recovery. This is a new arm because it replaces more than exact-C2 holds.",
+    "files": {
+      "Dockerfile.hrafn-chassis": "0ead1eadad1096578f8a0e19a63f2168f432a8e7746f9910bbbd7cfe66b17e7a",
+      "hrafn-state.mjs": "374f216652a7620001558ba848a95c16eda85e171efeac2786b0df0704ebb692",
+      "hrafn-safety.mjs": "4016468cb15d7e225adaaac6d049a22cdde5629cc575b44caee207dc2d9d9c05",
+      "hrafn-chassis.mjs": "a65b2c28327b6fae9fd3a470a02d10e0a5becd2c0ed8518817b6da935edff59c",
+      "hrafn-chassis-player.mjs": "39e3a658dcbaeea5e7c576b654838dcc1e646b4e44b82bb8b67db1130aa70054",
+      "package.json": "34302b1611c336e9db9e33460d168106c6ad9290716c0b9c78bf45ce866cf89a",
+      "package-lock.json": "39c03de8cf52b9dbf1a097871698ef1cabee8afac4be11927f3a5c612b2c77ec",
+      "scripts/build-hrafn-matched-job.mjs": "400cad8d3c369cd68c3ff9264a21b4918795b5609aa5f48016ed0eb8c791fc5b",
+      "test/build-hrafn-matched-job.test.mjs": "50cd1dc902736646267993bf784b5ae80172eb9c39972e324b2c3c26bdbb6973",
+      "test/hrafn-c3-cap-escape.test.mjs": "f6dce8550f96b14a531d8b647480de77651f5f4a2d765501984d1e108240c883"
+    }
+  },
+  "verification": {
+    "protocol_focused": {
+      "passed": 21,
+      "failed": 0
+    },
+    "c4_and_builder_focused": {
+      "passed": 31,
+      "failed": 0
+    },
+    "full_repository": {
+      "passed": 400,
+      "failed": 0
+    },
+    "rci": "APPROVE",
+    "json_and_diff_check": "passed"
+  },
+  "image": {
+    "tag": "hrafn-clean-chassis-c4:9d2921ca",
+    "id": "sha256:197b3193fff7de86c112720ea710e87d453bde036fc360a637090236cf57ba3a",
+    "platform": "linux/amd64",
+    "architecture_probe": "x86_64",
+    "policy_codename": "hrafn-clean-chassis-c4",
+    "command": [
+      "node",
+      "/app/hrafn-chassis-player.mjs"
+    ],
+    "build": "git archive --format=tar 9d2921cab1f1815f0cdc36862189dd22e3886f39 | docker build --platform linux/amd64 --build-arg POLICY_CODENAME=hrafn-clean-chassis-c4 -f Dockerfile.hrafn-chassis -t hrafn-clean-chassis-c4:9d2921ca -",
+    "all_copied_files_match_exact_commit": true
+  },
+  "promotion_state": {
+    "SOURCE_READY": true,
+    "IMAGE_READY": true,
+    "LOCAL_MATCHED_REACH": false,
+    "LOCAL_MATCHED_ADVANTAGE": false,
+    "DIAGNOSTIC_UPLOADED": false,
+    "HOSTED_PASSED": false,
+    "REGRESSION_PASSED": false,
+    "AUDIT_APPROVED": false,
+    "SUBMITTED": false,
+    "PLACED": false,
+    "CHAMPION_VERIFIED": false
+  },
+  "evidence_boundary": "The exact image and source hashes prove packaging only. They do not prove hks1 reach, match advantage, hosted performance, or promotion eligibility.",
+  "next_gate": "Generate two arm-bound, equally K1Z-tagged orientations against exact C2 and run both under the shared foreground lease. Interpret outcomes only after exact C4 hks1 reach."
+}
