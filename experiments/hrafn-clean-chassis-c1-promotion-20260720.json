@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_clean_chassis_promotion",
+  "recorded_at": "2026-07-20T13:26:00Z",
+  "lane": "hrafn-fylking",
+  "candidate": {
+    "label": "hrafn-fylking:v8",
+    "policy_version_id": "0b444466-abdd-422f-82e7-7652360a2015",
+    "source_commit": "b74fa0d4db8786ca5016b382501fac40dc42a871",
+    "audit_commit": "09661d0f83ab36aba5ab4ae2167a7755c4352efb",
+    "local_image": "hrafn-clean-chassis-c1:b74fa0d4",
+    "local_image_id": "sha256:c4768848217605db6333fae1307a49960025ecb4d5a607b428eccafccee1447f",
+    "registry_image_id": "img_7704d8c6-dd36-4e43-8a4c-79148f270b2f",
+    "registry_image_digest": "sha256:b217fb79cc52c98bc5bb2137901bae1e0ab10feb679c2e8cc4993ca8c42711f6",
+    "platform": "linux/amd64",
+    "run": [
+      "node",
+      "/app/hrafn-chassis-player.mjs"
+    ],
+    "uploaded_at": "2026-07-20T13:21:55.585193Z",
+    "purpose": "diagnostic only"
+  },
+  "preupload_approval": {
+    "verdict": "APPROVE",
+    "mailbox_file": "CODEX_ODIN_TO_HRAFN_C1_PREUPLOAD_APPROVAL_20260720.md",
+    "mailbox_commit": "9523074",
+    "approved_claims": [
+      "SOURCE_READY",
+      "LOCAL_QUALIFIED"
+    ]
+  },
+  "live_incumbent": {
+    "label": "hrafn-fylking:v5",
+    "policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+    "membership_id": "lpm_e822de7f-1124-4b5f-b0ef-1025d46ae211",
+    "status": "competing active",
+    "champion": true
+  },
+  "hosted_gate": {
+    "snapshot_round_id": "round_048c6b49-ca68-4a1b-92a2-2eb089f30577",
+    "snapshot_round_number": 570,
+    "snapshot_episode_id": "ereq_96e29e7f-8a7b-4c4c-8024-04fcc9c8bf08",
+    "variant": "tournament-12p-world",
+    "candidate_slot": 5,
+    "control_request": "experiments/gate-hrafn-c1-current-world-12p-control.json",
+    "candidate_request": "experiments/gate-hrafn-c1-current-world-12p-candidate.json",
+    "control_request_id": null,
+    "candidate_request_id": null,
+    "status": "not_started"
+  },
+  "regression_gate": {
+    "episodes_required": 20,
+    "status": "not_started"
+  },
+  "promotion_states": {
+    "SOURCE_READY": true,
+    "LOCAL_QUALIFIED": true,
+    "DIAGNOSTIC_UPLOADED": true,
+    "HOSTED_PASSED": false,
+    "REGRESSION_PASSED": false,
+    "AUDIT_APPROVED": false,
+    "SUBMITTED": false,
+    "PLACED": false,
+    "CHAMPION_VERIFIED": false,
+    "ROUND_CONFIRMED": false
+  },
+  "next_gate": "Create the pinned exact-v5 control and C1 candidate hosted requests; stop on any request, identity, replay, or audit failure."
+}
