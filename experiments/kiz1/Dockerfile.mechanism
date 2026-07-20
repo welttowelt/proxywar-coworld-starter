@@ -1,0 +1,3 @@
+FROM proxywar-agent-llm:qd1n-v89-kiz1-gravity-1ccaff73-amd64
+COPY selector-player.mjs /app/kiz1-selector-player.mjs
+CMD ["node", "/app/kiz1-selector-player.mjs"]

@@ -35,16 +35,32 @@
   },
   "qualifier": {
     "output": "/private/tmp/proxywar-kiz1-gravity-qualifier-1ccaff73",
-    "pass": "results exist; accepted_decision_count equals decision_count; fallback_count, degraded_count, rejects, unexplained holds, and K1Z harm are zero"
+    "pass": "the production llm-player wrapper boots; results exist; accepted_decision_count equals decision_count; rejects and crashes are zero",
+    "attempts": [
+      {
+        "at": "2026-07-20T20:03:11Z",
+        "result": "INFRASTRUCTURE_ABORT_BEFORE_GAME",
+        "reason": "--use-bedrock required an aws CLI that is not installed",
+        "quarantined_output": "/private/tmp/proxywar-kiz1-gravity-qualifier-1ccaff73.aborted-20260720T200314Z-kiz1-qualifier-1ccaff73"
+      }
+    ]
   },
   "mechanism_screen": {
     "job": "/private/tmp/qd1n-kiz1-gravity-job-1ccaff73.json",
-    "job_sha256": "d8e49412fc43890a584dd446025fcea9e9ea4737bc6e0cc29823b56e6f7a9e41",
+    "job_sha256": "71d4567bc480cd65956034512bc7f9cd470cb081ee3a88f818860ed6b5fd5aa5",
     "output": "/private/tmp/proxywar-kiz1-gravity-screen-1ccaff73",
     "map": "Asia",
     "seed": 20260720,
     "decision_steps": 40,
     "players": ["K1Z odin free", "K1Z Gravity", "Outsider"],
+    "player_run": ["node", "/app/kiz1-selector-player.mjs"],
+    "harness": {
+      "description": "Test-only deterministic player layered over the byte-identical candidate engine; production image and policy engine are unchanged.",
+      "image_id": "sha256:39548883b562262c5bdbe6bcc0fcc6115d330bd1a099308fcea33723b0150194",
+      "player_sha256": "fff9dd163284082b67a1a43ddb875f18b4ed83b245416d98cecd2f88cc7486c7",
+      "dockerfile_sha256": "b63787f4a7250a2217f7d4ad7ec8b9da6486408150ea77e1507737e1019651d6",
+      "strategy_engine_byte_match": true
+    },
     "pass": "Odin selects at least one accepted kp2 alliance_request to K1Z Gravity; zero harmful Odin actions to Gravity; all Odin decisions accepted; zero fallback, degradation, rejects, or unexplained holds; trace contains the exact current Gravity display name"
   },
   "differential_fixture": {
