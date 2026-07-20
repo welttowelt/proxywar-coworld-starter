@@ -1,0 +1,788 @@
+{
+  "schema_version": 1,
+  "fixture_type": "normalized_replay_derived_decision_vectors",
+  "caveat": "These are reduced branch fixtures, not byte-exact raw observations. Persistent state, unselected-action metadata, and omitted rivals/actions are constructed test inputs. Each expected value is the clean-chassis output on the reduced fixture, not an estimate of the action or outcome in the original episode. Source username and observed selected ID are retained when available.",
+  "vectors": [
+    {
+      "id": "grow-turn-400",
+      "provenance": {
+        "replay_file": "data/cache/replays/36e2d3f7-eb12-4e4c-ab77-0e3e766fdfc1.replay",
+        "replay_sha256": "0da4b1448763486695c595317cb19b047a793f61ac014468edec0a93dd51ec4d",
+        "run_id": "coworld-2026-07-18T15-25-07-598Z-cd003424",
+        "turn": 400,
+        "player_decision": 4,
+        "global_sequence": 29,
+        "source_username": "K1Z Hrafn",
+        "observed_selected_action_id": "expand:terra-nullius:35"
+      },
+      "persistent_state": {
+        "bootNeutralCount": 3
+      },
+      "observation": {
+        "gameMode": "FFA",
+        "phase": "active",
+        "turnNumber": 400,
+        "ownState": {
+          "tileShare": 0,
+          "troopRatio": 0.51,
+          "unitCounts": {}
+        },
+        "visiblePlayers": []
+      },
+      "actions": [
+        {
+          "id": "expand:terra-nullius:10",
+          "kind": "attack",
+          "label": "Expand Terra Nullius 10%",
+          "metadata": {
+            "expansion": true,
+            "troopPercent": 10
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "expand:terra-nullius:20",
+          "kind": "attack",
+          "label": "Expand Terra Nullius 20%",
+          "metadata": {
+            "expansion": true,
+            "troopPercent": 20
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "expand:terra-nullius:35",
+          "kind": "attack",
+          "label": "Expand Terra Nullius 35%",
+          "metadata": {
+            "expansion": true,
+            "troopPercent": 35
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "build:City:400",
+          "kind": "build",
+          "label": "Build City",
+          "metadata": {
+            "unit": "City"
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "build:Factory:400",
+          "kind": "build",
+          "label": "Build Factory",
+          "metadata": {
+            "unit": "Factory"
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "hold",
+          "kind": "hold",
+          "label": "Hold",
+          "risk": {
+            "level": "low"
+          }
+        }
+      ],
+      "expected": {
+        "action_id": "expand:terra-nullius:35",
+        "primary_marker": "hg35",
+        "evidence_markers": []
+      }
+    },
+    {
+      "id": "low-bank-grow-turn-2700",
+      "provenance": {
+        "replay_file": "data/cache/replays/36e2d3f7-eb12-4e4c-ab77-0e3e766fdfc1.replay",
+        "replay_sha256": "0da4b1448763486695c595317cb19b047a793f61ac014468edec0a93dd51ec4d",
+        "run_id": "coworld-2026-07-18T15-25-07-598Z-cd003424",
+        "turn": 2700,
+        "player_decision": 27,
+        "global_sequence": 213,
+        "source_username": "K1Z Hrafn",
+        "observed_selected_action_id": "attack:r5o3pta1:25"
+      },
+      "persistent_state": {
+        "bootNeutralCount": 12,
+        "selectedStructures": [
+          "city",
+          "factory"
+        ]
+      },
+      "observation": {
+        "gameMode": "FFA",
+        "phase": "active",
+        "turnNumber": 2700,
+        "ownState": {
+          "tileShare": 0.18,
+          "troopRatio": 0.48,
+          "unitCounts": {
+            "City": 1,
+            "Factory": 1
+          }
+        },
+        "visiblePlayers": [
+          {
+            "id": "r5o3pta1",
+            "name": "Richard Higgins",
+            "isAlive": true,
+            "tileShare": 0.2,
+            "relativeTroopRatio": 1.45,
+            "sharesBorder": true,
+            "canAttack": true
+          }
+        ]
+      },
+      "actions": [
+        {
+          "id": "attack:r5o3pta1:10",
+          "kind": "attack",
+          "label": "Attack Richard Higgins 10%",
+          "metadata": {
+            "targetID": "r5o3pta1",
+            "targetName": "Richard Higgins",
+            "troopPercent": 10
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "attack:r5o3pta1:25",
+          "kind": "attack",
+          "label": "Attack Richard Higgins 25%",
+          "metadata": {
+            "targetID": "r5o3pta1",
+            "targetName": "Richard Higgins",
+            "troopPercent": 25
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "attack:r5o3pta1:40",
+          "kind": "attack",
+          "label": "Attack Richard Higgins 40%",
+          "metadata": {
+            "targetID": "r5o3pta1",
+            "targetName": "Richard Higgins",
+            "troopPercent": 40
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "expand:terra-nullius:35",
+          "kind": "attack",
+          "label": "Expand Terra Nullius 35%",
+          "metadata": {
+            "expansion": true,
+            "troopPercent": 35
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "boat:neutral:16",
+          "kind": "boat",
+          "label": "Boat to Terra Nullius 16%",
+          "metadata": {
+            "expansion": true,
+            "invasion": false,
+            "troopPercent": 16
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "hold",
+          "kind": "hold",
+          "label": "Hold",
+          "risk": {
+            "level": "low"
+          }
+        }
+      ],
+      "expected": {
+        "action_id": "expand:terra-nullius:35",
+        "primary_marker": "hg35",
+        "evidence_markers": []
+      }
+    },
+    {
+      "id": "high-bank-dynamic-finish-turn-3300",
+      "provenance": {
+        "replay_file": "data/cache/replays/997d8a6f-14da-42b2-9d5c-fa3d3c048f76.replay",
+        "replay_sha256": "801b2c52aef6e1359e3621f58f79c4804c7124e202dfe05e28c7e147656ef51e",
+        "run_id": "coworld-2026-07-18T14-47-15-791Z-858dd5d9",
+        "turn": 3300,
+        "player_decision": 33,
+        "global_sequence": 261,
+        "source_username": "K1Z Hrafn",
+        "observed_selected_action_id": "attack:r5o3pta1:25"
+      },
+      "persistent_state": {
+        "bootNeutralCount": 14,
+        "selectedStructures": [
+          "city",
+          "factory"
+        ],
+        "primaryPreyID": "r5o3pta1",
+        "primaryPreyName": "richard higgins",
+        "primaryPreyAge": 2
+      },
+      "observation": {
+        "gameMode": "FFA",
+        "phase": "active",
+        "turnNumber": 3300,
+        "ownState": {
+          "tileShare": 0.18,
+          "troopRatio": 0.91,
+          "unitCounts": {
+            "City": 1,
+            "Factory": 1
+          }
+        },
+        "combat": {
+          "incomingAttackPlayerIDs": [
+            "r5o3pta1"
+          ]
+        },
+        "visiblePlayers": [
+          {
+            "id": "r5o3pta1",
+            "name": "Richard Higgins",
+            "isAlive": true,
+            "tileShare": 0.23,
+            "relativeTroopRatio": 1.37,
+            "sharesBorder": true,
+            "canAttack": true,
+            "incomingAttack": true
+          },
+          {
+            "id": "xbt2wt14",
+            "name": "Sefirot",
+            "isAlive": true,
+            "tileShare": 0.04,
+            "relativeTroopRatio": 2.12,
+            "sharesBorder": true,
+            "canAttack": true
+          }
+        ]
+      },
+      "actions": [
+        {
+          "id": "attack:r5o3pta1:10",
+          "kind": "attack",
+          "label": "Attack Richard Higgins 10%",
+          "metadata": {
+            "targetID": "r5o3pta1",
+            "targetName": "Richard Higgins",
+            "troopPercent": 10
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "attack:r5o3pta1:25",
+          "kind": "attack",
+          "label": "Attack Richard Higgins 25%",
+          "metadata": {
+            "targetID": "r5o3pta1",
+            "targetName": "Richard Higgins",
+            "troopPercent": 25
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "attack:r5o3pta1:40",
+          "kind": "attack",
+          "label": "Attack Richard Higgins 40%",
+          "metadata": {
+            "targetID": "r5o3pta1",
+            "targetName": "Richard Higgins",
+            "troopPercent": 40
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "attack:xbt2wt14:10",
+          "kind": "attack",
+          "label": "Attack Sefirot 10%",
+          "metadata": {
+            "targetID": "xbt2wt14",
+            "targetName": "Sefirot",
+            "troopPercent": 10
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "attack:xbt2wt14:25",
+          "kind": "attack",
+          "label": "Attack Sefirot 25%",
+          "metadata": {
+            "targetID": "xbt2wt14",
+            "targetName": "Sefirot",
+            "troopPercent": 25
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "attack:xbt2wt14:40",
+          "kind": "attack",
+          "label": "Attack Sefirot 40%",
+          "metadata": {
+            "targetID": "xbt2wt14",
+            "targetName": "Sefirot",
+            "troopPercent": 40
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "expand:terra-nullius:35",
+          "kind": "attack",
+          "label": "Expand Terra Nullius 35%",
+          "metadata": {
+            "expansion": true,
+            "troopPercent": 35
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "hold",
+          "kind": "hold",
+          "label": "Hold",
+          "risk": {
+            "level": "low"
+          }
+        }
+      ],
+      "expected": {
+        "action_id": "attack:xbt2wt14:40",
+        "primary_marker": "hc40",
+        "evidence_markers": [
+          "hint"
+        ]
+      }
+    },
+    {
+      "id": "daveey-current-attacker-pressure-turn-7600",
+      "provenance": {
+        "replay_file": "data/cache/replays/a30e53b5-d3bf-4a2b-bbe8-641187a77f65.replay",
+        "replay_sha256": "02dd55ecea6f8efb1c499baae5da90ef5112c7e56b8fbcc95127e7334b2267ed",
+        "run_id": "coworld-2026-07-18T15-19-02-771Z-3e543a61",
+        "turn": 7600,
+        "player_decision": 76,
+        "global_sequence": 572,
+        "source_username": "daveey",
+        "observed_selected_action_id": "attack:r5o3pta1:10"
+      },
+      "persistent_state": {
+        "bootNeutralCount": 14,
+        "selectedStructures": [
+          "city",
+          "factory",
+          "port"
+        ]
+      },
+      "observation": {
+        "gameMode": "FFA",
+        "phase": "active",
+        "turnNumber": 7600,
+        "ownState": {
+          "tileShare": 0.39,
+          "troopRatio": 0.74,
+          "unitCounts": {
+            "City": 6,
+            "Factory": 6,
+            "Port": 2
+          }
+        },
+        "combat": {
+          "incomingAttackPlayerIDs": [
+            "r5o3pta1"
+          ]
+        },
+        "visiblePlayers": [
+          {
+            "id": "r5o3pta1",
+            "name": "Richard Higgins",
+            "isAlive": true,
+            "tileShare": 0.55,
+            "relativeTroopRatio": 1.19,
+            "sharesBorder": true,
+            "canAttack": true,
+            "incomingAttack": true
+          }
+        ]
+      },
+      "actions": [
+        {
+          "id": "attack:r5o3pta1:10",
+          "kind": "attack",
+          "label": "Attack Richard Higgins 10%",
+          "metadata": {
+            "targetID": "r5o3pta1",
+            "targetName": "Richard Higgins",
+            "troopPercent": 10,
+            "incomingAttack": true
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "attack:r5o3pta1:25",
+          "kind": "attack",
+          "label": "Attack Richard Higgins 25%",
+          "metadata": {
+            "targetID": "r5o3pta1",
+            "targetName": "Richard Higgins",
+            "troopPercent": 25,
+            "incomingAttack": true
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "attack:r5o3pta1:40",
+          "kind": "attack",
+          "label": "Attack Richard Higgins 40%",
+          "metadata": {
+            "targetID": "r5o3pta1",
+            "targetName": "Richard Higgins",
+            "troopPercent": 40,
+            "incomingAttack": true
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "hold",
+          "kind": "hold",
+          "label": "Hold",
+          "risk": {
+            "level": "low"
+          }
+        }
+      ],
+      "expected": {
+        "action_id": "attack:r5o3pta1:10",
+        "primary_marker": "hc10",
+        "evidence_markers": [
+          "hctr"
+        ]
+      }
+    },
+    {
+      "id": "daveey-current-attacker-war-turn-6700",
+      "provenance": {
+        "replay_file": "data/cache/replays/997d8a6f-14da-42b2-9d5c-fa3d3c048f76.replay",
+        "replay_sha256": "801b2c52aef6e1359e3621f58f79c4804c7124e202dfe05e28c7e147656ef51e",
+        "run_id": "coworld-2026-07-18T14-47-15-791Z-858dd5d9",
+        "turn": 6700,
+        "player_decision": 67,
+        "global_sequence": 511,
+        "source_username": "daveey",
+        "observed_selected_action_id": "attack:r5o3pta1:25"
+      },
+      "persistent_state": {
+        "bootNeutralCount": 14,
+        "selectedStructures": [
+          "city",
+          "factory",
+          "port"
+        ]
+      },
+      "observation": {
+        "gameMode": "FFA",
+        "phase": "active",
+        "turnNumber": 6700,
+        "ownState": {
+          "tileShare": 0.26,
+          "troopRatio": 0.79,
+          "unitCounts": {
+            "City": 6,
+            "Factory": 5,
+            "Port": 1
+          }
+        },
+        "combat": {
+          "incomingAttackPlayerIDs": [
+            "r5o3pta1"
+          ]
+        },
+        "visiblePlayers": [
+          {
+            "id": "r5o3pta1",
+            "name": "Richard Higgins",
+            "isAlive": true,
+            "tileShare": 0.51,
+            "relativeTroopRatio": 1.22,
+            "sharesBorder": true,
+            "canAttack": true,
+            "incomingAttack": true
+          }
+        ]
+      },
+      "actions": [
+        {
+          "id": "attack:r5o3pta1:10",
+          "kind": "attack",
+          "label": "Attack Richard Higgins 10%",
+          "metadata": {
+            "targetID": "r5o3pta1",
+            "targetName": "Richard Higgins",
+            "troopPercent": 10,
+            "incomingAttack": true
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "attack:r5o3pta1:25",
+          "kind": "attack",
+          "label": "Attack Richard Higgins 25%",
+          "metadata": {
+            "targetID": "r5o3pta1",
+            "targetName": "Richard Higgins",
+            "troopPercent": 25,
+            "incomingAttack": true
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "attack:r5o3pta1:40",
+          "kind": "attack",
+          "label": "Attack Richard Higgins 40%",
+          "metadata": {
+            "targetID": "r5o3pta1",
+            "targetName": "Richard Higgins",
+            "troopPercent": 40,
+            "incomingAttack": true
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "expand:terra-nullius:35",
+          "kind": "attack",
+          "label": "Expand Terra Nullius 35%",
+          "metadata": {
+            "expansion": true,
+            "troopPercent": 35
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "hold",
+          "kind": "hold",
+          "label": "Hold",
+          "risk": {
+            "level": "low"
+          }
+        }
+      ],
+      "expected": {
+        "action_id": "attack:r5o3pta1:25",
+        "primary_marker": "hc25",
+        "evidence_markers": [
+          "hctr"
+        ]
+      }
+    },
+    {
+      "id": "neutral-boat-turn-5600",
+      "provenance": {
+        "replay_file": "data/cache/replays/a77b31d7-b181-4fe0-add0-b1a153195244.replay",
+        "replay_sha256": "a0f5963a4ef38d60928a0ead575d896c89a469f34c3fc9b3c7c3ff2f5ef7cc3a",
+        "run_id": "coworld-2026-07-18T15-46-20-308Z-ccc75928",
+        "turn": 5600,
+        "player_decision": 56,
+        "global_sequence": 428,
+        "source_username": "K1Z Hrafn",
+        "observed_selected_action_id": "boat:412691:8"
+      },
+      "persistent_state": {
+        "bootNeutralCount": 10,
+        "selectedStructures": [
+          "city",
+          "factory"
+        ]
+      },
+      "observation": {
+        "gameMode": "FFA",
+        "phase": "active",
+        "turnNumber": 5600,
+        "ownState": {
+          "tilesOwned": 318,
+          "tileShare": 0,
+          "troopRatio": 0.75,
+          "unitCounts": {
+            "City": 1,
+            "Factory": 1
+          }
+        },
+        "visiblePlayers": [
+          {
+            "id": "r5o3pta1",
+            "name": "Richard Higgins",
+            "isAlive": true,
+            "tileShare": 0.32,
+            "relativeTroopRatio": 0.7,
+            "sharesBorder": false,
+            "canAttack": true
+          }
+        ]
+      },
+      "actions": [
+        {
+          "id": "attack:r5o3pta1:10",
+          "kind": "attack",
+          "label": "Attack Richard Higgins 10%",
+          "metadata": {
+            "targetID": "r5o3pta1",
+            "targetName": "Richard Higgins",
+            "troopPercent": 10
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "attack:r5o3pta1:25",
+          "kind": "attack",
+          "label": "Attack Richard Higgins 25%",
+          "metadata": {
+            "targetID": "r5o3pta1",
+            "targetName": "Richard Higgins",
+            "troopPercent": 25
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "attack:r5o3pta1:40",
+          "kind": "attack",
+          "label": "Attack Richard Higgins 40%",
+          "metadata": {
+            "targetID": "r5o3pta1",
+            "targetName": "Richard Higgins",
+            "troopPercent": 40
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "boat:412691:8",
+          "kind": "boat",
+          "label": "Boat to Terra Nullius 8%",
+          "metadata": {
+            "targetTile": 412691,
+            "sourceTile": 408702,
+            "expansion": true,
+            "invasion": false,
+            "troopPercent": 8
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "boat:412691:16",
+          "kind": "boat",
+          "label": "Boat to Terra Nullius 16%",
+          "metadata": {
+            "targetTile": 412691,
+            "sourceTile": 408702,
+            "expansion": true,
+            "invasion": false,
+            "troopPercent": 16
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "boat:412691:25",
+          "kind": "boat",
+          "label": "Boat to Terra Nullius 25%",
+          "metadata": {
+            "targetTile": 412691,
+            "sourceTile": 408702,
+            "expansion": true,
+            "invasion": false,
+            "troopPercent": 25
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "build:Defense Post:5600",
+          "kind": "build",
+          "label": "Build Defense Post",
+          "metadata": {
+            "unit": "Defense Post"
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "hold",
+          "kind": "hold",
+          "label": "Hold",
+          "risk": {
+            "level": "low"
+          }
+        }
+      ],
+      "expected": {
+        "action_id": "boat:412691:16",
+        "primary_marker": "hn16",
+        "evidence_markers": []
+      }
+    }
+  ]
+}

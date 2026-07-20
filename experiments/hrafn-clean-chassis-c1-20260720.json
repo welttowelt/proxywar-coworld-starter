@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_clean_chassis_preregistration",
+  "recorded_at": "2026-07-20T10:32:57Z",
+  "arm": "hrafn-clean-chassis-c1",
+  "parent": {
+    "label": "hrafn-fylking:v5",
+    "source_commit": "0c151570f7e650a32a5705ff71692aa930012097",
+    "policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+    "image_id": "sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d",
+    "control_rule": "Build the parent from the exact commit or use the pinned image. Current feature-branch hrafn-strategy.mjs is not the exact v5 control."
+  },
+  "field_checkpoint": {
+    "round": 566,
+    "round_status": "running",
+    "hrafn_rank": 10,
+    "hrafn_score": 0.27368807346169466,
+    "hrafn_recent_rounds": {
+      "564": {
+        "rank": 11,
+        "score": 0,
+        "episodes": 4
+      },
+      "565": {
+        "rank": 11,
+        "score": 0,
+        "episodes": 4
+      }
+    },
+    "daveey_rank": 1,
+    "daveey_score": 41.11272242145149,
+    "daveey_policy": "daveey-proxywar:v24"
+  },
+  "hypothesis": {
+    "claim": "A deterministic phase dispatcher that protects productive 35 percent neutral growth, dynamically rescans reachable outsider prey, and uses reserve-gated 10/25/40 commitments is hypothesized to convert more openings than v5 without named-outsider prey rules, routine midgame donations, blind naval loops, or social-action retries. Named K1Z identities remain explicit safety and terminal-handoff boundaries.",
+    "evidence_scope": "Clean-room behavioral inference from public Daveey replay telemetry. The replay payloads do not independently encode Daveey policy-version attribution. Correlations generate the mechanism; they do not prove hidden source or causal lift.",
+    "replay_fixture_scope": "The two Daveey vectors preserve exact public 10 and 25 percent counter selections as mechanism evidence. Four Hrafn-sourced rows are reduced counterfactual evaluation contexts. Every expected field is the clean chassis output on a constructed reduced fixture, not the source policy action or an outcome estimate.",
+    "expected_action_changes": [
+      "Four productive 35 percent neutral expansions precede the first City when both remain legal.",
+      "A Factory follows the boot sequence without preempting a productive frontier.",
+      "Current attackers may trigger a 10 or 25 percent counter, while a reachable high-bank finish may use 40 percent.",
+      "Primary prey is advisory and can be interrupted by an attacker or a clearly more finishable target.",
+      "Neutral and targeted boat launches require explicit safe target resolution where applicable and are hard-capped at two selections per process match; generic tile changes never reopen the latch.",
+      "Routine dn1 donations, outsider diplomacy, target_player, embargo, quick chat, emoji, and blind harmful fallbacks are absent."
+    ],
+    "observable_markers": [
+      "hg35",
+      "hec1",
+      "hef1",
+      "hc10",
+      "hc25",
+      "hc40",
+      "hctr",
+      "hpri",
+      "hint",
+      "hn16",
+      "hni25",
+      "hncap",
+      "hdef",
+      "hka1",
+      "hkf1",
+      "hhfc"
+    ]
+  },
+  "candidate_boundaries": {
+    "modules": [
+      "hrafn-state.mjs",
+      "hrafn-safety.mjs",
+      "hrafn-chassis.mjs",
+      "hrafn-chassis-player.mjs"
+    ],
+    "host_authority_modules": [
+      "hrafn-runtime-guard.mjs",
+      "scripts/assert-hrafn-host-runner.mjs"
+    ],
+    "immutable_legacy_files": [
+      "hrafn-strategy.mjs",
+      "hrafn-player.mjs",
+      "test/hrafn-strategy.test.mjs",
+      "Dockerfile"
+    ],
+    "default_commitments": {
+      "neutral_percent": 35,
+      "pressure_percent": 10,
+      "war_percent": 25,
+      "finish_percent": 40,
+      "neutral_boat_percent": 16,
+      "invasion_percent": 25
+    },
+    "default_reserve_guards": {
+      "war": 0.75,
+      "finish": 0.9
+    },
+    "midgame_support_enabled": false,
+    "outsider_diplomacy_enabled": false
+  },
+  "source_gate": {
+    "required": [
+      "Every selected action ID comes from the current legal menu.",
+      "Every harmful K1Z-targeted or ambiguously targeted action is rejected.",
+      "Strict K1Z-only terminal handoff fails closed on incomplete liveness.",
+      "Phase, commitment, prey interruption, the global two-launch naval latch, building milestones, request freshness, and public-marker tests pass.",
+      "Tracked replay-derived decision vectors exercise GROW, CONVERT, FINISH, and NAVAL branches.",
+      "Daveey-derived 10 and 25 percent counter vectors preserve the observed public selected IDs while remaining explicitly counterfactual test inputs.",
+      "Recognized hold markers and independent replay proof are reported separately; promotion requires zero hold-evidence gaps.",
+      "Legacy v5 files remain byte-for-byte unchanged."
+    ],
+    "failure_conditions": [
+      "Any K1Z harm or ambiguous harmful selection.",
+      "Any unexplained hold while a productive safe action exists.",
+      "Any stale request replay that mutates state twice or selects a withdrawn action ID.",
+      "Marker reach without an action-ID change in an enabled-versus-disabled fixture.",
+      "A local outcome claim without a controlled exact-v5 comparison."
+    ]
+  },
+  "runtime_gate": {
+    "host_boundary_contract": {
+      "foreground_supervisor": "/Users/olifreuler/proxywar-coworld-starter/scripts/proxywar-runner-lease.sh",
+      "declaration_check": "npm run check:hrafn-runner-declaration",
+      "authoritative_gate": "The foreground supervisor itself must report an active owner with matching supervisor/child PID start times and later emit a matching completion receipt. A separate live check must bind the active Coworld identity to Hrafn. The declaration check is advisory and cannot authorize a command.",
+      "rule": "The complete host batch wrapper must acquire and retain the v2 Hrafn foreground lease before any Coworld command. No integrated wrapper exists in this candidate yet. The uploaded policy container intentionally does not require or mount the host lease; Coworld supplies COWORLD_PLAYER_WS_URL at match runtime."
+    },
+    "blocked_reasons": [
+      "The active Coworld identity is K1Z odin free, not K1Z Hrafn.",
+      "An Odin operator is active and must not be interrupted.",
+      "Round 566 is still running.",
+      "Hrafn membership and sole-champion state are not independently visible under the active identity.",
+      "The local declaration checker does not validate supervisor/child liveness or active Coworld identity, and no Hrafn batch wrapper currently supplies its declaration fields inside the foreground supervisor."
+    ],
+    "authorized_this_record": "Offline source, fixtures, unit tests, and mock-WebSocket integration only. No Coworld episode, upload, hosted request, submission, membership, champion, or launcher mutation."
+  },
+  "promotion_state": {
+    "SOURCE_READY": false,
+    "LOCAL_QUALIFIED": false,
+    "DIAGNOSTIC_UPLOADED": false,
+    "HOSTED_PASSED": false,
+    "REGRESSION_PASSED": false,
+    "AUDIT_APPROVED": false,
+    "SUBMITTED": false,
+    "PLACED": false,
+    "CHAMPION_VERIFIED": false,
+    "ROUND_CONFIRMED": false
+  },
+  "amendments": [
+    {
+      "recorded_at": "2026-07-20T11:24:36Z",
+      "reason": "Read-only architecture review clarified that the foreground runner lease is a host-supervisor contract, not a Coworld container mount. Replay-vector wording now distinguishes public source observations from clean-chassis counterfactual expectations. Hypothesis, thresholds, authorization, and promotion states are unchanged."
+    },
+    {
+      "recorded_at": "2026-07-20T12:08:19Z",
+      "reason": "The naval contract is now an explicit global two-launch process-match latch because current observation telemetry cannot attribute territorial change to a route. Generic tile movement cannot reopen it. Authorization and promotion states remain unchanged."
+    }
+  ]
+}

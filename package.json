@@ -6,6 +6,10 @@
   "description": "ProxyWar LLM agent (Bedrock). Claude plans in the background; every decision is answered instantly within the hosted response cap. Keeps playing, loudly degraded, if Bedrock is unreachable.",
   "scripts": {
     "test": "node --test",
+    "test:hrafn-chassis": "node --test test/hrafn-state.test.mjs test/hrafn-safety.test.mjs test/hrafn-runtime-guard.test.mjs test/hrafn-operational-context.test.mjs test/hrafn-chassis.test.mjs test/hrafn-chassis-player.integration.test.mjs test/audit-hrafn-chassis-replay.test.mjs",
+    "check:hrafn-runner-declaration": "node scripts/assert-hrafn-host-runner.mjs",
+    "run:hrafn-supervised": "node scripts/run-hrafn-supervised.mjs",
+    "audit:hrafn-chassis": "node scripts/audit-hrafn-chassis-replay.mjs",
     "data:collect": "node scripts/collect-proxywar-data.mjs --rounds 20",
     "data:analyze": "duckdb < analytics/meta.sql",
     "data:refresh": "npm run data:collect && npm run data:analyze && npm run rci:report",

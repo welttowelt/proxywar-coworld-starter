@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_clean_chassis_source_audit",
+  "recorded_at": "2026-07-20T12:09:04Z",
+  "arm": "hrafn-clean-chassis-c1",
+  "validation": {
+    "focused_hrafn_test_command": "npm run test:hrafn-chassis",
+    "focused_hrafn_tests": 146,
+    "focused_hrafn_tests_passed": 146,
+    "syntax_checks_passed": true,
+    "preregistration_json_valid": true,
+    "git_diff_check_passed": true,
+    "foreground_launcher_probe": {
+      "run_id": "hrafn-launcher-probe-20260720b",
+      "result": "completed",
+      "exit_code": 0,
+      "identity_before_and_after": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+      "lease_released_to": "free",
+      "receipt": "/private/tmp/hrafn-launcher-probe-20260720b/hrafn-operational-receipt.json"
+    }
+  },
+  "candidate_image": {
+    "status": "not_built",
+    "reason": "node:24-bookworm-slim is absent locally; a network pull was intentionally not attempted during offline validation"
+  },
+  "legacy_unchanged": {
+    "hrafn-strategy.mjs": "c7be79b04044b195898190bc32b3cb500c1f082833538f167519eb29a98cea4d",
+    "hrafn-player.mjs": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
+    "test/hrafn-strategy.test.mjs": "2d91ebc0a990ec59f81451bed440ebd7737f8f812074e907ae8e85c530b11af6",
+    "Dockerfile": "6b516f81c4b2477c6bf05101a09b3d5ef45443dbadda5bc90584d9bcc03dbd38"
+  },
+  "result": {
+    "source_ready": false,
+    "local_qualified": false,
+    "reason": "Offline source validation passed, but promotion requires a candidate image, source-or-image binding in replay evidence, branch reach, an exact-v5 matched control, the external foreground-runner receipt, and independent live Hrafn identity proof."
+  },
+  "authorization": {
+    "performed": [
+      "source edits",
+      "focused unit and mock-WebSocket integration tests",
+      "local syntax and diff checks",
+      "foreground launcher probe with a harmless local Node child",
+      "live read-only Hrafn identity and incumbent membership verification"
+    ],
+    "not_performed": [
+      "game or match execution",
+      "container run",
+      "upload",
+      "submission",
+      "membership or champion change",
+      "Slack interaction"
+    ]
+  }
+}

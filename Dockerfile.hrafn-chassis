@@ -1,0 +1,17 @@
+FROM node:24-bookworm-slim
+WORKDIR /app
+
+ARG POLICY_CODENAME=hrafn-clean-chassis-c1
+ENV POLICY_CODENAME=$POLICY_CODENAME
+ENV HRAFN_GROW=1
+ENV HRAFN_CONVERT=1
+ENV HRAFN_NAVAL=1
+ENV HRAFN_ALLIANCE=1
+ENV HRAFN_KF1=1
+
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev --ignore-scripts
+
+COPY hrafn-state.mjs hrafn-safety.mjs hrafn-chassis.mjs hrafn-chassis-player.mjs ./
+
+CMD ["node", "/app/hrafn-chassis-player.mjs"]
