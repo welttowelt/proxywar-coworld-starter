@@ -22,6 +22,17 @@ shared foreground runner under its own `hrafn` lease for separately
 user-authorized local experiments. This runner access grants no Hrafn upload,
 submission, membership, or champion authority.
 
+The Codex wrapper owns `mickey-mouse-intent` as a third, independent warrior
+lane under the user's direct 2026-07-20 instruction. It may edit and test only
+its own source branch and may use the shared runner only under the `mickey`
+lease. It cannot mutate `qd1n` or `hrafn-fylking`. Any Mickey upload or league
+operation must use a dedicated HOME whose authenticated player ID is verified
+as Mickey, while the normal HOME remains authenticated as `K1Z odin free`.
+Softmax currently limits this account to two active players, so creating or
+submitting Mickey remains blocked unless the user explicitly chooses a player
+to disable or supplies another account. Never retire Odin or Hrafn to make
+room without that new instruction.
+
 Coordinate runner ownership through the team mailbox at
 `/Users/olifreuler/.stormforge/team-mailbox`. Every episode or batch must stay
 in the foreground of

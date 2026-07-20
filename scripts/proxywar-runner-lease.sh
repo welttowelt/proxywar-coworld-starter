@@ -34,10 +34,10 @@ usage() {
   cat >&2 <<'EOF'
 usage:
   proxywar-runner-lease.sh status [--json]
-  proxywar-runner-lease.sh run odin|hrafn RUN_ID --output ABS_DIR [--output ABS_DIR ...] -- COMMAND [ARG ...]
-  proxywar-runner-lease.sh release odin|hrafn RUN_ID TOKEN
-  proxywar-runner-lease.sh release odin|hrafn
-  proxywar-runner-lease.sh reap-stale odin|hrafn RUN_ID TOKEN
+  proxywar-runner-lease.sh run odin|hrafn|mickey RUN_ID --output ABS_DIR [--output ABS_DIR ...] -- COMMAND [ARG ...]
+  proxywar-runner-lease.sh release odin|hrafn|mickey RUN_ID TOKEN
+  proxywar-runner-lease.sh release odin|hrafn|mickey
+  proxywar-runner-lease.sh reap-stale odin|hrafn|mickey RUN_ID TOKEN
 
 The two-argument release form exists only for a pure tokenless v1 lock already
 present during migration. New standalone acquisition is deliberately disabled:
@@ -46,7 +46,7 @@ EOF
 }
 
 valid_lane() {
-  [[ "$1" == "odin" || "$1" == "hrafn" ]]
+  [[ "$1" == "odin" || "$1" == "hrafn" || "$1" == "mickey" ]]
 }
 
 valid_run_lane() {

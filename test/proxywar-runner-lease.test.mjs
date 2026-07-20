@@ -424,6 +424,22 @@ test("supervised run is strict-busy, exact-release protected, private, and clean
   assert.equal(readdirSync(directory).some((name) => name.includes(".aborted-")), false);
 });
 
+test("Mickey has a distinct supervised runner lane", (t) => {
+  const context = fixture();
+  const { directory, state } = context;
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const output = path.join(directory, "mickey-output");
+  const docker = makeFakeDocker(context);
+  const result = invoke(state, [
+    "run", "mickey", "mickey-smoke", "--output", output, "--", "/usr/bin/true",
+  ], docker.env);
+
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(existsSync(output), true);
+  assert.equal(existsSync(path.join(state, "runner.lock")), false);
+  assert.match(result.stderr, /"lane":"mickey"/);
+});
+
 test("failed supervised command performs scoped cleanup then quarantines exact output", (t) => {
   const context = fixture();
   const { directory, state } = context;
