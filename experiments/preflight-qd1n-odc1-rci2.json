@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-llm:qd1n-v89-odc1-rci2-amd64",
+    "parent_ref": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+    "exact_deltas": [
+      "Replace the mixed v89 decision chain with the bounded ODC1 clean dispatcher while preserving unconditional K1Z protection."
+    ],
+    "source_commit": "23ada8a8cfc1f41b1c798cfcb3b71f6fc2f21587",
+    "parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
+    "image_id": "sha256:3af909f391a179356876b54e810fd8c197d9cd88432ff4916a6c4e83c50a41a9"
+  },
+  "hypothesis": "A small deterministic dispatcher prevents social and legacy utility actions from displacing productive expansion, combat, economy, and naval actions without weakening K1Z protection.",
+  "mechanism": {
+    "marker": "odec1",
+    "prior_reachable_decisions": 1
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "contract_sha256": "5182e85926b43372b2454aad0dfaf85467a25edf62787652ce5331e4ce16e82d",
+    "audit_receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-qd1n-odc1-rci2-mechanism-20260720.json",
+      "sha256": "84bda8495c5f0178e5c4c5555b30a7e2d4be3d9a8ab392a9c6acea757fd20d9c"
+    }
+  },
+  "preupload_rci": {
+    "receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-qd1n-odc1-rci2-preupload-rci-20260720.json",
+      "sha256": "3d31039a78b553169b747376642d2f0d81add9faea62f12b0e605085a85c0c75"
+    }
+  },
+  "matched_baseline": null,
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "max_k1z_harm": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  }
+}

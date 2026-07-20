@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T16:38:55Z",
+  "updated_at": "2026-07-20T16:44:31Z",
   "cycle_id": "odin-odc1-rci2-20260720",
   "lane": "odin",
   "authority": {
@@ -17,7 +17,7 @@
     "marker_family": "od*",
     "closed": false
   },
-  "state": "preupload_rci_recheck_pending",
+  "state": "preupload_rci_passed_awaiting_diagnostic_upload",
   "runner": {
     "state": "free",
     "required_path": "scripts/proxywar-runner-lease.sh run odin"
@@ -61,6 +61,12 @@
       "evaluator_commit": "915476fcc9c3bbbc651dc933a3852145f20f43c4",
       "parent_action": "alliance:kata",
       "candidate_action": "expand:terra-nullius:10"
+    },
+    "preupload_rci": {
+      "verdict": "PASS_PREUPLOAD_RCI",
+      "receipt": "experiments/audit-qd1n-odc1-rci2-preupload-rci-20260720.json",
+      "receipt_sha256": "3d31039a78b553169b747376642d2f0d81add9faea62f12b0e605085a85c0c75",
+      "unresolved_violations": 0
     }
   },
   "gates": {
@@ -68,7 +74,7 @@
     "image_identity": "passed_byte_identical",
     "qualifier": "passed",
     "mechanism_screen": "passed_no_competitive_claim",
-    "preupload_rci": "pending_recheck_after_provenance_repair",
+    "preupload_rci": "passed",
     "diagnostic_uploaded": false,
     "hosted_4_of_4": "not_run",
     "league_regression_20_of_20": "not_run",
