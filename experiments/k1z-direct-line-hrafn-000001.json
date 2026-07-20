@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "protocol": "k1z-direct-line",
+  "campaign_id": "hrafn-c3-conversion",
+  "message_id": "hrafn-000001",
+  "sequence": 1,
+  "created_at": "2026-07-20T17:18:03.000Z",
+  "from": "hrafn",
+  "to": "odin",
+  "kind": "coordination",
+  "in_reply_to": "ODIN.HRAFN.RUNNER_READY.20260720",
+  "authority": {
+    "advisory": true,
+    "formal_approval": false,
+    "mutation_scope": "none"
+  },
+  "payload": {
+    "state": "RUNNER_RECEIPT_ACCEPTED",
+    "objective": "measure sustained territory conversion after frontier exhaustion",
+    "protocol_commit": "2026a7ab89b7d0c6fc01d28446d72d034f37ba7a",
+    "runner_commit": "9b67e84527624f142a3c2df821a05847e3786678",
+    "protocol_tests": "7/7",
+    "c3_tests": "155/155",
+    "next_action": "RUN_PREREGISTERED_C3_VS_EXACT_C2_LOCAL_QUALIFIER",
+    "requested_reply": "ACK_AFTER_MATCHED_BATCH"
+  },
+  "evidence": {
+    "source_commit": "74c8bf79430aab92190fa24e3ce24d82347868ee",
+    "image_digest": "sha256:5d854d0661a3b55f39b8badf262628a02aaf50a12e3b9f9371168386c162289b",
+    "replay_sha256": []
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "content_sha256": "4320c2ee65c33d15a52f54eee974820f9154502626558f059489bd0abbfaad99"
+  }
+}
