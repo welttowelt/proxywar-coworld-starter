@@ -1,62 +1,57 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T12:07:13Z",
-  "cycle_id": "odin-20260720T105304Z-6238",
+  "updated_at": "2026-07-20T13:09:00Z",
+  "cycle_id": "odin-ht1-20260720",
   "lane": "odin",
   "arm": {
-    "id": "ds1",
-    "name": "defensive_stance",
-    "branch": "rci/ds1-defensive-stance",
+    "id": "ht1",
+    "name": "harvest_transition",
+    "branch": "rci/ht1-harvest-transition",
     "exact_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
-    "candidate_source_commit": "8c3cf6ec85c3591fc322e75d13c3244321387f8c",
-    "gate_artifacts_commit": "8c3cf6ec85c3591fc322e75d13c3244321387f8c",
-    "marker": "ds1",
+    "candidate_source_commit": "48d57e95b12c1166cfb9b4a063c9aeead0e23c2d",
+    "marker": "ht1",
     "closed": true
   },
-  "state": "closed_local_gate_zero_reach_quantized_signal_no_lift",
+  "state": "closed_local_gate_zero_reach_exact_tie",
   "runner": {
     "state": "free",
-    "run_started": false
+    "run_started": true,
+    "last_run_id": "ht1-screen-a-48d57e95"
   },
   "evidence": {
-    "source_tests": "154/154; red-first verified",
-    "independent_rci": "PASS",
-    "qualifier": "34/34 accepted; zero holds; zero rejections; zero ds1 markers",
-    "candidate_image": "proxywar-agent-llm:qd1n-v89-ds1-8c3cf6ec-amd64",
-    "candidate_image_digest": "sha256:40d04abafbae132ca91af80623462f73be88ffd6103e19cf7f70a1e58fa4fa04",
+    "source_tests": "147/147; red-first verified",
+    "independent_rci": "PASS after removing the redundant emergency-path hook and requiring finite ratios",
+    "qualifier": "34/34 accepted; zero holds; zero rejections; zero ht1 markers",
+    "candidate_image": "proxywar-agent-llm:qd1n-v89-ht1-amd64",
+    "candidate_image_digest": "sha256:996596306ba33ed46e82c707e7ba62755ef9a242e9fa4047163c0d7995593f4d",
     "local_screen": {
-      "orientation": "B",
+      "orientation": "A",
       "map": "Pangaea",
       "seed": 20260722,
-      "output_root": "/private/tmp/proxywar-ds1-screen3-8c3cf6ec-b",
-      "candidate_final_tiles": 140,
-      "parent_final_tiles": 140,
-      "candidate_score": 0.00033489297777267467,
-      "parent_score": 0.00033489297777267467,
-      "candidate_ds1_markers": 0,
-      "parent_ds1_markers": 0,
-      "odin_decisions_each": 63,
-      "accepted_each": 63,
+      "output_root": "/private/tmp/proxywar-ht1-screen-a-48d57e95",
+      "candidate_score": 0.19937530540092555,
+      "parent_score": 0.19937530540092555,
+      "candidate_ht1_markers": 0,
+      "parent_ht1_markers": 0,
+      "odin_decisions_each": 83,
+      "accepted_each": 83,
       "holds_each": 0,
       "rejections_each": 0,
-      "protected_rival_actions": 0,
-      "pressure_attacks": [1700, 1800, 5600],
-      "pressure_attack_percent": 40,
-      "pressure_boat_invasion": 6200,
-      "candidate_parent_delta_tiles": 0,
-      "candidate_parent_delta_score": 0,
-      "candidate_parent_delta_deaths": 0
+      "coalition_harm_each": 0,
+      "candidate_parent_delta_score": 0
     },
-    "receipt": "experiments/audit-qd1n-ds1-defensive-stance-pangaea-20260720.json",
-    "causal_finding": "Raw Odin tiles collapsed, but the agent-visible share signal repeated at quantized values and never supplied two strict declines; DS1 therefore never activated."
+    "receipt": "experiments/audit-qd1n-ht1-harvest-transition-pangaea-20260720.json",
+    "causal_finding": "The proposed weak-leader plus 1.5x harvest alternative state did not occur, so the bounded selector never activated.",
+    "prior_arm_addendum_preserved": "DS1 remained closed; PO1 was rejected as unpaired cross-policy evidence and was not bundled into DS1."
   },
   "gates": {
     "source_integrity": "passed_committed_and_pushed",
-    "evidence_integrity": "passed_replay_and_screen_hash_checks",
     "identity": "passed_qualifier_candidate_image",
     "runner": "screen_completed_and_released",
     "coalition_integrity": "passed_zero_protected_rival_actions",
-    "local_screen": "STOP_zero_reach_and_zero_outcome_lift",
+    "local_screen": "STOP_zero_reach_and_exact_score_tie",
+    "orientation_b": "not_run_terminal_orientation_a",
+    "matrix": "not_run_terminal_orientation_a",
     "diagnostic_uploaded": false,
     "hosted_passed": false,
     "regression_passed": true,
@@ -67,11 +62,11 @@
     "round_confirmed": false
   },
   "dispatch_checkpoint": {
-    "classification": "ds1_terminal_stop_experiment_only_no_league_event",
+    "classification": "ht1_rejected_zero_reach_no_league_event",
     "mailbox_message_written": false,
-    "checkpoint_reason": "DS1 was a clean experimental failure: its marker never reached in the valid pressure cell and candidate-parent outcomes tied exactly. No league state changed."
+    "checkpoint_reason": "Matched orientation A produced zero ht1 markers and an exact candidate-parent score tie. The preregistered stop fired."
   },
-  "next_automatic_transition": "Restore the Odin operator. DS1 stays closed. Mission command may select one separate replay-backed mechanism; do not amend DS1 or reuse its trigger. No upload or league action is authorized from this receipt.",
+  "next_automatic_transition": "Return to replay evidence for one distinct post-opening transition mechanism. Do not tune HT1 thresholds, run orientation B, upload, submit, or change champion from this receipt.",
   "prior_verified_champion_preserved": true,
   "prior_verified_champion": "qd1n:v89"
 }

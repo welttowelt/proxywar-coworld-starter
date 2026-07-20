@@ -507,3 +507,23 @@ diagnostic, upload, submission, membership, or champion change. A raw-tile
 collapse signal is a separate future hypothesis, not a DS1 amendment.
 `qd1n:v89` remains live. The receipt is
 [`audit-qd1n-ds1-defensive-stance-pangaea-20260720.json`](experiments/audit-qd1n-ds1-defensive-stance-pangaea-20260720.json).
+
+## HT1 harvest-transition rejection (2026-07-20)
+
+HT1 tested one bounded post-opening substitution: when the exact v89 selector
+chose a non-retaliatory rival below parity after 20 decisions and 12% land
+share, reroute the same attack commitment to the strongest legal non-K1Z rival
+at 1.5x or better. The implementation passed red-first regression, `147/147`
+tests, independent RCI review, linux/amd64 byte checks, and a `34/34` accepted
+stock qualifier.
+
+The first matched Pangaea screen was terminal. Candidate and exact parent each
+made 83 accepted Odin decisions with zero holds, zero rejections, and zero
+coalition harm. HT1 emitted zero markers. Both arms produced the same action
+mix and the same Odin score, `0.19937530540092555`.
+
+HT1 is rejected at orientation A. Orientation B, the CPU matrix, hosted
+diagnostics, upload, submission, membership, and champion changes were not
+run. Threshold tuning would invent a new mechanism after zero reach, so HT1
+stays closed and `qd1n:v89` remains live. The receipt is
+[`audit-qd1n-ht1-harvest-transition-pangaea-20260720.json`](experiments/audit-qd1n-ht1-harvest-transition-pangaea-20260720.json).
