@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_intent_i1_preregistration",
+  "recorded_at": "2026-07-20T19:26:10Z",
+  "campaign_id": "hrafn-intent-i1",
+  "scope": "Hrafn only",
+  "status": "PREREGISTERED_NO_RUNTIME_AUTHORITY",
+  "parent": {
+    "label": "hrafn-fylking:v5",
+    "source_commit": "0c151570f7e650a32a5705ff71692aa930012097",
+    "strategy_sha256": "7620684b07c9dc9c633d284e817348c92881b43724291f991296c7a17ac20807",
+    "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
+    "local_rebuild_image": "hrafn-fylking-v5:0c151570",
+    "local_rebuild_digest": "sha256:fb695574f4958beb29a036ed216c0882ee4da84ffa2f63c535f6c658f997522d",
+    "control_contract": "Both arms run the same HI1 wrapper and exact-v5 compatibility mode. The sole policy difference is whether a validated intent may restrict the executor's affordance set."
+  },
+  "hypothesis": {
+    "claim": "A small strategic intent with bounded lifetime can improve Hrafn's opening conversion while the exact-v5 executor retains action-ID choice, timing, commitment, retry behavior, and K1Z safety.",
+    "mechanism": "The planner chooses only grow or convert, an exact visible outsider ID when converting, and a horizon. It never receives or returns legal action IDs, action kinds, percentages, weights, labels, or free-form instructions. The executor filters to intent-compatible affordances and then runs the exact-v5 selector unchanged on that subset.",
+    "expected_causal_trace": "An accepted intent is causal only when the chosen exact action ID differs from the same-input exact-v5 baseline. Such decisions expose the hi1 sidecar marker and a structured log row containing both IDs."
+  },
+  "intent_contract": {
+    "schema": {
+      "objective": "grow | convert",
+      "targetID": "null for grow; exact visible outsider player ID for convert",
+      "horizon": "integer from 2 through 12 decisions"
+    },
+    "planner": {
+      "provider": "local Ollama only",
+      "model": "llama3:latest",
+      "temperature": 0,
+      "seed": 240721,
+      "endpoint": "http://host.docker.internal:11434/api/generate",
+      "response_schema_enforced": true,
+      "nonblocking": true,
+      "timeout_ms": 4000,
+      "refresh_rule": "Start in exact-v5 mode. Refresh in the background when no valid intent exists or its decision horizon expires; never delay an action response for planning."
+    },
+    "validation": [
+      "Reject unknown or extra fields, unknown objectives, noninteger or out-of-range horizons, and nonexact target IDs.",
+      "grow requires targetID null and at least one current neutral growth affordance.",
+      "convert requires an alive, visible, nonallied, non-K1Z target with a current exact-v5 conversion affordance.",
+      "Reject stale, unavailable, protected, ambiguous, or unresolved targets and fall back to the same-input exact-v5 action.",
+      "Spawn, K1Z alliance, Odin support, and severe-defense decisions remain outside intent authority."
+    ],
+    "public_marker": "hi1 appears only when a valid intent changes the exact selected action ID from the same-input exact-v5 baseline."
+  },
+  "source_gate": {
+    "red_first_tests": [
+      "Intent disabled, missing, malformed, expired, or unreachable preserves exact-v5 action and public reason across frozen fixtures.",
+      "grow and convert can each cause a fresh legal action-ID delta on a reachable fixture.",
+      "convert binds to one exact outsider ID; K1Z, allied, unknown, ambiguous, and unavailable targets cannot be selected.",
+      "Intent cannot override spawn, K1Z alliance, Odin support, or severe defense.",
+      "hi1 is absent without an action-ID delta and present exactly once with a delta.",
+      "Planner timeout, malformed output, and transport failure keep response selection on exact-v5 and emit truthful degradation telemetry.",
+      "No candidate response contains an ID outside the current legal menu."
+    ],
+    "required": [
+      "Focused HI1 tests and the complete repository test suite pass.",
+      "Exact-v5 compatibility is compared against the frozen 0c151570 implementation over the full strategy fixture corpus.",
+      "A linux/amd64 image is built from an exact committed source tree and its digest is recorded.",
+      "No qd1n or Odin source, image, process, identity, submission, or champion state is modified or run."
+    ]
+  },
+  "pilot": {
+    "design": "Four separate same-seat 4-player FFA episodes; candidate and control never play each other. Each cell freezes map, seed, subject slot, names, commands, limits, and three outsider opponents. The only arm difference is intent enabled versus disabled for the subject named exactly K1Z Hrafn.",
+    "cells": [
+      {
+        "map": "Compact Pangaea",
+        "seed": 240721,
+        "subject_slot_zero_based": 1,
+        "order": ["control", "candidate"]
+      },
+      {
+        "map": "Compact Asia",
+        "seed": 240722,
+        "subject_slot_zero_based": 2,
+        "order": ["candidate", "control"]
+      }
+    ],
+    "opponents": "Three fixed outsider names running the exact v5 rebuild. No Odin or qd1n image is permitted.",
+    "coworld_client": "0.1.28",
+    "manifest_sha256": "8feb5100ee63d5ccca66794c40e535f2715376e2a2cf8a3f8ed892880dfe65f3",
+    "foreground_runner_lease_required": true,
+    "identity_window_required": "A fresh advisory Odin-to-Hrafn identity handoff must be committed before any Coworld episode. This is not the single formal promotion approval.",
+    "primary_metric": {
+      "name": "opening_auc20",
+      "definition": "Mean post-action tilesOwned over the subject's first 20 accepted nonspawn decisions; missing decisions after elimination are padded with zero.",
+      "pass": "Candidate lift is positive in both paired cells and mean relative lift is at least 10 percent."
+    },
+    "outcome_veto": "Candidate combined final score and combined final tiles must each be at least control.",
+    "autonomy_reach": {
+      "valid_intent_coverage_minimum": 0.8,
+      "intent_epochs_per_surviving_candidate_minimum": 2,
+      "action_deltas_per_surviving_candidate_minimum": 8,
+      "action_delta_rate_minimum": 0.1
+    },
+    "reliability": {
+      "accepted_action_rate": 1,
+      "maximum_rejected_actions": 0,
+      "maximum_k1z_harm": 0,
+      "maximum_platform_fallbacks": 0,
+      "maximum_unexplained_holds": 0,
+      "maximum_disconnects_or_timeouts": 0,
+      "maximum_planner_degraded_decisions_for_pass": 0,
+      "response_p95_ms_maximum": 5000,
+      "response_max_ms_maximum": 8000
+    },
+    "sequential_stop": "Audit the Pangaea pair before Asia. Stop on a safety or reliability failure, intent coverage below 80 percent, or fewer than eight action deltas in a surviving candidate. Do not stop for performance alone if the pair is operationally clean.",
+    "verdicts": {
+      "PROMISING_DIAGNOSTIC_ONLY": "Primary metric, outcome veto, reach, and reliability all pass. Expand to at least three seeds per map before any promotion packet.",
+      "REJECT_NO_REACH": "Intent did not produce the preregistered valid coverage and action deltas.",
+      "REJECT_SAFETY_OR_RELIABILITY": "Any fail-closed safety or operational gate failed.",
+      "REJECT_NO_LIFT": "Reach was real but the paired primary metric or outcome veto failed."
+    }
+  },
+  "authorization": {
+    "allowed_now": "Hrafn-only source, tests, exact image build, local planner probes, preregistration, and advisory mailbox coordination.",
+    "blocked_until_identity_window": "Any Coworld episode.",
+    "blocked_until_all_promotion_gates_and_one_exact_odin_approval": "Upload, submission, placement, or champion mutation.",
+    "slack": "No interaction through 2026-08-09."
+  },
+  "promotion_state": {
+    "SOURCE_READY": false,
+    "LOCAL_QUALIFIED": false,
+    "DIAGNOSTIC_RUN": false,
+    "PROMISING_DIAGNOSTIC_ONLY": false,
+    "FORMAL_ODIN_APPROVAL_REQUESTED": false,
+    "UPLOADED": false,
+    "SUBMITTED": false,
+    "CHAMPION_CHANGED": false
+  }
+}
