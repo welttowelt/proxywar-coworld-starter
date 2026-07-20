@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "arm": "ds1-defensive-stance",
+  "status": "rejected",
+  "decision": "NO_SUBMIT",
+  "reason": [
+    "zero replay-visible ds1 marker reach under direct pressure",
+    "candidate and exact parent produced identical outcomes",
+    "the two-strict-decline trigger was suppressed by agent-visible tile-share quantization during raw tile collapse"
+  ],
+  "candidate": {
+    "source_commit": "8c3cf6ec85c3591fc322e75d13c3244321387f8c",
+    "branch": "rci/ds1-defensive-stance",
+    "tests": "154/154",
+    "red_first_verified": true,
+    "independent_rci": "PASS",
+    "image": "proxywar-agent-llm:qd1n-v89-ds1-8c3cf6ec-amd64",
+    "image_id": "sha256:40d04abafbae132ca91af80623462f73be88ffd6103e19cf7f70a1e58fa4fa04",
+    "architecture": "amd64"
+  },
+  "exact_parent": {
+    "source_commit": "f1347251834a6283182b631e1336595eb2e08342",
+    "image": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+    "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478"
+  },
+  "qualifier": {
+    "output": "/private/tmp/proxywar-ds1-qual-8c3cf6ec",
+    "decisions": 34,
+    "accepted": 34,
+    "holds": 0,
+    "rejections": 0,
+    "ds1_markers": 0,
+    "config_sha256": "7a0b94bf4445d0e0ffb7bf72e888f3e8ab847e88dcb287c641c4019af52bdd23",
+    "results_sha256": "d47d0eee35fdce9da3efb743d121d7f720c9dc91c21372c667d12cb31587b8dc",
+    "replay_sha256": "4747601588ca147446a6a78436afa0b482972cb213be26429c8f70a831903326"
+  },
+  "terminal_screen": {
+    "output_root": "/private/tmp/proxywar-ds1-screen3-8c3cf6ec-b",
+    "map": "Pangaea",
+    "seed": 20260722,
+    "max_decision_steps": 60,
+    "odin_slot": 0,
+    "pressure_slot": 7,
+    "pressure_fixture": {
+      "image": "proxywar-pressure-fixture:ds1-v2-amd64",
+      "image_id": "sha256:df36af73f3b0966cacfa44be389d1b1acde1a491bd60f17a57cecdc1b0f37f21",
+      "odin_attack_turns": [
+        1700,
+        1800,
+        5600
+      ],
+      "attack_percent": 40,
+      "odin_boat_invasion_turn": 6200
+    },
+    "candidate": {
+      "config_sha256": "1598d5e4f688855fe82dd8f9db610644c5fddd6dcfd017c82b2baa1ca2c1a145",
+      "results_sha256": "471078768f67be97087e49a455ed752d66e5af980418f50bd7861872dbf63a66",
+      "replay_sha256": "be4519f5fcc44053c529ff411ca33c43d95940f74c60cbb31235cf15f84a7112",
+      "odin_decisions": 63,
+      "accepted": 63,
+      "holds": 0,
+      "rejections": 0,
+      "ds1_markers": 0,
+      "final_tiles": 140,
+      "score": 0.00033489297777267467,
+      "alive": true
+    },
+    "parent": {
+      "config_sha256": "1332f80cbba0acf0a4888293f4335a6a3055b592bb5097eee18563e605a8d3b8",
+      "results_sha256": "471078768f67be97087e49a455ed752d66e5af980418f50bd7861872dbf63a66",
+      "replay_sha256": "e201c004b204bab46433bc594f602d54967737426036f03dab776e577c03bd17",
+      "odin_decisions": 63,
+      "accepted": 63,
+      "holds": 0,
+      "rejections": 0,
+      "ds1_markers": 0,
+      "final_tiles": 140,
+      "score": 0.00033489297777267467,
+      "alive": true
+    },
+    "raw_tile_collapse_examples": [
+      [
+        13093,
+        12444,
+        12320,
+        11233,
+        8693,
+        8535
+      ],
+      [
+        8776,
+        7740,
+        6661
+      ],
+      [
+        534,
+        380,
+        140
+      ]
+    ],
+    "candidate_minus_parent": {
+      "tiles": 0,
+      "score": 0,
+      "deaths": 0
+    }
+  },
+  "discarded_fixture_checks": [
+    "The first generic-pressure fixture never attacked Odin and was invalid.",
+    "The corrected orientation-A fixture attacked Odin only once for 93295 troops while Odin held about 2.5 million troops; the candidate and parent were identical and Odin remained dominant."
+  ],
+  "promotion": {
+    "diagnostic_uploaded": false,
+    "hosted_request_created": false,
+    "policy_uploaded": false,
+    "league_submission_created": false,
+    "membership_changed": false,
+    "champion_changed": false,
+    "live_champion_preserved": "qd1n:v89"
+  },
+  "next_step": "DS1 is closed. Do not amend or reopen it. A raw-tile or count-based collapse signal would be a separate replay-backed arm with its own preregistered gate."
+}

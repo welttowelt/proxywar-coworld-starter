@@ -484,3 +484,26 @@ membership, or champion change. The v89 control remains live. Evidence is on
 branch `rci/dp2-world-opening-post` in
 `experiments/diagnosis-qd1n-dp2-world-defense-20260720.md`; replay SHA-256 is
 `2eb9a95802787ece721394c7bc7ee34629b8d1b7a2446781e4253a3f9eec2351`.
+
+## DS1 defensive-stance rejection (2026-07-20)
+
+DS1 isolated one response switch: after two strict observed land-share declines
+with a current non-K1Z attacker, suspend four optional queue items and select
+the maximum safe counterattack. The source passed red-first regression,
+`154/154` tests, independent RCI review, linux/amd64 byte checks, and a
+`34/34` accepted stock qualifier.
+
+The valid Pangaea pressure pair then disproved the runtime mechanism. A
+non-coalition fixture hit Odin with three 40-percent attacks at turns
+1700/1800/5600 and a boat invasion at turn 6200. Odin's raw territory collapsed
+from 13,093 through 8,535 and later to 140 tiles, but the two-strict-decline
+condition never survived the agent's quantized land-share signal. DS1 emitted
+zero markers. Candidate and exact v89 parent were identical: 63/63 accepted
+Odin decisions, zero holds, zero rejections, 140 final tiles, alive, and
+`0.000334893` score.
+
+DS1 is rejected at the local gate. It receives no trigger repair, hosted
+diagnostic, upload, submission, membership, or champion change. A raw-tile
+collapse signal is a separate future hypothesis, not a DS1 amendment.
+`qd1n:v89` remains live. The receipt is
+[`audit-qd1n-ds1-defensive-stance-pangaea-20260720.json`](experiments/audit-qd1n-ds1-defensive-stance-pangaea-20260720.json).
