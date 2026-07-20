@@ -172,6 +172,7 @@ test("generated fanout index binds four distinct matched cells per arm", () => {
     assert.deepEqual(candidate.game_config, m0.game_config);
     assert.equal(candidate.game_config.map, pair.map);
     assert.equal(candidate.game_config.seed, pair.seed);
+    assert.ok(pair.seed >= 0 && pair.seed <= 308915775);
     assert.equal(candidate.game_config.max_decision_steps, pair.max_decision_steps);
     assert.equal(candidate.players[pair.seat].name, "K1Z Mickey Mouse");
     assert.equal(m0.players[pair.seat].name, "K1Z Mickey Mouse");

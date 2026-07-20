@@ -20,16 +20,16 @@ const arms = [
 
 const cells = {
   "all-k1z-grow": [
-    { id: "pangaea-s0-a", map: "Pangaea", seed: 2026072101, seat: 0 },
-    { id: "pangaea-s2-b", map: "Pangaea", seed: 2026072101, seat: 2 },
-    { id: "asia-s0-c", map: "Asia", seed: 2026072103, seat: 0 },
-    { id: "asia-s2-d", map: "Asia", seed: 2026072103, seat: 2 },
+    { id: "pangaea-s0-a", map: "Pangaea", seed: 20260721, seat: 0 },
+    { id: "pangaea-s2-b", map: "Pangaea", seed: 20260721, seat: 2 },
+    { id: "asia-s0-c", map: "Asia", seed: 20260722, seat: 0 },
+    { id: "asia-s2-d", map: "Asia", seed: 20260722, seat: 2 },
   ],
   "mixed-outsider-convert": [
-    { id: "world-s0-a", map: "World", seed: 2026072111, seat: 0 },
-    { id: "world-s2-b", map: "World", seed: 2026072111, seat: 2 },
-    { id: "asia-s0-c", map: "Asia", seed: 2026072113, seat: 0 },
-    { id: "asia-s2-d", map: "Asia", seed: 2026072113, seat: 2 },
+    { id: "world-s0-a", map: "World", seed: 20260723, seat: 0 },
+    { id: "world-s2-b", map: "World", seed: 20260723, seat: 2 },
+    { id: "asia-s0-c", map: "Asia", seed: 20260724, seat: 0 },
+    { id: "asia-s2-d", map: "Asia", seed: 20260724, seat: 2 },
   ],
 };
 
