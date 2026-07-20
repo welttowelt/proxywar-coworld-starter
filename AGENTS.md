@@ -20,10 +20,12 @@ Hrafn runs on Studio as a separate operator for `hrafn-fylking` only. Hrafn
 cannot mutate `qd1n`, and Odin does not edit or run Hrafn's working branch.
 Mickey owns this Mac's local `mickey-mouse-intent` source, evaluation, and CPU
 fanout lane. Mickey cannot mutate `qd1n` or `hrafn-fylking`; it uses only a
-separately named `mickey` runner lease. Until Studio posts the terminal Hrafn
-migration receipt, Mickey has no Softmax identity, upload, submission,
-membership, or champion authority. Local source builds and offline evaluation
-remain allowed.
+separately named `mickey` runner lease. Hrafn has no local runner lane or
+background operator on this Mac. Mickey does not inherit Hrafn's player or
+league state: live uploads, submissions, memberships, and champion changes
+remain unavailable until Mickey has a distinct Softmax player credential and
+passes its own promotion gates. Local source builds and offline evaluation are
+allowed now.
 
 Coordinate runner ownership through the team mailbox at
 `/Users/olifreuler/.stormforge/team-mailbox`. Every episode or batch must stay

@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T23:31:04Z",
+  "updated_at": "2026-07-20T23:57:57Z",
   "cycle_id": "odin-20260720T230625Z-26500",
   "lane": "odin",
   "arm": {
@@ -22,27 +22,27 @@
     "is_champion": true
   },
   "locks": {
-    "runner": "free after clean RS1 candidate completion",
+    "runner": "free after Mickey lease smoke; local lanes are odin|mickey and local hrafn is rejected",
     "qd1n_mutation": "free",
     "active_player": "K1Z odin free (live verified 2026-07-20T23:08:26Z)",
-    "hrafn_identity_window": "hi1_studio_ready_local_slot_released",
-    "mailbox_commit": "b4f4063b55c64b33060c45d199458ee359a6d7f5",
-    "hrafn_pickup": "Hrafn source and execution are Studio-only. Exact 98288c8b, the isolated Studio identity, image, and four-job advisory window passed independent audit at mailbox b4f4063. Under the user's direct local-slot transfer, normal HOME is restored to K1Z odin free and no local Hrafn process remains.",
-    "mickey_local_slot": "source, five-arm evaluation, linux/amd64 images, and local evidence ownership ready; dedicated HOME exists with no active player, while distinct Mickey player creation hit the two-active-player account limit and may not reuse or rename Hrafn"
+    "hrafn_identity_window": "hi1_terminal_rejected_studio_only",
+    "mailbox_commit": "a53a5a0",
+    "hrafn_pickup": "Hrafn source and execution are Studio-only. HI1 was terminally rejected at mailbox a53a5a0; no local Hrafn process, runner lane, or background operator remains.",
+    "mickey_local_slot": "active local source, evaluation, and CPU owner under the mickey lease; the live lease smoke passed and local hrafn is rejected; dedicated HOME has no active player because the account already has two players"
   },
   "operator_topology": {
     "odin": "local qd1n owner",
     "hrafn": "Studio-only hrafn-fylking owner",
-    "mickey": "local mickey-mouse-intent source and evidence owner",
-    "authority_receipt": "team-mailbox b4f4063",
+    "mickey": "local mickey-mouse-intent source, evaluation, and CPU operator",
+    "authority_receipt": "team-mailbox b648a04 role transfer + 932d96c source gate",
     "mickey_source_worktree": "/private/tmp/proxywar-mickey-cpu-surrogates-20260721",
     "mickey_ops_worktree": "/private/tmp/proxywar-mickey-cpu-fanout-ops-20260721",
     "mickey_source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
     "mickey_source_receipt_commit": "068afee40b55ee80e00b55966905c0e3f3c3df10",
     "mickey_ops_commit": "0ff0dbe563807a4c9bd16972eeb69e62df4a7153",
-    "mickey_state": "five distinct arms; 184/184; zero K1Z harm; six linux/amd64 images verified; local source/evidence ready; live operations blocked only on a distinct Mickey player credential",
+    "mickey_state": "local runner wired and smoke-tested; five distinct arms; 184/184; zero K1Z harm; six prior linux/amd64 images; live operations blocked on a distinct Mickey player credential and a fresh image reseal",
     "live_identity_guard": "released by direct user transfer after the verified Studio handoff; normal HOME is K1Z odin free and dedicated Mickey HOME has no active player",
-    "hrafn_studio_reseal": "complete at exact source 98288c8b9211513cfb71ceb88707de1721f351e3; advisory four-job diagnostic window ready; Hrafn remains Studio-only"
+    "hrafn_studio_reseal": "exact source 98288c8b9211513cfb71ceb88707de1721f351e3 was tested and HI1 terminally rejected at mailbox a53a5a0; Hrafn remains Studio-only"
   },
   "candidate": {
     "source_tests": "154/154",
@@ -132,14 +132,14 @@
   "next_automatic_transition": "Do not run RS1 again or scan adjacent seeds. Preserve qd1n:v89. In the next operator cycle, select one new replay-backed offensive mechanism that addresses the remaining opening-yield gap without reopening closed percent, scheduler, or boat-reroute arms. Hrafn stays Studio-only and Mickey stays local source/evidence-only until a distinct Softmax credential or player slot exists.",
   "prior_verified_champion_preserved": true,
   "latest_coordination_checkpoint": {
-    "cycle_id": "odin-20260720T230625Z-26500",
-    "checked_at": "2026-07-20T23:08:37Z",
-    "receipt": "experiments/checkpoint-qd1n-rs1-hrafn-hi1-window-20260720.json",
-    "dispatch_mailbox_head": "b4f4063b55c64b33060c45d199458ee359a6d7f5",
-    "hrafn_message_id": "hrafn-000016",
+    "cycle_id": "hrafn-hi1-terminal-20260721",
+    "checked_at": "2026-07-20T23:37:46Z",
+    "receipt": "team-mailbox/K1ZDL_HRAFN_000018_HI1_98288C8B_PANGAEA_TERMINAL_REJECT.json",
+    "dispatch_mailbox_head": "a53a5a0",
+    "hrafn_message_id": "hrafn-000018",
     "odin_message_id": "odin-000018",
     "hrafn_source_commit": "98288c8b9211513cfb71ceb88707de1721f351e3",
-    "result": "HRAFN_HI1_WINDOW_READY_ODIN_IDENTITY_BLOCK_PERSISTS"
+    "result": "HRAFN_HI1_TERMINAL_REJECT_STUDIO_ONLY"
   },
   "live_identity_checkpoint": {
     "cycle_id": "mickey-local-takeover-20260721",

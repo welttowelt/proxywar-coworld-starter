@@ -14,9 +14,11 @@ its candidate, commit, verdict, or next transition into this mission file.
 
 - Preserve exact live `qd1n:v89` until every promotion gate passes.
 - Improve Odin's general conversion; do not open a named-opponent branch.
-- Hrafn is a separate `hrafn-fylking` operator. It may run separately
-  user-authorized local experiments under its own lease, but it has no `qd1n`
-  or league-mutation authority. Other supporter policies stay frozen.
+- Hrafn is a Studio-only `hrafn-fylking` operator. It has no runner lane on
+  this Mac and no `qd1n` or league-mutation authority. Mickey owns this Mac's
+  local source, evaluation, and CPU fanout lane under the separate `mickey`
+  lease; it has no live player or league authority. Other supporter policies
+  stay frozen.
 - Keep the K1Z-only Odin finish disabled until the engine exposes an
   authoritative alive-roster signal. Visible rivals are not survivor proof.
 
@@ -43,8 +45,11 @@ No additional user `GO` is required after every objective gate passes.
 ## Operating model
 
 - Codex Odin is the sole writable Qd1n operator.
-- Hrafn is a separate runner-only lane for `hrafn-fylking`; it cannot mutate
-  `qd1n`, upload, submit, change memberships, or change champion state.
+- Hrafn runs `hrafn-fylking` on Studio only; it has no local runner lane and
+  cannot mutate `qd1n`.
+- Mickey owns local source, evaluation, and CPU fanout under the `mickey`
+  runner lease. It cannot mutate `qd1n` or `hrafn-fylking`, and it cannot use
+  live league APIs without its own player credential and complete gates.
 - Kimi K3 Max is an external adviser and never mutates league state.
 - All Coworld runs use `scripts/proxywar-runner-lease.sh run`.
 - All diagnostic uploads and league submissions use

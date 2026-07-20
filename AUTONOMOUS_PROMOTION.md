@@ -5,16 +5,20 @@
 On 2026-07-19 the user granted standing authority for automatic promotion
 after every gate below passes. No additional user `GO` is required. Codex Odin
 owns the full writable `qd1n` lane. Hrafn was later reactivated only as a
-separate runner operator for user-authorized `hrafn-fylking` experiments.
+separate Studio operator for user-authorized `hrafn-fylking` experiments.
 
 This authority applies only to the sanctioned Coworld/Softmax ProxyWar league:
 
 - Codex Odin may mutate `qd1n` submissions, memberships, and champion state.
   Only one Qd1n experiment owns the runner at a time.
-- Hrafn may edit and run its own `hrafn-fylking` branch under a separate
-  current authorization and its own foreground runner lease. Hrafn cannot
-  mutate `qd1n` and has no upload, submission, membership, or champion
+- Hrafn may edit and run its own `hrafn-fylking` branch on Studio under a
+  separate authorization. Hrafn has no runner lane on this Mac, cannot mutate
+  `qd1n`, and has no Odin/Qd1n upload, submission, membership, or champion
   authority. Odin does not edit or run Hrafn's branch.
+- Mickey owns this Mac's local source, evaluation, and CPU fanout lane under
+  the foreground `mickey` runner lease. Mickey cannot mutate `qd1n` or
+  `hrafn-fylking` and has no live league authority without a distinct player
+  credential and its own complete promotion gates.
 - Kimi K3 Max is advisory and performs no league mutations.
 
 ## Required states

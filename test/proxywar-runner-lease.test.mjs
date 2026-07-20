@@ -392,13 +392,13 @@ test("supervised run is strict-busy, exact-release protected, private, and clean
   assert.match(contender.stderr, /busy:odin:run-a/);
   assert.equal(existsSync(contenderOutput), false);
 
-  const hrafnOutput = path.join(directory, "contender-hrafn");
-  const hrafnContender = invoke(state, [
-    "run", "hrafn", "run-hrafn", "--output", hrafnOutput, "--", "/usr/bin/true",
+  const mickeyOutput = path.join(directory, "contender-mickey");
+  const mickeyContender = invoke(state, [
+    "run", "mickey", "run-mickey", "--output", mickeyOutput, "--", "/usr/bin/true",
   ], docker.env);
-  assert.equal(hrafnContender.status, 1, hrafnContender.stderr);
-  assert.match(hrafnContender.stderr, /busy:odin:run-a/);
-  assert.equal(existsSync(hrafnOutput), false);
+  assert.equal(mickeyContender.status, 1, mickeyContender.stderr);
+  assert.match(mickeyContender.stderr, /busy:odin:run-a/);
+  assert.equal(existsSync(mickeyOutput), false);
 
   const wrongRelease = invoke(state, ["release", "odin", "run-a", "wrong-token"]);
   assert.equal(wrongRelease.status, 1);
@@ -786,7 +786,7 @@ test("partial-v2 can never use tokenless release while a pure legacy lock can re
   mkdirSync(legacyLock);
   writeFileSync(path.join(legacyLock, "owner"), "odin\n");
   writeFileSync(path.join(legacyLock, "acquired_at"), "2026-07-19T11:10:17Z\n");
-  result = invoke(legacy.state, ["release", "hrafn"]);
+  result = invoke(legacy.state, ["release", "mickey"]);
   assert.equal(result.status, 1);
   assert.match(result.stderr, /owned-by:odin/);
   result = invoke(legacy.state, ["release", "odin"]);
@@ -1093,26 +1093,26 @@ test("Odin launcher fails closed on invalid status and rejects the separate Hraf
   assert.equal(existsSync(path.join(legacyPrompt.state, "runner.lock")), false);
 });
 
-test("runner gives Hrafn the same foreground lease and exact-token recovery path", (t) => {
+test("runner gives Mickey the same foreground lease and exact-token recovery path", (t) => {
   const context = fixture();
   const { directory, state } = context;
   t.after(() => rmSync(directory, { recursive: true, force: true }));
 
-  const output = path.join(directory, "hrafn-run");
+  const output = path.join(directory, "mickey-run");
   const run = invoke(state, [
-    "run", "hrafn", "hrafn-runner-smoke", "--output", output, "--", "/usr/bin/true",
+    "run", "mickey", "mickey-runner-smoke", "--output", output, "--", "/usr/bin/true",
   ]);
   assert.equal(run.status, 0, run.stderr);
   assert.match(run.stderr, /"event":"lease_acquired"/);
-  assert.match(run.stderr, /"lane":"hrafn"/);
-  assert.match(run.stderr, /"run_id":"hrafn-runner-smoke"/);
+  assert.match(run.stderr, /"lane":"mickey"/);
+  assert.match(run.stderr, /"run_id":"mickey-runner-smoke"/);
   assert.match(run.stderr, /"event":"lease_released"/);
   assert.equal(existsSync(output), true);
   assert.equal(existsSync(path.join(state, "runner.lock")), false);
 
-  const staleOutput = path.join(directory, "old-hrafn-output");
+  const staleOutput = path.join(directory, "old-mickey-output");
   writeV2Lock(state, {
-    lane: "hrafn",
+    lane: "mickey",
     runId: "old-run",
     token: "old-token",
     outputs: [staleOutput],
@@ -1120,13 +1120,28 @@ test("runner gives Hrafn the same foreground lease and exact-token recovery path
   const docker = makeFakeDocker(context);
   const reap = invoke(
     state,
-    ["reap-stale", "hrafn", "old-run", "old-token"],
+    ["reap-stale", "mickey", "old-run", "old-token"],
     docker.env,
   );
   assert.equal(reap.status, 0, reap.stderr);
-  assert.match(reap.stdout, /reaped:hrafn:old-run/);
+  assert.match(reap.stdout, /reaped:mickey:old-run/);
   assert.equal(existsSync(path.join(state, "runner.lock")), false);
   assert.equal(existsSync(staleOutput), false);
+});
+
+test("runner rejects the retired local Hrafn lane", (t) => {
+  const context = fixture();
+  const { directory, state } = context;
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const output = path.join(directory, "retired-hrafn-output");
+
+  const result = invoke(state, [
+    "run", "hrafn", "retired-hrafn", "--output", output, "--", "/usr/bin/true",
+  ]);
+  assert.equal(result.status, 64);
+  assert.match(result.stderr, /run odin\|mickey/);
+  assert.equal(existsSync(output), false);
+  assert.equal(existsSync(path.join(state, "runner.lock")), false);
 });
 
 test("runner cannot start while the shared Qd1n mutation lock exists", (t) => {
