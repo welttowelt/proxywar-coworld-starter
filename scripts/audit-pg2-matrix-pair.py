@@ -196,30 +196,35 @@ def classify_holds(decisions: list[dict], ally_ids: set[str]) -> list[dict]:
             for identifier in identifiers or []:
                 match = TARGET_PREFIX.match(str(identifier))
                 action_target = match.group(1).lower() if match else None
+                text = str(identifier).lower()
+                # A hold is only unexplained when the selector had a legal,
+                # non-protected tactical alternative. The engine deliberately
+                # refuses attacks against K1Z and Defense Post builds; ally
+                # donations are social support, not a forced tactical escape.
+                if kind in {"attack", "boat", "nuke", "warship", "move_warship"} and \
+                    action_target is not None and action_target in ally_ids:
+                    continue
+                if kind == "build" and "defense post" in text:
+                    continue
+                if kind in {"donate_troops", "donate_gold"}:
+                    continue
                 tactical.append((kind, str(identifier), action_target))
         if not tactical:
             continue
-        protected_only = all(
-            kind in {"donate_troops", "donate_gold"}
-            and action_target is not None
-            and action_target in ally_ids
-            for kind, _, action_target in tactical
+        unexplained.append(
+            {
+                "turn": decision.get("turnNumber"),
+                "reason": decision.get("reason"),
+                "tactical_actions": [
+                    {
+                        "kind": kind,
+                        "id": identifier,
+                        "target_id": action_target,
+                    }
+                    for kind, identifier, action_target in tactical
+                ],
+            }
         )
-        if not protected_only:
-            unexplained.append(
-                {
-                    "turn": decision.get("turnNumber"),
-                    "reason": decision.get("reason"),
-                    "tactical_actions": [
-                        {
-                            "kind": kind,
-                            "id": identifier,
-                            "target_id": action_target,
-                        }
-                        for kind, identifier, action_target in tactical
-                    ],
-                }
-            )
     return unexplained
 
 
