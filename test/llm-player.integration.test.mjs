@@ -287,3 +287,76 @@ test("qd2n engine wiring grinds the opening at 35 percent", async () => {
   assert.equal(responses[0].selectedLegalActionId, "expand:terra-nullius:35");
   assert.match(responses[0].reason, /ch1/);
 });
+
+test("odc1 engine wiring uses the clean Odin neutral cadence", async () => {
+  const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
+  await new Promise((resolve) => server.once("listening", resolve));
+  const { port } = server.address();
+  const lowRisk = { level: "low" };
+  const decision = request("odin-grind", [10, 20, 35].map((percent) => ({
+    id: `expand:terra-nullius:${percent}`,
+    kind: "attack",
+    label: `Expand into neutral land with ${percent}% troops`,
+    risk: lowRisk,
+    metadata: { expansion: true, troopPercent: percent },
+  })), {
+    phase: "active",
+    ownState: {
+      tileShare: 0.08,
+      troopRatio: 0.8,
+      troops: 500000,
+      gold: 250000,
+      borderTiles: 100,
+      incomingAttacks: [],
+      spawnTile: 1180588,
+    },
+    visiblePlayers: [],
+  });
+
+  const responses = [];
+  let stderr = "";
+  const child = spawn(process.execPath, [playerPath], {
+    env: {
+      ...process.env,
+      COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
+      POLICY_ENGINE: "odc1",
+      AWS_ACCESS_KEY_ID: "test",
+      AWS_SECRET_ACCESS_KEY: "test",
+      AWS_EC2_METADATA_DISABLED: "true",
+      BEDROCK_MODEL: "invalid-test-model",
+    },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  child.stderr.on("data", (chunk) => { stderr += String(chunk); });
+
+  const completed = new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      child.kill("SIGKILL");
+      reject(new Error(`odc1 wiring test timed out: ${stderr}`));
+    }, 8000);
+    server.once("connection", (socket) => {
+      socket.send(JSON.stringify(decision));
+      socket.on("message", (data) => {
+        responses.push(JSON.parse(String(data)));
+        socket.send(JSON.stringify({ type: "final" }));
+      });
+    });
+    child.once("error", reject);
+    child.once("exit", (code) => {
+      clearTimeout(timeout);
+      if (code === 0) resolve();
+      else reject(new Error(`player exited ${code}: ${stderr}`));
+    });
+  });
+
+  try {
+    await completed;
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+
+  assert.equal(responses[0].selectedLegalActionId, "expand:terra-nullius:10");
+  assert.match(responses[0].reason, /odg10/);
+  assert.equal(responses[0].fallbackUsed, false);
+  assert.equal(responses[0].llmPlannerDegraded, false);
+});

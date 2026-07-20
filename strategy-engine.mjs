@@ -303,7 +303,7 @@ function reciprocalTrustIntact(state, history, rival) {
   return isReciprocalRival(rival) && recentHostility(state, history, rival, history.length) === 0;
 }
 
-function rivalIsProtected(state, history, rival) {
+export function rivalIsProtected(state, history, rival) {
   if (rival.isAllied) return true;
   if (reciprocalTrustIntact(state, history, rival)) return true;
   if (state.self.tileShare >= 0.35) return false;
@@ -555,13 +555,27 @@ function matchesKingmakerPartner(action, partner, state) {
       normalizedRivalName(recipientName) === normalizedRivalName(partner.name));
 }
 
-function kingmakerAllianceAction(actions, state, history) {
+export function kingmakerAllianceAction(
+  actions,
+  state,
+  history,
+  { pendingOnly = false } = {},
+) {
   const partners = reciprocalPartners(actions, state);
   for (const partner of partners) {
     const candidates = safeActions(actions, (action) =>
       action.kind === "alliance_request" && matchesKingmakerPartner(action, partner, state)
     );
     if (candidates.length === 0) continue;
+    if (
+      pendingOnly &&
+      !actions.some((action) =>
+        action.kind === "alliance_reject" &&
+        matchesKingmakerPartner(action, partner, state)
+      )
+    ) {
+      continue;
+    }
     const lastAttempt = decisionsSince(history, (entry) =>
       entry.kind === "alliance_request" &&
       (entry.targetID === partner.id.toLowerCase() ||
@@ -576,7 +590,7 @@ function kingmakerAllianceAction(actions, state, history) {
   return null;
 }
 
-function chooseAtomBomb(actions, state, history) {
+export function chooseAtomBomb(actions, state, history) {
   const candidates = safeActions(actions, (action) =>
     action.kind === "build" && String(action?.metadata?.unit ?? "").toLowerCase() === "atom bomb"
   ).map((action) => ({ action, rival: rivalForAction(action, state) }))

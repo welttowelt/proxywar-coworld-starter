@@ -22,10 +22,18 @@ import {
   clean,
   recordDecision,
 } from "./strategy-engine.mjs";
-import { chooseChassisAction } from "./strategy-chassis.mjs";
+import {
+  chooseChassisAction,
+  chooseOdinChassisAction,
+} from "./strategy-chassis.mjs";
 
 const chooseAction =
-  process.env.POLICY_ENGINE === "qd2n" ? chooseChassisAction : chooseSelectorAction;
+  process.env.POLICY_ENGINE === "qd2n"
+    ? chooseChassisAction
+    : process.env.POLICY_ENGINE === "odc1"
+      ? chooseOdinChassisAction
+      : chooseSelectorAction;
+const deterministicPolicy = process.env.POLICY_ENGINE === "odc1";
 import { classifyPlannerError, plannerCooldownMs } from "./planner-backoff.mjs";
 
 const url = process.env.COWORLD_PLAYER_WS_URL;
@@ -226,12 +234,15 @@ function handleMessage(activeSocket, data) {
   const state = buildState(obs, actions, history);
 
   // Keep the plan fresh WITHOUT blocking — the answer below never waits on Bedrock.
-  planDecisionAge += 1;
-  if (plan === null || planDecisionAge >= PLAN_EVERY) refreshPlanInBackground(state);
+  if (!deterministicPolicy) {
+    planDecisionAge += 1;
+    if (plan === null || planDecisionAge >= PLAN_EVERY) refreshPlanInBackground(state);
+  }
 
-  const chosen = chooseAction(actions, state, plan, history);
-  const degraded = lastPlanError !== null;
-  const reason = publicReason(chosen, plan !== null, degraded, lastPlanErrorClass);
+  const activePlan = deterministicPolicy ? null : plan;
+  const chosen = chooseAction(actions, state, activePlan, history);
+  const degraded = !deterministicPolicy && lastPlanError !== null;
+  const reason = publicReason(chosen, activePlan !== null, degraded, lastPlanErrorClass);
 
   recordDecision(history, chosen, state);
   const response = JSON.stringify({
@@ -239,9 +250,9 @@ function handleMessage(activeSocket, data) {
     requestID: message.requestID,
     selectedLegalActionId: chosen.id,
     reason: reason.slice(0, 48),
-    confidence: plan !== null ? (degraded ? 0.5 : 0.75) : 0.4,
-    fallbackUsed: plan === null || degraded,
-    llmPlannerDegraded: plan === null || degraded,
+    confidence: deterministicPolicy ? 0.9 : activePlan !== null ? (degraded ? 0.5 : 0.75) : 0.4,
+    fallbackUsed: deterministicPolicy ? false : activePlan === null || degraded,
+    llmPlannerDegraded: deterministicPolicy ? false : activePlan === null || degraded,
   });
   if (activeSocket.readyState !== WebSocket.OPEN) return;
   activeSocket.send(response, (error) => {
