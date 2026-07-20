@@ -6,7 +6,7 @@ import {
   serializeK1ZPacket,
   summarizeK1ZLearning,
   validateK1ZPacketLedger,
-  verifyK1ZPacketFile,
+  verifyK1ZPacketBytes,
 } from "../k1z-direct-line.mjs";
 
 function fail(message) {
@@ -42,7 +42,7 @@ try {
     const sealed = sealK1ZPacket(await readJSON(args[0]));
     const bytes = await atomicPacket(args[1], sealed);
     process.stdout.write(
-      `${JSON.stringify(verifyK1ZPacketFile(sealed, bytes))}\n`,
+      `${JSON.stringify(verifyK1ZPacketBytes(bytes))}\n`,
     );
   } else if (command === "verify") {
     if (args.length !== 5) {
@@ -51,7 +51,7 @@ try {
       );
     }
     const bytes = await readFile(args[0]);
-    const report = verifyK1ZPacketFile(JSON.parse(bytes.toString("utf8")), bytes, {
+    const report = verifyK1ZPacketBytes(bytes, {
       fileSHA256: option(args, "--file-sha256"),
       contentSHA256: option(args, "--content-sha256"),
     });

@@ -48,6 +48,17 @@ UTF-8 packet bytes: two-space JSON plus one trailing LF. Bridges must label and
 carry both. Verify both with `npm run k1z:line -- verify PACKET.json
 --file-sha256 SHA --content-sha256 SHA`; never relabel one as the other.
 
+The normative `k1z-json-v1` sort is ECMAScript `Object.keys(value).sort()`:
+default UTF-16 code-unit order, recursively applied to plain objects, with
+array order unchanged. Canonical content uses `JSON.stringify` semantics, no
+Unicode normalization, no whitespace, and no trailing LF. File verification
+uses received bytes; CRLF, BOM, trailing spaces, or missing/extra LF fail.
+Packets without both declared contract fields remain legacy advisory evidence
+and cannot authorize an identity action. Identity authorization is narrower
+than packet validity: it requires a valid formal Odin `APPROVE`, both declared
+contract fields, and externally supplied matching content and file hashes.
+Advisory packets remain authorization-ineligible even when both hashes match.
+
 Commit and push verified Hrafn protocol, policy, evidence, lore, and merit
 checkpoints without waiting for another prompt. Update `LORE.md` and `MERIT.md`
 when evidence changes direction, proves a mechanism, closes a candidate, or

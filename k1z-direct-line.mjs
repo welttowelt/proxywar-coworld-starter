@@ -14,16 +14,91 @@ function object(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
 
-function canonicalize(value) {
-  if (Array.isArray(value)) return value.map(canonicalize);
-  if (!object(value)) return value;
-  return Object.fromEntries(
-    Object.keys(value).sort().map((key) => [key, canonicalize(value[key])]),
-  );
+function losslessJSONError(value, path = "$", seen = new Set()) {
+  if (
+    value === null ||
+    typeof value === "string" ||
+    typeof value === "boolean"
+  ) {
+    return null;
+  }
+  if (typeof value === "number") {
+    if (!Number.isFinite(value)) return `${path} is not a finite number`;
+    return Object.is(value, -0) ? `${path} is negative zero` : null;
+  }
+  if (typeof value !== "object") {
+    return `${path} has unsupported type ${typeof value}`;
+  }
+  if (seen.has(value)) return `${path} is cyclic`;
+  seen.add(value);
+  if (Array.isArray(value)) {
+    for (const key of Reflect.ownKeys(value)) {
+      if (typeof key === "symbol") return `${path} has a symbol key`;
+      if (key === "length") continue;
+      const index = Number(key);
+      if (
+        !/^(?:0|[1-9]\d*)$/.test(key) ||
+        !Number.isSafeInteger(index) ||
+        index >= 0xffff_ffff ||
+        index >= value.length ||
+        String(index) !== key
+      ) {
+        return `${path}.${key} is an unsupported array property`;
+      }
+      const descriptor = Object.getOwnPropertyDescriptor(value, key);
+      if (
+        descriptor?.enumerable !== true ||
+        !Object.hasOwn(descriptor, "value")
+      ) {
+        return `${path}[${key}] is not an enumerable data property`;
+      }
+    }
+    for (let index = 0; index < value.length; index += 1) {
+      if (!Object.hasOwn(value, index)) return `${path}[${index}] is sparse`;
+      const error = losslessJSONError(value[index], `${path}[${index}]`, seen);
+      if (error) return error;
+    }
+  } else {
+    const prototype = Object.getPrototypeOf(value);
+    if (prototype !== Object.prototype && prototype !== null) {
+      return `${path} is not a plain object`;
+    }
+    for (const key of Reflect.ownKeys(value)) {
+      if (typeof key === "symbol") return `${path} has a symbol key`;
+      const descriptor = Object.getOwnPropertyDescriptor(value, key);
+      if (
+        descriptor?.enumerable !== true ||
+        !Object.hasOwn(descriptor, "value")
+      ) {
+        return `${path}.${key} is not an enumerable data property`;
+      }
+      const error = losslessJSONError(value[key], `${path}.${key}`, seen);
+      if (error) return error;
+    }
+  }
+  seen.delete(value);
+  return null;
+}
+
+function canonicalJSONUnchecked(value) {
+  if (Array.isArray(value)) {
+    return `[${value.map(canonicalJSONUnchecked).join(",")}]`;
+  }
+  if (object(value)) {
+    return `{${Object.keys(value)
+      .sort()
+      .map((key) =>
+        `${JSON.stringify(key)}:${canonicalJSONUnchecked(value[key])}`
+      )
+      .join(",")}}`;
+  }
+  return JSON.stringify(value);
 }
 
 function canonicalJSON(value) {
-  return JSON.stringify(canonicalize(value));
+  const error = losslessJSONError(value);
+  if (error) throw new Error(`value must be lossless JSON: ${error}`);
+  return canonicalJSONUnchecked(value);
 }
 
 function sha256(value) {
@@ -31,6 +106,7 @@ function sha256(value) {
 }
 
 function contentSHA256(packet) {
+  if (!object(packet)) throw new Error("packet must be an object");
   const unsigned = structuredClone(packet);
   delete unsigned.integrity;
   return sha256(canonicalJSON(unsigned));
@@ -38,6 +114,8 @@ function contentSHA256(packet) {
 
 function packetErrors(packet, requireIntegrity) {
   const errors = [];
+  const jsonError = losslessJSONError(packet);
+  if (jsonError) return [`packet must be lossless JSON: ${jsonError}`];
   if (!object(packet)) return ["packet must be an object"];
   if (packet.schema_version !== 1) errors.push("schema_version must be 1");
   if (packet.protocol !== "k1z-direct-line") {
@@ -157,27 +235,44 @@ function packetErrors(packet, requireIntegrity) {
         errors.push("content digest does not match packet");
       }
     }
-    const contractDeclared =
-      packet.integrity?.content_canonicalization !== undefined ||
-      packet.integrity?.wire_encoding !== undefined;
+    const hasContentContract = Object.hasOwn(
+      packet.integrity ?? {},
+      "content_canonicalization",
+    );
+    const hasWireContract = Object.hasOwn(
+      packet.integrity ?? {},
+      "wire_encoding",
+    );
+    const contractPartiallyDeclared = hasContentContract || hasWireContract;
+    const contractDeclared = hasContentContract && hasWireContract;
+    if (contractPartiallyDeclared && !contractDeclared) {
+      errors.push("integrity contract requires both declared fields");
+    }
     if (
-      contractDeclared &&
+      hasContentContract &&
       packet.integrity?.content_canonicalization !==
         K1Z_CONTENT_CANONICALIZATION
     ) {
       errors.push("integrity content canonicalization is invalid");
     }
     if (
-      contractDeclared &&
+      hasWireContract &&
       packet.integrity?.wire_encoding !== K1Z_WIRE_ENCODING
     ) {
       errors.push("integrity wire encoding is invalid");
+    }
+    if (formal && !contractDeclared) {
+      errors.push("formal verdict requires a declared integrity contract");
     }
   }
   return errors;
 }
 
 export function sealK1ZPacket(draft) {
+  const jsonError = losslessJSONError(draft);
+  if (jsonError) {
+    throw new Error(`draft must be lossless JSON: ${jsonError}`);
+  }
   const packet = structuredClone(draft);
   delete packet.integrity;
   const errors = packetErrors(packet, false);
@@ -192,26 +287,107 @@ export function sealK1ZPacket(draft) {
 }
 
 export function serializeK1ZPacket(packet) {
+  const jsonError = losslessJSONError(packet);
+  if (jsonError) {
+    throw new Error(`packet must be lossless JSON: ${jsonError}`);
+  }
   return `${JSON.stringify(packet, null, 2)}\n`;
 }
 
-export function verifyK1ZPacketFile(packet, bytes, expected = {}) {
+function wireBuffer(bytes) {
+  if (typeof bytes === "string") return Buffer.from(bytes, "utf8");
+  if (Buffer.isBuffer(bytes)) return Buffer.from(bytes);
+  if (ArrayBuffer.isView(bytes)) {
+    return Buffer.from(bytes.buffer, bytes.byteOffset, bytes.byteLength);
+  }
+  if (bytes instanceof ArrayBuffer) return Buffer.from(bytes);
+  throw new Error("packet bytes must be a string, ArrayBuffer, or byte view");
+}
+
+function parseWireJSON(bytes) {
+  let text;
+  try {
+    text = new TextDecoder("utf-8", { fatal: true }).decode(bytes);
+  } catch {
+    return { packet: null, error: "packet bytes are not valid UTF-8" };
+  }
+  try {
+    return { packet: JSON.parse(text), error: null };
+  } catch {
+    return { packet: null, error: "packet bytes are not valid JSON" };
+  }
+}
+
+function hasDeclaredContract(packet) {
+  return (
+    object(packet?.integrity) &&
+    Object.hasOwn(packet.integrity, "content_canonicalization") &&
+    Object.hasOwn(packet.integrity, "wire_encoding")
+  );
+}
+
+function isFormalOdinApproval(packet) {
+  return (
+    packet?.from === "odin" &&
+    packet?.to === "hrafn" &&
+    packet?.kind === "verdict" &&
+    packet?.authority?.advisory === false &&
+    packet?.authority?.formal_approval === true &&
+    packet?.authority?.mutation_scope === "hrafn" &&
+    packet?.payload?.decision === "APPROVE"
+  );
+}
+
+export function verifyK1ZPacketFile(
+  packet,
+  bytes,
+  expected = {},
+  options = {},
+) {
   const packetReport = validateK1ZPacket(packet);
-  const wireBytes =
-    typeof bytes === "string" ? Buffer.from(bytes, "utf8") : Buffer.from(bytes);
-  const expectedWireBytes = Buffer.from(serializeK1ZPacket(packet), "utf8");
+  const wireBytes = wireBuffer(bytes);
+  const parsed = parseWireJSON(wireBytes);
+  const packetJSONError = losslessJSONError(packet);
+  const parsedJSONError = parsed.error
+    ? null
+    : losslessJSONError(parsed.packet);
+  const packetIsObject = object(packet);
+  const expectedWireBytes = packetJSONError
+    ? null
+    : Buffer.from(serializeK1ZPacket(packet), "utf8");
+  const contractDeclared = hasDeclaredContract(packet);
+  const hashesExternallyBound =
+    SHA256.test(expected.contentSHA256 ?? "") &&
+    SHA256.test(expected.fileSHA256 ?? "");
   const report = {
     valid: false,
     protocol: "k1z-direct-line",
     content_canonicalization: K1Z_CONTENT_CANONICALIZATION,
     wire_encoding: K1Z_WIRE_ENCODING,
-    content_sha256: contentSHA256(packet),
+    content_sha256:
+      packetIsObject && !packetJSONError ? contentSHA256(packet) : null,
     file_sha256: sha256(wireBytes),
+    contract_declared: contractDeclared,
+    legacy: packetIsObject ? !contractDeclared : null,
+    identity_action_eligible: false,
     errors: [...packetReport.errors],
   };
 
-  if (!wireBytes.equals(expectedWireBytes)) {
+  if (parsed.error) {
+    report.errors.push(parsed.error);
+  } else if (parsedJSONError) {
+    report.errors.push(`parsed packet must be lossless JSON: ${parsedJSONError}`);
+  } else if (
+    !packetJSONError &&
+    canonicalJSON(parsed.packet) !== canonicalJSON(packet)
+  ) {
+    report.errors.push("packet argument does not match parsed file bytes");
+  }
+  if (expectedWireBytes === null || !wireBytes.equals(expectedWireBytes)) {
     report.errors.push("file bytes do not match declared wire encoding");
+  }
+  if (options.requireDeclaredContract === true && !contractDeclared) {
+    report.errors.push("verification requires a declared integrity contract");
   }
   if (
     expected.contentSHA256 !== undefined &&
@@ -228,7 +404,43 @@ export function verifyK1ZPacketFile(packet, bytes, expected = {}) {
     report.errors.push("expected file digest does not match");
   }
   report.valid = report.errors.length === 0;
+  report.identity_action_eligible =
+    report.valid &&
+    contractDeclared &&
+    hashesExternallyBound &&
+    isFormalOdinApproval(packet);
   return report;
+}
+
+export function verifyK1ZPacketBytes(bytes, expected = {}, options = {}) {
+  const wireBytes = wireBuffer(bytes);
+  const parsed = parseWireJSON(wireBytes);
+  if (parsed.error) {
+    const report = {
+      valid: false,
+      protocol: "k1z-direct-line",
+      content_canonicalization: K1Z_CONTENT_CANONICALIZATION,
+      wire_encoding: K1Z_WIRE_ENCODING,
+      content_sha256: null,
+      file_sha256: sha256(wireBytes),
+      contract_declared: false,
+      legacy: null,
+      identity_action_eligible: false,
+      errors: [parsed.error],
+    };
+    if (
+      expected.fileSHA256 !== undefined &&
+      (!SHA256.test(expected.fileSHA256) ||
+        report.file_sha256 !== expected.fileSHA256)
+    ) {
+      report.errors.push("expected file digest does not match");
+    }
+    if (expected.contentSHA256 !== undefined) {
+      report.errors.push("expected content digest cannot be verified");
+    }
+    return report;
+  }
+  return verifyK1ZPacketFile(parsed.packet, wireBytes, expected, options);
 }
 
 export function validateK1ZPacket(packet) {
@@ -244,6 +456,7 @@ export function validateK1ZPacketLedger(packets) {
   for (const [index, packet] of packets.entries()) {
     const result = validateK1ZPacket(packet);
     errors.push(...result.errors.map((error) => `packet ${index}: ${error}`));
+    if (!object(packet)) continue;
     if (messageIDs.has(packet.message_id)) {
       errors.push(`duplicate message_id ${packet.message_id}`);
     }
