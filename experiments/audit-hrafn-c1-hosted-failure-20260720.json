@@ -23,7 +23,12 @@
     "episode_request_id": "ereq_4c85549c-6875-4fd4-8b83-a96996af0478",
     "completed_at": "2026-07-20T13:47:23.507629Z",
     "replay_url": "https://softmax-public.s3.amazonaws.com/replays/24eab3a0-1c1b-496a-896f-f4ec8362996a.replay",
-    "replay_sha256": "6569f7d1a9c835b9a723a45f3cfb395ade367a79fcd93e042c6a2c3a62d613d2",
+    "replay_sha256": "7f8339c14df0d06e9c7dd6c2c2c35aa32817d0eeb76cbd163c5c08f100078217",
+    "replay_content_length_bytes": 56007647,
+    "replay_etag": "1440efc0206a5aa41a77431c5ec0a53e",
+    "replay_hash_method": "SHA-256 over the raw downloaded replay bytes",
+    "non_authoritative_decoded_reencoded_sha256": "6569f7d1a9c835b9a723a45f3cfb395ade367a79fcd93e042c6a2c3a62d613d2",
+    "hash_correction": "The earlier digest hashed UTF-8-decoded and re-encoded JSON. The raw-byte digest above is authoritative.",
     "game_id": "COWRLD01",
     "resolved_identity": {
       "player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",

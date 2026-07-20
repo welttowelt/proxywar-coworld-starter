@@ -62,7 +62,7 @@
     "first_terminal_candidate_episode": {
       "episode_request_id": "ereq_4c85549c-6875-4fd4-8b83-a96996af0478",
       "completed_at": "2026-07-20T13:47:23.507629Z",
-      "replay_sha256": "6569f7d1a9c835b9a723a45f3cfb395ade367a79fcd93e042c6a2c3a62d613d2",
+      "replay_sha256": "7f8339c14df0d06e9c7dd6c2c2c35aa32817d0eeb76cbd163c5c08f100078217",
       "candidate_score": 0,
       "winner": "proxywar-keystone:v42",
       "winner_score": 1,
@@ -82,7 +82,8 @@
       ]
     },
     "status": "failed_no_submit",
-    "terminal_reason": "The first completed candidate episode lost 0-1 to proxywar-keystone:v42. The immutable 4/4 gate is impossible regardless of the remaining already-running episodes."
+    "terminal_reason": "The first completed candidate episode lost 0-1 to proxywar-keystone:v42. The immutable 4/4 gate is impossible regardless of the remaining already-running episodes.",
+    "replay_hash_method": "SHA-256 over the raw downloaded replay bytes; do not hash a decoded and re-encoded string"
   },
   "regression_gate": {
     "episodes_required": 20,
