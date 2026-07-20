@@ -405,6 +405,108 @@ test("strict diagnostic accepts a safe mechanism screen without a lift claim", (
   assert.match(unsafe.report.errors.join(" "), /coalition presence failed/);
 });
 
+test("strict diagnostic binds an arm-specific differential verifier and fixture", () => {
+  const context = strictDiagnosticFixture();
+  const localBinding = context.value.local.audit_receipt;
+  const local = JSON.parse(readFileSync(localBinding.path, "utf8"));
+  context.value.local.differential_binding = {
+    verifier_path: DIFFERENTIAL_VERIFIER,
+    fixture_path: DIFFERENTIAL_FIXTURE,
+  };
+  local.differential_unit_proof.fixture.path = DIFFERENTIAL_FIXTURE;
+  writeFileSync(localBinding.path, JSON.stringify(local));
+  localBinding.sha256 = sha256(localBinding.path);
+
+  const passed = validate(context.value, "--require-diagnostic");
+  assert.equal(passed.status, 0, passed.stderr);
+
+  context.value.local.differential_binding.fixture_path =
+    "experiments/odc1/../kiz1/differential-fixture.json";
+  const traversal = validate(context.value, "--require-diagnostic");
+  assert.equal(traversal.status, 1);
+  assert.match(
+    traversal.report.errors.join(" "),
+    /differential verifier provenance|differential command/,
+  );
+});
+
+test("strict mechanism screen honestly binds a derived selector harness", () => {
+  const context = strictDiagnosticFixture();
+  const evaluatorCommit = execFileSync(
+    "git",
+    ["-C", root, "rev-parse", "HEAD"],
+    { encoding: "utf8" },
+  ).trim();
+  const source = evaluatorCommit;
+  const harnessImage = `sha256:${"f".repeat(64)}`;
+  const engineSha = createHash("sha256")
+    .update(committedFile(source, "strategy-engine.mjs"))
+    .digest("hex");
+  const playerPath = "experiments/kiz1/selector-player.mjs";
+  const dockerfilePath = "experiments/kiz1/Dockerfile.mechanism";
+  const playerSha = createHash("sha256")
+    .update(committedFile(evaluatorCommit, playerPath))
+    .digest("hex");
+  const dockerfileSha = createHash("sha256")
+    .update(committedFile(evaluatorCommit, dockerfilePath))
+    .digest("hex");
+
+  context.value.candidate.source_commit = source;
+  context.value.local.runs = 1;
+  context.value.local.independent_traces = 1;
+  context.value.local.mechanism_harness = {
+    resolved_image_id: harnessImage,
+    base_candidate_image_id: context.image,
+    strategy_engine_sha256: engineSha,
+    evaluator_commit: evaluatorCommit,
+    artifacts: {
+      player: { path: playerPath, sha256: playerSha },
+      dockerfile: { path: dockerfilePath, sha256: dockerfileSha },
+    },
+  };
+
+  const localBinding = context.value.local.audit_receipt;
+  const local = JSON.parse(readFileSync(localBinding.path, "utf8"));
+  local.verdict = "PASS_MECHANISM_SCREEN";
+  local.screen_mode = "mechanism";
+  local.competitive_evidence = false;
+  local.candidate_source_commit = source;
+  local.differential_unit_proof.candidate.source_commit = source;
+  local.differential_unit_proof.test_command[4] = source;
+  local.differential_unit_proof.test_command[6] =
+    `experiments/odc1/differential-proof-${source.slice(0, 8)}.json`;
+  local.runs = [local.runs[0]];
+  delete local.runs[0].orientation_advantage;
+  local.runs[0].resolved_images.images.candidate.image_id = harnessImage;
+  local.runs[0].mechanism_harness = {
+    resolved_image_id: harnessImage,
+    base_candidate_image_id: context.image,
+    evaluator_commit: evaluatorCommit,
+    strategy_engine_byte_match: true,
+    strategy_engine_sha256: engineSha,
+    player: { path: playerPath, sha256: playerSha },
+    dockerfile: { path: dockerfilePath, sha256: dockerfileSha },
+  };
+  writeFileSync(localBinding.path, JSON.stringify(local));
+  localBinding.sha256 = sha256(localBinding.path);
+
+  const rciBinding = context.value.preupload_rci.receipt;
+  const rci = JSON.parse(readFileSync(rciBinding.path, "utf8"));
+  rci.candidate_source_commit = source;
+  writeFileSync(rciBinding.path, JSON.stringify(rci));
+  rciBinding.sha256 = sha256(rciBinding.path);
+
+  const passed = validate(context.value, "--require-diagnostic");
+  assert.equal(passed.status, 0, passed.stderr);
+
+  local.runs[0].mechanism_harness.strategy_engine_sha256 = "0".repeat(64);
+  writeFileSync(localBinding.path, JSON.stringify(local));
+  localBinding.sha256 = sha256(localBinding.path);
+  const mismatched = validate(context.value, "--require-diagnostic");
+  assert.equal(mismatched.status, 1);
+  assert.match(mismatched.report.errors.join(" "), /resolved image ID mismatched/);
+});
+
 test("strict promotion rejects self-attested counters without immutable receipts", () => {
   const value = fixture();
   value.diagnostic_only = false;

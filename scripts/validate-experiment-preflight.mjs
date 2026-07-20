@@ -28,14 +28,38 @@ const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-
 const POLICY_LABEL = /^qd1n:v[1-9][0-9]*$/;
 const ODIN_PLAYER_ID = "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c";
 const REPOSITORY = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
-const DIFFERENTIAL_VERIFIER = "experiments/odc1/verify-differential.mjs";
-const DIFFERENTIAL_FIXTURE = "experiments/odc1/differential-fixture.json";
+const LEGACY_DIFFERENTIAL_VERIFIER = "experiments/odc1/verify-differential.mjs";
+const LEGACY_DIFFERENTIAL_FIXTURE = "experiments/odc1/differential-fixture.json";
 
 const requireString = (value, label) => {
   if (typeof value !== "string" || value.trim() === "") errors.push(`${label} is required`);
 };
 const emptyArray = (value) => Array.isArray(value) && value.length === 0;
 const nonNegativeInteger = (value) => Number.isInteger(value) && value >= 0;
+const safeRepositoryPath = (value) =>
+  typeof value === "string" &&
+  value.length > 0 &&
+  !path.isAbsolute(value) &&
+  path.posix.normalize(value) === value &&
+  !value.split("/").includes("..");
+const safeExperimentArtifact = (value) =>
+  safeRepositoryPath(value) && value.startsWith("experiments/");
+
+function committedArtifact(commit, artifactPath, label) {
+  if (!COMMIT.test(commit ?? "") || !safeRepositoryPath(artifactPath)) {
+    errors.push(`${label} provenance is invalid`);
+    return null;
+  }
+  try {
+    return execFileSync(
+      "git",
+      ["-C", REPOSITORY, "show", `${commit}:${artifactPath}`],
+    );
+  } catch {
+    errors.push(`${label} commit or path is unavailable`);
+    return null;
+  }
+}
 
 async function loadBoundReceipt(binding, label) {
   if (!binding || typeof binding !== "object") {
@@ -191,7 +215,57 @@ function validateLocalReceipt(receipt, candidate, preflightValue) {
     const resolvedCandidate =
       run.resolved_images?.images?.candidate?.image_id;
     if (resolvedCandidate !== candidate.image_id) {
-      errors.push(`local ${run.orientation ?? "unknown"} resolved image ID mismatched`);
+      const harness = run.mechanism_harness ?? {};
+      const binding = preflightValue.local?.mechanism_harness ?? {};
+      const candidateEngine = committedArtifact(
+        candidate.source_commit,
+        "strategy-engine.mjs",
+        "local mechanism harness candidate engine",
+      );
+      const candidateEngineSha = candidateEngine && createHash("sha256")
+        .update(candidateEngine)
+        .digest("hex");
+      const artifactNames = ["player", "dockerfile"];
+      const artifactsValid = artifactNames.every((name) => {
+        const artifact = binding.artifacts?.[name] ?? {};
+        const committed = safeExperimentArtifact(artifact.path)
+          ? committedArtifact(
+              binding.evaluator_commit,
+              artifact.path,
+              `local mechanism harness ${name}`,
+            )
+          : null;
+        const committedSha = committed && createHash("sha256")
+          .update(committed)
+          .digest("hex");
+        return (
+          committed !== null &&
+          SHA256.test(artifact.sha256 ?? "") &&
+          artifact.sha256 === committedSha &&
+          harness[name]?.path === artifact.path &&
+          harness[name]?.sha256 === artifact.sha256
+        );
+      });
+      if (
+        !mechanismOnly ||
+        receipt.competitive_evidence !== false ||
+        !IMAGE_ID.test(resolvedCandidate ?? "") ||
+        binding.resolved_image_id !== resolvedCandidate ||
+        binding.base_candidate_image_id !== candidate.image_id ||
+        binding.strategy_engine_sha256 !== candidateEngineSha ||
+        !COMMIT.test(binding.evaluator_commit ?? "") ||
+        harness.resolved_image_id !== resolvedCandidate ||
+        harness.base_candidate_image_id !== candidate.image_id ||
+        harness.evaluator_commit !== binding.evaluator_commit ||
+        harness.strategy_engine_byte_match !== true ||
+        !SHA256.test(harness.strategy_engine_sha256 ?? "") ||
+        harness.strategy_engine_sha256 !== candidateEngineSha ||
+        !artifactsValid
+      ) {
+        errors.push(
+          `local ${run.orientation ?? "unknown"} resolved image ID mismatched`,
+        );
+      }
     }
   }
   if (!mechanismOnly && (!orientations.has("A") || !orientations.has("B"))) {
@@ -221,67 +295,81 @@ function validateLocalReceipt(receipt, candidate, preflightValue) {
     errors.push("local audit differential proof is incomplete or mismatched");
   }
   const verifier = proof.verifier ?? {};
+  const differentialBinding = preflightValue.local?.differential_binding;
+  const explicitBinding = differentialBinding !== undefined;
+  const verifierPath = explicitBinding
+    ? differentialBinding?.verifier_path
+    : LEGACY_DIFFERENTIAL_VERIFIER;
+  const fixturePath = explicitBinding
+    ? differentialBinding?.fixture_path
+    : LEGACY_DIFFERENTIAL_FIXTURE;
+  const pathsShareDirectory =
+    safeExperimentArtifact(verifierPath) &&
+    safeExperimentArtifact(fixturePath) &&
+    path.posix.dirname(verifierPath) === path.posix.dirname(fixturePath);
   if (
-    verifier.path !== DIFFERENTIAL_VERIFIER ||
+    !pathsShareDirectory ||
+    verifier.path !== verifierPath ||
+    (explicitBinding && proof.fixture?.path !== fixturePath) ||
+    (!explicitBinding &&
+      proof.fixture?.path !== undefined &&
+      proof.fixture.path !== fixturePath) ||
     !COMMIT.test(verifier.evaluator_commit ?? "") ||
     !SHA256.test(verifier.sha256 ?? "")
   ) {
     errors.push("local audit differential verifier provenance is incomplete");
   } else {
-    try {
-      const committedVerifier = execFileSync(
-        "git",
-        [
-          "-C",
-          REPOSITORY,
-          "show",
-          `${verifier.evaluator_commit}:${DIFFERENTIAL_VERIFIER}`,
-        ],
-      );
+    const committedVerifier = committedArtifact(
+      verifier.evaluator_commit,
+      verifierPath,
+      "local audit differential verifier",
+    );
+    if (committedVerifier) {
       const actualVerifierSha = createHash("sha256")
         .update(committedVerifier)
         .digest("hex");
       if (actualVerifierSha !== verifier.sha256) {
         errors.push("local audit differential verifier SHA-256 mismatched");
       }
-    } catch {
-      errors.push("local audit differential verifier commit is unavailable");
     }
   }
   if (!SHA256.test(proof.fixture?.sha256 ?? "")) {
     errors.push("local audit differential fixture SHA-256 is invalid");
-  } else if (COMMIT.test(verifier.evaluator_commit ?? "")) {
-    try {
-      const committedFixture = execFileSync(
-        "git",
-        [
-          "-C",
-          REPOSITORY,
-          "show",
-          `${verifier.evaluator_commit}:${DIFFERENTIAL_FIXTURE}`,
-        ],
-      );
+  } else if (
+    COMMIT.test(verifier.evaluator_commit ?? "") &&
+    safeExperimentArtifact(fixturePath)
+  ) {
+    const committedFixture = committedArtifact(
+      verifier.evaluator_commit,
+      fixturePath,
+      "local audit differential fixture",
+    );
+    if (committedFixture) {
       const actualFixtureSha = createHash("sha256")
         .update(committedFixture)
         .digest("hex");
       if (actualFixtureSha !== proof.fixture.sha256) {
         errors.push("local audit differential fixture SHA-256 mismatched");
       }
-    } catch {
-      errors.push("local audit differential fixture commit is unavailable");
     }
   }
   const command = proof.test_command;
+  const expectedOutput = safeExperimentArtifact(verifierPath)
+    ? path.posix.join(
+        path.posix.dirname(verifierPath),
+        `differential-proof-${candidate.source_commit.slice(0, 8)}.json`,
+      )
+    : null;
   if (
     !Array.isArray(command) ||
     command.length !== 7 ||
     command[0] !== "node" ||
-    command[1] !== DIFFERENTIAL_VERIFIER ||
+    command[1] !== verifierPath ||
+    command[2] !== "." ||
     command[3] !== candidate.parent_commit ||
     command[4] !== candidate.source_commit ||
-    command[5] !== DIFFERENTIAL_FIXTURE ||
-    command[6] !==
-      `experiments/odc1/differential-proof-${candidate.source_commit.slice(0, 8)}.json`
+    command[5] !== fixturePath ||
+    command[6] !== expectedOutput
   ) {
     errors.push("local audit differential command is not reproducibly bound");
   }
