@@ -1,17 +1,18 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T20:58:39Z",
-  "cycle_id": "odin-kiz1-gravity-20260720",
+  "updated_at": "2026-07-20T21:33:10Z",
+  "cycle_id": "odin-rs1-raw-stall-20260720",
   "lane": "odin",
   "arm": {
-    "id": "kiz1",
-    "name": "gravity_identity_alias",
-    "branch": "rci/kiz1-gravity-alias",
+    "id": "rs1",
+    "name": "raw_tile_stall_measurement",
+    "branch": "rci/rs1-raw-stall",
     "exact_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
-    "candidate_source_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
-    "closed": true
+    "safety_invariant_base_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "candidate_source_commit": "4bfad888d54b41e11930b0126016dfd50a909414",
+    "closed": false
   },
-  "state": "closed_hosted_failure",
+  "state": "source_ready_waiting_hrafn_window",
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
     "player_name": "K1Z odin free",
@@ -21,48 +22,45 @@
     "is_champion": true
   },
   "locks": {
-    "runner": "free",
+    "runner": "free_at_identity_handoff",
     "qd1n_mutation": "free",
-    "active_player": "K1Z odin free",
-    "hrafn_identity_window": "closed"
+    "active_player": "K1Z Hrafn",
+    "hrafn_identity_window": "open_advisory_only",
+    "mailbox_commit": "4ec54d5"
   },
   "candidate": {
-    "source_tests": "147/147",
-    "source_rci": "PASS",
-    "kimi_advice": "PASS",
-    "image_ref": "proxywar-agent-llm:qd1n-v89-kiz1-gravity-1ccaff73-amd64",
-    "image_id": "sha256:de2a15be36a86cf8f74029539f6576b0559554c89ac5800ebf4814c6b863677e",
+    "source_tests": "153/153",
+    "source_rci": "PASS after one revision",
+    "image_ref": "proxywar-agent-llm:qd1n-v89-rs1-4bfad888-amd64",
+    "image_id": "sha256:29065128631a4e467a4b6c52bc3fa65bb218233a36f07277133ac5578dbfa157",
     "architecture": "amd64",
     "policy_engine": "",
-    "contract": "experiments/contract-qd1n-kiz1-gravity-local-screen-20260720.json",
-    "uploaded_label": "qd1n:v94",
-    "policy_version_id": "e141216a-5a79-47a2-b885-7538b5d0003e",
-    "upload_receipt": "experiments/receipt-qd1n-kiz1-gravity-diagnostic-upload-20260720.json"
+    "contract": "experiments/contract-qd1n-rs1-raw-stall-20260720.json"
+  },
+  "replay_basis": {
+    "round": 581,
+    "false_stalls": 5,
+    "true_stalls": 2,
+    "diagnosis": "experiments/diagnosis-qd1n-r581-opening-yield-20260720.json"
+  },
+  "source_evidence": {
+    "red_first": "1 core fail, 5 lock-ins pass",
+    "red_log_sha256": "5cd8ed9435f5bf7889342898ea7fb8f6b163d364e21ff0f88740f76072623fca",
+    "focused": "6/6",
+    "full": "153/153",
+    "full_log_sha256": "75d6e1bdcae5569017d733a234f99164055d967537453c85f6635ad0e14231b4",
+    "randomized_parent_parity": "2000/2000",
+    "targeted_marker_truth": "5000/5000"
   },
   "local_evidence": {
-    "verdict": "PASS_LOCAL_MECHANISM",
-    "receipt": "experiments/audit-qd1n-kiz1-gravity-local-screen-20260720.json",
-    "qualifier": "34/34 accepted",
-    "mechanism": "39/39 accepted, 6 Gravity kp2, 0 Gravity harm, 0 candidate fallback/degradation/holds/rejects, Odin win"
-  },
-  "hosted_evidence": {
-    "source_round": 581,
-    "variant": "tournament-12p-pangaea",
-    "candidate_request": "xreq_41f198c5-8ecf-4c1b-82bb-7628d949b672",
-    "parent_request": "xreq_38a50cf3-0476-470e-b357-877cbf6285e7",
-    "episodes_per_request": 4,
-    "status": "terminal_early_stop",
-    "terminal_episode": "ereq_bdbaf1ce-aa44-41f7-9906-e10d57b98876",
-    "terminal_replay_sha256": "19f2461529699a2dea30d6eca88cac999de9192b38d9c27d92343bc36125b301",
-    "candidate_won": false,
-    "candidate_score": 0.0,
-    "candidate_final_tiles": 4342,
-    "verdict": "STOP_HOSTED"
+    "status": "not_run",
+    "reason": "Shared active identity is K1Z Hrafn for the sealed HI1 four-run diagnostic window. Odin will not compete for the runner or switch identity mid-window."
   },
   "gates": {
     "source_ready": true,
-    "local_mechanism_verified": true,
-    "diagnostic_uploaded": true,
+    "image_verified": true,
+    "local_matched": false,
+    "diagnostic_uploaded": false,
     "hosted_4_of_4": false,
     "regression_20_of_20": false,
     "final_rci": false,
@@ -72,10 +70,11 @@
     "round_confirmed": false
   },
   "superseded": {
-    "os1": "closed_without_run_as_recombined_complexity",
-    "id1": "closed_directional_only_no_dynamic_llm_proof"
+    "kiz1": "closed_hosted_failure; Gravity protection retained only as a mandatory safety invariant",
+    "oi2": "closed_before_edit as redundant with HI1",
+    "os1": "closed_without_run_as_recombined_complexity"
   },
-  "next_automatic_transition": "KIZ1 is closed. Preserve qd1n:v89 and carry the Gravity alias forward only as a mandatory safety invariant in the next single-mechanism offensive candidate.",
+  "next_automatic_transition": "After Hrafn closes HI1 and restores K1Z odin free, run only the preregistered RS1 matched orientations. Reject immediately on zero reach, any unexplained hold/reject/K1Z harm, or failed opening-AUC gate.",
   "prior_verified_champion_preserved": true,
   "last_live_checkpoint": {
     "cycle_id": "odin-20260720T205740Z-88030",
