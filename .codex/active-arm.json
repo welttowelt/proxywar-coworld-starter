@@ -1,14 +1,15 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T22:27:47Z",
+  "updated_at": "2026-07-20T22:35:42Z",
   "cycle_id": "mickey-static-intent-evaluation-20260721",
   "lane": "mickey",
   "policy_lineage": "mickey-mouse-intent",
-  "state": "source_ready_image_gate",
+  "state": "image_ready_waiting_migration_identity",
   "worktree": "/private/tmp/proxywar-mickey-cpu-surrogates-20260721",
   "branch": "codex/mickey-cpu-surrogates",
   "base_commit": "dbb14e75ea70b1285dde9781f8c9f0119a212c06",
-  "source_commit": "ff51e47f19442f1406daaf44a84bef368b4f3864",
+  "source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
+  "source_receipt_commit": "068afee40b55ee80e00b55966905c0e3f3c3df10",
   "mission": "Test compact grow or convert intents while the deterministic controller alone selects an offered legal action ID.",
   "guards": {
     "zero_k1z_harm": true,
@@ -27,15 +28,25 @@
   },
   "evidence_gates": {
     "red_first": "177/180 before baked-entrypoint correction",
-    "focused_tests": "14/14",
-    "full_source_suite": "182/182",
+    "focused_tests": "16/16",
+    "full_source_suite": "184/184",
     "production_evaluation_isolation": true,
     "deterministic_legal_action_selection": true,
     "zero_k1z_harm": true,
+    "distinct_source_traces": "5/5",
+    "linux_amd64_images_verified": true,
     "local_runtime": false,
     "hosted": false,
     "submission": false,
     "champion": false
   },
-  "next_transition": "Build and inspect the exact explicit evaluation images; keep the default production stage free of surrogate source. No Coworld run or live operation before the migration and identity gates open."
+  "images": {
+    "production": "sha256:09d5bf61622f0b9619957564c520389a04c52ad337358262b380900127156042",
+    "m0": "sha256:63395b042d6247520b5b8ebcdfb75470ac54750a6aadf2e5b712cbb66061e230",
+    "grow_opening": "sha256:3cf9874143eed7b7592228532a41353cc0f724127287f682584814dc214e83c1",
+    "grow_low_share": "sha256:917165e843949009cfcc4d23cd96a27314cb373e63427245b41d13eec70bbbe6",
+    "convert_weakest": "sha256:a1de9d15e302a3181f6638edc37f697ea305427c15b9ddb80e6a7706b54a1380",
+    "convert_largest": "sha256:647e29657e47b76a24946baf1fd8837e94d69616a4084a5ff572f281694abe7f"
+  },
+  "next_transition": "After Studio posts the terminal Hrafn migration receipt and dedicated Mickey identity is verified, preregister the smallest local M0-versus-one-arm runtime screen under the mickey lease. No live operation before both gates open."
 }
