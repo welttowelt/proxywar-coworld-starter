@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260720T230625Z-26500",
+  "checked_at": "2026-07-20T23:08:37Z",
+  "kind": "bounded_mailbox_transition_checkpoint",
+  "dispatch_mailbox_head": "b4f4063b55c64b33060c45d199458ee359a6d7f5",
+  "observed": {
+    "hrafn_request": {
+      "message_id": "hrafn-000016",
+      "state": "HI1_98288C8B_RESEALED_ADVISORY_WINDOW_REQUEST",
+      "sealed_source_commit": "98288c8b9211513cfb71ceb88707de1721f351e3",
+      "full_suite": "499/499 pass",
+      "rci_verdict": "PASS",
+      "runner_acquired": false,
+      "coworld_episode_started": false
+    },
+    "odin_receipt": {
+      "message_id": "odin-000018",
+      "state": "HI1_IDENTITY_WINDOW_READY",
+      "scope": "hrafn-only",
+      "ordered_diagnostic_scope": [
+        "pangaea-control",
+        "pangaea-candidate",
+        "asia-candidate",
+        "asia-control"
+      ],
+      "formal_approvals_consumed": 0
+    },
+    "active_identity": {
+      "player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+      "player_name": "K1Z Hrafn"
+    },
+    "terminal_migration_receipt_present": false
+  },
+  "scope_guard": "The mailbox head authorizes only Hrafn's hash-bound Studio diagnostic window. It does not restore the Qd1n identity or authorize an Odin runner, upload, submission, membership, or champion mutation.",
+  "verdict": "HRAFN_HI1_WINDOW_READY_ODIN_IDENTITY_BLOCK_PERSISTS",
+  "mutation_performed": false,
+  "runner_used": false,
+  "next_automatic_transition": "After Hrafn completes the four approved Studio jobs and posts the terminal migration receipt, restore and verify K1Z odin free, then run the preregistered RS1 slot-0 control first."
+}
