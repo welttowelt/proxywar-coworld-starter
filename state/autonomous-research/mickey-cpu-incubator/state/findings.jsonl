@@ -1,0 +1,1 @@
+{"confidence": "high", "evidence": "scripts/validate_mickey_incubator_state.py and test/test_validate_mickey_incubator_state.py", "iteration": 0, "summary": "The fail-closed incubator validator preserves the static-evaluation boundary, ordered gates, structural stale pivots, and rollback requirement.", "ts": "2026-07-20T22:42:07Z"}

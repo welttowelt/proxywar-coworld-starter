@@ -1,0 +1,2 @@
+{"detail": "The fail-closed incubator validator preserves the static-evaluation boundary, ordered gates, structural stale pivots, and rollback requirement.", "event": "finding_added", "level": "info", "source": "work", "ts": "2026-07-20T22:42:07Z"}
+{"detail": "Durable state, protocol, initial population, and validator are ready; no CPU outcome has been recorded.", "event": "progress_updated", "level": "info", "source": "work", "ts": "2026-07-20T22:42:07Z"}

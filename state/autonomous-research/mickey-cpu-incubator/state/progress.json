@@ -1,0 +1,15 @@
+{
+  "created_at": "2026-07-20T22:38:31Z",
+  "iteration": 0,
+  "last_metric": null,
+  "last_output_kind": "summary",
+  "last_seen": "2026-07-20T22:44:30Z",
+  "schema_version": 1,
+  "stale_count": 0,
+  "stale_reason": null,
+  "status": "working",
+  "task_id": "mickey-cpu-incubator",
+  "title": "Mickey CPU Incubator",
+  "total_findings": 1,
+  "updated_at": "2026-07-20T22:44:30Z"
+}

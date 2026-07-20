@@ -1,0 +1,4 @@
+{"detail": "validator accepted the committed-shape snapshot and six fail-closed unit cases passed", "event": "state_validation_passed", "level": "info", "source": "verifier", "ts": "2026-07-20T22:42:07Z"}
+{"detail": "local-active league-blocked boundary and eight fail-closed unit cases passed", "event": "state_validation_extended", "level": "info", "source": "verifier", "ts": "2026-07-20T22:44:30Z"}
+{"detail": "ten local unit cases now cover malformed contracts and forbidden sensitive keys", "event": "state_validator_fail_closed", "level": "info", "source": "verifier", "ts": "2026-07-20T22:44:58Z"}
+{"detail": "eleven local cases include a production-clean local promotion with rollback while the league remains blocked", "event": "local_promotion_path_validated", "level": "info", "source": "verifier", "ts": "2026-07-20T22:45:48Z"}

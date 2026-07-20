@@ -1,0 +1,384 @@
+{
+  "schema_version": 1,
+  "task_id": "mickey-cpu-incubator",
+  "lane": "mickey",
+  "scope": {
+    "mode": "local_static_cpu_evaluation",
+    "local_mac_mutation_allowed_now": false,
+    "network_allowed": false,
+    "pod_operation_allowed": false,
+    "runner_operation_allowed": false,
+    "coworld_operation_allowed": false,
+    "upload_allowed": false,
+    "league_mutation_allowed": false,
+    "persistent_scheduler_allowed": false
+  },
+  "static_evaluation_boundary": {
+    "artifact_class": "static_evaluation",
+    "surrogate_source": "static-eval-v1",
+    "upload_eligible": false,
+    "production_eligible": false,
+    "production_reimplementation_required": true,
+    "live_promotion_gate": "separate_and_closed"
+  },
+  "loop_control": {
+    "stale_count": 0,
+    "state": "active",
+    "pivot_at": 2,
+    "stop_at": 4,
+    "allowed_structural_pivots": [
+      "hypothesis",
+      "roster_or_data_cell",
+      "objective",
+      "verifier",
+      "decomposition",
+      "search_space"
+    ],
+    "next_direction": null
+  },
+  "gate_contracts": {
+    "screen": {
+      "minimum_matched_pairs": 4,
+      "same_map_seed_seat_roster": true,
+      "randomized_order": true,
+      "direct_marker_reach_required": true,
+      "matched_outcome_advantage_required": true,
+      "maximum_k1z_harm": 0,
+      "maximum_rejects": 0,
+      "maximum_unexplained_holds": 0
+    },
+    "confirm": {
+      "minimum_fresh_matched_pairs": 12,
+      "minimum_maps": 2,
+      "minimum_seats": 2,
+      "screen_cell_overlap_allowed": false,
+      "direct_marker_reach_required": true,
+      "matched_outcome_advantage_required": true,
+      "maximum_k1z_harm": 0,
+      "maximum_rejects": 0,
+      "maximum_unexplained_holds": 0
+    },
+    "promote_local_mac": {
+      "confirmed_static_mechanism_required": true,
+      "production_reimplementation_required": true,
+      "static_evaluation_runtime_absent": true,
+      "full_source_suite_required": true,
+      "independent_verifier_required": true,
+      "exact_amd64_image_required": true,
+      "mac_canary_required": true,
+      "registered_rollback_target_required": true,
+      "softmax_identity_required": false,
+      "live_softmax_gate_inferred": false
+    },
+    "promote_league": {
+      "active_local_incumbent_required": true,
+      "dedicated_mickey_player_required": true,
+      "terminal_hrafn_migration_receipt_required": true,
+      "hosted_4_of_4_required": true,
+      "regression_20_of_20_required": true,
+      "final_rci_required": true,
+      "authority_from_this_manifest": false
+    }
+  },
+  "local_incumbent": {
+    "state": "registration_required",
+    "origin": null,
+    "arm_id": null,
+    "source_commit": null,
+    "image_tag": null,
+    "image_digest": null,
+    "activation_receipt": null,
+    "rollback_ready": false,
+    "previous": null
+  },
+  "league_incumbent": {
+    "state": "blocked",
+    "local_arm_id": null,
+    "player_id": null,
+    "policy_version_id": null,
+    "membership_id": null,
+    "activation_receipt": null,
+    "gates": {
+      "dedicated_mickey_player": {
+        "status": "blocked",
+        "evidence": []
+      },
+      "terminal_hrafn_migration_receipt": {
+        "status": "blocked",
+        "evidence": []
+      },
+      "hosted_4_of_4": {
+        "status": "blocked",
+        "evidence": []
+      },
+      "regression_20_of_20": {
+        "status": "blocked",
+        "evidence": []
+      },
+      "final_rci": {
+        "status": "blocked",
+        "evidence": []
+      }
+    }
+  },
+  "current_generation_id": "g000",
+  "generations": [
+    {
+      "generation_id": "g000",
+      "parent_generation_id": null,
+      "status": "ready_to_screen",
+      "structural_dimension": "intent_schedule",
+      "hypothesis": "A compact state-conditioned grow or outsider-conversion intent can improve matched outcomes while Mickey's deterministic selector alone chooses a legal action.",
+      "control_arm_id": "m0",
+      "source_commit": "ff51e47f19442f1406daaf44a84bef368b4f3864",
+      "base_commit": "dbb14e75ea70b1285dde9781f8c9f0119a212c06",
+      "arms": [
+        {
+          "arm_id": "m0",
+          "role": "control",
+          "parent_arm_id": null,
+          "mechanism_key": "intent-disabled",
+          "mechanism": "Same Mickey safety and legal-action chassis with the high-level intent disabled.",
+          "mechanism_delta_count": 0,
+          "roster_requirement": "any",
+          "status": "source_ready",
+          "evaluation_artifact": {
+            "class": "static_evaluation",
+            "surrogate_source": "static-eval-v1",
+            "source_commit": "ff51e47f19442f1406daaf44a84bef368b4f3864",
+            "upload_eligible": false,
+            "production_eligible": false
+          },
+          "gates": {
+            "source": {
+              "status": "pass",
+              "evidence": [
+                ".codex/active-arm.json"
+              ]
+            },
+            "screen": {
+              "status": "not_applicable",
+              "evidence": []
+            },
+            "confirm": {
+              "status": "not_applicable",
+              "evidence": []
+            }
+          },
+          "production_candidate": null,
+          "rejection_reason": null
+        },
+        {
+          "arm_id": "grow-opening",
+          "role": "maverick",
+          "parent_arm_id": "m0",
+          "mechanism_key": "grow-first-20",
+          "mechanism": "Emit grow intent during the first twenty active decisions.",
+          "mechanism_delta_count": 1,
+          "roster_requirement": "any",
+          "status": "source_ready",
+          "evaluation_artifact": {
+            "class": "static_evaluation",
+            "surrogate_source": "static-eval-v1",
+            "source_commit": "ff51e47f19442f1406daaf44a84bef368b4f3864",
+            "upload_eligible": false,
+            "production_eligible": false
+          },
+          "gates": {
+            "source": {
+              "status": "pass",
+              "evidence": [
+                ".codex/active-arm.json"
+              ]
+            },
+            "screen": {
+              "status": "pending",
+              "evidence": []
+            },
+            "confirm": {
+              "status": "pending",
+              "evidence": []
+            }
+          },
+          "production_candidate": null,
+          "rejection_reason": null
+        },
+        {
+          "arm_id": "grow-low-share",
+          "role": "maverick",
+          "parent_arm_id": "m0",
+          "mechanism_key": "grow-below-share-floor",
+          "mechanism": "Emit grow intent only while self tile share is below the bounded low-share floor.",
+          "mechanism_delta_count": 1,
+          "roster_requirement": "any",
+          "status": "source_ready",
+          "evaluation_artifact": {
+            "class": "static_evaluation",
+            "surrogate_source": "static-eval-v1",
+            "source_commit": "ff51e47f19442f1406daaf44a84bef368b4f3864",
+            "upload_eligible": false,
+            "production_eligible": false
+          },
+          "gates": {
+            "source": {
+              "status": "pass",
+              "evidence": [
+                ".codex/active-arm.json"
+              ]
+            },
+            "screen": {
+              "status": "pending",
+              "evidence": []
+            },
+            "confirm": {
+              "status": "pending",
+              "evidence": []
+            }
+          },
+          "production_candidate": null,
+          "rejection_reason": null
+        },
+        {
+          "arm_id": "grow-calm",
+          "role": "maverick",
+          "parent_arm_id": "m0",
+          "mechanism_key": "grow-without-incoming-pressure",
+          "mechanism": "Emit grow intent only while current and protocol-attributed incoming pressure are absent.",
+          "mechanism_delta_count": 1,
+          "roster_requirement": "any",
+          "status": "source_ready",
+          "evaluation_artifact": {
+            "class": "static_evaluation",
+            "surrogate_source": "static-eval-v1",
+            "source_commit": "ff51e47f19442f1406daaf44a84bef368b4f3864",
+            "upload_eligible": false,
+            "production_eligible": false
+          },
+          "gates": {
+            "source": {
+              "status": "pass",
+              "evidence": [
+                ".codex/active-arm.json"
+              ]
+            },
+            "screen": {
+              "status": "pending",
+              "evidence": []
+            },
+            "confirm": {
+              "status": "pending",
+              "evidence": []
+            }
+          },
+          "production_candidate": null,
+          "rejection_reason": null
+        },
+        {
+          "arm_id": "grow-conjunction",
+          "role": "maverick",
+          "parent_arm_id": "m0",
+          "mechanism_key": "grow-opening-low-share-calm",
+          "mechanism": "Emit grow intent only when opening, low-share, and calm guards all hold.",
+          "mechanism_delta_count": 1,
+          "roster_requirement": "any",
+          "status": "source_ready",
+          "evaluation_artifact": {
+            "class": "static_evaluation",
+            "surrogate_source": "static-eval-v1",
+            "source_commit": "ff51e47f19442f1406daaf44a84bef368b4f3864",
+            "upload_eligible": false,
+            "production_eligible": false
+          },
+          "gates": {
+            "source": {
+              "status": "pass",
+              "evidence": [
+                ".codex/active-arm.json"
+              ]
+            },
+            "screen": {
+              "status": "pending",
+              "evidence": []
+            },
+            "confirm": {
+              "status": "pending",
+              "evidence": []
+            }
+          },
+          "production_candidate": null,
+          "rejection_reason": null
+        },
+        {
+          "arm_id": "convert-weakest",
+          "role": "maverick",
+          "parent_arm_id": "m0",
+          "mechanism_key": "convert-highest-troop-ratio-outsider",
+          "mechanism": "Emit convert intent for the legal unprotected outsider with the highest relative troop ratio.",
+          "mechanism_delta_count": 1,
+          "roster_requirement": "mixed_with_visible_outsider",
+          "status": "source_ready",
+          "evaluation_artifact": {
+            "class": "static_evaluation",
+            "surrogate_source": "static-eval-v1",
+            "source_commit": "ff51e47f19442f1406daaf44a84bef368b4f3864",
+            "upload_eligible": false,
+            "production_eligible": false
+          },
+          "gates": {
+            "source": {
+              "status": "pass",
+              "evidence": [
+                ".codex/active-arm.json"
+              ]
+            },
+            "screen": {
+              "status": "pending",
+              "evidence": []
+            },
+            "confirm": {
+              "status": "pending",
+              "evidence": []
+            }
+          },
+          "production_candidate": null,
+          "rejection_reason": null
+        },
+        {
+          "arm_id": "convert-largest",
+          "role": "maverick",
+          "parent_arm_id": "m0",
+          "mechanism_key": "convert-largest-eligible-outsider",
+          "mechanism": "Emit convert intent for the largest legal unprotected outsider that clears the troop-ratio guard.",
+          "mechanism_delta_count": 1,
+          "roster_requirement": "mixed_with_visible_outsider",
+          "status": "source_ready",
+          "evaluation_artifact": {
+            "class": "static_evaluation",
+            "surrogate_source": "static-eval-v1",
+            "source_commit": "ff51e47f19442f1406daaf44a84bef368b4f3864",
+            "upload_eligible": false,
+            "production_eligible": false
+          },
+          "gates": {
+            "source": {
+              "status": "pass",
+              "evidence": [
+                ".codex/active-arm.json"
+              ]
+            },
+            "screen": {
+              "status": "pending",
+              "evidence": []
+            },
+            "confirm": {
+              "status": "pending",
+              "evidence": []
+            }
+          },
+          "production_candidate": null,
+          "rejection_reason": null
+        }
+      ]
+    }
+  ]
+}
