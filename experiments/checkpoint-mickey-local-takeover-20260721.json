@@ -43,9 +43,10 @@
     "identity_blocker": "A distinct Softmax user credential or available player slot is required; do not rename or reuse Hrafn."
   },
   "parallel_fanout_draft": {
-    "status": "preserved_untracked_not_accepted",
-    "latest_test_result": "10/11",
-    "reason": "active external writer, three gate defects, non-atomic dependencies, and avoidable launchd overhead"
+    "status": "local_unpushed_quarantined_not_accepted",
+    "commit": "f79b7af3",
+    "latest_test_result": "14/14 focused",
+    "reason": "The parallel worker committed 3676 lines after the takeover audit. It remains outside the accepted lean path until an independent RCI review proves the final gate fixes and justifies the launchd layer."
   },
   "mutations": {
     "coworld_episode_started": false,
