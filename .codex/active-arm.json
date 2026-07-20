@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T22:03:52Z",
+  "updated_at": "2026-07-20T22:09:39Z",
   "cycle_id": "odin-20260720T220201Z-40724",
   "lane": "odin",
   "arm": {
@@ -12,7 +12,7 @@
     "candidate_source_commit": "ddb980e389c61915fafaa1c91fea282937ad85b5",
     "closed": false
   },
-  "state": "blocked_hrafn_identity_active_waiting_reseal",
+  "state": "blocked_hrafn_source_revise_waiting_studio_reseal",
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
     "player_name": "K1Z odin free",
@@ -26,8 +26,8 @@
     "qd1n_mutation": "free",
     "active_player": "K1Z Hrafn (live verified 2026-07-20T22:03:52Z)",
     "hrafn_identity_window": "open_advisory_only",
-    "mailbox_commit": "51345b0",
-    "hrafn_pickup": "pangaea-control r3 started but rejected the Coworld decision envelope; evidence-ineligible; Hrafn reseal requested"
+    "mailbox_commit": "036314b",
+    "hrafn_pickup": "Hrafn committed f9d569a1 and requested a Studio window, but its exact seven-key root guard still rejects additional Coworld envelope metadata and returns the full envelope. Odin removed the obsolete ready packet and issued source REVISE odin-000016; no valid execution window remains."
   },
   "candidate": {
     "source_tests": "154/154",
@@ -60,7 +60,10 @@
     "contract_sha256": "85830bd5b5a2e69b1e03ab320bd438db85f2069352ef99ec3237abd6d82f6205",
     "control_job_sha256": "60c479db19ddbb095c7f0d99b6acba6de79e0de27f6bafc52bb0167e9f6edaf8",
     "candidate_job_sha256": "fe81e4d79fae86cbf05c8715c44e9e8d68fc17b501592754f4f4b04243722f6e",
-    "reason": "Shared active identity is K1Z Hrafn. HI1 pangaea-control r3 exposed a decision-envelope validation defect and was quarantined evidence-ineligible. The runner is free and remains yielded while Hrafn fixes, tests, and reseals. Odin will not compete for the runner or switch identity mid-window."
+    "auditor_sha256": "771143a16a3f7f201f3ed018c23f6e991800db01002ffd5c35de8d53e686a4d3",
+    "auditor_self_test_report_sha256": "8ba3fe5095cfe6ffe962d65552d66f7270094ce24fd52255820c69b870ce5828",
+    "auditor_self_test": "parent-as-both failed closed on zero RS1 marker reach while reproducing the exact turn-2400 opportunity and AUC25 516155",
+    "reason": "Shared active identity is K1Z Hrafn. Commit f9d569a1 replaced the original two-key rejection with another exact-root-key rejection, contradicting the sealed requirement to tolerate additional envelope metadata. Mailbox 036314b removes the obsolete ready packet and requires one permissive extraction fix plus a complete Studio reseal. Odin will not compete for the runner or switch identity mid-window."
   },
   "gates": {
     "source_ready": true,
@@ -80,7 +83,7 @@
     "oi2": "closed_before_edit as redundant with HI1",
     "os1": "closed_without_run_as_recombined_complexity"
   },
-  "next_automatic_transition": "After Hrafn closes HI1 and restores K1Z odin free, run the preregistered RS1 slot-0 control first. Run the candidate only if the control reproduces the trace-proven opportunity. Reject immediately on zero reach, pre-marker divergence, any unexplained hold/reject/K1Z harm, or failed AUC25 lift; only a pass unlocks one adjacent-seed reach search.",
+  "next_automatic_transition": "Hrafn fixes permissive Coworld envelope extraction on Studio, reseals every source/image/job binding, and requests a new advisory window. After Hrafn closes HI1 and restores K1Z odin free, run the preregistered RS1 slot-0 control first. Run the candidate only if the control reproduces the trace-proven opportunity; reject on zero reach, pre-marker divergence, any unexplained hold/reject/K1Z harm, or nonpositive AUC25 lift.",
   "prior_verified_champion_preserved": true,
   "live_identity_checkpoint": {
     "cycle_id": "odin-20260720T220201Z-40724",
