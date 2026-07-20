@@ -1459,7 +1459,12 @@ export function decideHrafn({
     config.enableNaval &&
     navalCapReached(persistent, config)
   ) {
-    selection = selectNavalCapRecovery(
+    selection = selectNavalCapEscape(
+      safe,
+      state,
+      persistent,
+      config,
+    ) ?? selectNavalCapRecovery(
       safe,
       state,
       persistent,
@@ -1496,14 +1501,6 @@ export function decideHrafn({
         target: null,
       };
     }
-  }
-  if (!selection) {
-    selection = selectNavalCapEscape(
-      safe,
-      state,
-      persistent,
-      config,
-    );
   }
   if (!selection) {
     selection = {

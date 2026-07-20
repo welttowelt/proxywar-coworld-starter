@@ -11,6 +11,7 @@ import { createHrafnPersistentState } from "../hrafn-state.mjs";
 import { auditHrafnChassisReplay } from "../scripts/audit-hrafn-chassis-replay.mjs";
 import {
   action,
+  expand,
   hold,
   neutralBoat,
   observation,
@@ -286,6 +287,49 @@ test("latched cap selects one fresh Warship build with hks1.hncap", () => {
   );
   assert.equal(result.nextState.naval.capEscapeBuilds, 1);
   assert.equal(result.nextState.naval.blocked, true);
+});
+
+test("cap escape precedes ordinary cap-recovery builds when both are legal", () => {
+  const defensiveBuild = action(
+    "build:Defense Post:500243",
+    "build",
+    "Build Defense Post",
+    {
+      unit: "Defense Post",
+      targetTile: 500243,
+    },
+  );
+  const result = decide({
+    actions: [defensiveBuild, warship(), neutralBoat(500242, 16), hold()],
+    requestID: "c3-priority-before-recovery",
+  });
+
+  assert.equal(result.action.id, "build:Warship:500241");
+  assert.equal(result.action.policyMarker, "hks1");
+  assert.deepEqual(result.action.evidenceMarkers, ["hncap"]);
+});
+
+test("C4 cap escape precedes stalled neutral 35 recovery while exact C2 does not", () => {
+  const actions = [warship(), expand(35), hold()];
+  const state = cappedState({ neutralStallCount: 2 });
+  const revised = decide({
+    actions,
+    state,
+    requestID: "c4-priority-before-neutral-recovery",
+  });
+  const exactC2 = decide({
+    actions,
+    state,
+    requestID: "c2-neutral-recovery-control",
+    config: { enableCapEscape: false },
+  });
+
+  assert.equal(revised.action.id, "build:Warship:500241");
+  assert.equal(revised.action.policyMarker, "hks1");
+  assert.deepEqual(revised.action.evidenceMarkers, ["hncap"]);
+  assert.equal(exactC2.action.id, "expand:terra-nullius:35");
+  assert.equal(exactC2.action.policyMarker, "hg35");
+  assert.deepEqual(exactC2.action.evidenceMarkers, ["hncap"]);
 });
 
 test("an observed Warship selects a fresh move before another build", () => {

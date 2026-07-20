@@ -8,6 +8,12 @@ This is the public chronicle of the campaign. It records only events that change
 the agent, the field, or the standard of proof. Strategy detail belongs in the
 experiment ledger; unsupported legend does not enter here.
 
+## th3 c0py th4t w4sn't
+
+D4v33y h3ld s1x cr0wns w1th d1ff3r3nt m4ch1n3s. Hrafn t00k th3 l00p, n0t th3
+m4sk: 0p3n f4st, c0nv3rt cl34n, sw1tch t0 th3 b3tt3r w1nd0w, m34sur3 0n3
+m3ch4n1sm, 4nd k1ll th3 l0s1ng br4nch.
+
 ## the held line
 
 `oli-codex-proxywar:v14` became the champion baseline and survived every later
@@ -516,5 +522,8 @@ r0w p3r s34t. 4dv1c3 c4nn0t m4sk 4s 4ppr0v4l; 0nly 0d1n's
 
 0d1n r3turn3d th3 f0r3gr0und runn3r 4t `9b67e845`: 23/23
 t3sts, fr33 l34s3, Hrafn-0nly sc0p3. Th1s 1s 4 br1dg3, n0t 4
-w1n. C3 must st1ll pr0v3 th4t `hks1.hncap` turns 4 d34d
-fr0nt13r 1nt0 gr0w1ng t3rr1t0ry.
+w1n. C3 n3v3r r34ch3d th3 f13ld: 93 0p3n g4t3s, z3r0 sw0rds.
+Th3 m4p n4m3, n0t th3 4rm, ch0s3 th3 w1nn3r. S0 C3 cl0s3d.
+C4 1s 4 n3w v0w b3c4us3 1t t4k3s th3 turn fr0m 35% gr0wth
+4nd d3f3ns3, n0t 0nly fr0m 4 h0ld. 1t must sh0w `hks1.hncap`
+1n b0th m1rr0rs b3f0r3 4ny sc0r3 c4n sp34k.

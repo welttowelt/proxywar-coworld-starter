@@ -45,7 +45,7 @@ function build(order) {
   };
 }
 
-test("C3 crossover fixes names and seed while swapping only exact images", () => {
+test("chassis crossover binds equally tagged identities to arms while swapping seats", () => {
   const first = build("candidate-first");
   const second = build("control-first");
   assert.equal(first.result.status, 0, first.result.stderr);
@@ -54,10 +54,6 @@ test("C3 crossover fixes names and seed while swapping only exact images", () =>
   for (const { job } of [first, second]) {
     assert.equal(job.game_config.seed, 240720);
     assert.equal(job.game_config.tokens, null);
-    assert.deepEqual(job.game_config.players, [
-      { name: "K1Z Hrafn" },
-      { name: "Hrafn comparison" },
-    ]);
     assert.deepEqual(
       job.players.map((player) => player.run),
       [
@@ -65,7 +61,20 @@ test("C3 crossover fixes names and seed while swapping only exact images", () =>
         ["node", "/app/hrafn-chassis-player.mjs"],
       ],
     );
+    assert.ok(
+      job.game_config.players.every((player) =>
+        player.name.toLowerCase().startsWith("k1z ")
+      ),
+    );
   }
+  assert.deepEqual(first.job.game_config.players, [
+    { name: "K1Z Hrafn" },
+    { name: "K1Z Hrafn comparison" },
+  ]);
+  assert.deepEqual(second.job.game_config.players, [
+    { name: "K1Z Hrafn comparison" },
+    { name: "K1Z Hrafn" },
+  ]);
   assert.deepEqual(
     first.job.players.map((player) => player.image),
     ["hrafn-c3:exact", "hrafn-c2:exact"],

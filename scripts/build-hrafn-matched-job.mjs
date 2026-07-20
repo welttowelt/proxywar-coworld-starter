@@ -53,7 +53,7 @@ gameConfig.tokens = null;
 if (seed !== null) gameConfig.seed = seed;
 const chassisControl = controlKind === "chassis-control";
 const namedPlayers = chassisControl
-  ? [{ name: "K1Z Hrafn" }, { name: "Hrafn comparison" }]
+  ? [{ name: "K1Z Hrafn" }, { name: "K1Z Hrafn comparison" }]
   : [{ name: "K1Z Hrafn" }, { name: "Hrafn v5 control" }];
 const runnables = [
   {
@@ -73,7 +73,7 @@ const runnables = [
   },
 ];
 if (order === "control-first") {
-  if (!chassisControl) namedPlayers.reverse();
+  namedPlayers.reverse();
   runnables.reverse();
 }
 gameConfig.players = namedPlayers;

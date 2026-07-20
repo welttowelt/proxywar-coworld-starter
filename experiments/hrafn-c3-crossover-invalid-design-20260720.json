@@ -1,0 +1,174 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_candidate_crossover_diagnostic",
+  "campaign_id": "hrafn-c3-conversion",
+  "recorded_at": "2026-07-20T17:49:34Z",
+  "candidate": {
+    "arm": "hrafn-clean-chassis-c3",
+    "source_commit": "74c8bf79430aab92190fa24e3ce24d82347868ee",
+    "image": "hrafn-clean-chassis-c3:74c8bf79",
+    "image_digest": "sha256:5d854d0661a3b55f39b8badf262628a02aaf50a12e3b9f9371168386c162289b",
+    "intended_delta": "After the bounded neutral-boat cap, select at most one fresh Warship build and then eligible Warship moves under hks1.hncap."
+  },
+  "control": {
+    "arm": "hrafn-clean-chassis-c2",
+    "source_commit": "9c9ae7b6b3a978d971cde24688aba3995a88bdea",
+    "image": "hrafn-clean-chassis-c2:9c9ae7b6",
+    "image_digest": "sha256:79b3646454e53702414f5d6755adf445246e8a9a09af0a9e42ef3db85f3f5ff3"
+  },
+  "runtime": {
+    "coworld_client": "0.1.28",
+    "variant": "tournament-2p-pangaea",
+    "seed": 240720,
+    "max_decision_steps": 300,
+    "turns_per_decision_step": 25,
+    "foreground_runner_lease": true,
+    "manifest": {
+      "downloaded_sha256": "f64cd51b21883a434d7c5e3eef924a6312e6ca74f1cb6b9d998dc0724dca65cf",
+      "normalized_sha256": "8feb5100ee63d5ccca66794c40e535f2715376e2a2cf8a3f8ed892880dfe65f3",
+      "normalization": "Removed only legacy top-level tags and episode_timeout_minutes fields rejected by Coworld 0.1.28 validation."
+    },
+    "candidate_first_job_sha256": "60d8761eeb2d30b6558c302c065c5e7a882efa029ee854a730fa91c093c6bf8f",
+    "control_first_job_sha256": "d460f96bf19d0397bdd8fa831b680e537bb7c2760f99a17c368ce84091cd94ad"
+  },
+  "runs": [
+    {
+      "run_id": "hrafn-c3-xo-a-r3-20260720",
+      "seat_map": [
+        {
+          "slot": 0,
+          "name": "K1Z Hrafn",
+          "arm": "candidate"
+        },
+        {
+          "slot": 1,
+          "name": "Hrafn comparison",
+          "arm": "control"
+        }
+      ],
+      "game_id": "CWAANSCM",
+      "turn_count": 7825,
+      "decision_count": 624,
+      "accepted_decisions": 624,
+      "fallbacks": 0,
+      "degraded": 0,
+      "winner_slot": null,
+      "scores": [
+        0.6212884198699944,
+        0.3787115801300056
+      ],
+      "tiles": [
+        61935,
+        37753
+      ],
+      "results_sha256": "d4027bb9a5533489177706063a71ee75ea172311fba5a5bae1edb6cad2888c76",
+      "replay_sha256": "0f1da6aff9316c7800fccc456a76d88decafe30b8948ca8a7b2f96fabde484c3",
+      "operational_receipt_sha256": "255363964aabe4b258c6edac23b9834aaed140f3d15b1176353e09023c56aa06",
+      "audited_exact_hrafn_arm": "candidate",
+      "audited_policy_decisions": 300,
+      "audited_accepted": 300,
+      "audited_holds": 0,
+      "audited_rejections": 0,
+      "audited_fallbacks": 0,
+      "audited_k1z_harm": 0,
+      "hks1_reach": 0
+    },
+    {
+      "run_id": "hrafn-c3-xo-b-r3-20260720",
+      "seat_map": [
+        {
+          "slot": 0,
+          "name": "K1Z Hrafn",
+          "arm": "control"
+        },
+        {
+          "slot": 1,
+          "name": "Hrafn comparison",
+          "arm": "candidate"
+        }
+      ],
+      "game_id": "CWAANSCM",
+      "turn_count": 7825,
+      "decision_count": 624,
+      "accepted_decisions": 624,
+      "fallbacks": 0,
+      "degraded": 0,
+      "winner_slot": null,
+      "scores": [
+        0.6212884198699944,
+        0.3787115801300056
+      ],
+      "tiles": [
+        61935,
+        37753
+      ],
+      "results_sha256": "d4027bb9a5533489177706063a71ee75ea172311fba5a5bae1edb6cad2888c76",
+      "replay_sha256": "7b0a3035bebe38ef7273a1c89824568f1cee5af7b2318762ba8fd011acdfa17b",
+      "operational_receipt_sha256": "9d1e4faa31c7e3760f7bbe58d627ad93566abf0a5367832129f41a95c5f0fcd6",
+      "audited_exact_hrafn_arm": "control",
+      "audited_policy_decisions": 300,
+      "audited_accepted": 300,
+      "audited_holds": 0,
+      "audited_rejections": 0,
+      "audited_fallbacks": 0,
+      "audited_k1z_harm": 0,
+      "hks1_reach": 0
+    }
+  ],
+  "trace_equivalence": {
+    "slot_0_stripped_policy_trace_sha256": "c5bf65bf86b1598511c8f547965de47532c11d8f318d5727c1dce82574a00538",
+    "slot_1_stripped_policy_trace_sha256": "87182fdcaebd0b61d4d88cc2f180d815be3e079277df9d3f2d36f8f68ba6f738",
+    "interpretation": "Each physical slot produced an identical stripped action trace after the images swapped. The original C3 delta was action-inert in this episode."
+  },
+  "cap_escape_opportunity_audit": {
+    "slot_0": {
+      "legal_warship_build_opportunities": 86,
+      "selected_neutral_35_recovery": 82,
+      "selected_defense_post_recovery": 4
+    },
+    "slot_1": {
+      "legal_warship_build_opportunities": 7,
+      "selected_neutral_35_recovery": 0,
+      "selected_defense_post_recovery": 7
+    },
+    "legal_warship_moves": 0,
+    "hks1_selected": 0
+  },
+  "root_causes": [
+    {
+      "id": "K1Z_NAME_SLOT_ASYMMETRY",
+      "evidence": "The exact score, tiles, results hash, and stripped per-slot policy traces followed the fixed names and slots after the images swapped.",
+      "mechanism": "Only slot 0 had a leading K1Z name. Hrafn safety rules protected that slot from the untagged comparison arm while allowing the tagged arm to treat the comparison identity as an outsider.",
+      "effect": "The two orientations were not a fair policy comparison."
+    },
+    {
+      "id": "CAP_ESCAPE_PRECEDENCE_NO_REACH",
+      "evidence": "C3 had 86 legal Warship-build opportunities in slot zero: 82 were preempted by neutral 35 recovery and four by Defense Posts. Slot one had seven opportunities, all preempted by Defense Posts. At turn 3825, build:Warship:146701 was legal after the cap, but the candidate selected build:Defense Post:141689 with hncap. C3 called selectNavalCapEscape only after ordinary cap recovery and later selectors.",
+      "effect": "Ordinary recovery consumed every reachable cap turn, so hks1 fired zero times and C3 remained action-identical to C2."
+    }
+  ],
+  "verdict": {
+    "code": "INVALID_MATCHED_DESIGN_AND_REJECT_NO_REACH",
+    "promotion_eligible": false,
+    "upload_eligible": false,
+    "submission_eligible": false,
+    "champion_change": false,
+    "candidate_status": "Original C3 implementation closed. The precedence-changing repair is registered as a new C4 arm and must prove hks1 reach under equally K1Z-tagged arm identities before outcome interpretation."
+  },
+  "repair": {
+    "revised_arm": "C4",
+    "scope_change": "Moving cap escape ahead of ordinary cap recovery replaces Defense Post and neutral 35 recovery actions, not only exact-C2 holds. That broadens the original C3 boundary and therefore cannot be treated as a repair-only rerun.",
+    "match_builder": "Bind K1Z Hrafn to the candidate, K1Z Hrafn comparison to the control, and swap both names with their images across seats.",
+    "policy": "Run bounded cap escape before ordinary cap recovery after severe defense, finish, counter, and reverse-alliance checks.",
+    "red_first_tests": [
+      "When a Warship and an ordinary defensive build are both legal after the cap, C4 must select the Warship with hks1.hncap.",
+      "When a Warship and stalled neutral 35 recovery are both legal after the cap, C4 must select the Warship with hks1.hncap while exact C2 selects hg35.hncap."
+    ],
+    "next_gate": "Build an exact amd64 C4 candidate, run the focused and full suites, then repeat the two orientations under the shared foreground runner."
+  },
+  "authority": {
+    "local_diagnostic_only": true,
+    "gameplay_merit": false,
+    "odin_formal_approval_requested": false
+  }
+}
