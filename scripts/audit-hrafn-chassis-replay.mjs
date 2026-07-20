@@ -271,7 +271,7 @@ function submittedEffectFailures(decision, selectedTarget, universe) {
   if (kind === "build" || kind === "warship") {
     const selectedUnit = String(metadata.unit ?? "");
     const selectedTile = Number(
-      kind === "warship"
+      kind === "warship" || selectedUnit === "Port"
         ? metadata.targetTile ?? metadata.buildTile
         : metadata.buildTile ?? metadata.targetTile,
     );

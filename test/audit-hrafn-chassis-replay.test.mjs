@@ -336,6 +336,31 @@ test("tracked submitted-intent schema covers every candidate-emittable kind", ()
   assert.equal(Object.values(report.checks).every(Boolean), true);
 });
 
+test("port submitted intent binds the water target rather than its land anchor", () => {
+  const port = decision({
+    turn: 4900,
+    id: "build:Port:142163",
+    kind: "build",
+    metadata: {
+      unit: "Port",
+      targetTile: 141677,
+      buildTile: 142163,
+    },
+    reason: "[K1Z] r4vn:bld:hec1",
+  });
+  const report = auditHrafnChassisReplay(replayWith([port]));
+  assert.deepEqual(report.effect_consistency_failures, []);
+
+  const anchored = structuredClone(port);
+  anchored.result.submittedIntent.tile = 142163;
+  const anchoredReport = auditHrafnChassisReplay(replayWith([anchored]));
+  assert.equal(anchoredReport.effect_consistency_failures.length, 1);
+  assert.match(
+    anchoredReport.effect_consistency_failures[0].failures.join(" "),
+    /build tile/,
+  );
+});
+
 test("obsolete submitted-intent type aliases fail closed", () => {
   const cases = [
     decision({
