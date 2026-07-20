@@ -1,11 +1,9 @@
-# Codex Odin is the persistent root operator for this project.
-# Hrafn and Kimi K3 Max are external collaborators, not Codex subagents.
+# Local Mickey source/evaluation operator. League and identity operations stay
+# closed until Codex Odin updates the active-arm migration gate.
 model = "gpt-5.6-sol"
 model_reasoning_effort = "high"
 
-# ProxyWar is terminal/API/replay driven. Keep this project lean and avoid
-# loading unrelated interaction surfaces. Slack remains explicitly disabled
-# during the global freeze.
+# Keep this sealed source-only cycle lean and offline.
 [features]
 browser_use = false
 browser_use_external = false

@@ -1,93 +1,40 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T20:58:39Z",
-  "cycle_id": "odin-kiz1-gravity-20260720",
-  "lane": "odin",
-  "arm": {
-    "id": "kiz1",
-    "name": "gravity_identity_alias",
-    "branch": "rci/kiz1-gravity-alias",
-    "exact_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
-    "candidate_source_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
-    "closed": true
+  "updated_at": "2026-07-20T22:21:05Z",
+  "cycle_id": "mickey-static-intent-evaluation-20260721",
+  "lane": "mickey",
+  "policy_lineage": "mickey-mouse-intent",
+  "state": "source_evaluation_only",
+  "worktree": "/private/tmp/proxywar-mickey-cpu-surrogates-20260721",
+  "branch": "codex/mickey-cpu-surrogates",
+  "base_commit": "dbb14e75ea70b1285dde9781f8c9f0119a212c06",
+  "mission": "Test compact grow or convert intents while the deterministic controller alone selects an offered legal action ID.",
+  "guards": {
+    "zero_k1z_harm": true,
+    "production_static_intent": "forbidden",
+    "runner_lane": "mickey",
+    "game_runs": "closed",
+    "network_and_push": "closed",
+    "qd1n_mutation": "forbidden",
+    "hrafn_mutation": "forbidden"
   },
-  "state": "closed_hosted_failure",
-  "live_control": {
-    "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
-    "player_name": "K1Z odin free",
-    "policy_label": "qd1n:v89",
-    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
-    "membership_id": "lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6",
-    "is_champion": true
+  "migration_gate": {
+    "hrafn_studio_terminal_receipt_verified": false,
+    "dedicated_mickey_credentials_verified": false,
+    "dedicated_mickey_player_verified": false,
+    "external_operations_allowed": false
   },
-  "locks": {
-    "runner": "free",
-    "qd1n_mutation": "free",
-    "active_player": "K1Z odin free",
-    "hrafn_identity_window": "closed"
+  "evidence_gates": {
+    "red_first": false,
+    "focused_tests": false,
+    "full_source_suite": false,
+    "production_evaluation_isolation": false,
+    "deterministic_legal_action_selection": false,
+    "zero_k1z_harm": false,
+    "local_runtime": false,
+    "hosted": false,
+    "submission": false,
+    "champion": false
   },
-  "candidate": {
-    "source_tests": "147/147",
-    "source_rci": "PASS",
-    "kimi_advice": "PASS",
-    "image_ref": "proxywar-agent-llm:qd1n-v89-kiz1-gravity-1ccaff73-amd64",
-    "image_id": "sha256:de2a15be36a86cf8f74029539f6576b0559554c89ac5800ebf4814c6b863677e",
-    "architecture": "amd64",
-    "policy_engine": "",
-    "contract": "experiments/contract-qd1n-kiz1-gravity-local-screen-20260720.json",
-    "uploaded_label": "qd1n:v94",
-    "policy_version_id": "e141216a-5a79-47a2-b885-7538b5d0003e",
-    "upload_receipt": "experiments/receipt-qd1n-kiz1-gravity-diagnostic-upload-20260720.json"
-  },
-  "local_evidence": {
-    "verdict": "PASS_LOCAL_MECHANISM",
-    "receipt": "experiments/audit-qd1n-kiz1-gravity-local-screen-20260720.json",
-    "qualifier": "34/34 accepted",
-    "mechanism": "39/39 accepted, 6 Gravity kp2, 0 Gravity harm, 0 candidate fallback/degradation/holds/rejects, Odin win"
-  },
-  "hosted_evidence": {
-    "source_round": 581,
-    "variant": "tournament-12p-pangaea",
-    "candidate_request": "xreq_41f198c5-8ecf-4c1b-82bb-7628d949b672",
-    "parent_request": "xreq_38a50cf3-0476-470e-b357-877cbf6285e7",
-    "episodes_per_request": 4,
-    "status": "terminal_early_stop",
-    "terminal_episode": "ereq_bdbaf1ce-aa44-41f7-9906-e10d57b98876",
-    "terminal_replay_sha256": "19f2461529699a2dea30d6eca88cac999de9192b38d9c27d92343bc36125b301",
-    "candidate_won": false,
-    "candidate_score": 0.0,
-    "candidate_final_tiles": 4342,
-    "verdict": "STOP_HOSTED"
-  },
-  "gates": {
-    "source_ready": true,
-    "local_mechanism_verified": true,
-    "diagnostic_uploaded": true,
-    "hosted_4_of_4": false,
-    "regression_20_of_20": false,
-    "final_rci": false,
-    "submitted": false,
-    "placed": false,
-    "champion_verified": false,
-    "round_confirmed": false
-  },
-  "superseded": {
-    "os1": "closed_without_run_as_recombined_complexity",
-    "id1": "closed_directional_only_no_dynamic_llm_proof"
-  },
-  "next_automatic_transition": "KIZ1 is closed. Preserve qd1n:v89 and carry the Gravity alias forward only as a mandatory safety invariant in the next single-mechanism offensive candidate.",
-  "prior_verified_champion_preserved": true,
-  "last_live_checkpoint": {
-    "cycle_id": "odin-20260720T205740Z-88030",
-    "checked_at": "2026-07-20T20:58:39Z",
-    "receipt": "experiments/checkpoint-qd1n-kiz1-post-failure-membership-20260720.json",
-    "membership_id": "lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6",
-    "policy_label": "qd1n:v89",
-    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
-    "status": "competing",
-    "substatus": "active",
-    "is_champion": true,
-    "candidate_submitted": false,
-    "result": "PRIOR_CHAMPION_PRESERVED"
-  }
+  "next_transition": "Implement and verify the smallest evaluation-only static-intent surrogate required by the existing red tests; return the uncommitted diff to Codex Odin."
 }
