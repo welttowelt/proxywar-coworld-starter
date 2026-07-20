@@ -2112,3 +2112,359 @@ test("outsiders remain legal nuclear targets beside all three K1Z allies", () =>
   assert.equal(selected.id, bomb.id);
   assert.equal(selected.policyMarker, "nk1");
 });
+
+function os1History(count, { cityAt = -1 } = {}) {
+  return Array.from({ length: count }, (_, index) => {
+    if (index === cityAt) {
+      return {
+        actionID: "build:City:opening",
+        kind: "build",
+        tileShare: 0.02 + index * 0.006,
+      };
+    }
+    return {
+      actionID: `expand:terra-nullius:${index}`,
+      kind: "attack",
+      neutral: true,
+      tileShare: 0.02 + index * 0.006,
+    };
+  });
+}
+
+test("OS1 replaces a proactive K1Z request with calm opening land", () => {
+  const katanasanAlliance = {
+    ...action("alliance:katanasan", "alliance_request", "Alliance with K1Z katanasan"),
+    metadata: { recipientID: "katanasan", recipientName: "K1Z katanasan", relation: 2 },
+  };
+  const neutral = action("expand:terra-nullius:10", "attack", "Expand Terra Nullius 10%");
+  const selected = choose(
+    [katanasanAlliance, neutral],
+    observation({
+      rivals: [{
+        id: "katanasan",
+        name: "K1Z katanasan",
+        tileShare: 0.08,
+        relativeTroopRatio: 1.2,
+      }],
+    }),
+  );
+  assert.equal(selected.id, neutral.id);
+  assert.equal(selected.policyMarker, "os1");
+});
+
+test("OS1 builds the first City on active decision five", () => {
+  const city = action("build:City:opening", "build", "Build City");
+  const neutral = action("expand:terra-nullius:10", "attack", "Expand Terra Nullius 10%");
+  const selected = choose(
+    [neutral, city],
+    observation({ tileShare: 0.05 }),
+    null,
+    os1History(4),
+  );
+  assert.equal(selected.id, city.id);
+  assert.equal(selected.policyMarker, "os1");
+});
+
+test("OS1 never schedules a second opening City", () => {
+  const city = action("build:City:second", "build", "Build City");
+  const neutral = action("expand:terra-nullius:10", "attack", "Expand Terra Nullius 10%");
+  const selected = choose(
+    [neutral, city],
+    observation({ tileShare: 0.06 }),
+    null,
+    os1History(5, { cityAt: 4 }),
+  );
+  assert.equal(selected.id, neutral.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("OS1 converts a calm opening into a replay-backed strong outsider", () => {
+  const neutral = action("expand:terra-nullius:10", "attack", "Expand Terra Nullius 10%");
+  const outsider10 = action("attack:outsider:10", "attack", "Attack Outsider 10%");
+  const outsider25 = action("attack:outsider:25", "attack", "Attack Outsider 25%");
+  const selected = choose(
+    [neutral, outsider10, outsider25],
+    observation({
+      tileShare: 0.08,
+      rivals: [{
+        id: "outsider",
+        name: "Outsider",
+        tileShare: 0.08,
+        relativeTroopRatio: 1.65,
+      }],
+    }),
+    null,
+    os1History(6, { cityAt: 4 }),
+  );
+  assert.equal(selected.id, outsider10.id);
+  assert.equal(selected.policyMarker, "os1");
+});
+
+test("OS1 keeps neutral land over an outsider below the conversion floor", () => {
+  const neutral = action("expand:terra-nullius:10", "attack", "Expand Terra Nullius 10%");
+  const outsider = action("attack:outsider:10", "attack", "Attack Outsider 10%");
+  const selected = choose(
+    [neutral, outsider],
+    observation({
+      tileShare: 0.08,
+      rivals: [{
+        id: "outsider",
+        name: "Outsider",
+        tileShare: 0.08,
+        relativeTroopRatio: 1.59,
+      }],
+    }),
+    null,
+    os1History(6, { cityAt: 4 }),
+  );
+  assert.equal(selected.id, neutral.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("OS1 never converts into a protected K1Z rival", () => {
+  const neutral = action("expand:terra-nullius:10", "attack", "Expand Terra Nullius 10%");
+  const hrafnAttack = action("attack:hrafn:10", "attack", "Attack K1Z Hrafn 10%");
+  const selected = choose(
+    [neutral, hrafnAttack],
+    observation({
+      tileShare: 0.08,
+      rivals: [{
+        id: "hrafn",
+        name: "K1Z Hrafn",
+        tileShare: 0.08,
+        relativeTroopRatio: 2,
+      }],
+    }),
+    null,
+    os1History(6, { cityAt: 4 }),
+  );
+  assert.equal(selected.id, neutral.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("OS1 preserves a genuine pending K1Z reverse handshake", () => {
+  const hrafnAlliance = {
+    ...action("alliance:hrafn", "alliance_request", "Alliance with K1Z Hrafn"),
+    metadata: { recipientID: "hrafn", recipientName: "K1Z Hrafn", relation: 2 },
+  };
+  const hrafnReject = action(
+    "alliance_reject:hrafn",
+    "alliance_reject",
+    "Reject alliance with K1Z Hrafn",
+  );
+  const neutral = action("expand:terra-nullius:10", "attack", "Expand Terra Nullius 10%");
+  const selected = choose(
+    [hrafnAlliance, hrafnReject, neutral],
+    observation({
+      rivals: [{
+        id: "hrafn",
+        name: "K1Z Hrafn",
+        tileShare: 0.08,
+        relativeTroopRatio: 1.2,
+      }],
+    }),
+  );
+  assert.equal(selected.id, hrafnAlliance.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("OS1 preserves a pending K1Z handshake inside the retry cooldown", () => {
+  const hrafnAlliance = {
+    ...action("alliance:hrafn", "alliance_request", "Alliance with K1Z Hrafn"),
+    metadata: { recipientID: "hrafn", recipientName: "K1Z Hrafn", relation: 2 },
+  };
+  const hrafnReject = {
+    ...action(
+      "alliance_reject:hrafn",
+      "alliance_reject",
+      "Reject alliance with K1Z Hrafn",
+    ),
+    metadata: { recipientID: "hrafn", recipientName: "K1Z Hrafn" },
+  };
+  const neutral = action("expand:terra-nullius:10", "attack", "Expand Terra Nullius 10%");
+  const history = [{
+    actionID: "alliance:hrafn",
+    kind: "alliance_request",
+    targetID: "hrafn",
+    targetName: "K1Z Hrafn",
+    tileShare: 0.05,
+    policyMarker: "kp2",
+  }];
+  const selected = choose(
+    [hrafnAlliance, hrafnReject, neutral],
+    observation({
+      rivals: [{
+        id: "hrafn",
+        name: "K1Z Hrafn",
+        tileShare: 0.08,
+        relativeTroopRatio: 1.2,
+      }],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, hrafnAlliance.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("OS1 accepts the pending K1Z partner instead of another proactive partner", () => {
+  const katanasanAlliance = {
+    ...action("alliance:katanasan", "alliance_request", "Alliance with K1Z katanasan"),
+    metadata: {
+      recipientID: "katanasan",
+      recipientName: "K1Z katanasan",
+      relation: 2,
+    },
+  };
+  const hrafnAlliance = {
+    ...action("alliance:hrafn", "alliance_request", "Alliance with K1Z Hrafn"),
+    metadata: { recipientID: "hrafn", recipientName: "K1Z Hrafn", relation: 2 },
+  };
+  const hrafnReject = {
+    ...action(
+      "alliance_reject:hrafn",
+      "alliance_reject",
+      "Reject alliance with K1Z Hrafn",
+    ),
+    metadata: { recipientID: "hrafn", recipientName: "K1Z Hrafn" },
+  };
+  const neutral = action("expand:terra-nullius:10", "attack", "Expand Terra Nullius 10%");
+  const selected = choose(
+    [katanasanAlliance, hrafnAlliance, hrafnReject, neutral],
+    observation({
+      rivals: [
+        {
+          id: "katanasan",
+          name: "K1Z katanasan",
+          tileShare: 0.09,
+          relativeTroopRatio: 1.2,
+        },
+        {
+          id: "hrafn",
+          name: "K1Z Hrafn",
+          tileShare: 0.08,
+          relativeTroopRatio: 1.2,
+        },
+      ],
+    }),
+  );
+  assert.equal(selected.id, hrafnAlliance.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("OS1 does not force a late City over a strong frontier conversion", () => {
+  const city = action("build:City:late", "build", "Build City");
+  const neutral = action("expand:terra-nullius:10", "attack", "Expand Terra Nullius 10%");
+  const outsider = action("attack:outsider:10", "attack", "Attack Outsider 10%");
+  const selected = choose(
+    [neutral, outsider, city],
+    observation({
+      tileShare: 0.08,
+      rivals: [{
+        id: "outsider",
+        name: "Outsider",
+        tileShare: 0.08,
+        relativeTroopRatio: 1.7,
+      }],
+    }),
+    null,
+    os1History(5),
+  );
+  assert.equal(selected.id, outsider.id);
+  assert.equal(selected.policyMarker, "os1");
+});
+
+test("OS1 delegates current pressure to the exact parent defense", () => {
+  const city = action("build:City:defense", "build", "Build City");
+  const neutral = action("expand:terra-nullius:10", "attack", "Expand Terra Nullius 10%");
+  const selected = choose(
+    [neutral, city],
+    observation({
+      tileShare: 0.05,
+      troopRatio: 0.7,
+      incomingAttacks: [{ attackerID: "enemy" }],
+      rivals: [{
+        id: "enemy",
+        name: "Enemy",
+        tileShare: 0.08,
+        relativeTroopRatio: 0.7,
+      }],
+    }),
+    null,
+    os1History(4),
+  );
+  assert.equal(selected.id, city.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("OS1 does not force a high-risk opening land replacement", () => {
+  const factory = action("build:Factory:opening", "build", "Build Factory");
+  const highRiskNeutral = action(
+    "expand:terra-nullius:35",
+    "attack",
+    "Expand Terra Nullius 35%",
+    { level: "high" },
+  );
+  const selected = choose(
+    [factory, highRiskNeutral],
+    observation({ tileShare: 0.104 }),
+    null,
+    os1History(15, { cityAt: 0 }),
+  );
+  assert.deepEqual(selected, factory);
+});
+
+test("OS1 delegates exactly to the parent after decision twenty", () => {
+  const hrafnAlliance = {
+    ...action("alliance:hrafn", "alliance_request", "Alliance with K1Z Hrafn"),
+    metadata: { recipientID: "hrafn", recipientName: "K1Z Hrafn", relation: 2 },
+  };
+  const neutral = action("expand:terra-nullius:10", "attack", "Expand Terra Nullius 10%");
+  const selected = choose(
+    [hrafnAlliance, neutral],
+    observation({
+      tileShare: 0.05,
+      rivals: [{
+        id: "hrafn",
+        name: "K1Z Hrafn",
+        tileShare: 0.08,
+        relativeTroopRatio: 1.2,
+      }],
+    }),
+    null,
+    os1History(20, { cityAt: 4 }),
+  );
+  assert.equal(selected.id, hrafnAlliance.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("OS1 leaves an existing parent land action byte-for-byte unmarked", () => {
+  const neutral = action("expand:terra-nullius:10", "attack", "Expand Terra Nullius 10%");
+  const selected = choose([neutral], observation({ tileShare: 0.05 }));
+  assert.deepEqual(selected, neutral);
+});
+
+test("recordDecision persists an OS1 replacement marker", () => {
+  const katanasanAlliance = {
+    ...action("alliance:katanasan", "alliance_request", "Alliance with K1Z katanasan"),
+    metadata: { recipientID: "katanasan", recipientName: "K1Z katanasan", relation: 2 },
+  };
+  const neutral = action("expand:terra-nullius:10", "attack", "Expand Terra Nullius 10%");
+  const actions = [katanasanAlliance, neutral];
+  const state = buildState(
+    observation({
+      rivals: [{
+        id: "katanasan",
+        name: "K1Z katanasan",
+        tileShare: 0.08,
+        relativeTroopRatio: 1.2,
+      }],
+    }),
+    actions,
+    [],
+  );
+  const selected = chooseAction(actions, state, null, []);
+  const history = [];
+  recordDecision(history, selected, state);
+  assert.equal(history[0].policyMarker, "os1");
+});

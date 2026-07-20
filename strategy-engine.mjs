@@ -447,7 +447,15 @@ function attackScore(rival, state, plan, history) {
     retaliationBonus + (planTarget ? 0.25 : 0);
 }
 
-function chooseRivalAttack(actions, state, plan, history, avoid, threatCount = 0) {
+function chooseRivalAttack(
+  actions,
+  state,
+  plan,
+  history,
+  avoid,
+  threatCount = 0,
+  minimumRatio = -Infinity,
+) {
   const grouped = new Map();
   for (const action of safeActions(actions, (candidate) =>
     candidate.kind === "attack" && !isNeutralExpansion(candidate)
@@ -464,7 +472,10 @@ function chooseRivalAttack(actions, state, plan, history, avoid, threatCount = 0
       protected: rivalIsProtected(state, history, option.rival),
       score: attackScore(option.rival, state, plan, history),
     }))
-    .filter((option) => Number.isFinite(option.score))
+    .filter((option) =>
+      Number.isFinite(option.score) &&
+      option.rival.relativeTroopRatio >= minimumRatio
+    )
     .sort((left, right) => right.score - left.score);
   if (options.length === 0) return null;
 
@@ -767,7 +778,7 @@ export function chooseUtility(actions, state, plan, history) {
   return null;
 }
 
-export function chooseAction(actions, state, plan = null, history = []) {
+function chooseParentAction(actions, state, plan = null, history = []) {
   if (!Array.isArray(actions) || actions.length === 0) {
     throw new Error("decision request had no legal actions");
   }
@@ -909,6 +920,101 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (pressure) return pressure;
 
   return actions.find((action) => action.kind === "hold") ?? actions[0];
+}
+
+const OS1_OPENING_DECISIONS = 20;
+const OS1_CITY_DECISION_INDEX = 4;
+const OS1_RIVAL_CONVERSION_RATIO = 1.6;
+
+function activeDecisionCount(history) {
+  return history.filter((entry) => entry.kind !== "spawn").length;
+}
+
+function hasCurrentPressure(state) {
+  return incomingThreatCount(state.self.incomingAttacks) > 0 ||
+    (state.self.incomingAttackerIDs || []).length > 0 ||
+    (state.self.allProtocolAttackerIDs || []).length > 0;
+}
+
+function pendingReciprocalHandshake(actions, state) {
+  for (const partner of reciprocalPartners(actions, state)) {
+    const pending = actions.some((action) =>
+      action.kind === "alliance_reject" &&
+      matchesKingmakerPartner(action, partner, state)
+    );
+    if (!pending) continue;
+    const request = actions.find((action) =>
+      action.kind === "alliance_request" &&
+      matchesKingmakerPartner(action, partner, state)
+    );
+    if (request) return { ...request, policyMarker: "kp2" };
+  }
+  return null;
+}
+
+function openingCity(actions, history) {
+  if (builtUnits(history).some((id) => id.includes("city"))) return null;
+  return actions.find((action) =>
+    action.kind === "build" &&
+    action.risk?.level !== "high" &&
+    actionText(action).includes("city")
+  ) ?? null;
+}
+
+function os1Replacement(parent, candidate) {
+  if (!candidate || candidate.id === parent.id) return parent;
+  return { ...candidate, policyMarker: "os1" };
+}
+
+// OS1 is a thin, bounded scheduler over the exact v89 selector. It changes
+// opening tempo only: one City on decision five, a replay-backed strong-rival
+// conversion, and safe land instead of optional work. Every unsafe, pressured,
+// post-window, or no-land state delegates byte-for-byte to the parent.
+export function chooseAction(actions, state, plan = null, history = []) {
+  const parent = chooseParentAction(actions, state, plan, history);
+  const activeDecisions = activeDecisionCount(history);
+  if (
+    parent.kind === "spawn" ||
+    activeDecisions >= OS1_OPENING_DECISIONS ||
+    state.self.tileShare >= 0.12 ||
+    hasCurrentPressure(state) ||
+    territoryCollapsing(state, history) ||
+    neutralExpansionStalled(state, history)
+  ) {
+    return parent;
+  }
+
+  const reverseHandshake = pendingReciprocalHandshake(actions, state);
+  if (reverseHandshake) return reverseHandshake;
+
+  if (activeDecisions === OS1_CITY_DECISION_INDEX) {
+    const city = openingCity(actions, history);
+    if (city) return os1Replacement(parent, city);
+  }
+
+  const avoid = new Set(avoidActionIDs(history));
+  const nonHighRiskActions = actions.filter((action) => action.risk?.level !== "high");
+  const strongRival = chooseRivalAttack(
+    nonHighRiskActions,
+    state,
+    plan,
+    history,
+    avoid,
+    0,
+    OS1_RIVAL_CONVERSION_RATIO,
+  );
+  if (
+    strongRival?.action &&
+    strongRival.rival?.sharesBorder === true &&
+    strongRival.rival?.canAttack === true
+  ) {
+    return os1Replacement(parent, strongRival.action);
+  }
+
+  if (parent.kind === "attack") return parent;
+
+  const neutral = chooseNeutralAttack(nonHighRiskActions, history, avoid);
+  return os1Replacement(parent, neutral);
 }
 
 export function recordDecision(history, action, state) {
