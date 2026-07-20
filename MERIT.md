@@ -458,3 +458,26 @@ membership, or champion change followed; `qd1n:v89` remains the exact live
 control. Evidence is retained on branch `rci/eb3-city-window` in
 `experiments/audit-qd1n-eb3-city-window-pangaea-20260720.json` (replay
 `845a0154ce03be16e5999eb09bc7ee5a789a6ff281c473ad7875c683d03716d4`).
+
+## DP2 World opening-Defense-Post rejection (2026-07-20)
+
+DP2 isolated the direct Round 544 World observation in which Odin had a current
+incoming attack at 0.14-percent land and 57-percent troop ratio, while the
+parent's defensive-build branch selected a legal Factory despite a legal
+Defense Post. It replaced only that World decision-6-to-14 branch with the
+Defense Post when a City already exists, current incoming attacks are nonzero,
+troop ratio is below 0.80, and land share is below two percent. It retained all
+other exact-v89 selection paths and emitted `dp2` only on a replacement.
+
+The red regression and full suite passed (`142/142`), and the candidate image
+was byte-checked on linux/amd64. Its valid reach gate used one DP2 seat against
+seven exact v89 seats on canonical World 8P, seed `20260720`, capped at 18
+decision steps. All `168/168` decisions were accepted with zero holds and zero
+rejections, but the clone roster generated no early incoming attack, so `dp2`
+executed zero times. This is a failed reach gate, not an outcome result.
+
+DP2 is rejected without mirrored work, hosted diagnostics, upload, submission,
+membership, or champion change. The v89 control remains live. Evidence is on
+branch `rci/dp2-world-opening-post` in
+`experiments/diagnosis-qd1n-dp2-world-defense-20260720.md`; replay SHA-256 is
+`2eb9a95802787ece721394c7bc7ee34629b8d1b7a2446781e4253a3f9eec2351`.
