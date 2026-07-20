@@ -1,7 +1,9 @@
 {
   "schema_version": 1,
-  "record_type": "hrafn_clean_chassis_local_qualification",
+  "record_type": "hrafn_clean_chassis_local_runtime_diagnostic",
   "recorded_at": "2026-07-20T14:32:04Z",
+  "corrected_at": "2026-07-20T14:36:52Z",
+  "correction_reason": "RCI found that mock WebSocket container evidence does not satisfy the formal LOCAL_QUALIFIED state, which also requires an accepted Coworld qualifier, replay safety evidence, and matched candidate advantage. This record is therefore narrowed to local runtime diagnostic readiness.",
   "arm": "hrafn-clean-chassis-c2-runtime-liveness",
   "scope": "Hrafn only",
   "source": {
@@ -10,6 +12,12 @@
     "source_evidence_commit": "7231e67420367b079052dcab1daa7b9c95bf8df2",
     "branch": "feature/k1z-hrafn-fylking",
     "pushed_before_build": true
+  },
+  "test_hardening": {
+    "commit": "dfa39e2c695868b9bcabc3c97461e80e0d647d61",
+    "integration_test_sha256": "1e7faa1cedbdaba58ad4dbd93d5dd4ef3ec68af7812c5fc4c80d66615200e44c",
+    "requirement": "The delayed no-pong fixture must observe at least two heartbeat ping frames before sending the first active request.",
+    "integration_result": "8/8 passed"
   },
   "image": {
     "tag": "hrafn-clean-chassis-c2:9c9ae7b6",
@@ -60,6 +68,47 @@
       "exit_code": 0,
       "passed": true
     },
+    "candidate_ping_frame_probe": {
+      "harness_id": "hrafn-c2-container-no-pong-ping-proof-v2",
+      "started_at": "2026-07-20T14:41:14.243Z",
+      "completed_at": "2026-07-20T14:41:15.186Z",
+      "host_invocation": "node --input-type=module < inline harness",
+      "spawned_command": [
+        "docker",
+        "run",
+        "--rm",
+        "--name",
+        "hrafn-c2-ping-proof-v2",
+        "--platform",
+        "linux/amd64",
+        "-e",
+        "COWORLD_PLAYER_WS_URL=ws://host.docker.internal:52897",
+        "-e",
+        "HRAFN_HEARTBEAT_MS=50",
+        "-e",
+        "RECONNECT_BASE_MS=20",
+        "hrafn-clean-chassis-c2:9c9ae7b6"
+      ],
+      "heartbeat_ms": 50,
+      "connections": 1,
+      "ping_frames_before_request": 4,
+      "ping_frame_offsets_ms": [
+        46.555,
+        101.06,
+        157.401,
+        209.474
+      ],
+      "request_offset_ms": 231.643,
+      "response_ms": 34.606,
+      "selected_action_id": "expand:terra-nullius:35",
+      "public_reason": "[K1Z] r4vn:atk:hg35",
+      "fallback_used": false,
+      "planner_degraded": false,
+      "stderr_empty": true,
+      "exit_code": 0,
+      "evidence_boundary": "The exact spawned container command and timestamped observations are recorded; the one-off inline host harness is not committed. The committed integration test independently enforces the same minimum ping and delayed-request behavior.",
+      "passed": true
+    },
     "candidate_immediate_request": {
       "connections": 1,
       "response_ms": 16,
@@ -76,6 +125,7 @@
   },
   "verification": {
     "targeted_red_then_green": true,
+    "heartbeat_pings_observed": "4 in the exact-image probe and at least 2 required by the integration test",
     "integration_tests": "8/8 passed",
     "hrafn_chassis_tests": "152/152 passed",
     "matched_auditor_and_authoritative_replay_tests": "60/60 passed",
@@ -96,7 +146,8 @@
   },
   "promotion_state": {
     "SOURCE_READY": true,
-    "LOCAL_QUALIFIED": true,
+    "LOCAL_RUNTIME_DIAGNOSTIC_READY": true,
+    "LOCAL_QUALIFIED": false,
     "DIAGNOSTIC_UPLOADED": false,
     "HOSTED_PASSED": false,
     "REGRESSION_PASSED": false,
@@ -106,7 +157,7 @@
     "CHAMPION_VERIFIED": false,
     "ROUND_CONFIRMED": false
   },
-  "authorization_boundary": "This local qualification permits an independent pre-upload cross-audit request. C2 remains runtime-diagnostic-only and cannot be submitted, placed, or championed.",
-  "next_gate": "Obtain independent pre-upload APPROVE on the exact source and image packet before diagnostic upload.",
-  "verdict": "LOCAL_QUALIFIED for a Hrafn-only runtime liveness diagnostic. NO SUBMIT and no champion change."
+  "authorization_boundary": "This mock-container diagnostic does not authorize a C2 upload or hosted request. C2 remains runtime-diagnostic-only and cannot be submitted, placed, or championed.",
+  "next_gate": "Carry the exact C2 runtime source and image proof into C3, then satisfy the formal foreground-leased Coworld qualifier, replay-safety, and matched-advantage gates on the strategy candidate.",
+  "verdict": "LOCAL_RUNTIME_DIAGNOSTIC_READY only. LOCAL_QUALIFIED remains false; NO UPLOAD, NO SUBMIT, and no champion change."
 }
