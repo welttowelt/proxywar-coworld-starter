@@ -7,12 +7,18 @@ import {
 } from "node:fs";
 import assert from "node:assert/strict";
 import test from "node:test";
-import { tmpdir } from "node:os";
+import { homedir, tmpdir } from "node:os";
+import path from "node:path";
 
 import {
   assertActiveHrafnPlayers,
+  DEFAULT_HRAFN_LEASE_DIRECTORY,
   validateHrafnLeaseSnapshot,
 } from "../hrafn-operational-context.mjs";
+import {
+  DEFAULT_HRAFN_MAILBOX_DIRECTORY,
+  DEFAULT_HRAFN_REPO,
+} from "../scripts/preflight-hrafn-intent-run.mjs";
 import { HRAFN_PLAYER_ID } from "../hrafn-state.mjs";
 
 function fixture(t, overrides = {}) {
@@ -41,6 +47,18 @@ function fixture(t, overrides = {}) {
   t.after(() => rmSync(root, { recursive: true, force: true }));
   return { leaseDirectory, outputDirectory };
 }
+
+test("Hrafn operational defaults follow the active host home", () => {
+  assert.equal(
+    DEFAULT_HRAFN_LEASE_DIRECTORY,
+    path.join(homedir(), ".stormforge", "proxywar-operators", "runner.lock"),
+  );
+  assert.equal(DEFAULT_HRAFN_REPO, path.join(homedir(), "proxywar-k1z-hrafn"));
+  assert.equal(
+    DEFAULT_HRAFN_MAILBOX_DIRECTORY,
+    path.join(homedir(), ".stormforge", "team-mailbox"),
+  );
+});
 
 test("operational context binds the launcher, supervisor, and claimed output", (t) => {
   const paths = fixture(t);

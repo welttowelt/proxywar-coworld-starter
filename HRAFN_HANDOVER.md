@@ -1,17 +1,16 @@
 # ProxyWar Hrafn lane handover
 
-Updated: 2026-07-19
+Updated: 2026-07-20
 
 ## Ownership
 
 Hrafn is the persistent writable operator for `hrafn-fylking` from this
-repository. Codex Odin separately owns `qd1n` from
-`/Users/olifreuler/proxywar-coworld-starter`. Kimi K3 Max is the external
-moonshot adviser.
+repository. Codex Odin separately owns `qd1n`; Hrafn never enters or runs that
+lane. Kimi K3 Max is the external moonshot adviser.
 
 Hrafn may change only Hrafn policy code and Hrafn league state. Odin may change
 only Qd1n policy code and Qd1n league state. Cross-audits are read-only and use
-the mailbox at `/Users/olifreuler/.stormforge/team-mailbox`.
+the mailbox at `$HOME/.stormforge/team-mailbox`.
 
 ## Live deployment truth
 
@@ -242,13 +241,13 @@ max setting.
 
 ## Runner and mailbox
 
-- Mailbox: `/Users/olifreuler/.stormforge/team-mailbox`
+- Mailbox: `$HOME/.stormforge/team-mailbox`
 - Mailbox writes use the atomic lock at
-  `/Users/olifreuler/.stormforge/proxywar-operators/mailbox-write.lock`.
+  `$HOME/.stormforge/proxywar-operators/mailbox-write.lock`.
 - Put every Coworld episode or batch under the foreground supervisor:
 
   ```bash
-  /Users/olifreuler/proxywar-coworld-starter/scripts/proxywar-runner-lease.sh run hrafn HRAFN_RUN_ID \
+  "$HOME/proxywar-k1z-hrafn/scripts/proxywar-runner-lease.sh" run hrafn HRAFN_RUN_ID \
     --output /private/tmp/hrafn-new-output-a \
     --output /private/tmp/hrafn-new-output-b \
     -- /absolute/path/to/hrafn-batch-script.sh

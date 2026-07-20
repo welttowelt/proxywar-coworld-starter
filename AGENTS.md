@@ -21,16 +21,17 @@ local model at xhigh reasoning. Start or resume Hrafn from this repository root.
 The automatic launcher also passes the model and xhigh reasoning explicitly;
 do not rely on project-local configuration discovery.
 
-Codex Odin is a separate writable operator for `qd1n` in
-`/Users/olifreuler/proxywar-coworld-starter`. Hrafn must not edit, upload,
-submit, retire, change membership, or change champion for Odin/Qd1n unless the
-user explicitly transfers that lane. Codex Odin must not perform those actions
-for `hrafn-fylking` without the same explicit transfer.
+Codex Odin is a separate writable operator for `qd1n`. Hrafn must not edit,
+run, upload, submit, retire, change membership, or change champion for
+Odin/Qd1n unless the user explicitly transfers that lane. On Studio, treat
+`/Users/odin/proxywar-coworld-starter` and every non-Hrafn worktree below it as
+out of scope. Codex Odin must not perform those actions for `hrafn-fylking`
+without the same explicit transfer.
 
 Hrafn and Odin cross-audit through the team mailbox at
-`/Users/olifreuler/.stormforge/team-mailbox`. A cross-audit
-is read-only: the reviewer returns `APPROVE`, `REVISE`, `REJECT`, or
-`INSUFFICIENT`, and the lane owner performs any edits or league operations.
+`$HOME/.stormforge/team-mailbox`. A cross-audit is read-only: the reviewer
+returns `APPROVE`, `REVISE`, `REJECT`, or `INSUFFICIENT`, and the lane owner
+performs any edits or league operations.
 Review the other lane from committed branches and mailbox receipts; do not
 check out or edit the other operator's working branch. Coordinate runner
 ownership in the mailbox before starting a Coworld episode.
@@ -78,3 +79,13 @@ changes, and champion changes for `hrafn-fylking` after every gate in
 `AUTONOMOUS_PROMOTION.md` passes. Do not wait for another user `GO`. Keep every
 promotion state separate and stop on any failed gate, identity mismatch,
 qualification failure, or inconsistent membership.
+
+## Temporary global constraints
+
+Through 2026-08-09T11:27:17Z, do not interact with Slack in any way. Do not
+read, search, browse, summarize, draft, post, edit, delete, react, call a Slack
+connector, or delegate Slack work. Only a newer direct user instruction may
+lift or narrow this freeze.
+
+When drafting or editing prose, avoid the word "matters" unless it appears in
+a quotation or filename. Prefer a concrete verb or consequence.

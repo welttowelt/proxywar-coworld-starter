@@ -4,13 +4,14 @@ import {
   readFileSync,
   realpathSync,
 } from "node:fs";
+import { homedir } from "node:os";
 import path from "node:path";
 
 import { HRAFN_PLAYER_ID } from "./hrafn-state.mjs";
 
 export const HRAFN_PLAYER_NAME = "K1Z Hrafn";
 export const DEFAULT_HRAFN_LEASE_DIRECTORY =
-  "/Users/olifreuler/.stormforge/proxywar-operators/runner.lock";
+  path.join(homedir(), ".stormforge", "proxywar-operators", "runner.lock");
 
 function plainFile(directory, name) {
   const target = path.join(directory, name);

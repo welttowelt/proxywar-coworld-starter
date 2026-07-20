@@ -9,6 +9,7 @@ import {
   rename,
   writeFile,
 } from "node:fs/promises";
+import { homedir } from "node:os";
 import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
@@ -46,8 +47,12 @@ import { verifyK1ZPacketBytes } from "../k1z-direct-line.mjs";
 const execFileAsync = promisify(execFile);
 const SHA256 = /^[a-f0-9]{64}$/;
 const IMAGE_ID = /^sha256:[a-f0-9]{64}$/;
-const DEFAULT_REPO = "/Users/olifreuler/proxywar-k1z-hrafn";
-const DEFAULT_MAILBOX = "/Users/olifreuler/.stormforge/team-mailbox";
+export const DEFAULT_HRAFN_REPO = path.join(homedir(), "proxywar-k1z-hrafn");
+export const DEFAULT_HRAFN_MAILBOX_DIRECTORY = path.join(
+  homedir(),
+  ".stormforge",
+  "team-mailbox",
+);
 const DEFAULT_OUTPUT_ROOT = "/private/tmp";
 const SUBJECT_NAME = "K1Z Hrafn";
 const PREFLIGHT_RECEIPT_NAME = "hrafn-intent-preflight-receipt.json";
@@ -614,8 +619,8 @@ export async function verifyHrafnIntentRunPreflight(
   {
     command,
     processPID = process.pid,
-    expectedRepoPath = DEFAULT_REPO,
-    expectedMailboxDirectory = DEFAULT_MAILBOX,
+    expectedRepoPath = DEFAULT_HRAFN_REPO,
+    expectedMailboxDirectory = DEFAULT_HRAFN_MAILBOX_DIRECTORY,
     expectedOutputRoot = DEFAULT_OUTPUT_ROOT,
     expectedManifestSHA256 = HRAFN_INTENT_MANIFEST_SHA256,
   } = {},
@@ -624,7 +629,7 @@ export async function verifyHrafnIntentRunPreflight(
   validateSpec(spec);
   if (spec.repo_path !== expectedRepoPath) throw new Error("preflight repo path is not Hrafn");
   if (spec.lease_directory !== DEFAULT_HRAFN_LEASE_DIRECTORY &&
-    expectedRepoPath === DEFAULT_REPO
+    expectedRepoPath === DEFAULT_HRAFN_REPO
   ) {
     throw new Error("preflight lease path is not the shared foreground lease");
   }
