@@ -130,8 +130,28 @@
       "structural_dimension": "intent_schedule",
       "hypothesis": "A compact state-conditioned grow or outsider-conversion intent can improve matched outcomes while Mickey's deterministic selector alone chooses a legal action.",
       "control_arm_id": "m0",
-      "source_commit": "ff51e47f19442f1406daaf44a84bef368b4f3864",
+      "source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
       "base_commit": "dbb14e75ea70b1285dde9781f8c9f0119a212c06",
+      "source_receipt": {
+        "commit": "068afee40b55ee80e00b55966905c0e3f3c3df10",
+        "path": "experiments/mickey-static-intent-source-reach-20260721.json",
+        "sha256": "127d60ee51f4e4b2d50c7b6908d1e571ce8f9e40f1939f61c25e3cdb4abaa129"
+      },
+      "image_receipt": {
+        "commit": "0ff0dbe563807a4c9bd16972eeb69e62df4a7153",
+        "path": ".codex/active-arm.json",
+        "sha256": "c8b46dd5481f8b4e7f87319573536f52b27fa78957e3fbf9f717f09e6f159460"
+      },
+      "production_source_image": {
+        "class": "production_source",
+        "source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
+        "image_tag": "proxywar-agent-llm:mickey-production-26c36eca-amd64",
+        "image_id": "sha256:09d5bf61622f0b9619957564c520389a04c52ad337358262b380900127156042",
+        "architecture": "amd64",
+        "static_evaluation_runtime_absent": true,
+        "activation_state": "not_activated",
+        "upload_eligible": false
+      },
       "arms": [
         {
           "arm_id": "m0",
@@ -145,7 +165,10 @@
           "evaluation_artifact": {
             "class": "static_evaluation",
             "surrogate_source": "static-eval-v1",
-            "source_commit": "ff51e47f19442f1406daaf44a84bef368b4f3864",
+            "source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
+            "image_tag": "proxywar-agent-llm:mickey-m0-26c36eca-amd64",
+            "image_id": "sha256:63395b042d6247520b5b8ebcdfb75470ac54750a6aadf2e5b712cbb66061e230",
+            "architecture": "amd64",
             "upload_eligible": false,
             "production_eligible": false
           },
@@ -153,7 +176,7 @@
             "source": {
               "status": "pass",
               "evidence": [
-                ".codex/active-arm.json"
+                "experiments/mickey-static-intent-source-reach-20260721.json"
               ]
             },
             "screen": {
@@ -180,7 +203,10 @@
           "evaluation_artifact": {
             "class": "static_evaluation",
             "surrogate_source": "static-eval-v1",
-            "source_commit": "ff51e47f19442f1406daaf44a84bef368b4f3864",
+            "source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
+            "image_tag": "proxywar-agent-llm:mickey-grow-opening-26c36eca-amd64",
+            "image_id": "sha256:3cf9874143eed7b7592228532a41353cc0f724127287f682584814dc214e83c1",
+            "architecture": "amd64",
             "upload_eligible": false,
             "production_eligible": false
           },
@@ -188,7 +214,7 @@
             "source": {
               "status": "pass",
               "evidence": [
-                ".codex/active-arm.json"
+                "experiments/mickey-static-intent-source-reach-20260721.json"
               ]
             },
             "screen": {
@@ -215,7 +241,10 @@
           "evaluation_artifact": {
             "class": "static_evaluation",
             "surrogate_source": "static-eval-v1",
-            "source_commit": "ff51e47f19442f1406daaf44a84bef368b4f3864",
+            "source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
+            "image_tag": "proxywar-agent-llm:mickey-grow-low-share-26c36eca-amd64",
+            "image_id": "sha256:917165e843949009cfcc4d23cd96a27314cb373e63427245b41d13eec70bbbe6",
+            "architecture": "amd64",
             "upload_eligible": false,
             "production_eligible": false
           },
@@ -223,77 +252,7 @@
             "source": {
               "status": "pass",
               "evidence": [
-                ".codex/active-arm.json"
-              ]
-            },
-            "screen": {
-              "status": "pending",
-              "evidence": []
-            },
-            "confirm": {
-              "status": "pending",
-              "evidence": []
-            }
-          },
-          "production_candidate": null,
-          "rejection_reason": null
-        },
-        {
-          "arm_id": "grow-calm",
-          "role": "maverick",
-          "parent_arm_id": "m0",
-          "mechanism_key": "grow-without-incoming-pressure",
-          "mechanism": "Emit grow intent only while current and protocol-attributed incoming pressure are absent.",
-          "mechanism_delta_count": 1,
-          "roster_requirement": "any",
-          "status": "source_ready",
-          "evaluation_artifact": {
-            "class": "static_evaluation",
-            "surrogate_source": "static-eval-v1",
-            "source_commit": "ff51e47f19442f1406daaf44a84bef368b4f3864",
-            "upload_eligible": false,
-            "production_eligible": false
-          },
-          "gates": {
-            "source": {
-              "status": "pass",
-              "evidence": [
-                ".codex/active-arm.json"
-              ]
-            },
-            "screen": {
-              "status": "pending",
-              "evidence": []
-            },
-            "confirm": {
-              "status": "pending",
-              "evidence": []
-            }
-          },
-          "production_candidate": null,
-          "rejection_reason": null
-        },
-        {
-          "arm_id": "grow-conjunction",
-          "role": "maverick",
-          "parent_arm_id": "m0",
-          "mechanism_key": "grow-opening-low-share-calm",
-          "mechanism": "Emit grow intent only when opening, low-share, and calm guards all hold.",
-          "mechanism_delta_count": 1,
-          "roster_requirement": "any",
-          "status": "source_ready",
-          "evaluation_artifact": {
-            "class": "static_evaluation",
-            "surrogate_source": "static-eval-v1",
-            "source_commit": "ff51e47f19442f1406daaf44a84bef368b4f3864",
-            "upload_eligible": false,
-            "production_eligible": false
-          },
-          "gates": {
-            "source": {
-              "status": "pass",
-              "evidence": [
-                ".codex/active-arm.json"
+                "experiments/mickey-static-intent-source-reach-20260721.json"
               ]
             },
             "screen": {
@@ -320,7 +279,10 @@
           "evaluation_artifact": {
             "class": "static_evaluation",
             "surrogate_source": "static-eval-v1",
-            "source_commit": "ff51e47f19442f1406daaf44a84bef368b4f3864",
+            "source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
+            "image_tag": "proxywar-agent-llm:mickey-convert-weakest-26c36eca-amd64",
+            "image_id": "sha256:a1de9d15e302a3181f6638edc37f697ea305427c15b9ddb80e6a7706b54a1380",
+            "architecture": "amd64",
             "upload_eligible": false,
             "production_eligible": false
           },
@@ -328,7 +290,7 @@
             "source": {
               "status": "pass",
               "evidence": [
-                ".codex/active-arm.json"
+                "experiments/mickey-static-intent-source-reach-20260721.json"
               ]
             },
             "screen": {
@@ -355,7 +317,10 @@
           "evaluation_artifact": {
             "class": "static_evaluation",
             "surrogate_source": "static-eval-v1",
-            "source_commit": "ff51e47f19442f1406daaf44a84bef368b4f3864",
+            "source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
+            "image_tag": "proxywar-agent-llm:mickey-convert-largest-26c36eca-amd64",
+            "image_id": "sha256:647e29657e47b76a24946baf1fd8837e94d69616a4084a5ff572f281694abe7f",
+            "architecture": "amd64",
             "upload_eligible": false,
             "production_eligible": false
           },
@@ -363,7 +328,7 @@
             "source": {
               "status": "pass",
               "evidence": [
-                ".codex/active-arm.json"
+                "experiments/mickey-static-intent-source-reach-20260721.json"
               ]
             },
             "screen": {

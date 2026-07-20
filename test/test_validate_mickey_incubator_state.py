@@ -32,6 +32,44 @@ class MickeyIncubatorStateTest(unittest.TestCase):
     def test_committed_snapshot_is_valid(self) -> None:
         self.assertEqual(validate_task_root(SOURCE_ROOT), [])
 
+    def test_g000_is_exactly_bound_to_pruned_26c_population(self) -> None:
+        manifest = json.loads((SOURCE_ROOT / "state" / "incubator_manifest.json").read_text())
+        generation = manifest["generations"][0]
+        self.assertEqual(
+            generation["source_commit"],
+            "26c36eca6f30272c921f6c7049187192fc100e21",
+        )
+        self.assertEqual(
+            generation["source_receipt"],
+            {
+                "commit": "068afee40b55ee80e00b55966905c0e3f3c3df10",
+                "path": "experiments/mickey-static-intent-source-reach-20260721.json",
+                "sha256": "127d60ee51f4e4b2d50c7b6908d1e571ce8f9e40f1939f61c25e3cdb4abaa129",
+            },
+        )
+        self.assertEqual(
+            [arm["arm_id"] for arm in generation["arms"]],
+            ["m0", "grow-opening", "grow-low-share", "convert-weakest", "convert-largest"],
+        )
+
+    def test_superseded_g000_source_is_rejected(self) -> None:
+        holder, root, manifest, progress = self.fixture()
+        self.addCleanup(holder.cleanup)
+        manifest["generations"][0]["source_commit"] = "f" * 40
+        self.write(root, manifest, progress)
+        errors = validate_task_root(root)
+        self.assertTrue(any("source commit is superseded" in item for item in errors))
+
+    def test_g000_image_binding_drift_is_rejected(self) -> None:
+        holder, root, manifest, progress = self.fixture()
+        self.addCleanup(holder.cleanup)
+        manifest["generations"][0]["arms"][1]["evaluation_artifact"]["image_id"] = (
+            "sha256:" + "0" * 64
+        )
+        self.write(root, manifest, progress)
+        errors = validate_task_root(root)
+        self.assertTrue(any("grow-opening image binding drifted" in item for item in errors))
+
     def test_static_artifact_can_never_be_uploadable(self) -> None:
         holder, root, manifest, progress = self.fixture()
         self.addCleanup(holder.cleanup)
@@ -163,8 +201,10 @@ class MickeyIncubatorStateTest(unittest.TestCase):
             "status": "pass",
             "evidence": ["evidence/confirm.json"],
         }
+
         def pass_gate(path: str) -> dict:
             return {"status": "pass", "evidence": [path]}
+
         arm["production_candidate"] = {
             "class": "production_candidate",
             "derived_from_static_arm": True,

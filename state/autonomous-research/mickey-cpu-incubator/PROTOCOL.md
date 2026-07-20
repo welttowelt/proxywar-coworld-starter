@@ -42,6 +42,18 @@ fresh matched pairs across two maps and two seats. A structural change may
 revise those counts, but the decision and rationale must be logged before the
 new generation opens.
 
+Generation `g000` is bound to source
+`26c36eca6f30272c921f6c7049187192fc100e21` and the immutable source-reach
+receipt at commit `068afee40b55ee80e00b55966905c0e3f3c3df10`, SHA-256
+`127d60ee51f4e4b2d50c7b6908d1e571ce8f9e40f1939f61c25e3cdb4abaa129`.
+Its only schedulable population is `m0`, `grow-opening`, `grow-low-share`,
+`convert-weakest`, and `convert-largest`. `grow-calm` and
+`grow-conjunction` were pruned after source fixtures showed behaviorally
+duplicate traces; do not spend CPU cells on them under another label. The
+manifest binds the exact linux/amd64 image tag and ID for all five arms plus
+the production-source image. A rebuilt or retagged image opens a new binding;
+it never silently replaces one of these IDs.
+
 ## Static evaluation boundary
 
 `static-eval-v1` is a deterministic, credential-free CPU surrogate. Every arm

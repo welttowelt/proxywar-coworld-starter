@@ -16,6 +16,7 @@ from typing import Any
 
 
 COMMIT_RE = re.compile(r"^[0-9a-f]{40}$")
+SHA256_RE = re.compile(r"^[0-9a-f]{64}$")
 IMAGE_RE = re.compile(r"^sha256:[0-9a-f]{64}$")
 IMAGE_TAG_RE = re.compile(r"^[a-z0-9][a-z0-9._/:@-]{0,191}$")
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9-]*$")
@@ -56,6 +57,43 @@ LEAGUE_GATES = (
     "final_rci",
 )
 SENSITIVE_KEY_PARTS = ("credential", "password", "private_key", "secret", "token", "cookie")
+G000_SOURCE_COMMIT = "26c36eca6f30272c921f6c7049187192fc100e21"
+G000_SOURCE_RECEIPT = {
+    "commit": "068afee40b55ee80e00b55966905c0e3f3c3df10",
+    "path": "experiments/mickey-static-intent-source-reach-20260721.json",
+    "sha256": "127d60ee51f4e4b2d50c7b6908d1e571ce8f9e40f1939f61c25e3cdb4abaa129",
+}
+G000_IMAGE_RECEIPT = {
+    "commit": "0ff0dbe563807a4c9bd16972eeb69e62df4a7153",
+    "path": ".codex/active-arm.json",
+    "sha256": "c8b46dd5481f8b4e7f87319573536f52b27fa78957e3fbf9f717f09e6f159460",
+}
+G000_PRODUCTION_IMAGE = {
+    "image_tag": "proxywar-agent-llm:mickey-production-26c36eca-amd64",
+    "image_id": "sha256:09d5bf61622f0b9619957564c520389a04c52ad337358262b380900127156042",
+}
+G000_ARM_IMAGES = {
+    "m0": (
+        "proxywar-agent-llm:mickey-m0-26c36eca-amd64",
+        "sha256:63395b042d6247520b5b8ebcdfb75470ac54750a6aadf2e5b712cbb66061e230",
+    ),
+    "grow-opening": (
+        "proxywar-agent-llm:mickey-grow-opening-26c36eca-amd64",
+        "sha256:3cf9874143eed7b7592228532a41353cc0f724127287f682584814dc214e83c1",
+    ),
+    "grow-low-share": (
+        "proxywar-agent-llm:mickey-grow-low-share-26c36eca-amd64",
+        "sha256:917165e843949009cfcc4d23cd96a27314cb373e63427245b41d13eec70bbbe6",
+    ),
+    "convert-weakest": (
+        "proxywar-agent-llm:mickey-convert-weakest-26c36eca-amd64",
+        "sha256:a1de9d15e302a3181f6638edc37f697ea305427c15b9ddb80e6a7706b54a1380",
+    ),
+    "convert-largest": (
+        "proxywar-agent-llm:mickey-convert-largest-26c36eca-amd64",
+        "sha256:647e29657e47b76a24946baf1fd8837e94d69616a4084a5ff572f281694abe7f",
+    ),
+}
 
 
 def read_json(path: Path) -> Any:
@@ -99,6 +137,46 @@ def validate_gate(errors: list[str], label: str, gate: Any) -> str | None:
     return status if isinstance(status, str) else None
 
 
+def validate_receipt(errors: list[str], label: str, receipt: Any) -> str | None:
+    if not isinstance(receipt, dict):
+        errors.append(f"{label} must be an object")
+        return None
+    if not COMMIT_RE.fullmatch(str(receipt.get("commit", ""))):
+        errors.append(f"{label}.commit must be a full commit")
+    path = receipt.get("path")
+    if not evidence_is_safe(path):
+        errors.append(f"{label}.path must be repo-relative")
+    if not SHA256_RE.fullmatch(str(receipt.get("sha256", ""))):
+        errors.append(f"{label}.sha256 must be 64 lowercase hex characters")
+    return path if isinstance(path, str) else None
+
+
+def validate_production_source_image(
+    errors: list[str], label: str, image: Any, source_commit: str
+) -> str | None:
+    if not isinstance(image, dict):
+        errors.append(f"{label} must be an object")
+        return None
+    if image.get("class") != "production_source":
+        errors.append(f"{label}.class must be production_source")
+    if image.get("source_commit") != source_commit:
+        errors.append(f"{label}.source_commit differs from its generation")
+    if not IMAGE_TAG_RE.fullmatch(str(image.get("image_tag", ""))):
+        errors.append(f"{label}.image_tag is invalid")
+    image_id = image.get("image_id")
+    if not IMAGE_RE.fullmatch(str(image_id or "")):
+        errors.append(f"{label}.image_id is invalid")
+    if image.get("architecture") != "amd64":
+        errors.append(f"{label}.architecture must be amd64")
+    if image.get("static_evaluation_runtime_absent") is not True:
+        errors.append(f"{label} must exclude the static evaluation runtime")
+    if image.get("activation_state") not in {"not_activated", "baseline", "superseded"}:
+        errors.append(f"{label}.activation_state is invalid")
+    if image.get("upload_eligible") is not False:
+        errors.append(f"{label} cannot grant upload eligibility")
+    return image_id if isinstance(image_id, str) else None
+
+
 def validate_production_candidate(
     errors: list[str], label: str, candidate: Any
 ) -> bool:
@@ -138,16 +216,21 @@ def validate_production_candidate(
 
 
 def validate_arm(
-    errors: list[str], generation_label: str, arm: Any, control_arm_id: str
-) -> tuple[str | None, str | None]:
+    errors: list[str],
+    generation_label: str,
+    arm: Any,
+    control_arm_id: str,
+    generation_source_commit: str,
+    source_receipt_path: str | None,
+) -> tuple[str | None, str | None, str | None]:
     if not isinstance(arm, dict):
         errors.append(f"{generation_label} contains a non-object arm")
-        return None, None
+        return None, None, None
     arm_id = arm.get("arm_id")
     label = f"{generation_label}.arms[{arm_id or '?'}]"
     if not isinstance(arm_id, str) or not ID_RE.fullmatch(arm_id):
         errors.append(f"{label}.arm_id is invalid")
-        return None, None
+        return None, None, None
     role = arm.get("role")
     if role not in {"control", "maverick"}:
         errors.append(f"{label}.role is invalid")
@@ -186,8 +269,14 @@ def validate_arm(
             errors.append(f"{label} static artifact cannot be upload eligible")
         if artifact.get("production_eligible") is not False:
             errors.append(f"{label} static artifact cannot be production eligible")
-        if not COMMIT_RE.fullmatch(str(artifact.get("source_commit", ""))):
-            errors.append(f"{label} static source commit is invalid")
+        if artifact.get("source_commit") != generation_source_commit:
+            errors.append(f"{label} static source commit differs from its generation")
+        if not IMAGE_TAG_RE.fullmatch(str(artifact.get("image_tag", ""))):
+            errors.append(f"{label} static image tag is invalid")
+        if not IMAGE_RE.fullmatch(str(artifact.get("image_id", ""))):
+            errors.append(f"{label} static image ID is invalid")
+        if artifact.get("architecture") != "amd64":
+            errors.append(f"{label} static image architecture must be amd64")
 
     gates = arm.get("gates")
     if not isinstance(gates, dict):
@@ -197,6 +286,9 @@ def validate_arm(
         source_status = validate_gate(errors, f"{label}.gates.source", gates.get("source"))
         screen_status = validate_gate(errors, f"{label}.gates.screen", gates.get("screen"))
         confirm_status = validate_gate(errors, f"{label}.gates.confirm", gates.get("confirm"))
+        source_evidence = gates.get("source", {}).get("evidence", []) if isinstance(gates.get("source"), dict) else []
+        if source_status == "pass" and source_receipt_path not in source_evidence:
+            errors.append(f"{label} source gate is not bound to the generation receipt")
 
     if role == "control":
         if screen_status != "not_applicable" or confirm_status != "not_applicable":
@@ -222,7 +314,8 @@ def validate_arm(
         errors.append(f"{label} has a production candidate before production_ready")
     if status in {"rejected", "rolled_back"} and not arm.get("rejection_reason"):
         errors.append(f"{label} rejected or rolled-back arm needs a reason")
-    return arm_id, arm.get("mechanism_key")
+    image_id = artifact.get("image_id") if isinstance(artifact, dict) else None
+    return arm_id, arm.get("mechanism_key"), image_id if isinstance(image_id, str) else None
 
 
 def validate_local_incumbent(errors: list[str], incumbent: Any, arms_by_id: dict[str, Any]) -> None:
@@ -519,10 +612,25 @@ def validate_task_root(task_root: Path) -> list[str]:
                 errors.append(f"{label}.structural_dimension is required")
             if not isinstance(generation.get("hypothesis"), str) or not generation.get("hypothesis"):
                 errors.append(f"{label}.hypothesis is required")
-            if not COMMIT_RE.fullmatch(str(generation.get("source_commit", ""))):
+            source_commit = generation.get("source_commit")
+            if not COMMIT_RE.fullmatch(str(source_commit or "")):
                 errors.append(f"{label}.source_commit is invalid")
+                source_commit = ""
             if not COMMIT_RE.fullmatch(str(generation.get("base_commit", ""))):
                 errors.append(f"{label}.base_commit is invalid")
+            source_receipt = generation.get("source_receipt")
+            source_receipt_path = validate_receipt(
+                errors, f"{label}.source_receipt", source_receipt
+            )
+            image_receipt = generation.get("image_receipt")
+            validate_receipt(errors, f"{label}.image_receipt", image_receipt)
+            production_source_image = generation.get("production_source_image")
+            production_image_id = validate_production_source_image(
+                errors,
+                f"{label}.production_source_image",
+                production_source_image,
+                source_commit,
+            )
             parent_generation = generation.get("parent_generation_id")
             if parent_generation is not None and parent_generation not in generation_by_id:
                 errors.append(f"{label}.parent_generation_id must reference an earlier generation")
@@ -536,8 +644,16 @@ def validate_task_root(task_root: Path) -> list[str]:
                 continue
             controls = 0
             mechanism_keys: set[str] = set()
+            arm_image_ids: set[str] = set()
             for arm in arms:
-                arm_id, mechanism_key = validate_arm(errors, label, arm, control_arm_id)
+                arm_id, mechanism_key, arm_image_id = validate_arm(
+                    errors,
+                    label,
+                    arm,
+                    control_arm_id,
+                    source_commit,
+                    source_receipt_path,
+                )
                 if isinstance(arm, dict) and arm.get("role") == "control":
                     controls += 1
                 if arm_id:
@@ -548,8 +664,39 @@ def validate_task_root(task_root: Path) -> list[str]:
                     if mechanism_key in mechanism_keys:
                         errors.append(f"{label} repeats mechanism_key {mechanism_key}")
                     mechanism_keys.add(mechanism_key)
+                if arm_image_id:
+                    if arm_image_id in arm_image_ids:
+                        errors.append(f"{label} repeats static image ID {arm_image_id}")
+                    arm_image_ids.add(arm_image_id)
             if controls != 1:
                 errors.append(f"{label} must contain exactly one control")
+            if production_image_id in arm_image_ids:
+                errors.append(f"{label} production and static images must be distinct")
+            if generation_id == "g000":
+                if source_commit != G000_SOURCE_COMMIT:
+                    errors.append("generation[g000] source commit is superseded")
+                if source_receipt != G000_SOURCE_RECEIPT:
+                    errors.append("generation[g000] source receipt binding drifted")
+                if image_receipt != G000_IMAGE_RECEIPT:
+                    errors.append("generation[g000] image receipt binding drifted")
+                if not isinstance(production_source_image, dict) or any(
+                    production_source_image.get(key) != expected
+                    for key, expected in G000_PRODUCTION_IMAGE.items()
+                ):
+                    errors.append("generation[g000] production image binding drifted")
+                arm_map = {
+                    arm.get("arm_id"): arm
+                    for arm in arms
+                    if isinstance(arm, dict) and isinstance(arm.get("arm_id"), str)
+                }
+                if set(arm_map) != set(G000_ARM_IMAGES):
+                    errors.append("generation[g000] must contain only the five pruned distinct arms")
+                for expected_arm_id, (expected_tag, expected_id) in G000_ARM_IMAGES.items():
+                    artifact = (arm_map.get(expected_arm_id) or {}).get("evaluation_artifact") or {}
+                    if artifact.get("image_tag") != expected_tag or artifact.get("image_id") != expected_id:
+                        errors.append(
+                            f"generation[g000] {expected_arm_id} image binding drifted"
+                        )
 
     current_generation_id = manifest.get("current_generation_id")
     current_generation = generation_by_id.get(current_generation_id)
