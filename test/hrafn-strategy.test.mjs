@@ -288,6 +288,32 @@ test("dv1 targets daveey without feeding him below the attack floor", () => {
   assert.equal(chosen.policyMarker, "dv1");
 });
 
+test("dv2 grows neutral land instead of socially targeting daveey", () => {
+  const daveey = rival({
+    id: "daveey",
+    name: "daveey",
+    tileShare: 0.3,
+    relativeTroopRatio: 1.2,
+  });
+  const target = action(
+    "target:daveey",
+    "target_player",
+    "Target daveey",
+    { targetID: daveey.id, targetName: daveey.name },
+  );
+  const expand = action(
+    "expand:terra-nullius:35",
+    "attack",
+    "Expand Terra Nullius 35%",
+    { expansion: true, troopPercent: 35 },
+  );
+  const chosen = chooseHrafnAction(
+    [attack(daveey, 25), target, expand],
+    observation({ tileShare: 0.12, rivals: [daveey] }),
+  );
+  assert.equal(chosen.id, expand.id);
+});
+
 test("dv1 switches an older outsider lock to newly reachable daveey", () => {
   const daveey = rival({
     id: "daveey",

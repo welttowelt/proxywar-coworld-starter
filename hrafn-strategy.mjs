@@ -440,6 +440,14 @@ function adaptiveLeaderPressureAction(
   config,
   marker = "rv3",
 ) {
+  if (
+    marker === "dv1" &&
+    safeActions(actions, (candidate) =>
+      candidate.kind === "attack" && isNeutralAction(candidate)
+    ).length > 0
+  ) {
+    return null;
+  }
   const since = decisionsSince(history, (entry) =>
     entry.policyMarker === marker &&
     (entry.targetID === rival.id.toLowerCase() ||
