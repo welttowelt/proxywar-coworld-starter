@@ -3,6 +3,7 @@ import {
   mkdirSync,
   realpathSync,
   rmSync,
+  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import assert from "node:assert/strict";
@@ -62,21 +63,88 @@ test("Hrafn operational defaults follow the active host home", () => {
 });
 
 test("Hrafn can isolate Coworld credentials without moving host operations", (t) => {
-  const root = mkdtempSync(`${tmpdir()}/hrafn-coworld-home-`);
+  const root = mkdtempSync(`${tmpdir()}/hrafn-coworld-context-`);
   t.after(() => rmSync(root, { recursive: true, force: true }));
+  const hostHome = path.join(root, "host-home");
+  const coworldHome = path.join(root, "coworld-home");
+  mkdirSync(hostHome);
+  mkdirSync(coworldHome);
   const environment = {
-    HOME: "/Users/odin",
+    HOME: hostHome,
     PATH: "/usr/bin:/bin",
-    HRAFN_SOFTMAX_HOME: root,
+    HRAFN_SOFTMAX_HOME: realpathSync(coworldHome),
   };
 
   const isolated = hrafnCoworldEnvironment(environment);
-  assert.equal(isolated.HOME, realpathSync(root));
+  assert.equal(isolated.HOME, realpathSync(coworldHome));
   assert.equal(isolated.PATH, environment.PATH);
-  assert.equal(environment.HOME, "/Users/odin");
+  assert.equal(environment.HOME, hostHome);
+  assert.deepEqual(isolated, {
+    ...environment,
+    HOME: realpathSync(coworldHome),
+  });
+  assert.equal(Object.isFrozen(isolated), true);
+});
+
+test("Hrafn Coworld identity probe rejects a missing or blank isolated home", (t) => {
+  const hostHome = mkdtempSync(`${tmpdir()}/hrafn-host-home-`);
+  t.after(() => rmSync(hostHome, { recursive: true, force: true }));
+
   assert.throws(
-    () => hrafnCoworldEnvironment({ HRAFN_SOFTMAX_HOME: "relative" }),
-    /must be an absolute real directory/,
+    () => hrafnCoworldEnvironment({ HOME: hostHome }),
+    /HRAFN_SOFTMAX_HOME is required/,
+  );
+  assert.throws(
+    () => hrafnCoworldEnvironment({
+      HOME: hostHome,
+      HRAFN_SOFTMAX_HOME: "   ",
+    }),
+    /HRAFN_SOFTMAX_HOME is required/,
+  );
+});
+
+test("Hrafn Coworld identity probe rejects shared-home aliases", (t) => {
+  const root = mkdtempSync(`${tmpdir()}/hrafn-home-alias-`);
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const hostHome = path.join(root, "host-home");
+  const hostAlias = path.join(root, "host-alias");
+  mkdirSync(hostHome);
+  symlinkSync(hostHome, hostAlias);
+  const canonicalHostHome = realpathSync(hostHome);
+
+  assert.throws(
+    () => hrafnCoworldEnvironment({
+      HOME: canonicalHostHome,
+      HRAFN_SOFTMAX_HOME: canonicalHostHome,
+    }),
+    /must be distinct from the normal HOME/,
+  );
+  assert.throws(
+    () => hrafnCoworldEnvironment({
+      HOME: hostAlias,
+      HRAFN_SOFTMAX_HOME: canonicalHostHome,
+    }),
+    /must be distinct from the normal HOME/,
+  );
+  assert.throws(
+    () => hrafnCoworldEnvironment({
+      HOME: canonicalHostHome,
+      HRAFN_SOFTMAX_HOME: hostAlias,
+    }),
+    /must be an absolute canonical directory/,
+  );
+});
+
+test("Hrafn Coworld identity probe requires a canonical absolute directory", (t) => {
+  const hostHome = mkdtempSync(`${tmpdir()}/hrafn-host-home-`);
+  t.after(() => rmSync(hostHome, { recursive: true, force: true }));
+
+  assert.throws(
+    () => hrafnCoworldEnvironment({
+      HOME: hostHome,
+      HRAFN_SOFTMAX_HOME: "relative",
+    }),
+    /must be an absolute canonical directory/,
   );
 });
 

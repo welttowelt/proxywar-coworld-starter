@@ -13,19 +13,61 @@ export const HRAFN_PLAYER_NAME = "K1Z Hrafn";
 export const DEFAULT_HRAFN_LEASE_DIRECTORY =
   path.join(homedir(), ".stormforge", "proxywar-operators", "runner.lock");
 
+function realDirectory(target, label) {
+  if (!path.isAbsolute(target)) {
+    throw new Error(`${label} must be an absolute directory`);
+  }
+  try {
+    const canonical = realpathSync(target);
+    if (!lstatSync(canonical).isDirectory()) {
+      throw new Error("not a directory");
+    }
+    return canonical;
+  } catch {
+    throw new Error(`${label} must be an absolute real directory`);
+  }
+}
+
 export function hrafnCoworldEnvironment(environment = process.env) {
   const requestedHome = String(environment.HRAFN_SOFTMAX_HOME ?? "").trim();
-  if (!requestedHome) return environment;
-  if (!path.isAbsolute(requestedHome)) {
-    throw new Error("HRAFN_SOFTMAX_HOME must be an absolute real directory");
+  if (!requestedHome) {
+    throw new Error(
+      "HRAFN_SOFTMAX_HOME is required for Hrafn Coworld identity probes",
+    );
   }
-  const stat = lstatSync(requestedHome);
-  if (!stat.isDirectory() || stat.isSymbolicLink()) {
-    throw new Error("HRAFN_SOFTMAX_HOME must be an absolute real directory");
+  if (!path.isAbsolute(requestedHome)) {
+    throw new Error(
+      "HRAFN_SOFTMAX_HOME must be an absolute canonical directory",
+    );
+  }
+  let isolatedHome;
+  try {
+    const stat = lstatSync(requestedHome);
+    isolatedHome = realpathSync(requestedHome);
+    if (
+      !stat.isDirectory() ||
+      stat.isSymbolicLink() ||
+      path.normalize(requestedHome) !== isolatedHome
+    ) {
+      throw new Error("not canonical");
+    }
+  } catch {
+    throw new Error(
+      "HRAFN_SOFTMAX_HOME must be an absolute canonical directory",
+    );
+  }
+  const normalHome = realDirectory(
+    String(environment.HOME ?? "").trim() || homedir(),
+    "normal HOME",
+  );
+  if (isolatedHome === normalHome) {
+    throw new Error(
+      "HRAFN_SOFTMAX_HOME must be distinct from the normal HOME",
+    );
   }
   return Object.freeze({
     ...environment,
-    HOME: realpathSync(requestedHome),
+    HOME: isolatedHome,
   });
 }
 
