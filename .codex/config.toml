@@ -34,15 +34,3 @@ enabled = false
 
 [plugins."slack@openai-curated"]
 enabled = false
-
-[mcp_servers.node_repl]
-enabled = false
-
-[mcp_servers.computer-use]
-enabled = false
-
-[mcp_servers.dune]
-enabled = false
-
-[mcp_servers.openaiDeveloperDocs]
-enabled = false

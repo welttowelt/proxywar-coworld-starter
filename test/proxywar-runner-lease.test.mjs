@@ -1020,7 +1020,7 @@ test("launcher blocks active, stale, legacy, initializing, reaping, and corrupt 
   }
 });
 
-test("launcher fails closed on invalid status and split-line legacy Hrafn prompt without consuming work", (t) => {
+test("launcher fails closed on invalid status and rejects the retired Hrafn lane before consuming work", (t) => {
   const fixtures = [];
   t.after(() => {
     for (const item of fixtures) rmSync(item.directory, { recursive: true, force: true });
@@ -1076,8 +1076,8 @@ test("launcher fails closed on invalid status and split-line legacy Hrafn prompt
       PROXYWAR_OPERATOR_REPO: root,
     }),
   });
-  assert.equal(result.status, 78);
-  assert.match(result.stderr, /not runner-v2 ready/);
+  assert.equal(result.status, 64);
+  assert.match(result.stderr, /usage: .* odin/);
   assert.equal(existsSync(hrafnWake), true);
   assert.equal(readFileSync(hrafnCursor, "utf8"), "cursor\n");
 
@@ -1087,7 +1087,7 @@ test("launcher fails closed on invalid status and split-line legacy Hrafn prompt
   assert.equal(existsSync(path.join(legacyPrompt.state, "runner.lock")), false);
 });
 
-test("launcher accepts a multiline migrated Hrafn run prompt before applying runner-state preflight", (t) => {
+test("launcher rejects a migrated Hrafn prompt before applying runner-state preflight", (t) => {
   const context = fixture();
   const { directory, state } = context;
   t.after(() => rmSync(directory, { recursive: true, force: true }));
@@ -1120,8 +1120,8 @@ test("launcher accepts a multiline migrated Hrafn run prompt before applying run
       PROXYWAR_OPERATOR_REPO: root,
     }),
   });
-  assert.equal(result.status, 0, result.stderr);
-  assert.doesNotMatch(result.stderr, /not runner-v2 ready/);
+  assert.equal(result.status, 64, result.stderr);
+  assert.match(result.stderr, /usage: .* odin/);
   assert.equal(existsSync(wake), true);
   assert.equal(readFileSync(cursor, "utf8"), "cursor\n");
   assert.equal(existsSync(path.join(state, "hrafn.lock")), false);

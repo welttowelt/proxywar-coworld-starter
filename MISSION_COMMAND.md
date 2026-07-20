@@ -1,114 +1,113 @@
-# Odin domination mission command
+# Odin lean dominance mission
 
 ## Commander's intent
 
-Retake the ProxyWar overall lead by fixing Odin's opening offense. Convert
-research throughput into one binary competitive verdict at a time.
+Retake the ProxyWar lead by improving Odin's general first-place conversion,
+not by specializing against one opponent. Preserve exact `qd1n:v89` as the
+live control and evaluate one bounded Qd1n mechanism at a time.
 
-## End state
+## Current truth
 
-The current main-effort candidate either:
+- Live control: `qd1n:v89`.
+- Active candidate: `NB1 safe frontier boats`.
+- Closed: PG2, A1, A2, A3, GR1, EF1, EF2, OE1, TPL1, and every other rejected
+  arm in `MERIT.md`.
+- PR1 is closed before source mutation because its Defense Post mechanism
+  duplicates the rejected DP1 family.
+- Frozen support: `hrafn-fylking:v5`, `tsukuyomi-no-kage:v39`, and
+  `santai-juryoku:v3`.
+- No direct-daveey or other named-opponent branch may open.
+- KF1 remains a separate frozen K1Z-only endgame converter and must not be
+  combined with NB1.
 
-1. beats exact `qd1n:v89` in controlled matched evidence, passes hosted `4/4`
-and regression `20/20`, passes Odin's fail-closed RCI audit, and becomes the
-verified sole champion automatically; or
-2. is rejected with immutable evidence, after which one fresh replay-backed
-opening hypothesis becomes the only next main effort.
+## NB1 hypothesis
 
-## Main effort
+Exact-v89 replay evidence exposes a repeated safe naval undercommitment. Across
+the four PG2 hosted losses, Odin produced 43 safety-clean decisions where the parent selected
+a neutral 8-percent boat, a same-destination 16-percent boat was legal, troop
+ratio was at least 0.87, and current threat was zero. The same clean opportunity
+appeared at turn 1600 in all four replays with troop ratio 0.95 and low danger.
 
-`A1 silent-opening` is closed. Its immutable Pangaea pair reached zero `a1`
-markers, retained thirteen unexplained holds, and trailed exact v89 by 1,406
-tiles. `qd1n:v89` remains the sole live control.
+NB1 changes exactly one already-selected action:
 
-The next main effort is replay reconnaissance: identify one early-opening
-action difference in a recent official Odin loss that has not already failed a
-matched gate. The tempting fixed-10-percent neutral-expansion change is closed
-by direct overlap with rejected GR1 and EF2; its census and no-branch decision
-are recorded in
-`experiments/audit-qd1n-opening-commitment-overlap-20260720.json`. No code
-branch opens before new evidence names the guard, marker, expected action
-change, and stop condition.
+```text
+parent selected a neutral 8-percent boat
+AND troop ratio >= 0.87
+AND current and protocol-level incoming threat are zero
+AND a neutral 16-percent boat to the same destination is legal
+=> select that 16-percent boat and emit nb1
+```
 
-## Supporting effort
+Every other path remains exact v89. NB1 adds no opponent names, map routing,
+target selection, action priority, diplomacy change, rival boat, or K1Z
+exception.
 
-The RunPod CPU fleet is an evidence factory, not a second policy system. Every
-new arm first runs a two-pair screen: one World and one Pangaea matched
-candidate-parent pair. The screen checks exact images, replay-visible reach,
-accepted decisions, zero unexplained candidate holds or rejects, zero K1Z
-harm, and directional paired score.
+## Promotion funnel
 
-Only a clean screen with at least one non-negative paired score advances to the
-preregistered 24-pair World, Asia, and Pangaea proof matrix. The full proof
-uses up to twelve CPU pods in two waves. If the provider cannot return twelve
-ready endpoints promptly, use the ready pool immediately and add only the
-extra wave required to complete all 24 pairs. There are no mid-wave approvals,
-partial map ceremonies, or new policy edits during a proof run. Preserve immutable
-image, seed, roster, pair audit, and hash verification; use capacity only to
-reduce wall-clock time.
+1. `SOURCE_READY`
+   - branch from exact parent `f1347251834a6283182b631e1336595eb2e08342`;
+   - red replay fixtures fail on the parent and pass with NB1;
+   - threat, low-cap, rival/K1Z boat, and non-boat paths remain exact;
+   - full suite passes and source is pushed.
+2. `LOCAL_QUALIFIED`
+   - exact linux/amd64 image matches committed source;
+   - qualifier boots with accepted decisions;
+   - one World and one Pangaea candidate-parent pair run under one foreground
+     runner lease, four episodes total;
+   - NB1 reaches in both candidate maps;
+   - every marker is an accepted same-destination 16-percent neutral boat with
+     the 8-percent form legal, troop ratio at least 0.87, and zero threat;
+   - unexplained holds, rejects, and K1Z harm are zero;
+   - combined first-launch ten-decision tile-gain delta is positive, retreat
+     count does not increase, and combined paired score is positive.
+3. `HOSTED_PASSED`
+   - current-roster diagnostic completes `4/4`;
+   - replay audit records reach, accepted decisions, placements, outcome,
+     holds, rejects, K1Z safety, and replay hashes;
+   - telemetry without a clean outcome is not a pass.
+4. `REGRESSION_PASSED`
+   - separate map-and-seat regression completes `20/20`;
+   - immutable candidate and parent images are used throughout.
+5. `RCI_AUDIT_PASSED`
+   - final fail-closed audit has no unresolved source, image, roster, runtime,
+     safety, identity, or outcome discrepancy.
+6. Automatic deployment
+   - upload/hosted, submission, placement, sole champion verification, and
+     first completed official round remain separate recorded states;
+   - no additional user `GO` is required after every objective gate passes.
 
-## Reserve
+The former 24-pair pre-hosted matrix is removed. PG2 passed 20 of 24 local
+pairs and then failed hosted `0/4`, so that matrix was slow and weakly
+predictive. The `20/20` regression runs only after hosted success.
 
-PG2 has no recoverable terminal evidence and A1 is rejected. A2 and A3 remain
-closed: neither has a fresh replay-backed causal case. Do not spend runner time
-on a pre-queued name. The next arm must begin with the smallest current replay
-cell that distinguishes Odin's opening from the winning policy.
+## Failure rules
 
-A parent-only control anomaly is neither a candidate failure nor a promotion
-pass. Record it, complete the remaining independent pairs, and replay that
-exact paired cell once before the final matrix audit. Candidate safety or
-artifact-integrity failures still stop immediately.
+Close NB1 immediately on:
 
-## Frozen work
+- zero mechanism reach in either declared map;
+- an unexplained hold or rejected decision;
+- harmful K1Z action;
+- source, image, roster, runtime, or identity drift;
+- non-positive combined first-launch ten-decision tile-gain delta;
+- increased retreat count;
+- non-positive combined paired score;
+- hosted or regression failure.
 
-- KF1 remains a separate K1Z-only endgame converter.
-- No KF1 episode or promotion occurs before all three supporter policies have
-  committed stand-down implementations and the combined proof is ready.
-- Every rejected arm stays closed.
+Do not tune NB1 thresholds or create NB2. If NB1 fails, stop micro-guards and
+request one structural mechanism review from the real Kimi K3 Max.
 
-## Decision rights
+## Operating model
 
-Codex Odin owns Qd1n source, tests, images, experiments, diagnostic uploads,
-league submissions, memberships, and champion changes. Odin proceeds
-autonomously through the established objective gates and does not wait for a
-new user `GO`. Hrafn is retired as an operator. Kimi K3 Max is the external
-moonshot adviser and does not mutate policies or league state.
-
-## Stop conditions
-
-Stop the current arm on any:
-
-- zero mechanism reach;
-- negative score in both fast-screen cells, or non-positive full-matrix
-  matched advantage;
-- unexplained hold or rejection;
-- K1Z harm;
-- action-class divergence;
-- source, image, roster, runtime, or identity mismatch;
-- failed qualifier, hosted gate, regression gate, placement, or membership
-  check.
-
-Environment or transport failures are repaired and rerun; they are not policy
-verdicts.
-
-## Autonomous cadence
-
-- One iteration is capped at thirty minutes or fifteen agent rounds.
-- Every iteration must produce a verified finding, metric improvement,
-  falsification, or concrete blocker.
-- Two stale iterations force the structural reserve pivot.
-- Four stale iterations stop autonomous pivots and escalate to the user.
-- Slack is frozen through 2026-08-09T11:27:17Z. No Slack read, write, draft,
-  search, reaction, or notification action is permitted.
-
-## Gate score
-
-| Score | Verified state |
-| --- | --- |
-| 0 | source or transport repair |
-| 1 | independent cross-audit approval |
-| 2 | same-host canary pass |
-| 3 | 24-pair matched advantage |
-| 4 | hosted `4/4` |
-| 5 | regression `20/20` |
-| 6 | sole champion verified |
+- Codex Odin is the sole writable operator and mutates Qd1n only.
+- Hrafn is retired as an operator. Its live support policy is frozen.
+- Kimi K3 Max is an external adviser and never mutates league state.
+- All Coworld runs use `scripts/proxywar-runner-lease.sh run`.
+- RunPod CPUs are evidence workers, not policy owners: four lanes for the
+  two-pair screen, then scale only for the post-hosted `20/20`.
+- Build each image once and distribute the immutable digest.
+- `.codex/active-arm.json` is current operational truth.
+- `MERIT.md` stores terminal evidence only.
+- Mailbox writes are limited to terminal verdicts, exact review requests, or
+  concrete blockers.
+- Slack is frozen through 2026-08-09T11:27:17Z. No Slack interaction is
+  permitted.

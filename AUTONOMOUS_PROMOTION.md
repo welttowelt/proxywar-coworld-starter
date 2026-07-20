@@ -8,13 +8,12 @@ day the user retired Hrafn and assigned the full operating lane to Codex Odin.
 
 This authority applies only to the sanctioned Coworld/Softmax ProxyWar league:
 
-- Codex Odin may mutate `qd1n` and `hrafn-fylking` submissions, memberships,
-  and champion state. Each policy family keeps its own immutable evidence,
-  player-identity check, and promotion record; only one experiment owns the
-  runner at a time.
+- Codex Odin may mutate `qd1n` submissions, memberships, and champion state.
+  Only one Qd1n experiment owns the runner at a time.
 - Hrafn is retired. Its code, evidence, and live historical policy remain
-  readable under Codex Odin's control, but no independent Hrafn worker performs
-  a review, runner, upload, submission, membership, or champion action.
+  readable, but `hrafn-fylking` is frozen and no Hrafn worker or Odin cycle
+  performs a review, edit, runner, upload, submission, membership, or champion
+  action for that family.
 - Kimi K3 Max is advisory and performs no league mutations.
 
 ## Required states
