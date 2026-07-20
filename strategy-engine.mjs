@@ -495,6 +495,52 @@ function chooseRivalAttack(actions, state, plan, history, avoid, threatCount = 0
   };
 }
 
+function harvestTransition(actions, state, history, avoid, selection) {
+  const selectedAction = selection?.action;
+  const selectedRival = selection?.rival;
+  const activeDecisions = history.filter((entry) => entry.kind !== "spawn").length;
+  if (
+    !selectedAction || !selectedRival ||
+    state.self.tileShare < 0.12 || activeDecisions < 20 ||
+    !Number.isFinite(selectedRival.relativeTroopRatio) ||
+    selectedRival.relativeTroopRatio >= 1 ||
+    (state.self.incomingAttackerIDs || []).includes(selectedRival.id.toLowerCase())
+  ) {
+    return selection;
+  }
+
+  const grouped = new Map();
+  for (const action of safeActions(actions, (candidate) =>
+    candidate.kind === "attack" && !isNeutralExpansion(candidate)
+  )) {
+    const rival = rivalForAction(action, state);
+    if (
+      !rival || rival.id === selectedRival.id ||
+      !Number.isFinite(rival.relativeTroopRatio) || rival.relativeTroopRatio < 1.5 ||
+      rivalIsProtected(state, history, rival)
+    ) {
+      continue;
+    }
+    if (!grouped.has(rival.id)) grouped.set(rival.id, { rival, actions: [] });
+    grouped.get(rival.id).actions.push(action);
+  }
+  const harvest = [...grouped.values()].sort((left, right) =>
+    right.rival.relativeTroopRatio - left.rival.relativeTroopRatio ||
+    right.rival.tileShare - left.rival.tileShare ||
+    left.rival.name.localeCompare(right.rival.name)
+  )[0];
+  if (!harvest) return selection;
+
+  const desiredPercent = actionPercent(selectedAction) ?? 10;
+  const action = pickPercent(harvest.actions, desiredPercent, avoid);
+  return {
+    ...selection,
+    action: action ? { ...action, policyMarker: "ht1" } : selectedAction,
+    rival: action ? harvest.rival : selectedRival,
+    streak: 0,
+  };
+}
+
 const KINGMAKER_RETRY_COOLDOWN = 6;
 
 // Reciprocal partners come from two channels: visible rivals, and
@@ -788,7 +834,21 @@ export function chooseAction(actions, state, plan = null, history = []) {
   const atomBomb = chooseAtomBomb(actions, state, history);
   if (atomBomb) return atomBomb;
 
-  const rivalAttack = chooseRivalAttack(actions, state, plan, history, avoid, threatCount);
+  const parentRivalAttack = chooseRivalAttack(
+    actions,
+    state,
+    plan,
+    history,
+    avoid,
+    threatCount,
+  );
+  const rivalAttack = harvestTransition(
+    actions,
+    state,
+    history,
+    avoid,
+    parentRivalAttack,
+  );
   const peaceRedirect = rivalAttack?.peaceRedirect === true;
   const withPeace = (action) =>
     peaceRedirect && action && !action.policyMarker ? { ...action, policyMarker: "kp1" } : action;

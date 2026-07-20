@@ -2112,3 +2112,102 @@ test("outsiders remain legal nuclear targets beside all three K1Z allies", () =>
   assert.equal(selected.id, bomb.id);
   assert.equal(selected.policyMarker, "nk1");
 });
+
+test("post-opening harvest transition reroutes a weak leader grind to a strong rival", () => {
+  const leader = action("attack:leader:10", "attack", "Attack Leader 10%");
+  const harvest = action("attack:harvest:10", "attack", "Attack Harvest 10%");
+  const history = Array.from({ length: 20 }, (_, index) => ({
+    actionID: `attack:neutral:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare: 0.15,
+  }));
+  const selected = choose(
+    [leader, harvest],
+    observation({
+      tileShare: 0.15,
+      rivals: [
+        { id: "leader", name: "Leader", tileShare: 0.55, relativeTroopRatio: 0.95 },
+        { id: "harvest", name: "Harvest", tileShare: 0.2, relativeTroopRatio: 1.5 },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, harvest.id);
+  assert.equal(selected.policyMarker, "ht1");
+});
+
+test("harvest transition preserves retaliation against a current attacker", () => {
+  const leader = action("attack:leader:10", "attack", "Attack Leader 10%");
+  const harvest = action("attack:harvest:10", "attack", "Attack Harvest 10%");
+  const history = Array.from({ length: 20 }, (_, index) => ({
+    actionID: `attack:neutral:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare: 0.15,
+  }));
+  const selected = choose(
+    [leader, harvest],
+    observation({
+      tileShare: 0.15,
+      incomingAttacks: [{ attackerID: "leader" }],
+      incomingAttackPlayerIDs: ["leader"],
+      rivals: [
+        { id: "leader", name: "Leader", tileShare: 0.55, relativeTroopRatio: 0.95 },
+        { id: "harvest", name: "Harvest", tileShare: 0.2, relativeTroopRatio: 1.5 },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, leader.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("harvest transition stays exact-parent before the opening threshold", () => {
+  const leader = action("attack:leader:10", "attack", "Attack Leader 10%");
+  const harvest = action("attack:harvest:10", "attack", "Attack Harvest 10%");
+  const selected = choose(
+    [leader, harvest],
+    observation({
+      tileShare: 0.15,
+      rivals: [
+        { id: "leader", name: "Leader", tileShare: 0.55, relativeTroopRatio: 1.01 },
+        { id: "harvest", name: "Harvest", tileShare: 0.2, relativeTroopRatio: 1.5 },
+      ],
+    }),
+  );
+  assert.equal(selected.id, leader.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("harvest transition never reroutes onto a protected K1Z rival", () => {
+  const leader = action("attack:leader:10", "attack", "Attack Leader 10%");
+  const hrafn = action("attack:hrafn:10", "attack", "Attack K1Z Hrafn 10%");
+  const history = Array.from({ length: 20 }, (_, index) => ({
+    actionID: `attack:neutral:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare: 0.15,
+  }));
+  const selected = choose(
+    [leader, hrafn],
+    observation({
+      tileShare: 0.15,
+      rivals: [
+        { id: "leader", name: "Leader", tileShare: 0.55, relativeTroopRatio: 0.95 },
+        {
+          id: "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+          name: "K1Z Hrafn",
+          tileShare: 0.2,
+          relativeTroopRatio: 2,
+        },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, leader.id);
+  assert.equal(selected.policyMarker, "kp1");
+});
