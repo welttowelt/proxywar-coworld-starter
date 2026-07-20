@@ -19,26 +19,53 @@ import {
 
 const lowRisk = { level: "low" };
 
-test("HI1 accepts the exact live Coworld request envelope and rejects drift", () => {
+test("HI1 accepts unrelated Coworld root metadata and projects a structured clone", () => {
+  const legalActions = [{ id: "hold", kind: "hold" }];
+  const observation = { turnNumber: 1000 };
   const request = {
     protocolVersion: HRAFN_COWORLD_PROTOCOL_VERSION,
     agent: {},
     match: {},
-    observation: {},
-    legalActions: [{ id: "hold", kind: "hold" }],
+    observation,
+    legalActions,
     decisionSupport: {},
     responseContract: HRAFN_COWORLD_RESPONSE_CONTRACT,
+    unrelatedRootMetadata: {
+      traceID: "trace-hi1-fixture",
+      nested: { retainedOnlyByTransport: true },
+    },
   };
-  assert.deepEqual(normalizeHrafnCoworldDecisionRequest(request), request);
-  for (const mutate of [
-    (value) => { value.protocolVersion = "proxywar-agent-v2"; },
-    (value) => { value.responseContract.reason = "drift"; },
-    (value) => { value.unexpected = true; },
-    (value) => { value.legalActions = null; },
+
+  const normalized = normalizeHrafnCoworldDecisionRequest(request);
+  assert.deepEqual(normalized, { legalActions, observation });
+  assert.notEqual(normalized, request);
+  assert.notEqual(normalized.legalActions, legalActions);
+  assert.notEqual(normalized.observation, observation);
+  assert.equal(Object.hasOwn(normalized, "unrelatedRootMetadata"), false);
+
+  legalActions[0].id = "mutated-after-normalization";
+  observation.turnNumber = 1100;
+  assert.deepEqual(normalized, {
+    legalActions: [{ id: "hold", kind: "hold" }],
+    observation: { turnNumber: 1000 },
+  });
+});
+
+test("HI1 fails closed on missing or malformed selector input fields", () => {
+  const request = { legalActions: [], observation: {} };
+  for (const [name, mutate] of [
+    ["missing legalActions", (value) => { delete value.legalActions; }],
+    ["malformed legalActions", (value) => { value.legalActions = {}; }],
+    ["missing observation", (value) => { delete value.observation; }],
+    ["malformed observation", (value) => { value.observation = []; }],
   ]) {
     const changed = structuredClone(request);
     mutate(changed);
-    assert.equal(normalizeHrafnCoworldDecisionRequest(changed), null);
+    assert.equal(
+      normalizeHrafnCoworldDecisionRequest(changed),
+      null,
+      name,
+    );
   }
 });
 

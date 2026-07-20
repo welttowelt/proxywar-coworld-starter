@@ -82,7 +82,7 @@ function decisionInputFromRequest(request) {
   const normalized = normalizeHrafnCoworldDecisionRequest(request);
   if (!normalized) {
     throw new Error(
-      "HI1 decision request does not match the exact proxywar-agent-v1 wire contract",
+      "HI1 decision request requires a legalActions array and plain-object observation",
     );
   }
   return normalized;
@@ -428,8 +428,8 @@ function sendEntry(activeSocket, entry, arrival, wireRetry) {
 }
 
 function sendCachedDecision(activeSocket, message, cached, arrival) {
-  decisionInputFromRequest(message.request);
-  const payloadSHA256 = hrafnIntentRequestPayloadSHA256(message.request);
+  const decisionInput = decisionInputFromRequest(message.request);
+  const payloadSHA256 = hrafnIntentRequestPayloadSHA256(decisionInput);
   if (payloadSHA256 !== cached.requestPayloadSHA256) {
     throw new Error(
       `duplicate request semantic conflict for ${message.requestID}`,
@@ -469,7 +469,7 @@ function handleDecision(activeSocket, message, arrival) {
   }
 
   const decisionInput = decisionInputFromRequest(message.request);
-  const requestPayloadSHA256 = hrafnIntentRequestPayloadSHA256(message.request);
+  const requestPayloadSHA256 = hrafnIntentRequestPayloadSHA256(decisionInput);
   const { legalActions: actions, observation } = decisionInput;
 
   const snapshot = {

@@ -106,6 +106,10 @@ function request(requestID) {
         parityNote: "Prefer legal progress.",
       },
       responseContract: HRAFN_COWORLD_RESPONSE_CONTRACT,
+      unrelatedRootMetadata: {
+        traceID: `trace-${requestID}`,
+        nested: { acceptedButNotSelected: true },
+      },
     },
   };
 }
@@ -163,7 +167,7 @@ function waitForPlayerOutput(player, predicate, timeoutMs = 2000) {
   });
 }
 
-test("HI1 planning is nonblocking and duplicate requests replay the original action", async () => {
+test("HI1 accepts and discards extra root metadata while planning remains nonblocking", async () => {
   let plannerCalls = 0;
   let plannerBody = null;
   const plannerServer = createServer((incoming, response) => {
@@ -282,7 +286,11 @@ test("HI1 planning is nonblocking and duplicate requests replay the original act
   assert.equal(decisions[1].actionDelta, true);
   assert.equal(decisions[1].intentObjective, "grow");
   assert.match(decisions[1].requestMarker, /^q[0-9a-f]{10}$/);
-  assert.deepEqual(decisions[0].decisionInput, request("first").request);
+  assert.deepEqual(decisions[0].decisionInput, {
+    legalActions: request("first").request.legalActions,
+    observation: request("first").request.observation,
+  });
+  assert.equal(Object.hasOwn(decisions[0].decisionInput, "unrelatedRootMetadata"), false);
   assert.equal(
     decisions[0].requestPayloadSHA256,
     requestPayloadSHA256(decisions[0].decisionInput),
@@ -836,13 +844,10 @@ test("the request cache retains the full match and rejects semantic ID reuse", a
   assert.equal(retries[0].requestID, "cache-0");
 });
 
-test("a duplicate request ID with changed observation or request fields fails closed", async (t) => {
+test("a duplicate request ID with changed selector input fails closed", async (t) => {
   for (const [name, mutate] of [
     ["observation", (message) => {
       message.request.observation.ownState.gold += 1;
-    }],
-    ["request top level", (message) => {
-      message.request.unexpected = true;
     }],
     ["unmodeled action field", (message) => {
       message.request.legalActions[0].unmodeled = "drift";
@@ -888,7 +893,7 @@ test("a duplicate request ID with changed observation or request fields fails cl
 
   assert.match(
     player.stderr(),
-    /duplicate request semantic conflict|exact proxywar-agent-v1 wire contract/,
+    /duplicate request semantic conflict|requires a legalActions array/,
   );
   });
 });

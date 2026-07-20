@@ -7,11 +7,7 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 
-import {
-  HRAFN_COWORLD_PROTOCOL_VERSION,
-  HRAFN_COWORLD_RESPONSE_CONTRACT,
-  chooseHrafnIntentDecision,
-} from "../hrafn-intent.mjs";
+import { chooseHrafnIntentDecision } from "../hrafn-intent.mjs";
 import {
   publicHrafnReason,
   recordHrafnDecision,
@@ -296,32 +292,8 @@ function runFixture(role, {
       visiblePlayers: [rival],
     };
     const decisionInput = {
-      protocolVersion: HRAFN_COWORLD_PROTOCOL_VERSION,
-      agent: {
-        agentID: subjectRuntimeID,
-        username: SUBJECT_NAME,
-        profile: "opportunistic",
-      },
-      match: {
-        gameID: "hi1-fixture-game",
-        phase: "active",
-        turnNumber,
-        tick: null,
-      },
       observation,
       legalActions,
-      decisionSupport: {
-        actionIDsByKind: {},
-        recommendedActionKinds: [],
-        usefulNonHoldActionIDs: legalActions
-          .filter((action) => action.kind !== "hold")
-          .map((action) => action.id),
-        avoidActionIDs: [],
-        safeFallbackActionID: "hold",
-        antiStallHint: null,
-        parityNote: "fixture",
-      },
-      responseContract: HRAFN_COWORLD_RESPONSE_CONTRACT,
     };
     const intent = intentEnabled && index > 0 &&
         (deltaIndexes === null || deltaIndexes.has(index))
@@ -1256,6 +1228,22 @@ test("auditor independently rejects a forged wrapped-v5 baseline", () => {
   fixture.policyLog = `${rows.map(JSON.stringify).join("\n")}\n`;
   const report = auditHrafnIntentRun(fixture);
   assert.equal(report.checks.baseline_recomputed, false);
+});
+
+test("auditor rejects decision input telemetry outside the two-field projection", () => {
+  const fixture = runFixture("candidate");
+  const rows = fixture.policyLog.trimEnd().split("\n").map(JSON.parse);
+  const decision = rows.find((row) => row.event === "hrafn_intent_decision");
+  decision.decisionInput.unrelatedRootMetadata = { traceID: "must-be-discarded" };
+  decision.requestPayloadSHA256 = payloadSHA256(decision.decisionInput);
+  fixture.policyLog = `${rows.map(JSON.stringify).join("\n")}\n`;
+
+  const report = auditHrafnIntentRun(fixture);
+  assert.equal(report.checks.request_payload_binding, false);
+  assert.match(
+    report.recomputed_baseline.request_failures[0].failure,
+    /exactly legalActions and observation/,
+  );
 });
 
 test("auditor rejects forged plan epochs and intent bindings", () => {

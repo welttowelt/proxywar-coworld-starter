@@ -25,15 +25,6 @@ export const HRAFN_COWORLD_RESPONSE_CONTRACT = Object.freeze({
 });
 
 const INTENT_KEYS = Object.freeze(["horizon", "objective", "targetID"]);
-const COWORLD_REQUEST_KEYS = Object.freeze([
-  "agent",
-  "decisionSupport",
-  "legalActions",
-  "match",
-  "observation",
-  "protocolVersion",
-  "responseContract",
-]);
 const INTENT_OBJECTIVES = new Set(["grow", "convert"]);
 const HARD_POLICY_MARKERS = new Set(["k1z", "dn1", "sk1"]);
 const GROW_BUILD_UNITS = new Set(["city", "factory", "port"]);
@@ -100,20 +91,15 @@ function exactKeys(value) {
 
 export function normalizeHrafnCoworldDecisionRequest(value) {
   if (!plainObject(value) ||
-    Object.keys(value).sort().join("\0") !== COWORLD_REQUEST_KEYS.join("\0") ||
-    value.protocolVersion !== HRAFN_COWORLD_PROTOCOL_VERSION ||
-    !plainObject(value.agent) ||
-    !plainObject(value.match) ||
-    !plainObject(value.decisionSupport) ||
     !Array.isArray(value.legalActions) ||
-    !plainObject(value.observation) ||
-    !plainObject(value.responseContract) ||
-    canonicalHrafnIntentJSON(value.responseContract) !==
-      canonicalHrafnIntentJSON(HRAFN_COWORLD_RESPONSE_CONTRACT)
+    !plainObject(value.observation)
   ) {
     return null;
   }
-  return structuredClone(value);
+  return structuredClone({
+    legalActions: value.legalActions,
+    observation: value.observation,
+  });
 }
 
 function sanitizeWireAction(action) {
