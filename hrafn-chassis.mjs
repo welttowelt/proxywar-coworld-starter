@@ -21,6 +21,7 @@ export const HRAFN_CHASSIS_DEFAULTS = Object.freeze({
   enableGrow: true,
   enableConvert: true,
   enableNaval: true,
+  enableCapEscape: true,
   enableAlliance: true,
   enableKF1: true,
   enableMidgameSupport: false,
@@ -47,6 +48,7 @@ export const HRAFN_CHASSIS_DEFAULTS = Object.freeze({
   structurePendingGraceDecisions: 3,
   structureRetryCooldownDecisions: 6,
   navalAttemptLimit: 2,
+  navalCapWarshipBuildLimit: 1,
   primaryPreyBonus: 1.5,
   primaryPreyMaximumAge: 8,
   allianceCooldownDecisions: 8,
@@ -64,6 +66,7 @@ export const HRAFN_PRIMARY_MARKERS = new Set([
   "hn16",
   "hni25",
   "hncap",
+  "hks1",
   "hdef",
   "hka1",
   "hkf1",
@@ -82,6 +85,27 @@ const HRAFN_COMBAT_MARKERS = new Set([
   "hc25",
   "hc40",
   "hni25",
+]);
+
+const CAP_ESCAPE_ATTRIBUTION_KEYS = Object.freeze([
+  "ownerID",
+  "ownerId",
+  "ownerPlayerID",
+  "ownerPlayerId",
+  "ownerName",
+  "ownerPlayerName",
+  "targetID",
+  "targetId",
+  "targetPlayerID",
+  "targetPlayerId",
+  "recipientID",
+  "recipientId",
+  "targetName",
+  "targetPlayerName",
+  "recipientName",
+  "playerID",
+  "playerId",
+  "playerName",
 ]);
 
 const PUBLIC_KIND = Object.freeze({
@@ -108,6 +132,81 @@ function finiteNumber(value, fallback = 0) {
 
 function stableByID(left, right) {
   return String(left?.id ?? "").localeCompare(String(right?.id ?? ""));
+}
+
+function populatedCapEscapeAttributionKeys(action) {
+  const metadata = action?.metadata ?? {};
+  return CAP_ESCAPE_ATTRIBUTION_KEYS.filter((key) =>
+    String(metadata[key] ?? "").trim().length > 0
+  );
+}
+
+export function validateHrafnCapEscapeAttribution(action) {
+  const keys = populatedCapEscapeAttributionKeys(action);
+  return {
+    valid: keys.length === 0,
+    keys,
+    failures: keys.length === 0
+      ? []
+      : [
+          `hks1 forbids owner or player-target attribution (${keys.join(", ")})`,
+        ],
+  };
+}
+
+function strictNonnegativeSafeInteger(value) {
+  if (typeof value === "number") {
+    return Number.isSafeInteger(value) && value >= 0;
+  }
+  if (typeof value !== "string" || value.trim() !== value) return false;
+  if (!/^(?:0|[1-9]\d*)$/.test(value)) return false;
+  const parsed = Number(value);
+  return Number.isSafeInteger(parsed) && parsed >= 0;
+}
+
+function strictPositiveSafeInteger(value) {
+  if (!strictNonnegativeSafeInteger(value)) return false;
+  return Number(value) > 0;
+}
+
+function capEscapeWarshipBuildSchemaValid(action) {
+  const idMatch = String(action?.id ?? "").match(
+    /^build:Warship:([^:]+)$/,
+  );
+  const idTile = idMatch?.[1];
+  const metadata = action?.metadata ?? {};
+  const targetTile = metadata.targetTile;
+  const hasBuildTile = Object.hasOwn(metadata, "buildTile");
+  const rawBuildTile = metadata.buildTile;
+  return action?.kind === "warship" &&
+    strictNonnegativeSafeInteger(idTile) &&
+    String(metadata.unit ?? "").trim().toLowerCase() === "warship" &&
+    strictNonnegativeSafeInteger(targetTile) &&
+    (
+      !hasBuildTile ||
+      (
+        strictNonnegativeSafeInteger(rawBuildTile) &&
+        Number(rawBuildTile) === Number(idTile)
+      )
+    ) &&
+    validateHrafnCapEscapeAttribution(action).valid;
+}
+
+function capEscapeWarshipMoveSchemaValid(action) {
+  const idMatch = String(action?.id ?? "").match(
+    /^move_warship:([^:]+):([^:]+)$/,
+  );
+  const unitID = idMatch?.[1] ?? "";
+  const idTile = idMatch?.[2];
+  const targetTile = action?.metadata?.targetTile;
+  return action?.kind === "move_warship" &&
+    unitID.length > 0 &&
+    unitID.trim() === unitID &&
+    strictNonnegativeSafeInteger(idTile) &&
+    strictNonnegativeSafeInteger(targetTile) &&
+    Number(targetTile) === Number(idTile) &&
+    strictPositiveSafeInteger(action?.metadata?.unitCount) &&
+    validateHrafnCapEscapeAttribution(action).valid;
 }
 
 function lowRiskFirst(actions) {
@@ -679,6 +778,64 @@ function navalCapReached(persistent, config) {
     );
 }
 
+function selectNavalCapEscape(
+  actions,
+  state,
+  persistent,
+  config,
+) {
+  if (
+    !config.enableNaval ||
+    !config.enableCapEscape ||
+    !navalCapReached(persistent, config)
+  ) {
+    return null;
+  }
+
+  const move = lowRiskFirst(
+    actions.filter(capEscapeWarshipMoveSchemaValid),
+  )[0] ?? null;
+  if (move) {
+    return {
+      action: move,
+      marker: "hks1",
+      evidenceMarkers: ["hncap"],
+      phase: HRAFN_PHASES.RECOVERY,
+      target: null,
+    };
+  }
+
+  const buildLimit = Math.min(1, Math.max(
+    0,
+    Math.trunc(finiteNumber(config.navalCapWarshipBuildLimit)),
+  ));
+  const buildCount = Math.max(
+    0,
+    Math.trunc(finiteNumber(persistent.naval.capEscapeBuilds)),
+  );
+  const observedWarships = finiteNumber(state.own.unitCounts.warship);
+  if (
+    buildCount >= buildLimit ||
+    !state.own.unitCountsObserved ||
+    observedWarships > 0
+  ) {
+    return null;
+  }
+
+  const build = lowRiskFirst(
+    actions.filter(capEscapeWarshipBuildSchemaValid),
+  )[0] ?? null;
+  return build
+    ? {
+        action: build,
+        marker: "hks1",
+        evidenceMarkers: ["hncap"],
+        phase: HRAFN_PHASES.RECOVERY,
+        target: null,
+      }
+    : null;
+}
+
 function selectNavalCapRecovery(
   actions,
   state,
@@ -966,6 +1123,12 @@ function commitDecision({
 
   if (selection.marker === "hg35") next.bootNeutralCount += 1;
   else next.neutralStallCount = 0;
+  if (selection.marker === "hks1" && decorated.kind === "warship") {
+    next.naval.capEscapeBuilds = Math.max(
+      0,
+      Math.trunc(finiteNumber(next.naval.capEscapeBuilds)),
+    ) + 1;
+  }
   const unit = buildUnit(decorated);
   if (unit && !next.selectedStructures.includes(unit)) {
     next.selectedStructures.push(unit);
@@ -1335,6 +1498,14 @@ export function decideHrafn({
     }
   }
   if (!selection) {
+    selection = selectNavalCapEscape(
+      safe,
+      state,
+      persistent,
+      config,
+    );
+  }
+  if (!selection) {
     selection = {
       action: failClosedHrafnHold(safe, state),
       marker:
@@ -1411,6 +1582,7 @@ export function validateHrafnMarkerSemantics(
     if (
       evidence === "hncap" &&
       marker !== "hg35" &&
+      marker !== "hks1" &&
       !HRAFN_COMBAT_MARKERS.has(marker)
     ) {
       failures.push(
@@ -1479,6 +1651,34 @@ export function validateHrafnMarkerSemantics(
         "hncap requires a cap replacement build or fail-closed hold",
       );
       break;
+    case "hks1": {
+      const evidence = action?.evidenceMarkers ?? [];
+      const attribution = validateHrafnCapEscapeAttribution(action);
+      expect(
+        evidence.length === 1 && evidence[0] === "hncap",
+        "hks1 requires exact hncap evidence",
+      );
+      expect(
+        action?.policyPhase === undefined ||
+          action?.policyPhase === HRAFN_PHASES.RECOVERY,
+        "hks1 requires RECOVERY phase",
+      );
+      failures.push(...attribution.failures);
+      if (action?.kind === "warship") {
+        expect(
+          capEscapeWarshipBuildSchemaValid(action),
+          "hks1 Warship requires strict nonnegative safe-integer tile metadata, a matching optional buildTile, and Warship unit",
+        );
+      } else if (action?.kind === "move_warship") {
+        expect(
+          capEscapeWarshipMoveSchemaValid(action),
+          "hks1 move requires strict matching move_warship:<unit>:<tile> metadata and a positive safe-integer Warship count",
+        );
+      } else {
+        failures.push("hks1 requires a Warship build or move");
+      }
+      break;
+    }
     case "hdef":
       expect(
         ["build", "retreat", "boat_retreat", "upgrade_structure", "warship", "move_warship"]

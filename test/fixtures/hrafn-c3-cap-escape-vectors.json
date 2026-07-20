@@ -1,0 +1,309 @@
+{
+  "schema_version": 1,
+  "fixture_type": "normalized_c1_replay_derived_c3_counterfactual_vectors",
+  "caveat": "These are normalized decision fixtures, not byte-exact raw observations. They preserve the authoritative full raw-replay SHA-256 and the observed exact-parent hold, then test the preregistered C3 action counterfactually.",
+  "exact_c2_red_receipt": {
+    "captured_at": "2026-07-20T14:57:29Z",
+    "exact_parent_commit": "9c9ae7b6b3a978d971cde24688aba3995a88bdea",
+    "hrafn_chassis_sha256": "531c5affbea511c47bff1ba249e5b8811cacd48e76171b33213d9588068c5ae3",
+    "replay_auditor_sha256": "0935ce3abd5b09f26fb24ad0db7f98dee84013dada103c0da11cc7c0d6fc140d",
+    "policy_red": {
+      "test": "an observed Warship selects a fresh move before another build",
+      "menu": [
+        "move_warship:warship-1:500251",
+        "build:Warship:500241",
+        "hold"
+      ],
+      "actual_action_id": "hold",
+      "actual_primary_marker": "hncap",
+      "candidate_expected_action_id": "move_warship:warship-1:500251"
+    },
+    "auditor_red": {
+      "synthetic_action_id": "build:Warship:500241",
+      "synthetic_reason": "[K1Z] r4vn:w4r:hks1.hncap",
+      "marker_semantics_valid": false,
+      "public_text_valid": true,
+      "submitted_effects_consistent": true,
+      "failures": [
+        "unknown primary marker hks1",
+        "hncap evidence requires a land-growth or combat primary marker"
+      ]
+    },
+    "initial_red_run": {
+      "command": "node --test test/hrafn-c3-cap-escape.test.mjs",
+      "tests": 13,
+      "passed": 6,
+      "failed": 7
+    }
+  },
+  "vectors": [
+    {
+      "id": "c1-turn-10800-warship-cap-escape",
+      "provenance": {
+        "episode_request_id": "ereq_4c85549c-6875-4fd4-8b83-a96996af0478",
+        "replay_sha256": "7f8339c14df0d06e9c7dd6c2c2c35aa32817d0eeb76cbd163c5c08f100078217",
+        "turn": 10800,
+        "source_username": "K1Z Hrafn",
+        "observed_parent_action_id": "hold",
+        "normalization": "counterfactual C3 fixture derived from the legal cap-hold menu"
+      },
+      "actions": [
+        {
+          "id": "build:Warship:500241",
+          "kind": "warship",
+          "label": "Build Warship",
+          "metadata": {
+            "unit": "Warship",
+            "targetTile": 500241,
+            "unitCount": 0,
+            "legalReason": "Port can build Warship"
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "boat:500242:16",
+          "kind": "boat",
+          "label": "Boat to Terra Nullius 16%",
+          "metadata": {
+            "targetTile": 500242,
+            "expansion": true,
+            "invasion": false,
+            "troopPercent": 16
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "hold",
+          "kind": "hold",
+          "label": "Hold",
+          "metadata": {},
+          "risk": {
+            "level": "low"
+          }
+        }
+      ],
+      "observation": {
+        "gameMode": "FFA",
+        "phase": "active",
+        "turnNumber": 10800,
+        "ownState": {
+          "tileShare": 0.1,
+          "troopRatio": 1,
+          "tilesOwned": 104625,
+          "troops": 500000,
+          "gold": 250000,
+          "incomingAttacks": 0,
+          "unitCounts": {
+            "City": 1,
+            "Factory": 1,
+            "Port": 1,
+            "Warship": 0
+          }
+        },
+        "combat": {
+          "incomingAttackPlayerIDs": []
+        },
+        "visiblePlayers": []
+      },
+      "persistent_state": {
+        "bootNeutralCount": 10,
+        "selectedStructures": [
+          "city",
+          "factory",
+          "port"
+        ],
+        "naval": {
+          "routeID": "boat:500240",
+          "attempts": 2,
+          "noProgress": 2,
+          "blocked": true,
+          "capEscapeBuilds": 0
+        },
+        "recent": [
+          {
+            "decision": 1,
+            "actionID": "boat:500239:16",
+            "kind": "boat",
+            "marker": "hn16"
+          },
+          {
+            "decision": 2,
+            "actionID": "boat:500240:16",
+            "kind": "boat",
+            "marker": "hn16"
+          },
+          {
+            "decision": 3,
+            "actionID": "build:City:500230",
+            "kind": "build",
+            "marker": "hec1"
+          },
+          {
+            "decision": 4,
+            "actionID": "build:Factory:500231",
+            "kind": "build",
+            "marker": "hef1"
+          },
+          {
+            "decision": 5,
+            "actionID": "upgrade:City:1",
+            "kind": "upgrade_structure",
+            "marker": "hdef"
+          },
+          {
+            "decision": 6,
+            "actionID": "retreat:attack-1",
+            "kind": "retreat",
+            "marker": "hdef"
+          }
+        ]
+      },
+      "expected": {
+        "action_id": "build:Warship:500241",
+        "primary_marker": "hks1",
+        "evidence_markers": [
+          "hncap"
+        ],
+        "phase": "RECOVERY"
+      }
+    },
+    {
+      "id": "c1-turn-8200-warship-cap-escape",
+      "provenance": {
+        "episode_request_id": "ereq_b441d035-be66-4854-b199-111677f4bbd2",
+        "replay_sha256": "126ea24ba3b16f660c26b221463aaa744d0f277e3d8ab4ce7e858b35b8ed0e3f",
+        "turn": 8200,
+        "source_username": "K1Z Hrafn",
+        "observed_parent_action_id": "hold",
+        "normalization": "counterfactual C3 fixture derived from the legal cap-hold menu"
+      },
+      "actions": [
+        {
+          "id": "build:Warship:500241",
+          "kind": "warship",
+          "label": "Build Warship",
+          "metadata": {
+            "unit": "Warship",
+            "targetTile": 500241,
+            "unitCount": 0,
+            "legalReason": "Port can build Warship"
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "boat:500243:16",
+          "kind": "boat",
+          "label": "Boat to Terra Nullius 16%",
+          "metadata": {
+            "targetTile": 500243,
+            "expansion": true,
+            "invasion": false,
+            "troopPercent": 16
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "hold",
+          "kind": "hold",
+          "label": "Hold",
+          "metadata": {},
+          "risk": {
+            "level": "low"
+          }
+        }
+      ],
+      "observation": {
+        "gameMode": "FFA",
+        "phase": "active",
+        "turnNumber": 8200,
+        "ownState": {
+          "tileShare": 0.1,
+          "troopRatio": 1,
+          "tilesOwned": 104625,
+          "troops": 500000,
+          "gold": 250000,
+          "incomingAttacks": 0,
+          "unitCounts": {
+            "City": 1,
+            "Factory": 1,
+            "Port": 1,
+            "Warship": 0
+          }
+        },
+        "combat": {
+          "incomingAttackPlayerIDs": []
+        },
+        "visiblePlayers": []
+      },
+      "persistent_state": {
+        "bootNeutralCount": 10,
+        "selectedStructures": [
+          "city",
+          "factory",
+          "port"
+        ],
+        "naval": {
+          "routeID": "boat:500240",
+          "attempts": 2,
+          "noProgress": 2,
+          "blocked": true,
+          "capEscapeBuilds": 0
+        },
+        "recent": [
+          {
+            "decision": 1,
+            "actionID": "boat:500239:16",
+            "kind": "boat",
+            "marker": "hn16"
+          },
+          {
+            "decision": 2,
+            "actionID": "boat:500240:16",
+            "kind": "boat",
+            "marker": "hn16"
+          },
+          {
+            "decision": 3,
+            "actionID": "build:City:500230",
+            "kind": "build",
+            "marker": "hec1"
+          },
+          {
+            "decision": 4,
+            "actionID": "build:Factory:500231",
+            "kind": "build",
+            "marker": "hef1"
+          },
+          {
+            "decision": 5,
+            "actionID": "upgrade:City:1",
+            "kind": "upgrade_structure",
+            "marker": "hdef"
+          },
+          {
+            "decision": 6,
+            "actionID": "retreat:attack-1",
+            "kind": "retreat",
+            "marker": "hdef"
+          }
+        ]
+      },
+      "expected": {
+        "action_id": "build:Warship:500241",
+        "primary_marker": "hks1",
+        "evidence_markers": [
+          "hncap"
+        ],
+        "phase": "RECOVERY"
+      }
+    }
+  ]
+}
