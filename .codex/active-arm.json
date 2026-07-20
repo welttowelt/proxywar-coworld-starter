@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T18:48:40Z",
+  "updated_at": "2026-07-20T18:52:12Z",
   "cycle_id": "odin-os1-source-20260720",
   "lane": "odin",
   "authority": {
@@ -17,7 +17,7 @@
     "marker_family": "os1",
     "closed": false
   },
-  "state": "source_ready_hrafn_identity_window_active_after_quarantined_non_evidence_attempt",
+  "state": "source_ready_waiting_hrafn_c4_local_run_and_identity_return_after_quarantined_non_evidence_attempt",
   "live_control": {
     "checked_at": "2026-07-20T18:23:19Z",
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
@@ -29,8 +29,10 @@
     "is_champion": true
   },
   "locks": {
-    "checked_at": "2026-07-20T18:48:40Z",
-    "runner": "free",
+    "checked_at": "2026-07-20T18:52:12Z",
+    "runner": "active_hrafn",
+    "runner_owner": "hrafn",
+    "runner_run_id": "hrafn-c4-xo-a-r2-20260720",
     "qd1n_mutation": "free",
     "active_player": "K1Z Hrafn",
     "active_player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
@@ -52,12 +54,14 @@
     "submitted": false
   },
   "runner": {
-    "status": "free_after_quarantined_attempt",
-    "aborted_run_id": "odin-os1-screen-316c7a11-20260720",
-    "aborted_at": "2026-07-20T18:38:36Z",
-    "terminal_reason": "supervised_command_exit_1",
-    "evidence_eligible": false,
-    "failure_cause_captured": false
+    "status": "active_hrafn_local_only",
+    "owner": "hrafn",
+    "run_id": "hrafn-c4-xo-a-r2-20260720",
+    "acquired_at": "2026-07-20T18:52:12Z",
+    "output_roots": [
+      "/private/tmp/hrafn-c4-crossover-20260720-r1/candidate-first-output"
+    ],
+    "qd1n_or_league_authority": false
   },
   "evidence": {
     "replay_basis": "experiments/daveey-policy-factory-invariant-20260720.md",
