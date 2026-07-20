@@ -4,9 +4,9 @@ Date: 2026-07-20
 
 ## Corrected verdict
 
-**MATRIX RESUMES FROM THE MISSING CELLS.** PG2 still has no permission to
-proceed to hosted 4/4, regression 20/20, upload, submission, or champion
-change. `qd1n:v89` remains the live policy.
+**LOCAL MATRIX PASSED.** PG2 now proceeds only to diagnostic upload and the
+predeclared hosted 4/4. It still has no permission for a league submission or
+champion change. `qd1n:v89` remains the live policy.
 
 ## Triggering evidence
 
@@ -33,16 +33,34 @@ mirrors those selector exclusions. A red-first regression proves that the
 protected-only cell is clean while a legal non-K1Z attack still makes a hold
 unexplained.
 
-## Positive evidence retained without changing the verdict
+## Asia evidence
 
 Asia completed all eight candidate/parent pairs. PG2 reached in every Asia
-candidate run and exceeded the parent final score in all eight. This establishes
-that the intervention executes and can improve early expansion; it does not
-yet open a hosted gate.
+candidate run and exceeded the parent final score in all eight. Together with
+the complete matrix below, this establishes local qualification and opens only
+the diagnostic hosted gate.
 
 ## Cleanup
 
 The premature Pangaea queue was stopped by exact run-root process identity only
-and the runner lease was stale-reaped to `free`. The missing Pangaea cells must
-be re-run under a fresh foreground lease after the corrected auditor is
-propagated. No unrelated process or container was removed.
+and the runner lease was stale-reaped to `free`. The three missing cells were
+re-run under a fresh foreground lease after the corrected auditor propagated.
+No unrelated process or container was removed.
+
+## Completed local matrix
+
+The complete 24-pair matrix now passes its declared gate with no safety
+violations: marker reach is `8/8` on World, Asia, and Pangaea; positive final
+score pairs are `20/24`; and candidate/parent declared wins are tied `0/0`.
+The paired median final-score deltas are World `0.0000883564`, Asia
+`0.0699160657`, and Pangaea `0.0220604483`. The all-pair receipt report is at
+`/private/tmp/pg2-final-matrix-audit-20260720T0138Z/report.json`.
+
+## Diagnostic upload
+
+The exact reviewed image was uploaded as diagnostic-only `qd1n:v92`
+(`32ce69ba-9959-4172-bb45-e2a84c55bced`) with tags `codename=pg2` and
+`source=42e9a181`. It is neither submitted to the league nor a membership.
+`qd1n:v89` remains Odin's sole competing champion.
+
+The next gate is a diagnostic-only hosted `4/4` against the current roster.
