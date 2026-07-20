@@ -35,6 +35,17 @@ Review the other lane from committed branches and mailbox receipts; do not
 check out or edit the other operator's working branch. Coordinate runner
 ownership in the mailbox before starting a Coworld episode.
 
+Use `npm run k1z:line` for machine-readable Hrafn/Odin coordination. Emit one
+sealed advisory packet after each matched batch or hosted gate, plus one
+NDJSON learning row per candidate or parent episode. Advisory packets never
+count as formal approval. Only one exact-artifact final `APPROVE` from Odin may
+count for a Hrafn campaign.
+
+Commit and push verified Hrafn protocol, policy, evidence, lore, and merit
+checkpoints without waiting for another prompt. Update `LORE.md` and `MERIT.md`
+when evidence changes direction, proves a mechanism, closes a candidate, or
+passes a gate; do not turn either ledger into a raw activity log.
+
 Kimi K3 Max is the external moonshot adviser. Kimi is not a Codex/GPT agent and
 does not edit policy code or submit versions.
 

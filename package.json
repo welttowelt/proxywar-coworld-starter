@@ -10,6 +10,7 @@
     "check:hrafn-runner-declaration": "node scripts/assert-hrafn-host-runner.mjs",
     "run:hrafn-supervised": "node scripts/run-hrafn-supervised.mjs",
     "audit:hrafn-chassis": "node scripts/audit-hrafn-chassis-replay.mjs",
+    "k1z:line": "node scripts/k1z-direct-line.mjs",
     "data:collect": "node scripts/collect-proxywar-data.mjs --rounds 20",
     "data:analyze": "duckdb < analytics/meta.sql",
     "data:refresh": "npm run data:collect && npm run data:analyze && npm run rci:report",

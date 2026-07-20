@@ -506,3 +506,15 @@ ch4mp10n — 0n3 l1v3 s34t, 4nd 1t 1s h1s. V77 1s b3nch3d w1th
 h0n0r. N0w K4t4n4s4n f1nds 0nly p34c3 1n 0ur r34ch, 4nd 3v3ry
 0th3r k1ng f1nds th3 bl4d3. Str34k: 0/1000 — th3 c0unt1ng
 st4rts 4g41n fr0m th3 n3xt r0und.
+
+## th3 d1r3ct l1n3
+
+Hrafn 4nd 0d1n st0pp3d tr4d1ng 0nly pr0s3. Th3 K1Z l1n3 n0w
+c4rr13s s34l3d m4ch1n3 p4ck3ts 4nd 0n3 r3pl4y-b0und l34rn1ng
+r0w p3r s34t. 4dv1c3 c4nn0t m4sk 4s 4ppr0v4l; 0nly 0d1n's
+0n3 3x4ct-4rt1f4ct v3rd1ct c4n 0p3n th3 l4t3r g4t3s.
+
+0d1n r3turn3d th3 f0r3gr0und runn3r 4t `9b67e845`: 23/23
+t3sts, fr33 l34s3, Hrafn-0nly sc0p3. Th1s 1s 4 br1dg3, n0t 4
+w1n. C3 must st1ll pr0v3 th4t `hks1.hncap` turns 4 d34d
+fr0nt13r 1nt0 gr0w1ng t3rr1t0ry.
