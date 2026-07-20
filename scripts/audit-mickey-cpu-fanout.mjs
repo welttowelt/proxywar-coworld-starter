@@ -252,7 +252,10 @@ function analyzeDecisions(rows, telemetry, participants, pair, identity, role, g
     const playerDirectedKinds = new Set([
       "attack", "boat", "nuke", "break_alliance", "target_player", "embargo",
     ]);
-    const optionallyPlayerDirectedKinds = new Set(["warship", "move_warship"]);
+    // Building a Warship has no player target and is infrastructure, not direct
+    // coalition harm. Moving one can attack a unit; without a replay-bound
+    // owner ID the target is unverifiable and must fail closed.
+    const optionallyPlayerDirectedKinds = new Set(["move_warship"]);
     const metadata = row.selectedActionMetadata ?? {};
     let hostileK1z = false;
     const selectedKind = String(row.selectedActionKind).toLowerCase();
@@ -282,6 +285,8 @@ function analyzeDecisions(rows, telemetry, participants, pair, identity, role, g
           (selectedKind === "attack" && metadata.expansion === true) ||
           (selectedKind === "boat" && metadata.expansion === true);
         assert(neutralExpansion, `${pair.id}/${role} accepted harmful action has no replay-verifiable target`);
+      } else if (selectedKind === "move_warship") {
+        assert(false, `${pair.id}/${role} accepted harmful action has no replay-verifiable target`);
       }
     }
     if (event.policyMarker === gateMarker) markerCount += 1;

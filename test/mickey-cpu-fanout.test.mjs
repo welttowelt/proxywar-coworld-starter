@@ -1171,6 +1171,29 @@ test("post-run audit ranks only a screen leader and rejects replay-visible K1Z h
     assert.equal(harmed.arms[0].mechanism.k1z_harm_count, 1);
     assert.equal(harmed.arms[0].mechanism.mechanism_reached_k1z_harm_count, 0);
     assert.equal(harmed.arms[0].gates.maximum_k1z_harm, false);
+
+    candidateArtifacts.rows[1] = {
+      username: pair.roster[0].name,
+      selectedLegalActionId: "move_warship:unit-7:tile-42",
+      selectedActionKind: "move_warship",
+      selectedActionMetadata: {
+        unitCount: 1,
+        targetTile: 42,
+        legalReason: "enemy Trade Ship is present but owner is absent",
+      },
+      legalActionIDs: ["move_warship:unit-7:tile-42", "hold"],
+      result: { accepted: true, reason: "accepted" },
+    };
+    candidateArtifacts.events[2].selectedActionID = "move_warship:unit-7:tile-42";
+    candidateArtifacts.events[2].selectedActionKind = "move_warship";
+    candidateArtifacts.events[2].selectedTargetID = null;
+    rewriteAuditRoleEvidence(candidateArtifacts);
+    completion.fetched_manifest_sha256 = refreshFetchedManifest(pairRoot);
+    writeFileSync(completionPath, `${JSON.stringify(completion, null, 2)}\n`);
+    await assert.rejects(
+      auditMickeyCpuFanout({ output, manifest, manifestSha256 }),
+      /accepted harmful action has no replay-verifiable target/,
+    );
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
