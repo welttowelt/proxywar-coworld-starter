@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_clean_chassis_preregistration",
+  "recorded_at": "2026-07-20T14:11:15Z",
+  "arm": "hrafn-clean-chassis-c2-runtime-liveness",
+  "scope": "Hrafn only",
+  "parent": {
+    "label": "hrafn-fylking:v8",
+    "source_commit": "b74fa0d4db8786ca5016b382501fac40dc42a871",
+    "policy_version_id": "0b444466-abdd-422f-82e7-7652360a2015",
+    "player_source_sha256": "79105178b6d23d3682d26fdbd719033a482f33e705a78ef1caba7f4d4acbd76e",
+    "control_rule": "C2 changes only the WebSocket heartbeat failure policy in hrafn-chassis-player.mjs. Strategy, state, safety, action selection, public markers, reconnect backoff, and Docker packaging remain byte-identical to the exact v8 source parent."
+  },
+  "diagnosis": {
+    "claim": "The first hosted active decision timed out because v8 treated an absent WebSocket pong as proof of connection death, terminated a viable socket, and crossed socket generations before turn 400. This is a client liveness defect, not a slow Hrafn decision.",
+    "hosted_episode_evidence": [
+      {
+        "episode_request_id": "ereq_4c85549c-6875-4fd4-8b83-a96996af0478",
+        "sequence": [
+          "connected to match",
+          "match socket missed heartbeat pong; reconnecting",
+          "match socket closed (1006: none); reconnecting",
+          "connected to match"
+        ],
+        "first_active_decision": {
+          "turn": 400,
+          "elapsed_ms": 15006,
+          "result": "host fallback"
+        }
+      },
+      {
+        "episode_request_id": "ereq_b441d035-be66-4854-b199-111677f4bbd2",
+        "sequence": [
+          "connected to match",
+          "match socket missed heartbeat pong; reconnecting",
+          "match socket closed (1006: none); reconnecting",
+          "connected to match"
+        ],
+        "first_active_decision": {
+          "turn": 400,
+          "elapsed_ms": 15004,
+          "result": "host fallback"
+        }
+      }
+    ],
+    "counterevidence": {
+      "fresh_process_12p_56_action_decide_ms": [
+        7.5,
+        8.4
+      ],
+      "later_hrafn_decision_ms": [
+        3,
+        18
+      ],
+      "other_player_first_decision_ms": [
+        4,
+        187
+      ],
+      "interpretation": "CPU, JSON parsing, image cold start, and strategy evaluation do not explain the exact 15-second misses."
+    },
+    "local_reproduction": "A WebSocketServer with autoPong disabled reproduces open, ping, forced close, reconnect, and repeated socket churn before any decision request."
+  },
+  "single_delta": {
+    "file": "hrafn-chassis-player.mjs",
+    "remove": [
+      "hrafnAwaitingPong connection state",
+      "the pong listener",
+      "the missed-pong terminate branch"
+    ],
+    "retain": [
+      "a non-destructive ping-only heartbeat",
+      "actual close and error reconnect behavior",
+      "send-failure reconnect behavior",
+      "socket-generation queue guards",
+      "exponential handshake reconnect backoff"
+    ],
+    "strategy_change": false,
+    "expected_action_change": "none",
+    "expected_runtime_change": "An idle healthy socket that exposes no pong remains on one connection and answers the first later active decision within budget."
+  },
+  "red_first_gate": {
+    "test_file": "test/hrafn-chassis-player.integration.test.mjs",
+    "fixture": "WebSocketServer({ autoPong: false }), HRAFN_HEARTBEAT_MS=50, no spawn request, idle for more than two heartbeat intervals, then send a 12-player-shaped active request.",
+    "current_parent_expected_failure": "The parent reconnects before the delayed first request.",
+    "candidate_required_pass": [
+      "exactly one WebSocket connection",
+      "first response selects the expected hg35 action within the test budget",
+      "clean final message and zero exit",
+      "no missed-pong teardown text"
+    ]
+  },
+  "qualification": {
+    "source_requirements": [
+      "The red test fails against exact v8 and passes after the single delta.",
+      "All Hrafn unit, integration, replay-audit, policy-contract, container, and full repository tests pass.",
+      "Only hrafn-chassis-player.mjs, its integration test, and evidence records differ from the exact parent.",
+      "The exact source commit is pushed before any image build."
+    ],
+    "local_runtime_requirements": [
+      "linux/amd64 image identity is recorded",
+      "mock no-pong delayed-first-request proof passes inside the built image",
+      "normal first-request and real-close reconnect integration tests pass"
+    ]
+  },
+  "hosted_scope": {
+    "purpose": "runtime liveness diagnostic only",
+    "minimum_evidence": "A fresh Hrafn-only hosted diagnostic must show no pre-decision missed-pong teardown and no first-active-decision timeout.",
+    "promotion_eligible": false,
+    "reason": "C1 already failed its strategic 4/4 gate and exposed a separate deterministic naval-cap hold trap. C2 cannot reopen C1 or become champion regardless of its runtime result."
+  },
+  "known_separate_defect": {
+    "name": "naval launch-budget hold trap",
+    "observed_holds_in_first_two_c1_replays": 196,
+    "boundary": "No cap-escape, Warship, donation, naval-state, or action-priority change is permitted in C2. That correction requires its own preregistered exact-parent experiment."
+  },
+  "promotion_state": {
+    "SOURCE_READY": false,
+    "LOCAL_QUALIFIED": false,
+    "DIAGNOSTIC_UPLOADED": false,
+    "HOSTED_PASSED": false,
+    "REGRESSION_PASSED": false,
+    "AUDIT_APPROVED": false,
+    "SUBMITTED": false,
+    "PLACED": false,
+    "CHAMPION_VERIFIED": false,
+    "ROUND_CONFIRMED": false
+  },
+  "verdict": "PREREGISTERED: implement and test the runtime-only liveness correction. No upload, submission, membership change, or champion change is authorized by this record."
+}
