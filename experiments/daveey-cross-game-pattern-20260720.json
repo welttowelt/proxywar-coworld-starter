@@ -89,6 +89,60 @@
       "odin_lane_plan": "Odin intends to test this independently as OS1 against his v89 champion.",
       "hrafn_boundary": "This is coordination context supplied by the operator, not a formal Odin approval and not authority for Hrafn to touch OS1, v89, or the qd1n lane."
     },
+    "operator_relayed_wrapper_audit": {
+      "received_at": "2026-07-20",
+      "provenance_boundary": "The operator supplied this audit from another Codex wrapper. Hrafn records its claims and caveats but did not independently rerun the qd1n-side collection in this checkpoint.",
+      "learning_taxonomy": {
+        "supported": [
+          "Developer learning through replay collection, evaluation, controller revision, and new version uploads.",
+          "In-game adaptation by a fixed controller reacting to changing board state."
+        ],
+        "not_established": "Online learning that updates persistent parameters or memory between matches."
+      },
+      "version_evidence": {
+        "competition_visible_versions_v2_through_v24": 16,
+        "mean_raw_round_score": {
+          "v18": 0.273,
+          "v20": 0.24,
+          "v22": 0.341,
+          "v24": 0.418
+        },
+        "v22_to_v24_visible_changes": [
+          "Reason prefix changed from WC22 to WC24.",
+          "First City moved from approximately turn 900 to turn 800.",
+          "Early social actions fell from 2.7 percent to 0.7 percent.",
+          "Median response latency fell from 4 ms to 2 ms."
+        ]
+      },
+      "fixed_v24_evidence": {
+        "same_policy_uuid_rounds": "518-577",
+        "early_period_mean_raw_score": 0.294,
+        "late_period_mean_raw_score": 0.505,
+        "early_rank_one_appearances": "5/23",
+        "late_rank_one_appearances": "24/33",
+        "interpretation": "The outcome lift is real but uncontrolled across opponents, seeds, seats, and spawn geometry. Stable opening behavior and reason families do not show parameter updates."
+      },
+      "executor_evidence": {
+        "corrected_non_spawn_decisions": 881,
+        "accepted": 881,
+        "latency_ms": {
+          "median": 2,
+          "p95": 4,
+          "maximum": 35
+        },
+        "planner_error_direction": "Exposed planner errors rose from 16.5 percent to 21.6 percent while results improved and exact actions remained fast and accepted.",
+        "inference": "A fast fixed executor continued playing when the optional planner was unavailable."
+      },
+      "persistence_boundary": {
+        "hosted_runtime": "One short-lived digest-pinned player container per episode, restart policy Never, with no player persistent volume.",
+        "consequence": "Cross-match online learning would require an external database or service. No public replay, repository, or Telegram artifact establishes that Daveey used one."
+      },
+      "corrections": [
+        "brainType external-http is a generic Coworld bridge label and is not Daveey-specific.",
+        "The Telegram note about a workflow not accruing learnings was written by Calcutator, not Daveey."
+      ],
+      "hrafn_consequence": "Keep the live container deterministic and stateless. Accumulate learnings in committed replay/evaluation artifacts, use model analysis between matches, and promote only measured controller revisions."
+    },
     "architectural_implication": {
       "supported": "Keep model intelligence off the exact-ID critical path. Use deterministic offered-action selection, safety checks, loop control, and bounded latency online; use models and automated analysis to generate hypotheses and revise measured policy components offline.",
       "not_supported": "The export does not identify Daveey's internal architecture and does not prove that copying Auri's starter unchanged will match Daveey.",
@@ -165,12 +219,14 @@
   "inference": {
     "supported": "Daveey's transferable advantage is a rapid empirical loop plus game-specific policies: low idle in opening and conversion, neutral compounding, adaptive retargeting toward stronger windows, harder commitment at favorable ratios, and fast single-mechanism replacement.",
     "not_supported": "One hidden tactic or one policy copied unchanged across games.",
+    "online_learning_assessment": "Public evidence supports development-level learning and fixed-controller in-game adaptation. It does not establish persistent self-training between matches.",
     "hrafn_adaptation": "Copy the loop, not the code. Keep separate map arms and test one replay-visible mechanism against an exact parent before promotion."
   },
   "limitations": [
     "Current ranks can move during collection.",
     "No public Daveey replay rows were returned outside Proxywar under current access.",
-    "Cross-game action behavior remains unresolved; rankings, policy specialization, and iteration cadence are the cross-game evidence."
+    "Cross-game action behavior remains unresolved; rankings, policy specialization, and iteration cadence are the cross-game evidence.",
+    "The later v24 and Coworld persistence audit was supplied by the operator from another Codex wrapper and was not independently rerun by Hrafn in this checkpoint."
   ],
   "authority": {
     "research_only": true,
