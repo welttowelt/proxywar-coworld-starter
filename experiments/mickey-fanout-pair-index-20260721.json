@@ -53,7 +53,7 @@
       "mechanism_class": "convert",
       "roster_class": "mixed-outsider-convert",
       "map": "Asia",
-      "seed": 2026072114,
+      "seed": 2026072113,
       "seat": 2,
       "max_decision_steps": 80,
       "roster": [
@@ -80,11 +80,11 @@
       ],
       "candidate_spec": {
         "archive_path": "specs/convert-largest-asia-s2-d-candidate.json",
-        "sha256": "4df6548e7098ccf89428379da06b8d2580750d98aba5da4fd8f5ead140581c02"
+        "sha256": "b3547056455a647aa7381488684c8847ed4f03657ebbf6ffe020e6e16fe236f1"
       },
       "m0_spec": {
         "archive_path": "specs/mixed-outsider-convert-asia-s2-d-m0.json",
-        "sha256": "eb0e9b6826ae33d3c3ae41a5c26e35a5a79957ee335ec92cd696a2daacb3a0d2"
+        "sha256": "7a34ca1794b11b4785dc20daff9af5caceb73ffde417455ef0223d92298a4e17"
       }
     },
     {
@@ -133,7 +133,7 @@
       "mechanism_class": "convert",
       "roster_class": "mixed-outsider-convert",
       "map": "World",
-      "seed": 2026072112,
+      "seed": 2026072111,
       "seat": 2,
       "max_decision_steps": 80,
       "roster": [
@@ -160,11 +160,11 @@
       ],
       "candidate_spec": {
         "archive_path": "specs/convert-largest-world-s2-b-candidate.json",
-        "sha256": "9fc50164f9d7852c5945e1bc662806fa75ab99005b29e57850955af0220bae79"
+        "sha256": "e05a97ff5b02fb1556b89271eb6e005a407dc5a09ae25b2c2c165ddcd8a86cb1"
       },
       "m0_spec": {
         "archive_path": "specs/mixed-outsider-convert-world-s2-b-m0.json",
-        "sha256": "192b9245628852f13b59f3b8f8d6e50f466e05f921f6ad341c4562da9d4cd075"
+        "sha256": "a55c7a582549cebc270727c9803a11d5f0be77f82d852efdf5708bbe3607d5cb"
       }
     },
     {
@@ -213,7 +213,7 @@
       "mechanism_class": "convert",
       "roster_class": "mixed-outsider-convert",
       "map": "Asia",
-      "seed": 2026072114,
+      "seed": 2026072113,
       "seat": 2,
       "max_decision_steps": 80,
       "roster": [
@@ -240,11 +240,11 @@
       ],
       "candidate_spec": {
         "archive_path": "specs/convert-weakest-asia-s2-d-candidate.json",
-        "sha256": "34167365f17437657f2bd7fe15736dfdffa94c8de3a4bbeb5077e3e75cb2e014"
+        "sha256": "6186d4069dcc5c76c31f31702e9c6041875e6250d74bc456f7e186ff711144f9"
       },
       "m0_spec": {
         "archive_path": "specs/mixed-outsider-convert-asia-s2-d-m0.json",
-        "sha256": "eb0e9b6826ae33d3c3ae41a5c26e35a5a79957ee335ec92cd696a2daacb3a0d2"
+        "sha256": "7a34ca1794b11b4785dc20daff9af5caceb73ffde417455ef0223d92298a4e17"
       }
     },
     {
@@ -293,7 +293,7 @@
       "mechanism_class": "convert",
       "roster_class": "mixed-outsider-convert",
       "map": "World",
-      "seed": 2026072112,
+      "seed": 2026072111,
       "seat": 2,
       "max_decision_steps": 80,
       "roster": [
@@ -320,11 +320,11 @@
       ],
       "candidate_spec": {
         "archive_path": "specs/convert-weakest-world-s2-b-candidate.json",
-        "sha256": "34635dc5417788753ed24f13a2eaecba98040afe0c4b971df60ba5d640be1453"
+        "sha256": "ff4e884b40fc0414bbd4d522125f7c953efb80d0a8aab4356f0c2b2aa19daf14"
       },
       "m0_spec": {
         "archive_path": "specs/mixed-outsider-convert-world-s2-b-m0.json",
-        "sha256": "192b9245628852f13b59f3b8f8d6e50f466e05f921f6ad341c4562da9d4cd075"
+        "sha256": "a55c7a582549cebc270727c9803a11d5f0be77f82d852efdf5708bbe3607d5cb"
       }
     },
     {
@@ -373,7 +373,7 @@
       "mechanism_class": "grow",
       "roster_class": "all-k1z-grow",
       "map": "Asia",
-      "seed": 2026072104,
+      "seed": 2026072103,
       "seat": 2,
       "max_decision_steps": 80,
       "roster": [
@@ -400,11 +400,11 @@
       ],
       "candidate_spec": {
         "archive_path": "specs/grow-low-share-asia-s2-d-candidate.json",
-        "sha256": "5d8215f3223c5dee63b648cf1b95130904a0cf09f9648408e86038341e340b0b"
+        "sha256": "713496739adcdbafe78d89de7a6346ae9c19e4d2383faafe6a21c778c0f3ea6e"
       },
       "m0_spec": {
         "archive_path": "specs/all-k1z-grow-asia-s2-d-m0.json",
-        "sha256": "8a3dea3fbf010445752c296c94ad2ebd10ca52e7d2cc3c10912022690f9d6323"
+        "sha256": "3f2ef206ee1b26a5afe04c905955af4ffb1e9378f4cd12feae7ef8acc19c638d"
       }
     },
     {
@@ -453,7 +453,7 @@
       "mechanism_class": "grow",
       "roster_class": "all-k1z-grow",
       "map": "Pangaea",
-      "seed": 2026072102,
+      "seed": 2026072101,
       "seat": 2,
       "max_decision_steps": 80,
       "roster": [
@@ -480,11 +480,11 @@
       ],
       "candidate_spec": {
         "archive_path": "specs/grow-low-share-pangaea-s2-b-candidate.json",
-        "sha256": "94a55fa30f2bb3848a6c4d98c9f8c0ce64bd71405c8c6b099f34ef7087be8997"
+        "sha256": "78835722576d003ec00cb82dc197cd0e4fdabe9cb67ac9beca6cbad402b0dfd1"
       },
       "m0_spec": {
         "archive_path": "specs/all-k1z-grow-pangaea-s2-b-m0.json",
-        "sha256": "95135f212b38192901eddfc9a9028674841302dc59e1e0ea6221982d66148171"
+        "sha256": "629951ed187d7b1cf93d0d8487acf48be2a176c3ad86c7670d8e8ef821b4752c"
       }
     },
     {
@@ -533,7 +533,7 @@
       "mechanism_class": "grow",
       "roster_class": "all-k1z-grow",
       "map": "Asia",
-      "seed": 2026072104,
+      "seed": 2026072103,
       "seat": 2,
       "max_decision_steps": 80,
       "roster": [
@@ -560,11 +560,11 @@
       ],
       "candidate_spec": {
         "archive_path": "specs/grow-opening-asia-s2-d-candidate.json",
-        "sha256": "c98442d3e039f2435e3f84bac4f84f510acc927f2138f7724293f4e055724ac4"
+        "sha256": "6c73c05217c758be6609bc7d43c03292018495f8abccd7ba2b5518742b1edba5"
       },
       "m0_spec": {
         "archive_path": "specs/all-k1z-grow-asia-s2-d-m0.json",
-        "sha256": "8a3dea3fbf010445752c296c94ad2ebd10ca52e7d2cc3c10912022690f9d6323"
+        "sha256": "3f2ef206ee1b26a5afe04c905955af4ffb1e9378f4cd12feae7ef8acc19c638d"
       }
     },
     {
@@ -613,7 +613,7 @@
       "mechanism_class": "grow",
       "roster_class": "all-k1z-grow",
       "map": "Pangaea",
-      "seed": 2026072102,
+      "seed": 2026072101,
       "seat": 2,
       "max_decision_steps": 80,
       "roster": [
@@ -640,11 +640,11 @@
       ],
       "candidate_spec": {
         "archive_path": "specs/grow-opening-pangaea-s2-b-candidate.json",
-        "sha256": "611e0be1bc87f14a0998887d5eef18f2aaaa6e4a8fc6d8a156445560b1ebab2b"
+        "sha256": "b5ec84c19b6416fe027ca1f8948c81c19e67c3f366c2bd7f9cad17e9d7ada2a4"
       },
       "m0_spec": {
         "archive_path": "specs/all-k1z-grow-pangaea-s2-b-m0.json",
-        "sha256": "95135f212b38192901eddfc9a9028674841302dc59e1e0ea6221982d66148171"
+        "sha256": "629951ed187d7b1cf93d0d8487acf48be2a176c3ad86c7670d8e8ef821b4752c"
       }
     }
   ]

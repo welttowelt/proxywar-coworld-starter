@@ -194,4 +194,19 @@ test("generated fanout index binds four distinct matched cells per arm", () => {
     assert.equal(arm.maps.size, 2);
     assert.equal(arm.seats.size, 2);
   }
+  for (const [armID] of perArm) {
+    const armPairs = index.pairs.filter((pair) => pair.arm === armID);
+    for (const mapName of new Set(armPairs.map((pair) => pair.map))) {
+      const mirrors = armPairs.filter((pair) => pair.map === mapName);
+      assert.equal(new Set(mirrors.map((pair) => pair.seed)).size, 1);
+      assert.deepEqual(new Set(mirrors.map((pair) => pair.seat)), new Set([0, 2]));
+      assert.deepEqual(
+        mirrors.map((pair) => pair.roster.map((player) => `${player.name}:${player.coalition}`).sort()),
+        [
+          mirrors[0].roster.map((player) => `${player.name}:${player.coalition}`).sort(),
+          mirrors[0].roster.map((player) => `${player.name}:${player.coalition}`).sort(),
+        ],
+      );
+    }
+  }
 });
