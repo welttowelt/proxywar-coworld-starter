@@ -1432,6 +1432,358 @@ function pileOnObs({ spawnTile, bystanderRatio = 1.2, attackerCount = 2 } = {}) 
   });
 }
 
+function defensiveStanceHistory(shares = [0.2, 0.16]) {
+  return shares.map((tileShare, index) => ({
+    actionID: `boat:terra:${index === 0 ? 8 : 16}`,
+    kind: "boat",
+    neutral: true,
+    tileShare,
+  }));
+}
+
+function r563AuriActions() {
+  return [
+    ...[10, 25, 40].map((percent) => ({
+      ...action(`attack:c4o8gv6v:${percent}`, "attack", `Attack Auri ${percent}%`),
+      metadata: { targetID: "c4o8gv6v", troopPercent: percent },
+    })),
+    {
+      ...action("expand:terra-nullius:10", "attack", "Expand Terra Nullius 10%"),
+      metadata: { expansion: true, troopPercent: 10 },
+    },
+  ];
+}
+
+test("DS1 exact R563 t3900 fixture counters Auri at maximum commitment", () => {
+  // Episode 11da03e1, replay SHA256 eef5df4f...: the first strict trigger
+  // visible through the agent's two-decimal tile-share quantization.
+  const actions = r563AuriActions();
+  const history = defensiveStanceHistory([0.06, 0.05]);
+  const obs = observation({
+    tileShare: 0.03,
+    spawnTile: 659528,
+    incomingAttacks: [{ attackerID: "c4o8gv6v" }],
+    rivals: [{
+      id: "c4o8gv6v",
+      name: "Auri",
+      tileShare: 0.11,
+      relativeTroopRatio: 562928 / 1415742,
+    }],
+  });
+  const state = buildState(obs, actions, history);
+  const parent = chooseAction(actions, state, null, history, true);
+  assert.equal(parent.id, "expand:terra-nullius:10");
+  assert.equal(parent.policyMarker, undefined);
+
+  const selected = chooseAction(actions, state, null, history);
+  assert.equal(selected.id, "attack:c4o8gv6v:40");
+  assert.equal(selected.policyMarker, "ds1");
+});
+
+test("DS1 exact R563 t3800 fixture does not trigger before two strict declines", () => {
+  const selected = choose(
+    r563AuriActions(),
+    observation({
+      tileShare: 0.05,
+      spawnTile: 659528,
+      incomingAttacks: [{ attackerID: "c4o8gv6v" }],
+      rivals: [{
+        id: "c4o8gv6v",
+        name: "Auri",
+        tileShare: 0.1,
+        relativeTroopRatio: 901431 / 1795554,
+      }],
+    }),
+    null,
+    defensiveStanceHistory([0.06, 0.06]),
+  );
+  assert.equal(selected.id, "expand:terra-nullius:10");
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("DS1 exact R563 flat-share fixture clears after two non-shrinking decisions", () => {
+  const history = [
+    { actionID: "attack:c4o8gv6v:40", kind: "attack", tileShare: 0, policyMarker: "ds1" },
+    { actionID: "attack:c4o8gv6v:40", kind: "attack", tileShare: 0, policyMarker: "ds1" },
+  ];
+  const selected = choose(
+    [action("build:City:551159", "build", "Build City"), action("hold", "hold", "Hold")],
+    observation({
+      tileShare: 0,
+      spawnTile: 659528,
+      incomingAttacks: [{ attackerID: "c4o8gv6v" }],
+      rivals: [{
+        id: "c4o8gv6v",
+        name: "Auri",
+        tileShare: 0.1,
+        relativeTroopRatio: 0.4,
+      }],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, "build:City:551159");
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("DS1 persists through one recovery decision and clears after two", () => {
+  const actions = [
+    {
+      ...action("attack:aggressor:40", "attack", "Attack Aggressor 40%"),
+      metadata: { targetID: "aggressor", troopPercent: 40 },
+    },
+    action("build:City:1", "build", "Build City"),
+  ];
+  const oneRecovery = [
+    { actionID: "boat:terra:8", kind: "boat", tileShare: 0.2 },
+    {
+      actionID: "attack:aggressor:40",
+      kind: "attack",
+      tileShare: 0.16,
+      policyMarker: "ds1",
+    },
+  ];
+  const stillActive = choose(actions, observation({
+    tileShare: 0.17,
+    spawnTile: 659528,
+    incomingAttacks: [{ attackerID: "aggressor" }],
+    rivals: [{
+      id: "aggressor",
+      name: "Aggressor",
+      tileShare: 0.2,
+      relativeTroopRatio: 0.6,
+    }],
+  }), null, oneRecovery);
+  assert.equal(stillActive.id, "attack:aggressor:40");
+  assert.equal(stillActive.policyMarker, "ds1");
+
+  const twoRecoveries = [
+    ...oneRecovery,
+    {
+      actionID: "attack:aggressor:40",
+      kind: "attack",
+      tileShare: 0.17,
+      policyMarker: "ds1",
+    },
+  ];
+  const cleared = choose(actions, observation({
+    tileShare: 0.18,
+    spawnTile: 659528,
+    incomingAttacks: [{ attackerID: "aggressor" }],
+    rivals: [{
+      id: "aggressor",
+      name: "Aggressor",
+      tileShare: 0.2,
+      relativeTroopRatio: 0.6,
+    }],
+  }), null, twoRecoveries);
+  assert.equal(cleared.id, "build:City:1");
+  assert.equal(cleared.policyMarker, undefined);
+});
+
+test("DS1 survives one missing attacker-attribution tick", () => {
+  const history = defensiveStanceHistory();
+  history.at(-1).policyMarker = "ds1";
+  const selected = choose(
+    [
+      action("boat:terra:8", "boat", "Boat to Terra Nullius 8%"),
+      action("boat_retreat:113", "boat_retreat", "Retreat boat 113"),
+      action("hold", "hold", "Hold"),
+    ],
+    observation({ tileShare: 0.15, spawnTile: 659528 }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, "boat_retreat:113");
+  assert.equal(selected.policyMarker, "ds1");
+});
+
+test("DS1 never counters a K1Z invader and keeps boat retreat legal", () => {
+  const selected = choose(
+    [
+      {
+        ...action("attack:kata:40", "attack", "Attack K1Z katanasan 40%"),
+        metadata: { targetID: "kata", troopPercent: 40 },
+      },
+      action("boat_retreat:113", "boat_retreat", "Retreat boat 113"),
+      action("hold", "hold", "Hold"),
+    ],
+    observation({
+      tileShare: 0.1,
+      spawnTile: 659528,
+      incomingAttacks: [{ attackerID: "kata" }],
+      rivals: [{
+        id: "kata",
+        name: "K1Z katanasan",
+        tileShare: 0.2,
+        relativeTroopRatio: 1.4,
+      }],
+    }),
+    null,
+    defensiveStanceHistory(),
+  );
+  assert.equal(selected.id, "boat_retreat:113");
+  assert.equal(selected.policyMarker, "ds1");
+});
+
+test("DS1 chooses one attacker deterministically and then its largest safe counter", () => {
+  const attacks = [
+    {
+      ...action("attack:attacker-a:40", "attack", "Attack Attacker A 40%"),
+      metadata: { targetID: "attacker-a", troopPercent: 40 },
+    },
+    {
+      ...action("attack:attacker-b:40", "attack", "Attack Attacker B 40%"),
+      metadata: { targetID: "attacker-b", troopPercent: 40 },
+    },
+    {
+      ...action("attack:attacker-b:25", "attack", "Attack Attacker B 25%"),
+      metadata: { targetID: "attacker-b", troopPercent: 25 },
+    },
+  ];
+  const obs = observation({
+    tileShare: 0.1,
+    spawnTile: 659528,
+    incomingAttacks: [{ attackerID: "attacker-a" }, { attackerID: "attacker-b" }],
+    rivals: [
+      {
+        id: "attacker-a",
+        name: "Attacker A",
+        tileShare: 0.2,
+        relativeTroopRatio: 0.6,
+      },
+      {
+        id: "attacker-b",
+        name: "Attacker B",
+        tileShare: 0.3,
+        relativeTroopRatio: 0.6,
+      },
+    ],
+  });
+  for (const ordered of [attacks, [...attacks].reverse()]) {
+    const selected = choose(ordered, obs, null, defensiveStanceHistory());
+    assert.equal(selected.id, "attack:attacker-b:40");
+    assert.equal(selected.policyMarker, "ds1");
+  }
+});
+
+test("DS1 prefers a safe counter over a larger high-risk counter", () => {
+  const selected = choose(
+    [
+      {
+        ...action(
+          "attack:aggressor:40",
+          "attack",
+          "Attack Aggressor 40%",
+          { level: "high" },
+        ),
+        metadata: { targetID: "aggressor", troopPercent: 40 },
+      },
+      {
+        ...action("attack:aggressor:25", "attack", "Attack Aggressor 25%"),
+        metadata: { targetID: "aggressor", troopPercent: 25 },
+      },
+    ],
+    observation({
+      tileShare: 0.1,
+      spawnTile: 659528,
+      incomingAttacks: [{ attackerID: "aggressor" }],
+      rivals: [{
+        id: "aggressor",
+        name: "Aggressor",
+        tileShare: 0.2,
+        relativeTroopRatio: 0.6,
+      }],
+    }),
+    null,
+    defensiveStanceHistory(),
+  );
+  assert.equal(selected.id, "attack:aggressor:25");
+  assert.equal(selected.policyMarker, "ds1");
+});
+
+test("DS1 applies counter safety across every current attacker", () => {
+  const selected = choose(
+    [
+      {
+        ...action("attack:larger:40", "attack", "Attack Larger 40%", { level: "high" }),
+        metadata: { targetID: "larger", troopPercent: 40 },
+      },
+      {
+        ...action("attack:smaller:25", "attack", "Attack Smaller 25%"),
+        metadata: { targetID: "smaller", troopPercent: 25 },
+      },
+    ],
+    observation({
+      tileShare: 0.1,
+      spawnTile: 659528,
+      incomingAttacks: [{ attackerID: "larger" }, { attackerID: "smaller" }],
+      rivals: [
+        { id: "larger", name: "Larger", tileShare: 0.4, relativeTroopRatio: 0.5 },
+        { id: "smaller", name: "Smaller", tileShare: 0.2, relativeTroopRatio: 0.7 },
+      ],
+    }),
+    null,
+    defensiveStanceHistory(),
+  );
+  assert.equal(selected.id, "attack:smaller:25");
+  assert.equal(selected.policyMarker, "ds1");
+});
+
+test("DS1 embargoes only its reviewed queue and never holds when a safe action remains", () => {
+  const selected = choose(
+    [
+      action("boat:terra:8", "boat", "Boat to Terra Nullius 8%"),
+      action("alliance:other", "alliance_request", "Alliance with Other"),
+      action("target:other", "target_player", "Target Other"),
+      action("upgrade:port:1", "upgrade_structure", "Upgrade Port"),
+      action("build:City:1", "build", "Build City"),
+      action("hold", "hold", "Hold"),
+    ],
+    observation({
+      tileShare: 0.1,
+      spawnTile: 659528,
+      incomingAttacks: [{ attackerID: "aggressor" }],
+      rivals: [{
+        id: "aggressor",
+        name: "Aggressor",
+        tileShare: 0.2,
+        relativeTroopRatio: 0.6,
+      }],
+    }),
+    null,
+    defensiveStanceHistory(),
+  );
+  assert.equal(selected.id, "build:City:1");
+  assert.equal(selected.policyMarker, "ds1");
+});
+
+test("DS1 preserves an inner marker and its cooldown history", () => {
+  const history = Array.from({ length: 8 }, (_, index) => ({
+    actionID: `boat:terra:${index}`,
+    kind: "boat",
+    neutral: true,
+    tileShare: index === 6 ? 0.09 : 0.08,
+  }));
+  history.at(-1).policyMarker = "ds1";
+  const actions = [
+    action("boat:terra:8", "boat", "Boat to Terra Nullius 8%"),
+    action("upgrade:port:1", "upgrade_structure", "Upgrade Port"),
+    action("warship:1", "warship", "Build Warship"),
+    action("hold", "hold", "Hold"),
+  ];
+  const obs = observation({ tileShare: 0.08, spawnTile: 659528 });
+  const state = buildState(obs, actions, history);
+  const selected = chooseAction(actions, state, null, history);
+  assert.equal(selected.id, "warship:1");
+  assert.equal(selected.policyMarker, "ds1");
+  assert.deepEqual(selected.policyMarkers, ["cv1", "ds1"]);
+
+  const recorded = [];
+  recordDecision(recorded, selected, state);
+  assert.deepEqual(recorded[0].policyMarkers, ["cv1", "ds1"]);
+});
+
 test("Pangaea pile-on discipline suppresses a near-parity rival attack", () => {
   const attacks = [10, 25, 40].map((percent) =>
     action(`attack:bystander:${percent}`, "attack", `Attack Bystander ${percent}%`));

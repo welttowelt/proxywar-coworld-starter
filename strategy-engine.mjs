@@ -61,6 +61,25 @@ function finiteNumber(value, fallback = 0) {
   return Number.isFinite(number) ? number : fallback;
 }
 
+function policyMarkers(value) {
+  return [...new Set([
+    ...(Array.isArray(value?.policyMarkers) ? value.policyMarkers : []),
+    value?.policyMarker,
+  ].filter(Boolean))];
+}
+
+function hasPolicyMarker(value, marker) {
+  return policyMarkers(value).includes(marker);
+}
+
+function withPolicyMarker(action, marker) {
+  return {
+    ...action,
+    policyMarker: marker,
+    policyMarkers: [...new Set([...policyMarkers(action), marker])],
+  };
+}
+
 function playerID(player) {
   return clean(
     player?.id ?? player?.playerID ?? player?.playerId ?? player?.player_id ?? "",
@@ -627,6 +646,80 @@ export function territoryCollapsing(state, history) {
   return recentPeak - currentShare >= meaningfulDrop;
 }
 
+function defensiveStanceActive(state, history) {
+  if (history.length < 2) return false;
+  const previouslyActive = hasPolicyMarker(history.at(-1), "ds1");
+  if (!previouslyActive && (state.self.incomingAttackerIDs || []).length === 0) return false;
+
+  const currentShare = finiteNumber(state.self.tileShare, NaN);
+  const previousShare = finiteNumber(history.at(-1)?.tileShare, NaN);
+  const priorShare = finiteNumber(history.at(-2)?.tileShare, NaN);
+  if (![currentShare, previousShare, priorShare].every(Number.isFinite)) return false;
+
+  const justTriggered = priorShare > previousShare && previousShare > currentShare;
+  const cleared = priorShare <= previousShare && previousShare <= currentShare;
+  return !cleared && (justTriggered || previouslyActive);
+}
+
+function chooseDefensiveStance(actions, state, history) {
+  if (!defensiveStanceActive(state, history)) return null;
+  const attackerIDs = new Set(
+    (state.self.incomingAttackerIDs || []).map((id) => String(id).toLowerCase()),
+  );
+  const validCounters = actions
+    .map((action) => ({ action, rival: rivalForAction(action, state) }))
+    .filter(({ action, rival }) =>
+      action.kind === "attack" && !isNeutralExpansion(action) && rival &&
+      attackerIDs.has(rival.id.toLowerCase()) && !isReciprocalRival(rival) &&
+      !rivalIsProtected(state, history, rival)
+    );
+  const safeCounters = validCounters.filter(({ action }) => action.risk?.level !== "high");
+  const counterPool = safeCounters.length > 0 ? safeCounters : validCounters;
+  const counterTargets = state.rivals
+    .filter((rival) =>
+      attackerIDs.has(rival.id.toLowerCase()) && !isReciprocalRival(rival) &&
+      !rivalIsProtected(state, history, rival)
+    )
+    .map((rival) => ({
+      rival,
+      actions: counterPool
+        .filter((entry) => entry.rival.id.toLowerCase() === rival.id.toLowerCase())
+        .map((entry) => entry.action),
+    }))
+    .filter((target) => target.actions.length > 0)
+    .sort((left, right) =>
+      recentHostility(state, history, right.rival) -
+        recentHostility(state, history, left.rival) ||
+      right.rival.tileShare - left.rival.tileShare ||
+      left.rival.id.localeCompare(right.rival.id)
+    );
+  const counter = counterTargets[0]?.actions
+    .sort((left, right) =>
+      finiteNumber(actionPercent(right), -1) - finiteNumber(actionPercent(left), -1) ||
+      left.id.localeCompare(right.id)
+    )[0];
+  if (counter) return { active: true, action: counter };
+
+  const retreat = safeActions(
+    actions,
+    (action) => action.kind === "boat_retreat",
+  )[0];
+  if (retreat) return { active: true, action: retreat };
+
+  const allowedActions = actions.filter((action) => {
+    if (
+      action.kind === "alliance_request" || action.kind === "target_player" ||
+      action.kind === "upgrade_structure"
+    ) return false;
+    if (isNeutralBoat(action)) return false;
+    const rival = rivalForAction(action, state);
+    return !rival || (
+      !isReciprocalRival(rival) && !rivalIsProtected(state, history, rival)
+    );
+  });
+  return { active: true, allowedActions };
+}
+
 export function boatConversionStalled(state, history) {
   const currentShare = finiteNumber(state?.self?.tileShare, NaN);
   if (!Number.isFinite(currentShare) || currentShare < MIN_CONVERSION_TILE_SHARE) return false;
@@ -767,9 +860,21 @@ export function chooseUtility(actions, state, plan, history) {
   return null;
 }
 
-export function chooseAction(actions, state, plan = null, history = []) {
+export function chooseAction(actions, state, plan = null, history = [], skipDefensiveStance = false) {
   if (!Array.isArray(actions) || actions.length === 0) {
     throw new Error("decision request had no legal actions");
+  }
+  if (!skipDefensiveStance) {
+    const stance = chooseDefensiveStance(actions, state, history);
+    if (stance?.active) {
+      if (stance.action) return withPolicyMarker(stance.action, "ds1");
+      const fallbackActions = stance.allowedActions.length > 0
+        ? stance.allowedActions
+        : actions.filter((action) => action.kind === "hold");
+      if (fallbackActions.length === 0) return null;
+      const fallback = chooseAction(fallbackActions, state, plan, history, true);
+      return withPolicyMarker(fallback, "ds1");
+    }
   }
   const avoid = new Set(avoidActionIDs(history));
   const spawn = safeActions(actions, (action) => action.kind === "spawn")
@@ -838,7 +943,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
 
   const conversionReady = decisionsSince(
     history,
-    (entry) => entry.policyMarker === "cv1",
+    (entry) => hasPolicyMarker(entry, "cv1"),
   ) >= 6;
   if (!collapsing && conversionReady && boatConversionStalled(state, history)) {
     const conversion = disciplinedAttack || chooseUtility(actions, state, plan, history) ||
@@ -935,6 +1040,7 @@ export function recordDecision(history, action, state) {
     incomingAttackerNames,
     mapFingerprint: state.mapFingerprint,
     policyMarker: action.policyMarker ?? null,
+    policyMarkers: policyMarkers(action),
   });
   if (history.length > 320) history.shift();
 }
