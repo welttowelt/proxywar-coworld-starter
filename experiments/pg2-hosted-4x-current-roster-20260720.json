@@ -1,8 +1,7 @@
 {
-  "idempotency_key": "pg2-hosted-4x-top12-roster-v92-20260720",
-  "target": {
-    "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42"
-  },
+  "idempotency_key": "pg2-hosted-4x-top12-pangaea-v92-20260720",
+  "coworld_id": "cow_236e7c2e-acdb-404a-b1b9-41852e5ac658",
+  "variant_id": "tournament-12p-pangaea",
   "roster": [
     { "slot": 0, "player": { "policy_ref": "2ac33c94-19e2-446e-bf25-2ee64a9ec133" } },
     { "slot": 1, "player": { "policy_ref": "cea2bb5b-add0-4dd3-aa32-9442280142c5" } },
@@ -18,5 +17,5 @@
     { "slot": 11, "player": { "policy_ref": "3ed5713d-7940-45f1-b347-76d596b90fe8" } }
   ],
   "num_episodes": 4,
-  "notes": "PG2 diagnostic-only hosted 4/4: current Competition top-12 by live leaderboard (12-seat hosted cap), replace only qd1n:v89 with qd1n:v92; source 42e9a181; no league submission or champion change."
+  "notes": "PG2 diagnostic-only hosted 4/4: current Competition top-12 by live leaderboard in the explicit 12P Pangaea variant (12-seat hosted cap), replace only qd1n:v89 with qd1n:v92; source 42e9a181; no league submission or champion change."
 }

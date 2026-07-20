@@ -67,4 +67,7 @@ The hosted Coworld currently has a twelve-seat cap while the live competition
 has thirteen active champions. The hosted specification therefore uses the
 live top twelve by the official leaderboard and omits only rank-13 docxology;
 it does not silently omit a stronger rival. The next gate is a diagnostic-only
-hosted `4/4` against that declared current top-twelve roster.
+hosted `4/4` against that declared current top-twelve roster in the explicit
+12P Pangaea variant. A league-targeted request was cancelled before dispatch
+when the API resolved it to the two-seat qualifier; it produced zero episodes
+and is not gate evidence.
