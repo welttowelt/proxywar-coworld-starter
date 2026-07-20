@@ -1,13 +1,14 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T22:21:05Z",
+  "updated_at": "2026-07-20T22:27:47Z",
   "cycle_id": "mickey-static-intent-evaluation-20260721",
   "lane": "mickey",
   "policy_lineage": "mickey-mouse-intent",
-  "state": "source_evaluation_only",
+  "state": "source_ready_image_gate",
   "worktree": "/private/tmp/proxywar-mickey-cpu-surrogates-20260721",
   "branch": "codex/mickey-cpu-surrogates",
   "base_commit": "dbb14e75ea70b1285dde9781f8c9f0119a212c06",
+  "source_commit": "ff51e47f19442f1406daaf44a84bef368b4f3864",
   "mission": "Test compact grow or convert intents while the deterministic controller alone selects an offered legal action ID.",
   "guards": {
     "zero_k1z_harm": true,
@@ -25,16 +26,16 @@
     "external_operations_allowed": false
   },
   "evidence_gates": {
-    "red_first": false,
-    "focused_tests": false,
-    "full_source_suite": false,
-    "production_evaluation_isolation": false,
-    "deterministic_legal_action_selection": false,
-    "zero_k1z_harm": false,
+    "red_first": "177/180 before baked-entrypoint correction",
+    "focused_tests": "14/14",
+    "full_source_suite": "182/182",
+    "production_evaluation_isolation": true,
+    "deterministic_legal_action_selection": true,
+    "zero_k1z_harm": true,
     "local_runtime": false,
     "hosted": false,
     "submission": false,
     "champion": false
   },
-  "next_transition": "Implement and verify the smallest evaluation-only static-intent surrogate required by the existing red tests; return the uncommitted diff to Codex Odin."
+  "next_transition": "Build and inspect the exact explicit evaluation images; keep the default production stage free of surrogate source. No Coworld run or live operation before the migration and identity gates open."
 }
