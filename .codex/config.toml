@@ -6,6 +6,14 @@ model_reasoning_effort = "high"
 # ProxyWar is terminal/API/replay driven. Keep this project lean and avoid
 # loading unrelated interaction surfaces. Slack remains explicitly disabled
 # during the global freeze.
+[features]
+browser_use = false
+browser_use_external = false
+browser_use_full_cdp_access = false
+computer_use = false
+in_app_browser = false
+multi_agent = false
+
 [plugins."browser@openai-bundled"]
 enabled = false
 
@@ -25,4 +33,16 @@ enabled = false
 enabled = false
 
 [plugins."slack@openai-curated"]
+enabled = false
+
+[mcp_servers.node_repl]
+enabled = false
+
+[mcp_servers.computer-use]
+enabled = false
+
+[mcp_servers.dune]
+enabled = false
+
+[mcp_servers.openaiDeveloperDocs]
 enabled = false
