@@ -75,6 +75,20 @@ with an asynchronous plan refresh every eight decisions.
 This supports a selector-side experiment, not a pure-LLM rewrite. It does not
 identify Daveey's private implementation.
 
+### Daveey runtime signature
+
+Eight hosted public replays add stronger implementation evidence. Daveey's 881
+non-spawn decisions in that bounded sample were all accepted external exact-
+action calls with `fallbackUsed=false`, median latency 2 ms, p95 4 ms, and
+maximum 35 ms. Their structured reason codes begin `WC24[boot]` or
+`WC24[open]` and describe named phases, prey continuity, milestones, reserve
+ratios, and exact action choices.
+
+The private source remains unavailable, but this wire behavior is effectively
+a fast deterministic controller rather than a synchronous model choosing every
+action ID. It explains the zero fallback flag without turning that flag into a
+competitive metric.
+
 ## Platform context
 
 Auri reported on 2026-07-17 that the live leaderboard uses a 24-round EWMA
@@ -92,7 +106,7 @@ matched gate.
 
 ## Lean next hypothesis
 
-Test one deterministic, selector-side decision-20 scheduler, not another
+Test `OS1`, one deterministic, selector-side decision-20 scheduler, not another
 commitment-only rule or prompt revision:
 
 1. Build one early City.
