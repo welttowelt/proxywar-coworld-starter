@@ -3,17 +3,18 @@
 ## Standing authority
 
 On 2026-07-19 the user granted standing authority for automatic promotion
-after every gate below passes. No additional user `GO` is required. Later that
-day the user retired Hrafn and assigned the full operating lane to Codex Odin.
+after every gate below passes. No additional user `GO` is required. Codex Odin
+owns the full writable `qd1n` lane. Hrafn was later reactivated only as a
+separate runner operator for user-authorized `hrafn-fylking` experiments.
 
 This authority applies only to the sanctioned Coworld/Softmax ProxyWar league:
 
 - Codex Odin may mutate `qd1n` submissions, memberships, and champion state.
   Only one Qd1n experiment owns the runner at a time.
-- Hrafn is retired. Its code, evidence, and live historical policy remain
-  readable, but `hrafn-fylking` is frozen and no Hrafn worker or Odin cycle
-  performs a review, edit, runner, upload, submission, membership, or champion
-  action for that family.
+- Hrafn may edit and run its own `hrafn-fylking` branch under a separate
+  current authorization and its own foreground runner lease. Hrafn cannot
+  mutate `qd1n` and has no upload, submission, membership, or champion
+  authority. Odin does not edit or run Hrafn's branch.
 - Kimi K3 Max is advisory and performs no league mutations.
 
 ## Required states
