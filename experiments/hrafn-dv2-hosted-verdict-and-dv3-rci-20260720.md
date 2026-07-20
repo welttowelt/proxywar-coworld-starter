@@ -74,3 +74,50 @@ Pangaea, Hrafn seat 0, 80 decisions, exact DV2 local fixture:
 This is a mechanism screen, not an outcome win. DV3 may proceed only as a fresh
 hosted diagnostic against real daveey. No league submission or champion change
 is authorized by this evidence.
+
+## DV3 hosted verdict: reject and close the direct-focus arm
+
+Diagnostic:
+
+- label: `hrafn-fylking:v7`
+- policy version: `deed077e-bc37-4c82-9534-86b14d973016`
+- experience request:
+  `xreq_d01dd032-020f-4fa4-9b09-11a6de6b4cc5`
+
+Results:
+
+- Hrafn wins: `0/4`
+- Odin wins: `0/4`
+- daveey wins: `2/4`
+- Auri wins: `2/4`
+- Hrafn direct attacks on daveey: `0`
+- Hrafn harmful actions against K1Z: `0`
+- Hrafn rejects: `0`
+- Hrafn holds: `15` total
+
+The only Hrafn actions containing daveey's player ID were four
+`embargo:<daveey>:stop` cleanup actions. The `25%` selector never reached
+because Hrafn never received a legal direct daveey attack in these four seats.
+Hrafn peaked at only 31.5k-32.5k tiles and was eliminated in every game.
+
+Replay SHA-256:
+
+- `9d830f04b6b8d91f92d2c3face07603dfe63f89bd8b4c69388aaa380e6a00180`
+- `77a1b0fb5c9791333673f4105041667aeb3b1920aef8ca8e12cd3d756074f5db`
+- `7af33048d0ab7887b566fc1ea399fbd882627ab43678a93f493b2c21c575807c`
+- `7c538ec01364da1b5ea5314a611a1f6fc51911a03188155aac933c7708a8be5b`
+
+RCI conclusion: attack commitment was a real DV2 defect, but it was not the
+binding hosted constraint. Spawn geometry and legal reach make a
+single-opponent Hrafn role unreliable. Adding boats, target broadcasts, or
+map-specific pursuit would add machinery without evidence of conversion.
+
+Final decision:
+
+- DV2: rejected
+- DV3: rejected
+- DV4: not created
+- v6/v7: diagnostic uploads only; never submit or champion
+- live Hrafn v5: preserve
+- next experiments should improve general territorial conversion or Odin's
+  own offense; do not continue the direct-daveey specialization
