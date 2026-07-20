@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T16:47:27Z",
+  "updated_at": "2026-07-20T16:48:35Z",
   "cycle_id": "odin-odc1-rci2-20260720",
   "lane": "odin",
   "authority": {
@@ -17,7 +17,7 @@
     "marker_family": "od*",
     "closed": false
   },
-  "state": "diagnostic_uploaded_awaiting_hosted_4_of_4",
+  "state": "hosted_4_of_4_running",
   "runner": {
     "state": "free",
     "required_path": "scripts/proxywar-runner-lease.sh run odin"
@@ -71,6 +71,15 @@
       "receipt": "experiments/audit-qd1n-odc1-rci2-preupload-rci-20260720.json",
       "receipt_sha256": "3d31039a78b553169b747376642d2f0d81add9faea62f12b0e605085a85c0c75",
       "unresolved_violations": 0
+    },
+    "hosted_gate": {
+      "candidate_request_id": "xreq_78ea6880-1bba-4db6-88e1-9008e7f4966a",
+      "parent_request_id": "xreq_21e492fa-fe11-46c2-9e06-0ed289a12d5e",
+      "source_round_number": 575,
+      "variant": "tournament-12p-pangaea",
+      "episodes_per_request": 4,
+      "odin_slot": 7,
+      "only_changed_policy_version": true
     }
   },
   "gates": {
@@ -80,7 +89,7 @@
     "mechanism_screen": "passed_no_competitive_claim",
     "preupload_rci": "passed",
     "diagnostic_uploaded": true,
-    "hosted_4_of_4": "not_run",
+    "hosted_4_of_4": "running",
     "league_regression_20_of_20": "not_run",
     "final_rci": "not_run",
     "submitted": false,

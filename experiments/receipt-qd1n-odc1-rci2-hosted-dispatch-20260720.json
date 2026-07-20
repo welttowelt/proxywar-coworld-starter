@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-20T16:48:35Z",
+  "status": "dispatched",
+  "candidate_source_commit": "23ada8a8cfc1f41b1c798cfcb3b71f6fc2f21587",
+  "candidate_image_id": "sha256:3af909f391a179356876b54e810fd8c197d9cd88432ff4916a6c4e83c50a41a9",
+  "candidate_policy_version_id": "3d498947-09a1-490f-80d4-b893609c2f00",
+  "candidate": {
+    "request_id": "xreq_78ea6880-1bba-4db6-88e1-9008e7f4966a",
+    "request_body": "experiments/request-qd1n-odc1-rci2-hosted-candidate-4x.json",
+    "request_body_sha256": "e6c18b9e822ddc652ecfbe9d45b92ed26305c2b0de00359293f3a340a8e8f195",
+    "status_at_dispatch": "pending"
+  },
+  "parent": {
+    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "request_id": "xreq_21e492fa-fe11-46c2-9e06-0ed289a12d5e",
+    "request_body": "experiments/request-qd1n-odc1-rci2-hosted-parent-4x.json",
+    "request_body_sha256": "bd0899da5b12f105b99009d00b9323bf4216eb61005dc5674b09e29f281c9eb1",
+    "status_at_dispatch": "pending"
+  },
+  "match_contract": {
+    "source_round_id": "round_e63ced7d-10ca-4a03-8be9-319b8020a2f1",
+    "source_round_number": 575,
+    "coworld_id": "cow_236e7c2e-acdb-404a-b1b9-41852e5ac658",
+    "variant_id": "tournament-12p-pangaea",
+    "odin_slot": 7,
+    "episodes_per_request": 4,
+    "same_roster": true,
+    "only_changed_policy_version": true
+  },
+  "league_state": {
+    "candidate_submissions": 0,
+    "candidate_memberships": 0,
+    "preserved_champion": "qd1n:v89",
+    "preserved_champion_membership": "lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6"
+  }
+}
