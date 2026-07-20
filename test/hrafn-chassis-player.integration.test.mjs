@@ -482,6 +482,7 @@ test("idle no-pong socket survives until the delayed first active request", asyn
   );
 
   let connections = 0;
+  let pingCount = 0;
   let response = null;
   let responseElapsedMs = Number.POSITIVE_INFINITY;
   let delayedRequestTimer = null;
@@ -495,6 +496,9 @@ test("idle no-pong socket survives until the delayed first active request", asyn
     }, 8000);
     server.on("connection", (socket) => {
       connections += 1;
+      socket.on("ping", () => {
+        pingCount += 1;
+      });
       if (connections !== 1) return;
       delayedRequestTimer = setTimeout(() => {
         try {
@@ -545,6 +549,10 @@ test("idle no-pong socket survives until the delayed first active request", asyn
   }
 
   assert.equal(connections, 1);
+  assert.ok(
+    pingCount >= 2,
+    `idle no-pong socket received only ${pingCount} heartbeat pings`,
+  );
   assert.equal(response?.selectedLegalActionId, "expand:terra-nullius:35");
   assert.equal(response?.reason, "[K1Z] r4vn:atk:hg35");
   assert.ok(
