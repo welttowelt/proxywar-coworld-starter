@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_clean_chassis_local_qualification",
+  "recorded_at": "2026-07-20T14:32:04Z",
+  "arm": "hrafn-clean-chassis-c2-runtime-liveness",
+  "scope": "Hrafn only",
+  "source": {
+    "preregistration_commit": "3a7957c4731803f322f1af2de0bbb1611812a04a",
+    "source_commit": "9c9ae7b6b3a978d971cde24688aba3995a88bdea",
+    "source_evidence_commit": "7231e67420367b079052dcab1daa7b9c95bf8df2",
+    "branch": "feature/k1z-hrafn-fylking",
+    "pushed_before_build": true
+  },
+  "image": {
+    "tag": "hrafn-clean-chassis-c2:9c9ae7b6",
+    "id": "sha256:79b3646454e53702414f5d6755adf445246e8a9a09af0a9e42ef3db85f3f5ff3",
+    "platform": "linux/amd64",
+    "runtime": "linux/x64",
+    "policy_codename": "hrafn-clean-chassis-c2",
+    "command": [
+      "node",
+      "/app/hrafn-chassis-player.mjs"
+    ],
+    "build": "git archive --format=tar 9c9ae7b6 | docker build --platform linux/amd64 --build-arg POLICY_CODENAME=hrafn-clean-chassis-c2 -f Dockerfile.hrafn-chassis -t hrafn-clean-chassis-c2:9c9ae7b6 -"
+  },
+  "immutable_source_binding": {
+    "all_match_exact_commit": true,
+    "files": {
+      "hrafn-state.mjs": "b36458b78dcf2d1f585b5b62552b17935c9bd837ee1c31f0af40fffd2c355334",
+      "hrafn-safety.mjs": "4016468cb15d7e225adaaac6d049a22cdde5629cc575b44caee207dc2d9d9c05",
+      "hrafn-chassis.mjs": "531c5affbea511c47bff1ba249e5b8811cacd48e76171b33213d9588068c5ae3",
+      "hrafn-chassis-player.mjs": "39e3a658dcbaeea5e7c576b654838dcc1e646b4e44b82bb8b67db1130aa70054",
+      "package.json": "9a3e9fc13997bce19c6601192f30b628bce1888aeb34beff84aaf457a2d82dba",
+      "package-lock.json": "39c03de8cf52b9dbf1a097871698ef1cabee8afac4be11927f3a5c612b2c77ec"
+    }
+  },
+  "rci_runtime_probes": {
+    "exact_parent_red": {
+      "source_commit": "b74fa0d4db8786ca5016b382501fac40dc42a871",
+      "auto_pong": false,
+      "heartbeat_ms": 50,
+      "delayed_request_ms": 225,
+      "connections": 2,
+      "first_socket_closed": true,
+      "stderr": "match socket missed heartbeat pong; reconnecting",
+      "passed": false
+    },
+    "candidate_delayed_first_request": {
+      "auto_pong": false,
+      "heartbeat_ms": 50,
+      "delayed_request_ms": 225,
+      "connections": 1,
+      "turn": 400,
+      "response_ms": 48,
+      "selected_action_id": "expand:terra-nullius:35",
+      "public_reason": "[K1Z] r4vn:atk:hg35",
+      "fallback_used": false,
+      "planner_degraded": false,
+      "stderr_empty": true,
+      "exit_code": 0,
+      "passed": true
+    },
+    "candidate_immediate_request": {
+      "connections": 1,
+      "response_ms": 16,
+      "exit_code": 0,
+      "passed": true
+    },
+    "candidate_real_close_reconnect": {
+      "server_close_code": 1012,
+      "reconnections": 1,
+      "second_connection_response_ms": 7,
+      "exit_code": 0,
+      "passed": true
+    }
+  },
+  "verification": {
+    "targeted_red_then_green": true,
+    "integration_tests": "8/8 passed",
+    "hrafn_chassis_tests": "152/152 passed",
+    "matched_auditor_and_authoritative_replay_tests": "60/60 passed",
+    "repository_tests": "341/341 passed",
+    "container_probe_failures": 0,
+    "coworld_episode_run": false,
+    "runner_lease_required": false,
+    "reason": "These probes exercised only a local mock WebSocket and the exact Hrafn container; no Coworld command ran."
+  },
+  "live_safety_state": {
+    "active_player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "active_player_name": "K1Z Hrafn",
+    "champion_policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+    "champion_label": "hrafn-fylking:v5",
+    "champion_status": "competing active",
+    "champion_is_sole": true,
+    "league_mutation_performed": false
+  },
+  "promotion_state": {
+    "SOURCE_READY": true,
+    "LOCAL_QUALIFIED": true,
+    "DIAGNOSTIC_UPLOADED": false,
+    "HOSTED_PASSED": false,
+    "REGRESSION_PASSED": false,
+    "AUDIT_APPROVED": false,
+    "SUBMITTED": false,
+    "PLACED": false,
+    "CHAMPION_VERIFIED": false,
+    "ROUND_CONFIRMED": false
+  },
+  "authorization_boundary": "This local qualification permits an independent pre-upload cross-audit request. C2 remains runtime-diagnostic-only and cannot be submitted, placed, or championed.",
+  "next_gate": "Obtain independent pre-upload APPROVE on the exact source and image packet before diagnostic upload.",
+  "verdict": "LOCAL_QUALIFIED for a Hrafn-only runtime liveness diagnostic. NO SUBMIT and no champion change."
+}
