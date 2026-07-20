@@ -57,12 +57,17 @@ function parseFileManifest(body) {
   const entries = new Map();
   for (const line of body.split("\n")) {
     if (line === "") continue;
-    const match = line.match(/^([a-f0-9]{64})  ([a-zA-Z0-9._/-]+)$/);
+    // npm scopes and game assets legitimately contain @, spaces, parentheses,
+    // and Unicode punctuation. Parse the fixed hash separator, then enforce a
+    // canonical relative POSIX path instead of maintaining a brittle allowlist.
+    const match = line.match(/^([a-f0-9]{64})  (.+)$/u);
     assert(match, "files.sha256 contains an unsafe line");
     const relative = match[2];
     assert(
       !path.posix.isAbsolute(relative) &&
-      !relative.split("/").some((part) => part === "" || part === "." || part === ".."),
+      path.posix.normalize(relative) === relative &&
+      !relative.split("/").some((part) => part === "" || part === "." || part === "..") &&
+      !/[\\\u0000-\u001f\u007f]/u.test(relative),
       "files.sha256 contains a non-canonical path",
     );
     assert(!entries.has(relative), "files.sha256 contains a duplicate path");

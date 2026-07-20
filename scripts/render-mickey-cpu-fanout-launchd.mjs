@@ -4,8 +4,8 @@
  * Inert renderer only. It never calls launchctl and never creates a job, pod,
  * output directory, plist, daemon, cron entry, or background process.
  *
- * The rendered launchctl-submit argv keeps the existing foreground Mickey
- * runner lease as the supervisor. An operator may execute it only after a
+ * The rendered launchctl-submit argv keeps the transferred foreground Hrafn
+ * runner lease as the supervisor for the Mickey policy. An operator may execute it only after a
  * separate explicit approval for launchd use.
  */
 
@@ -19,7 +19,6 @@ import { preflightManifest } from "./run-mickey-cpu-fanout.mjs";
 const SCRIPT_PATH = fileURLToPath(import.meta.url);
 const REPO_ROOT = path.resolve(path.dirname(SCRIPT_PATH), "..");
 const FANOUT = path.join(REPO_ROOT, "scripts", "run-mickey-cpu-fanout.mjs");
-const RUNNER = path.join(REPO_ROOT, "scripts", "proxywar-runner-lease.sh");
 
 function parseArgs(argv) {
   const options = {
@@ -57,6 +56,7 @@ export async function render(argv) {
   const options = parseArgs(argv);
   const preflight = await preflightManifest(options.manifest, options.manifestSha256);
   const runpodctl = options.runpodctl ?? preflight.document.runpodctl.path;
+  const runner = preflight.document.runner_lease.path;
   if (runpodctl !== preflight.document.runpodctl.path) {
     throw new Error("--runpodctl must equal the path/hash-pinned manifest binary");
   }
@@ -68,6 +68,7 @@ export async function render(argv) {
   const parentInfo = await lstat(parent).catch(() => null);
   if (!parentInfo?.isDirectory() || parentInfo.isSymbolicLink()) throw new Error("output parent is missing or unsafe");
   await requireAbsoluteExistingFile(runpodctl, "--runpodctl");
+  await requireAbsoluteExistingFile(runner, "manifest.runner_lease.path");
   if (options.resumeFrom !== null) {
     if (!path.isAbsolute(options.resumeFrom)) throw new Error("--resume-from must be absolute");
     const resumeInfo = await lstat(options.resumeFrom).catch(() => null);
@@ -113,10 +114,10 @@ export async function render(argv) {
     `RUNPODCTL_BIN=${runpodctl}`,
     "SSH_BIN=/usr/bin/ssh",
     "SCP_BIN=/usr/bin/scp",
-    `PROXYWAR_RUNNER_LEASE_SCRIPT=${RUNNER}`,
-    RUNNER,
+    `PROXYWAR_RUNNER_LEASE_SCRIPT=${runner}`,
+    runner,
     "run",
-    "mickey",
+    "hrafn",
     preflight.document.run_id,
     "--output",
     options.output,
@@ -138,7 +139,7 @@ export async function render(argv) {
     stderr_path: stderrPath,
     command: "/bin/launchctl",
     argv: launchctlArgs,
-    warning: "Do not execute without explicit approval; normal execution uses the existing foreground Mickey runner lease.",
+    warning: "Do not execute without explicit approval; normal execution uses the transferred foreground Hrafn runner lease for the Mickey policy.",
   };
 }
 

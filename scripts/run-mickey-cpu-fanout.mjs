@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { spawn } from "node:child_process";
-import { createHash, randomUUID } from "node:crypto";
+import { createHash, createHmac, randomUUID, timingSafeEqual } from "node:crypto";
 import {
   cp,
   lstat,
@@ -28,11 +28,11 @@ const REMOTE_VERIFIER = path.join(
   "scripts",
   "verify-mickey-cpu-fanout-bundle.mjs",
 );
-const DEFAULT_RUNNER_LEASE = path.join(
-  REPO_ROOT,
-  "scripts",
-  "proxywar-runner-lease.sh",
-);
+// The user transferred the Mac's existing Hrafn operator slot to this
+// incubator.  Mickey is the policy identity; Hrafn remains the machine-level
+// foreground lease understood by the shared runner guard.
+const RUNNER_OPERATOR_LANE = "hrafn";
+const RUNNER_STATE_ROOT = "/Users/olifreuler/.stormforge/proxywar-operators";
 
 const SHA256 = /^[a-f0-9]{64}$/;
 const IMAGE_ID = /^sha256:[a-f0-9]{64}$/;
@@ -80,9 +80,12 @@ const REQUIRED_SHARED_FILES = Object.freeze([
 ]);
 const FORBIDDEN_KEY = /(api.?key|secret|password|credential|access.?token|private.?key)/i;
 const RUNPODCTL_SOURCE_REPOSITORY = "https://github.com/runpod/runpodctl";
+const RUNPODCTL_UPSTREAM_BASE_COMMIT = "3928df943d67c89e66b4945bd5c8b38ffd512767";
+const RUNPODCTL_PATCHED_SOURCE_COMMIT = "d4296baa6edf37f098d58e9d92f7b496ee4bfaab";
 const RUNPODCTL_PATCH_ID = "mickey-cpu-terminate-after-v1";
 const RUNPODCTL_CREATE_INTERFACE = "legacy-graphql-json-v1";
 const RUNPODCTL_REQUEST_HASH_ALGORITHM = "sorted-json-sha256-v1";
+const SSH_HOST_KEY_ATTESTATION_DOMAIN = "mickey-ssh-host-key-v1";
 
 function usage() {
   return `Usage:
@@ -99,7 +102,7 @@ Options:
   --help          Print this help.
 
 Real execution must be the child of:
-  scripts/proxywar-runner-lease.sh run mickey RUN_ID --output NEW_DIR -- <command>
+  scripts/proxywar-runner-lease.sh run hrafn RUN_ID --output NEW_DIR -- <command>
 `;
 }
 
@@ -329,6 +332,15 @@ export function derivePairOrder(nonce, armId, pairId) {
   return { digest, order };
 }
 
+export function derivePodControlNonce(nonce, armId, pairId) {
+  assertString(nonce, "randomization.nonce", SHA256);
+  assertString(armId, "arm id", SAFE_ID);
+  assertString(pairId, "pair id", SAFE_ID);
+  return createHash("sha256")
+    .update(`${nonce}\n${armId}\n${pairId}\ncontrol-plane-ssh-v1\n`, "utf8")
+    .digest("hex");
+}
+
 function validatePair(pair, arm, randomization, index) {
   const label = `arms[${arm.__index}].pairs[${index}]`;
   exactKeys(
@@ -410,6 +422,7 @@ export function validateManifest(document) {
       "preregistered_at",
       "evidence_scope",
       "randomization",
+      "runner_lease",
       "runpodctl",
       "pod",
       "source_reach_receipt",
@@ -435,9 +448,24 @@ export function validateManifest(document) {
   }
   assertString(document.randomization.nonce, "manifest.randomization.nonce", SHA256);
 
+  exactKeys(document.runner_lease, ["path", "sha256", "operator_lane", "state_root"], "manifest.runner_lease");
+  validateHashedFileReference(
+    { path: document.runner_lease.path, sha256: document.runner_lease.sha256 },
+    "manifest.runner_lease script",
+  );
+  if (document.runner_lease.operator_lane !== RUNNER_OPERATOR_LANE) {
+    throw new Error(`manifest.runner_lease.operator_lane must be ${RUNNER_OPERATOR_LANE}`);
+  }
+  if (document.runner_lease.state_root !== RUNNER_STATE_ROOT) {
+    throw new Error(`manifest.runner_lease.state_root must be ${RUNNER_STATE_ROOT}`);
+  }
+
   exactKeys(
     document.runpodctl,
-    ["path", "sha256", "source_repository", "source_commit", "patch_id", "create_interface"],
+    [
+      "path", "sha256", "source_repository", "upstream_base_commit",
+      "source_commit", "patch_path", "patch_sha256", "patch_id", "create_interface",
+    ],
     "manifest.runpodctl",
   );
   validateHashedFileReference(
@@ -446,12 +474,17 @@ export function validateManifest(document) {
   );
   if (
     document.runpodctl.source_repository !== RUNPODCTL_SOURCE_REPOSITORY ||
+    document.runpodctl.upstream_base_commit !== RUNPODCTL_UPSTREAM_BASE_COMMIT ||
+    document.runpodctl.source_commit !== RUNPODCTL_PATCHED_SOURCE_COMMIT ||
     document.runpodctl.patch_id !== RUNPODCTL_PATCH_ID ||
     document.runpodctl.create_interface !== RUNPODCTL_CREATE_INTERFACE
   ) {
     throw new Error("manifest.runpodctl must identify the pinned Mickey CPU termination fork");
   }
-  assertString(document.runpodctl.source_commit, "manifest.runpodctl.source_commit", SOURCE_COMMIT);
+  validateHashedFileReference(
+    { path: document.runpodctl.patch_path, sha256: document.runpodctl.patch_sha256 },
+    "manifest.runpodctl patch",
+  );
 
   exactKeys(
     document.pod,
@@ -462,6 +495,7 @@ export function validateManifest(document) {
       "cloud_type",
       "gpu_count",
       "max_cost_per_hour",
+      "max_total_cost_usd",
       "vcpu_count",
       "memory_gb",
       "container_disk_gb",
@@ -485,6 +519,9 @@ export function validateManifest(document) {
   if (document.pod.max_cost_per_hour !== 0.1) {
     throw new Error("manifest.pod.max_cost_per_hour must be exactly 0.10");
   }
+  if (document.pod.max_total_cost_usd !== 3.2) {
+    throw new Error("manifest.pod.max_total_cost_usd must be exactly 3.20 for this bounded screen");
+  }
   if (document.pod.vcpu_count !== 2 || document.pod.memory_gb !== 4) {
     throw new Error("manifest pod must request exactly 2 vCPU and 4GB system memory");
   }
@@ -496,7 +533,7 @@ export function validateManifest(document) {
   ) {
     throw new Error("manifest pod must use 20GB ephemeral disk, no volume, no network volume, and a 2h termination");
   }
-  assertInteger(document.pod.max_concurrency, "manifest.pod.max_concurrency", 1, 32);
+  assertInteger(document.pod.max_concurrency, "manifest.pod.max_concurrency", 1, 4);
   validateHashedFileReference(document.source_reach_receipt, "manifest.source_reach_receipt");
 
   exactKeys(
@@ -593,6 +630,12 @@ export function validateManifest(document) {
   }
   if (document.pod.max_concurrency > flattenedPairs.length) {
     throw new Error("manifest.pod.max_concurrency cannot exceed the number of pairs");
+  }
+  const worstCaseCost = flattenedPairs.length *
+    document.pod.max_cost_per_hour *
+    (document.pod.terminate_after_seconds / 3600);
+  if (worstCaseCost > document.pod.max_total_cost_usd + Number.EPSILON) {
+    throw new Error(`manifest worst-case pod cost ${worstCaseCost.toFixed(2)} exceeds total cap`);
   }
   return { document, pairs: flattenedPairs };
 }
@@ -730,10 +773,24 @@ export async function preflightManifest(manifestPath, expectedSha256) {
     { path: document.runpodctl.path, sha256: document.runpodctl.sha256 },
     "pinned runpodctl binary",
   );
+  const runpodctlBody = await readFile(document.runpodctl.path);
+  if (!runpodctlBody.includes(Buffer.from(`vcs.revision=${document.runpodctl.source_commit}`, "utf8"))) {
+    throw new Error("pinned runpodctl binary does not embed the declared patched source commit");
+  }
+  await verifyHashedLocalFile(
+    { path: document.runpodctl.patch_path, sha256: document.runpodctl.patch_sha256 },
+    "pinned runpodctl patch",
+  );
   const runpodctlInfo = await stat(document.runpodctl.path);
   if ((runpodctlInfo.mode & 0o111) === 0) {
     throw new Error("pinned runpodctl binary must be executable");
   }
+  await verifyHashedLocalFile(
+    { path: document.runner_lease.path, sha256: document.runner_lease.sha256 },
+    "pinned Hrafn runner lease",
+  );
+  const runnerInfo = await stat(document.runner_lease.path);
+  if ((runnerInfo.mode & 0o111) === 0) throw new Error("pinned Hrafn runner lease must be executable");
   const localArtifacts = new Map();
   for (const { arm } of validated.pairs) {
     for (const [label, reference] of [["bundle", arm.bundle], ["extractor", arm.extractor]]) {
@@ -797,6 +854,8 @@ export function buildPodCreateArgs(manifest, armId, pairId, now = Date.now()) {
     "--volumePath",
     "/workspace",
     "--startSSH",
+    "--env",
+    `MICKEY_CONTROL_PLANE_NONCE=${derivePodControlNonce(manifest.randomization.nonce, armId, pairId)}`,
     "--terminateAfter",
     terminateAfter,
     "-o",
@@ -806,7 +865,7 @@ export function buildPodCreateArgs(manifest, armId, pairId, now = Date.now()) {
 
 export function validateCreatedPod(
   record,
-  { expectedName, preexistingIds, maxCost = 0.1 },
+  { expectedName, preexistingIds, maxCost = 0.1, requireNetworkVolumeInspection = false },
 ) {
   if (!isObject(record)) throw new Error("RunPod create response must be an object");
   assertString(record.id, "created pod id", /^[a-zA-Z0-9][a-zA-Z0-9-]{2,79}$/);
@@ -830,6 +889,27 @@ export function validateCreatedPod(
       }
     }
   }
+  if (requireNetworkVolumeInspection) {
+    const inspection = record.networkVolumeInspection;
+    if (!isObject(inspection) || inspection.includeNetworkVolumeRequested !== true) {
+      throw new Error("created pod lacks explicit network-volume inspection");
+    }
+    const idObservation = inspection.networkVolumeId;
+    const volumeObservation = inspection.networkVolume;
+    if (!isObject(idObservation) || !isObject(volumeObservation)) {
+      throw new Error("created pod network-volume inspection is malformed");
+    }
+    const observations = [idObservation, volumeObservation].filter((entry) => entry.present === true);
+    if (observations.length === 0) {
+      throw new Error("RunPod omitted both network-volume fields from explicit inspection");
+    }
+    if (idObservation.present === true && idObservation.value !== null && idObservation.value !== "") {
+      throw new Error("created pod has a networkVolumeId");
+    }
+    if (volumeObservation.present === true && volumeObservation.value !== null) {
+      throw new Error("created pod has an attached networkVolume");
+    }
+  }
   return record.id;
 }
 
@@ -847,7 +927,7 @@ export function canonicalRequestInputSha256(value) {
 
 export function validateCreateRequestAttestation(
   record,
-  { manifest, expectedName, expectedTerminateAfter },
+  { manifest, armId, pairId, expectedName, expectedTerminateAfter },
 ) {
   if (!isObject(record)) throw new Error("RunPod create response must be an object");
   if (record.requestInputHashAlgorithm !== RUNPODCTL_REQUEST_HASH_ALGORITHM) {
@@ -892,7 +972,10 @@ export function validateCreateRequestAttestation(
     deployCost: manifest.pod.max_cost_per_hour,
     dockerArgs: "",
     dataCenterId: "",
-    env: [],
+    env: [{
+      key: "MICKEY_CONTROL_PLANE_NONCE",
+      value: derivePodControlNonce(manifest.randomization.nonce, armId, pairId),
+    }],
     gpuCount: manifest.pod.gpu_count,
     gpuTypeId: "",
     imageName: manifest.pod.image,
@@ -1045,32 +1128,145 @@ async function writeJsonAtomic(filePath, value) {
   await rename(temporary, filePath);
 }
 
-async function appendEvent(output, event, detail = {}) {
-  const entry = {
-    timestamp: new Date().toISOString(),
-    component: "mickey-cpu-fanout",
-    event,
-    ...detail,
-  };
-  const eventPath = path.join(output, "evidence", "events.jsonl");
-  const prior = await readFile(eventPath, "utf8").catch(() => "");
-  await writeFile(`${eventPath}.part`, `${prior}${JSON.stringify(entry)}\n`, { mode: 0o600 });
-  await rename(`${eventPath}.part`, eventPath);
+let eventAppendTail = Promise.resolve();
+
+export function appendEvent(output, event, detail = {}) {
+  const operation = eventAppendTail.then(async () => {
+    const entry = {
+      timestamp: new Date().toISOString(),
+      component: "mickey-cpu-fanout",
+      event,
+      ...detail,
+    };
+    const eventPath = path.join(output, "evidence", "events.jsonl");
+    const prior = await readFile(eventPath, "utf8").catch(() => "");
+    const temporary = `${eventPath}.part-${process.pid}-${randomUUID()}`;
+    await writeFile(temporary, `${prior}${JSON.stringify(entry)}\n`, { mode: 0o600 });
+    await rename(temporary, eventPath);
+  });
+  eventAppendTail = operation.catch(() => {});
+  return operation;
 }
 
-async function assertClaimedMickeyOutput(output, runId, runnerLease, executor) {
+async function readSecureRunnerStateFile(lockRoot, name, { allowEmpty = false } = {}) {
+  const filePath = path.join(lockRoot, name);
+  const info = await lstat(filePath).catch(() => null);
+  if (!info?.isFile() || info.isSymbolicLink()) throw new Error(`runner state ${name} is missing or unsafe`);
+  if (await realpath(filePath) !== filePath) throw new Error(`runner state ${name} must already be canonical`);
+  if ((info.mode & 0o077) !== 0) throw new Error(`runner state ${name} permissions are too broad`);
+  if (typeof process.getuid === "function" && info.uid !== process.getuid()) {
+    throw new Error(`runner state ${name} is not owned by this operator`);
+  }
+  const body = await readFile(filePath, "utf8");
+  if (body.includes("\0") || (!allowEmpty && body.length === 0)) {
+    throw new Error(`runner state ${name} has invalid contents`);
+  }
+  return body;
+}
+
+function oneLine(body, label) {
+  if (!body.endsWith("\n") || body.slice(0, -1).includes("\n")) {
+    throw new Error(`${label} must contain exactly one newline-terminated line`);
+  }
+  return body.slice(0, -1);
+}
+
+function runnerClaimDigest(token, output, device, inode) {
+  return createHash("sha256")
+    .update(token, "utf8")
+    .update("\0", "utf8")
+    .update(output, "utf8")
+    .update("\0", "utf8")
+    .update(device, "utf8")
+    .update("\0", "utf8")
+    .update(inode, "utf8")
+    .digest("hex");
+}
+
+export async function validateClaimedOutputShape(output, runId, stateRoot = RUNNER_STATE_ROOT) {
   assertAbsoluteFilePath(output, "--output");
+  if (stateRoot !== RUNNER_STATE_ROOT) throw new Error("runner state root is not the pinned local operator root");
+  const stateRootInfo = await lstat(stateRoot).catch(() => null);
+  if (!stateRootInfo?.isDirectory() || stateRootInfo.isSymbolicLink() || await realpath(stateRoot) !== stateRoot) {
+    throw new Error("runner state root is missing or unsafe");
+  }
+  if (typeof process.getuid === "function" && stateRootInfo.uid !== process.getuid()) {
+    throw new Error("runner state root is not owned by this operator");
+  }
+  const lockRoot = path.join(stateRoot, "runner.lock");
+  const lockInfo = await lstat(lockRoot).catch(() => null);
+  if (
+    !lockInfo?.isDirectory() ||
+    lockInfo.isSymbolicLink() ||
+    await realpath(lockRoot) !== lockRoot ||
+    (lockInfo.mode & 0o077) !== 0 ||
+    (typeof process.getuid === "function" && lockInfo.uid !== process.getuid())
+  ) {
+    throw new Error("active runner lock is missing or unsafe");
+  }
   const info = await lstat(output).catch(() => null);
   if (!info?.isDirectory() || info.isSymbolicLink()) throw new Error("--output must be the runner-claimed directory");
-  const marker = await readFile(path.join(output, ".proxywar-runner-claim"), "utf8").catch(() => "");
-  if (!marker.includes("lane=mickey\n") || !marker.includes(`run_id=${runId}\n`)) {
+  if (await realpath(output) !== output) throw new Error("--output must already be canonical");
+  const markerPath = path.join(output, ".proxywar-runner-claim");
+  const markerInfo = await lstat(markerPath).catch(() => null);
+  if (!markerInfo?.isFile() || markerInfo.isSymbolicLink()) throw new Error("runner claim marker is missing or unsafe");
+  if ((markerInfo.mode & 0o077) !== 0 || (typeof process.getuid === "function" && markerInfo.uid !== process.getuid())) {
+    throw new Error("runner claim marker permissions or ownership are unsafe");
+  }
+  const body = await readFile(markerPath, "utf8");
+  const fields = new Map();
+  for (const line of body.split("\n")) {
+    if (line === "") continue;
+    const separator = line.indexOf("=");
+    if (separator < 1) throw new Error("runner claim marker contains an invalid line");
+    const key = line.slice(0, separator);
+    if (fields.has(key)) throw new Error("runner claim marker contains a duplicate field");
+    fields.set(key, line.slice(separator + 1));
+  }
+  const expectedKeys = ["schema_version", "lane", "run_id", "claim_digest", "device", "inode", "path"];
+  const device = String(info.dev);
+  const inode = String(info.ino);
+  const schemaVersion = oneLine(await readSecureRunnerStateFile(lockRoot, "schema_version"), "runner schema_version");
+  const lane = oneLine(await readSecureRunnerStateFile(lockRoot, "owner"), "runner owner");
+  const lockedRunId = oneLine(await readSecureRunnerStateFile(lockRoot, "run_id"), "runner run_id");
+  const token = oneLine(await readSecureRunnerStateFile(lockRoot, "token"), "runner token");
+  const outputs = await readSecureRunnerStateFile(lockRoot, "outputs");
+  const outputClaims = await readSecureRunnerStateFile(lockRoot, "output_claims");
+  await readSecureRunnerStateFile(lockRoot, "ready", { allowEmpty: true });
+  if (
+    schemaVersion !== "2" ||
+    lane !== RUNNER_OPERATOR_LANE ||
+    lockedRunId !== runId ||
+    !/^[a-z0-9-]{16,128}$/.test(token) ||
+    outputs !== `${output}\n` ||
+    outputClaims !== `${output}\t${device}\t${inode}\n`
+  ) {
+    throw new Error("active runner state does not bind the exact output claim");
+  }
+  const expectedDigest = runnerClaimDigest(token, output, device, inode);
+  if (
+    fields.size !== expectedKeys.length ||
+    expectedKeys.some((key) => !fields.has(key)) ||
+    fields.get("schema_version") !== "1" ||
+    fields.get("lane") !== RUNNER_OPERATOR_LANE ||
+    fields.get("run_id") !== runId ||
+    fields.get("path") !== output ||
+    fields.get("claim_digest") !== expectedDigest ||
+    fields.get("device") !== device ||
+    fields.get("inode") !== inode
+  ) {
     throw new Error("output is not claimed by the exact Mickey runner lease/run ID");
   }
+  return Object.fromEntries(fields);
+}
+
+async function assertClaimedMickeyOutput(output, runId, runnerLease, stateRoot, executor) {
+  await validateClaimedOutputShape(output, runId, stateRoot);
   const statusResult = await executor.run(runnerLease, ["status", "--json"], { label: "runner-status" });
   const status = parseJsonOutput(statusResult, "runner status");
   if (
     status.state !== "active" ||
-    status.owner !== "mickey" ||
+    status.owner !== RUNNER_OPERATOR_LANE ||
     status.run_id !== runId ||
     status.supervisor_alive !== true ||
     status.child_alive !== true ||
@@ -1111,13 +1307,17 @@ function pairContract(preflight, arm, pair) {
   };
 }
 
-function sshArgs(info, knownHosts) {
+function sshArgs(info, knownHosts, { bootstrap = false } = {}) {
   return [
     "-i", info.ssh_key.path,
     "-p", String(info.port),
     "-o", "BatchMode=yes",
-    "-o", "StrictHostKeyChecking=accept-new",
+    "-o", `StrictHostKeyChecking=${bootstrap ? "accept-new" : "yes"}`,
     "-o", `UserKnownHostsFile=${knownHosts}`,
+    "-o", "IdentitiesOnly=yes",
+    "-o", "HostKeyAlgorithms=ssh-ed25519",
+    "-o", "PasswordAuthentication=no",
+    "-o", "KbdInteractiveAuthentication=no",
     "-o", "ConnectTimeout=20",
     "-o", "ServerAliveInterval=20",
     "-o", "ServerAliveCountMax=9",
@@ -1129,17 +1329,23 @@ function scpArgs(info, knownHosts) {
     "-i", info.ssh_key.path,
     "-P", String(info.port),
     "-o", "BatchMode=yes",
-    "-o", "StrictHostKeyChecking=accept-new",
+    "-o", "StrictHostKeyChecking=yes",
     "-o", `UserKnownHostsFile=${knownHosts}`,
+    "-o", "IdentitiesOnly=yes",
+    "-o", "HostKeyAlgorithms=ssh-ed25519",
+    "-o", "PasswordAuthentication=no",
+    "-o", "KbdInteractiveAuthentication=no",
     "-o", "ConnectTimeout=20",
     "-o", "ServerAliveInterval=20",
     "-o", "ServerAliveCountMax=9",
   ];
 }
 
-function validateSshInfo(info) {
+export function validateSshInfo(info, expectedPodId, expectedName) {
   if (
     !isObject(info) ||
+    info.id !== expectedPodId ||
+    info.name !== expectedName ||
     typeof info.ip !== "string" ||
     !/^[a-zA-Z0-9.:-]+$/.test(info.ip) ||
     !Number.isInteger(info.port) ||
@@ -1147,11 +1353,70 @@ function validateSshInfo(info) {
     info.port > 65535 ||
     !isObject(info.ssh_key) ||
     typeof info.ssh_key.path !== "string" ||
-    !path.isAbsolute(info.ssh_key.path)
+    !path.isAbsolute(info.ssh_key.path) ||
+    info.ssh_key.exists !== true ||
+    info.ssh_key.source !== "runpodctl doctor" ||
+    info.ssh_key.in_account !== true ||
+    typeof info.ssh_key.fingerprint !== "string" ||
+    !/^SHA256:[A-Za-z0-9+/]{43}$/.test(info.ssh_key.fingerprint)
   ) {
     throw new Error("runpodctl ssh info returned an unsafe or incomplete record");
   }
   return info;
+}
+
+export function parseSshKeygenFingerprint(stdout) {
+  if (typeof stdout !== "string") throw new Error("ssh-keygen output must be text");
+  const lines = stdout.trim().split(/\r?\n/).filter(Boolean);
+  if (lines.length !== 1) throw new Error("known_hosts must contain exactly one negotiated host key");
+  const match = lines[0].match(/^256 (SHA256:[A-Za-z0-9+/]{43}) .+ \(ED25519\)$/);
+  if (!match) throw new Error("known_hosts does not contain one ED25519 SHA-256 fingerprint");
+  return match[1];
+}
+
+function sshHostKeyHmacMessage(fingerprint) {
+  return `${SSH_HOST_KEY_ATTESTATION_DOMAIN}\n${fingerprint}\n`;
+}
+
+export function validateSshHostKeyAttestation(challenge, knownHostsFingerprint, controlNonce) {
+  if (!isObject(challenge)) throw new Error("SSH host-key attestation must be an object");
+  exactKeys(challenge, ["schema_version", "fingerprint", "hmac_sha256"], "SSH host-key attestation");
+  assertString(controlNonce, "SSH control-plane nonce", SHA256);
+  assertString(knownHostsFingerprint, "known_hosts fingerprint", /^SHA256:[A-Za-z0-9+/]{43}$/);
+  if (
+    challenge.schema_version !== 1 ||
+    challenge.fingerprint !== knownHostsFingerprint ||
+    !SHA256.test(challenge.hmac_sha256 ?? "")
+  ) {
+    throw new Error("SSH endpoint host key is not bound to the RunPod control-plane nonce");
+  }
+  const expected = createHmac("sha256", Buffer.from(controlNonce, "hex"))
+    .update(sshHostKeyHmacMessage(knownHostsFingerprint), "utf8")
+    .digest();
+  const actual = Buffer.from(challenge.hmac_sha256, "hex");
+  if (actual.length !== expected.length || !timingSafeEqual(actual, expected)) {
+    throw new Error("SSH host-key attestation HMAC is invalid");
+  }
+  return {
+    schema_version: 1,
+    method: "runpod-control-plane-hmac-host-key-v1",
+    fingerprint: knownHostsFingerprint,
+    hmac_sha256: challenge.hmac_sha256,
+  };
+}
+
+function remoteSshHostKeyAttestationCommand() {
+  const code = [
+    "import hashlib,hmac,json,os,subprocess",
+    "parts=subprocess.check_output(['ssh-keygen','-lf','/etc/ssh/ssh_host_ed25519_key.pub','-E','sha256'],text=True).split()",
+    "assert len(parts)>=2 and parts[0]=='256' and parts[1].startswith('SHA256:')",
+    "fingerprint=parts[1]",
+    `message=${JSON.stringify(`${SSH_HOST_KEY_ATTESTATION_DOMAIN}\n`)}+fingerprint+'\\n'`,
+    "key=bytes.fromhex(os.environ['MICKEY_CONTROL_PLANE_NONCE'])",
+    "digest=hmac.new(key,message.encode(),hashlib.sha256).hexdigest()",
+    "print(json.dumps({'schema_version':1,'fingerprint':fingerprint,'hmac_sha256':digest},separators=(',',':')))",
+  ].join(";");
+  return `python3 -c ${remoteQuote(code)}`;
 }
 
 async function delay(milliseconds, stopState) {
@@ -1162,7 +1427,7 @@ async function delay(milliseconds, stopState) {
   }
 }
 
-async function waitForSsh(runpodctl, podId, executor, stopState, label) {
+async function waitForSsh(runpodctl, podId, expectedName, executor, stopState, label) {
   let last = null;
   for (let attempt = 1; attempt <= 60; attempt += 1) {
     if (stopState.requested) throw new Error("fanout stopping during SSH readiness");
@@ -1174,7 +1439,7 @@ async function waitForSsh(runpodctl, podId, executor, stopState, label) {
     last = result;
     if (result.code === 0) {
       try {
-        return validateSshInfo(JSON.parse(result.stdout));
+        return validateSshInfo(JSON.parse(result.stdout), podId, expectedName);
       } catch {
         // Keep polling until the full identity is available.
       }
@@ -1396,6 +1661,8 @@ async function runOnePair({
     }
     const requestAttestation = validateCreateRequestAttestation(createRecord, {
       manifest: preflight.document,
+      armId: arm.id,
+      pairId: pair.id,
       expectedName: name,
       expectedTerminateAfter,
     });
@@ -1440,19 +1707,73 @@ async function runOnePair({
     if (got.id !== podId || got.name !== name) throw new Error("RunPod get returned a different pod identity");
     validateCreatedPod(
       { ...createRecord, ...listed[0], ...got, id: podId },
-      { expectedName: name, preexistingIds },
+      { expectedName: name, preexistingIds, requireNetworkVolumeInspection: true },
     );
 
     state.pairs[pair.id].phase = "ssh-ready";
     await writeJsonAtomic(path.join(output, "state.json"), state);
-    const info = await waitForSsh(tools.runpodctl, podId, executor, stopState, pair.id);
+    const info = await waitForSsh(tools.runpodctl, podId, name, executor, stopState, pair.id);
     await writeJsonAtomic(path.join(activeRoot, "ssh-info.json"), info);
     const keyInfo = await lstat(info.ssh_key.path).catch(() => null);
     if (!keyInfo?.isFile() || keyInfo.isSymbolicLink()) throw new Error("SSH key path is missing or unsafe");
+    if (await realpath(info.ssh_key.path) !== info.ssh_key.path) throw new Error("SSH key path must already be canonical");
+    if ((keyInfo.mode & 0o077) !== 0) throw new Error("SSH private key permissions are too broad");
+    if (typeof process.getuid === "function" && keyInfo.uid !== process.getuid()) {
+      throw new Error("SSH private key is not owned by this operator");
+    }
     const knownHosts = path.join(activeRoot, "known_hosts");
+    const remote = `root@${info.ip}`;
+    const controlNonce = derivePodControlNonce(
+      preflight.document.randomization.nonce,
+      arm.id,
+      pair.id,
+    );
+    const bootstrapResult = await executor.run(
+      tools.ssh,
+      [
+        ...sshArgs(info, knownHosts, { bootstrap: true }),
+        remote,
+        remoteSshHostKeyAttestationCommand(),
+      ],
+      { label: `${pair.id}-host-key-attestation-challenge` },
+    );
+    const knownHostsInfo = await lstat(knownHosts).catch(() => null);
+    if (
+      !knownHostsInfo?.isFile() ||
+      knownHostsInfo.isSymbolicLink() ||
+      knownHostsInfo.size < 20 ||
+      (knownHostsInfo.mode & 0o077) !== 0 ||
+      (typeof process.getuid === "function" && knownHostsInfo.uid !== process.getuid())
+    ) {
+      throw new Error("SSH bootstrap did not produce a safe pinned host-key file");
+    }
+    const fingerprintResult = await executor.run(
+      tools.sshKeygen,
+      ["-lf", knownHosts, "-E", "sha256"],
+      { label: `${pair.id}-known-host-fingerprint` },
+    );
+    const knownHostsFingerprint = parseSshKeygenFingerprint(fingerprintResult.stdout);
+    let hostKeyChallenge;
+    try {
+      hostKeyChallenge = JSON.parse(bootstrapResult.stdout);
+    } catch (error) {
+      throw new Error(`SSH host-key attestation did not return exact JSON: ${error.message}`);
+    }
+    const hostKeyAttestation = validateSshHostKeyAttestation(
+      hostKeyChallenge,
+      knownHostsFingerprint,
+      controlNonce,
+    );
+    await writeJsonAtomic(path.join(activeRoot, "ssh-host-key-attestation.json"), {
+      ...hostKeyAttestation,
+      pod_id: podId,
+      pod_name: name,
+      ssh_account_key_fingerprint: info.ssh_key.fingerprint,
+      known_hosts_sha256: await sha256File(knownHosts),
+      strict_followup_required: true,
+    });
     const ssh = sshArgs(info, knownHosts);
     const scp = scpArgs(info, knownHosts);
-    const remote = `root@${info.ip}`;
     const remoteRoot = `/workspace/proxywar-mickey-fanout-${preflight.document.run_id}-${pair.id}`;
     const remoteStage = `${remoteRoot}/stage`;
     const bundleRoot = `${remoteRoot}/extracted/proxywar-runpod-bundle`;
@@ -1671,13 +1992,19 @@ export async function runCli(argv) {
   }
 
   const output = options.output;
+  await validateClaimedOutputShape(
+    output,
+    preflight.document.run_id,
+    preflight.document.runner_lease.state_root,
+  );
   const directories = ["active", "completed", "quarantine", "evidence", "control", "command-logs"];
   for (const directory of directories) await mkdir(path.join(output, directory), { recursive: true, mode: 0o700 });
   const executor = new CommandExecutor(path.join(output, "command-logs"));
   const tools = {
     runpodctl: preflight.document.runpodctl.path,
-    ssh: process.env.SSH_BIN || "/usr/bin/ssh",
-    scp: process.env.SCP_BIN || "/usr/bin/scp",
+    ssh: "/usr/bin/ssh",
+    scp: "/usr/bin/scp",
+    sshKeygen: "/usr/bin/ssh-keygen",
   };
   if (
     process.env.RUNPODCTL_BIN &&
@@ -1685,8 +2012,26 @@ export async function runCli(argv) {
   ) {
     throw new Error("RUNPODCTL_BIN override does not match the hash-pinned manifest binary");
   }
-  const runnerLease = process.env.PROXYWAR_RUNNER_LEASE_SCRIPT || DEFAULT_RUNNER_LEASE;
-  await assertClaimedMickeyOutput(output, preflight.document.run_id, runnerLease, executor);
+  const runnerLease = preflight.document.runner_lease.path;
+  if (
+    process.env.PROXYWAR_RUNNER_LEASE_SCRIPT &&
+    path.resolve(process.env.PROXYWAR_RUNNER_LEASE_SCRIPT) !== runnerLease
+  ) {
+    throw new Error("PROXYWAR_RUNNER_LEASE_SCRIPT override does not match the hash-pinned manifest runner");
+  }
+  if (
+    process.env.PROXYWAR_OPERATOR_STATE_ROOT &&
+    path.resolve(process.env.PROXYWAR_OPERATOR_STATE_ROOT) !== preflight.document.runner_lease.state_root
+  ) {
+    throw new Error("PROXYWAR_OPERATOR_STATE_ROOT override does not match the pinned runner state root");
+  }
+  await assertClaimedMickeyOutput(
+    output,
+    preflight.document.run_id,
+    runnerLease,
+    preflight.document.runner_lease.state_root,
+    executor,
+  );
   await cp(options.manifest, path.join(output, "evidence", "manifest.json"), { errorOnExist: true, force: false });
   await writeFile(
     path.join(output, "evidence", "manifest.sha256"),

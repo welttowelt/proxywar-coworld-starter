@@ -1,11 +1,12 @@
 import assert from "node:assert/strict";
 import { spawnSync } from "node:child_process";
-import { createHash } from "node:crypto";
+import { createHash, createHmac } from "node:crypto";
 import {
   chmodSync,
   existsSync,
   mkdirSync,
   mkdtempSync,
+  readdirSync,
   readFileSync,
   realpathSync,
   rmSync,
@@ -17,15 +18,20 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
+  appendEvent,
   CommandExecutor,
   canonicalRequestInputSha256,
   deleteExactPod,
   derivePairOrder,
+  derivePodControlNonce,
   discoverNewExactNamePods,
+  parseSshKeygenFingerprint,
   preflightManifest,
   registerCreatedPod,
   validateCreateRequestAttestation,
   validateCreatedPod,
+  validateSshHostKeyAttestation,
+  validateSshInfo,
   validateManifest,
   verifyFetchedArtifacts,
 } from "../scripts/run-mickey-cpu-fanout.mjs";
@@ -33,6 +39,7 @@ import {
   auditMickeyCpuFanout,
   mirroredSeatsPass,
 } from "../scripts/audit-mickey-cpu-fanout.mjs";
+import { parseFileManifest } from "../scripts/verify-mickey-cpu-fanout-bundle.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const fanoutScript = path.join(root, "scripts", "run-mickey-cpu-fanout.mjs");
@@ -48,6 +55,24 @@ const HEX = {
   m0Image: `sha256:${"6".repeat(64)}`,
   goImage: `sha256:${"7".repeat(64)}`,
 };
+
+test("bundle file manifest accepts real npm and asset paths but rejects traversal", () => {
+  const digest = "a".repeat(64);
+  const entries = parseFileManifest([
+    `${digest}  runtime/node_modules/@scope/package/index.js`,
+    `${digest}  runtime/proxywar/resources/flags/East Anglia – 1.svg`,
+    "",
+  ].join("\n"));
+  assert.equal(entries.size, 2);
+  assert.throws(
+    () => parseFileManifest(`${digest}  runtime/../escape\n`),
+    /non-canonical path/,
+  );
+  assert.throws(
+    () => parseFileManifest(`${digest}  runtime\\escape\n`),
+    /non-canonical path/,
+  );
+});
 
 function sha256(value) {
   return createHash("sha256").update(value).digest("hex");
@@ -113,11 +138,16 @@ function fixture() {
   const bundle = path.join(directory, "grow-opening.tar.gz");
   const extractor = path.join(directory, "extract.py");
   const runpodctl = path.join(directory, "runpodctl-mickey-pinned");
+  const runpodctlPatch = path.join(directory, "runpodctl.patch");
+  const runnerLease = path.join(directory, "proxywar-runner-lease.sh");
   const receiptPath = path.join(directory, "source-reach.json");
   writeFileSync(bundle, "immutable-bundle\n");
   writeFileSync(extractor, "#!/usr/bin/env python3\n");
-  writeFileSync(runpodctl, "#!/bin/sh\nexit 99\n");
+  writeFileSync(runpodctl, "vcs.revision=d4296baa6edf37f098d58e9d92f7b496ee4bfaab\n");
+  writeFileSync(runpodctlPatch, "fixture patch\n");
+  writeFileSync(runnerLease, "#!/bin/sh\nexit 99\n");
   chmodSync(runpodctl, 0o755);
+  chmodSync(runnerLease, 0o755);
   writeFileSync(receiptPath, `${JSON.stringify(sourceReceipt(), null, 2)}\n`);
   const nonce = "9".repeat(64);
   const pairId = "go-pangaea-seed-1-seat-0";
@@ -131,11 +161,20 @@ function fixture() {
     preregistered_at: new Date(Date.now() - 1_000).toISOString(),
     evidence_scope: "diagnostic_only",
     randomization: { algorithm: "sha256-parity-v1", nonce },
+    runner_lease: {
+      path: runnerLease,
+      sha256: sha256File(runnerLease),
+      operator_lane: "hrafn",
+      state_root: "/Users/olifreuler/.stormforge/proxywar-operators",
+    },
     runpodctl: {
       path: runpodctl,
       sha256: sha256File(runpodctl),
       source_repository: "https://github.com/runpod/runpodctl",
-      source_commit: "a".repeat(40),
+      upstream_base_commit: "3928df943d67c89e66b4945bd5c8b38ffd512767",
+      source_commit: "d4296baa6edf37f098d58e9d92f7b496ee4bfaab",
+      patch_path: runpodctlPatch,
+      patch_sha256: sha256File(runpodctlPatch),
       patch_id: "mickey-cpu-terminate-after-v1",
       create_interface: "legacy-graphql-json-v1",
     },
@@ -146,6 +185,7 @@ function fixture() {
       cloud_type: "COMMUNITY",
       gpu_count: 0,
       max_cost_per_hour: 0.1,
+      max_total_cost_usd: 3.2,
       vcpu_count: 2,
       memory_gb: 4,
       container_disk_gb: 20,
@@ -307,12 +347,127 @@ test("pod registration rejects pre-existing IDs and enforces the exact CPU cost/
     () => validateCreatedPod({ ...base, name: "storm-existing" }, { expectedName: "storm-existing", preexistingIds: new Set() }),
     /exact Mickey fanout name/,
   );
+  assert.throws(
+    () => validateCreatedPod(base, {
+      expectedName: base.name,
+      preexistingIds: new Set(),
+      requireNetworkVolumeInspection: true,
+    }),
+    /explicit network-volume inspection/,
+  );
+  const inspected = {
+    ...base,
+    networkVolumeInspection: {
+      includeNetworkVolumeRequested: true,
+      networkVolumeId: { present: true, value: null },
+      networkVolume: { present: false },
+    },
+  };
+  assert.equal(
+    validateCreatedPod(inspected, {
+      expectedName: base.name,
+      preexistingIds: new Set(),
+      requireNetworkVolumeInspection: true,
+    }),
+    base.id,
+  );
+  assert.throws(
+    () => validateCreatedPod({
+      ...inspected,
+      networkVolumeInspection: {
+        ...inspected.networkVolumeInspection,
+        networkVolumeId: { present: true, value: "nv-attached" },
+      },
+    }, {
+      expectedName: base.name,
+      preexistingIds: new Set(),
+      requireNetworkVolumeInspection: true,
+    }),
+    /has a networkVolumeId/,
+  );
+  assert.throws(
+    () => validateCreatedPod({
+      ...inspected,
+      networkVolumeInspection: {
+        includeNetworkVolumeRequested: true,
+        networkVolumeId: { present: false },
+        networkVolume: { present: false },
+      },
+    }, {
+      expectedName: base.name,
+      preexistingIds: new Set(),
+      requireNetworkVolumeInspection: true,
+    }),
+    /omitted both network-volume fields/,
+  );
+});
+
+test("manifest rejects a fanout whose aggregate two-hour ceiling exceeds USD 3.20", () => {
+  const { directory, manifest } = fixture();
+  try {
+    const template = manifest.arms[0].pairs[0];
+    manifest.arms[0].pairs = Array.from({ length: 17 }, (_, index) => {
+      const id = `go-cap-pair-${String(index).padStart(2, "0")}`;
+      const draw = derivePairOrder(manifest.randomization.nonce, manifest.arms[0].id, id);
+      return { ...structuredClone(template), id, order: draw.order, order_draw_sha256: draw.digest };
+    });
+    manifest.arms[0].gates.outcome.minimum_pairs = 17;
+    assert.throws(() => validateManifest(manifest), /worst-case pod cost 3\.40 exceeds total cap/);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test("SSH first contact binds the negotiated ED25519 host key to the control-plane nonce", () => {
+  const fingerprint = `SHA256:${"A".repeat(43)}`;
+  const controlNonce = "b".repeat(64);
+  assert.equal(
+    parseSshKeygenFingerprint(`256 ${fingerprint} no comment (ED25519)\n`),
+    fingerprint,
+  );
+  assert.throws(
+    () => parseSshKeygenFingerprint(`256 ${fingerprint} first (ED25519)\n256 ${fingerprint} second (ED25519)\n`),
+    /exactly one negotiated host key/,
+  );
+  const hmac = createHmac("sha256", Buffer.from(controlNonce, "hex"))
+    .update(`mickey-ssh-host-key-v1\n${fingerprint}\n`, "utf8")
+    .digest("hex");
+  const challenge = { schema_version: 1, fingerprint, hmac_sha256: hmac };
+  assert.equal(
+    validateSshHostKeyAttestation(challenge, fingerprint, controlNonce).fingerprint,
+    fingerprint,
+  );
+  assert.throws(
+    () => validateSshHostKeyAttestation(challenge, `SHA256:${"B".repeat(43)}`, controlNonce),
+    /not bound/,
+  );
+  assert.throws(
+    () => validateSshHostKeyAttestation({ ...challenge, hmac_sha256: "0".repeat(64) }, fingerprint, controlNonce),
+    /HMAC is invalid/,
+  );
+  const sshInfo = {
+    id: "pod123",
+    name: "proxywar-mickey-cpu-fanout-unit",
+    ip: "192.0.2.10",
+    port: 22022,
+    ssh_key: {
+      path: "/Users/olifreuler/.runpod/ssh/RunPod-Key-Go",
+      exists: true,
+      source: "runpodctl doctor",
+      in_account: true,
+      fingerprint,
+    },
+  };
+  assert.equal(validateSshInfo(sshInfo, sshInfo.id, sshInfo.name), sshInfo);
+  assert.throws(() => validateSshInfo({ ...sshInfo, id: "wrong" }, sshInfo.id, sshInfo.name), /unsafe or incomplete/);
 });
 
 test("create request attestation binds CPU, cost, and typed server termination input", () => {
   const { directory, manifest } = fixture();
   try {
     const expectedName = "proxywar-mickey-cpu-fanout-unit";
+    const armId = manifest.arms[0].id;
+    const pairId = manifest.arms[0].pairs[0].id;
     const expectedTerminateAfter = "2026-07-21T22:00:00.000Z";
     const requestInput = {
       cloudType: "COMMUNITY",
@@ -320,7 +475,10 @@ test("create request attestation binds CPU, cost, and typed server termination i
       deployCost: 0.1,
       dockerArgs: "",
       dataCenterId: "",
-      env: [],
+      env: [{
+        key: "MICKEY_CONTROL_PLANE_NONCE",
+        value: derivePodControlNonce(manifest.randomization.nonce, armId, pairId),
+      }],
       gpuCount: 0,
       gpuTypeId: "",
       imageName: manifest.pod.image,
@@ -345,6 +503,8 @@ test("create request attestation binds CPU, cost, and typed server termination i
     assert.equal(
       validateCreateRequestAttestation(record, {
         manifest,
+        armId,
+        pairId,
         expectedName,
         expectedTerminateAfter,
       }).requested_terminate_after,
@@ -356,6 +516,8 @@ test("create request attestation binds CPU, cost, and typed server termination i
     assert.throws(
       () => validateCreateRequestAttestation(tampered, {
         manifest,
+        armId,
+        pairId,
         expectedName,
         expectedTerminateAfter,
       }),
@@ -497,6 +659,24 @@ test("fetched evidence verification requires an exact, symlink-free file set and
   }
 });
 
+test("parallel workers serialize the shared event ledger without loss or rename races", async () => {
+  const directory = tempDirectory("mickey-events-test-");
+  try {
+    mkdirSync(path.join(directory, "evidence"));
+    await Promise.all(Array.from({ length: 40 }, (_, index) =>
+      appendEvent(directory, "unit_event", { index })));
+    const rows = readFileSync(path.join(directory, "evidence", "events.jsonl"), "utf8")
+      .trim()
+      .split("\n")
+      .map((line) => JSON.parse(line));
+    assert.equal(rows.length, 40);
+    assert.deepEqual(rows.map((row) => row.index).sort((left, right) => left - right),
+      Array.from({ length: 40 }, (_, index) => index));
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
 test("dry-run performs zero network calls even when every external command is a tripwire", () => {
   const { directory, manifestPath, manifestSha256 } = fixture();
   try {
@@ -540,7 +720,7 @@ function manifestOrder(manifestPath) {
   return JSON.parse(readFileSync(manifestPath, "utf8")).arms[0].pairs[0].order;
 }
 
-test("launchd renderer is inert and preserves the foreground Mickey lease command", () => {
+test("launchd renderer is inert and preserves the transferred Hrafn lease command", () => {
   const { directory, manifest, manifestPath, manifestSha256 } = fixture();
   const outputParent = realpathSync(mkdtempSync("/private/tmp/mickey-launchd-test-"));
   try {
@@ -566,7 +746,7 @@ test("launchd renderer is inert and preserves the foreground Mickey lease comman
     assert.equal(plan.executed, false);
     assert.equal(plan.command, "/bin/launchctl");
     const joined = plan.argv.join(" ");
-    assert.match(joined, /run mickey mickey-fanout-unit --output/);
+    assert.match(joined, /run hrafn mickey-fanout-unit --output/);
     assert.match(joined, /run-mickey-cpu-fanout\.mjs/);
   } finally {
     rmSync(directory, { recursive: true, force: true });
@@ -720,14 +900,26 @@ test("mirrored-seat gate groups reordered rosters by identity and coalition", ()
         seat: 2,
         roster: [
           { name: "Outsider", coalition: "OUT" },
-          { name: "Mickey", coalition: "K1Z" },
           { name: "Ally", coalition: "K1Z" },
+          { name: "Mickey", coalition: "K1Z" },
         ],
       },
     ],
   };
 
   assert.equal(mirroredSeatsPass(arm), true);
+
+  arm.pairs[1].roster = [
+    { name: "Outsider", coalition: "OUT" },
+    { name: "Mickey", coalition: "K1Z" },
+    { name: "Ally", coalition: "K1Z" },
+  ];
+  assert.equal(mirroredSeatsPass(arm), false);
+  arm.pairs[1].roster = [
+    { name: "Outsider", coalition: "OUT" },
+    { name: "Ally", coalition: "K1Z" },
+    { name: "Mickey", coalition: "K1Z" },
+  ];
 
   arm.pairs[1].seed = 42;
   assert.equal(mirroredSeatsPass(arm), false);
@@ -769,7 +961,7 @@ function writeAuditRole(output, manifest, role, { score, tiles, reached }) {
       username: pair.roster[0].name,
       selectedLegalActionId: firstAction,
       selectedActionKind: "attack",
-      selectedActionMetadata: { targetID: null },
+      selectedActionMetadata: { targetID: null, expansion: true },
       result: { accepted: true, reason: "accepted" },
     },
     {
@@ -790,6 +982,12 @@ function writeAuditRole(output, manifest, role, { score, tiles, reached }) {
   const replayPath = path.join(runRoot, "replay");
   writeFileSync(replayPath, `${JSON.stringify({
     schemaVersion: 1,
+    finalState: {
+      players: pair.roster.map((entry, index) => ({
+        username: entry.name,
+        playerID: index === 1 ? "k1z-target" : `player-${index}`,
+      })),
+    },
     inlineRunArtifacts: { "decisions.jsonl": decisionsBody },
   })}\n`);
   const events = [
@@ -867,7 +1065,7 @@ function writeAuditRole(output, manifest, role, { score, tiles, reached }) {
   };
   const receiptPath = path.join(runRoot, "receipt.json");
   writeFileSync(receiptPath, `${JSON.stringify(receipt, null, 2)}\n`);
-  return { runRoot, rows, events, stdoutPath, decisionsPath, replayPath, receipt, receiptPath };
+  return { runRoot, rows, events, stdoutPath, decisionsPath, replayPath, receipt, receiptPath, pair };
 }
 
 function rewriteAuditRoleEvidence(artifacts) {
@@ -875,6 +1073,12 @@ function rewriteAuditRoleEvidence(artifacts) {
   if (existsSync(artifacts.decisionsPath)) writeFileSync(artifacts.decisionsPath, decisionsBody);
   writeFileSync(artifacts.replayPath, `${JSON.stringify({
     schemaVersion: 1,
+    finalState: {
+      players: artifacts.pair.roster.map((entry, index) => ({
+        username: entry.name,
+        playerID: index === 1 ? "k1z-target" : `player-${index}`,
+      })),
+    },
     inlineRunArtifacts: { "decisions.jsonl": decisionsBody },
   })}\n`);
   writeFileSync(
@@ -883,6 +1087,26 @@ function rewriteAuditRoleEvidence(artifacts) {
   );
   artifacts.receipt.primary_artifact_hashes.replay.sha256 = sha256File(artifacts.replayPath);
   writeFileSync(artifacts.receiptPath, `${JSON.stringify(artifacts.receipt, null, 2)}\n`);
+}
+
+function refreshFetchedManifest(pairRoot) {
+  const fetchedRoot = path.join(pairRoot, "fetched");
+  const lines = [];
+  function walk(directory, relativeRoot) {
+    for (const entry of readdirSync(directory, { withFileTypes: true })) {
+      const absolute = path.join(directory, entry.name);
+      const relative = path.posix.join(relativeRoot, entry.name);
+      if (entry.isDirectory()) walk(absolute, relative);
+      else if (entry.isFile()) lines.push(`${sha256File(absolute)}  ${relative}`);
+      else throw new Error(`unsupported audit fixture entry ${relative}`);
+    }
+  }
+  walk(path.join(fetchedRoot, "runs"), "runs");
+  walk(path.join(fetchedRoot, "evidence"), "evidence");
+  lines.sort();
+  const manifestPath = path.join(fetchedRoot, "artifacts.sha256");
+  writeFileSync(manifestPath, `${lines.join("\n")}\n`);
+  return sha256File(manifestPath);
 }
 
 test("post-run audit ranks only a screen leader and rejects replay-visible K1Z harm", async () => {
@@ -899,7 +1123,8 @@ test("post-run audit ranks only a screen leader and rejects replay-visible K1Z h
     });
     writeAuditRole(output, manifest, "m0", { score: 0.25, tiles: 20, reached: false });
     rmSync(candidateArtifacts.decisionsPath);
-    writeFileSync(path.join(pairRoot, "pair-complete.json"), `${JSON.stringify({
+    const completionPath = path.join(pairRoot, "pair-complete.json");
+    const completion = {
       schema_version: 1,
       pair_id: pair.id,
       arm_id: manifest.arms[0].id,
@@ -907,7 +1132,9 @@ test("post-run audit ranks only a screen leader and rejects replay-visible K1Z h
       execution_order: pair.order,
       order_draw_sha256: pair.order_draw_sha256,
       evidence_eligible: true,
-    }, null, 2)}\n`);
+      fetched_manifest_sha256: refreshFetchedManifest(pairRoot),
+    };
+    writeFileSync(completionPath, `${JSON.stringify(completion, null, 2)}\n`);
     const leaderboard = await auditMickeyCpuFanout({ output, manifest, manifestSha256 });
     assert.equal(leaderboard.screen_leader, "grow-opening");
     assert.equal(leaderboard.arms[0].label, "screen_leader");
@@ -934,6 +1161,8 @@ test("post-run audit ranks only a screen leader and rejects replay-visible K1Z h
     candidateArtifacts.events[2].selectedActionKind = "attack";
     candidateArtifacts.events[2].selectedTargetID = "k1z-target";
     rewriteAuditRoleEvidence(candidateArtifacts);
+    completion.fetched_manifest_sha256 = refreshFetchedManifest(pairRoot);
+    writeFileSync(completionPath, `${JSON.stringify(completion, null, 2)}\n`);
     const harmed = await auditMickeyCpuFanout({ output, manifest, manifestSha256 });
     assert.equal(harmed.screen_leader, null);
     assert.equal(harmed.arms[0].label, "screen_rejected");

@@ -42,6 +42,54 @@ async function readJson(filePath, label) {
   return value;
 }
 
+async function verifyFetchedEvidence(fetchRoot) {
+  const rootInfo = await lstat(fetchRoot).catch(() => null);
+  assert(rootInfo?.isDirectory() && !rootInfo.isSymbolicLink(), "fetched evidence root is missing or unsafe");
+  const manifestPath = path.join(fetchRoot, "artifacts.sha256");
+  const manifestInfo = await lstat(manifestPath).catch(() => null);
+  assert(manifestInfo?.isFile() && !manifestInfo.isSymbolicLink(), "fetched artifacts.sha256 is missing or unsafe");
+  const expected = new Map();
+  for (const line of (await readFile(manifestPath, "utf8")).split("\n")) {
+    if (line === "") continue;
+    const match = line.match(/^([a-f0-9]{64})  ((?:runs|evidence)\/(.+))$/u);
+    assert(match, "fetched artifacts.sha256 contains an unsafe line");
+    const relative = match[2];
+    assert(
+      path.posix.normalize(relative) === relative &&
+      !relative.split("/").some((part) => part === "" || part === "." || part === "..") &&
+      !/[\\\u0000-\u001f\u007f]/u.test(relative) &&
+      !expected.has(relative),
+      "fetched artifacts.sha256 contains a duplicate or non-canonical path",
+    );
+    expected.set(relative, match[1]);
+  }
+  assert(expected.size > 0, "fetched artifacts.sha256 is empty");
+  const actual = [];
+  async function walk(directory, relativeRoot) {
+    const info = await lstat(directory).catch(() => null);
+    assert(info?.isDirectory() && !info.isSymbolicLink(), `fetched ${relativeRoot} root is unsafe`);
+    for (const entry of await readdir(directory, { withFileTypes: true })) {
+      const relative = path.posix.join(relativeRoot, entry.name);
+      const absolute = path.join(directory, entry.name);
+      assert(!entry.isSymbolicLink(), `fetched evidence contains symlink ${relative}`);
+      if (entry.isDirectory()) await walk(absolute, relative);
+      else {
+        assert(entry.isFile(), `fetched evidence contains unsupported file ${relative}`);
+        actual.push(relative);
+      }
+    }
+  }
+  await walk(path.join(fetchRoot, "runs"), "runs");
+  await walk(path.join(fetchRoot, "evidence"), "evidence");
+  actual.sort();
+  const listed = [...expected.keys()].sort();
+  assert(equal(actual, listed), "fetched evidence file set differs from artifacts.sha256");
+  for (const [relative, digest] of expected) {
+    assert(await sha256File(path.join(fetchRoot, ...relative.split("/"))) === digest, `fetched evidence hash mismatch: ${relative}`);
+  }
+  return { manifest_sha256: await sha256File(manifestPath), file_count: expected.size };
+}
+
 async function findDecisionLogs(runRoot) {
   const matches = [];
   async function walk(directory, relative = "") {
@@ -88,9 +136,25 @@ async function loadReplayDecisions(runRoot, pair, role) {
     const standaloneBody = await readFile(standalone[0], "utf8");
     assert(standaloneBody === inline, `${pair.id}/${role} standalone and replay-inline decisions disagree`);
   }
+  const finalPlayers = replay.finalState?.players;
+  assert(Array.isArray(finalPlayers) && finalPlayers.length === pair.roster.length, `${pair.id}/${role} replay lacks exact final participant identities`);
+  const participantsByName = new Map();
+  const participantsById = new Map();
+  for (const rosterEntry of pair.roster) {
+    const matches = finalPlayers.filter((entry) => entry?.username === rosterEntry.name);
+    assert(matches.length === 1, `${pair.id}/${role} replay participant name is missing or duplicated`);
+    const playerID = matches[0].playerID;
+    assert(typeof playerID === "string" && playerID.length > 0, `${pair.id}/${role} replay participant ID is missing`);
+    assert(!participantsById.has(playerID), `${pair.id}/${role} replay participant ID is duplicated`);
+    const participant = { id: playerID, name: rosterEntry.name, coalition: rosterEntry.coalition, seat: rosterEntry.seat };
+    participantsByName.set(rosterEntry.name, participant);
+    participantsById.set(playerID, participant);
+  }
   return {
     rows: parseJsonLinesBody(inline, `${pair.id}/${role} replay-inline decisions`),
     source: standalone.length === 1 ? "replay_inline_and_matching_standalone" : "replay_inline",
+    participantsByName,
+    participantsById,
   };
 }
 
@@ -149,7 +213,7 @@ function validatePrimaryHashes(runRoot, receipt, pair, role) {
   })).then(Object.fromEntries);
 }
 
-function analyzeDecisions(rows, telemetry, pair, identity, role, gateMarker) {
+function analyzeDecisions(rows, telemetry, participants, pair, identity, role, gateMarker) {
   const username = pair.roster[pair.seat].name;
   const testedRows = rows.filter((row) => row.username === username);
   assert(testedRows.length > 0, `${pair.id}/${role} has no decisions for the tested player`);
@@ -185,18 +249,39 @@ function analyzeDecisions(rows, telemetry, pair, identity, role, gateMarker) {
       const nonHoldLegal = row.legalActionIDs.some((id) => typeof id === "string" && id !== "hold");
       if (accepted && nonHoldLegal) unexplainedHolds += 1;
     }
-    const hostileKinds = new Set(["attack", "boat", "nuke", "target_player", "embargo"]);
+    const playerDirectedKinds = new Set([
+      "attack", "boat", "nuke", "break_alliance", "target_player", "embargo",
+    ]);
+    const optionallyPlayerDirectedKinds = new Set(["warship", "move_warship"]);
     const metadata = row.selectedActionMetadata ?? {};
     let hostileK1z = false;
-    if (accepted && hostileKinds.has(String(row.selectedActionKind).toLowerCase())) {
-      const targetID = metadata.targetID ?? null;
+    const selectedKind = String(row.selectedActionKind).toLowerCase();
+    if (
+      accepted &&
+      (playerDirectedKinds.has(selectedKind) || optionallyPlayerDirectedKinds.has(selectedKind) || selectedKind === "embargo_all")
+    ) {
+      const targetID = metadata.targetID ?? metadata.recipientID ?? null;
       if (targetID !== null) {
         assert(typeof targetID === "string" && targetID.length > 0, `${pair.id}/${role} hostile target ID is invalid`);
-        assert(typeof metadata.targetName === "string" && metadata.targetName.length > 0, `${pair.id}/${role} hostile target name is unverifiable`);
-        const rosterTarget = pair.roster.find((entry) => entry.name === metadata.targetName);
-        assert(rosterTarget, `${pair.id}/${role} hostile target is absent from the preregistered roster`);
+        const targetName = metadata.targetName ?? metadata.recipientName ?? null;
+        assert(typeof targetName === "string" && targetName.length > 0, `${pair.id}/${role} hostile target name is unverifiable`);
+        const rosterTarget = participants.participantsById.get(targetID);
+        assert(rosterTarget, `${pair.id}/${role} hostile target ID is absent from replay participants`);
+        assert(rosterTarget.name === targetName, `${pair.id}/${role} hostile target ID/name binding disagrees with replay`);
         hostileK1z = rosterTarget.coalition === "k1z" && rosterTarget.seat !== pair.seat;
         if (hostileK1z) k1zHarm += 1;
+      } else if (selectedKind === "embargo_all") {
+        const otherK1z = [...participants.participantsById.values()]
+          .filter((entry) => entry.coalition === "k1z" && entry.seat !== pair.seat).length;
+        if (otherK1z > 0) {
+          hostileK1z = true;
+          k1zHarm += otherK1z;
+        }
+      } else if (playerDirectedKinds.has(selectedKind)) {
+        const neutralExpansion =
+          (selectedKind === "attack" && metadata.expansion === true) ||
+          (selectedKind === "boat" && metadata.expansion === true);
+        assert(neutralExpansion, `${pair.id}/${role} accepted harmful action has no replay-verifiable target`);
       }
     }
     if (event.policyMarker === gateMarker) markerCount += 1;
@@ -210,8 +295,9 @@ function analyzeDecisions(rows, telemetry, pair, identity, role, gateMarker) {
         assert(typeof targetID === "string" && targetID.length > 0, `${pair.id}/${role} reached target ID is invalid`);
         assert(metadata.targetID === targetID, `${pair.id}/${role} reached target does not match replay metadata`);
         assert(typeof metadata.targetName === "string" && metadata.targetName.length > 0, `${pair.id}/${role} reached target name is unverifiable`);
-        const rosterTarget = pair.roster.find((entry) => entry.name === metadata.targetName);
-        assert(rosterTarget, `${pair.id}/${role} reached target is absent from the preregistered roster`);
+        const rosterTarget = participants.participantsById.get(targetID);
+        assert(rosterTarget, `${pair.id}/${role} reached target ID is absent from replay participants`);
+        assert(rosterTarget.name === metadata.targetName, `${pair.id}/${role} reached target ID/name binding disagrees with replay`);
       }
       if (hostileK1z) mechanismReachedK1zHarm += 1;
       reach.push({
@@ -269,7 +355,7 @@ async function auditRole(pairRoot, pair, arm, role) {
   assert(starts[0].source === "static-eval-v1" && starts[0].arm === identity.arm, `${pair.id}/${role} start event identity mismatch`);
   assert(starts[0].uploadEligible === false, `${pair.id}/${role} start event must be upload-ineligible`);
   const telemetry = logEvents.filter((event) => event.type === "evaluation_static_intent_decision");
-  const decisionAudit = analyzeDecisions(rows, telemetry, pair, identity, role, arm.gates.mechanism.marker);
+  const decisionAudit = analyzeDecisions(rows, telemetry, decisions, pair, identity, role, arm.gates.mechanism.marker);
   return {
     role,
     policy_id: identity.policy_id,
@@ -287,11 +373,18 @@ export function mirroredSeatsPass(arm) {
   if (!arm.gates.outcome.require_mirrored_seats) return true;
   const groups = new Map();
   for (const pair of arm.pairs) {
+    const tested = pair.roster[pair.seat];
+    if (!tested) return false;
     const rosterSet = pair.roster
       .map((entry) => [entry.name, entry.coalition])
       .sort(([leftName, leftCoalition], [rightName, rightCoalition]) =>
         leftName.localeCompare(rightName) || leftCoalition.localeCompare(rightCoalition));
-    const key = JSON.stringify([pair.map, pair.seed, rosterSet]);
+    const key = JSON.stringify([
+      pair.map,
+      pair.seed,
+      rosterSet,
+      [tested.name, tested.coalition],
+    ]);
     if (!groups.has(key)) groups.set(key, new Set());
     groups.get(key).add(pair.seat);
   }
@@ -306,6 +399,11 @@ async function auditPair(output, manifestSha256, arm, pair) {
   assert(completion.pair_id === pair.id && completion.arm_id === arm.id, `${pair.id} completion identity mismatch`);
   assert(equal(completion.execution_order, pair.order), `${pair.id} execution order mismatch`);
   assert(completion.order_draw_sha256 === pair.order_draw_sha256, `${pair.id} order draw mismatch`);
+  const fetched = await verifyFetchedEvidence(path.join(pairRoot, "fetched"));
+  assert(
+    completion.fetched_manifest_sha256 === fetched.manifest_sha256,
+    `${pair.id} completion receipt does not bind the reverified fetched manifest`,
+  );
   const [candidate, m0] = await Promise.all([
     auditRole(pairRoot, pair, arm, "candidate"),
     auditRole(pairRoot, pair, arm, "m0"),
