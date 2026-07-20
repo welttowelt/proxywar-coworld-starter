@@ -210,7 +210,11 @@ function odinActionIsHarmful(action) {
       String(action?.metadata?.unit ?? "").toLowerCase() === "atom bomb");
 }
 
-function odinProtectedActions(actions, state) {
+function odinProtectedActions(actions, state, history) {
+  const incoming = new Set(
+    (state.self.allProtocolAttackerIDs || state.self.incomingAttackerIDs || [])
+      .map((id) => String(id).toLowerCase()),
+  );
   return actions.filter((action) => {
     if (!odinActionIsHarmful(action)) return true;
     if (isNeutralExpansion(action) || isNeutralBoat(action)) return true;
@@ -228,7 +232,11 @@ function odinProtectedActions(actions, state) {
     return Boolean(
       rival &&
       !rivalIsK1Z(rival) &&
-      !actionTargetsK1Z(action, state),
+      !actionTargetsK1Z(action, state) &&
+      (
+        !rivalIsProtected(state, history, rival) ||
+        incoming.has(rival.id.toLowerCase())
+      ),
     );
   });
 }
@@ -413,7 +421,7 @@ export function chooseOdinChassisAction(actions, state, _plan = null, history = 
     .find((action) => !avoid.has(action.id));
   if (spawn) return spawn;
 
-  const odinActions = odinProtectedActions(actions, state);
+  const odinActions = odinProtectedActions(actions, state, history);
   const pendingHandshake = kingmakerAllianceAction(
     odinActions,
     state,
@@ -506,9 +514,14 @@ export function chooseOdinChassisAction(actions, state, _plan = null, history = 
 
   const hold = odinActions.find((action) => action.kind === "hold");
   const alternatives = actions.filter((action) => action.kind !== "hold");
+  const admissibleAlternativeIDs = new Set(
+    odinActions
+      .filter((action) => action.kind !== "hold")
+      .map((action) => action.id),
+  );
   const guardedOnly = alternatives.length > 0 && alternatives.every((action) => {
+    if (!admissibleAlternativeIDs.has(action.id)) return true;
     if (action.kind === "build" && actionText(action).includes("defense post")) return true;
-    if (odinActionIsHarmful(action) && actionTargetsK1Z(action, state)) return true;
     const target = rivalForAction(action, state);
     return target && rivalIsProtected(state, history, target);
   });

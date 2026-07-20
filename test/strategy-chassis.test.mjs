@@ -902,6 +902,7 @@ test("ODC1 excludes unresolved move-warship and global embargo actions", () => {
     observation({ tileShare: 0.1 }),
   );
   assert.equal(selected.id, hold.id);
+  assert.equal(selected.policyMarker, "odguard");
 });
 
 test("ODC1 never attacks a metadata-resolved K1Z partner", () => {
