@@ -1,0 +1,109 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_clean_chassis_c1_hosted_failure",
+  "recorded_at": "2026-07-20T13:50:15Z",
+  "lane": "hrafn-fylking",
+  "candidate": {
+    "label": "hrafn-fylking:v8",
+    "policy_version_id": "0b444466-abdd-422f-82e7-7652360a2015",
+    "source_commit": "b74fa0d4db8786ca5016b382501fac40dc42a871",
+    "audit_commit": "09661d0f83ab36aba5ab4ae2167a7755c4352efb",
+    "registry_image_digest": "sha256:b217fb79cc52c98bc5bb2137901bae1e0ab10feb679c2e8cc4993ca8c42711f6"
+  },
+  "matched_hosted_requests": {
+    "control": "xreq_a8e07da9-ac69-4b97-bc06-a5cb133734ea",
+    "candidate": "xreq_01bc60c3-7aea-443d-af64-3cc2debf5ec4",
+    "variant": "tournament-12p-world",
+    "candidate_slot": 5,
+    "episodes_requested_per_arm": 4,
+    "roster_source_episode": "ereq_96e29e7f-8a7b-4c4c-8024-04fcc9c8bf08",
+    "only_policy_delta": "hrafn-fylking:v5 -> hrafn-fylking:v8"
+  },
+  "conclusive_candidate_episode": {
+    "episode_request_id": "ereq_4c85549c-6875-4fd4-8b83-a96996af0478",
+    "completed_at": "2026-07-20T13:47:23.507629Z",
+    "replay_url": "https://softmax-public.s3.amazonaws.com/replays/24eab3a0-1c1b-496a-896f-f4ec8362996a.replay",
+    "replay_sha256": "6569f7d1a9c835b9a723a45f3cfb395ade367a79fcd93e042c6a2c3a62d613d2",
+    "game_id": "COWRLD01",
+    "resolved_identity": {
+      "player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+      "player_name": "K1Z Hrafn",
+      "policy_id": "e483e9fe-7c3a-4e7b-9e67-3140b17a3de2",
+      "policy_version_id": "0b444466-abdd-422f-82e7-7652360a2015",
+      "position": 5,
+      "agent_id": "opportunistic-agent-6"
+    },
+    "outcome": {
+      "candidate_score": 0,
+      "candidate_tiles": 104625,
+      "candidate_alive": true,
+      "winner_position": 0,
+      "winner_name": "Auri",
+      "winner_policy": "proxywar-keystone:v42",
+      "winner_score": 1,
+      "winner_tiles": 521836
+    },
+    "execution": {
+      "policy_decisions": 285,
+      "accepted": 285,
+      "rejected": 0,
+      "holds": 128,
+      "verified_holds": 0,
+      "unexplained_holds": 0,
+      "hold_evidence_gaps": 128,
+      "fallbacks": 1,
+      "planner_degradation_failures": 1,
+      "harmful_k1z_actions": 0,
+      "marker_counts": {
+        "hg35": 76,
+        "hka1": 24,
+        "hc25": 11,
+        "hpri": 3,
+        "hc40": 2,
+        "hef1": 2,
+        "hn16": 2,
+        "hncap": 157,
+        "hdef": 35,
+        "hctr": 11,
+        "hc10": 1
+      }
+    },
+    "first_execution_failure": {
+      "turn": 400,
+      "cause": "Coworld player slot 5 timed out after 15000ms",
+      "fallback_action": "build:City:500334",
+      "fallback_reason": "opportunistic rule brain selected Build City at tile 500334"
+    },
+    "hold_failure": {
+      "first_turn": 10800,
+      "primary_marker": "hncap",
+      "observed_pattern": "repeated hold after the naval cap latched",
+      "independent_evidence": "all 128 holds exposed at least one non-hold action and failed the replay auditor's complete no-productive-safe-alternative proof"
+    }
+  },
+  "preexisting_gate": {
+    "candidate_wins_required": "4/4",
+    "zero_holds_required_by": "experiments/PROTOCOL.md",
+    "zero_rejects_required": true,
+    "zero_fallbacks_required": true,
+    "zero_planner_degradation_required": true,
+    "zero_k1z_harm_required": true
+  },
+  "gate_result": {
+    "HOSTED_PASSED": false,
+    "REGRESSION_PASSED": false,
+    "AUDIT_APPROVED": false,
+    "SUBMITTED": false,
+    "verdict": "NO SUBMIT",
+    "reason": "The first completed candidate episode lost and also violated the zero-hold, zero-fallback, and zero-planner-degradation gates."
+  },
+  "league_state_after_stop": {
+    "champion": "hrafn-fylking:v5",
+    "champion_policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+    "membership_id": "lpm_e822de7f-1124-4b5f-b0ef-1025d46ae211",
+    "status": "competing",
+    "substatus": "active",
+    "is_champion": true
+  },
+  "remaining_requests": "The other already-dispatched hosted episodes may finish, but they are observational failure evidence only and cannot reopen C1."
+}

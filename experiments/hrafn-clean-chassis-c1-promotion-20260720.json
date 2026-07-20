@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "record_type": "hrafn_clean_chassis_promotion",
-  "recorded_at": "2026-07-20T13:26:00Z",
+  "recorded_at": "2026-07-20T13:50:15Z",
   "lane": "hrafn-fylking",
   "candidate": {
     "label": "hrafn-fylking:v8",
@@ -51,6 +51,7 @@
       "completed_verified_replays": "4/4",
       "candidate_decisions_present": true,
       "all_candidate_decisions_accepted": true,
+      "zero_holds": true,
       "zero_unexplained_holds": true,
       "zero_rejects": true,
       "zero_fallbacks": true,
@@ -58,11 +59,34 @@
       "zero_k1z_harm": true,
       "productive_r4vn_marker_executions_per_episode": "at least 1"
     },
-    "status": "requests_created"
+    "first_terminal_candidate_episode": {
+      "episode_request_id": "ereq_4c85549c-6875-4fd4-8b83-a96996af0478",
+      "completed_at": "2026-07-20T13:47:23.507629Z",
+      "replay_sha256": "6569f7d1a9c835b9a723a45f3cfb395ade367a79fcd93e042c6a2c3a62d613d2",
+      "candidate_score": 0,
+      "winner": "proxywar-keystone:v42",
+      "winner_score": 1,
+      "candidate_decisions": 285,
+      "accepted": 285,
+      "rejected": 0,
+      "holds": 128,
+      "fallbacks": 1,
+      "planner_degradation_failures": 1,
+      "harmful_k1z_actions": 0,
+      "productive_marker_reach": true,
+      "failure_reasons": [
+        "candidate lost the first completed hosted episode, so 4/4 became impossible",
+        "one 15000ms player timeout invoked the opportunistic fallback at turn 400",
+        "the candidate selected 128 naval-cap holds",
+        "all 128 holds lacked complete independent proof that no productive safe alternative was offered"
+      ]
+    },
+    "status": "failed_no_submit",
+    "terminal_reason": "The first completed candidate episode lost 0-1 to proxywar-keystone:v42. The immutable 4/4 gate is impossible regardless of the remaining already-running episodes."
   },
   "regression_gate": {
     "episodes_required": 20,
-    "status": "not_started"
+    "status": "not_started_gate_closed"
   },
   "promotion_states": {
     "SOURCE_READY": true,
@@ -76,5 +100,15 @@
     "CHAMPION_VERIFIED": false,
     "ROUND_CONFIRMED": false
   },
-  "next_gate": "Create the pinned exact-v5 control and C1 candidate hosted requests; stop on any request, identity, replay, or audit failure."
+  "incumbent_verification": {
+    "checked_at": "2026-07-20T13:49:00Z",
+    "membership_id": "lpm_e822de7f-1124-4b5f-b0ef-1025d46ae211",
+    "policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+    "label": "hrafn-fylking:v5",
+    "status": "competing",
+    "substatus": "active",
+    "champion": true
+  },
+  "verdict": "NO SUBMIT: C1 failed the hosted 4/4 gate on its first completed candidate episode. Do not create the regression, request a final promotion audit, submit v8, or change Hrafn membership/champion state.",
+  "next_gate": "Audit the already-running diagnostic episodes as observational failure evidence only. Any successor must fix the first-decision timeout path and the repeated naval-cap hold state, then restart from a new exact-parent preregistration. Hrafn v5 remains sole champion."
 }
