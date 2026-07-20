@@ -9,6 +9,7 @@ import {
   chooseHrafnIntentDecision,
   createOllamaHrafnIntentPlanner,
   hrafnIntentAvailable,
+  normalizeHrafnCoworldDecisionRequest,
 } from "./hrafn-intent.mjs";
 import {
   publicHrafnReason,
@@ -78,31 +79,13 @@ function requestMarker(requestID) {
 }
 
 function decisionInputFromRequest(request) {
-  if (!request || typeof request !== "object" || Array.isArray(request)) {
-    throw new Error("HI1 decision request payload must be an object");
-  }
-  if (
-    Object.keys(request).sort().join("\0") !==
-      ["legalActions", "observation"].sort().join("\0")
-  ) {
+  const normalized = normalizeHrafnCoworldDecisionRequest(request);
+  if (!normalized) {
     throw new Error(
-      "HI1 decision request must contain exactly legalActions and observation",
+      "HI1 decision request does not match the exact proxywar-agent-v1 wire contract",
     );
   }
-  if (!Array.isArray(request.legalActions)) {
-    throw new Error("HI1 decision request had no legal action list");
-  }
-  if (
-    !request.observation ||
-    typeof request.observation !== "object" ||
-    Array.isArray(request.observation)
-  ) {
-    throw new Error("HI1 decision request observation must be an object");
-  }
-  return structuredClone({
-    legalActions: request.legalActions,
-    observation: request.observation,
-  });
+  return normalized;
 }
 
 function plannerIntentAllowed(intent, snapshot) {

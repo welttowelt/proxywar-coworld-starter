@@ -7,14 +7,40 @@ import {
   publicHrafnReason,
 } from "../hrafn-strategy.mjs";
 import {
+  HRAFN_COWORLD_PROTOCOL_VERSION,
+  HRAFN_COWORLD_RESPONSE_CONTRACT,
   buildHrafnIntentSnapshot,
   canonicalHrafnIntentJSON,
   chooseHrafnIntentDecision,
   createOllamaHrafnIntentPlanner,
+  normalizeHrafnCoworldDecisionRequest,
   normalizeHrafnIntent,
 } from "../hrafn-intent.mjs";
 
 const lowRisk = { level: "low" };
+
+test("HI1 accepts the exact live Coworld request envelope and rejects drift", () => {
+  const request = {
+    protocolVersion: HRAFN_COWORLD_PROTOCOL_VERSION,
+    agent: {},
+    match: {},
+    observation: {},
+    legalActions: [{ id: "hold", kind: "hold" }],
+    decisionSupport: {},
+    responseContract: HRAFN_COWORLD_RESPONSE_CONTRACT,
+  };
+  assert.deepEqual(normalizeHrafnCoworldDecisionRequest(request), request);
+  for (const mutate of [
+    (value) => { value.protocolVersion = "proxywar-agent-v2"; },
+    (value) => { value.responseContract.reason = "drift"; },
+    (value) => { value.unexpected = true; },
+    (value) => { value.legalActions = null; },
+  ]) {
+    const changed = structuredClone(request);
+    mutate(changed);
+    assert.equal(normalizeHrafnCoworldDecisionRequest(changed), null);
+  }
+});
 
 function action(id, kind, label = id, metadata = {}) {
   return { id, kind, label, metadata, risk: lowRisk };

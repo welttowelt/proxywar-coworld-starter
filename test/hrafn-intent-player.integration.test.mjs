@@ -8,6 +8,10 @@ import { fileURLToPath } from "node:url";
 import { WebSocketServer } from "ws";
 
 import { publicHrafnReason } from "../hrafn-strategy.mjs";
+import {
+  HRAFN_COWORLD_PROTOCOL_VERSION,
+  HRAFN_COWORLD_RESPONSE_CONTRACT,
+} from "../hrafn-intent.mjs";
 
 const playerPath = fileURLToPath(
   new URL("../hrafn-intent-player.mjs", import.meta.url),
@@ -33,6 +37,18 @@ function request(requestID) {
     type: "decision_request",
     requestID,
     request: {
+      protocolVersion: HRAFN_COWORLD_PROTOCOL_VERSION,
+      agent: {
+        agentID: "hrafn-runtime",
+        username: "K1Z Hrafn",
+        profile: "opportunistic",
+      },
+      match: {
+        gameID: "hi1-test-game",
+        phase: "active",
+        turnNumber: 1000,
+        tick: null,
+      },
       legalActions: [
         {
           id: "attack:auri:25",
@@ -74,6 +90,22 @@ function request(requestID) {
           isAlive: true,
         }],
       },
+      decisionSupport: {
+        actionIDsByKind: {
+          attack: ["attack:auri:25", "expand:terra-nullius:35"],
+          hold: ["hold"],
+        },
+        recommendedActionKinds: [],
+        usefulNonHoldActionIDs: [
+          "attack:auri:25",
+          "expand:terra-nullius:35",
+        ],
+        avoidActionIDs: [],
+        safeFallbackActionID: "hold",
+        antiStallHint: "A useful non-hold action is available.",
+        parityNote: "Prefer legal progress.",
+      },
+      responseContract: HRAFN_COWORLD_RESPONSE_CONTRACT,
     },
   };
 }
@@ -353,9 +385,17 @@ test("malformed planner output degrades truthfully while exact-v5 keeps respondi
       socket.on("message", (data) => {
         responses.push(JSON.parse(String(data)));
         if (responses.length === 1) {
-          setTimeout(() => {
-            socket.send(JSON.stringify(request("degrade-second")));
-          }, 100);
+          void waitForPlayerOutput(player, (output) =>
+            output.split(/\r?\n/).some((line) => {
+              if (!line.startsWith("{")) return false;
+              const entry = JSON.parse(line);
+              return entry.event === "hrafn_intent_plan" && entry.ok === false;
+            }), 4000).then(() => {
+              socket.send(JSON.stringify(request("degrade-second")));
+            }).catch((error) => {
+              player.child.kill("SIGKILL");
+              reject(error);
+            });
         } else {
           socket.send(JSON.stringify({ type: "final" }));
         }
@@ -422,14 +462,22 @@ test("an intent that becomes unreachable falls back and degrades truthfully", as
       socket.on("message", (data) => {
         responses.push(JSON.parse(String(data)));
         if (responses.length === 1) {
-          setTimeout(() => {
+          void waitForPlayerOutput(player, (output) =>
+            output.split(/\r?\n/).some((line) => {
+              if (!line.startsWith("{")) return false;
+              const entry = JSON.parse(line);
+              return entry.event === "hrafn_intent_plan" && entry.ok === true;
+            }), 4000).then(() => {
             const noGrowth = request("growth-vanished");
             noGrowth.request.legalActions = [
               noGrowth.request.legalActions[0],
               noGrowth.request.legalActions[2],
             ];
             socket.send(JSON.stringify(noGrowth));
-          }, 75);
+          }).catch((error) => {
+            player.child.kill("SIGKILL");
+            reject(error);
+          });
         } else {
           socket.send(JSON.stringify({ type: "final" }));
         }
@@ -840,7 +888,7 @@ test("a duplicate request ID with changed observation or request fields fails cl
 
   assert.match(
     player.stderr(),
-    /duplicate request semantic conflict|must contain exactly legalActions and observation/,
+    /duplicate request semantic conflict|exact proxywar-agent-v1 wire contract/,
   );
   });
 });

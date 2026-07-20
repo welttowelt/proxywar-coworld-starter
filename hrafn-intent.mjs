@@ -17,8 +17,23 @@ export const HRAFN_INTENT_MARKER = "hi1";
 export const HRAFN_OLLAMA_MODEL = "llama3:latest";
 export const HRAFN_EXPECTED_OLLAMA_MODEL_DIGEST =
   "365c0bd3c000a25d28ddbf732fe1c6add414de7275464c4e4d1c3b5fcb5d8ad1";
+export const HRAFN_COWORLD_PROTOCOL_VERSION = "proxywar-agent-v1";
+export const HRAFN_COWORLD_RESPONSE_CONTRACT = Object.freeze({
+  selectedLegalActionId: "must exactly match one offered legalActions[].id",
+  reason: "short human-readable string",
+  confidence: "optional number from 0 to 1",
+});
 
 const INTENT_KEYS = Object.freeze(["horizon", "objective", "targetID"]);
+const COWORLD_REQUEST_KEYS = Object.freeze([
+  "agent",
+  "decisionSupport",
+  "legalActions",
+  "match",
+  "observation",
+  "protocolVersion",
+  "responseContract",
+]);
 const INTENT_OBJECTIVES = new Set(["grow", "convert"]);
 const HARD_POLICY_MARKERS = new Set(["k1z", "dn1", "sk1"]);
 const GROW_BUILD_UNITS = new Set(["city", "factory", "port"]);
@@ -81,6 +96,24 @@ function finiteOrNull(value) {
 
 function exactKeys(value) {
   return Object.keys(value).sort().join("\0") === INTENT_KEYS.join("\0");
+}
+
+export function normalizeHrafnCoworldDecisionRequest(value) {
+  if (!plainObject(value) ||
+    Object.keys(value).sort().join("\0") !== COWORLD_REQUEST_KEYS.join("\0") ||
+    value.protocolVersion !== HRAFN_COWORLD_PROTOCOL_VERSION ||
+    !plainObject(value.agent) ||
+    !plainObject(value.match) ||
+    !plainObject(value.decisionSupport) ||
+    !Array.isArray(value.legalActions) ||
+    !plainObject(value.observation) ||
+    !plainObject(value.responseContract) ||
+    canonicalHrafnIntentJSON(value.responseContract) !==
+      canonicalHrafnIntentJSON(HRAFN_COWORLD_RESPONSE_CONTRACT)
+  ) {
+    return null;
+  }
+  return structuredClone(value);
 }
 
 function sanitizeWireAction(action) {

@@ -5,7 +5,10 @@ import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
 
-import { chooseHrafnIntentDecision } from "../hrafn-intent.mjs";
+import {
+  chooseHrafnIntentDecision,
+  normalizeHrafnCoworldDecisionRequest,
+} from "../hrafn-intent.mjs";
 import { HRAFN_PLAYER_ID } from "../hrafn-state.mjs";
 import { recordHrafnDecision } from "../hrafn-strategy.mjs";
 import { verifyK1ZPacketBytes } from "../k1z-direct-line.mjs";
@@ -524,10 +527,7 @@ function inputActionShape(action) {
 }
 
 function exactDecisionInput(value) {
-  return plainObject(value) &&
-    Object.keys(value).sort().join("\0") === "legalActions\0observation" &&
-    Array.isArray(value.legalActions) &&
-    plainObject(value.observation);
+  return normalizeHrafnCoworldDecisionRequest(value) !== null;
 }
 
 function recomputeWrappedV5(joined) {
@@ -541,7 +541,7 @@ function recomputeWrappedV5(joined) {
     if (!exactDecisionInput(input)) {
       requestFailures.push({
         decision: index + 1,
-        failure: "decisionInput must contain exactly legalActions and observation",
+        failure: "decisionInput must match the exact proxywar-agent-v1 wire contract",
       });
       continue;
     }

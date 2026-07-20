@@ -7,7 +7,11 @@ import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 
-import { chooseHrafnIntentDecision } from "../hrafn-intent.mjs";
+import {
+  HRAFN_COWORLD_PROTOCOL_VERSION,
+  HRAFN_COWORLD_RESPONSE_CONTRACT,
+  chooseHrafnIntentDecision,
+} from "../hrafn-intent.mjs";
 import {
   publicHrafnReason,
   recordHrafnDecision,
@@ -291,7 +295,34 @@ function runFixture(role, {
       combat: { incomingAttackPlayerIDs: [] },
       visiblePlayers: [rival],
     };
-    const decisionInput = { legalActions, observation };
+    const decisionInput = {
+      protocolVersion: HRAFN_COWORLD_PROTOCOL_VERSION,
+      agent: {
+        agentID: subjectRuntimeID,
+        username: SUBJECT_NAME,
+        profile: "opportunistic",
+      },
+      match: {
+        gameID: "hi1-fixture-game",
+        phase: "active",
+        turnNumber,
+        tick: null,
+      },
+      observation,
+      legalActions,
+      decisionSupport: {
+        actionIDsByKind: {},
+        recommendedActionKinds: [],
+        usefulNonHoldActionIDs: legalActions
+          .filter((action) => action.kind !== "hold")
+          .map((action) => action.id),
+        avoidActionIDs: [],
+        safeFallbackActionID: "hold",
+        antiStallHint: null,
+        parityNote: "fixture",
+      },
+      responseContract: HRAFN_COWORLD_RESPONSE_CONTRACT,
+    };
     const intent = intentEnabled && index > 0 &&
         (deltaIndexes === null || deltaIndexes.has(index))
       ? { objective: "grow", targetID: null, horizon: 12 }
