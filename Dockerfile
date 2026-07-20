@@ -29,8 +29,6 @@ COPY --chown=node:node \
     evaluation-m0-player.mjs \
     evaluation-grow-opening-player.mjs \
     evaluation-grow-low-share-player.mjs \
-    evaluation-grow-calm-player.mjs \
-    evaluation-grow-conjunction-player.mjs \
     evaluation-convert-weakest-player.mjs \
     evaluation-convert-largest-player.mjs \
     ./
@@ -39,8 +37,6 @@ RUN node --check evaluation-static-intent.mjs \
     && node --check evaluation-m0-player.mjs \
     && node --check evaluation-grow-opening-player.mjs \
     && node --check evaluation-grow-low-share-player.mjs \
-    && node --check evaluation-grow-calm-player.mjs \
-    && node --check evaluation-grow-conjunction-player.mjs \
     && node --check evaluation-convert-weakest-player.mjs \
     && node --check evaluation-convert-largest-player.mjs
 LABEL org.opencontainers.image.title="ProxyWar Mickey static intent evaluator" \
@@ -55,12 +51,6 @@ CMD ["node", "/app/evaluation-grow-opening-player.mjs"]
 
 FROM evaluation-base AS evaluation-grow-low-share
 CMD ["node", "/app/evaluation-grow-low-share-player.mjs"]
-
-FROM evaluation-base AS evaluation-grow-calm
-CMD ["node", "/app/evaluation-grow-calm-player.mjs"]
-
-FROM evaluation-base AS evaluation-grow-conjunction
-CMD ["node", "/app/evaluation-grow-conjunction-player.mjs"]
 
 FROM evaluation-base AS evaluation-convert-weakest
 CMD ["node", "/app/evaluation-convert-weakest-player.mjs"]

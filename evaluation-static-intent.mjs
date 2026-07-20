@@ -5,7 +5,6 @@ import {
 } from "./intent-controller.mjs";
 import {
   clean,
-  incomingThreatCount,
   rivalIsProtected,
 } from "./strategy-engine.mjs";
 
@@ -14,8 +13,6 @@ export const STATIC_INTENT_ARMS = Object.freeze([
   "m0",
   "grow-opening",
   "grow-low-share",
-  "grow-calm",
-  "grow-conjunction",
   "convert-weakest",
   "convert-largest",
 ]);
@@ -30,8 +27,6 @@ const ARM_TOKENS = Object.freeze({
   m0: "m0",
   "grow-opening": "go1",
   "grow-low-share": "gl1",
-  "grow-calm": "gc1",
-  "grow-conjunction": "gx1",
   "convert-weakest": "cw1",
   "convert-largest": "cl1",
 });
@@ -81,12 +76,6 @@ function isOpening(state, history) {
 
 function isLowShare(state) {
   return Number.isFinite(state?.self?.tileShare) && state.self.tileShare < LOW_SHARE_LIMIT;
-}
-
-function isCalm(state) {
-  return incomingThreatCount(state?.self?.incomingAttacks) === 0 &&
-    (state?.self?.incomingAttackerIDs || []).length === 0 &&
-    (state?.self?.allProtocolAttackerIDs || []).length === 0;
 }
 
 function growDirective() {
@@ -145,11 +134,6 @@ export function staticIntentPlan(arm, state, history = []) {
   if (arm === "grow-opening" && isOpening(state, history)) {
     directive = growDirective();
   } else if (arm === "grow-low-share" && isLowShare(state)) {
-    directive = growDirective();
-  } else if (arm === "grow-calm" && isCalm(state)) {
-    directive = growDirective();
-  } else if (arm === "grow-conjunction" &&
-      isOpening(state, history) && isLowShare(state) && isCalm(state)) {
     directive = growDirective();
   } else if (arm === "convert-weakest" || arm === "convert-largest") {
     directive = conversionDirective(arm, state, history);

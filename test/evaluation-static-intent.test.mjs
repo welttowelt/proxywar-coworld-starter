@@ -9,6 +9,7 @@ import {
   staticIntentPlan,
 } from "../evaluation-static-intent.mjs";
 import { buildState, chooseAction } from "../strategy-engine.mjs";
+import { buildSourceReachReceipt } from "../scripts/mickey-static-source-reach.mjs";
 
 const lowRisk = { level: "low" };
 const coalitionID = "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba";
@@ -83,8 +84,6 @@ test("static evaluation exposes only preregistered interpretable arms", () => {
     "m0",
     "grow-opening",
     "grow-low-share",
-    "grow-calm",
-    "grow-conjunction",
     "convert-weakest",
     "convert-largest",
   ]);
@@ -188,23 +187,15 @@ test("grow-opening counts twenty active decisions rather than the spawn", () => 
   assert.equal(staticIntentPlan("grow-opening", lateState, twentyActive), null);
 });
 
-test("grow schedule arms are deterministic state predicates", () => {
+test("grow-low-share is a strict subset of grow-opening", () => {
   const menu = coalitionMenu();
   const calmLow = stateFor({ tileShare: 0.08 }, menu);
   const calmHigh = stateFor({ tileShare: 0.14 }, menu);
-  const pressuredLow = stateFor({
-    tileShare: 0.08,
-    incomingAttacks: [{ attackerID: "outsider" }],
-    rivals: [rival({ id: "outsider", name: "Outsider", incomingAttack: true })],
-  }, menu);
 
   assert.equal(staticIntentPlan("grow-low-share", calmLow, []).intent, "grow");
   assert.equal(staticIntentPlan("grow-low-share", calmHigh, []), null);
-  assert.equal(staticIntentPlan("grow-calm", calmHigh, []).intent, "grow");
-  assert.equal(staticIntentPlan("grow-calm", pressuredLow, []), null);
-  assert.equal(staticIntentPlan("grow-conjunction", calmLow, []).intent, "grow");
-  assert.equal(staticIntentPlan("grow-conjunction", calmHigh, []), null);
-  assert.equal(staticIntentPlan("grow-conjunction", pressuredLow, []), null);
+  assert.equal(staticIntentPlan("grow-opening", calmLow, []).intent, "grow");
+  assert.equal(staticIntentPlan("grow-opening", calmHigh, []).intent, "grow");
 });
 
 test("convert arms select exact visible outsiders with distinct single rankings", () => {
@@ -300,5 +291,30 @@ test("all-K1Z rosters yield no conversion directive and no K1Z harm", () => {
     assert.equal(plan, null, arm);
     assert.equal(selected.id.startsWith("attack:ply_"), false, arm);
     assert.notEqual(selected.policyMarker, "mm1c", arm);
+  }
+});
+
+test("retained arms have unique selected-action traces and honest source reach", async () => {
+  const receipt = await buildSourceReachReceipt("0".repeat(40));
+  assert.equal(receipt.evidence_scope, "deterministic-source-fixtures-only");
+  assert.equal(receipt.upload_eligible, false);
+  assert.equal(receipt.arms.length, 5);
+  assert.equal(
+    new Set(receipt.arms.map((arm) => arm.selected_action_trace_sha256)).size,
+    receipt.arms.length,
+  );
+  assert.equal(
+    new Set(receipt.arms.map((arm) => arm.entrypoint_sha256)).size,
+    receipt.arms.length,
+  );
+  for (const arm of receipt.arms) {
+    assert.equal(arm.mechanism_reached, arm.expected_mechanism_reach, arm.id);
+    assert.equal(arm.k1z_harm_count, 0, arm.id);
+  }
+  assert.equal(receipt.arms.find((arm) => arm.id === "m0").mechanism_reached, false);
+  for (const id of [
+    "grow-opening", "grow-low-share", "convert-weakest", "convert-largest",
+  ]) {
+    assert.equal(receipt.arms.find((arm) => arm.id === id).mechanism_reached, true, id);
   }
 });

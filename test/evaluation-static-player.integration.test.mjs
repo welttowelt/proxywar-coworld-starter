@@ -4,6 +4,7 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { WebSocketServer } from "ws";
+import { evaluationResponseMetadata } from "../evaluation-static-intent-player.mjs";
 
 const playerPaths = Object.freeze({
   m0: fileURLToPath(new URL("../evaluation-m0-player.mjs", import.meta.url)),
@@ -110,12 +111,21 @@ async function runArm(arm) {
   };
 }
 
+test("static response flags cannot satisfy the production planner-health gate", () => {
+  assert.deepEqual(evaluationResponseMetadata(false), {
+    confidence: 0.4,
+    fallbackUsed: true,
+    llmPlannerDegraded: true,
+  });
+  assert.deepEqual(evaluationResponseMetadata(true), evaluationResponseMetadata(false));
+});
+
 test("M0 runtime reports static source and remains exact baseline", async () => {
   const { response, telemetry } = await runArm("m0");
   assert.equal(response.selectedLegalActionId, "alliance:katanasan");
   assert.equal(response.reason, "sev1:m0:base:4ly:kp2");
   assert.equal(response.fallbackUsed, true);
-  assert.equal(response.llmPlannerDegraded, false);
+  assert.equal(response.llmPlannerDegraded, true);
   assert.deepEqual(telemetry[0], {
     type: "evaluation_static_intent_start",
     source: "static-eval-v1",
@@ -136,8 +146,8 @@ test("grow-opening runtime reports a real mm1g action delta", async () => {
   const { response, telemetry } = await runArm("grow-opening");
   assert.equal(response.selectedLegalActionId, "expand:terra-nullius:10");
   assert.equal(response.reason, "sev1:go1:rch:atk:mm1g");
-  assert.equal(response.fallbackUsed, false);
-  assert.equal(response.llmPlannerDegraded, false);
+  assert.equal(response.fallbackUsed, true);
+  assert.equal(response.llmPlannerDegraded, true);
   assert.equal(telemetry[0].source, "static-eval-v1");
   assert.equal(telemetry[0].arm, "grow-opening");
   assert.equal(telemetry[0].uploadEligible, false);

@@ -42,11 +42,11 @@ function publicReason(armToken, chosen, scheduled, reached) {
     .slice(0, 48);
 }
 
-export function evaluationResponseMetadata(actionDelta) {
+export function evaluationResponseMetadata() {
   return {
-    confidence: actionDelta ? 0.75 : 0.4,
-    fallbackUsed: !actionDelta,
-    llmPlannerDegraded: false,
+    confidence: 0.4,
+    fallbackUsed: true,
+    llmPlannerDegraded: true,
   };
 }
 
@@ -123,7 +123,7 @@ export function startStaticIntentPlayer(value) {
       requestID: message.requestID,
       selectedLegalActionId: chosen.id,
       reason,
-      ...evaluationResponseMetadata(telemetry.actionDelta),
+      ...evaluationResponseMetadata(),
     });
     if (activeSocket.readyState !== WebSocket.OPEN) return;
     activeSocket.send(response, (error) => {

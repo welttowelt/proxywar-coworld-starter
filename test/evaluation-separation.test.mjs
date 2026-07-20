@@ -39,8 +39,6 @@ test("evaluation arms use baked one-file entrypoints, never environment selectio
     m0: "evaluation-m0-player.mjs",
     "grow-opening": "evaluation-grow-opening-player.mjs",
     "grow-low-share": "evaluation-grow-low-share-player.mjs",
-    "grow-calm": "evaluation-grow-calm-player.mjs",
-    "grow-conjunction": "evaluation-grow-conjunction-player.mjs",
     "convert-weakest": "evaluation-convert-weakest-player.mjs",
     "convert-largest": "evaluation-convert-largest-player.mjs",
   };
