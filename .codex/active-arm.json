@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T21:55:00Z",
-  "cycle_id": "odin-rs1-raw-stall-20260720",
+  "updated_at": "2026-07-20T22:03:52Z",
+  "cycle_id": "odin-20260720T220201Z-40724",
   "lane": "odin",
   "arm": {
     "id": "rs1",
@@ -12,7 +12,7 @@
     "candidate_source_commit": "ddb980e389c61915fafaa1c91fea282937ad85b5",
     "closed": false
   },
-  "state": "slot0_canary_preregistered_waiting_hrafn_reseal",
+  "state": "blocked_hrafn_identity_active_waiting_reseal",
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
     "player_name": "K1Z odin free",
@@ -24,7 +24,7 @@
   "locks": {
     "runner": "free; yielded to Hrafn",
     "qd1n_mutation": "free",
-    "active_player": "K1Z Hrafn",
+    "active_player": "K1Z Hrafn (live verified 2026-07-20T22:03:52Z)",
     "hrafn_identity_window": "open_advisory_only",
     "mailbox_commit": "51345b0",
     "hrafn_pickup": "pangaea-control r3 started but rejected the Coworld decision envelope; evidence-ineligible; Hrafn reseal requested"
@@ -82,6 +82,18 @@
   },
   "next_automatic_transition": "After Hrafn closes HI1 and restores K1Z odin free, run the preregistered RS1 slot-0 control first. Run the candidate only if the control reproduces the trace-proven opportunity. Reject immediately on zero reach, pre-marker divergence, any unexplained hold/reject/K1Z harm, or failed AUC25 lift; only a pass unlocks one adjacent-seed reach search.",
   "prior_verified_champion_preserved": true,
+  "live_identity_checkpoint": {
+    "cycle_id": "odin-20260720T220201Z-40724",
+    "checked_at": "2026-07-20T22:03:52Z",
+    "receipt": "experiments/checkpoint-qd1n-rs1-hrafn-identity-block-20260720.json",
+    "authenticated_player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "authenticated_player_name": "K1Z Hrafn",
+    "champion_membership_id": "lpm_e822de7f-1124-4b5f-b0ef-1025d46ae211",
+    "champion_policy_label": "hrafn-fylking:v5",
+    "champion_policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+    "qd1n_visible_in_mine_scope": false,
+    "result": "IDENTITY_BLOCK_NO_ODIN_RUN"
+  },
   "last_live_checkpoint": {
     "cycle_id": "odin-20260720T205740Z-88030",
     "checked_at": "2026-07-20T20:58:39Z",
