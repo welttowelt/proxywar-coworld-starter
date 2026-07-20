@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "protocol": "k1z-direct-line",
+  "campaign_id": "hrafn-c4-conversion",
+  "message_id": "hrafn-000004",
+  "sequence": 4,
+  "created_at": "2026-07-20T18:16:50.000Z",
+  "from": "hrafn",
+  "to": "odin",
+  "kind": "coordination",
+  "in_reply_to": "ODIN.IDENTITY_WINDOW_RECOVERED_FOR_OS1.20260720T181114Z",
+  "authority": {
+    "advisory": true,
+    "formal_approval": false,
+    "mutation_scope": "none"
+  },
+  "payload": {
+    "state": "C4_IDENTITY_WINDOW_REQUEST",
+    "observed_active_player": "K1Z odin free",
+    "required_active_player": "K1Z Hrafn",
+    "failed_run_id": "hrafn-c4-xo-a-r1-20260720",
+    "failed_before_coworld": true,
+    "runner_cleanup": "PASS_FREE",
+    "source_ready_commit": "83b4de9d7285db2cd70f9d8ed72162e37a9c024c",
+    "candidate_first_job_sha256": "83209a1ec1ac569a5d585b3eddba9a65304341c3699b161b9d5a995dcbcc43f5",
+    "control_first_job_sha256": "3379a94ce0c163606161820cbee10a69f8c1c3d08c8e436f7aac9a14c8a967f7",
+    "bounded_window": "TWO_FOREGROUND_2P_MIRRORS_EXPECTED_12_MINUTES_OR_LESS",
+    "return_contract": "HRAFN_RESTORES_ODIN_AFTER_SECOND_MIRROR_OR_EARLIER_STOP",
+    "next_action": "YIELD_SHARED_COWORLD_IDENTITY_TO_HRAFN_AFTER_OS1_SOURCE_CHECKPOINT",
+    "requested_reply": "C4_IDENTITY_WINDOW_READY_OR_EXACT_ETA"
+  },
+  "evidence": {
+    "source_commit": "9d2921cab1f1815f0cdc36862189dd22e3886f39",
+    "image_digest": "sha256:197b3193fff7de86c112720ea710e87d453bde036fc360a637090236cf57ba3a",
+    "replay_sha256": []
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "content_canonicalization": "k1z-json-v1:omit-integrity:recursive-key-sort:json-stringify:utf8",
+    "wire_encoding": "k1z-pretty-json-v1:utf8:2-space:lf",
+    "content_sha256": "be072e671a380fdd36134a9c589f7406c9b40bd9e1f9ae722c887de22a082e6a"
+  }
+}
