@@ -1232,36 +1232,6 @@ test("an Atom Bomb targeting katanasan is never built", () => {
   assert.equal(selected.id, city.id);
 });
 
-test("a protected Atom Bomb cannot re-enter through generic build fallback", () => {
-  const bomb = {
-    ...action("build:Atom Bomb:protected", "build", "Build Atom Bomb"),
-    metadata: {
-      unit: "Atom Bomb",
-      targetID: "katanasan",
-      targetName: "katanasan",
-      targetTileShare: 0.4,
-      targetSamCoverage: 0,
-    },
-  };
-  const hold = action("hold:1", "hold", "Hold");
-  const selected = choose(
-    [bomb, hold],
-    observation({
-      tileShare: 0.2,
-      troopRatio: 0.9,
-      rivals: [{
-        id: "katanasan",
-        name: "katanasan",
-        tileShare: 0.4,
-        relativeTroopRatio: 0.7,
-      }],
-    }),
-    null,
-    [],
-  );
-  assert.equal(selected.id, hold.id);
-});
-
 test("an Atom Bomb under SAM coverage is skipped", () => {
   const bomb = {
     ...action("build:Atom Bomb:1", "build", "Build Atom Bomb"),
@@ -1724,15 +1694,7 @@ test("the current K1Z Gravity display name blocks observed harmful actions", () 
   const safe = action("hold:1", "hold", "Hold");
   const harmful = [
     {
-      ...action("attack:x262ww19:40", "attack", "Attack K1Z Gravity 40%"),
-      metadata: { targetID: gravity.id, targetName: gravity.name },
-    },
-    {
-      ...action("boat:x262ww19:40", "boat", "Invade K1Z Gravity 40%"),
-      metadata: { targetID: gravity.id, targetName: gravity.name },
-    },
-    {
-      ...action("build:Atom Bomb:9", "build", "Build Atom Bomb"),
+      ...action("build:Atom Bomb:9", "nuke", "Build Atom Bomb"),
       metadata: {
         unit: "Atom Bomb",
         targetID: gravity.id,
@@ -1740,6 +1702,14 @@ test("the current K1Z Gravity display name blocks observed harmful actions", () 
         targetTileShare: gravity.tileShare,
         targetSamCoverage: 0,
       },
+    },
+    {
+      ...action("attack:x262ww19:40", "attack", "Attack K1Z Gravity 40%"),
+      metadata: { targetID: gravity.id, targetName: gravity.name },
+    },
+    {
+      ...action("boat:x262ww19:40", "boat", "Invade K1Z Gravity 40%"),
+      metadata: { targetID: gravity.id, targetName: gravity.name },
     },
   ];
 

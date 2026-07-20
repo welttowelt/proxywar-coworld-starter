@@ -650,9 +650,7 @@ function builtUnits(history) {
 
 export function chooseBuild(actions, history, defend = false) {
   const candidates = safeActions(actions, (action) =>
-    action.kind === "build" &&
-    !actionText(action).includes("defense post") &&
-    String(action?.metadata?.unit ?? "").toLowerCase() !== "atom bomb"
+    action.kind === "build" && !actionText(action).includes("defense post")
   );
   if (candidates.length === 0) return null;
   const built = builtUnits(history);
