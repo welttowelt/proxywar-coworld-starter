@@ -36,16 +36,23 @@ Read these in order:
 3. `AUTONOMOUS_PROMOTION.md` — promotion states and automatic authority.
 4. `MERIT.md` — terminal historical evidence.
 
-NB1 safe frontier boats is the only active candidate. It may resize an
-already-selected neutral 8-percent boat to the legal same-destination
-16-percent form only at troop ratio 0.87 or higher with zero current threat.
-Every other decision remains exact v89.
+There is no active candidate. NB1 safe frontier boats passed source, RCI,
+image, and qualifier checks, then failed the four-episode local outcome gate:
+Pangaea reach was zero; World reached seven times but produced zero
+ten-decision tile-gain and zero final outcome delta. Candidate and parent tied
+at 85,691 combined tiles with all 332 Odin decisions accepted and no holds,
+rejects, or K1Z harm. NB1 is closed without tuning.
 
 PG2 is terminally closed: hosted `4/4` completed, but Odin won `0/4` and
 recorded 17 unexplained holds. A1 is also closed: zero marker reach, 13 holds,
 and a negative paired result. PR1 was closed before source mutation because it
 duplicates the rejected DP1 Defense Post family. A2/A3 and all prior rejected
 arms remain closed.
+
+The next transition is one structural, replay-backed mechanism review from the
+real Kimi K3 Max. No new source branch opens until that review identifies one
+distinct causal action change, a replay cell, marker, smallest screen, and
+binary stop condition.
 
 ## Runner
 

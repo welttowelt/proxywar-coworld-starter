@@ -35,8 +35,10 @@ scoreboard narration, and new hypotheses. Do not open a second arm. Follow
 `MISSION_COMMAND.md` and `.codex/active-arm.json`; never dispatch a successor
 from an older mailbox packet or stale handover. PG2, A1, A2, and A3 are closed.
 PR1 is also closed because it duplicates the rejected DP1 Defense Post family.
-NB1 safe frontier boats is the sole active candidate. If NB1 fails, close it
-without tuning or opening a successor micro-guard.
+NB1 is closed after zero Pangaea reach and zero World outcome lift. No active
+candidate exists. The only authorized transition is a structural,
+replay-backed mechanism review from Kimi K3 Max; do not open another
+micro-guard or mutate source first.
 
 ## Execution
 
