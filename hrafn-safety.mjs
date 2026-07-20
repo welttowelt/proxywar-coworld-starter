@@ -1,4 +1,5 @@
 import {
+  buildUnit,
   coalitionMemberForRival,
   hasLeadingK1ZTag,
   hrafnActionTargetRawNames,
@@ -31,6 +32,11 @@ export const HRAFN_OMITTED_SOCIAL_KINDS = new Set([
 ]);
 
 const DONATION_KINDS = new Set(["donate_troops", "donate_gold"]);
+const TARGETED_OFFENSIVE_BUILD_UNITS = new Set([
+  "atom bomb",
+  "hydrogen bomb",
+  "mirv",
+]);
 
 export function classifyHrafnActionSafety(action, state) {
   if (!action || typeof action !== "object") {
@@ -44,15 +50,20 @@ export function classifyHrafnActionSafety(action, state) {
     return { safe: true, reason: "neutral-territory", rival: null };
   }
 
+  const resolution = resolveHrafnActionTarget(action, state);
+  const rival = resolution.rival;
+  const targetedOffensiveBuild = action.kind === "build" &&
+    TARGETED_OFFENSIVE_BUILD_UNITS.has(buildUnit(action)) &&
+    resolution.signaled;
+  const harmful = HRAFN_HARMFUL_KINDS.has(action.kind) ||
+    targetedOffensiveBuild;
+
   if (
-    HRAFN_HARMFUL_KINDS.has(action.kind) &&
+    harmful &&
     hrafnActionTargetRawNames(action).some(hasLeadingK1ZTag)
   ) {
     return { safe: false, reason: "k1z-protected", rival: null };
   }
-
-  const resolution = resolveHrafnActionTarget(action, state);
-  const rival = resolution.rival;
 
   if (DONATION_KINDS.has(action.kind)) {
     if (!rival) {
@@ -70,7 +81,7 @@ export function classifyHrafnActionSafety(action, state) {
       : { safe: false, reason: "non-odin-donation", rival };
   }
 
-  if (!HRAFN_HARMFUL_KINDS.has(action.kind)) {
+  if (!harmful) {
     return { safe: true, reason: "non-harmful", rival };
   }
 

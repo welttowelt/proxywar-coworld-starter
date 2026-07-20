@@ -150,6 +150,9 @@ export function buildUnit(action) {
     "sam launcher",
     "defense post",
     "missile silo",
+    "atom bomb",
+    "hydrogen bomb",
+    "mirv",
   ]) {
     if (text.includes(unit)) return unit;
   }

@@ -22,7 +22,7 @@ const INTENT_KEYS = Object.freeze(["horizon", "objective", "targetID"]);
 const INTENT_OBJECTIVES = new Set(["grow", "convert"]);
 const HARD_POLICY_MARKERS = new Set(["k1z", "dn1", "sk1"]);
 const GROW_BUILD_UNITS = new Set(["city", "factory", "port"]);
-const CONVERT_KINDS = new Set(["attack", "target_player"]);
+const CONVERT_KINDS = new Set(["attack"]);
 const OMITTED_PUBLIC_TEXT_KINDS = new Set(["quick_chat", "emoji"]);
 const RESERVED_ACTION_FIELDS = Object.freeze([
   "campaignStartDecision",

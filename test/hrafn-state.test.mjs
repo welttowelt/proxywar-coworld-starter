@@ -115,6 +115,9 @@ test("neutral land and boat actions are classified structurally", () => {
 test("build units normalize current Coworld labels and metadata", () => {
   assert.equal(buildUnit(build("City")), "city");
   assert.equal(buildUnit(build("Factory")), "factory");
+  assert.equal(buildUnit(build("Atom Bomb")), "atom bomb");
+  assert.equal(buildUnit(build("Hydrogen Bomb")), "hydrogen bomb");
+  assert.equal(buildUnit(build("MIRV")), "mirv");
   assert.equal(
     buildUnit(action("build:SAM Launcher:2", "build", "Build SAM Launcher")),
     "sam launcher",

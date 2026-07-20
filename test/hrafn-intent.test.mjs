@@ -219,6 +219,35 @@ test("convert intent binds exact-v5 autonomy to one exact outsider", () => {
   assert.equal(result.action.intentMarker, "hi1");
 });
 
+test("target-player-only conversion falls back without HI1 reach", () => {
+  const foe = rival({ id: "foe", name: "Foe", tileShare: 0.3 });
+  const targetPlayer = action(
+    `target:${foe.id}`,
+    "target_player",
+    "Target Foe",
+    { targetID: foe.id, targetName: foe.name },
+  );
+  const actions = [targetPlayer, action("hold", "hold", "Hold")];
+  const observationValue = observation({ rivals: [foe] });
+  const result = chooseHrafnIntentDecision({
+    actions,
+    observation: observationValue,
+    intent: { objective: "convert", targetID: foe.id, horizon: 4 },
+  });
+  const snapshot = buildHrafnIntentSnapshot({
+    actions,
+    observation: observationValue,
+  });
+
+  assert.equal(result.action.id, result.baseline.id);
+  assert.equal(result.intentValid, false);
+  assert.equal(result.intentApplied, false);
+  assert.equal(result.actionDelta, false);
+  assert.equal(result.reason, "intent_unreachable");
+  assert.equal(result.action.intentMarker, undefined);
+  assert.deepEqual(snapshot.convertTargets, []);
+});
+
 test("an intent with no action delta has no public HI1 marker", () => {
   const leader = rival({ id: "leader", name: "Leader", tileShare: 0.3 });
   const actions = [attack(leader), expand(), action("hold", "hold", "Hold")];

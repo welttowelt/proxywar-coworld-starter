@@ -59,6 +59,52 @@ test("every harmful action kind targeting K1Z is rejected", () => {
   }
 });
 
+test("every targeted offensive build is rejected against every K1Z identity", () => {
+  for (const member of K1Z_MEMBERS) {
+    const protectedTarget = rival({
+      id: member.id,
+      name: `K1Z ${member.names[0]}`,
+    });
+    for (const unit of ["Atom Bomb", "Hydrogen Bomb", "MIRV"]) {
+      const candidate = action(
+        `build:${unit}:300`,
+        "build",
+        `Build ${unit} against ${protectedTarget.name}`,
+        {
+          targetID: protectedTarget.id,
+          targetName: protectedTarget.name,
+        },
+      );
+      const state = stateFor([protectedTarget], [candidate]);
+      const result = classifyHrafnActionSafety(candidate, state);
+      assert.equal(result.safe, false, `${member.role}:${unit}`);
+      assert.equal(result.reason, "k1z-protected", `${member.role}:${unit}`);
+    }
+  }
+});
+
+test("targeted offensive builds remain legal against an exact outsider", () => {
+  const outsider = rival({ id: "outsider", name: "Outsider" });
+  for (const unit of ["Atom Bomb", "Hydrogen Bomb", "MIRV"]) {
+    const candidate = action(
+      `build:${unit}:300`,
+      "build",
+      `Build ${unit} against Outsider`,
+      {
+        unit,
+        targetID: outsider.id,
+        targetName: outsider.name,
+      },
+    );
+    const state = stateFor([outsider], [candidate]);
+    assert.deepEqual(
+      classifyHrafnActionSafety(candidate, state),
+      { safe: true, reason: "resolved-outsider", rival: state.rivals[0] },
+      unit,
+    );
+  }
+});
+
 test("K1Z protection survives a renamed exact configured ID", () => {
   const renamed = rival({
     id: K1Z_MEMBERS[2].id,
