@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T23:08:37Z",
+  "updated_at": "2026-07-20T23:08:52Z",
   "cycle_id": "odin-20260720T230625Z-26500",
   "lane": "odin",
   "arm": {
@@ -12,7 +12,7 @@
     "candidate_source_commit": "ddb980e389c61915fafaa1c91fea282937ad85b5",
     "closed": false
   },
-  "state": "waiting_hrafn_hi1_diagnostic_terminal_migration",
+  "state": "odin_restored_mickey_source_ready_identity_blocked",
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
     "player_name": "K1Z odin free",
@@ -24,25 +24,25 @@
   "locks": {
     "runner": "free; Hrafn source operations moved to Studio; local Mickey work requires the separate mickey lease",
     "qd1n_mutation": "free",
-    "active_player": "K1Z Hrafn (live verified 2026-07-20T22:03:52Z)",
-    "hrafn_identity_window": "hi1_ready_diagnostics_pending_terminal_migration",
+    "active_player": "K1Z odin free (live verified 2026-07-20T23:08:26Z)",
+    "hrafn_identity_window": "hi1_studio_ready_local_slot_released",
     "mailbox_commit": "b4f4063b55c64b33060c45d199458ee359a6d7f5",
-    "hrafn_pickup": "Hrafn source and execution remain Studio-only. Hrafn resealed exact 98288c8b and requested a four-job advisory diagnostic window in hrafn-000016. Odin verified the bindings and posted odin-000018 at mailbox head b4f4063. The active Softmax identity remains K1Z Hrafn; no terminal migration receipt exists, so no Odin runner or qd1n mutation is authorized.",
-    "mickey_local_slot": "source, five-arm evaluation, linux/amd64 images, and CPU fanout ready; no live identity or league authority before the Hrafn terminal migration receipt"
+    "hrafn_pickup": "Hrafn source and execution are Studio-only. Exact 98288c8b, the isolated Studio identity, image, and four-job advisory window passed independent audit at mailbox b4f4063. Under the user's direct local-slot transfer, normal HOME is restored to K1Z odin free and no local Hrafn process remains.",
+    "mickey_local_slot": "source, five-arm evaluation, linux/amd64 images, and local evidence ownership ready; dedicated HOME exists with no active player, while distinct Mickey player creation returned HTTP 409 and may not reuse or rename Hrafn"
   },
   "operator_topology": {
     "odin": "local qd1n owner",
     "hrafn": "Studio-only hrafn-fylking owner",
     "mickey": "local mickey-mouse-intent source and evidence owner",
-    "authority_receipt": "team-mailbox 26c7a1e",
+    "authority_receipt": "team-mailbox b4f4063",
     "mickey_source_worktree": "/private/tmp/proxywar-mickey-cpu-surrogates-20260721",
     "mickey_ops_worktree": "/private/tmp/proxywar-mickey-cpu-fanout-ops-20260721",
     "mickey_source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
     "mickey_source_receipt_commit": "068afee40b55ee80e00b55966905c0e3f3c3df10",
     "mickey_ops_commit": "0ff0dbe563807a4c9bd16972eeb69e62df4a7153",
-    "mickey_state": "five distinct arms; 184/184; zero K1Z harm; six linux/amd64 images verified; waiting only on migration and dedicated identity",
-    "live_identity_guard": "K1Z Hrafn remains active locally until the Studio terminal migration receipt",
-    "hrafn_studio_reseal": "complete at exact source 98288c8b9211513cfb71ceb88707de1721f351e3; advisory four-job diagnostic window ready; no terminal migration receipt"
+    "mickey_state": "five distinct arms; 184/184; zero K1Z harm; six linux/amd64 images verified; local source/evidence ready; live operations blocked only on a distinct Mickey player credential",
+    "live_identity_guard": "released by direct user transfer after the verified Studio handoff; normal HOME is K1Z odin free and dedicated Mickey HOME has no active player",
+    "hrafn_studio_reseal": "complete at exact source 98288c8b9211513cfb71ceb88707de1721f351e3; advisory four-job diagnostic window ready; Hrafn remains Studio-only"
   },
   "candidate": {
     "source_tests": "154/154",
@@ -78,7 +78,7 @@
     "auditor_sha256": "771143a16a3f7f201f3ed018c23f6e991800db01002ffd5c35de8d53e686a4d3",
     "auditor_self_test_report_sha256": "8ba3fe5095cfe6ffe962d65552d66f7270094ce24fd52255820c69b870ce5828",
     "auditor_self_test": "parent-as-both failed closed on zero RS1 marker reach while reproducing the exact turn-2400 opportunity and AUC25 516155",
-    "reason": "Shared active identity remains K1Z Hrafn. Mailbox hrafn-000016 and odin-000018 establish a valid Hrafn-only HI1 diagnostic window at exact source 98288c8b, but they do not restore K1Z odin free or provide the terminal migration receipt. Odin will not compete for the runner or switch identity mid-window."
+    "reason": "Mailbox hrafn-000016 and odin-000018 establish a valid Hrafn-only Studio window at exact source 98288c8b. The user's direct local-slot transfer restores normal HOME to Odin without affecting Studio Hrafn. Mickey remains source/evidence-only until a distinct player credential exists."
   },
   "gates": {
     "source_ready": true,
@@ -98,7 +98,7 @@
     "oi2": "closed_before_edit as redundant with HI1",
     "os1": "closed_without_run_as_recombined_complexity"
   },
-  "next_automatic_transition": "Hrafn runs only the approved four-job HI1 Studio diagnostic window and posts its terminal migration receipt. Then restore K1Z odin free locally, verify the restored identity, and run the preregistered RS1 slot-0 control first. Mickey may separately preregister one M0-versus-one-arm local screen under the mickey lease after its dedicated identity is verified. Reject either lane on zero reach, pre-marker divergence, any unexplained hold/reject/K1Z harm, or nonpositive measured lift.",
+  "next_automatic_transition": "Run the preregistered RS1 slot-0 control first under the Odin lease. Hrafn runs only its approved Studio diagnostic window. Mickey stays local source/evidence-only until a distinct Softmax user credential or available player slot yields an exact Mickey player; then preregister one M0-versus-one-arm screen under the mickey lease. Reject either lane on zero reach, pre-marker divergence, any unexplained hold/reject/K1Z harm, or nonpositive measured lift.",
   "prior_verified_champion_preserved": true,
   "latest_coordination_checkpoint": {
     "cycle_id": "odin-20260720T230625Z-26500",
@@ -111,16 +111,15 @@
     "result": "HRAFN_HI1_WINDOW_READY_ODIN_IDENTITY_BLOCK_PERSISTS"
   },
   "live_identity_checkpoint": {
-    "cycle_id": "odin-20260720T220201Z-40724",
-    "checked_at": "2026-07-20T22:03:52Z",
-    "receipt": "experiments/checkpoint-qd1n-rs1-hrafn-identity-block-20260720.json",
-    "authenticated_player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
-    "authenticated_player_name": "K1Z Hrafn",
-    "champion_membership_id": "lpm_e822de7f-1124-4b5f-b0ef-1025d46ae211",
-    "champion_policy_label": "hrafn-fylking:v5",
-    "champion_policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
-    "qd1n_visible_in_mine_scope": false,
-    "result": "IDENTITY_BLOCK_NO_ODIN_RUN"
+    "cycle_id": "mickey-local-takeover-20260721",
+    "checked_at": "2026-07-20T23:08:26Z",
+    "receipt": "experiments/checkpoint-mickey-local-takeover-20260721.json",
+    "authenticated_player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "authenticated_player_name": "K1Z odin free",
+    "hrafn_local_active": false,
+    "mickey_dedicated_home_active_player": null,
+    "mickey_player_create_result": "HTTP_409_CONFLICT",
+    "result": "ODIN_RESTORED_MICKEY_OPERATOR_READY_IDENTITY_BLOCKED"
   },
   "last_live_checkpoint": {
     "cycle_id": "odin-20260720T205740Z-88030",
