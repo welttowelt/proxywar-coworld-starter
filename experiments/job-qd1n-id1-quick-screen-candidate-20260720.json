@@ -60,7 +60,7 @@
     },
     {
       "type": "player",
-      "image": "sha256:43bb0e611dda93d763437462fe8d377c28e5d31c91678156a208c85197b595b2",
+      "image": "sha256:c5fa17ae2ba6e0611af5ad50d1a37c8f37910ffc481666b7f270c567046b9ab6",
       "run": ["node", "/app/llm-player.mjs"]
     }
   ]

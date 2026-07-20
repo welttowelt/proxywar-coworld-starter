@@ -3,15 +3,20 @@
   "record_type": "qd1n_id1_exploratory_intent_screen",
   "created_at": "2026-07-20T19:05:00Z",
   "claim_limit": "Exploratory mechanism and early-payoff screen only. It cannot authorize upload, submission, placement, or champion change.",
-  "hypothesis": "A high-level grow intent can let the safe selector replace proactive opening social work with legal neutral conquest, without changing tactical, economic, pressure, collapse, stall, K1Z, or post-window behavior.",
+  "hypothesis": "A high-level grow intent can let the safe selector replace proactive opening coalition requests with legal neutral conquest, without changing reverse handshakes, tactical, economic, pressure, collapse, stall, K1Z, or post-window behavior.",
   "candidate": {
     "arm": "ID1",
-    "source_commit": "83f0eb9f1b810603c3a9c40c7a507071a52f62fd",
+    "source_commit": "1e8386bfc3116e9c4d660e169568179b9ba56093",
     "source_branch": "rci/id1-intent-delegation",
-    "image_id": "sha256:43bb0e611dda93d763437462fe8d377c28e5d31c91678156a208c85197b595b2",
+    "image_id": "sha256:c5fa17ae2ba6e0611af5ad50d1a37c8f37910ffc481666b7f270c567046b9ab6",
     "image_architecture": "amd64",
     "policy_engine": "id1",
-    "marker": "id1"
+    "marker": "id1",
+    "wiring_proof": {
+      "method": "docker image inspect on the immutable image ID",
+      "config_env": "POLICY_ENGINE=id1",
+      "verified": true
+    }
   },
   "parent": {
     "policy": "qd1n:v89",
@@ -32,9 +37,14 @@
     "odin_slot_zero_based": 7
   },
   "jobs": {
+    "materialization": {
+      "method": "Add the exact pinned Coworld manifest JSON as the top-level manifest field in each template. Change no other field.",
+      "candidate_materialized_sha256": "1ab6d79c83fabe2165c44ce601782dbb95df9d889140aae59528bad663b23aa7",
+      "parent_materialized_sha256": "2e12b109a3cdeea813323fd107b1e69a45384cc1d2fcb76ad298e983480baff9"
+    },
     "candidate": {
       "path": "experiments/job-qd1n-id1-quick-screen-candidate-20260720.json",
-      "sha256": "1a250d31f47479ef26f7ffa2f42baa4ac262ade4b7208a55094da7ca63998261"
+      "sha256": "1a460e7734c92742e6e952242be523a889a79f092945792fb130b0894fbd942f"
     },
     "parent": {
       "path": "experiments/job-qd1n-id1-quick-screen-parent-20260720.json",
@@ -42,10 +52,18 @@
     },
     "controlled_difference": "Only player slot 7 image changes from exact v89 to ID1."
   },
+  "preflight_attempt": {
+    "at": "2026-07-20T19:10:36Z",
+    "status": "SCHEMA_REJECTED_BEFORE_GAME_START",
+    "reason": "The first invocation passed the committed templates directly; Coworld 0.1.28 requires the pinned manifest inline.",
+    "policy_evidence": false,
+    "league_or_identity_change": false
+  },
   "audit": {
     "decision_window": "First 20 non-spawn K1Z odin free decisions.",
     "mechanism_pass": [
       "At least one accepted ID1-marked neutral attack.",
+      "The candidate job references the immutable image whose inspected config contains POLICY_ENGINE=id1.",
       "Zero rejected decisions, unexplained holds, planner degradation, fallbacks, or K1Z harm.",
       "At least 20 auditable non-spawn Odin decisions."
     ],
