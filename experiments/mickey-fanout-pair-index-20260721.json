@@ -1,0 +1,651 @@
+{
+  "schema_version": 1,
+  "kind": "mickey_cpu_fanout_pair_index",
+  "evidence_scope": "diagnostic_only",
+  "pair_count": 16,
+  "cells_per_arm": 4,
+  "maps_per_arm": 2,
+  "test_seats_per_arm": 2,
+  "pairs": [
+    {
+      "id": "convert-largest-asia-s0-c",
+      "arm": "convert-largest",
+      "mechanism_class": "convert",
+      "roster_class": "mixed-outsider-convert",
+      "map": "Asia",
+      "seed": 2026072113,
+      "seat": 0,
+      "max_decision_steps": 80,
+      "roster": [
+        {
+          "seat": 0,
+          "name": "K1Z Mickey Mouse",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 1,
+          "name": "K1Z odin free",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 2,
+          "name": "K1Z Gravity",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 3,
+          "name": "outsider-control-v89",
+          "coalition": "outsider"
+        }
+      ],
+      "candidate_spec": {
+        "archive_path": "specs/convert-largest-asia-s0-c-candidate.json",
+        "sha256": "2088badde44a7e05a7ff19300a9e6ae7c2d09020a7b2afd410a66eac06654892"
+      },
+      "m0_spec": {
+        "archive_path": "specs/mixed-outsider-convert-asia-s0-c-m0.json",
+        "sha256": "681aea17c3b44070ab3762d6ecd68b875753bc2d480b70a00f9b3bd3cada86fe"
+      }
+    },
+    {
+      "id": "convert-largest-asia-s2-d",
+      "arm": "convert-largest",
+      "mechanism_class": "convert",
+      "roster_class": "mixed-outsider-convert",
+      "map": "Asia",
+      "seed": 2026072114,
+      "seat": 2,
+      "max_decision_steps": 80,
+      "roster": [
+        {
+          "seat": 0,
+          "name": "K1Z odin free",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 1,
+          "name": "K1Z Gravity",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 2,
+          "name": "K1Z Mickey Mouse",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 3,
+          "name": "outsider-control-v89",
+          "coalition": "outsider"
+        }
+      ],
+      "candidate_spec": {
+        "archive_path": "specs/convert-largest-asia-s2-d-candidate.json",
+        "sha256": "4df6548e7098ccf89428379da06b8d2580750d98aba5da4fd8f5ead140581c02"
+      },
+      "m0_spec": {
+        "archive_path": "specs/mixed-outsider-convert-asia-s2-d-m0.json",
+        "sha256": "eb0e9b6826ae33d3c3ae41a5c26e35a5a79957ee335ec92cd696a2daacb3a0d2"
+      }
+    },
+    {
+      "id": "convert-largest-world-s0-a",
+      "arm": "convert-largest",
+      "mechanism_class": "convert",
+      "roster_class": "mixed-outsider-convert",
+      "map": "World",
+      "seed": 2026072111,
+      "seat": 0,
+      "max_decision_steps": 80,
+      "roster": [
+        {
+          "seat": 0,
+          "name": "K1Z Mickey Mouse",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 1,
+          "name": "K1Z odin free",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 2,
+          "name": "K1Z Gravity",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 3,
+          "name": "outsider-control-v89",
+          "coalition": "outsider"
+        }
+      ],
+      "candidate_spec": {
+        "archive_path": "specs/convert-largest-world-s0-a-candidate.json",
+        "sha256": "8bac6cc826e19ea2afaa93084d5a4201c093975ab31a2cab7c6191639aba737d"
+      },
+      "m0_spec": {
+        "archive_path": "specs/mixed-outsider-convert-world-s0-a-m0.json",
+        "sha256": "b33cd713ab9bbedf7025bdf859f22d2f7b562713b76a4a4c3e1fad558eab578b"
+      }
+    },
+    {
+      "id": "convert-largest-world-s2-b",
+      "arm": "convert-largest",
+      "mechanism_class": "convert",
+      "roster_class": "mixed-outsider-convert",
+      "map": "World",
+      "seed": 2026072112,
+      "seat": 2,
+      "max_decision_steps": 80,
+      "roster": [
+        {
+          "seat": 0,
+          "name": "K1Z odin free",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 1,
+          "name": "K1Z Gravity",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 2,
+          "name": "K1Z Mickey Mouse",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 3,
+          "name": "outsider-control-v89",
+          "coalition": "outsider"
+        }
+      ],
+      "candidate_spec": {
+        "archive_path": "specs/convert-largest-world-s2-b-candidate.json",
+        "sha256": "9fc50164f9d7852c5945e1bc662806fa75ab99005b29e57850955af0220bae79"
+      },
+      "m0_spec": {
+        "archive_path": "specs/mixed-outsider-convert-world-s2-b-m0.json",
+        "sha256": "192b9245628852f13b59f3b8f8d6e50f466e05f921f6ad341c4562da9d4cd075"
+      }
+    },
+    {
+      "id": "convert-weakest-asia-s0-c",
+      "arm": "convert-weakest",
+      "mechanism_class": "convert",
+      "roster_class": "mixed-outsider-convert",
+      "map": "Asia",
+      "seed": 2026072113,
+      "seat": 0,
+      "max_decision_steps": 80,
+      "roster": [
+        {
+          "seat": 0,
+          "name": "K1Z Mickey Mouse",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 1,
+          "name": "K1Z odin free",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 2,
+          "name": "K1Z Gravity",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 3,
+          "name": "outsider-control-v89",
+          "coalition": "outsider"
+        }
+      ],
+      "candidate_spec": {
+        "archive_path": "specs/convert-weakest-asia-s0-c-candidate.json",
+        "sha256": "0c68a20b4f5cf1894370debb95a51f73f0035340d0d962fce56273415aee9ca0"
+      },
+      "m0_spec": {
+        "archive_path": "specs/mixed-outsider-convert-asia-s0-c-m0.json",
+        "sha256": "681aea17c3b44070ab3762d6ecd68b875753bc2d480b70a00f9b3bd3cada86fe"
+      }
+    },
+    {
+      "id": "convert-weakest-asia-s2-d",
+      "arm": "convert-weakest",
+      "mechanism_class": "convert",
+      "roster_class": "mixed-outsider-convert",
+      "map": "Asia",
+      "seed": 2026072114,
+      "seat": 2,
+      "max_decision_steps": 80,
+      "roster": [
+        {
+          "seat": 0,
+          "name": "K1Z odin free",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 1,
+          "name": "K1Z Gravity",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 2,
+          "name": "K1Z Mickey Mouse",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 3,
+          "name": "outsider-control-v89",
+          "coalition": "outsider"
+        }
+      ],
+      "candidate_spec": {
+        "archive_path": "specs/convert-weakest-asia-s2-d-candidate.json",
+        "sha256": "34167365f17437657f2bd7fe15736dfdffa94c8de3a4bbeb5077e3e75cb2e014"
+      },
+      "m0_spec": {
+        "archive_path": "specs/mixed-outsider-convert-asia-s2-d-m0.json",
+        "sha256": "eb0e9b6826ae33d3c3ae41a5c26e35a5a79957ee335ec92cd696a2daacb3a0d2"
+      }
+    },
+    {
+      "id": "convert-weakest-world-s0-a",
+      "arm": "convert-weakest",
+      "mechanism_class": "convert",
+      "roster_class": "mixed-outsider-convert",
+      "map": "World",
+      "seed": 2026072111,
+      "seat": 0,
+      "max_decision_steps": 80,
+      "roster": [
+        {
+          "seat": 0,
+          "name": "K1Z Mickey Mouse",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 1,
+          "name": "K1Z odin free",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 2,
+          "name": "K1Z Gravity",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 3,
+          "name": "outsider-control-v89",
+          "coalition": "outsider"
+        }
+      ],
+      "candidate_spec": {
+        "archive_path": "specs/convert-weakest-world-s0-a-candidate.json",
+        "sha256": "89ec83c1a6d5f58bf1c95c4ff3be1fe50c4b7042df882f26f0ea9e37f486e3fd"
+      },
+      "m0_spec": {
+        "archive_path": "specs/mixed-outsider-convert-world-s0-a-m0.json",
+        "sha256": "b33cd713ab9bbedf7025bdf859f22d2f7b562713b76a4a4c3e1fad558eab578b"
+      }
+    },
+    {
+      "id": "convert-weakest-world-s2-b",
+      "arm": "convert-weakest",
+      "mechanism_class": "convert",
+      "roster_class": "mixed-outsider-convert",
+      "map": "World",
+      "seed": 2026072112,
+      "seat": 2,
+      "max_decision_steps": 80,
+      "roster": [
+        {
+          "seat": 0,
+          "name": "K1Z odin free",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 1,
+          "name": "K1Z Gravity",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 2,
+          "name": "K1Z Mickey Mouse",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 3,
+          "name": "outsider-control-v89",
+          "coalition": "outsider"
+        }
+      ],
+      "candidate_spec": {
+        "archive_path": "specs/convert-weakest-world-s2-b-candidate.json",
+        "sha256": "34635dc5417788753ed24f13a2eaecba98040afe0c4b971df60ba5d640be1453"
+      },
+      "m0_spec": {
+        "archive_path": "specs/mixed-outsider-convert-world-s2-b-m0.json",
+        "sha256": "192b9245628852f13b59f3b8f8d6e50f466e05f921f6ad341c4562da9d4cd075"
+      }
+    },
+    {
+      "id": "grow-low-share-asia-s0-c",
+      "arm": "grow-low-share",
+      "mechanism_class": "grow",
+      "roster_class": "all-k1z-grow",
+      "map": "Asia",
+      "seed": 2026072103,
+      "seat": 0,
+      "max_decision_steps": 80,
+      "roster": [
+        {
+          "seat": 0,
+          "name": "K1Z Mickey Mouse",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 1,
+          "name": "K1Z odin free",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 2,
+          "name": "K1Z Gravity",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 3,
+          "name": "K1Z sparring ghost",
+          "coalition": "k1z"
+        }
+      ],
+      "candidate_spec": {
+        "archive_path": "specs/grow-low-share-asia-s0-c-candidate.json",
+        "sha256": "dbb1580597e7d62fb1df28a1d5bdb7bc00b53c0919f83e79bc038eeed78ae0d8"
+      },
+      "m0_spec": {
+        "archive_path": "specs/all-k1z-grow-asia-s0-c-m0.json",
+        "sha256": "6736e83db770e04d793aecb7a323cf77000463e99f3dd67911cdb5b865f490cb"
+      }
+    },
+    {
+      "id": "grow-low-share-asia-s2-d",
+      "arm": "grow-low-share",
+      "mechanism_class": "grow",
+      "roster_class": "all-k1z-grow",
+      "map": "Asia",
+      "seed": 2026072104,
+      "seat": 2,
+      "max_decision_steps": 80,
+      "roster": [
+        {
+          "seat": 0,
+          "name": "K1Z odin free",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 1,
+          "name": "K1Z Gravity",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 2,
+          "name": "K1Z Mickey Mouse",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 3,
+          "name": "K1Z sparring ghost",
+          "coalition": "k1z"
+        }
+      ],
+      "candidate_spec": {
+        "archive_path": "specs/grow-low-share-asia-s2-d-candidate.json",
+        "sha256": "5d8215f3223c5dee63b648cf1b95130904a0cf09f9648408e86038341e340b0b"
+      },
+      "m0_spec": {
+        "archive_path": "specs/all-k1z-grow-asia-s2-d-m0.json",
+        "sha256": "8a3dea3fbf010445752c296c94ad2ebd10ca52e7d2cc3c10912022690f9d6323"
+      }
+    },
+    {
+      "id": "grow-low-share-pangaea-s0-a",
+      "arm": "grow-low-share",
+      "mechanism_class": "grow",
+      "roster_class": "all-k1z-grow",
+      "map": "Pangaea",
+      "seed": 2026072101,
+      "seat": 0,
+      "max_decision_steps": 80,
+      "roster": [
+        {
+          "seat": 0,
+          "name": "K1Z Mickey Mouse",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 1,
+          "name": "K1Z odin free",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 2,
+          "name": "K1Z Gravity",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 3,
+          "name": "K1Z sparring ghost",
+          "coalition": "k1z"
+        }
+      ],
+      "candidate_spec": {
+        "archive_path": "specs/grow-low-share-pangaea-s0-a-candidate.json",
+        "sha256": "27375ab0986c78d25d84b3a62883a41ca3975bd639c14bd92d778f1d84f3f64d"
+      },
+      "m0_spec": {
+        "archive_path": "specs/all-k1z-grow-pangaea-s0-a-m0.json",
+        "sha256": "0b56a7dbe4b0cafb9b2a345a36cc321dd57d25e0e264463d2b1c94c77636ab59"
+      }
+    },
+    {
+      "id": "grow-low-share-pangaea-s2-b",
+      "arm": "grow-low-share",
+      "mechanism_class": "grow",
+      "roster_class": "all-k1z-grow",
+      "map": "Pangaea",
+      "seed": 2026072102,
+      "seat": 2,
+      "max_decision_steps": 80,
+      "roster": [
+        {
+          "seat": 0,
+          "name": "K1Z odin free",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 1,
+          "name": "K1Z Gravity",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 2,
+          "name": "K1Z Mickey Mouse",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 3,
+          "name": "K1Z sparring ghost",
+          "coalition": "k1z"
+        }
+      ],
+      "candidate_spec": {
+        "archive_path": "specs/grow-low-share-pangaea-s2-b-candidate.json",
+        "sha256": "94a55fa30f2bb3848a6c4d98c9f8c0ce64bd71405c8c6b099f34ef7087be8997"
+      },
+      "m0_spec": {
+        "archive_path": "specs/all-k1z-grow-pangaea-s2-b-m0.json",
+        "sha256": "95135f212b38192901eddfc9a9028674841302dc59e1e0ea6221982d66148171"
+      }
+    },
+    {
+      "id": "grow-opening-asia-s0-c",
+      "arm": "grow-opening",
+      "mechanism_class": "grow",
+      "roster_class": "all-k1z-grow",
+      "map": "Asia",
+      "seed": 2026072103,
+      "seat": 0,
+      "max_decision_steps": 80,
+      "roster": [
+        {
+          "seat": 0,
+          "name": "K1Z Mickey Mouse",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 1,
+          "name": "K1Z odin free",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 2,
+          "name": "K1Z Gravity",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 3,
+          "name": "K1Z sparring ghost",
+          "coalition": "k1z"
+        }
+      ],
+      "candidate_spec": {
+        "archive_path": "specs/grow-opening-asia-s0-c-candidate.json",
+        "sha256": "09342374b5497689e2f4264a258d1985aebfa4d43cdb678fd29d551a57744092"
+      },
+      "m0_spec": {
+        "archive_path": "specs/all-k1z-grow-asia-s0-c-m0.json",
+        "sha256": "6736e83db770e04d793aecb7a323cf77000463e99f3dd67911cdb5b865f490cb"
+      }
+    },
+    {
+      "id": "grow-opening-asia-s2-d",
+      "arm": "grow-opening",
+      "mechanism_class": "grow",
+      "roster_class": "all-k1z-grow",
+      "map": "Asia",
+      "seed": 2026072104,
+      "seat": 2,
+      "max_decision_steps": 80,
+      "roster": [
+        {
+          "seat": 0,
+          "name": "K1Z odin free",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 1,
+          "name": "K1Z Gravity",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 2,
+          "name": "K1Z Mickey Mouse",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 3,
+          "name": "K1Z sparring ghost",
+          "coalition": "k1z"
+        }
+      ],
+      "candidate_spec": {
+        "archive_path": "specs/grow-opening-asia-s2-d-candidate.json",
+        "sha256": "c98442d3e039f2435e3f84bac4f84f510acc927f2138f7724293f4e055724ac4"
+      },
+      "m0_spec": {
+        "archive_path": "specs/all-k1z-grow-asia-s2-d-m0.json",
+        "sha256": "8a3dea3fbf010445752c296c94ad2ebd10ca52e7d2cc3c10912022690f9d6323"
+      }
+    },
+    {
+      "id": "grow-opening-pangaea-s0-a",
+      "arm": "grow-opening",
+      "mechanism_class": "grow",
+      "roster_class": "all-k1z-grow",
+      "map": "Pangaea",
+      "seed": 2026072101,
+      "seat": 0,
+      "max_decision_steps": 80,
+      "roster": [
+        {
+          "seat": 0,
+          "name": "K1Z Mickey Mouse",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 1,
+          "name": "K1Z odin free",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 2,
+          "name": "K1Z Gravity",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 3,
+          "name": "K1Z sparring ghost",
+          "coalition": "k1z"
+        }
+      ],
+      "candidate_spec": {
+        "archive_path": "specs/grow-opening-pangaea-s0-a-candidate.json",
+        "sha256": "2cadc689cc37d76780b8306d6dddce70273eecba3a2bdb8a290eb131c96ab9dd"
+      },
+      "m0_spec": {
+        "archive_path": "specs/all-k1z-grow-pangaea-s0-a-m0.json",
+        "sha256": "0b56a7dbe4b0cafb9b2a345a36cc321dd57d25e0e264463d2b1c94c77636ab59"
+      }
+    },
+    {
+      "id": "grow-opening-pangaea-s2-b",
+      "arm": "grow-opening",
+      "mechanism_class": "grow",
+      "roster_class": "all-k1z-grow",
+      "map": "Pangaea",
+      "seed": 2026072102,
+      "seat": 2,
+      "max_decision_steps": 80,
+      "roster": [
+        {
+          "seat": 0,
+          "name": "K1Z odin free",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 1,
+          "name": "K1Z Gravity",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 2,
+          "name": "K1Z Mickey Mouse",
+          "coalition": "k1z"
+        },
+        {
+          "seat": 3,
+          "name": "K1Z sparring ghost",
+          "coalition": "k1z"
+        }
+      ],
+      "candidate_spec": {
+        "archive_path": "specs/grow-opening-pangaea-s2-b-candidate.json",
+        "sha256": "611e0be1bc87f14a0998887d5eef18f2aaaa6e4a8fc6d8a156445560b1ebab2b"
+      },
+      "m0_spec": {
+        "archive_path": "specs/all-k1z-grow-pangaea-s2-b-m0.json",
+        "sha256": "95135f212b38192901eddfc9a9028674841302dc59e1e0ea6221982d66148171"
+      }
+    }
+  ]
+}

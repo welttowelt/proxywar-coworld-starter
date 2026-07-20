@@ -1,0 +1,436 @@
+{
+  "schema_version": 1,
+  "kind": "mickey_runpod_multi_policy_bundle",
+  "bundle_id": "mickey-static-eval-26c36eca",
+  "runtime": {
+    "image": "public.ecr.aws/q5f4m8t9/cogames@sha256:88d166c6c33609ec5b0dc1f70799001a1f1f34e1cd852ddbfc17a2eb43969ea1",
+    "image_id": "sha256:88d166c6c33609ec5b0dc1f70799001a1f1f34e1cd852ddbfc17a2eb43969ea1",
+    "architecture": "amd64",
+    "node_sha256": "41a74efb34cbde5c7632cdac0cf8bd1a14d0b8d73dc1e82755014d9a9ce70f5c"
+  },
+  "source_reach_receipt": {
+    "path": "experiments/mickey-static-intent-source-reach-20260721.json",
+    "sha256": "127d60ee51f4e4b2d50c7b6908d1e571ce8f9e40f1939f61c25e3cdb4abaa129"
+  },
+  "shared_files": [
+    {
+      "path": "evaluation-static-intent-player.mjs",
+      "sha256": "d392c1e474ad9b1f079fbfd6d979a4f0372a22793bcfb0f761ac9cdf59c02005"
+    },
+    {
+      "path": "evaluation-static-intent.mjs",
+      "sha256": "1917a718f3441360325bde796f4141c15df0557c819076328dfd7453af3806c5"
+    },
+    {
+      "path": "intent-controller.mjs",
+      "sha256": "9d9226af4f6dba15aa090bb941af4843b0728f9b541e98b4014ea33fad08e63a"
+    },
+    {
+      "path": "strategy-engine.mjs",
+      "sha256": "32b7c3a0d10f34a7edf26ce78b3c97616e57024dee7a465b9550e2d742a079fa"
+    }
+  ],
+  "policies": [
+    {
+      "kind": "evaluation",
+      "policy_id": "mickey-static-eval/m0",
+      "key": "mickey-static-eval-m0",
+      "arm": "m0",
+      "docker_target": "evaluation-m0",
+      "surrogate_source": "static-eval-v1",
+      "source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
+      "local_reference": "proxywar-agent-llm:mickey-m0-26c36eca-amd64",
+      "image_id": "sha256:63395b042d6247520b5b8ebcdfb75470ac54750a6aadf2e5b712cbb66061e230",
+      "architecture": "amd64",
+      "image_user": "node",
+      "working_dir": "/app",
+      "container_entrypoint": [
+        "docker-entrypoint.sh"
+      ],
+      "container_cmd": [
+        "node",
+        "/app/evaluation-m0-player.mjs"
+      ],
+      "upload_label": "false",
+      "upload_eligible": false,
+      "bundle_root": "policies/mickey-static-eval-m0/app",
+      "run": [
+        "node",
+        "evaluation-m0-player.mjs"
+      ],
+      "entrypoint_sha256": "6164d6205181601f0bfca71d78b1b82d06888ab6a6cd9a1d66cd7905c7e66144"
+    },
+    {
+      "kind": "evaluation",
+      "policy_id": "mickey-static-eval/grow-opening",
+      "key": "mickey-static-eval-grow-opening",
+      "arm": "grow-opening",
+      "docker_target": "evaluation-grow-opening",
+      "surrogate_source": "static-eval-v1",
+      "source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
+      "local_reference": "proxywar-agent-llm:mickey-grow-opening-26c36eca-amd64",
+      "image_id": "sha256:3cf9874143eed7b7592228532a41353cc0f724127287f682584814dc214e83c1",
+      "architecture": "amd64",
+      "image_user": "node",
+      "working_dir": "/app",
+      "container_entrypoint": [
+        "docker-entrypoint.sh"
+      ],
+      "container_cmd": [
+        "node",
+        "/app/evaluation-grow-opening-player.mjs"
+      ],
+      "upload_label": "false",
+      "upload_eligible": false,
+      "bundle_root": "policies/mickey-static-eval-grow-opening/app",
+      "run": [
+        "node",
+        "evaluation-grow-opening-player.mjs"
+      ],
+      "entrypoint_sha256": "d4d2ec30ea787518124e33d026f02396eedbc9430031243e2a014dee9c4769ae"
+    },
+    {
+      "kind": "evaluation",
+      "policy_id": "mickey-static-eval/grow-low-share",
+      "key": "mickey-static-eval-grow-low-share",
+      "arm": "grow-low-share",
+      "docker_target": "evaluation-grow-low-share",
+      "surrogate_source": "static-eval-v1",
+      "source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
+      "local_reference": "proxywar-agent-llm:mickey-grow-low-share-26c36eca-amd64",
+      "image_id": "sha256:917165e843949009cfcc4d23cd96a27314cb373e63427245b41d13eec70bbbe6",
+      "architecture": "amd64",
+      "image_user": "node",
+      "working_dir": "/app",
+      "container_entrypoint": [
+        "docker-entrypoint.sh"
+      ],
+      "container_cmd": [
+        "node",
+        "/app/evaluation-grow-low-share-player.mjs"
+      ],
+      "upload_label": "false",
+      "upload_eligible": false,
+      "bundle_root": "policies/mickey-static-eval-grow-low-share/app",
+      "run": [
+        "node",
+        "evaluation-grow-low-share-player.mjs"
+      ],
+      "entrypoint_sha256": "029dd65fad3f277a83c80ad224bffa1012b2fa96cf1e4147c0df74c2d710ab50"
+    },
+    {
+      "kind": "evaluation",
+      "policy_id": "mickey-static-eval/convert-weakest",
+      "key": "mickey-static-eval-convert-weakest",
+      "arm": "convert-weakest",
+      "docker_target": "evaluation-convert-weakest",
+      "surrogate_source": "static-eval-v1",
+      "source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
+      "local_reference": "proxywar-agent-llm:mickey-convert-weakest-26c36eca-amd64",
+      "image_id": "sha256:a1de9d15e302a3181f6638edc37f697ea305427c15b9ddb80e6a7706b54a1380",
+      "architecture": "amd64",
+      "image_user": "node",
+      "working_dir": "/app",
+      "container_entrypoint": [
+        "docker-entrypoint.sh"
+      ],
+      "container_cmd": [
+        "node",
+        "/app/evaluation-convert-weakest-player.mjs"
+      ],
+      "upload_label": "false",
+      "upload_eligible": false,
+      "bundle_root": "policies/mickey-static-eval-convert-weakest/app",
+      "run": [
+        "node",
+        "evaluation-convert-weakest-player.mjs"
+      ],
+      "entrypoint_sha256": "eb258597534467abae055ed457100a05ffc5f3e1b837d28f4e9e75f7dcca9020"
+    },
+    {
+      "kind": "evaluation",
+      "policy_id": "mickey-static-eval/convert-largest",
+      "key": "mickey-static-eval-convert-largest",
+      "arm": "convert-largest",
+      "docker_target": "evaluation-convert-largest",
+      "surrogate_source": "static-eval-v1",
+      "source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
+      "local_reference": "proxywar-agent-llm:mickey-convert-largest-26c36eca-amd64",
+      "image_id": "sha256:647e29657e47b76a24946baf1fd8837e94d69616a4084a5ff572f281694abe7f",
+      "architecture": "amd64",
+      "image_user": "node",
+      "working_dir": "/app",
+      "container_entrypoint": [
+        "docker-entrypoint.sh"
+      ],
+      "container_cmd": [
+        "node",
+        "/app/evaluation-convert-largest-player.mjs"
+      ],
+      "upload_label": "false",
+      "upload_eligible": false,
+      "bundle_root": "policies/mickey-static-eval-convert-largest/app",
+      "run": [
+        "node",
+        "evaluation-convert-largest-player.mjs"
+      ],
+      "entrypoint_sha256": "25415c261ef10705741fe5058dac9b957a8f7bda507c7e48c7f9e98036eb463a"
+    },
+    {
+      "kind": "opponent",
+      "policy_id": null,
+      "key": "opponent-qd1n-v89",
+      "arm": null,
+      "docker_target": null,
+      "surrogate_source": null,
+      "source_commit": null,
+      "local_reference": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+      "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+      "architecture": "amd64",
+      "image_user": "",
+      "working_dir": "/app",
+      "container_entrypoint": [
+        "docker-entrypoint.sh"
+      ],
+      "container_cmd": [
+        "node",
+        "/app/llm-player.mjs"
+      ],
+      "upload_label": null,
+      "upload_eligible": false,
+      "bundle_root": "policies/opponent-qd1n-v89/app",
+      "run": [
+        "node",
+        "llm-player.mjs"
+      ],
+      "entrypoint_sha256": "1154115fdf5ebb89fa170bba6060d5a730615970d4cc23c00dbfa97e42b31563"
+    },
+    {
+      "kind": "opponent",
+      "policy_id": null,
+      "key": "opponent-gravity-kiz1-selector",
+      "arm": null,
+      "docker_target": null,
+      "surrogate_source": null,
+      "source_commit": null,
+      "local_reference": "proxywar-kiz1-mechanism:gravity-1ccaff73-amd64",
+      "image_id": "sha256:39548883b562262c5bdbe6bcc0fcc6115d330bd1a099308fcea33723b0150194",
+      "architecture": "amd64",
+      "image_user": "",
+      "working_dir": "/app",
+      "container_entrypoint": [
+        "docker-entrypoint.sh"
+      ],
+      "container_cmd": [
+        "node",
+        "/app/kiz1-selector-player.mjs"
+      ],
+      "upload_label": null,
+      "upload_eligible": false,
+      "bundle_root": "policies/opponent-gravity-kiz1-selector/app",
+      "run": [
+        "node",
+        "kiz1-selector-player.mjs"
+      ],
+      "entrypoint_sha256": "fff9dd163284082b67a1a43ddb875f18b4ed83b245416d98cecd2f88cc7486c7"
+    }
+  ],
+  "experiment_specs": [
+    {
+      "label": "all-k1z-grow-asia-s0-c-m0",
+      "source": "experiments/mickey-fanout-specs-20260721/all-k1z-grow-asia-s0-c-m0.json",
+      "archive_path": "specs/all-k1z-grow-asia-s0-c-m0.json",
+      "sha256": "6736e83db770e04d793aecb7a323cf77000463e99f3dd67911cdb5b865f490cb",
+      "role": "exact-parent",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "all-k1z-grow-asia-s2-d-m0",
+      "source": "experiments/mickey-fanout-specs-20260721/all-k1z-grow-asia-s2-d-m0.json",
+      "archive_path": "specs/all-k1z-grow-asia-s2-d-m0.json",
+      "sha256": "8a3dea3fbf010445752c296c94ad2ebd10ca52e7d2cc3c10912022690f9d6323",
+      "role": "exact-parent",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "all-k1z-grow-pangaea-s0-a-m0",
+      "source": "experiments/mickey-fanout-specs-20260721/all-k1z-grow-pangaea-s0-a-m0.json",
+      "archive_path": "specs/all-k1z-grow-pangaea-s0-a-m0.json",
+      "sha256": "0b56a7dbe4b0cafb9b2a345a36cc321dd57d25e0e264463d2b1c94c77636ab59",
+      "role": "exact-parent",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "all-k1z-grow-pangaea-s2-b-m0",
+      "source": "experiments/mickey-fanout-specs-20260721/all-k1z-grow-pangaea-s2-b-m0.json",
+      "archive_path": "specs/all-k1z-grow-pangaea-s2-b-m0.json",
+      "sha256": "95135f212b38192901eddfc9a9028674841302dc59e1e0ea6221982d66148171",
+      "role": "exact-parent",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "convert-largest-asia-s0-c-candidate",
+      "source": "experiments/mickey-fanout-specs-20260721/convert-largest-asia-s0-c-candidate.json",
+      "archive_path": "specs/convert-largest-asia-s0-c-candidate.json",
+      "sha256": "2088badde44a7e05a7ff19300a9e6ae7c2d09020a7b2afd410a66eac06654892",
+      "role": "candidate",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "convert-largest-asia-s2-d-candidate",
+      "source": "experiments/mickey-fanout-specs-20260721/convert-largest-asia-s2-d-candidate.json",
+      "archive_path": "specs/convert-largest-asia-s2-d-candidate.json",
+      "sha256": "4df6548e7098ccf89428379da06b8d2580750d98aba5da4fd8f5ead140581c02",
+      "role": "candidate",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "convert-largest-world-s0-a-candidate",
+      "source": "experiments/mickey-fanout-specs-20260721/convert-largest-world-s0-a-candidate.json",
+      "archive_path": "specs/convert-largest-world-s0-a-candidate.json",
+      "sha256": "8bac6cc826e19ea2afaa93084d5a4201c093975ab31a2cab7c6191639aba737d",
+      "role": "candidate",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "convert-largest-world-s2-b-candidate",
+      "source": "experiments/mickey-fanout-specs-20260721/convert-largest-world-s2-b-candidate.json",
+      "archive_path": "specs/convert-largest-world-s2-b-candidate.json",
+      "sha256": "9fc50164f9d7852c5945e1bc662806fa75ab99005b29e57850955af0220bae79",
+      "role": "candidate",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "convert-weakest-asia-s0-c-candidate",
+      "source": "experiments/mickey-fanout-specs-20260721/convert-weakest-asia-s0-c-candidate.json",
+      "archive_path": "specs/convert-weakest-asia-s0-c-candidate.json",
+      "sha256": "0c68a20b4f5cf1894370debb95a51f73f0035340d0d962fce56273415aee9ca0",
+      "role": "candidate",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "convert-weakest-asia-s2-d-candidate",
+      "source": "experiments/mickey-fanout-specs-20260721/convert-weakest-asia-s2-d-candidate.json",
+      "archive_path": "specs/convert-weakest-asia-s2-d-candidate.json",
+      "sha256": "34167365f17437657f2bd7fe15736dfdffa94c8de3a4bbeb5077e3e75cb2e014",
+      "role": "candidate",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "convert-weakest-world-s0-a-candidate",
+      "source": "experiments/mickey-fanout-specs-20260721/convert-weakest-world-s0-a-candidate.json",
+      "archive_path": "specs/convert-weakest-world-s0-a-candidate.json",
+      "sha256": "89ec83c1a6d5f58bf1c95c4ff3be1fe50c4b7042df882f26f0ea9e37f486e3fd",
+      "role": "candidate",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "convert-weakest-world-s2-b-candidate",
+      "source": "experiments/mickey-fanout-specs-20260721/convert-weakest-world-s2-b-candidate.json",
+      "archive_path": "specs/convert-weakest-world-s2-b-candidate.json",
+      "sha256": "34635dc5417788753ed24f13a2eaecba98040afe0c4b971df60ba5d640be1453",
+      "role": "candidate",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "grow-low-share-asia-s0-c-candidate",
+      "source": "experiments/mickey-fanout-specs-20260721/grow-low-share-asia-s0-c-candidate.json",
+      "archive_path": "specs/grow-low-share-asia-s0-c-candidate.json",
+      "sha256": "dbb1580597e7d62fb1df28a1d5bdb7bc00b53c0919f83e79bc038eeed78ae0d8",
+      "role": "candidate",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "grow-low-share-asia-s2-d-candidate",
+      "source": "experiments/mickey-fanout-specs-20260721/grow-low-share-asia-s2-d-candidate.json",
+      "archive_path": "specs/grow-low-share-asia-s2-d-candidate.json",
+      "sha256": "5d8215f3223c5dee63b648cf1b95130904a0cf09f9648408e86038341e340b0b",
+      "role": "candidate",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "grow-low-share-pangaea-s0-a-candidate",
+      "source": "experiments/mickey-fanout-specs-20260721/grow-low-share-pangaea-s0-a-candidate.json",
+      "archive_path": "specs/grow-low-share-pangaea-s0-a-candidate.json",
+      "sha256": "27375ab0986c78d25d84b3a62883a41ca3975bd639c14bd92d778f1d84f3f64d",
+      "role": "candidate",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "grow-low-share-pangaea-s2-b-candidate",
+      "source": "experiments/mickey-fanout-specs-20260721/grow-low-share-pangaea-s2-b-candidate.json",
+      "archive_path": "specs/grow-low-share-pangaea-s2-b-candidate.json",
+      "sha256": "94a55fa30f2bb3848a6c4d98c9f8c0ce64bd71405c8c6b099f34ef7087be8997",
+      "role": "candidate",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "grow-opening-asia-s0-c-candidate",
+      "source": "experiments/mickey-fanout-specs-20260721/grow-opening-asia-s0-c-candidate.json",
+      "archive_path": "specs/grow-opening-asia-s0-c-candidate.json",
+      "sha256": "09342374b5497689e2f4264a258d1985aebfa4d43cdb678fd29d551a57744092",
+      "role": "candidate",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "grow-opening-asia-s2-d-candidate",
+      "source": "experiments/mickey-fanout-specs-20260721/grow-opening-asia-s2-d-candidate.json",
+      "archive_path": "specs/grow-opening-asia-s2-d-candidate.json",
+      "sha256": "c98442d3e039f2435e3f84bac4f84f510acc927f2138f7724293f4e055724ac4",
+      "role": "candidate",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "grow-opening-pangaea-s0-a-candidate",
+      "source": "experiments/mickey-fanout-specs-20260721/grow-opening-pangaea-s0-a-candidate.json",
+      "archive_path": "specs/grow-opening-pangaea-s0-a-candidate.json",
+      "sha256": "2cadc689cc37d76780b8306d6dddce70273eecba3a2bdb8a290eb131c96ab9dd",
+      "role": "candidate",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "grow-opening-pangaea-s2-b-candidate",
+      "source": "experiments/mickey-fanout-specs-20260721/grow-opening-pangaea-s2-b-candidate.json",
+      "archive_path": "specs/grow-opening-pangaea-s2-b-candidate.json",
+      "sha256": "611e0be1bc87f14a0998887d5eef18f2aaaa6e4a8fc6d8a156445560b1ebab2b",
+      "role": "candidate",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "mixed-outsider-convert-asia-s0-c-m0",
+      "source": "experiments/mickey-fanout-specs-20260721/mixed-outsider-convert-asia-s0-c-m0.json",
+      "archive_path": "specs/mixed-outsider-convert-asia-s0-c-m0.json",
+      "sha256": "681aea17c3b44070ab3762d6ecd68b875753bc2d480b70a00f9b3bd3cada86fe",
+      "role": "exact-parent",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "mixed-outsider-convert-asia-s2-d-m0",
+      "source": "experiments/mickey-fanout-specs-20260721/mixed-outsider-convert-asia-s2-d-m0.json",
+      "archive_path": "specs/mixed-outsider-convert-asia-s2-d-m0.json",
+      "sha256": "eb0e9b6826ae33d3c3ae41a5c26e35a5a79957ee335ec92cd696a2daacb3a0d2",
+      "role": "exact-parent",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "mixed-outsider-convert-world-s0-a-m0",
+      "source": "experiments/mickey-fanout-specs-20260721/mixed-outsider-convert-world-s0-a-m0.json",
+      "archive_path": "specs/mixed-outsider-convert-world-s0-a-m0.json",
+      "sha256": "b33cd713ab9bbedf7025bdf859f22d2f7b562713b76a4a4c3e1fad558eab578b",
+      "role": "exact-parent",
+      "max_decision_steps": 80
+    },
+    {
+      "label": "mixed-outsider-convert-world-s2-b-m0",
+      "source": "experiments/mickey-fanout-specs-20260721/mixed-outsider-convert-world-s2-b-m0.json",
+      "archive_path": "specs/mixed-outsider-convert-world-s2-b-m0.json",
+      "sha256": "192b9245628852f13b59f3b8f8d6e50f466e05f921f6ad341c4562da9d4cd075",
+      "role": "exact-parent",
+      "max_decision_steps": 80
+    }
+  ],
+  "pair_index": {
+    "path": "experiments/mickey-fanout-pair-index-20260721.json",
+    "sha256": "42c79025ef537074b3f763e01098bd6fac70f0c4c7d2f41ecf81b9bcbe1c10c5"
+  }
+}
