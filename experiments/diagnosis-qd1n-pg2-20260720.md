@@ -71,3 +71,17 @@ hosted `4/4` against that declared current top-twelve roster in the explicit
 12P Pangaea variant. A league-targeted request was cancelled before dispatch
 when the API resolved it to the two-seat qualifier; it produced zero episodes
 and is not gate evidence.
+
+## Hosted 4/4 verdict
+
+Request `xreq_281aefb8-4d52-4d7c-ac81-9dd7ebf93a27` completed `4/4` with zero transport failures. The fail-closed PG2 replay audit `FAILED` with mechanism reach `4/4`, wins `0/4`, and ereq_728fbb6c-4944-4691-badb-91150c82a6f3: Odin had unexplained holds; ereq_78892e2b-32f4-4214-b2b2-2c7e82524c3d: Odin had unexplained holds; ereq_7f618562-8305-4ce0-8a7e-b7437d4fa2c8: Odin had unexplained holds.
+
+- `ereq_728fbb6c-4944-4691-badb-91150c82a6f3`: decisions `147`, accepted `147`, rejected `0`, holds `9`, markers `11`, scope violations `0`, Odin K1Z harm `0`, coalition harm `0`, won=`false`, final tiles `2231`, replay `970b8791eb7af77851bc867d136ff2fb1f9977730a2641f4df074d94a2df3ad7`.
+- `ereq_78892e2b-32f4-4214-b2b2-2c7e82524c3d`: decisions `117`, accepted `117`, rejected `0`, holds `3`, markers `11`, scope violations `0`, Odin K1Z harm `0`, coalition harm `0`, won=`false`, final tiles `2599`, replay `ad6a1d0a2859b0a271b8f24b01bc5ad455d37500e724d7da8bb159918635a993`.
+- `ereq_7f618562-8305-4ce0-8a7e-b7437d4fa2c8`: decisions `150`, accepted `150`, rejected `0`, holds `5`, markers `11`, scope violations `0`, Odin K1Z harm `0`, coalition harm `0`, won=`false`, final tiles `0`, replay `719ab60337627795481f5b8a3a95282f0db58b0e88fa96c60cbb93d449e37f71`.
+- `ereq_7b247383-ecd9-4526-8d5f-cba9d904ec56`: decisions `101`, accepted `101`, rejected `0`, holds `0`, markers `10`, scope violations `0`, Odin K1Z harm `0`, coalition harm `0`, won=`false`, final tiles `6493`, replay `508f52292caccaedc0812da9dc0ae3e8a97a257447a220a6547b73b9932424db`.
+
+PG2 is closed. A1 was already rejected, and PR1 was closed before source
+mutation because it duplicates the rejected DP1 Defense Post family. NB1 safe
+frontier boats is the sole active arm. The prior verified champion remains
+`qd1n:v89`.
