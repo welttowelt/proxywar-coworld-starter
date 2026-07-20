@@ -392,6 +392,14 @@ test("supervised run is strict-busy, exact-release protected, private, and clean
   assert.match(contender.stderr, /busy:odin:run-a/);
   assert.equal(existsSync(contenderOutput), false);
 
+  const hrafnOutput = path.join(directory, "contender-hrafn");
+  const hrafnContender = invoke(state, [
+    "run", "hrafn", "run-hrafn", "--output", hrafnOutput, "--", "/usr/bin/true",
+  ], docker.env);
+  assert.equal(hrafnContender.status, 1, hrafnContender.stderr);
+  assert.match(hrafnContender.stderr, /busy:odin:run-a/);
+  assert.equal(existsSync(hrafnOutput), false);
+
   const wrongRelease = invoke(state, ["release", "odin", "run-a", "wrong-token"]);
   assert.equal(wrongRelease.status, 1);
   assert.match(wrongRelease.stderr, /lease-mismatch/);
@@ -1018,7 +1026,7 @@ test("launcher blocks active, stale, legacy, initializing, reaping, and corrupt 
   }
 });
 
-test("launcher fails closed on invalid status and rejects the retired Hrafn lane before consuming work", (t) => {
+test("Odin launcher fails closed on invalid status and rejects the separate Hrafn operator lane", (t) => {
   const fixtures = [];
   t.after(() => {
     for (const item of fixtures) rmSync(item.directory, { recursive: true, force: true });
@@ -1085,18 +1093,22 @@ test("launcher fails closed on invalid status and rejects the retired Hrafn lane
   assert.equal(existsSync(path.join(legacyPrompt.state, "runner.lock")), false);
 });
 
-test("runner rejects new Hrafn work but preserves exact-token recovery commands", (t) => {
+test("runner gives Hrafn the same foreground lease and exact-token recovery path", (t) => {
   const context = fixture();
   const { directory, state } = context;
   t.after(() => rmSync(directory, { recursive: true, force: true }));
 
-  const output = path.join(directory, "retired-hrafn-run");
+  const output = path.join(directory, "hrafn-run");
   const run = invoke(state, [
-    "run", "hrafn", "retired-run", "--output", output, "--", "/usr/bin/true",
+    "run", "hrafn", "hrafn-runner-smoke", "--output", output, "--", "/usr/bin/true",
   ]);
-  assert.equal(run.status, 64);
-  assert.match(run.stderr, /retired-lane:hrafn/);
-  assert.equal(existsSync(output), false);
+  assert.equal(run.status, 0, run.stderr);
+  assert.match(run.stderr, /"event":"lease_acquired"/);
+  assert.match(run.stderr, /"lane":"hrafn"/);
+  assert.match(run.stderr, /"run_id":"hrafn-runner-smoke"/);
+  assert.match(run.stderr, /"event":"lease_released"/);
+  assert.equal(existsSync(output), true);
+  assert.equal(existsSync(path.join(state, "runner.lock")), false);
 
   const staleOutput = path.join(directory, "old-hrafn-output");
   writeV2Lock(state, {

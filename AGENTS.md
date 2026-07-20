@@ -13,13 +13,14 @@ the Coworld/Softmax game simulation.
 
 # Agent operating model
 
-Codex Odin is the sole persistent writable ProxyWar operator. The active
-campaign mutates `qd1n` only: hypothesis selection, implementation, tests,
-image builds, runner coordination, experiment records, uploads, submissions,
-memberships, and champion changes. The user retired Hrafn on 2026-07-19.
-Its repository, evidence, and historical live policy remain readable, but
-`hrafn-fylking` is frozen and no Hrafn worker or Odin cycle reviews, edits,
-runs, uploads, submits, or changes its league state.
+Codex Odin is the sole persistent writable `qd1n` operator: hypothesis
+selection, implementation, tests, image builds, runner coordination,
+experiment records, uploads, submissions, memberships, and champion changes.
+Hrafn runs as a separate operator for `hrafn-fylking` only. Hrafn cannot mutate
+`qd1n`, and Odin does not edit or run Hrafn's working branch. Hrafn may use the
+shared foreground runner under its own `hrafn` lease for separately
+user-authorized local experiments. This runner access grants no Hrafn upload,
+submission, membership, or champion authority.
 
 Coordinate runner ownership through the team mailbox at
 `/Users/olifreuler/.stormforge/team-mailbox`. Every episode or batch must stay

@@ -34,13 +34,10 @@ usage() {
   cat >&2 <<'EOF'
 usage:
   proxywar-runner-lease.sh status [--json]
-  proxywar-runner-lease.sh run odin RUN_ID --output ABS_DIR [--output ABS_DIR ...] -- COMMAND [ARG ...]
+  proxywar-runner-lease.sh run odin|hrafn RUN_ID --output ABS_DIR [--output ABS_DIR ...] -- COMMAND [ARG ...]
   proxywar-runner-lease.sh release odin|hrafn RUN_ID TOKEN
   proxywar-runner-lease.sh release odin|hrafn
   proxywar-runner-lease.sh reap-stale odin|hrafn RUN_ID TOKEN
-
-New Hrafn runs are disabled because that lane is retired. Exact-token release
-and reap-stale remain available for recovering an old Hrafn lease.
 
 The two-argument release form exists only for a pure tokenless v1 lock already
 present during migration. New standalone acquisition is deliberately disabled:
@@ -53,7 +50,7 @@ valid_lane() {
 }
 
 valid_run_lane() {
-  [[ "$1" == "odin" ]]
+  valid_lane "$1"
 }
 
 valid_run_id() {
@@ -1097,9 +1094,6 @@ run_action() {
   LANE="${2:-}"
   RUN_ID="${3:-}"
   valid_run_lane "$LANE" || {
-    if [[ "$LANE" == "hrafn" ]]; then
-      print -r -- "retired-lane:hrafn:new runs are disabled; exact-token recovery only" >&2
-    fi
     usage
     return 64
   }
