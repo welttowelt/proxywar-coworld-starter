@@ -1,5 +1,5 @@
 {
-  "idempotency_key": "pg2-hosted-4x-current-roster-v92-20260720",
+  "idempotency_key": "pg2-hosted-4x-top12-roster-v92-20260720",
   "target": {
     "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42"
   },
@@ -8,16 +8,15 @@
     { "slot": 1, "player": { "policy_ref": "cea2bb5b-add0-4dd3-aa32-9442280142c5" } },
     { "slot": 2, "player": { "policy_ref": "dffb6fb2-673e-4be5-9e35-ba69d6731754" } },
     { "slot": 3, "player": { "policy_ref": "9f233579-4837-4a27-b352-ed3135301135" } },
-    { "slot": 4, "player": { "policy_ref": "4110c5a3-f340-44d6-ad60-106f5672df88" } },
+    { "slot": 4, "player": { "policy_ref": "6a3e8de0-1c69-4402-9217-e9e98adb65e8" } },
     { "slot": 5, "player": { "policy_ref": "2b8cdf1f-7602-4340-ac38-3e6eba911ec7" } },
     { "slot": 6, "player": { "policy_ref": "b378acb9-2446-45c9-b3ce-67eac8e72170" } },
     { "slot": 7, "player": { "policy_ref": "32ce69ba-9959-4172-bb45-e2a84c55bced" } },
     { "slot": 8, "player": { "policy_ref": "2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a" } },
     { "slot": 9, "player": { "policy_ref": "2741a865-6821-4d36-9aaa-fa859c8921ce" } },
     { "slot": 10, "player": { "policy_ref": "10c32300-4593-408a-a17d-02e1d70e4a2e" } },
-    { "slot": 11, "player": { "policy_ref": "6a3e8de0-1c69-4402-9217-e9e98adb65e8" } },
-    { "slot": 12, "player": { "policy_ref": "3ed5713d-7940-45f1-b347-76d596b90fe8" } }
+    { "slot": 11, "player": { "policy_ref": "3ed5713d-7940-45f1-b347-76d596b90fe8" } }
   ],
   "num_episodes": 4,
-  "notes": "PG2 diagnostic-only hosted 4/4: current live 13-policy Competition roster, replace only qd1n:v89 with qd1n:v92; source 42e9a181; no league submission or champion change."
+  "notes": "PG2 diagnostic-only hosted 4/4: current Competition top-12 by live leaderboard (12-seat hosted cap), replace only qd1n:v89 with qd1n:v92; source 42e9a181; no league submission or champion change."
 }

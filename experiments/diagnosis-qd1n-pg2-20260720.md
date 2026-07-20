@@ -63,4 +63,8 @@ The exact reviewed image was uploaded as diagnostic-only `qd1n:v92`
 `source=42e9a181`. It is neither submitted to the league nor a membership.
 `qd1n:v89` remains Odin's sole competing champion.
 
-The next gate is a diagnostic-only hosted `4/4` against the current roster.
+The hosted Coworld currently has a twelve-seat cap while the live competition
+has thirteen active champions. The hosted specification therefore uses the
+live top twelve by the official leaderboard and omits only rank-13 docxology;
+it does not silently omit a stronger rival. The next gate is a diagnostic-only
+hosted `4/4` against that declared current top-twelve roster.
