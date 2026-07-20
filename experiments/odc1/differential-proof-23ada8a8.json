@@ -2,6 +2,11 @@
   "schema_version": 2,
   "arm": "odc1",
   "same_fixture": true,
+  "verifier": {
+    "evaluator_commit": "915476fcc9c3bbbc651dc933a3852145f20f43c4",
+    "path": "experiments/odc1/verify-differential.mjs",
+    "sha256": "3835de8d2bb3e2d3e76de562966d56bb47b5dbabc40c6959436539a392e103ba"
+  },
   "fixture": {
     "id": "odc1-routine-k1z-vs-neutral",
     "sha256": "4f5dd380013f4cdd125222a4ea0162c428d3c6f3f8668480042610ab3f303b1f",
@@ -18,10 +23,11 @@
   "test_command": [
     "node",
     "experiments/odc1/verify-differential.mjs",
-    "/private/tmp/proxywar-odc1-parent-f1347251",
-    "/private/tmp/proxywar-odc1-source-20260720",
+    ".",
+    "f1347251834a6283182b631e1336595eb2e08342",
+    "23ada8a8cfc1f41b1c798cfcb3b71f6fc2f21587",
     "experiments/odc1/differential-fixture.json",
-    "/private/tmp/odc1-rci2-differential-proof.json"
+    "experiments/odc1/differential-proof-23ada8a8.json"
   ],
   "test_exit_code": 0
 }

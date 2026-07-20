@@ -3,7 +3,7 @@
   "candidate_image_id": "sha256:3af909f391a179356876b54e810fd8c197d9cd88432ff4916a6c4e83c50a41a9",
   "candidate_source_commit": "23ada8a8cfc1f41b1c798cfcb3b71f6fc2f21587",
   "competitive_evidence": false,
-  "contract_sha256": "293ed221126e148e2ceaea08748fb6375238c65cc08eaa42bc93899812b423b6",
+  "contract_sha256": "5182e85926b43372b2454aad0dfaf85467a25edf62787652ce5331e4ce16e82d",
   "differential_unit_proof": {
     "arm": "odc1",
     "candidate": {
@@ -24,12 +24,18 @@
     "test_command": [
       "node",
       "experiments/odc1/verify-differential.mjs",
-      "/private/tmp/proxywar-odc1-parent-f1347251",
-      "/private/tmp/proxywar-odc1-source-20260720",
+      ".",
+      "f1347251834a6283182b631e1336595eb2e08342",
+      "23ada8a8cfc1f41b1c798cfcb3b71f6fc2f21587",
       "experiments/odc1/differential-fixture.json",
-      "/private/tmp/odc1-rci2-differential-proof.json"
+      "experiments/odc1/differential-proof-23ada8a8.json"
     ],
-    "test_exit_code": 0
+    "test_exit_code": 0,
+    "verifier": {
+      "evaluator_commit": "915476fcc9c3bbbc651dc933a3852145f20f43c4",
+      "path": "experiments/odc1/verify-differential.mjs",
+      "sha256": "3835de8d2bb3e2d3e76de562966d56bb47b5dbabc40c6959436539a392e103ba"
+    }
   },
   "failures": [],
   "pair_id": "odc1-rci2-pangaea-20260720",

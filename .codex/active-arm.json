@@ -1,79 +1,89 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T14:16:57Z",
-  "cycle_id": "odin-odc1-20260720",
+  "updated_at": "2026-07-20T16:38:55Z",
+  "cycle_id": "odin-odc1-rci2-20260720",
   "lane": "odin",
+  "authority": {
+    "persistent_operator": "Codex Odin",
+    "hrafn": "retired_frozen",
+    "slack": "frozen_through_2026-08-09T11:27:17Z"
+  },
   "arm": {
     "id": "odc1",
     "name": "clean_dispatcher",
     "branch": "rci/odc1-clean-dispatcher",
     "exact_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
-    "candidate_source_commit": "576283d41e13646aec8bce9adbf58f56078ccce8",
+    "candidate_source_commit": "23ada8a8cfc1f41b1c798cfcb3b71f6fc2f21587",
     "marker_family": "od*",
     "closed": false
   },
-  "state": "local_qualified_awaiting_seeded_field_gate",
+  "state": "preupload_rci_recheck_pending",
   "runner": {
     "state": "free",
-    "run_started": true,
-    "last_run_id": "odc1-seeded-b-576283d4"
+    "required_path": "scripts/proxywar-runner-lease.sh run odin"
+  },
+  "candidate": {
+    "policy_ref": "proxywar-agent-llm:qd1n-v89-odc1-rci2-amd64",
+    "image_id": "sha256:3af909f391a179356876b54e810fd8c197d9cd88432ff4916a6c4e83c50a41a9",
+    "architecture": "amd64",
+    "source_tests": "173/173",
+    "source_pushed": true,
+    "image_matches_source": true
   },
   "evidence": {
-    "source_tests": "163/163; red-first verified",
-    "independent_rci": "PASS after nine bounded correctness and telemetry repairs",
-    "qualifier": "34/34 accepted; zero holds, rejections, fallbacks, or degradation",
-    "candidate_image": "proxywar-agent-llm:qd1n-v89-odc1-amd64",
-    "candidate_image_digest": "sha256:a9aa29ff41f7d77a3a29754c47ed7517d0513d0221eec3c34a874b1a3aa7f40d",
-    "local_pair": {
-      "pair_id": "odc1-pangaea-compact-20260720",
-      "seed": 20260720,
-      "candidate_scores": [
-        0.6897909514528527,
-        0.6907682247805497
-      ],
-      "parent_scores": [
-        0.3102090485471472,
-        0.30923177521945033
-      ],
-      "candidate_combined_tiles": 139444,
-      "parent_combined_tiles": 62567,
-      "candidate_decisions": 624,
-      "candidate_accepted": 624,
-      "candidate_causal_transitions": 111,
-      "candidate_holds": 0,
-      "candidate_rejections": 0,
-      "candidate_fallbacks": 0,
-      "candidate_degradation": 0,
-      "candidate_illegal_actions": 0,
-      "candidate_k1z_harm": 0,
-      "declared_wins": 0
+    "qualifier": {
+      "path": "/private/tmp/proxywar-odc1-rci2-qualifier-23ada8a8-20260720",
+      "accepted": 34,
+      "decisions": 34,
+      "holds": 0,
+      "rejections": 0,
+      "fallbacks": 0,
+      "degradation": 0
     },
-    "receipt": "experiments/audit-qd1n-odc1-clean-dispatcher-seeded-20260720.json",
-    "causal_finding": "The clean dispatcher produced a strong, seat-independent local score and territory separation while preserving coalition safety and eliminating planner/runtime failures."
+    "mechanism_screen": {
+      "verdict": "PASS_MECHANISM_SCREEN",
+      "competitive_evidence": false,
+      "receipt": "experiments/audit-qd1n-odc1-rci2-mechanism-20260720.json",
+      "receipt_sha256": "84bda8495c5f0178e5c4c5555b30a7e2d4be3d9a8ab392a9c6acea757fd20d9c",
+      "contract_sha256": "5182e85926b43372b2454aad0dfaf85467a25edf62787652ce5331e4ce16e82d",
+      "candidate_decisions": 66,
+      "candidate_accepted": 66,
+      "route_executions": 10,
+      "holds": 0,
+      "rejections": 0,
+      "fallbacks": 0,
+      "degradation": 0,
+      "k1z_harm": 0
+    },
+    "differential_proof": {
+      "path": "experiments/odc1/differential-proof-23ada8a8.json",
+      "sha256": "425fe2a390a29bb40da4f5ebae4e8c7e4a05eeb3edb154a69aae6d7f3fa2e300",
+      "evaluator_commit": "915476fcc9c3bbbc651dc933a3852145f20f43c4",
+      "parent_action": "alliance:kata",
+      "candidate_action": "expand:terra-nullius:10"
+    }
   },
   "gates": {
     "source_integrity": "passed_committed_and_pushed",
-    "identity": "passed_qualifier_candidate_image",
-    "runner": "local_pair_completed_and_released",
-    "coalition_integrity": "passed_zero_protected_rival_actions",
-    "local_seeded_pair": "PASS_LOCAL_QUALIFIED",
-    "seeded_current_field": "not_run",
+    "image_identity": "passed_byte_identical",
+    "qualifier": "passed",
+    "mechanism_screen": "passed_no_competitive_claim",
+    "preupload_rci": "pending_recheck_after_provenance_repair",
+    "diagnostic_uploaded": false,
     "hosted_4_of_4": "not_run",
     "league_regression_20_of_20": "not_run",
-    "source_regression_passed": true,
-    "rci_audit_passed": true,
-    "diagnostic_uploaded": false,
+    "final_rci": "not_run",
     "submitted": false,
     "placed": false,
     "champion_verified": false,
     "round_confirmed": false
   },
-  "dispatch_checkpoint": {
-    "classification": "odc1_local_qualified_no_league_event",
-    "mailbox_message_written": false,
-    "checkpoint_reason": "Both explicit-seed seat orientations passed with strong candidate separation and clean runtime evidence. The next test changes the roster, not the policy."
+  "scope_limits": {
+    "local_competitive_lift_claimed": false,
+    "parent_runtime_excluded": "local parent lacked Bedrock credentials",
+    "k1z_only_finish": "disabled_until_authoritative_alive_roster_signal"
   },
-  "next_automatic_transition": "Run one explicit-seed current-roster coalition matched gate through the Odin runner lease. Failure closes ODC1. Success advances automatically to hosted 4/4 and 20/20 regression. Only all-green gates authorize automatic upload, submission, champion verification, and round confirmation; no separate user GO is required.",
+  "next_automatic_transition": "Pass the independent pre-upload RCI on the regenerated proof chain, bind the immutable diagnostic preflight, and upload only the diagnostic policy version. Do not submit to the league or change champion state before hosted 4/4, a distinct 20/20 regression, and final RCI all pass.",
   "prior_verified_champion_preserved": true,
   "prior_verified_champion": "qd1n:v89"
 }
