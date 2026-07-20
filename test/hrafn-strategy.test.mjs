@@ -241,10 +241,10 @@ test("rv1 skips an oversized K1Z member and pins the strongest outsider", () => 
   assert.equal(chosen.policyMarker, "rv1");
 });
 
-test("rv3 opens on Auri before a larger reachable outsider", () => {
-  const auri = rival({
-    id: "auri",
-    name: "Auri",
+test("dv1 opens on daveey before a larger reachable outsider", () => {
+  const daveey = rival({
+    id: "daveey",
+    name: "daveey",
     tileShare: 0.2,
     relativeTroopRatio: 1.5,
   });
@@ -255,17 +255,17 @@ test("rv3 opens on Auri before a larger reachable outsider", () => {
     relativeTroopRatio: 2,
   });
   const chosen = chooseHrafnAction(
-    [attack(larger, 25), attack(auri, 25)],
-    observation({ tileShare: 0.12, rivals: [larger, auri] }),
+    [attack(larger, 25), attack(daveey, 25)],
+    observation({ tileShare: 0.12, rivals: [larger, daveey] }),
   );
-  assert.equal(chosen.id, "attack:auri:25");
-  assert.equal(chosen.policyMarker, "rv3");
+  assert.equal(chosen.id, "attack:daveey:25");
+  assert.equal(chosen.policyMarker, "dv1");
 });
 
-test("rv3 targets Auri without feeding him below the attack floor", () => {
-  const auri = rival({
-    id: "auri",
-    name: "Auri",
+test("dv1 targets daveey without feeding him below the attack floor", () => {
+  const daveey = rival({
+    id: "daveey",
+    name: "daveey",
     tileShare: 0.3,
     relativeTroopRatio: 1.2,
   });
@@ -275,23 +275,23 @@ test("rv3 targets Auri without feeding him below the attack floor", () => {
     isAllied: true,
   });
   const target = action(
-    "target:auri",
+    "target:daveey",
     "target_player",
-    "Target Auri",
-    { targetID: auri.id, targetName: auri.name },
+    "Target daveey",
+    { targetID: daveey.id, targetName: daveey.name },
   );
   const chosen = chooseHrafnAction(
-    [attack(auri, 25), target],
-    observation({ tileShare: 0.12, rivals: [auri, odin] }),
+    [attack(daveey, 25), target],
+    observation({ tileShare: 0.12, rivals: [daveey, odin] }),
   );
   assert.equal(chosen.id, target.id);
-  assert.equal(chosen.policyMarker, "rv3");
+  assert.equal(chosen.policyMarker, "dv1");
 });
 
-test("rv3 switches an older outsider lock to newly reachable Auri", () => {
-  const auri = rival({
-    id: "auri",
-    name: "Auri",
+test("dv1 switches an older outsider lock to newly reachable daveey", () => {
+  const daveey = rival({
+    id: "daveey",
+    name: "daveey",
     tileShare: 0.2,
     relativeTroopRatio: 1.5,
   });
@@ -311,18 +311,18 @@ test("rv3 switches an older outsider lock to newly reachable Auri", () => {
     campaignStartDecision: 0,
   }];
   const chosen = chooseHrafnAction(
-    [attack(older, 25), attack(auri, 25)],
-    observation({ tileShare: 0.12, rivals: [older, auri] }),
+    [attack(older, 25), attack(daveey, 25)],
+    observation({ tileShare: 0.12, rivals: [older, daveey] }),
     history,
   );
-  assert.equal(chosen.id, "attack:auri:25");
-  assert.equal(chosen.policyMarker, "rv3");
+  assert.equal(chosen.id, "attack:daveey:25");
+  assert.equal(chosen.policyMarker, "dv1");
 });
 
-test("rv3 hands off from suppressed Auri to a runaway Richard", () => {
-  const auri = rival({
-    id: "auri",
-    name: "Auri",
+test("dv1 hands off from suppressed daveey to a runaway Richard", () => {
+  const daveey = rival({
+    id: "daveey",
+    name: "daveey",
     tileShare: 0.18,
     relativeTroopRatio: 2,
   });
@@ -333,17 +333,17 @@ test("rv3 hands off from suppressed Auri to a runaway Richard", () => {
     relativeTroopRatio: 1.5,
   });
   const history = [{
-    actionID: "target:auri",
+    actionID: "target:daveey",
     kind: "target_player",
-    targetID: auri.id,
-    targetName: canonicalizeK1ZName(auri.name),
+    targetID: daveey.id,
+    targetName: canonicalizeK1ZName(daveey.name),
     tileShare: 0.12,
-    policyMarker: "rv3",
+    policyMarker: "dv1",
     campaignStartDecision: 0,
   }];
   const chosen = chooseHrafnAction(
-    [attack(auri, 25), attack(richard, 25)],
-    observation({ tileShare: 0.12, rivals: [auri, richard] }),
+    [attack(daveey, 25), attack(richard, 25)],
+    observation({ tileShare: 0.12, rivals: [daveey, richard] }),
     history,
   );
   assert.equal(chosen.id, "attack:richard:25");

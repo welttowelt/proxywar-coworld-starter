@@ -52,7 +52,7 @@ export const HRAFN_DEFAULTS = Object.freeze({
   activationCeiling: 0.3,
   minimumRelativeTroopRatio: 1.25,
   continuingRelativeTroopRatio: 1.1,
-  priorityTargetNames: Object.freeze(["auri"]),
+  priorityTargetNames: Object.freeze(["daveey"]),
   priorityAttackFloor: 1.35,
   leaderHandoffGap: 0.05,
   leaderPressureCooldownDecisions: 4,
@@ -340,7 +340,11 @@ function attackGroups(actions, state) {
 function latestCampaign(history) {
   for (let index = history.length - 1; index >= 0; index--) {
     const entry = history[index];
-    if (entry.policyMarker !== "rv1" && entry.policyMarker !== "rv2") continue;
+    if (
+      entry.policyMarker !== "rv1" &&
+      entry.policyMarker !== "rv2" &&
+      entry.policyMarker !== "dv1"
+    ) continue;
     return {
       lastIndex: index,
       startDecision: Number.isInteger(entry.campaignStartDecision)
@@ -413,22 +417,31 @@ function selectAdaptiveLeader(state, history, config) {
       right.relativeTroopRatio - left.relativeTroopRatio
     );
   if (outsiders.length === 0) return null;
-  const auri = outsiders.find((rival) => isPriorityTarget(rival, config)) ?? null;
-  const rv3Started = history.some((entry) => entry.policyMarker === "rv3");
-  if (!rv3Started && auri) return auri;
+  const priority = outsiders.find((rival) => isPriorityTarget(rival, config)) ?? null;
+  const adaptiveStarted = history.some((entry) =>
+    entry.policyMarker === "rv3" || entry.policyMarker === "dv1"
+  );
+  if (!adaptiveStarted && priority) return priority;
   const leader = outsiders[0];
   if (
-    auri &&
-    leader.tileShare - auri.tileShare <= config.leaderHandoffGap
+    priority &&
+    leader.tileShare - priority.tileShare <= config.leaderHandoffGap
   ) {
-    return auri;
+    return priority;
   }
-  return rv3Started || auri ? leader : null;
+  return adaptiveStarted || priority ? leader : null;
 }
 
-function adaptiveLeaderPressureAction(actions, state, history, rival, config) {
+function adaptiveLeaderPressureAction(
+  actions,
+  state,
+  history,
+  rival,
+  config,
+  marker = "rv3",
+) {
   const since = decisionsSince(history, (entry) =>
-    entry.policyMarker === "rv3" &&
+    entry.policyMarker === marker &&
     (entry.targetID === rival.id.toLowerCase() ||
       entry.targetName === rival.canonicalName)
   );
@@ -440,7 +453,7 @@ function adaptiveLeaderPressureAction(actions, state, history, rival, config) {
   return action
     ? {
         ...action,
-        policyMarker: "rv3",
+        policyMarker: marker,
         campaignStartDecision: history.length,
       }
     : null;
@@ -481,11 +494,15 @@ function campaignAttack(
 ) {
   if (!group) return null;
   const alreadyOpened = history.some((entry) =>
-    (entry.policyMarker === "rv1" || entry.policyMarker === "rv2") &&
+    (
+      entry.policyMarker === "rv1" ||
+      entry.policyMarker === "rv2" ||
+      entry.policyMarker === "dv1"
+    ) &&
     entry.campaignStartDecision === campaignStartDecision &&
     entry.kind === "attack"
   );
-  const desired = marker === "rv2"
+  const desired = marker === "rv2" || marker === "dv1"
     ? config.priorityPressurePercent
     : (alreadyOpened ? config.pressurePercent : config.openingPercent);
   const selected = chooseClosestPercent(
@@ -622,6 +639,9 @@ export function chooseHrafnAction(
     : null;
   const leaderInterceptActive = adaptiveLeader !== null;
   if (adaptiveLeader) {
+    const adaptiveMarker = isPriorityTarget(adaptiveLeader, config)
+      ? "dv1"
+      : "rv3";
     const group = groups.find(({ rival }) =>
       rival.id.toLowerCase() === adaptiveLeader.id.toLowerCase()
     );
@@ -634,7 +654,7 @@ export function chooseHrafnAction(
         history,
         history.length,
         config,
-        "rv3",
+        adaptiveMarker,
       );
       if (attack) return attack;
     }
@@ -644,6 +664,7 @@ export function chooseHrafnAction(
       history,
       adaptiveLeader,
       config,
+      adaptiveMarker,
     );
     if (pressure) return pressure;
   }
@@ -657,7 +678,7 @@ export function chooseHrafnAction(
         history,
         history.length,
         config,
-        "rv2",
+        "dv1",
       );
       if (attack) return attack;
     }
@@ -668,7 +689,7 @@ export function chooseHrafnAction(
       priority.rival,
       history.length,
       config,
-      "rv2",
+      "dv1",
     );
     if (pressure) return pressure;
   }
@@ -676,8 +697,8 @@ export function chooseHrafnAction(
     const group = groups.find(({ rival }) =>
       rival.id.toLowerCase() === campaign.rival.id.toLowerCase()
     );
-    const marker = isPriorityTarget(campaign.rival, config) ? "rv2" : "rv1";
-    const attackFloor = marker === "rv2"
+    const marker = isPriorityTarget(campaign.rival, config) ? "dv1" : "rv1";
+    const attackFloor = marker === "dv1"
       ? config.priorityAttackFloor
       : config.continuingRelativeTroopRatio;
     if (
