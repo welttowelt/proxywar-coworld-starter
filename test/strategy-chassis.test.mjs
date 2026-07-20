@@ -304,6 +304,38 @@ test("ODC1 accepts a proven incoming K1Z handshake before routine growth", () =>
   assert.equal(selected.policyMarker, "kp2");
 });
 
+test("ODC1 accepts a proven reverse K1Z handshake despite a recent request", () => {
+  const request = {
+    ...action("alliance:kata", "alliance_request", "Alliance with K1Z katanasan"),
+    metadata: { recipientID: "kata", recipientName: "K1Z katanasan", relation: 2 },
+  };
+  const reject = {
+    ...action("alliance-reject:kata", "alliance_reject", "Reject K1Z katanasan"),
+    metadata: { recipientID: "kata", recipientName: "K1Z katanasan" },
+  };
+  const history = [{
+    actionID: request.id,
+    kind: "alliance_request",
+    targetID: "kata",
+    targetName: "K1Z katanasan",
+    tileShare: 0.04,
+  }];
+  const obs = observation({
+    tileShare: 0.04,
+    rivals: [{
+      id: "kata",
+      name: "K1Z katanasan",
+      tileShare: 0.08,
+      relativeTroopRatio: 1,
+    }],
+  });
+  const actions = [...neutralActions(), request, reject];
+  const selected = chooseOdin(actions, obs, null, history);
+  assert.equal(selected.id, request.id);
+  assert.equal(selected.policyMarker, "kp2");
+  assert.equal(chooseParent(actions, obs, null, history).id, "expand:terra-nullius:10");
+});
+
 test("ODC1 defers a routine K1Z request while neutral growth is legal", () => {
   const request = {
     ...action("alliance:kata", "alliance_request", "Alliance with K1Z katanasan"),
@@ -472,6 +504,106 @@ test("ODC1 never attacks a confirmed ally on a stale incoming ID", () => {
   assert.equal(selected.id, "expand:terra-nullius:10");
 });
 
+test("ODC1 never retaliates against a non-allied K1Z current attacker", () => {
+  const hrafnID = "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863";
+  const hrafn = [10, 25, 40].map((percent) => ({
+    ...action(`attack:hrafn:${percent}`, "attack", `Attack K1Z Hrafn ${percent}%`),
+    metadata: { targetID: hrafnID, targetName: "K1Z Hrafn" },
+  }));
+  const outsider = [10, 25, 40].map((percent) =>
+    action(`attack:outsider:${percent}`, "attack", `Attack Outsider ${percent}%`));
+  const selected = chooseOdin(
+    [...hrafn, ...outsider],
+    observation({
+      tileShare: 0.15,
+      incomingAttackPlayerIDs: [hrafnID],
+      rivals: [
+        {
+          id: hrafnID,
+          name: "K1Z Hrafn",
+          tileShare: 0.2,
+          relativeTroopRatio: 2,
+        },
+        {
+          id: "outsider",
+          name: "Outsider",
+          tileShare: 0.15,
+          relativeTroopRatio: 1.3,
+        },
+      ],
+    }),
+  );
+  assert.equal(selected.id, "attack:outsider:25");
+  assert.equal(selected.policyMarker, "odc25");
+});
+
+test("ODC1 breaks a K1Z alliance first in the exact K1Z-only endgame", () => {
+  const hrafnID = "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863";
+  const allianceBreak = {
+    ...action("break:hrafn", "break_alliance", "Break alliance with K1Z Hrafn"),
+    metadata: { targetID: hrafnID, targetName: "K1Z Hrafn" },
+  };
+  const selected = chooseOdin(
+    [allianceBreak, action("hold", "hold", "Hold")],
+    observation({
+      tileShare: 0.6,
+      rivals: [{
+        id: hrafnID,
+        name: "K1Z Hrafn",
+        tileShare: 0.4,
+        relativeTroopRatio: 1.5,
+        isAllied: true,
+      }],
+    }),
+  );
+  assert.equal(selected.id, allianceBreak.id);
+  assert.equal(selected.policyMarker, "odk1");
+});
+
+test("ODC1 attacks decisively in the exact non-allied K1Z-only endgame", () => {
+  const hrafnID = "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863";
+  const attacks = [10, 25, 40].map((percent) => ({
+    ...action(`attack:hrafn:${percent}`, "attack", `Attack K1Z Hrafn ${percent}%`),
+    metadata: { targetID: hrafnID, targetName: "K1Z Hrafn" },
+  }));
+  const selected = chooseOdin(
+    attacks,
+    observation({
+      tileShare: 0.6,
+      rivals: [{
+        id: hrafnID,
+        name: "K1Z Hrafn",
+        tileShare: 0.4,
+        relativeTroopRatio: 1.5,
+      }],
+    }),
+  );
+  assert.equal(selected.id, "attack:hrafn:40");
+  assert.equal(selected.policyMarker, "odk1");
+});
+
+test("ODC1 does not infer a K1Z-only endgame from partial visibility", () => {
+  const hrafnID = "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863";
+  const attacks = [10, 25, 40].map((percent) => ({
+    ...action(`attack:hrafn:${percent}`, "attack", `Attack K1Z Hrafn ${percent}%`),
+    metadata: { targetID: hrafnID, targetName: "K1Z Hrafn" },
+  }));
+  const selected = chooseOdin(
+    [...neutralActions(), ...attacks],
+    observation({
+      tileShare: 0.2,
+      rivals: [{
+        id: hrafnID,
+        name: "K1Z Hrafn",
+        tileShare: 0.2,
+        relativeTroopRatio: 2,
+      }],
+    }),
+  );
+  assert.equal(selected.id, "expand:terra-nullius:10");
+  assert.equal(selected.policyMarker, "odg10");
+});
+
 test("ODC1 rival choice is independent of planner advice", () => {
   const attacks = ["alpha", "beta"].flatMap((name) => [10, 25].map((percent) =>
     action(`attack:${name}:${percent}`, "attack", `Attack ${name} ${percent}%`)));
@@ -505,6 +637,7 @@ test("ODC1 does not pressure a weaker rival while Odin already leads", () => {
     }),
   );
   assert.equal(selected.id, hold.id);
+  assert.equal(selected.policyMarker, "odguard");
 });
 
 test("ODC1 lets a newly finishable rival replace an older mediocre target", () => {
@@ -574,9 +707,9 @@ test("ODC1 exits a flat naval loop into economy instead of holding", () => {
   assert.equal(selected.policyMarker, "odncap");
 });
 
-test("ODC1 uses a safe Atom Bomb on a runaway outsider", () => {
+test("ODC1 uses a production-shaped safe Atom Bomb on a runaway outsider", () => {
   const bomb = {
-    ...action("build:Atom Bomb:1", "build", "Build Atom Bomb"),
+    ...action("nuke:atom-bomb:leader", "nuke", "Launch Atom Bomb at Leader"),
     metadata: {
       unit: "Atom Bomb",
       targetID: "leader",
@@ -603,9 +736,9 @@ test("ODC1 uses a safe Atom Bomb on a runaway outsider", () => {
   assert.equal(selected.policyMarker, "nk1");
 });
 
-test("ODC1 never reintroduces a K1Z-targeted Atom Bomb through build fallback", () => {
+test("ODC1 never launches a production-shaped Atom Bomb at K1Z", () => {
   const bomb = {
-    ...action("build:Atom Bomb:1", "build", "Build Atom Bomb"),
+    ...action("nuke:atom-bomb:hrafn", "nuke", "Launch Atom Bomb at K1Z Hrafn"),
     metadata: {
       unit: "Atom Bomb",
       targetID: "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
@@ -624,6 +757,58 @@ test("ODC1 never reintroduces a K1Z-targeted Atom Bomb through build fallback", 
         id: "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
         name: "K1Z Hrafn",
         tileShare: 0.79,
+        relativeTroopRatio: 0.5,
+      }],
+    }),
+  );
+  assert.equal(selected.id, hold.id);
+});
+
+test("ODC1 does not reintroduce a SAM-covered nuke through generic utility", () => {
+  const bomb = {
+    ...action("nuke:atom-bomb:leader", "nuke", "Launch Atom Bomb at Leader"),
+    metadata: {
+      unit: "Atom Bomb",
+      targetID: "leader",
+      targetName: "Leader",
+      targetTileShare: 0.79,
+      targetSamCoverage: 1,
+    },
+  };
+  const hold = action("hold", "hold", "Hold");
+  const obs = observation({
+    tileShare: 0.2,
+    rivals: [{
+      id: "leader",
+      name: "Leader",
+      tileShare: 0.79,
+      relativeTroopRatio: 0.5,
+    }],
+  });
+  assert.equal(chooseOdin([bomb, hold], obs).id, hold.id);
+  assert.equal(chooseParent([bomb, hold], obs).id, bomb.id);
+});
+
+test("ODC1 skips an uncovered Atom Bomb without a worthwhile target", () => {
+  const bomb = {
+    ...action("nuke:atom-bomb:minor", "nuke", "Launch Atom Bomb at Minor"),
+    metadata: {
+      unit: "Atom Bomb",
+      targetID: "minor",
+      targetName: "Minor",
+      targetTileShare: 0.08,
+      targetSamCoverage: 0,
+    },
+  };
+  const hold = action("hold", "hold", "Hold");
+  const selected = chooseOdin(
+    [bomb, hold],
+    observation({
+      tileShare: 0.2,
+      rivals: [{
+        id: "minor",
+        name: "Minor",
+        tileShare: 0.08,
         relativeTroopRatio: 0.5,
       }],
     }),
@@ -674,7 +859,7 @@ test("ODC1 takes a legal retreat before a routine coalition request", () => {
 });
 
 test("ODC1 uses a harmless social action instead of an unexplained hold", () => {
-  for (const kind of ["alliance_extend", "embargo_stop", "quick_chat", "emoji"]) {
+  for (const kind of ["alliance_extend", "embargo_stop", "emoji"]) {
     const harmless = action(`${kind}:1`, kind, kind);
     const selected = chooseOdin(
       [harmless, action("hold", "hold", "Hold")],
@@ -683,6 +868,16 @@ test("ODC1 uses a harmless social action instead of an unexplained hold", () => 
     assert.equal(selected.id, harmless.id, kind);
     assert.equal(selected.policyMarker, "odsafe", kind);
   }
+});
+
+test("ODC1 never emits unrestricted quick chat", () => {
+  const hold = action("hold", "hold", "Hold");
+  const selected = chooseOdin(
+    [action("quick-chat:1", "quick_chat", "This is unrestricted public prose"), hold],
+    observation({ tileShare: 0.1 }),
+  );
+  assert.equal(selected.id, hold.id);
+  assert.equal(selected.policyMarker, undefined);
 });
 
 test("ODC1 never attacks a metadata-resolved K1Z partner", () => {

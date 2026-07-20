@@ -8,13 +8,13 @@
  * tactical action remains. Markers: ch1 (grind), ch2 (commitment contact).
  */
 import {
+  actionTargetsK1Z,
   actionPercent,
   actionText,
   avoidActionIDs,
   chooseAction as chooseSelectorAction,
   bestAllianceRequest,
   boatConversionStalled,
-  chooseAtomBomb,
   chooseBoat,
   chooseBuild,
   chooseNeutralAttack,
@@ -27,6 +27,7 @@ import {
   pickPercent,
   recentHostility,
   rivalForAction,
+  rivalIsK1Z,
   rivalIsProtected,
   safeActions,
   territoryCollapsing,
@@ -190,11 +191,28 @@ export function chooseChassisAction(actions, state, plan = null, history = []) {
 export const ODIN_CHASSIS_MARKERS = [
   "odef", "odec1", "odec2", "odg10", "odg20", "odg35",
   "odc10", "odc25", "odc40", "odn8", "odn16", "odncap", "odecon",
-  "odsafe", "odguard",
+  "odsafe", "odguard", "odk1",
 ];
 
 function marked(action, marker) {
   return action ? { ...action, policyMarker: marker } : null;
+}
+
+const ODIN_HARMFUL_KINDS = new Set([
+  "attack", "boat", "break_alliance", "embargo", "embargo_all", "move_warship",
+  "nuke", "target_player", "warship",
+]);
+
+function odinActionIsHarmful(action) {
+  return ODIN_HARMFUL_KINDS.has(action?.kind) ||
+    (action?.kind === "build" &&
+      String(action?.metadata?.unit ?? "").toLowerCase() === "atom bomb");
+}
+
+function odinProtectedActions(actions, state) {
+  return actions.filter((action) =>
+    !odinActionIsHarmful(action) || !actionTargetsK1Z(action, state)
+  );
 }
 
 function builtUnit(history, unit) {
@@ -206,14 +224,16 @@ function builtUnit(history, unit) {
 
 function odinBuildActions(actions, state, history) {
   return actions.filter((action) => {
+    if (action.kind === "nuke") return false;
     if (action.kind !== "build") return true;
     const metadata = action?.metadata || {};
+    if (String(metadata.unit ?? "").toLowerCase() === "atom bomb") return false;
     const targeted = metadata.targetID || metadata.targetName ||
       metadata.recipientID || metadata.recipientName ||
-      String(metadata.unit ?? "").toLowerCase() === "atom bomb";
+      false;
     if (!targeted) return true;
     const rival = rivalForAction(action, state);
-    return rival && !rivalIsProtected(state, history, rival);
+    return rival && !rivalIsK1Z(rival) && !rivalIsProtected(state, history, rival);
   });
 }
 
@@ -258,6 +278,84 @@ function chooseOdinEconomy(actions, state, history) {
   return null;
 }
 
+function chooseOdinAtomBomb(actions, state, history) {
+  const incoming = new Set(
+    (state.self.allProtocolAttackerIDs || state.self.incomingAttackerIDs || [])
+      .map((id) => String(id).toLowerCase()),
+  );
+  const candidates = safeActions(actions, (action) =>
+    action.kind === "nuke" &&
+    (
+      String(action?.metadata?.unit ?? "").toLowerCase() === "atom bomb" ||
+      actionText(action).includes("atom bomb")
+    )
+  ).map((action) => ({ action, rival: rivalForAction(action, state) }))
+    .filter(({ action, rival }) => {
+      if (
+        !rival ||
+        rivalIsK1Z(rival) ||
+        actionTargetsK1Z(action, state) ||
+        rivalIsProtected(state, history, rival) ||
+        Number(action?.metadata?.targetSamCoverage ?? 1) !== 0
+      ) {
+        return false;
+      }
+      const targetShare = Number(
+        action?.metadata?.targetTileShare ?? rival.tileShare ?? 0,
+      );
+      return targetShare >= 0.12 || incoming.has(rival.id.toLowerCase());
+    })
+    .sort((left, right) =>
+      Number(right.action?.metadata?.targetTileShare ?? right.rival.tileShare ?? 0) -
+      Number(left.action?.metadata?.targetTileShare ?? left.rival.tileShare ?? 0)
+    );
+  return marked(candidates[0]?.action ?? null, "nk1");
+}
+
+function allRivalsAreK1Z(state) {
+  const visibleTileShare = state.self.tileShare +
+    state.rivals.reduce((total, rival) => total + rival.tileShare, 0);
+  return state.rivals.length > 0 &&
+    visibleTileShare >= 0.98 &&
+    state.rivals.every(rivalIsK1Z);
+}
+
+function chooseOdinK1ZEndgame(actions, state) {
+  if (!allRivalsAreK1Z(state)) return null;
+
+  const allianceBreak = safeActions(actions, (action) => {
+    if (action.kind !== "break_alliance" || !actionTargetsK1Z(action, state)) {
+      return false;
+    }
+    return rivalForAction(action, state)?.isAllied === true;
+  })[0];
+  if (allianceBreak) return marked(allianceBreak, "odk1");
+
+  const grouped = new Map();
+  for (const action of safeActions(actions, (candidate) =>
+    candidate.kind === "attack" && !isNeutralExpansion(candidate)
+  )) {
+    const rival = rivalForAction(action, state);
+    if (!rival || rival.isAllied || !rivalIsK1Z(rival)) continue;
+    const key = rival.id || rival.name;
+    if (!grouped.has(key)) grouped.set(key, { rival, actions: [] });
+    grouped.get(key).actions.push(action);
+  }
+  const target = [...grouped.values()].sort((left, right) => {
+    const leftRatio = Number.isFinite(left.rival.relativeTroopRatio)
+      ? left.rival.relativeTroopRatio
+      : -Infinity;
+    const rightRatio = Number.isFinite(right.rival.relativeTroopRatio)
+      ? right.rival.relativeTroopRatio
+      : -Infinity;
+    return rightRatio - leftRatio || right.rival.tileShare - left.rival.tileShare;
+  })[0];
+  return marked(
+    target ? pickPercent(target.actions, 40, new Set()) : null,
+    "odk1",
+  );
+}
+
 function chooseOdinRivalAction(actions, state, history, avoid) {
   const incoming = new Set(
     (state.self.allProtocolAttackerIDs || state.self.incomingAttackerIDs || [])
@@ -271,6 +369,7 @@ function chooseOdinRivalAction(actions, state, history, avoid) {
     if (
       !rival ||
       rival.isAllied ||
+      rivalIsK1Z(rival) ||
       (rivalIsProtected(state, history, rival) &&
         !incoming.has(rival.id.toLowerCase()))
     ) {
@@ -340,8 +439,12 @@ export function chooseOdinChassisAction(actions, state, _plan = null, history = 
     .find((action) => !avoid.has(action.id));
   if (spawn) return spawn;
 
+  const k1zEndgame = chooseOdinK1ZEndgame(actions, state);
+  if (k1zEndgame) return k1zEndgame;
+
+  const odinActions = odinProtectedActions(actions, state);
   const pendingHandshake = kingmakerAllianceAction(
-    actions,
+    odinActions,
     state,
     history,
     { pendingOnly: true },
@@ -354,20 +457,20 @@ export function chooseOdinChassisAction(actions, state, _plan = null, history = 
   );
   const collapsing = territoryCollapsing(state, history);
   if ((threatCount > 0 || collapsing) && state.self.troopRatio < 0.8) {
-    const defense = chooseOdinBuild(actions, state, history, true);
+    const defense = chooseOdinBuild(odinActions, state, history, true);
     if (defense) return marked(defense, "odef");
   }
 
-  const atomBomb = chooseAtomBomb(actions, state, history);
+  const atomBomb = chooseOdinAtomBomb(odinActions, state, history);
   if (atomBomb) return atomBomb;
 
-  const rival = chooseOdinRivalAction(actions, state, history, avoid);
+  const rival = chooseOdinRivalAction(odinActions, state, history, avoid);
   if (rival?.finishable || rival?.isIncoming) return rival.action;
 
-  const economy = chooseOdinEconomy(actions, state, history);
+  const economy = chooseOdinEconomy(odinActions, state, history);
   if (economy) return economy;
 
-  const neutral = chooseNeutralAttack(actions, history, avoid);
+  const neutral = chooseNeutralAttack(odinActions, history, avoid);
   if (neutral && state.self.tileShare < 0.12 && threatCount === 0 && !collapsing) {
     return marked(neutral, neutralMarker(neutral));
   }
@@ -375,10 +478,10 @@ export function chooseOdinChassisAction(actions, state, _plan = null, history = 
   if (rival?.action) return rival.action;
   if (neutral) return marked(neutral, neutralMarker(neutral));
 
-  const build = chooseOdinBuild(actions, state, history);
+  const build = chooseOdinBuild(odinActions, state, history);
   const stalledBoat = boatConversionStalled(state, history);
   if (!stalledBoat) {
-    const boat = chooseBoat(actions, state, history, avoid, true);
+    const boat = chooseBoat(odinActions, state, history, avoid, true);
     if (boat) {
       const percent = actionPercent(boat);
       return marked(boat, `odn${Math.round(percent ?? 16)}`);
@@ -386,15 +489,20 @@ export function chooseOdinChassisAction(actions, state, _plan = null, history = 
   }
   if (build) return marked(build, stalledBoat ? "odncap" : "odecon");
 
-  const utility = chooseUtility(actions, state, null, history);
+  const utility = chooseUtility(
+    odinActions.filter((action) => action.kind !== "nuke"),
+    state,
+    null,
+    history,
+  );
   if (utility) return utility;
 
-  const retreat = safeActions(actions, (action) =>
+  const retreat = safeActions(odinActions, (action) =>
     action.kind === "boat_retreat" || action.kind === "retreat"
   )[0];
   if (retreat) return retreat;
 
-  const emergencyAttacks = safeActions(actions, (action) => {
+  const emergencyAttacks = safeActions(odinActions, (action) => {
     if (action.kind !== "attack" || isNeutralExpansion(action)) return false;
     const target = rivalForAction(action, state);
     return target && !rivalIsProtected(state, history, target);
@@ -406,7 +514,7 @@ export function chooseOdinChassisAction(actions, state, _plan = null, history = 
     if (emergencyAttack) return marked(emergencyAttack, "odc10");
   }
 
-  const pressure = safeActions(actions, (action) => action.kind === "target_player")
+  const pressure = safeActions(odinActions, (action) => action.kind === "target_player")
     .map((action) => ({ action, rival: rivalForAction(action, state) }))
     .filter(({ rival: target }) =>
       target && !rivalIsProtected(state, history, target)
@@ -414,24 +522,37 @@ export function chooseOdinChassisAction(actions, state, _plan = null, history = 
     .sort((left, right) => right.rival.tileShare - left.rival.tileShare)[0]?.action;
   if (pressure) return pressure;
 
-  const coalition = kingmakerAllianceAction(actions, state, history);
+  const coalition = kingmakerAllianceAction(odinActions, state, history);
   if (coalition) return coalition;
 
-  const survivalAlliance = bestAllianceRequest(actions, state, history);
+  const survivalAlliance = bestAllianceRequest(odinActions, state, history);
   if (survivalAlliance) return survivalAlliance;
 
-  const harmlessSocial = safeActions(actions, (action) =>
-    ["alliance_extend", "embargo_stop", "quick_chat", "emoji"].includes(action.kind)
+  const harmlessSocial = safeActions(odinActions, (action) =>
+    ["alliance_extend", "embargo_stop", "emoji"].includes(action.kind)
   )[0];
   if (harmlessSocial) return marked(harmlessSocial, "odsafe");
 
-  const hold = actions.find((action) => action.kind === "hold");
+  const hold = odinActions.find((action) => action.kind === "hold");
   const alternatives = actions.filter((action) => action.kind !== "hold");
   const guardedOnly = alternatives.length > 0 && alternatives.every((action) => {
     if (action.kind === "build" && actionText(action).includes("defense post")) return true;
+    if (odinActionIsHarmful(action) && actionTargetsK1Z(action, state)) return true;
     const target = rivalForAction(action, state);
     return target && rivalIsProtected(state, history, target);
   });
-  if (hold) return guardedOnly ? marked(hold, "odguard") : hold;
-  return actions[0];
+  const dominantPreservation = threatCount === 0 && !collapsing &&
+    state.self.tileShare >= 0.35 &&
+    state.self.tileShare >= state.topRivalTileShare + 0.08 &&
+    alternatives.length > 0 &&
+    alternatives.every((action) => {
+      if (action.kind !== "attack" || isNeutralExpansion(action)) return false;
+      const target = rivalForAction(action, state);
+      return target && Number.isFinite(target.relativeTroopRatio) &&
+        target.relativeTroopRatio < 1;
+    });
+  if (hold) {
+    return guardedOnly || dominantPreservation ? marked(hold, "odguard") : hold;
+  }
+  return odinActions[0] ?? actions[0];
 }

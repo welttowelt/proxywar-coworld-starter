@@ -22,6 +22,16 @@ function normalizedRivalName(value) {
     .toLowerCase();
 }
 
+function hasK1ZTag(value) {
+  return /^(?:\[k1z\]|k1z)(?:\s+|$)/i.test(
+    String(value ?? "")
+      .normalize("NFKC")
+      .replace(/[-_.]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim(),
+  );
+}
+
 const RECIPROCAL_RIVALS = new Set(
   ["katanasan", "juryoku-koku", "hrafn"].map(normalizedRivalName),
 );
@@ -297,6 +307,24 @@ function recentDistinctAttackerCount(state, history, window = 12) {
 function isReciprocalRival(rival) {
   return RECIPROCAL_RIVALS.has(normalizedRivalName(rival?.name)) ||
     RECIPROCAL_RIVAL_IDS.has(String(rival?.id ?? "").toLowerCase());
+}
+
+export function rivalIsK1Z(rival) {
+  return Boolean(rival) && (isReciprocalRival(rival) || hasK1ZTag(rival.name));
+}
+
+export function actionTargetsK1Z(action, state) {
+  const rival = rivalForAction(action, state);
+  if (rivalIsK1Z(rival)) return true;
+  const metadataID = clean(
+    action?.metadata?.targetID ?? action?.metadata?.recipientID ?? "",
+  ).toLowerCase();
+  const metadataName = clean(
+    action?.metadata?.targetName ?? action?.metadata?.recipientName ?? "",
+  );
+  return RECIPROCAL_RIVAL_IDS.has(metadataID) ||
+    RECIPROCAL_RIVALS.has(normalizedRivalName(metadataName)) ||
+    hasK1ZTag(metadataName);
 }
 
 function reciprocalTrustIntact(state, history, rival) {
@@ -580,7 +608,7 @@ export function kingmakerAllianceAction(
       entry.kind === "alliance_request" &&
       (entry.targetID === partner.id.toLowerCase() ||
         normalizedRivalName(targetName(entry)) === normalizedRivalName(partner.name)));
-    if (lastAttempt < KINGMAKER_RETRY_COOLDOWN) continue;
+    if (!pendingOnly && lastAttempt < KINGMAKER_RETRY_COOLDOWN) continue;
     // metadata.relation is the game's Relation enum (0 Hostile, 1 Distrustful,
     // 2 Neutral, 3 Friendly), not a pending-state flag: coalition partners are
     // requested at any relation, and selecting the request also accepts the
