@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T10:21:37Z",
-  "cycle_id": "odin-20260720T101846Z-71886",
+  "updated_at": "2026-07-20T10:54:30Z",
+  "cycle_id": "odin-20260720T105304Z-6238",
   "lane": "odin",
   "arm": {
     "id": "ds1",
@@ -13,7 +13,7 @@
     "marker": "ds1",
     "closed": false
   },
-  "state": "advisor_review_accepted_source_build_pending",
+  "state": "advisor_addendum_reviewed_po1_rejected_ds1_source_build_pending",
   "runner": {
     "state": "free",
     "run_started": false
@@ -21,7 +21,11 @@
   "evidence": {
     "nb1_state": "closed_local_gate_zero_reach_and_zero_lift",
     "advisor_packet": "/Users/olifreuler/.stormforge/team-mailbox/KIMI_ADVISOR_TO_CODEX_ODIN_DS1_DEFENSIVE_STANCE_20260720.md",
+    "advisor_addendum": "/Users/olifreuler/.stormforge/team-mailbox/KIMI_ADVISOR_TO_CODEX_ODIN_DS1_JURYOKU_EVIDENCE_20260720.md",
     "structural_review": "accepted; stance switch is distinct from closed action-priority, boat, structure, upgrade, and social-timing arms",
+    "addendum_review": "juryoku's four official Pangaea wins support a cause-level opening-size hypothesis, but adding a 35 percent opening cadence to DS1 would bundle a second unproven mechanism and violate MISSION_COMMAND.md's one-causal-mechanism and no-cadence-wrapper constraints",
+    "po1_state": "rejected_as_ds1_amendment; no source arm opened",
+    "po1_evidence_limit": "the four juryoku wins are hypothesis-generating cross-policy evidence, not a matched causal comparison against exact qd1n:v89; closed GR1/OC1 context also prevents treating commitment alone as established lift",
     "causal_change": "after own tiles shrink on two consecutive recorded decisions and a current invader is identified, embargo the normal queue and select the maximum-commitment legal counterattack against a non-protected invader; boat retreat remains legal",
     "source_cells": [
       "afe7cede-211c-4d4c-9c62-c070763c5965",
@@ -53,13 +57,13 @@
     "round_confirmed": false
   },
   "dispatch_checkpoint": {
-    "priority_packet": "/Users/olifreuler/.stormforge/team-mailbox/KIMI_ADVISOR_TO_CODEX_ODIN_DS1_DEFENSIVE_STANCE_20260720.md",
-    "classification": "ds1_structural_advisory_validated_and_accepted",
+    "priority_packet": "/Users/olifreuler/.stormforge/team-mailbox/KIMI_ADVISOR_TO_CODEX_ODIN_DS1_JURYOKU_EVIDENCE_20260720.md",
+    "classification": "po1_bundle_rejected_ds1_acceptance_preserved",
     "mailbox_message_written": true,
-    "mailbox_commit": "d7abeac35291f8acc65c97b3b3fa897e960e2914",
-    "mailbox_head_checked_at": "2026-07-20T10:21:37Z",
+    "mailbox_commit": "361a82f0dad0fd00708dc630fc5acaa6aa1d056a",
+    "mailbox_head_checked_at": "2026-07-20T10:54:30Z",
     "kimi_review_acknowledged": true,
-    "checkpoint_reason": "DS1 supplies all five required review fields and is distinct enough to justify one red-first source attempt. The advisory was accepted without delegating source mutation to Kimi. No source, runner, image, upload, submission, membership, or champion state changed."
+    "checkpoint_reason": "The addendum was reviewed as the newest verdict. PO1 was not added because it is a cadence wrapper and would confound DS1 with a second mechanism. The accepted DS1 stance remains unchanged and source-pending. No source, runner, image, upload, submission, membership, or champion state changed."
   },
   "next_automatic_transition": "Codex Odin opens only rci/ds1-defensive-stance from exact parent f1347251, writes the red replay fixture plus K1Z and anti-hold locks first, then implements the smallest DS1 stance branch. Do not start a runner until the source gate is committed and independently checked.",
   "prior_verified_champion_preserved": true,
