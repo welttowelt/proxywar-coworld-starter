@@ -710,6 +710,21 @@ function selectNavalCapRecovery(
       target: null,
     };
   }
+  const neutralGrowth = chooseExactPercent(
+    actions.filter((action) =>
+      action?.kind === "attack" && isNeutralAction(action)
+    ),
+    config.neutralPercent,
+  );
+  if (neutralGrowth) {
+    return {
+      action: neutralGrowth,
+      marker: "hg35",
+      evidenceMarkers: ["hncap"],
+      phase: HRAFN_PHASES.RECOVERY,
+      target: null,
+    };
+  }
   const conversion = selectWar(groups, state, persistent, config) ??
     selectPressure(groups, state, persistent, config);
   if (conversion) {
@@ -1380,8 +1395,14 @@ export function validateHrafnMarkerSemantics(
     ) {
       failures.push(`${evidence} requires a combat primary marker`);
     }
-    if (evidence === "hncap" && !HRAFN_COMBAT_MARKERS.has(marker)) {
-      failures.push("hncap evidence requires a combat primary marker");
+    if (
+      evidence === "hncap" &&
+      marker !== "hg35" &&
+      !HRAFN_COMBAT_MARKERS.has(marker)
+    ) {
+      failures.push(
+        "hncap evidence requires a land-growth or combat primary marker",
+      );
     }
   }
   const expect = (condition, message) => {

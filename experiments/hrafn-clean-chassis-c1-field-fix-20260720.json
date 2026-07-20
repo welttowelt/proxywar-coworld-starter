@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_clean_chassis_field_fix",
+  "arm": "hrafn-clean-chassis-c1",
+  "recorded_at": "2026-07-20T12:32:00Z",
+  "trigger_run": {
+    "run_id": "hrafn-c1-matched-pangaea-a-20260720",
+    "candidate_score": 0.5247089484914009,
+    "control_score": 0.47529105150859907,
+    "candidate_decisions": 600,
+    "accepted": 600,
+    "rejected": 0,
+    "fallbacks": 0,
+    "holds": 61,
+    "hold_marker": "hncap",
+    "replay_sha256": "f052302c1c5a1279fa7a0ab9fd1f7f46d8367c86775ec1a634d64ebf5d54f274",
+    "gate_result": "failed",
+    "failure": "The capped naval-recovery branch selected hold while safe 35 percent neutral land growth remained legal."
+  },
+  "fix": {
+    "behavior": "After the naval cap, prefer a safe exact 35 percent neutral land action with hg35 primary and hncap evidence before any hold.",
+    "red_first_evidence": "The completed matched replay supplied 61 counterexamples before the focused regression was added.",
+    "focused_test": "boat cap uses safe land growth instead of holding when growth remains legal",
+    "focused_suite": "147/147 passed"
+  },
+  "promotion_state": {
+    "source_ready": false,
+    "local_qualified": false,
+    "diagnostic_uploaded": false,
+    "reason": "The corrected source requires a new immutable commit, exact image, qualifier, and fresh mirrored match."
+  }
+}

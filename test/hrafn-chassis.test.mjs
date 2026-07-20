@@ -933,6 +933,29 @@ test("two no-progress boats yield a cap replacement build", () => {
   assert.equal(result.nextState.naval.blocked, true);
 });
 
+test("boat cap uses safe land growth instead of holding when growth remains legal", () => {
+  const result = decide({
+    actions: [neutralBoat(100, 16), expand(35), hold()],
+    obs: observation({ tileShare: 0.1, tilesOwned: 100 }),
+    persistent: established({
+      lastPrimaryMarker: "hg35",
+      lastOwnTileShare: 0.1,
+      lastOwnTilesOwned: 100,
+      neutralStallCount: 1,
+      naval: {
+        routeID: "boat:100",
+        attempts: 2,
+        noProgress: 2,
+        blocked: true,
+      },
+    }),
+  });
+  assert.equal(result.action.id, "expand:terra-nullius:35");
+  assert.equal(result.action.policyMarker, "hg35");
+  assert.ok(result.action.evidenceMarkers.includes("hncap"));
+  assert.equal(result.nextState.naval.blocked, true);
+});
+
 test("boat cap converts a viable outsider when no milestone build exists", () => {
   const foe = rival({
     id: "foe",
