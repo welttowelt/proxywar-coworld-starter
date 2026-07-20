@@ -530,3 +530,20 @@ diagnostics, upload, submission, membership, and champion changes were not
 run. Threshold tuning would invent a new mechanism after zero reach, so HT1
 stays closed and `qd1n:v89` remains live. The receipt is
 [`audit-qd1n-ht1-harvest-transition-pangaea-20260720.json`](experiments/audit-qd1n-ht1-harvest-transition-pangaea-20260720.json).
+
+## Round 581 opening-yield diagnosis (2026-07-20)
+
+Across four official replays, the winners used 51 neutral-land actions in their
+first 20 decisions, 50 at 35 percent, and zero neutral boats. Odin used 43 land
+actions, only 17 at 35 percent, and 15 neutral boats; mean decision-21 land was
+20,374 for Odin versus 73,966 for the winners. The legal land menu exposed only
+10/20/35-percent Terra Nullius actions and no tile or frontier coordinate, so
+there is no hidden land-target selector to copy.
+
+Seven Odin boats were selected while land35 was legal, but most followed an
+already-flat land frontier. A boat-to-land marker would therefore prove reach,
+not productive growth. Percent-only and broad scheduler variants are already
+closed by EF2/GR1/PG2 and OS1/TPL1. The empty OI2 worktree was removed. HI1 is
+the one active grow-or-convert experiment; Odin remains exact `qd1n:v89` until
+matched evidence proves a minimal behavior worth porting. Evidence:
+[`diagnosis-qd1n-r581-opening-yield-20260720.json`](experiments/diagnosis-qd1n-r581-opening-yield-20260720.json).
