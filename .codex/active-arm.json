@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T16:44:31Z",
+  "updated_at": "2026-07-20T16:47:27Z",
   "cycle_id": "odin-odc1-rci2-20260720",
   "lane": "odin",
   "authority": {
@@ -17,7 +17,7 @@
     "marker_family": "od*",
     "closed": false
   },
-  "state": "preupload_rci_passed_awaiting_diagnostic_upload",
+  "state": "diagnostic_uploaded_awaiting_hosted_4_of_4",
   "runner": {
     "state": "free",
     "required_path": "scripts/proxywar-runner-lease.sh run odin"
@@ -28,7 +28,11 @@
     "architecture": "amd64",
     "source_tests": "173/173",
     "source_pushed": true,
-    "image_matches_source": true
+    "image_matches_source": true,
+    "uploaded_label": "qd1n:v93",
+    "policy_version_id": "3d498947-09a1-490f-80d4-b893609c2f00",
+    "upload_receipt": "experiments/receipt-qd1n-odc1-rci2-diagnostic-upload-20260720.json",
+    "upload_receipt_sha256": "cbc0a73d3bbd02ee37fdd3e5f5586ad7463ad4ec8a2faaef2d2145bca9a66e64"
   },
   "evidence": {
     "qualifier": {
@@ -75,7 +79,7 @@
     "qualifier": "passed",
     "mechanism_screen": "passed_no_competitive_claim",
     "preupload_rci": "passed",
-    "diagnostic_uploaded": false,
+    "diagnostic_uploaded": true,
     "hosted_4_of_4": "not_run",
     "league_regression_20_of_20": "not_run",
     "final_rci": "not_run",
@@ -89,7 +93,7 @@
     "parent_runtime_excluded": "local parent lacked Bedrock credentials",
     "k1z_only_finish": "disabled_until_authoritative_alive_roster_signal"
   },
-  "next_automatic_transition": "Pass the independent pre-upload RCI on the regenerated proof chain, bind the immutable diagnostic preflight, and upload only the diagnostic policy version. Do not submit to the league or change champion state before hosted 4/4, a distinct 20/20 regression, and final RCI all pass.",
+  "next_automatic_transition": "Run matched current-top-12 hosted Pangaea requests for qd1n:v93 and exact qd1n:v89, audit the four candidate episodes fail-closed, and close ODC1 immediately unless Odin wins 4/4 with mechanism reach, zero holds, zero rejections, zero K1Z harm, and no unexplained planner regression. Do not submit to the league or change champion state before hosted 4/4, a distinct 20/20 regression, and final RCI all pass.",
   "prior_verified_champion_preserved": true,
   "prior_verified_champion": "qd1n:v89"
 }
