@@ -44,9 +44,21 @@
     "candidate_slot": 5,
     "control_request": "experiments/gate-hrafn-c1-current-world-12p-control.json",
     "candidate_request": "experiments/gate-hrafn-c1-current-world-12p-candidate.json",
-    "control_request_id": null,
-    "candidate_request_id": null,
-    "status": "not_started"
+    "control_request_id": "xreq_a8e07da9-ac69-4b97-bc06-a5cb133734ea",
+    "candidate_request_id": "xreq_01bc60c3-7aea-443d-af64-3cc2debf5ec4",
+    "success_criteria": {
+      "candidate_wins": "4/4",
+      "completed_verified_replays": "4/4",
+      "candidate_decisions_present": true,
+      "all_candidate_decisions_accepted": true,
+      "zero_unexplained_holds": true,
+      "zero_rejects": true,
+      "zero_fallbacks": true,
+      "zero_planner_degradation": true,
+      "zero_k1z_harm": true,
+      "productive_r4vn_marker_executions_per_episode": "at least 1"
+    },
+    "status": "requests_created"
   },
   "regression_gate": {
     "episodes_required": 20,
