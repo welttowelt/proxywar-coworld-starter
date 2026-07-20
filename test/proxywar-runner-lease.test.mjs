@@ -103,6 +103,7 @@ function makeFakeDocker({ directory }, containers = [], failure = "") {
       `${container.state ?? (container.running ? "running" : "exited")}\n`,
     );
     if (container.inspectFails) writeFileSync(path.join(record, "inspect-fails"), "");
+    if (container.removeGone) writeFileSync(path.join(record, "remove-gone"), "");
   }
   const executable = path.join(dockerRoot, "docker");
   writeFileSync(executable, `#!/bin/zsh
@@ -149,6 +150,11 @@ case "$command_name" in
     container="\${@: -1}"
     [[ "$failure" != "remove" ]] || exit 74
     print -r -- "rm:$container" >> "$root/docker.log"
+    if [[ -e "$root/containers/$container/remove-gone" ]]; then
+      mv "$root/containers/$container" "$root/removed-$container-$RANDOM"
+      print -r -- "Error response from daemon: No such container: $container" >&2
+      exit 1
+    fi
     mv "$root/containers/$container" "$root/removed-$container-$RANDOM"
     ;;
   *)
@@ -611,6 +617,22 @@ test("stale reaping removes only exact mounted running and exited containers, th
     path.join(directory, quarantinedName, "runner-abort-receipt.json"), "utf8"));
   assert.equal(receipt.reason, "stale_supervisor");
   assert.equal(receipt.evidence_eligible, false);
+});
+
+test("stale reaping accepts only an exact container auto-removal race", (t) => {
+  const context = fixture();
+  const { directory, state } = context;
+  t.after(() => rmSync(directory, { recursive: true, force: true }));
+  const output = path.join(directory, "auto-removed-output");
+  writeV2Lock(state, { outputs: [output] });
+  const docker = makeFakeDocker(context, [
+    { id: "ours", mounts: [output], running: true, removeGone: true },
+  ]);
+
+  const result = invoke(state, ["reap-stale", "odin", "stale-run", "stale-token"], docker.env);
+  assert.equal(result.status, 0, result.stderr);
+  assert.match(result.stdout, /reaped:odin:stale-run:containers=1/);
+  assert.equal(existsSync(path.join(state, "runner.lock")), false);
 });
 
 test("Docker list, inspect, stop, and remove failures preserve the exact lock and outputs", (t) => {

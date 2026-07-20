@@ -882,7 +882,7 @@ scoped_container_cleanup() {
   }
   scan_matching_containers || return
   local -a first_scan
-  local container running stopped=0
+  local container running stopped=0 docker_error
   first_scan=("${MATCHED_CONTAINERS[@]}")
   for container in "${first_scan[@]}"; do
     running="$("$DOCKER_BIN" inspect --format '{{.State.Running}}' "$container")" ||
@@ -891,18 +891,28 @@ scoped_container_cleanup() {
         return 69
       }
     if [[ "$running" == "true" ]]; then
-      "$DOCKER_BIN" stop -t 2 "$container" >/dev/null || {
-        print -r -- "docker stop failed:${container}; preserving lease" >&2
-        return 69
-      }
+      if ! docker_error="$("$DOCKER_BIN" stop -t 2 "$container" 2>&1)"; then
+        if [[ "${docker_error:l}" != *"no such container"* &&
+          "${docker_error:l}" != *"no such object"* ]]; then
+          print -r -- "docker stop failed:${container}; preserving lease" >&2
+          return 69
+        fi
+        emit_event "docker_already_gone" "stop:${container[1,12]}"
+        stopped=$((stopped + 1))
+        continue
+      fi
     elif [[ "$running" != "false" ]]; then
       print -r -- "invalid docker running state:${container}; preserving lease" >&2
       return 69
     fi
-    "$DOCKER_BIN" rm "$container" >/dev/null || {
-      print -r -- "docker remove failed:${container}; preserving lease" >&2
-      return 69
-    }
+    if ! docker_error="$("$DOCKER_BIN" rm "$container" 2>&1)"; then
+      if [[ "${docker_error:l}" != *"no such container"* &&
+        "${docker_error:l}" != *"no such object"* ]]; then
+        print -r -- "docker remove failed:${container}; preserving lease" >&2
+        return 69
+      fi
+      emit_event "docker_already_gone" "rm:${container[1,12]}"
+    fi
     stopped=$((stopped + 1))
   done
   scan_matching_containers || return
