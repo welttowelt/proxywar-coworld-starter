@@ -916,13 +916,6 @@ function chooseParentAction(actions, state, plan = null, history = []) {
 }
 
 const ID1_OPENING_DECISIONS = 20;
-const ID1_DEFERRED_KINDS = new Set([
-  ...SOCIAL_KINDS,
-  "upgrade_structure",
-  "warship",
-  "move_warship",
-  "hold",
-]);
 
 function activeDecisionCount(history) {
   return history.filter((entry) => entry.kind !== "spawn").length;
@@ -952,7 +945,8 @@ function pendingReciprocalHandshake(actions, state) {
 
 // ID1 is an intent adapter, not another opening script. The commander states
 // the outcome ("grow"); the existing selector still owns the exact legal move.
-// During the bounded opening cell, safe land may replace discretionary work.
+// During the bounded opening cell, safe land may replace a proactive coalition
+// request. That is the only parent branch reachable before neutral conquest.
 // Tactical, economic, pressured, stalled, and post-window states remain the
 // exact v89 parent.
 export function chooseAction(actions, state, plan = null, history = []) {
@@ -960,7 +954,7 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (
     plan?.intent !== "grow" ||
     parent.kind === "spawn" ||
-    !ID1_DEFERRED_KINDS.has(parent.kind) ||
+    parent.kind !== "alliance_request" ||
     activeDecisionCount(history) >= ID1_OPENING_DECISIONS ||
     hasCurrentPressure(state) ||
     territoryCollapsing(state, history) ||
