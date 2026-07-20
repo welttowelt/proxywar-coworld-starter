@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T21:33:10Z",
+  "updated_at": "2026-07-20T21:55:00Z",
   "cycle_id": "odin-rs1-raw-stall-20260720",
   "lane": "odin",
   "arm": {
@@ -9,10 +9,10 @@
     "branch": "rci/rs1-raw-stall",
     "exact_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
     "safety_invariant_base_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
-    "candidate_source_commit": "4bfad888d54b41e11930b0126016dfd50a909414",
+    "candidate_source_commit": "ddb980e389c61915fafaa1c91fea282937ad85b5",
     "closed": false
   },
-  "state": "source_ready_waiting_hrafn_window",
+  "state": "slot0_canary_preregistered_waiting_hrafn_reseal",
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
     "player_name": "K1Z odin free",
@@ -22,17 +22,18 @@
     "is_champion": true
   },
   "locks": {
-    "runner": "free_at_identity_handoff",
+    "runner": "free; yielded to Hrafn",
     "qd1n_mutation": "free",
     "active_player": "K1Z Hrafn",
     "hrafn_identity_window": "open_advisory_only",
-    "mailbox_commit": "4ec54d5"
+    "mailbox_commit": "51345b0",
+    "hrafn_pickup": "pangaea-control r3 started but rejected the Coworld decision envelope; evidence-ineligible; Hrafn reseal requested"
   },
   "candidate": {
-    "source_tests": "153/153",
-    "source_rci": "PASS after one revision",
-    "image_ref": "proxywar-agent-llm:qd1n-v89-rs1-4bfad888-amd64",
-    "image_id": "sha256:29065128631a4e467a4b6c52bc3fa65bb218233a36f07277133ac5578dbfa157",
+    "source_tests": "154/154",
+    "source_rci": "PASS after two revisions; planner JSON parity 5000/5000",
+    "image_ref": "proxywar-agent-llm:qd1n-v89-rs1-ddb980e3-amd64",
+    "image_id": "sha256:24051929164cb19a6ed95f6ed184c57c1b4f8a7c21efbe8ba3e879a9058e0637",
     "architecture": "amd64",
     "policy_engine": "",
     "contract": "experiments/contract-qd1n-rs1-raw-stall-20260720.json"
@@ -46,15 +47,20 @@
   "source_evidence": {
     "red_first": "1 core fail, 5 lock-ins pass",
     "red_log_sha256": "5cd8ed9435f5bf7889342898ea7fb8f6b163d364e21ff0f88740f76072623fca",
+    "planner_prompt_red_first": "old source exposes tilesOwned in JSON.stringify(state); new selector-private regression passes",
+    "planner_prompt_red_log_sha256": "60de48b49ea62786b76dffd25dc6807fc0bf134f10c79f0cd7409438d8833fc8",
     "focused": "6/6",
-    "full": "153/153",
-    "full_log_sha256": "75d6e1bdcae5569017d733a234f99164055d967537453c85f6635ad0e14231b4",
-    "randomized_parent_parity": "2000/2000",
-    "targeted_marker_truth": "5000/5000"
+    "full": "154/154",
+    "full_log_sha256": "09abe7f0343ae0a928d57dbcef7f4a58d6f606d38564ae04a13c557071757f00",
+    "randomized_parent_parity": "missing-raw selector parity exact; planner JSON parity 5000/5000",
+    "targeted_marker_truth": "5000/5000; 2934 truthful markers"
   },
   "local_evidence": {
-    "status": "not_run",
-    "reason": "Shared active identity is K1Z Hrafn for the sealed HI1 four-run diagnostic window. Odin will not compete for the runner or switch identity mid-window."
+    "status": "slot0_canary_preregistered_not_run",
+    "contract_sha256": "85830bd5b5a2e69b1e03ab320bd438db85f2069352ef99ec3237abd6d82f6205",
+    "control_job_sha256": "60c479db19ddbb095c7f0d99b6acba6de79e0de27f6bafc52bb0167e9f6edaf8",
+    "candidate_job_sha256": "fe81e4d79fae86cbf05c8715c44e9e8d68fc17b501592754f4f4b04243722f6e",
+    "reason": "Shared active identity is K1Z Hrafn. HI1 pangaea-control r3 exposed a decision-envelope validation defect and was quarantined evidence-ineligible. The runner is free and remains yielded while Hrafn fixes, tests, and reseals. Odin will not compete for the runner or switch identity mid-window."
   },
   "gates": {
     "source_ready": true,
@@ -74,7 +80,7 @@
     "oi2": "closed_before_edit as redundant with HI1",
     "os1": "closed_without_run_as_recombined_complexity"
   },
-  "next_automatic_transition": "After Hrafn closes HI1 and restores K1Z odin free, run only the preregistered RS1 matched orientations. Reject immediately on zero reach, any unexplained hold/reject/K1Z harm, or failed opening-AUC gate.",
+  "next_automatic_transition": "After Hrafn closes HI1 and restores K1Z odin free, run the preregistered RS1 slot-0 control first. Run the candidate only if the control reproduces the trace-proven opportunity. Reject immediately on zero reach, pre-marker divergence, any unexplained hold/reject/K1Z harm, or failed AUC25 lift; only a pass unlocks one adjacent-seed reach search.",
   "prior_verified_champion_preserved": true,
   "last_live_checkpoint": {
     "cycle_id": "odin-20260720T205740Z-88030",
