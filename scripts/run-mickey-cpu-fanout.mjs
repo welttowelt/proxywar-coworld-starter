@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { spawn } from "node:child_process";
-import { createHash, createHmac, randomUUID, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, randomBytes, randomUUID, timingSafeEqual } from "node:crypto";
 import {
   cp,
   lstat,
@@ -330,15 +330,6 @@ export function derivePairOrder(nonce, armId, pairId) {
     ? ["m0", "candidate"]
     : ["candidate", "m0"];
   return { digest, order };
-}
-
-export function derivePodControlNonce(nonce, armId, pairId) {
-  assertString(nonce, "randomization.nonce", SHA256);
-  assertString(armId, "arm id", SAFE_ID);
-  assertString(pairId, "pair id", SAFE_ID);
-  return createHash("sha256")
-    .update(`${nonce}\n${armId}\n${pairId}\ncontrol-plane-ssh-v1\n`, "utf8")
-    .digest("hex");
 }
 
 function validatePair(pair, arm, randomization, index) {
@@ -825,9 +816,10 @@ function podName(manifest, armId, pairId) {
   return `${manifest.pod.name_prefix}-${tail}-${suffix}`.slice(0, 63);
 }
 
-export function buildPodCreateArgs(manifest, armId, pairId, now = Date.now()) {
+export function buildPodCreateArgs(manifest, armId, pairId, now, controlSecret) {
+  assertString(controlSecret, "runtime pod control secret", SHA256);
   const terminateAfter = new Date(
-    now + manifest.pod.terminate_after_seconds * 1000,
+    (now ?? Date.now()) + manifest.pod.terminate_after_seconds * 1000,
   ).toISOString();
   return [
     "create",
@@ -855,7 +847,7 @@ export function buildPodCreateArgs(manifest, armId, pairId, now = Date.now()) {
     "/workspace",
     "--startSSH",
     "--env",
-    `MICKEY_CONTROL_PLANE_NONCE=${derivePodControlNonce(manifest.randomization.nonce, armId, pairId)}`,
+    `MICKEY_CONTROL_PLANE_NONCE=${controlSecret}`,
     "--terminateAfter",
     terminateAfter,
     "-o",
@@ -927,8 +919,11 @@ export function canonicalRequestInputSha256(value) {
 
 export function validateCreateRequestAttestation(
   record,
-  { manifest, armId, pairId, expectedName, expectedTerminateAfter },
+  { manifest, armId, pairId, expectedName, expectedTerminateAfter, controlSecret },
 ) {
+  void armId;
+  void pairId;
+  assertString(controlSecret, "runtime pod control secret", SHA256);
   if (!isObject(record)) throw new Error("RunPod create response must be an object");
   if (record.requestInputHashAlgorithm !== RUNPODCTL_REQUEST_HASH_ALGORITHM) {
     throw new Error("RunPod create response uses an unapproved request-input hash algorithm");
@@ -974,7 +969,7 @@ export function validateCreateRequestAttestation(
     dataCenterId: "",
     env: [{
       key: "MICKEY_CONTROL_PLANE_NONCE",
-      value: derivePodControlNonce(manifest.randomization.nonce, armId, pairId),
+      value: controlSecret,
     }],
     gpuCount: manifest.pod.gpu_count,
     gpuTypeId: "",
@@ -1378,10 +1373,10 @@ function sshHostKeyHmacMessage(fingerprint) {
   return `${SSH_HOST_KEY_ATTESTATION_DOMAIN}\n${fingerprint}\n`;
 }
 
-export function validateSshHostKeyAttestation(challenge, knownHostsFingerprint, controlNonce) {
+export function validateSshHostKeyAttestation(challenge, knownHostsFingerprint, controlSecret) {
   if (!isObject(challenge)) throw new Error("SSH host-key attestation must be an object");
   exactKeys(challenge, ["schema_version", "fingerprint", "hmac_sha256"], "SSH host-key attestation");
-  assertString(controlNonce, "SSH control-plane nonce", SHA256);
+  assertString(controlSecret, "SSH runtime control secret", SHA256);
   assertString(knownHostsFingerprint, "known_hosts fingerprint", /^SHA256:[A-Za-z0-9+/]{43}$/);
   if (
     challenge.schema_version !== 1 ||
@@ -1390,7 +1385,7 @@ export function validateSshHostKeyAttestation(challenge, knownHostsFingerprint, 
   ) {
     throw new Error("SSH endpoint host key is not bound to the RunPod control-plane nonce");
   }
-  const expected = createHmac("sha256", Buffer.from(controlNonce, "hex"))
+  const expected = createHmac("sha256", Buffer.from(controlSecret, "hex"))
     .update(sshHostKeyHmacMessage(knownHostsFingerprint), "utf8")
     .digest();
   const actual = Buffer.from(challenge.hmac_sha256, "hex");
@@ -1407,12 +1402,13 @@ export function validateSshHostKeyAttestation(challenge, knownHostsFingerprint, 
 
 function remoteSshHostKeyAttestationCommand() {
   const code = [
-    "import hashlib,hmac,json,os,subprocess",
+    "import hashlib,hmac,json,subprocess",
     "parts=subprocess.check_output(['ssh-keygen','-lf','/etc/ssh/ssh_host_ed25519_key.pub','-E','sha256'],text=True).split()",
     "assert len(parts)>=2 and parts[0]=='256' and parts[1].startswith('SHA256:')",
     "fingerprint=parts[1]",
     `message=${JSON.stringify(`${SSH_HOST_KEY_ATTESTATION_DOMAIN}\n`)}+fingerprint+'\\n'`,
-    "key=bytes.fromhex(os.environ['MICKEY_CONTROL_PLANE_NONCE'])",
+    "pid1=dict(item.split(b'=',1) for item in open('/proc/1/environ','rb').read().split(b'\\0') if b'=' in item)",
+    "key=bytes.fromhex(pid1[b'MICKEY_CONTROL_PLANE_NONCE'].decode())",
     "digest=hmac.new(key,message.encode(),hashlib.sha256).hexdigest()",
     "print(json.dumps({'schema_version':1,'fingerprint':fingerprint,'hmac_sha256':digest},separators=(',',':')))",
   ].join(";");
@@ -1617,6 +1613,7 @@ async function runOnePair({
   let deadlineTimer = null;
   try {
     const createNow = Date.now();
+    const controlSecret = randomBytes(32).toString("hex");
     const expectedTerminateAfter = new Date(
       createNow + preflight.document.pod.terminate_after_seconds * 1000,
     ).toISOString();
@@ -1624,7 +1621,7 @@ async function runOnePair({
     try {
       createResult = await executor.run(
         tools.runpodctl,
-        buildPodCreateArgs(preflight.document, arm.id, pair.id, createNow),
+        buildPodCreateArgs(preflight.document, arm.id, pair.id, createNow, controlSecret),
         { label: `${pair.id}-pod-create`, allowFailure: true },
       );
     } catch (error) {
@@ -1665,6 +1662,7 @@ async function runOnePair({
       pairId: pair.id,
       expectedName: name,
       expectedTerminateAfter,
+      controlSecret,
     });
     validateCreatedPod(createRecord, {
       expectedName: name,
@@ -1723,11 +1721,6 @@ async function runOnePair({
     }
     const knownHosts = path.join(activeRoot, "known_hosts");
     const remote = `root@${info.ip}`;
-    const controlNonce = derivePodControlNonce(
-      preflight.document.randomization.nonce,
-      arm.id,
-      pair.id,
-    );
     const bootstrapResult = await executor.run(
       tools.ssh,
       [
@@ -1762,7 +1755,7 @@ async function runOnePair({
     const hostKeyAttestation = validateSshHostKeyAttestation(
       hostKeyChallenge,
       knownHostsFingerprint,
-      controlNonce,
+      controlSecret,
     );
     await writeJsonAtomic(path.join(activeRoot, "ssh-host-key-attestation.json"), {
       ...hostKeyAttestation,
@@ -1981,8 +1974,19 @@ export async function runCli(argv) {
         order: pair.order,
         order_draw_sha256: pair.order_draw_sha256,
         pod_name: podName(preflight.document, arm.id, pair.id),
-        pod_create_argv: buildPodCreateArgs(preflight.document, arm.id, pair.id, 0)
-          .map((value) => value.startsWith("1970-") ? "RUNTIME_NOW_PLUS_2H" : value),
+        pod_create_argv: buildPodCreateArgs(
+          preflight.document,
+          arm.id,
+          pair.id,
+          0,
+          "0".repeat(64),
+        ).map((value) => {
+          if (value.startsWith("1970-")) return "RUNTIME_NOW_PLUS_2H";
+          if (value.startsWith("MICKEY_CONTROL_PLANE_NONCE=")) {
+            return "MICKEY_CONTROL_PLANE_NONCE=RUNTIME_RANDOM_256_BIT_SECRET";
+          }
+          return value;
+        }),
       })),
       live_mutation_allowed: false,
       promotion_possible_from_this_run: false,

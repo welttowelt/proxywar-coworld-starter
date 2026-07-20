@@ -23,7 +23,6 @@ import {
   canonicalRequestInputSha256,
   deleteExactPod,
   derivePairOrder,
-  derivePodControlNonce,
   discoverNewExactNamePods,
   parseSshKeygenFingerprint,
   preflightManifest,
@@ -420,7 +419,7 @@ test("manifest rejects a fanout whose aggregate two-hour ceiling exceeds USD 3.2
 
 test("SSH first contact binds the negotiated ED25519 host key to the control-plane nonce", () => {
   const fingerprint = `SHA256:${"A".repeat(43)}`;
-  const controlNonce = "b".repeat(64);
+  const controlSecret = "b".repeat(64);
   assert.equal(
     parseSshKeygenFingerprint(`256 ${fingerprint} no comment (ED25519)\n`),
     fingerprint,
@@ -429,20 +428,20 @@ test("SSH first contact binds the negotiated ED25519 host key to the control-pla
     () => parseSshKeygenFingerprint(`256 ${fingerprint} first (ED25519)\n256 ${fingerprint} second (ED25519)\n`),
     /exactly one negotiated host key/,
   );
-  const hmac = createHmac("sha256", Buffer.from(controlNonce, "hex"))
+  const hmac = createHmac("sha256", Buffer.from(controlSecret, "hex"))
     .update(`mickey-ssh-host-key-v1\n${fingerprint}\n`, "utf8")
     .digest("hex");
   const challenge = { schema_version: 1, fingerprint, hmac_sha256: hmac };
   assert.equal(
-    validateSshHostKeyAttestation(challenge, fingerprint, controlNonce).fingerprint,
+    validateSshHostKeyAttestation(challenge, fingerprint, controlSecret).fingerprint,
     fingerprint,
   );
   assert.throws(
-    () => validateSshHostKeyAttestation(challenge, `SHA256:${"B".repeat(43)}`, controlNonce),
+    () => validateSshHostKeyAttestation(challenge, `SHA256:${"B".repeat(43)}`, controlSecret),
     /not bound/,
   );
   assert.throws(
-    () => validateSshHostKeyAttestation({ ...challenge, hmac_sha256: "0".repeat(64) }, fingerprint, controlNonce),
+    () => validateSshHostKeyAttestation({ ...challenge, hmac_sha256: "0".repeat(64) }, fingerprint, controlSecret),
     /HMAC is invalid/,
   );
   const sshInfo = {
@@ -469,6 +468,7 @@ test("create request attestation binds CPU, cost, and typed server termination i
     const armId = manifest.arms[0].id;
     const pairId = manifest.arms[0].pairs[0].id;
     const expectedTerminateAfter = "2026-07-21T22:00:00.000Z";
+    const controlSecret = "c".repeat(64);
     const requestInput = {
       cloudType: "COMMUNITY",
       containerDiskInGb: 20,
@@ -477,7 +477,7 @@ test("create request attestation binds CPU, cost, and typed server termination i
       dataCenterId: "",
       env: [{
         key: "MICKEY_CONTROL_PLANE_NONCE",
-        value: derivePodControlNonce(manifest.randomization.nonce, armId, pairId),
+        value: controlSecret,
       }],
       gpuCount: 0,
       gpuTypeId: "",
@@ -507,6 +507,7 @@ test("create request attestation binds CPU, cost, and typed server termination i
         pairId,
         expectedName,
         expectedTerminateAfter,
+        controlSecret,
       }).requested_terminate_after,
       expectedTerminateAfter,
     );
@@ -520,6 +521,7 @@ test("create request attestation binds CPU, cost, and typed server termination i
         pairId,
         expectedName,
         expectedTerminateAfter,
+        controlSecret,
       }),
       /request echo differs/,
     );
