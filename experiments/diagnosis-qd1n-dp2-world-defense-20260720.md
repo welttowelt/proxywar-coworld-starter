@@ -61,3 +61,21 @@ Round 544. DP1 remains rejected; DP2 earns no credit from it.
 2. Only if it reaches cleanly: alternating World parent/candidate comparison,
    with Pangaea trace identity as a dormant-scope control.
 3. Promote only after local advantage, hosted 4/4, and 20/20 regression.
+
+## First reach-gate result — rejected
+
+The shortest canonical World fixture that covers the DP2 window completed on
+2026-07-20:
+
+- job: one DP2 slot plus seven exact-v89 slots, World 8P, 18 decision steps,
+  seed `20260720`;
+- replay SHA-256:
+  `2eb9a95802787ece721394c7bc7ee34629b8d1b7a2446781e4253a3f9eec2351`;
+- decisions: `168/168` accepted, zero rejects and zero holds; and
+- reach: zero `dp2` markers.
+
+The all-v89 roster did not generate any current incoming attack during the
+early City window, so the mechanism did not execute. This is a fixture
+non-reach, not proof that a Defense Post would be harmful. It is still a failed
+promotion gate. DP2 is rejected without a second fixture ladder, mirrored
+outcome work, hosted diagnostics, upload, submission, or champion change.
