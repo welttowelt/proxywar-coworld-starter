@@ -142,18 +142,23 @@ test("Hrafn Coworld identity probe requires a canonical absolute directory", (t)
   const coworldHome = path.join(root, "coworld-home");
   mkdirSync(hostHome);
   mkdirSync(coworldHome);
+  const canonicalHostHome = realpathSync(hostHome);
+  const canonicalCoworldHome = realpathSync(coworldHome);
+  const dotSegmentCoworldHome =
+    `${canonicalCoworldHome}/../${path.basename(canonicalCoworldHome)}`;
+  assert.match(dotSegmentCoworldHome, /\/\.\.\//);
 
   assert.throws(
     () => hrafnCoworldEnvironment({
-      HOME: hostHome,
+      HOME: canonicalHostHome,
       HRAFN_SOFTMAX_HOME: "relative",
     }),
     /must be an absolute canonical directory/,
   );
   assert.throws(
     () => hrafnCoworldEnvironment({
-      HOME: hostHome,
-      HRAFN_SOFTMAX_HOME: path.join(coworldHome, "..", "coworld-home"),
+      HOME: canonicalHostHome,
+      HRAFN_SOFTMAX_HOME: dotSegmentCoworldHome,
     }),
     /must be an absolute canonical directory/,
   );
