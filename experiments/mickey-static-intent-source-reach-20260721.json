@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "evidence_scope": "deterministic-source-fixtures-only",
+  "source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
+  "surrogate_source": "static-eval-v1",
+  "upload_eligible": false,
+  "fixture_set_sha256": "1d49d566ef5e179d3cf90598bfee9e02db1fee0f4921398b98a4f23018095dff",
+  "fixture_ids": [
+    "grow-low-share-handshake",
+    "grow-mid-share-handshake",
+    "convert-largest-delta",
+    "convert-weakest-delta",
+    "all-k1z-safety"
+  ],
+  "arms": [
+    {
+      "id": "m0",
+      "docker_target": "evaluation-m0",
+      "run": [
+        "node",
+        "evaluation-m0-player.mjs"
+      ],
+      "entrypoint_sha256": "6164d6205181601f0bfca71d78b1b82d06888ab6a6cd9a1d66cd7905c7e66144",
+      "expected_mechanism_reach": false,
+      "mechanism_reached": false,
+      "selected_action_trace_sha256": "05b324c07c488044e315917e0929a531efb77afe75852cc46772959c2a89a9fc",
+      "k1z_harm_count": 0
+    },
+    {
+      "id": "grow-opening",
+      "docker_target": "evaluation-grow-opening",
+      "run": [
+        "node",
+        "evaluation-grow-opening-player.mjs"
+      ],
+      "entrypoint_sha256": "d4d2ec30ea787518124e33d026f02396eedbc9430031243e2a014dee9c4769ae",
+      "expected_mechanism_reach": true,
+      "mechanism_reached": true,
+      "selected_action_trace_sha256": "3ad6fdd20d6cbe6a0df564bd254a307494b7e3b224639de626b41e9ba2682ec9",
+      "k1z_harm_count": 0
+    },
+    {
+      "id": "grow-low-share",
+      "docker_target": "evaluation-grow-low-share",
+      "run": [
+        "node",
+        "evaluation-grow-low-share-player.mjs"
+      ],
+      "entrypoint_sha256": "029dd65fad3f277a83c80ad224bffa1012b2fa96cf1e4147c0df74c2d710ab50",
+      "expected_mechanism_reach": true,
+      "mechanism_reached": true,
+      "selected_action_trace_sha256": "80ca75280f64eda68d65b652412f8d8aff217e154f0d3b9fad37265cf710e6d6",
+      "k1z_harm_count": 0
+    },
+    {
+      "id": "convert-weakest",
+      "docker_target": "evaluation-convert-weakest",
+      "run": [
+        "node",
+        "evaluation-convert-weakest-player.mjs"
+      ],
+      "entrypoint_sha256": "eb258597534467abae055ed457100a05ffc5f3e1b837d28f4e9e75f7dcca9020",
+      "expected_mechanism_reach": true,
+      "mechanism_reached": true,
+      "selected_action_trace_sha256": "e1e97509e485277f7d5dd8524d453843698b857162db1985a1c1bb2e1b35e734",
+      "k1z_harm_count": 0
+    },
+    {
+      "id": "convert-largest",
+      "docker_target": "evaluation-convert-largest",
+      "run": [
+        "node",
+        "evaluation-convert-largest-player.mjs"
+      ],
+      "entrypoint_sha256": "25415c261ef10705741fe5058dac9b957a8f7bda507c7e48c7f9e98036eb463a",
+      "expected_mechanism_reach": true,
+      "mechanism_reached": true,
+      "selected_action_trace_sha256": "66a49169c8c333a615b46c99d83df9d1443366140253b9b1694c986dcdbf1100",
+      "k1z_harm_count": 0
+    }
+  ]
+}
