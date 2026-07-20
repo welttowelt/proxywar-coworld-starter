@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T20:44:05Z",
+  "updated_at": "2026-07-20T20:58:39Z",
   "cycle_id": "odin-kiz1-gravity-20260720",
   "lane": "odin",
   "arm": {
@@ -76,5 +76,18 @@
     "id1": "closed_directional_only_no_dynamic_llm_proof"
   },
   "next_automatic_transition": "KIZ1 is closed. Preserve qd1n:v89 and carry the Gravity alias forward only as a mandatory safety invariant in the next single-mechanism offensive candidate.",
-  "prior_verified_champion_preserved": true
+  "prior_verified_champion_preserved": true,
+  "last_live_checkpoint": {
+    "cycle_id": "odin-20260720T205740Z-88030",
+    "checked_at": "2026-07-20T20:58:39Z",
+    "receipt": "experiments/checkpoint-qd1n-kiz1-post-failure-membership-20260720.json",
+    "membership_id": "lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6",
+    "policy_label": "qd1n:v89",
+    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "status": "competing",
+    "substatus": "active",
+    "is_champion": true,
+    "candidate_submitted": false,
+    "result": "PRIOR_CHAMPION_PRESERVED"
+  }
 }
