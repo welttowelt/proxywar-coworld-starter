@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-20T21:20:29Z",
+  "arm": "rs1",
+  "name": "raw_tile_stall_measurement",
+  "hypothesis": "The v89 neutral-stall detector mistakes productive land growth for a stall because tileShare is rounded. Exact own-tile history should preserve land expansion while raw tiles are still rising and retain the existing escape branch only when raw tiles are flat.",
+  "candidate": {
+    "live_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
+    "safety_invariant_base_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "branch": "rci/rs1-raw-stall",
+    "source_delta": "Conditionally persist validated own tiles and veto the rounded-share stall only when the current raw count exceeds the oldest count in a complete four-record window. Preserve the exact parent state/history shape and tileShare behavior when raw history is absent or non-growing. The previously verified Gravity identity protection remains a mandatory K1Z invariant."
+  },
+  "causal_contract": {
+    "guard": "The legacy rounded-share detector reports a neutral stall; current plus four recent raw tile counts are valid; current raw tiles exceed the oldest count; a parent escape boat or build is available; a different neutral land action is legal; and no parent counterattack, pressure, collapse, or cadence-build branch outranks it.",
+    "action_change": "Replace that exact parent escape action with the normal v89 neutral-land action.",
+    "marker": "rs1 only when the selected neutral-land action ID differs from the available parent escape action ID.",
+    "failure": "Reject on zero marker reach, any unexplained hold/reject, any K1Z harm, or no matched opening-territory advantage. Do not tune the percentage cadence or add a scheduler."
+  },
+  "replay_basis": {
+    "round": 581,
+    "observed_false_stalls": 5,
+    "observed_true_stalls": 2,
+    "false_stall_action": "neutral boat selected while land35 remained legal",
+    "evidence": "experiments/diagnosis-qd1n-r581-opening-yield-20260720.json"
+  },
+  "source_gate": {
+    "red_first": "exact safety-invariant base: core rising-raw test fails; five counterfactual lock-ins pass",
+    "red_log_sha256": "5cd8ed9435f5bf7889342898ea7fb8f6b163d364e21ff0f88740f76072623fca",
+    "candidate_focused": "6/6 pass",
+    "focused_log_sha256": "18e235c5d08cab870dfbb16df5e8b0f571b4fef387562ea006f4a6ea244bf57c",
+    "candidate_full": "153/153 pass",
+    "full_log_sha256": "75d6e1bdcae5569017d733a234f99164055d967537453c85f6635ad0e14231b4",
+    "independent_rci": "PASS after revision; 2,000 missing-raw differentials had zero parent mismatches and 5,000 targeted cases had zero false-positive rs1 markers"
+  },
+  "gates": {
+    "source": "red-first rising-raw regression, flat-raw lock-in, full suite, exact linux/amd64 image byte check",
+    "local": "two matched orientations against the safety-invariant base; marker reach in both, all accepted, zero unexplained holds/rejects/K1Z harm, positive opening AUC in both and at least 10 percent mean gain",
+    "hosted": "current-roster 4/4 only after local pass",
+    "regression": "separate map-and-seat 20/20 only after hosted 4/4",
+    "promotion": "automatic only after every gate in AUTONOMOUS_PROMOTION.md passes"
+  },
+  "league_mutation_allowed_now": false
+}

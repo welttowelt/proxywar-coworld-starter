@@ -62,6 +62,12 @@ function finiteNumber(value, fallback = 0) {
   return Number.isFinite(number) ? number : fallback;
 }
 
+function validTileCount(value) {
+  if (value === null || value === undefined || value === "") return null;
+  const number = Number(value);
+  return Number.isFinite(number) && number >= 0 ? number : null;
+}
+
 function playerID(player) {
   return clean(
     player?.id ?? player?.playerID ?? player?.playerId ?? player?.player_id ?? "",
@@ -179,8 +185,10 @@ export function buildState(observation, actions, history = []) {
   const activeIncomingAttackerIDs = mapFingerprint === "Asia"
     ? currentProtocolIncomingAttackerIDs
     : baseIncomingAttackerIDs;
+  const tilesOwned = validTileCount(own.tilesOwned);
   const self = {
     tileShare: finiteNumber(own.tileShare),
+    ...(tilesOwned === null ? {} : { tilesOwned }),
     troops: finiteNumber(own.troops),
     troopRatio: finiteNumber(own.troopRatio),
     gold: own.gold,
@@ -602,18 +610,30 @@ export function chooseNeutralAttack(actions, history, avoid) {
   return pickPercent(candidates, cadence[Math.min(streak, cadence.length - 1)], avoid);
 }
 
-export function neutralExpansionStalled(state, history) {
+function roundedNeutralExpansionStalled(state, history) {
   const currentShare = finiteNumber(state?.self?.tileShare, NaN);
   if (!Number.isFinite(currentShare)) return false;
-
   const stagnant = [];
   for (let index = history.length - 1; index >= 0; index--) {
-    const previousShare = finiteNumber(history[index]?.tileShare, NaN);
-    if (!Number.isFinite(previousShare) || Math.abs(currentShare - previousShare) > 0.0005) break;
+    const previous = finiteNumber(history[index]?.tileShare, NaN);
+    if (!Number.isFinite(previous) || Math.abs(currentShare - previous) > 0.0005) break;
     stagnant.push(history[index]);
   }
   if (stagnant.length < 4) return false;
   return stagnant.filter((entry) => entry.kind === "attack" && entry.neutral === true).length >= 3;
+}
+
+function rawTilesShowGrowth(state, history) {
+  const currentTiles = validTileCount(state?.self?.tilesOwned);
+  const window = history.slice(-4);
+  if (currentTiles === null || window.length < 4 ||
+    window.some((entry) => validTileCount(entry?.tilesOwned) === null)) return false;
+  return currentTiles > validTileCount(window[0].tilesOwned);
+}
+
+export function neutralExpansionStalled(state, history) {
+  return roundedNeutralExpansionStalled(state, history) &&
+    !rawTilesShowGrowth(state, history);
 }
 
 export function territoryCollapsing(state, history) {
@@ -848,18 +868,28 @@ export function chooseAction(actions, state, plan = null, history = []) {
     if (conversion) return { ...conversion, policyMarker: "cv1" };
   }
 
-  if (neutralExpansionStalled(state, history)) {
+  let repairedEscapeActionID = null;
+  if (roundedNeutralExpansionStalled(state, history)) {
     if (disciplinedAttack) return disciplinedAttack;
     const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
-    if (boatStreak >= 2 && build) return withDiscipline(withPeace(build));
     const escapeBoat = chooseBoat(actions, state, history, avoid);
-    if (escapeBoat) return withDiscipline(withPeace(escapeBoat));
-    if (build) return withDiscipline(withPeace(build));
+    const escapeAction = boatStreak >= 2 && build
+      ? withDiscipline(withPeace(build))
+      : escapeBoat
+        ? withDiscipline(withPeace(escapeBoat))
+        : build
+          ? withDiscipline(withPeace(build))
+          : null;
+    const repairEligible = escapeAction && rawTilesShowGrowth(state, history) &&
+      state.self.tileShare < 0.12 && neutralAttack && threatCount === 0 &&
+      !collapsing && !cadenceBuild && escapeAction.id !== neutralAttack.id;
+    if (!repairEligible && escapeAction) return escapeAction;
+    if (repairEligible) repairedEscapeActionID = escapeAction.id;
   }
 
   if (cadenceBuild && !finishingTarget) return withDiscipline(withPeace(build));
   if (state.self.tileShare < 0.12 && neutralAttack && threatCount === 0 && !collapsing) {
-    return neutralAttack;
+    return repairedEscapeActionID ? { ...neutralAttack, policyMarker: "rs1" } : neutralAttack;
   }
   if (disciplinedAttack) return disciplinedAttack;
   if (neutralAttack) return withDiscipline(withPeace(neutralAttack));
@@ -931,6 +961,7 @@ export function recordDecision(history, action, state) {
     targetName: rival?.name ?? (metadataTargetName || null),
     targetID: rival?.id?.toLowerCase() ?? (metadataTargetID || null),
     tileShare: state.self.tileShare,
+    ...(Object.hasOwn(state.self, "tilesOwned") ? { tilesOwned: state.self.tilesOwned } : {}),
     incomingAttackerIDs,
     allProtocolAttackerIDs: state.self.allProtocolAttackerIDs || [],
     incomingAttackerNames,

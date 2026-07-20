@@ -5,6 +5,7 @@ import {
   boatConversionStalled,
   buildState,
   chooseAction,
+  neutralExpansionStalled,
   recordDecision,
 } from "../strategy-engine.mjs";
 
@@ -16,6 +17,7 @@ function action(id, kind, label = id, risk = lowRisk) {
 
 function observation({
   tileShare = 0.05,
+  tilesOwned,
   troopRatio = 0.8,
   rivals = [],
   incomingAttacks = [],
@@ -30,6 +32,7 @@ function observation({
     objective,
     ownState: {
       tileShare,
+      ...(tilesOwned === undefined ? {} : { tilesOwned }),
       troopRatio,
       troops: 500000,
       gold: 250000,
@@ -587,6 +590,140 @@ test("stalled land expansion switches to a neutral boat", () => {
     tileShare: 0.045,
   }));
   assert.equal(choose([land, boat], observation({ tileShare: 0.045 }), null, history).id, boat.id);
+});
+
+test("rising raw tiles veto a rounded-share stall and keep neutral land", () => {
+  const land = {
+    ...action("expand:terra-nullius:35", "attack", "Expand into neutral land 35%"),
+    metadata: { expansion: true, troopPercent: 35 },
+  };
+  const boat = {
+    ...action("boat:675041:8", "boat", "Boat to Terra Nullius 8%"),
+    metadata: { expansion: true, troopPercent: 8 },
+  };
+  const history = Array.from({ length: 4 }, (_, index) => ({
+    actionID: `expand:terra-nullius:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare: 0.045,
+    tilesOwned: 10_000 + index * 1_000,
+  }));
+  const state = buildState(
+    observation({ tileShare: 0.045, tilesOwned: 14_000 }),
+    [land, boat],
+    history,
+  );
+  assert.equal(neutralExpansionStalled(state, history), false);
+  const selected = chooseAction([land, boat], state, null, history);
+  assert.equal(selected.id, land.id);
+  assert.equal(selected.policyMarker, "rs1");
+});
+
+test("flat raw tiles retain the neutral escape branch", () => {
+  const land = {
+    ...action("expand:terra-nullius:35", "attack", "Expand into neutral land 35%"),
+    metadata: { expansion: true, troopPercent: 35 },
+  };
+  const boat = {
+    ...action("boat:675041:8", "boat", "Boat to Terra Nullius 8%"),
+    metadata: { expansion: true, troopPercent: 8 },
+  };
+  const history = Array.from({ length: 4 }, (_, index) => ({
+    actionID: `expand:terra-nullius:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare: 0.045,
+    tilesOwned: 13_000,
+  }));
+  const state = buildState(
+    observation({ tileShare: 0.045, tilesOwned: 13_000 }),
+    [land, boat],
+    history,
+  );
+  assert.equal(neutralExpansionStalled(state, history), true);
+  assert.equal(chooseAction([land, boat], state, null, history).id, boat.id);
+});
+
+test("falling raw tiles retain the parent escape branch", () => {
+  const land = {
+    ...action("expand:terra-nullius:35", "attack", "Expand into neutral land 35%"),
+    metadata: { expansion: true, troopPercent: 35 },
+  };
+  const boat = {
+    ...action("boat:675041:8", "boat", "Boat to Terra Nullius 8%"),
+    metadata: { expansion: true, troopPercent: 8 },
+  };
+  const history = [14_000, 13_750, 13_500, 13_250].map((tilesOwned, index) => ({
+    actionID: `expand:terra-nullius:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare: 0.045,
+    tilesOwned,
+  }));
+  const state = buildState(
+    observation({ tileShare: 0.045, tilesOwned: 13_000 }),
+    [land, boat],
+    history,
+  );
+  assert.equal(neutralExpansionStalled(state, history), true);
+  assert.equal(chooseAction([land, boat], state, null, history).id, boat.id);
+});
+
+test("raw growth never outranks the parent counterattack", () => {
+  const land = {
+    ...action("expand:terra-nullius:35", "attack", "Expand into neutral land 35%"),
+    metadata: { expansion: true, troopPercent: 35 },
+  };
+  const boat = {
+    ...action("boat:675041:8", "boat", "Boat to Terra Nullius 8%"),
+    metadata: { expansion: true, troopPercent: 8 },
+  };
+  const counter = action("attack:weak:10", "attack", "Attack Weak 10%");
+  const history = Array.from({ length: 4 }, (_, index) => ({
+    actionID: `expand:terra-nullius:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare: 0.045,
+    tilesOwned: 10_000 + index * 1_000,
+  }));
+  const state = buildState(observation({
+    tileShare: 0.045,
+    tilesOwned: 14_000,
+    rivals: [{ id: "weak", name: "Weak", tileShare: 0.08, relativeTroopRatio: 1.5 }],
+  }), [land, boat, counter], history);
+  const selected = chooseAction([land, boat, counter], state, null, history);
+  assert.equal(selected.id, counter.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("raw growth emits no marker when no parent escape action exists", () => {
+  const land = {
+    ...action("expand:terra-nullius:35", "attack", "Expand into neutral land 35%"),
+    metadata: { expansion: true, troopPercent: 35 },
+  };
+  const history = Array.from({ length: 4 }, (_, index) => ({
+    actionID: `expand:terra-nullius:${index}`,
+    kind: "attack",
+    neutral: true,
+    tileShare: 0.045,
+    tilesOwned: 10_000 + index * 1_000,
+  }));
+  const state = buildState(
+    observation({ tileShare: 0.045, tilesOwned: 14_000 }),
+    [land],
+    history,
+  );
+  const selected = chooseAction([land], state, null, history);
+  assert.equal(selected.id, land.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("missing raw tiles preserve the exact parent state and history shape", () => {
+  const state = buildState(observation(), [], []);
+  assert.equal(Object.hasOwn(state.self, "tilesOwned"), false);
+  const history = [];
+  recordDecision(history, action("hold", "hold", "Hold"), state);
+  assert.equal(Object.hasOwn(history[0], "tilesOwned"), false);
 });
 
 test("stalled expansion converts a favorable rival before launching a boat", () => {
@@ -2056,13 +2193,14 @@ test("an allied Gravity gets no fresh requests while its action lingers", () => 
 
 test("recordDecision keeps metadata targets for invisible partners", () => {
   const history = [];
-  const state = buildState(observation({ rivals: [] }), [], history);
+  const state = buildState(observation({ rivals: [], tilesOwned: 12_345 }), [], history);
   recordDecision(history, {
     ...action("alliance:9h8tnrym", "alliance_request", "Send alliance request"),
     metadata: { recipientID: "9h8tnrym", recipientName: "juryoku koku", relation: 0 },
   }, state);
   assert.equal(history[0].targetID, "9h8tnrym");
   assert.equal(history[0].targetName, "juryoku koku");
+  assert.equal(history[0].tilesOwned, 12_345);
 });
 
 test("a Neutral-relation Gravity partner is requested immediately", () => {
