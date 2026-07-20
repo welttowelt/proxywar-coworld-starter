@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "record_type": "qd1n_os1_aborted_local_attempt",
+  "recorded_at": "2026-07-20T18:48:40Z",
+  "lane": "odin",
+  "arm": "OS1",
+  "candidate_source_commit": "316c7a111aeebed4ebce00032287773492e39912",
+  "run_id": "odin-os1-screen-316c7a11-20260720",
+  "terminal_state": "QUARANTINED_NON_EVIDENCE",
+  "supervisor": {
+    "terminal_reason": "supervised_command_exit_1",
+    "quarantined_at": "2026-07-20T18:38:36Z",
+    "evidence_eligible": false,
+    "failure_cause_captured": false
+  },
+  "observed_before_exit": {
+    "local_image_ref": "proxywar-agent-llm:qd1n-v89-os1-316c7a11-amd64",
+    "local_image_id": "sha256:ab8dcdd2064a71885c922cd4ba8634028359881aae8c42874d7452dc7e4ab032",
+    "architecture": "amd64",
+    "candidate_strategy_sha256": "d0e398ab080f516f8f09a593e3d973de2c9c9d1627624f0fe42543204bc6e10a",
+    "extracted_strategy_sha256": "d0e398ab080f516f8f09a593e3d973de2c9c9d1627624f0fe42543204bc6e10a",
+    "qualifier_result_written": false,
+    "orientation_a_started": false,
+    "orientation_b_started": false
+  },
+  "quarantined_output_roots": [
+    "/private/tmp/proxywar-os1-qual-316c7a11-20260720.aborted-20260720T183836Z-odin-os1-screen-316c7a11-20260720",
+    "/private/tmp/proxywar-os1-screen-a-316c7a11-20260720.aborted-20260720T183836Z-odin-os1-screen-316c7a11-20260720",
+    "/private/tmp/proxywar-os1-screen-b-316c7a11-20260720.aborted-20260720T183836Z-odin-os1-screen-316c7a11-20260720"
+  ],
+  "contract_status": {
+    "current_contract": "experiments/contract-qd1n-os1-local-screen-20260720.json",
+    "attempt_predated_hash_bound_job_addendum": true,
+    "accepted_image_gate": false,
+    "accepted_qualifier": false,
+    "accepted_mechanism_screen": false,
+    "competitive_lift_claimed": false
+  },
+  "external_mutations": {
+    "upload": false,
+    "submission": false,
+    "membership_change": false,
+    "champion_change": false
+  },
+  "next_action": "Do not reuse these output roots. Commit and push the exact two-job hash-bound addendum before a fresh supervised attempt."
+}

@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "arm": "OS1",
+  "status": "SOURCE_READY",
+  "verdict": "SHIP_TO_MECHANISM_SCREEN",
+  "created_at": "2026-07-20T18:23:19Z",
+  "exact_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
+  "candidate_branch": "rci/os1-opening-scheduler",
+  "candidate_source_commit": "316c7a111aeebed4ebce00032287773492e39912",
+  "source_files": {
+    "strategy-engine.mjs": {
+      "sha256": "d0e398ab080f516f8f09a593e3d973de2c9c9d1627624f0fe42543204bc6e10a"
+    },
+    "test/strategy-engine.test.mjs": {
+      "sha256": "7279142339b8615d8c0cf44f66e6236d2b6fed1462b84034e8b5e0805a7a5cc9"
+    }
+  },
+  "red_first": {
+    "exact_parent_tests": 12,
+    "exact_parent_passed": 8,
+    "exact_parent_failed": 4,
+    "failed_behaviors": [
+      "proactive K1Z request replaced with calm opening land",
+      "first City scheduled on active decision five",
+      "strong outsider frontier conversion",
+      "OS1 marker persisted by recordDecision"
+    ],
+    "local_log": "/private/tmp/os1-red-proof.log",
+    "local_log_sha256": "46d6fde4c42949be74f3f85482a51e62e77282b72bf422c95bb5d83570c53da9",
+    "durability": "Hash-bound summary only. The raw local log is not committed."
+  },
+  "initial_postimplementation_rci": {
+    "verdict": "REVISE",
+    "blockers": [
+      "pending reciprocal K1Z handshakes depended on parent selection and could be hidden by retry cooldown or another partner",
+      "City scheduling used an open-ended decision-five-through-twenty window instead of decision five only"
+    ]
+  },
+  "fixes": [
+    "match alliance_reject independently to the reciprocal alliance_request and return that request with kp2",
+    "schedule the opening City only when activeDecisionCount equals four",
+    "add cooldown, alternate-partner, late-City, high-risk, and isolated post-window regressions"
+  ],
+  "postfix_verification": {
+    "focused_strategy_tests": {
+      "passed": 114,
+      "failed": 0
+    },
+    "full_tests": {
+      "passed": 158,
+      "failed": 0,
+      "local_log": "/private/tmp/os1-rci-fix-tests3.log",
+      "local_log_sha256": "8fcd331f1d4bb8bcf324097a86c082a07b6971b85ab734703770fd936695c7d4",
+      "durability": "Hash-bound summary only. The raw local log is not committed."
+    },
+    "git_diff_check": "clean",
+    "remaining_source_blockers": 0
+  },
+  "scope": {
+    "image_built": false,
+    "qualifier_run": false,
+    "mechanism_screen_run": false,
+    "competitive_lift_claimed": false,
+    "diagnostic_uploaded": false,
+    "league_submitted": false,
+    "champion_changed": false
+  },
+  "next_gate": "Build and byte-verify the exact linux/amd64 image, qualify under the Odin foreground runner lease, then run the preregistered Pangaea candidate-v89 mechanism and matched-outcome screen."
+}

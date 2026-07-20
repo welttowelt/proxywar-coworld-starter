@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "record_type": "qd1n_read_only_live_handover_snapshot",
+  "checked_at": "2026-07-20T18:23:19Z",
+  "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "division_id": "div_b54268ee-6b2f-4156-9c2a-8542645e31bc",
+  "sources": {
+    "identity": "coworld==0.1.28 player list --json",
+    "membership": "CoworldApiClient.list_memberships(active_only=true, champions_only=true)",
+    "leaderboard": "CoworldApiClient.get_division_leaderboard(include_recent_rounds=8)",
+    "runner": "scripts/proxywar-runner-lease.sh status --json",
+    "qd1n_mutation": "scripts/proxywar-qd1n-mutation.sh status --json"
+  },
+  "shared_cli_identity": {
+    "active_player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "active_player_name": "K1Z odin free",
+    "hrafn_player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "hrafn_selected_in_shared_cli": false,
+    "scope_note": "This is the shared CLI player selection. It does not assert Hrafn league membership state."
+  },
+  "qd1n_membership": {
+    "active_champion_count_for_player": 1,
+    "membership_id": "lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6",
+    "status": "competing",
+    "is_champion": true,
+    "policy_label": "qd1n:v89",
+    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f"
+  },
+  "leaderboard": {
+    "first": {
+      "rank": 1,
+      "player_name": "daveey",
+      "score": 41.8191374826596,
+      "policy_label": "daveey-proxywar:v24"
+    },
+    "odin": {
+      "rank": 2,
+      "player_name": "K1Z odin free",
+      "score": 17.88263104740383,
+      "recent_rounds_ascending": [
+        {
+          "round_number": 570,
+          "rank": 3,
+          "score": 0.25
+        },
+        {
+          "round_number": 571,
+          "rank": 9,
+          "score": 0.0
+        },
+        {
+          "round_number": 572,
+          "rank": 2,
+          "score": 0.3333333333333333
+        },
+        {
+          "round_number": 573,
+          "rank": 10,
+          "score": 0.0
+        },
+        {
+          "round_number": 574,
+          "rank": 3,
+          "score": 0.25
+        },
+        {
+          "round_number": 575,
+          "rank": 10,
+          "score": 0.0
+        },
+        {
+          "round_number": 576,
+          "rank": 8,
+          "score": 0.0
+        },
+        {
+          "round_number": 577,
+          "rank": 10,
+          "score": 0.0
+        }
+      ],
+      "first_place_streak": 0
+    }
+  },
+  "locks": {
+    "runner": "free",
+    "qd1n_mutation": "free"
+  },
+  "scope": {
+    "read_only": true,
+    "upload": false,
+    "submission": false,
+    "membership_change": false,
+    "champion_change": false
+  }
+}

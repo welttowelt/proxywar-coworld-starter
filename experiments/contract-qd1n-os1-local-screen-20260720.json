@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "record_type": "qd1n_os1_preregistered_local_screen",
+  "created_at": "2026-07-20T18:23:19Z",
+  "candidate": {
+    "arm": "OS1",
+    "branch": "rci/os1-opening-scheduler",
+    "commit": "316c7a111aeebed4ebce00032287773492e39912",
+    "marker": "os1"
+  },
+  "parent": {
+    "policy": "qd1n:v89",
+    "exact_executable_commit": "f1347251834a6283182b631e1336595eb2e08342"
+  },
+  "design": {
+    "map": "Pangaea",
+    "orientations": 2,
+    "same_seed": true,
+    "same_game_config": true,
+    "same_roster": true,
+    "candidate_parent_roles_swapped": true,
+    "immutable_job_spec_required_before_run": true,
+    "job_spec_precondition": "Before acquiring the runner lease, commit two exact job specifications that pin seed, map size, maximum decision steps, every in-game name, every image or policy identity, and candidate/parent seat mapping. Hash both files in this contract or a linked immutable addendum. The second job must change only the candidate/parent seat mapping. No episode may start before that commit is pushed."
+  },
+  "definitions": {
+    "decision_window": "The first 20 non-spawn Odin decision records in each episode. Fewer than 20 records fails the screen.",
+    "conquest_action": "An accepted selectedActionKind=attack targeting Terra Nullius or a non-K1Z rival.",
+    "proactive_social_action": "A selected alliance_request, break_alliance, target_player, donate_gold, donate_troops, quick_chat, emoji, embargo, embargo_stop, or embargo_all action. Exclude a kp2 alliance_request only when the same decision offers a matching reciprocal alliance_reject.",
+    "d20_tiles": "Use auditAfter.tilesOwned on decision 20. If absent, use auditBefore.tilesOwned on decision 21. If neither exists, the episode is unauditable and fails.",
+    "d50_tiles": "Use auditAfter.tilesOwned on decision 50. If absent, use auditBefore.tilesOwned on decision 51. If neither exists, the episode is unauditable and fails.",
+    "placement_point": "Per orientation: 1 when candidate final rank is lower than parent, 0.5 on equal rank, 0 when worse.",
+    "strong_rival_conversion": "An os1-marked accepted attack on a bordered, attackable, non-K1Z rival whose decision-time relativeTroopRatio is at least 1.6."
+  },
+  "pass_conditions": {
+    "mechanism_reach": "At least one os1 marker in each candidate orientation and at least one strong_rival_conversion across the pair.",
+    "opening_conquest": "At least 17 of the first 20 decisions are conquest_action in each candidate orientation.",
+    "opening_social": "At most one proactive_social_action in the first 20 decisions of each candidate orientation.",
+    "decision_20_lift": "Sum of candidate d20_tiles across both orientations is strictly greater than the parent sum.",
+    "decision_50_noninferiority": "Sum of candidate d50_tiles across both orientations is at least the parent sum.",
+    "placement_lift": "Candidate placement_point sum across two orientations is strictly greater than 1.0.",
+    "safety": "Across every candidate decision: zero unexplained holds, rejected decisions, fallback or planner degradation, unresolved harmful targets, and K1Z harm."
+  },
+  "stop_rules": [
+    "Any missing required field or unauditable episode fails the screen.",
+    "Any pass-condition failure closes OS1 without threshold tuning.",
+    "A marker, early territory lift, or one favorable orientation alone is not a pass.",
+    "No upload or league mutation follows a failed local screen."
+  ],
+  "next_state_on_pass": "PREUPLOAD_RCI",
+  "next_state_on_failure": "CLOSED_NO_SUBMIT_QD1N_V89_PRESERVED"
+}

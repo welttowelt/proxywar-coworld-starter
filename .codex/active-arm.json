@@ -1,111 +1,102 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T17:55:57Z",
-  "cycle_id": "odin-odc1-rci2-20260720",
+  "updated_at": "2026-07-20T18:48:40Z",
+  "cycle_id": "odin-os1-source-20260720",
   "lane": "odin",
   "authority": {
     "persistent_operator": "Codex Odin",
-    "hrafn": "runner_only_reactivated_no_league_mutation",
+    "hrafn": "separate_hrafn_fylking_runner_only_no_qd1n_or_league_mutation",
     "slack": "frozen_through_2026-08-09T11:27:17Z"
   },
   "arm": {
-    "id": "odc1",
-    "name": "clean_dispatcher",
-    "branch": "rci/odc1-clean-dispatcher",
+    "id": "os1",
+    "name": "opening_scheduler",
+    "branch": "rci/os1-opening-scheduler",
     "exact_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
-    "candidate_source_commit": "23ada8a8cfc1f41b1c798cfcb3b71f6fc2f21587",
-    "marker_family": "od*",
-    "closed": true
+    "candidate_source_commit": "316c7a111aeebed4ebce00032287773492e39912",
+    "marker_family": "os1",
+    "closed": false
   },
-  "state": "closed_hosted_gate_failed",
-  "runner": {
-    "state": "free",
-    "required_path": "scripts/proxywar-runner-lease.sh run odin"
+  "state": "source_ready_hrafn_identity_window_active_after_quarantined_non_evidence_attempt",
+  "live_control": {
+    "checked_at": "2026-07-20T18:23:19Z",
+    "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "player_name": "K1Z odin free",
+    "policy_label": "qd1n:v89",
+    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "membership_id": "lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6",
+    "membership_status": "competing",
+    "is_champion": true
+  },
+  "locks": {
+    "checked_at": "2026-07-20T18:48:40Z",
+    "runner": "free",
+    "qd1n_mutation": "free",
+    "active_player": "K1Z Hrafn",
+    "active_player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "identity_window": "hrafn_c4_local_only",
+    "identity_window_mailbox_commit": "1b8b2b6add8100c69b2f228de7283b374242c548"
   },
   "candidate": {
-    "policy_ref": "proxywar-agent-llm:qd1n-v89-odc1-rci2-amd64",
-    "image_id": "sha256:3af909f391a179356876b54e810fd8c197d9cd88432ff4916a6c4e83c50a41a9",
-    "architecture": "amd64",
-    "source_tests": "173/173",
+    "source_tests": "158/158",
     "source_pushed": true,
-    "image_matches_source": true,
-    "uploaded_label": "qd1n:v93",
-    "policy_version_id": "3d498947-09a1-490f-80d4-b893609c2f00",
-    "upload_receipt": "experiments/receipt-qd1n-odc1-rci2-diagnostic-upload-20260720.json",
-    "upload_receipt_sha256": "cbc0a73d3bbd02ee37fdd3e5f5586ad7463ad4ec8a2faaef2d2145bca9a66e64"
+    "postimplementation_rci": "SHIP_TO_MECHANISM_SCREEN",
+    "local_image_observed": true,
+    "accepted_image_identity": false,
+    "local_image_ref": "proxywar-agent-llm:qd1n-v89-os1-316c7a11-amd64",
+    "local_image_id": "sha256:ab8dcdd2064a71885c922cd4ba8634028359881aae8c42874d7452dc7e4ab032",
+    "image_observation": "quarantined_attempt_not_promotion_evidence",
+    "qualifier_run": false,
+    "mechanism_screen_run": false,
+    "uploaded": false,
+    "submitted": false
+  },
+  "runner": {
+    "status": "free_after_quarantined_attempt",
+    "aborted_run_id": "odin-os1-screen-316c7a11-20260720",
+    "aborted_at": "2026-07-20T18:38:36Z",
+    "terminal_reason": "supervised_command_exit_1",
+    "evidence_eligible": false,
+    "failure_cause_captured": false
   },
   "evidence": {
-    "qualifier": {
-      "path": "/private/tmp/proxywar-odc1-rci2-qualifier-23ada8a8-20260720",
-      "accepted": 34,
-      "decisions": 34,
-      "holds": 0,
-      "rejections": 0,
-      "fallbacks": 0,
-      "degradation": 0
+    "replay_basis": "experiments/daveey-policy-factory-invariant-20260720.md",
+    "red_first": {
+      "exact_parent_core_failures": 4,
+      "lock_in_tests_passed": 8,
+      "rci_edge_failures_reproduced": 2
     },
-    "mechanism_screen": {
-      "verdict": "PASS_MECHANISM_SCREEN",
-      "competitive_evidence": false,
-      "receipt": "experiments/audit-qd1n-odc1-rci2-mechanism-20260720.json",
-      "receipt_sha256": "84bda8495c5f0178e5c4c5555b30a7e2d4be3d9a8ab392a9c6acea757fd20d9c",
-      "contract_sha256": "5182e85926b43372b2454aad0dfaf85467a25edf62787652ce5331e4ce16e82d",
-      "candidate_decisions": 66,
-      "candidate_accepted": 66,
-      "route_executions": 10,
-      "holds": 0,
-      "rejections": 0,
-      "fallbacks": 0,
-      "degradation": 0,
-      "k1z_harm": 0
+    "source_rci": {
+      "verdict": "SHIP_TO_MECHANISM_SCREEN",
+      "receipt": "experiments/audit-qd1n-os1-source-rci-20260720.json",
+      "receipt_sha256": "c8b34305ab39d8f7b30c647958deb82c6ef7dacb40f2a68b0f88fa0f5f92aced",
+      "focused_tests": "114/114",
+      "full_tests": "158/158",
+      "diff_check": "clean"
     },
-    "differential_proof": {
-      "path": "experiments/odc1/differential-proof-23ada8a8.json",
-      "sha256": "425fe2a390a29bb40da4f5ebae4e8c7e4a05eeb3edb154a69aae6d7f3fa2e300",
-      "evaluator_commit": "915476fcc9c3bbbc651dc933a3852145f20f43c4",
-      "parent_action": "alliance:kata",
-      "candidate_action": "expand:terra-nullius:10"
+    "live_snapshot": {
+      "receipt": "experiments/receipt-qd1n-live-handover-20260720.json",
+      "receipt_sha256": "fc7fb11eb4c9d0cd8a080d37743286fb128eaf983403c81bc5b186b45fbd0166"
     },
-    "preupload_rci": {
-      "verdict": "PASS_PREUPLOAD_RCI",
-      "receipt": "experiments/audit-qd1n-odc1-rci2-preupload-rci-20260720.json",
-      "receipt_sha256": "3d31039a78b553169b747376642d2f0d81add9faea62f12b0e605085a85c0c75",
-      "unresolved_violations": 0
+    "local_screen_contract": {
+      "receipt": "experiments/contract-qd1n-os1-local-screen-20260720.json",
+      "receipt_sha256": "e174b07d77380450e40679346838d069c955768fbd44b203af4b6958c05633da"
     },
-    "hosted_gate": {
-      "verdict": "STOP_HOSTED",
-      "candidate_request_id": "xreq_78ea6880-1bba-4db6-88e1-9008e7f4966a",
-      "parent_request_id": "xreq_21e492fa-fe11-46c2-9e06-0ed289a12d5e",
-      "source_round_number": 575,
-      "variant": "tournament-12p-pangaea",
-      "episodes_per_request": 4,
-      "odin_slot": 7,
-      "only_changed_policy_version": true,
-      "receipt": "experiments/audit-qd1n-odc1-rci2-hosted-4x-20260720.json",
-      "receipt_sha256": "a00beee176a6a8cf0999737dab9fc7021f366dad445e8d0e8b67443994aecf03",
-      "candidate_wins": 0,
-      "parent_wins": 0,
-      "candidate_marker_executions": 24,
-      "candidate_final_tiles": [
-        2517,
-        5535,
-        2717,
-        0
-      ],
-      "candidate_holds": 1,
-      "candidate_rejections": 0,
-      "candidate_degradation": 0,
-      "candidate_k1z_harm": 0
+    "aborted_local_attempt": {
+      "receipt": "experiments/receipt-qd1n-os1-aborted-local-attempt-20260720.json",
+      "receipt_sha256": "26f857af22a59c2c56ee5f9df0b58371941cf46068edd658d899359aec1e6cdb",
+      "terminal_state": "QUARANTINED_NON_EVIDENCE"
     }
   },
   "gates": {
     "source_integrity": "passed_committed_and_pushed",
-    "image_identity": "passed_byte_identical",
-    "qualifier": "passed",
-    "mechanism_screen": "passed_no_competitive_claim",
-    "preupload_rci": "passed",
-    "diagnostic_uploaded": true,
-    "hosted_4_of_4": "failed_0_of_4",
+    "image_identity": "not_run",
+    "qualifier": "not_run",
+    "local_mechanism": "not_run",
+    "matched_advantage": "not_run",
+    "preupload_rci": "not_run",
+    "diagnostic_uploaded": false,
+    "hosted_4_of_4": "not_run",
     "league_regression_20_of_20": "not_run",
     "final_rci": "not_run",
     "submitted": false,
@@ -114,11 +105,13 @@
     "round_confirmed": false
   },
   "scope_limits": {
-    "local_competitive_lift_claimed": false,
-    "parent_runtime_excluded": "local parent lacked Bedrock credentials",
+    "promotion_evidence_claimed": false,
+    "competitive_lift_claimed": false,
+    "daveey_online_learning_proved": false,
+    "daveey_private_endpoint_proved": false,
     "k1z_only_finish": "disabled_until_authoritative_alive_roster_signal"
   },
-  "next_automatic_transition": "Keep qd1n:v89 champion. Open OS1: one bounded deterministic, plan-independent work-conserving scheduler derived from the verified Daveey runtime signature. Through decision 20: one early City, otherwise highest-progress legal land conquest, immediate neutral-to-bordered-non-K1Z pivot, proactive social and upgrades deferred, K1Z reverse handshakes and emergency defense preserved. Do not change the LLM/executor boundary or reopen a prompt-only arm. Reject unless matched mirrors show mechanism reach, decision-20 tile lift, and placement lift. Do not submit or change champion state before hosted 4/4, distinct 20/20 regression, and final RCI all pass.",
+  "next_automatic_transition": "Wait for Hrafn to finish or stop its bounded C4 local window and restore the shared identity to K1Z odin free. Then commit and push an immutable addendum containing the exact two OS1 job specifications and their hashes before acquiring the Odin runner lease. Use fresh outputs for a byte-verified image, accepted qualifier, and both Pangaea orientations. Audit exactly against experiments/contract-qd1n-os1-local-screen-20260720.json. Any missing field or failure closes OS1 and preserves qd1n:v89. A pass advances to pre-upload RCI; do not begin another arm.",
   "prior_verified_champion_preserved": true,
   "prior_verified_champion": "qd1n:v89"
 }
