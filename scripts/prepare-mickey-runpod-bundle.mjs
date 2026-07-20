@@ -482,8 +482,15 @@ function materialize(document, options) {
     mkdirSync(path.dirname(destination), { recursive: true });
     copyFileSync(source, destination);
   }
-  const candidateCanary = JSON.parse(readFileSync(resolveRepoFile(document.experiment_specs.find((spec) => spec.label === "grow-opening-candidate").source, document.experiment_specs.find((spec) => spec.label === "grow-opening-candidate").sha256, "candidate canary source"), "utf8"));
-  const controlCanary = JSON.parse(readFileSync(resolveRepoFile(document.experiment_specs.find((spec) => spec.label === "grow-m0").source, document.experiment_specs.find((spec) => spec.label === "grow-m0").sha256, "control canary source"), "utf8"));
+  const candidateCanaryMeta = document.experiment_specs.find(
+    (spec) => spec.label.startsWith("grow-opening-") && spec.role === "candidate",
+  );
+  const controlCanaryMeta = document.experiment_specs.find(
+    (spec) => spec.label.startsWith("all-k1z-grow-") && spec.role === "exact-parent",
+  );
+  assert(candidateCanaryMeta && controlCanaryMeta, "grow transport canary sources are missing");
+  const candidateCanary = JSON.parse(readFileSync(resolveRepoFile(candidateCanaryMeta.source, candidateCanaryMeta.sha256, "candidate canary source"), "utf8"));
+  const controlCanary = JSON.parse(readFileSync(resolveRepoFile(controlCanaryMeta.source, controlCanaryMeta.sha256, "control canary source"), "utf8"));
   for (const [name, spec] of [["canary-candidate-player-specs.json", candidateCanary], ["canary-control-player-specs.json", controlCanary]]) {
     spec.game_config.max_decision_steps = 3;
     spec.game_config.episode_timeout_seconds = 300;
