@@ -30,11 +30,12 @@ untouched.
 
 ## Current HI1 truth
 
-Coworld's pinned external-agent request has seven root fields:
-`agent`, `decisionSupport`, `legalActions`, `match`, `observation`,
-`protocolVersion`, and `responseContract`. Hrafn now validates that exact
-envelope, retains the full request, hashes it for duplicate detection, and
-audits the same bytes independently.
+Coworld's pinned external-agent request currently has seven root fields, but
+only `legalActions` and `observation` are selector inputs. Hrafn accepts a plain
+request object with unrelated root metadata, requires `legalActions` to be an
+array and `observation` to be a plain object, then structured-clones exactly
+those two fields. Duplicate detection and the independent auditor bind that
+projected selector input. Missing or malformed selector fields fail closed.
 
 The prior `hi1-pangaea-control-2c462243-r3` attempt is invalid and cannot be a
 predecessor. It produced no result or replay. All artifacts tied to source
