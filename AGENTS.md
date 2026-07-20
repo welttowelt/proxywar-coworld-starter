@@ -32,6 +32,19 @@ directories; the wrapper creates and marks them before the child starts.
 Review the other lane from committed branches and mailbox receipts; do not
 check out or edit the other operator's working branch.
 
+Use `K1Z_COORD_V1` for Odin-Hrafn mailbox traffic: compact
+`STATE -> EVIDENCE -> ACTION -> GUARDS` fields with immutable IDs and hashes.
+Every Hrafn request addressed to Odin receives an explicit ACK, action receipt,
+or exact blocker. Coordinate at request intake, runner handoff, completed
+matched batch, hosted verdict, and terminal gate; omit empty status pings.
+
+Keep the durable campaign trace on GitHub. Commit and push each arm transition,
+runner-authority change, diagnostic upload, hosted verdict, promotion state,
+and terminal blocker without waiting for another user prompt. Update
+`MERIT.md` at verified arm verdicts or promotions. Update `LORE.md` only for a
+real campaign turning point. Link mailbox commits or evidence hashes instead
+of copying raw mailbox traffic into the repository.
+
 Start or resume Odin from this repository root so `.codex/config.toml` loads.
 Odin runs `gpt-5.6-sol` at high reasoning. Reasoning does not change inside a
 running session; deeper checkpoints use a fresh fail-closed RCI audit rather

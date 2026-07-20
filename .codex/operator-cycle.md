@@ -74,10 +74,14 @@ Run every diagnostic upload or league submission through
 - At the soft deadline, checkpoint and exit; do not start another task.
 - At the hard deadline, exit even if analysis could continue. A supervised
   game may continue independently.
-- Write at most one mailbox message, only for a terminal verdict, exact review
-  request, or concrete blocker.
-- Update the compact active-arm state; update the long ledger only at an arm
-  verdict or promotion.
+- Use one compact `K1Z_COORD_V1` mailbox receipt at each real Hrafn transition:
+  directed request intake, runner handoff, completed matched batch, hosted
+  verdict, or terminal gate. Every directed Hrafn request receives an ACK,
+  action receipt, or exact blocker; do not emit empty status pings.
+- Commit and push every active-arm transition, runner-authority change,
+  diagnostic upload, hosted verdict, promotion state, and terminal blocker.
+  Update `MERIT.md` at verified arm verdicts or promotions. Update `LORE.md`
+  only for a real campaign turning point.
 - End with the action taken, exact evidence state, and next automatic
   transition.
 
