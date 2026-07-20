@@ -1069,6 +1069,60 @@ test("a stale Defense Post action is bypassed for a valid counterattack", () => 
   assert.equal(choose(actions, obs).id, "attack:leader:10");
 });
 
+test("dp2 replaces an early World defensive Factory with a legal Defense Post", () => {
+  const defense = action("build:Defense Post:611413", "build", "Build Defense Post");
+  const factory = action("build:Factory:611413", "build", "Build Factory");
+  const neutral = action("expand:terra-nullius:35", "attack", "Expand Terra Nullius 35%");
+  const history = [
+    { actionID: "spawn:621396", kind: "spawn" },
+    { actionID: "spawn:1333674", kind: "spawn" },
+    { actionID: "spawn:629398", kind: "spawn" },
+    { actionID: "alliance:one", kind: "alliance_request" },
+    { actionID: "alliance:two", kind: "alliance_request" },
+    { actionID: "alliance:three", kind: "alliance_request" },
+    { actionID: "expand:terra-nullius:10", kind: "attack", neutral: true },
+    { actionID: "expand:terra-nullius:10", kind: "attack", neutral: true },
+    { actionID: "expand:terra-nullius:20", kind: "attack", neutral: true },
+    { actionID: "build:City:611398", kind: "build" },
+  ];
+  const selected = choose(
+    [neutral, factory, defense],
+    observation({ tileShare: 0.0014, troopRatio: 0.57, incomingAttacks: 1, spawnTile: 629398 }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, defense.id);
+  assert.equal(selected.policyMarker, "dp2");
+});
+
+test("dp2 remains dormant without incoming pressure or outside the World opening", () => {
+  const defense = action("build:Defense Post:611413", "build", "Build Defense Post");
+  const factory = action("build:Factory:611413", "build", "Build Factory");
+  const neutral = action("expand:terra-nullius:35", "attack", "Expand Terra Nullius 35%");
+  const history = [
+    { actionID: "spawn:1333674", kind: "spawn" },
+    { actionID: "build:City:611398", kind: "build" },
+    ...Array.from({ length: 6 }, (_, index) => ({
+      actionID: `expand:terra-nullius:${index}`, kind: "attack", neutral: true,
+    })),
+  ];
+  const noThreat = choose(
+    [neutral, factory, defense],
+    observation({ tileShare: 0.0014, troopRatio: 0.57, spawnTile: 629398 }),
+    null,
+    history,
+  );
+  assert.notEqual(noThreat.policyMarker, "dp2");
+
+  const pangaea = choose(
+    [neutral, factory, defense],
+    observation({ tileShare: 0.0014, troopRatio: 0.57, incomingAttacks: 1, spawnTile: 659528 }),
+    null,
+    [{ actionID: "build:City:611398", kind: "build" }, ...history.slice(2)],
+  );
+  assert.notEqual(pangaea.policyMarker, "dp2");
+});
+
 test("an exposed transport retreats instead of holding", () => {
   const actions = [
     action("boat_retreat:113", "boat_retreat", "Retreat boat 113"),

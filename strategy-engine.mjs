@@ -669,6 +669,39 @@ export function chooseBuild(actions, history, defend = false) {
   return candidates[0];
 }
 
+function historyMapFingerprint(history) {
+  for (let index = history.length - 1; index >= 0; index--) {
+    const match = String(history[index]?.actionID ?? "").match(/^spawn:(\d+)$/);
+    if (!match) continue;
+    const map = MAP_SPAWN_TILES.get(Number(match[1]));
+    if (map) return map;
+  }
+  return null;
+}
+
+export function chooseWorldOpeningDefensePost(actions, state, history, threatCount) {
+  const map = state.mapFingerprint ?? historyMapFingerprint(history);
+  const activeDecisions = history.filter((entry) => entry.kind !== "spawn").length;
+  const hasCity = builtUnits(history).some((id) => id.includes("city"));
+  const hasDefensePost = builtUnits(history).some((id) => id.includes("defense post"));
+  if (
+    map !== "World" ||
+    threatCount < 1 ||
+    state.self.troopRatio >= 0.8 ||
+    state.self.tileShare >= 0.02 ||
+    activeDecisions < 6 ||
+    activeDecisions > 14 ||
+    !hasCity ||
+    hasDefensePost
+  ) {
+    return null;
+  }
+  const defensePost = safeActions(actions, (action) =>
+    action.kind === "build" && actionText(action).includes("defense post")
+  )[0];
+  return defensePost ? { ...defensePost, policyMarker: "dp2" } : null;
+}
+
 function recentBoatTargetCount(history, rival) {
   const name = rival.name.toLowerCase();
   return history.slice(-8).filter((entry) =>
@@ -777,6 +810,13 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (spawn) return spawn;
 
   const threatCount = incomingThreatCount(state.self.incomingAttacks);
+  const worldOpeningDefensePost = chooseWorldOpeningDefensePost(
+    actions,
+    state,
+    history,
+    threatCount,
+  );
+  if (worldOpeningDefensePost) return worldOpeningDefensePost;
   const defensiveBuild = threatCount > 0 && state.self.troopRatio < 0.8
     ? chooseBuild(actions, history, true)
     : null;
