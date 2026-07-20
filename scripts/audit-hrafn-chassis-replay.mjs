@@ -73,7 +73,7 @@ function targetIdentity(decision) {
 export function parseHrafnChassisReason(reason) {
   const raw = String(reason ?? "");
   const match = raw.match(
-    /^\[K1Z\] r4vn:([a-z0-9]{3})(?::([a-z0-9]{1,6}(?:\.[a-z0-9]{1,6})*))?$/,
+    /^\[K1Z\] r4vn:([a-z0-9]{3})(?::((?:q[0-9a-f]{10}|[a-z0-9]{1,6})(?:\.(?:q[0-9a-f]{10}|[a-z0-9]{1,6}))*))?$/,
   );
   if (!match) {
     return {

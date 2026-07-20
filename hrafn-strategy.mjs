@@ -686,12 +686,20 @@ export function chooseHrafnAction(
   const state = buildHrafnState(observation, actions);
   const config = { ...HRAFN_DEFAULTS, ...(options.config ?? {}) };
   const rv1Enabled = options.rv1Enabled !== false;
+  const exactV5 = options.exactV5 === true;
 
   const spawn = safeActions(actions, (action) => action.kind === "spawn")[0];
   if (spawn) return spawn;
 
   const alliance = coalitionAllianceAction(actions, state, history, config);
   if (alliance) return alliance;
+
+  // Compatibility mode is an executable binding to source commit 0c151570.
+  // The live v5 transferred to Odin before evaluating later tactical branches.
+  if (exactV5) {
+    const support = odinSupportAction(actions, state, history, config);
+    if (support) return support;
+  }
 
   const incomingCount = state.incomingAttackerIDs.length ||
     finiteNumber(state.own.incomingAttacks);
@@ -707,7 +715,8 @@ export function chooseHrafnAction(
   }
 
   const groups = attackGroups(actions, state);
-  const hasVanguardLock = vanguardLockedRival(history, state) !== null;
+  const hasVanguardLock = !exactV5 &&
+    vanguardLockedRival(history, state) !== null;
   if (hasVanguardLock) {
     const lockedVanguard = vanguardLeaderAttack(groups, state, history, config);
     if (lockedVanguard) return lockedVanguard;
@@ -716,7 +725,9 @@ export function chooseHrafnAction(
   // A legal transfer must not interrupt a leader fight.  This is deliberately
   // narrow: vr1 opens only when dn1 is actually available, and otherwise the
   // established campaign machinery retains priority.
-  const support = odinSupportAction(actions, state, history, config);
+  const support = exactV5
+    ? null
+    : odinSupportAction(actions, state, history, config);
   if (support) {
     const vanguard = vanguardLeaderAttack(groups, state, history, config);
     if (vanguard) return vanguard;
@@ -861,15 +872,17 @@ export function chooseHrafnAction(
   )[0];
   if (retreat) return retreat;
 
-  const withdrawalRecovery = withdrawalRecoveryAction(actions, state, history);
+  const withdrawalRecovery = exactV5
+    ? null
+    : withdrawalRecoveryAction(actions, state, history);
   if (withdrawalRecovery) return withdrawalRecovery;
 
   const recentActionIDs = new Set(history.slice(-6).map((entry) => entry.actionID));
-  // Quick-chat text is authored by the game, not by the player response.
-  // Selecting it can therefore publish long prose that violates Hrafn's
-  // short-leet public contract even though the response reason is bounded.
+  const socialKinds = exactV5
+    ? ["quick_chat", "emoji", "embargo_stop"]
+    : ["embargo_stop"];
   const safeSocial = safeActions(actions, (action) =>
-    action.kind === "embargo_stop" && !recentActionIDs.has(action.id)
+    socialKinds.includes(action.kind) && !recentActionIDs.has(action.id)
   )[0];
   if (safeSocial) return safeSocial;
 
@@ -923,9 +936,16 @@ const PUBLIC_KIND = Object.freeze({
 
 export function publicHrafnReason(action) {
   const kind = PUBLIC_KIND[action?.kind] ?? "act";
-  const marker = String(action?.policyMarker ?? "")
-    .toLowerCase()
-    .replace(/[^a-z0-9]/g, "")
-    .slice(0, 6);
-  return `[K1Z] r4vn:${kind}${marker ? `:${marker}` : ""}`.slice(0, 48);
+  const markers = [action?.policyMarker, action?.intentMarker]
+    .map((value) => String(value ?? "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "")
+      .slice(0, 6))
+    .filter(Boolean);
+  const requestMarker = String(action?.requestMarker ?? "").toLowerCase();
+  if (/^q[0-9a-f]{10}$/.test(requestMarker)) markers.push(requestMarker);
+  const suffix = markers.length > 0
+    ? `:${[...new Set(markers)].join(".")}`
+    : "";
+  return `[K1Z] r4vn:${kind}${suffix}`.slice(0, 48);
 }

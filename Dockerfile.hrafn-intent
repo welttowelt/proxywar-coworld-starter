@@ -1,0 +1,16 @@
+FROM node:24-bookworm-slim
+WORKDIR /app
+
+ARG POLICY_CODENAME=hrafn-intent-i1
+ENV POLICY_CODENAME=$POLICY_CODENAME
+ARG HRAFN_INTENT_ENABLED=1
+ENV HRAFN_INTENT_ENABLED=$HRAFN_INTENT_ENABLED
+ENV HRAFN_RV1=1
+ENV HRAFN_INTENT_ENDPOINT=http://host.docker.internal:11434/api/generate
+ENV HRAFN_INTENT_TIMEOUT_MS=4000
+
+COPY package.json package-lock.json ./
+RUN npm ci --omit=dev --ignore-scripts
+COPY hrafn-state.mjs hrafn-safety.mjs hrafn-strategy.mjs hrafn-intent.mjs hrafn-intent-player.mjs ./
+
+CMD ["node", "/app/hrafn-intent-player.mjs"]

@@ -159,6 +159,24 @@ test("reason parser separates the primary marker from sidecar evidence", () => {
     parseHrafnChassisReason("[K1Z] r4vn:attack:hc40").valid,
     false,
   );
+  assert.deepEqual(
+    parseHrafnChassisReason("[K1Z] r4vn:atk:rv3.hi1.q0123456789"),
+    {
+      valid: true,
+      kindCode: "atk",
+      primaryMarker: "rv3",
+      evidenceMarkers: ["hi1", "q0123456789"],
+    },
+  );
+  assert.equal(
+    parseHrafnChassisReason("[K1Z] r4vn:atk:rv3.q01234").valid,
+    true,
+    "legacy short policy tokens remain legal even when they begin with q",
+  );
+  assert.equal(
+    parseHrafnChassisReason("[K1Z] r4vn:atk:rv3.q01234567890").valid,
+    false,
+  );
 });
 
 test("clean candidate replay passes freshness, safety, marker, and hold checks", () => {
