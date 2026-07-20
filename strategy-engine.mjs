@@ -48,6 +48,10 @@ export const PLAN_KINDS = [
   "donate_troops", "quick_chat", "emoji", "hold",
 ];
 
+export const PLAN_INTENTS = [
+  "grow", "convert", "stabilize", "support", "finish",
+];
+
 export function clean(value) {
   return String(value ?? "")
     .replace(/[^\x20-\x7e]/g, " ")
@@ -767,7 +771,7 @@ export function chooseUtility(actions, state, plan, history) {
   return null;
 }
 
-export function chooseAction(actions, state, plan = null, history = []) {
+function chooseParentAction(actions, state, plan = null, history = []) {
   if (!Array.isArray(actions) || actions.length === 0) {
     throw new Error("decision request had no legal actions");
   }
@@ -909,6 +913,70 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (pressure) return pressure;
 
   return actions.find((action) => action.kind === "hold") ?? actions[0];
+}
+
+const ID1_OPENING_DECISIONS = 20;
+const ID1_DEFERRED_KINDS = new Set([
+  ...SOCIAL_KINDS,
+  "upgrade_structure",
+  "warship",
+  "move_warship",
+  "hold",
+]);
+
+function activeDecisionCount(history) {
+  return history.filter((entry) => entry.kind !== "spawn").length;
+}
+
+function hasCurrentPressure(state) {
+  return incomingThreatCount(state.self.incomingAttacks) > 0 ||
+    (state.self.incomingAttackerIDs || []).length > 0 ||
+    (state.self.allProtocolAttackerIDs || []).length > 0;
+}
+
+function pendingReciprocalHandshake(actions, state) {
+  for (const partner of reciprocalPartners(actions, state)) {
+    const pending = actions.some((action) =>
+      action.kind === "alliance_reject" &&
+      matchesKingmakerPartner(action, partner, state)
+    );
+    if (!pending) continue;
+    const request = actions.find((action) =>
+      action.kind === "alliance_request" &&
+      matchesKingmakerPartner(action, partner, state)
+    );
+    if (request) return { ...request, policyMarker: "kp2" };
+  }
+  return null;
+}
+
+// ID1 is an intent adapter, not another opening script. The commander states
+// the outcome ("grow"); the existing selector still owns the exact legal move.
+// During the bounded opening cell, safe land may replace discretionary work.
+// Tactical, economic, pressured, stalled, and post-window states remain the
+// exact v89 parent.
+export function chooseAction(actions, state, plan = null, history = []) {
+  const parent = chooseParentAction(actions, state, plan, history);
+  if (
+    plan?.intent !== "grow" ||
+    parent.kind === "spawn" ||
+    !ID1_DEFERRED_KINDS.has(parent.kind) ||
+    activeDecisionCount(history) >= ID1_OPENING_DECISIONS ||
+    hasCurrentPressure(state) ||
+    territoryCollapsing(state, history) ||
+    neutralExpansionStalled(state, history)
+  ) {
+    return parent;
+  }
+
+  const reverseHandshake = pendingReciprocalHandshake(actions, state);
+  if (reverseHandshake) return reverseHandshake;
+
+  const avoid = new Set(avoidActionIDs(history));
+  const safeLand = actions.filter((action) => action.risk?.level !== "high");
+  const neutral = chooseNeutralAttack(safeLand, history, avoid);
+  if (!neutral || neutral.id === parent.id) return parent;
+  return { ...neutral, policyMarker: "id1" };
 }
 
 export function recordDecision(history, action, state) {

@@ -194,13 +194,111 @@ test("deployed player reconnects after an unexpected match socket close", async 
   );
 });
 
-test("planner doctrine encodes the hosted winner profile", async () => {
+test("planner contract communicates intent instead of a tactical playbook", async () => {
   const { readFile } = await import("node:fs/promises");
   const source = await readFile(playerPath, "utf8");
-  assert.match(source, /do not attack any rival before that threshold unless they attacked you first/i);
-  assert.match(source, /only at relativeTroopRatio 1\.3 or better/i);
-  assert.match(source, /Commit 35% to neutral expansion/);
-  assert.doesNotMatch(source, /Probe with 10%, escalate to 25%/);
+  assert.match(source, /INTENT:/);
+  assert.match(source, /CONSTRAINTS:/);
+  assert.match(source, /SUCCESS:/);
+  assert.match(source, /FREEDOM:/);
+  assert.match(source, /"intent":/);
+  assert.doesNotMatch(source, /relativeTroopRatio 1\.3/);
+  assert.doesNotMatch(source, /Commit 35% to neutral expansion/);
+});
+
+test("id1 wiring executes a static grow intent without waiting for Bedrock", async () => {
+  const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
+  await new Promise((resolve) => server.once("listening", resolve));
+  const { port } = server.address();
+  const lowRisk = { level: "low" };
+  const requests = [
+    request("intent-grow", [
+      {
+        id: "alliance:katanasan",
+        kind: "alliance_request",
+        label: "Alliance with K1Z katanasan",
+        risk: lowRisk,
+        metadata: {
+          recipientID: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+          recipientName: "K1Z katanasan",
+          relation: 2,
+        },
+      },
+      {
+        id: "expand:terra-nullius:10",
+        kind: "attack",
+        label: "Expand into neutral land with 10% troops",
+        risk: lowRisk,
+        metadata: { expansion: true, troopPercent: 10 },
+      },
+    ], {
+      phase: "active",
+      ownState: {
+        tileShare: 0.05,
+        troopRatio: 0.8,
+        troops: 500000,
+        gold: 250000,
+        borderTiles: 100,
+        incomingAttacks: [],
+      },
+      visiblePlayers: [{
+        id: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+        name: "K1Z katanasan",
+        isAlive: true,
+        tileShare: 0.08,
+        relativeTroopRatio: 1.2,
+        sharesBorder: true,
+        canAttack: true,
+        isAllied: false,
+      }],
+    }),
+  ];
+
+  const responses = [];
+  let stderr = "";
+  const child = spawn(process.execPath, [playerPath], {
+    env: {
+      ...process.env,
+      COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
+      POLICY_ENGINE: "id1",
+      AWS_ACCESS_KEY_ID: "test",
+      AWS_SECRET_ACCESS_KEY: "test",
+      AWS_EC2_METADATA_DISABLED: "true",
+      BEDROCK_MODEL: "invalid-test-model",
+    },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  child.stderr.on("data", (chunk) => { stderr += String(chunk); });
+
+  const completed = new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      child.kill("SIGKILL");
+      reject(new Error(`id1 wiring test timed out: ${stderr}`));
+    }, 8000);
+    server.once("connection", (socket) => {
+      socket.send(JSON.stringify(requests[0]));
+      socket.on("message", (data) => {
+        responses.push(JSON.parse(String(data)));
+        socket.send(JSON.stringify({ type: "final" }));
+      });
+    });
+    child.once("error", reject);
+    child.once("exit", (code) => {
+      clearTimeout(timeout);
+      if (code === 0) resolve();
+      else reject(new Error(`player exited ${code}: ${stderr}`));
+    });
+  });
+
+  try {
+    await completed;
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+
+  assert.equal(responses[0].selectedLegalActionId, "expand:terra-nullius:10");
+  assert.match(responses[0].reason, /id1/);
+  assert.equal(responses[0].fallbackUsed, false);
 });
 
 test("qd2n engine wiring grinds the opening at 35 percent", async () => {

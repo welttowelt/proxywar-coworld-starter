@@ -16,6 +16,7 @@
 import { WebSocket } from "ws";
 import { AnthropicBedrock } from "@anthropic-ai/bedrock-sdk";
 import {
+  PLAN_INTENTS,
   PLAN_KINDS,
   buildState,
   chooseAction as chooseSelectorAction,
@@ -46,25 +47,11 @@ let lockedModel = null;
 
 // -- YOUR STRATEGY -- edit this to change how your agent thinks ---------------
 const STRATEGY = [
-  "You are the strategy commander of an autonomous nation in ProxyWar, a territorial-conquest game.",
-  "Win by owning the most land. You are NOT picking a single move — you are writing a short",
-  "standing PLAN your nation will follow for the next few decisions.",
-  "Open with legal Terra Nullius expansion at the strongest legal commitment until about 12% land;",
-  "and do not attack any rival before that threshold unless they attacked you first.",
-  "After roughly 10-15% land, convert the most vulnerable bordered rival and finish that target.",
-  "After spawning, HOLD is failure unless no productive legal action exists.",
-  "Attack bordered rivals only at relativeTroopRatio 1.3 or better; pressure a runaway leader down to 0.9.",
-  "Commit 35% to neutral expansion and finish weakening targets at 40%; never open a second front while under attack.",
-  "Build cities, factories, ports, and reliable structures on a regular cadence without interrupting a finish.",
-  "Never select Defense Post; its advertised action IDs can be stale and degrade to HOLD.",
-  "Use boats for neutral expansion or favorable invasion, but never let boats replace land conversion.",
-  "If isolated and only rival boats remain, invade the safest non-allied target instead of holding.",
-  "If territory is collapsing, defend, retreat exposed boats, or probe a rival before considering HOLD.",
-  "When a nuke is legal, use it to stop the leader, break a stalemate, or finish a rival.",
-  "Request alliances only when no tactical action exists; social IDs can disappear during simultaneous resolution.",
-  "Donate only to an allied recipient when it prevents their collapse.",
-  "Do not loop embargo, donation, chat, or emoji actions when expansion, economy, or combat is available.",
-  "Break or ignore alliances late when converting territory can secure the win.",
+  "You command an autonomous nation in ProxyWar. Win by owning the most land.",
+  "INTENT: choose one outcome for the next few decisions: grow, convert, stabilize, support, or finish.",
+  "CONSTRAINTS: never harm protected K1Z partners; preserve survival under active attack; use only offered action kinds.",
+  "SUCCESS: increase our chance of finishing with the most territory; name a rival only when it advances the intent.",
+  "FREEDOM: do not prescribe action IDs, percentages, or turn timing. The deterministic selector chooses the exact legal move.",
 ].join(" ");
 const PLAN_EVERY = Math.max(1, Number(process.env.PLAN_EVERY) || 8);
 const PLAN_TIMEOUT_MS = Math.max(1000, Number(process.env.PLAN_TIMEOUT_MS) || 12000);
@@ -102,7 +89,7 @@ async function askBedrock(state, signal) {
   if (!bedrock) throw new Error("bedrock client did not initialize");
   const prompt =
     STRATEGY + "\n" + SECURITY + "\n" +
-    'Reply with ONLY JSON: {"focus":"<one of expand|economy|attack|defend|ally>",' +
+    'Reply with ONLY JSON: {"intent":"<one of ' + PLAN_INTENTS.join("|") + '>","focus":"<one of expand|economy|attack|defend|ally>",' +
     '"preferKinds":["<action kinds from this list, best first: ' + PLAN_KINDS.join("|") + '>"],' +
     '"target":"<exact rival name to pressure, or null>","avoidTargets":["<rival names not to attack>"],' +
     '"reason":"<one short sentence>"}\n' +
@@ -122,8 +109,20 @@ async function askBedrock(state, signal) {
   throw lastErr || new Error("no bedrock model responded");
 }
 
+const STATIC_INTENT = process.env.POLICY_ENGINE === "id1"
+  ? {
+      intent: "grow",
+      focus: "expand",
+      preferKinds: ["attack"],
+      target: null,
+      avoidTargets: [],
+      reason: "Gain territory while the selector enforces constraints.",
+      model: "static-id1",
+    }
+  : null;
+
 // -- the PLAN: written by the model in the background, executed instantly -----
-let plan = null;          // { focus, preferKinds, target, avoidTargets, reason, model }
+let plan = STATIC_INTENT;  // { intent, focus, preferKinds, target, avoidTargets, reason, model }
 let planDecisionAge = 0;  // decisions answered since the last successful refresh
 let planRefreshInFlight = false;
 let lastPlanError = null; // set when the most recent refresh failed (loud degradation)
@@ -132,6 +131,7 @@ let planFailureCount = 0;
 let nextPlanRefreshAt = 0;
 
 function refreshPlanInBackground(state) {
+  if (STATIC_INTENT) return;
   if (planRefreshInFlight || Date.now() < nextPlanRefreshAt) return;
   planRefreshInFlight = true;
   const controller = new AbortController();
@@ -142,7 +142,9 @@ function refreshPlanInBackground(state) {
       const preferKinds = Array.isArray(parsed.preferKinds)
         ? parsed.preferKinds.filter((k) => PLAN_KINDS.includes(k))
         : [];
+      const requestedIntent = clean(parsed.intent).toLowerCase();
       plan = {
+        intent: PLAN_INTENTS.includes(requestedIntent) ? requestedIntent : null,
         focus: clean(parsed.focus) || "expand",
         preferKinds,
         target: parsed.target ? clean(parsed.target) : null,
@@ -227,7 +229,9 @@ function handleMessage(activeSocket, data) {
 
   // Keep the plan fresh WITHOUT blocking — the answer below never waits on Bedrock.
   planDecisionAge += 1;
-  if (plan === null || planDecisionAge >= PLAN_EVERY) refreshPlanInBackground(state);
+  if (!STATIC_INTENT && (plan === null || planDecisionAge >= PLAN_EVERY)) {
+    refreshPlanInBackground(state);
+  }
 
   const chosen = chooseAction(actions, state, plan, history);
   const degraded = lastPlanError !== null;
