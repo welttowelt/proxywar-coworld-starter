@@ -13,6 +13,22 @@ export const HRAFN_PLAYER_NAME = "K1Z Hrafn";
 export const DEFAULT_HRAFN_LEASE_DIRECTORY =
   path.join(homedir(), ".stormforge", "proxywar-operators", "runner.lock");
 
+export function hrafnCoworldEnvironment(environment = process.env) {
+  const requestedHome = String(environment.HRAFN_SOFTMAX_HOME ?? "").trim();
+  if (!requestedHome) return environment;
+  if (!path.isAbsolute(requestedHome)) {
+    throw new Error("HRAFN_SOFTMAX_HOME must be an absolute real directory");
+  }
+  const stat = lstatSync(requestedHome);
+  if (!stat.isDirectory() || stat.isSymbolicLink()) {
+    throw new Error("HRAFN_SOFTMAX_HOME must be an absolute real directory");
+  }
+  return Object.freeze({
+    ...environment,
+    HOME: realpathSync(requestedHome),
+  });
+}
+
 function plainFile(directory, name) {
   const target = path.join(directory, name);
   const stat = lstatSync(target);
@@ -136,7 +152,11 @@ export function readActiveHrafnIdentity() {
   const raw = execFileSync(
     "uvx",
     ["--from", "coworld==0.1.28", "coworld", "player", "list", "--json"],
-    { encoding: "utf8", maxBuffer: 2 * 1024 * 1024 },
+    {
+      encoding: "utf8",
+      env: hrafnCoworldEnvironment(),
+      maxBuffer: 2 * 1024 * 1024,
+    },
   );
   return assertActiveHrafnPlayers(JSON.parse(raw));
 }

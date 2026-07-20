@@ -28,6 +28,12 @@ Odin/Qd1n unless the user explicitly transfers that lane. On Studio, treat
 out of scope. Codex Odin must not perform those actions for `hrafn-fylking`
 without the same explicit transfer.
 
+Studio's shared `$HOME/.softmax` profile belongs to Katanasan and Gravity and
+must remain untouched. Hrafn uses a dedicated real directory through
+`HRAFN_SOFTMAX_HOME`; only the Coworld identity probe receives that directory
+as `HOME`. Repository, mailbox, and foreground-runner paths continue to derive
+from Studio's normal `$HOME`.
+
 Hrafn and Odin cross-audit through the team mailbox at
 `$HOME/.stormforge/team-mailbox`. A cross-audit is read-only: the reviewer
 returns `APPROVE`, `REVISE`, `REJECT`, or `INSUFFICIENT`, and the lane owner

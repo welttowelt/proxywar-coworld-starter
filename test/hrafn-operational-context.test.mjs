@@ -13,6 +13,7 @@ import path from "node:path";
 import {
   assertActiveHrafnPlayers,
   DEFAULT_HRAFN_LEASE_DIRECTORY,
+  hrafnCoworldEnvironment,
   validateHrafnLeaseSnapshot,
 } from "../hrafn-operational-context.mjs";
 import {
@@ -57,6 +58,25 @@ test("Hrafn operational defaults follow the active host home", () => {
   assert.equal(
     DEFAULT_HRAFN_MAILBOX_DIRECTORY,
     path.join(homedir(), ".stormforge", "team-mailbox"),
+  );
+});
+
+test("Hrafn can isolate Coworld credentials without moving host operations", (t) => {
+  const root = mkdtempSync(`${tmpdir()}/hrafn-coworld-home-`);
+  t.after(() => rmSync(root, { recursive: true, force: true }));
+  const environment = {
+    HOME: "/Users/odin",
+    PATH: "/usr/bin:/bin",
+    HRAFN_SOFTMAX_HOME: root,
+  };
+
+  const isolated = hrafnCoworldEnvironment(environment);
+  assert.equal(isolated.HOME, realpathSync(root));
+  assert.equal(isolated.PATH, environment.PATH);
+  assert.equal(environment.HOME, "/Users/odin");
+  assert.throws(
+    () => hrafnCoworldEnvironment({ HRAFN_SOFTMAX_HOME: "relative" }),
+    /must be an absolute real directory/,
   );
 });
 

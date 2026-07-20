@@ -28,6 +28,12 @@ Do not delete or rewrite that worktree. The separate Gravity/Juryoku session on
 `ttys001` remains active and out of scope. Leave the Katanasan mailbox watcher
 untouched.
 
+Studio's shared `/Users/odin/.softmax` profile remains owned by Katanasan and
+Gravity. Hrafn uses the isolated real home `/Users/odin/.hrafn-coworld-home`
+through `HRAFN_SOFTMAX_HOME`; never overwrite or swap the shared profile. This
+changes only the Coworld identity probe. Repository, mailbox, and runner lease
+paths remain under the normal `/Users/odin` home.
+
 ## Current HI1 truth
 
 Coworld's pinned external-agent request currently has seven root fields, but

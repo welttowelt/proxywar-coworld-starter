@@ -28,6 +28,7 @@ export const HRAFN_INTENT_IMAGE_FILES = Object.freeze([
   "experiments/hrafn-intent-i1-preregistration-20260720.json",
   "hrafn-intent-player.mjs",
   "hrafn-intent.mjs",
+  "hrafn-operational-context.mjs",
   "hrafn-safety.mjs",
   "hrafn-state.mjs",
   "hrafn-strategy.mjs",
