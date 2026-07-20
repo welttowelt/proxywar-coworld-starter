@@ -2,81 +2,115 @@
   "schema_version": 2,
   "recorded_at": "2026-07-20T20:11:34Z",
   "arm": "kiz1",
-  "scope": "source integrity, production-wrapper qualification, exact-engine Gravity mechanism, and K1Z safety; no hosted or promotion claim",
-  "verdict": "PASS_LOCAL_MECHANISM",
-  "candidate": {
-    "exact_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
-    "source_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
-    "source_branch": "rci/kiz1-gravity-alias",
-    "production_delta": "one canonical gravity alias",
-    "source_tests": "147/147",
-    "image_ref": "proxywar-agent-llm:qd1n-v89-kiz1-gravity-1ccaff73-amd64",
-    "image_id": "sha256:de2a15be36a86cf8f74029539f6576b0559554c89ac5800ebf4814c6b863677e",
-    "architecture": "amd64",
-    "policy_engine": "",
-    "shipped_files_byte_identical": true
+  "scope": "candidate mechanism and K1Z safety only; no local competitive lift claim",
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "failures": [],
+  "candidate_source_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+  "candidate_image_id": "sha256:de2a15be36a86cf8f74029539f6576b0559554c89ac5800ebf4814c6b863677e",
+  "parent_source_commit": "f1347251834a6283182b631e1336595eb2e08342",
+  "parent_image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+  "contract_sha256": "1faa4e03d4c4a13f8d5559807d25ff86f61fe1e6cfabd1b1be0f79c8c29b3f49",
+  "required_coalition_roles": ["gravity"],
+  "differential_unit_proof": {
+    "schema_version": 2,
+    "arm": "kiz1",
+    "same_fixture": true,
+    "verifier": {
+      "evaluator_commit": "b8b4b4fa5232ba49e015adb6de5b1abd5a2ba758",
+      "path": "experiments/kiz1/verify-differential.mjs",
+      "sha256": "63d08f917ee112f390db68e9f734947342b17e17e4e52a9ee7bd17159e4e4ac1"
+    },
+    "fixture": {
+      "id": "kiz1-current-gravity-production-nuke",
+      "path": "experiments/kiz1/differential-fixture.json",
+      "sha256": "4037c7150d2e49b38bb8389f1fa79bf257dcf15d85afd1eb44bfe69ee7d01b36",
+      "legal_action_ids_sha256": "8ceb5c46d05768787de8279fdebed7da7053aaa692ca56cc449d0e7d8b40644e"
+    },
+    "parent": {
+      "source_commit": "f1347251834a6283182b631e1336595eb2e08342",
+      "selected_action_id": "build:Atom Bomb:9"
+    },
+    "candidate": {
+      "source_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+      "selected_action_id": "hold:1"
+    },
+    "test_command": [
+      "node",
+      "experiments/kiz1/verify-differential.mjs",
+      ".",
+      "f1347251834a6283182b631e1336595eb2e08342",
+      "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+      "experiments/kiz1/differential-fixture.json",
+      "experiments/kiz1/differential-proof-1ccaff73.json"
+    ],
+    "test_exit_code": 0
   },
   "qualifier": {
     "status": "PASS_PRODUCTION_WRAPPER_WIRING",
-    "output": "/private/tmp/proxywar-kiz1-gravity-qualifier-1ccaff73",
-    "game_id": "COWRLD01",
     "decision_count": 34,
-    "accepted_decision_count": 34,
-    "rejected_decision_count": 0,
-    "fallback_count": 10,
-    "degraded_count": 10,
-    "planner_note": "Local Bedrock credentials were not supplied; these flags are recorded but are outside the crash/connect qualifier gate.",
-    "results_sha256": "d47d0eee35fdce9da3efb743d121d7f720c9dc91c21372c667d12cb31587b8dc",
+    "accepted": 34,
+    "rejected": 0,
     "replay_sha256": "888e86c8ca986dad818009af116e536a89202266da6104e4fa54e49cfb800464",
-    "decisions_sha256": "4bb43d066474611958679b863f9347c198106f2eb2f2eaab8ecff6bfb05c0ea5"
+    "fallback_note": "Ten local planner fallbacks reflect absent Bedrock credentials and are outside this crash/connect result."
   },
-  "mechanism": {
-    "status": "PASS",
-    "output": "/private/tmp/proxywar-kiz1-gravity-screen-1ccaff73",
-    "job_sha256": "71d4567bc480cd65956034512bc7f9cd470cb081ee3a88f818860ed6b5fd5aa5",
-    "game_id": "CWBSITMM",
-    "map": "Asia",
-    "seed": 20260720,
-    "winner_slot": 0,
-    "candidate_slot": 0,
-    "candidate_name": "K1Z odin free",
-    "candidate_score": 1,
-    "candidate_tiles": 216072,
-    "candidate_decisions": 39,
-    "candidate_accepted": 39,
-    "candidate_rejected": 0,
-    "candidate_fallback": 0,
-    "candidate_degraded": 0,
-    "candidate_holds": 0,
-    "candidate_k1z_harm": 0,
-    "gravity_kp2_requests": 6,
-    "gravity_request_turns": [400, 1100, 1800, 2500, 3200, 3900],
-    "outsider_attacks": 8,
-    "marker_counts": {
-      "kp2": 6,
-      "kp1": 12,
-      "pd2": 3
-    },
-    "global_parent_slot_fallback_count": 72,
-    "parent_slot_note": "Fallbacks belong only to the two exact-parent opponent wrappers and are excluded from the candidate mechanism verdict.",
-    "results_sha256": "3aa1c1913de4e18799878b223c37c4c87e644280b2422af610905ddaa8b90a33",
-    "replay_sha256": "4ca3f25b01c64ef8679327735fd06c6c57f9b096611f13b0b10f6935b9d9a31d",
-    "decisions_sha256": "fa8abe1fbf0ba044128e9cb4c9afe4345b37071e8ff51b5056eef04b30d7a513"
-  },
-  "mechanism_harness": {
-    "image_id": "sha256:39548883b562262c5bdbe6bcc0fcc6115d330bd1a099308fcea33723b0150194",
-    "player_sha256": "fff9dd163284082b67a1a43ddb875f18b4ed83b245416d98cecd2f88cc7486c7",
-    "dockerfile_sha256": "b63787f4a7250a2217f7d4ad7ec8b9da6486408150ea77e1507737e1019651d6",
-    "candidate_strategy_engine_byte_match": true,
-    "production_image_unchanged": true
-  },
-  "post_run_state": {
-    "runner": "free",
-    "active_player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
-    "active_player_name": "K1Z odin free",
-    "league_mutation": false,
-    "prior_champion_preserved": "qd1n:v89"
-  },
-  "failures": [],
-  "next_gate": "PREUPLOAD_RCI_FOR_DIAGNOSTIC_ONLY"
+  "runs": [
+    {
+      "orientation": "A",
+      "game_id": "CWBSITMM",
+      "map": "Asia",
+      "seed": 20260720,
+      "replay_sha256": "4ca3f25b01c64ef8679327735fd06c6c57f9b096611f13b0b10f6935b9d9a31d",
+      "results_sha256": "3aa1c1913de4e18799878b223c37c4c87e644280b2422af610905ddaa8b90a33",
+      "decisions_sha256": "fa8abe1fbf0ba044128e9cb4c9afe4345b37071e8ff51b5056eef04b30d7a513",
+      "coalition_roles_present": ["odin", "gravity"],
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image": "proxywar-kiz1-mechanism:gravity-1ccaff73-amd64",
+            "image_id": "sha256:39548883b562262c5bdbe6bcc0fcc6115d330bd1a099308fcea33723b0150194"
+          },
+          "production_candidate": {
+            "image": "proxywar-agent-llm:qd1n-v89-kiz1-gravity-1ccaff73-amd64",
+            "image_id": "sha256:de2a15be36a86cf8f74029539f6576b0559554c89ac5800ebf4814c6b863677e"
+          }
+        }
+      },
+      "mechanism_harness": {
+        "resolved_image_id": "sha256:39548883b562262c5bdbe6bcc0fcc6115d330bd1a099308fcea33723b0150194",
+        "base_candidate_image_id": "sha256:de2a15be36a86cf8f74029539f6576b0559554c89ac5800ebf4814c6b863677e",
+        "evaluator_commit": "b8b4b4fa5232ba49e015adb6de5b1abd5a2ba758",
+        "strategy_engine_byte_match": true,
+        "strategy_engine_sha256": "52d156a3646a2591ef4dc9f058b2834c0782b3a9bfff60d7d9be508110e30d02",
+        "player": {
+          "path": "experiments/kiz1/selector-player.mjs",
+          "sha256": "fff9dd163284082b67a1a43ddb875f18b4ed83b245416d98cecd2f88cc7486c7"
+        },
+        "dockerfile": {
+          "path": "experiments/kiz1/Dockerfile.mechanism",
+          "sha256": "b63787f4a7250a2217f7d4ad7ec8b9da6486408150ea77e1507737e1019651d6"
+        }
+      },
+      "candidate": {
+        "slot": 0,
+        "score": 1,
+        "tiles": 216072,
+        "decision_count": 39,
+        "accepted": 39,
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "unexplained_holds": [],
+        "harmful_k1z_actions": [],
+        "unresolved_harmful_targets": [],
+        "marker_counts": { "kp2": 6, "kp1": 12, "pd2": 3 },
+        "route_execution_count": 6,
+        "gravity_request_turns": [400, 1100, 1800, 2500, 3200, 3900],
+        "outsider_attacks": 8
+      },
+      "violations": []
+    }
+  ]
 }
