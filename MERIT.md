@@ -42,6 +42,7 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | RCI protocol | preflight validates reach, trace independence, marker, baseline, `4/4`, and `20/20` | enforced |
 | qd1n GC2 qualifier | exact v89 parent `f1347251`; isolated candidate `9efe990d`; `152/152` tests; exact amd64 images and fresh A/B hashes pass; corrected manifest/request artifacts pushed at `978c77df`; Hrafn exact-job `APPROVE` at mailbox `4d9cb04`; both seats connected and produced `58/58` accepted decisions, zero holds/rejects/K1Z harm, but `gc2=0`; deterministic fallbacks `34` after planner connection errors; replay `44c399fc...`; Hrafn approved the zero-reach stop at mailbox `4901247` | QUALIFIER GATE FAILED on zero replay-visible mechanism reach; runner released; no matched pair, hosted request, upload, submission, membership, champion change, or GR1 evaluation |
 | qd1n KIZ1 Gravity identity repair | R579 replay audit found qd1n:v89 taking 8 and 33 harmful actions against renamed `K1Z Gravity`; exact-parent red fixture selected a production-shaped Atom Bomb while candidate `1ccaff73` held; one production alias only; `147/147` tests; amd64 image `de2a15be...`, `POLICY_ENGINE` empty; qualifier `34/34`; Coworld mechanism trace `39/39`, six accepted Gravity `kp2` requests, eight outsider attacks, zero K1Z harm/holds/rejects/fallback/degradation; strict pre-upload RCI passed; diagnostic upload `qd1n:v94` (`e141216a-5a79-47a2-b885-7538b5d0003e`); the first completed current-roster hosted episode reached Gravity with five accepted `kp2` requests and kept `131/131` decisions clean, but lost to Auri with score `0` and 4,342 tiles | `STOP_HOSTED`: candidate `4/4` became impossible after one completed loss, so the remaining server episodes are irrelevant to promotion and `20/20` was not run. No submission, membership, or champion change; qd1n:v89 preserved. Carry the Gravity alias forward only as a mandatory safety invariant in the next offensive candidate. Evidence: `experiments/audit-qd1n-kiz1-gravity-hosted-early-stop-20260720.json` |
+| qd1n RS1 raw-tile stall repair | exact safety-normalized control and RS1 candidate produced `264/264` accepted decisions each; exact pre-marker trace across 184 lobby rows; seven truthful `rs1` reroutes; first at turn 2400 changed accepted `boat:442484:8` to accepted `expand:terra-nullius:20`; zero holds, rejects, illegal actions, unresolved targets, or K1Z harm | `STOP_LOCAL`: candidate AUC25 `515,570` versus control `516,155`, delta `-585` (`-0.113%`). No adjacent-seed scan, upload, hosted gate, regression, submission, membership, or champion change; qd1n:v89 preserved. Evidence: `experiments/audit-qd1n-rs1-raw-stall-pangaea-20260721.json` |
 | v14 current control | `0/4`; Auri `4/4`; reserve 0.48 at Auri's 1.66x turn-1900 entry in every episode | weak-seat opening confirmed |
 | v24 requalified parent | 28 replay-derived reserve interventions; prior `3/4` on the same roster | diagnostic parent only |
 | v31 hosted | `1/4`; opening reserve fired 28 times; bank-build fired zero times; four holds | rejected, no league change |
@@ -547,3 +548,22 @@ closed by EF2/GR1/PG2 and OS1/TPL1. The empty OI2 worktree was removed. HI1 is
 the one active grow-or-convert experiment; Odin remains exact `qd1n:v89` until
 matched evidence proves a minimal behavior worth porting. Evidence:
 [`diagnosis-qd1n-r581-opening-yield-20260720.json`](experiments/diagnosis-qd1n-r581-opening-yield-20260720.json).
+
+## RS1 raw-tile stall rejection (2026-07-21)
+
+RS1 tested one narrow correction to the rounded-share stall detector: when raw
+territory was still rising, keep neutral land expansion instead of taking the
+parent's boat or build escape. The safety-normalized control reproduced the
+sealed turn-2400 opportunity exactly. Candidate and control matched across 184
+pre-marker lobby rows and 23 subject-source rows. RS1 fired seven times; its
+first accepted reroute replaced `boat:442484:8` with
+`expand:terra-nullius:20`. Both arms completed `264/264` accepted decisions
+with zero holds, illegal actions, rejects, unresolved harmful targets, or K1Z
+harm.
+
+The repair did not improve the opening. Candidate AUC25 was `515,570` versus
+control `516,155`, a delta of `-585` (`-0.113%`), and decision-25 territory was
+32,321 versus 32,479. RS1 is rejected at the first matched cell. The adjacent
+seed, hosted diagnostic, regression set, upload, submission, membership, and
+champion change were not run. `qd1n:v89` remains live. Receipt:
+[`audit-qd1n-rs1-raw-stall-pangaea-20260721.json`](experiments/audit-qd1n-rs1-raw-stall-pangaea-20260721.json).

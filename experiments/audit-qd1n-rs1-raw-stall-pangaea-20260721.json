@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-20T23:31:04Z",
+  "arm": "rs1",
+  "name": "raw_tile_stall_measurement",
+  "verdict": "STOP_LOCAL",
+  "reason": "The candidate reached the intended reroute safely but reduced the preregistered AUC25 outcome metric.",
+  "source": {
+    "exact_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
+    "safety_invariant_base_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "candidate_commit": "ddb980e389c61915fafaa1c91fea282937ad85b5",
+    "control_image_id": "sha256:de2a15be36a86cf8f74029539f6576b0559554c89ac5800ebf4814c6b863677e",
+    "candidate_image_id": "sha256:24051929164cb19a6ed95f6ed184c57c1b4f8a7c21efbe8ba3e879a9058e0637",
+    "tests": "154/154"
+  },
+  "fixture": {
+    "map": "Pangaea",
+    "map_size": "Normal",
+    "seed": 20260722,
+    "subject_slot": 0,
+    "subject_name": "K1Z Hrafn",
+    "max_decision_steps": 30,
+    "control_job_sha256": "60c479db19ddbb095c7f0d99b6acba6de79e0de27f6bafc52bb0167e9f6edaf8",
+    "candidate_job_sha256": "fe81e4d79fae86cbf05c8715c44e9e8d68fc17b501592754f4f4b04243722f6e",
+    "runtime": "coworld==0.1.30"
+  },
+  "control": {
+    "run_id": "rs1-slot0-control-20260721-r2",
+    "game_id": "CWBSITMO",
+    "accepted": "264/264",
+    "fallback_count": 240,
+    "degraded_count": 240,
+    "auc25": 516155,
+    "decision_25_tiles": 32479,
+    "results_sha256": "6e45d2b242c596ffa9a6eec617469259fb285e6fae91f281fd66ee4865112026",
+    "replay_sha256": "2da4ef38833fca3ad3ecc3847fe30726b6b7751feb7182cbf9bcf6a1d912b32e",
+    "decisions_sha256": "76863cb241537dcc1b95b6f3aef5697f19bcba420c32f4b07a5124167c008737"
+  },
+  "candidate": {
+    "run_id": "rs1-slot0-candidate-20260721-r1",
+    "game_id": "CWBSITMO",
+    "accepted": "264/264",
+    "fallback_count": 240,
+    "degraded_count": 240,
+    "auc25": 515570,
+    "decision_25_tiles": 32321,
+    "results_sha256": "bd79d79c5e1454234e38211635dc923e55d0432024f514f6aa5dd8a6c0289566",
+    "replay_sha256": "028c30fcb9649ab03d8784b1cde7a9ab9f6cc9052b06960ed8f462fa738d0e01",
+    "decisions_sha256": "1fbf08db86dcf36036f929cb44c309776997642fbb246e2551a0c8653289d619"
+  },
+  "mechanism": {
+    "pre_marker_trace": "exact across 184 all-lobby rows",
+    "subject_source_trace": "exact across 23 rows",
+    "marker_count": 7,
+    "first_marker_turn": 2400,
+    "candidate_action": "expand:terra-nullius:20",
+    "control_action": "boat:442484:8",
+    "raw_tile_history": [32167, 32167, 32167, 32168]
+  },
+  "safety": {
+    "control_rejects": 0,
+    "candidate_rejects": 0,
+    "control_illegal": 0,
+    "candidate_illegal": 0,
+    "control_holds": 0,
+    "candidate_holds": 0,
+    "control_k1z_harm": 0,
+    "candidate_k1z_harm": 0,
+    "unresolved_harmful_targets": 0
+  },
+  "outcome": {
+    "auc25_delta": -585,
+    "auc25_relative_delta": -0.0011333804767947612,
+    "candidate_score": 0.08267384220299878,
+    "control_score": 0.08085503661671274,
+    "candidate_final_tiles": 32322,
+    "control_final_tiles": 33343
+  },
+  "audit": {
+    "path": "/private/tmp/proxywar-rs1-slot0-canary-20260721-pair-audit.json",
+    "sha256": "2e8c7ef3490151312be2974296e54f752d0123bf4a2f033295eab1e18481ce61",
+    "violation": "pair: candidate AUC25 did not strictly exceed control"
+  },
+  "decision": {
+    "adjacent_seed_scan": "NOT_RUN",
+    "diagnostic_upload": "NOT_RUN",
+    "hosted_4_of_4": "NOT_RUN",
+    "regression_20_of_20": "NOT_RUN",
+    "submission": "NOT_RUN",
+    "champion_change": "NONE",
+    "live_control_preserved": "qd1n:v89"
+  }
+}
