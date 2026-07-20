@@ -314,6 +314,27 @@ test("dv2 grows neutral land instead of socially targeting daveey", () => {
   assert.equal(chosen.id, expand.id);
 });
 
+test("dv3 commits 25 percent to reachable daveey before social fallback", () => {
+  const daveey = rival({
+    id: "daveey",
+    name: "daveey",
+    tileShare: 0.12,
+    relativeTroopRatio: 1.42,
+  });
+  const chat = action(
+    "quick_chat:daveey:attack.focus",
+    "quick_chat",
+    "Focus daveey",
+    { targetID: daveey.id, targetName: daveey.name },
+  );
+  const chosen = chooseHrafnAction(
+    [attack(daveey, 10), attack(daveey, 25), attack(daveey, 40), chat],
+    observation({ tileShare: 0.31, rivals: [daveey] }),
+  );
+  assert.equal(chosen.id, "attack:daveey:25");
+  assert.equal(chosen.policyMarker, "dv1");
+});
+
 test("dv1 switches an older outsider lock to newly reachable daveey", () => {
   const daveey = rival({
     id: "daveey",

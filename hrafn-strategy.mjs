@@ -581,7 +581,7 @@ function safeUtility(actions, state) {
   return null;
 }
 
-function fallbackRivalAttack(groups, state, history) {
+function fallbackRivalAttack(groups, state, history, config) {
   const incoming = new Set(state.incomingAttackerIDs);
   const recentTarget = [...history].reverse().find((entry) =>
     entry.kind === "attack" && entry.targetID
@@ -600,9 +600,16 @@ function fallbackRivalAttack(groups, state, history) {
         candidate.rival.relativeTroopRatio / 10,
     }))
     .sort((left, right) => right.score - left.score)[0];
-  return ranked
-    ? chooseClosestPercent(ranked.actions, 10, 25)
-    : null;
+  if (!ranked) return null;
+  const priority = isPriorityTarget(ranked.rival, config);
+  const selected = chooseClosestPercent(
+    ranked.actions,
+    priority ? config.priorityPressurePercent : 10,
+    priority ? config.maximumCommitPercent : 25,
+  );
+  return selected && priority
+    ? { ...selected, policyMarker: "dv1" }
+    : selected;
 }
 
 export function chooseHrafnAction(
@@ -767,7 +774,7 @@ export function chooseHrafnAction(
   if (build) return build;
 
   if (!campaign.active) {
-    const fallbackAttack = fallbackRivalAttack(groups, state, history);
+    const fallbackAttack = fallbackRivalAttack(groups, state, history, config);
     if (fallbackAttack) return fallbackAttack;
   }
 
