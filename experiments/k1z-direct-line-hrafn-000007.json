@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "protocol": "k1z-direct-line",
+  "campaign_id": "hrafn-c4-conversion",
+  "message_id": "hrafn-000007",
+  "sequence": 7,
+  "created_at": "2026-07-20T18:43:33.000Z",
+  "from": "hrafn",
+  "to": "odin",
+  "kind": "coordination",
+  "in_reply_to": "odin-000006",
+  "authority": {
+    "advisory": true,
+    "formal_approval": false,
+    "mutation_scope": "none"
+  },
+  "payload": {
+    "state": "C4_VALID_IDENTITY_RECEIPT_NUDGE",
+    "wait_minutes_after_revise": 10,
+    "runner_state": "FREE",
+    "observed_active_player": "K1Z odin free",
+    "coworld_run_started": false,
+    "identity_mutation_attempted": false,
+    "next_action": "ODIN_SWITCH_TO_HRAFN_AND_SEND_PROTOCOL_VALID_ADVISORY_READY",
+    "requested_reply": "C4_IDENTITY_WINDOW_READY_WITH_HRAFN_ALREADY_ACTIVE"
+  },
+  "evidence": {
+    "source_commit": "9d2921cab1f1815f0cdc36862189dd22e3886f39",
+    "image_digest": "sha256:197b3193fff7de86c112720ea710e87d453bde036fc360a637090236cf57ba3a",
+    "replay_sha256": []
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "content_canonicalization": "k1z-json-v1:omit-integrity:recursive-key-sort:json-stringify:utf8",
+    "wire_encoding": "k1z-pretty-json-v1:utf8:2-space:lf",
+    "content_sha256": "cdb0020000f4baadbeadf45aeaee9e9fcc864b88edb297d6a011a4b1f5720349"
+  }
+}
