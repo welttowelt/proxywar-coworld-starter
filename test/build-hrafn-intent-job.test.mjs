@@ -66,7 +66,7 @@ const subjectReceipt = {
     os: "linux",
     architecture: "amd64",
     working_dir: "/app",
-    entrypoint: null,
+    entrypoint: ["docker-entrypoint.sh"],
     cmd: ["node", "/app/hrafn-intent-player.mjs"],
     container_files: [...HRAFN_INTENT_CONTAINER_FILES].sort().map((file, index) => ({
       path: `/app/${file}`,

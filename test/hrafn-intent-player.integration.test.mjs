@@ -177,10 +177,14 @@ test("HI1 planning is nonblocking and duplicate requests replay the original act
         responses.push(JSON.parse(String(data)));
         responseTimes.push(Date.now() - sentAt);
         if (responses.length === 1) {
-          setTimeout(() => {
+          void waitForPlayerOutput(
+            player,
+            (output) => output.includes('"event":"hrafn_intent_plan","attempt":1,"ok":true'),
+            4000,
+          ).then(() => {
             sentAt = Date.now();
             socket.send(JSON.stringify(request("first")));
-          }, 350);
+          }, reject);
         } else if (responses.length === 2) {
           sentAt = Date.now();
           socket.send(JSON.stringify(request("fresh")));

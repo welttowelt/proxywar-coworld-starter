@@ -14,6 +14,9 @@ export const HRAFN_INTENT_PLAYER_RUN = Object.freeze([
   "node",
   "/app/hrafn-intent-player.mjs",
 ]);
+export const HRAFN_INTENT_IMAGE_ENTRYPOINT = Object.freeze([
+  "docker-entrypoint.sh",
+]);
 export const HRAFN_INTENT_MODEL = "llama3:latest";
 export const HRAFN_INTENT_MODEL_DIGEST =
   "365c0bd3c000a25d28ddbf732fe1c6add414de7275464c4e4d1c3b5fcb5d8ad1";
@@ -139,7 +142,8 @@ function verifyDockerInspect(raw, requestedReference) {
     throw new Error("HI1 subject image cannot equal the frozen v5 opponent");
   }
   if (!plainObject(image.Config) || image.Config.WorkingDir !== "/app" ||
-    image.Config.Entrypoint !== null ||
+    canonicalJSON(image.Config.Entrypoint) !==
+      canonicalJSON(HRAFN_INTENT_IMAGE_ENTRYPOINT) ||
     canonicalJSON(image.Config.Cmd) !== canonicalJSON(HRAFN_INTENT_PLAYER_RUN)
   ) {
     throw new Error("HI1 subject image runtime metadata is invalid");
@@ -327,7 +331,8 @@ export function verifyHrafnIntentImageReceipt(receipt) {
     receipt.image.os !== "linux" ||
     receipt.image.architecture !== "amd64" ||
     receipt.image.working_dir !== "/app" ||
-    receipt.image.entrypoint !== null ||
+    canonicalJSON(receipt.image.entrypoint) !==
+      canonicalJSON(HRAFN_INTENT_IMAGE_ENTRYPOINT) ||
     canonicalJSON(receipt.image.cmd) !== canonicalJSON(HRAFN_INTENT_PLAYER_RUN) ||
     receipt.image.id === HRAFN_V5_OPPONENT_IMAGE_ID
   ) {
@@ -649,7 +654,7 @@ export async function verifyHrafnIntentImageReceiptEnvironment(
   ]);
   const image = verifyDockerInspect(inspected.stdout, receipt.image.id);
   if (image.id !== receipt.image.id || image.working_dir !== receipt.image.working_dir ||
-    image.entrypoint !== receipt.image.entrypoint ||
+    canonicalJSON(image.entrypoint) !== canonicalJSON(receipt.image.entrypoint) ||
     canonicalJSON(image.cmd) !== canonicalJSON(receipt.image.cmd)
   ) {
     throw new Error("live subject image ID no longer matches the receipt");

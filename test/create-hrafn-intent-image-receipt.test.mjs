@@ -77,7 +77,7 @@ function fixtureRuntime(overrides = {}) {
             RepoTags: ["hrafn-intent-i1:test"],
             Config: {
               WorkingDir: "/app",
-              Entrypoint: null,
+              Entrypoint: ["docker-entrypoint.sh"],
               Cmd: ["node", "/app/hrafn-intent-player.mjs"],
             },
           }])),
@@ -143,7 +143,7 @@ test("image receipt is generated from clean pushed Git, Docker inspect, and a re
     os: "linux",
     architecture: "amd64",
     working_dir: "/app",
-    entrypoint: null,
+    entrypoint: ["docker-entrypoint.sh"],
     cmd: ["node", "/app/hrafn-intent-player.mjs"],
     container_files: [...HRAFN_INTENT_CONTAINER_FILES].sort().map((file) => ({
       path: `/app/${file}`,
@@ -256,6 +256,7 @@ test("image receipt verification fails on self-declared or tampered evidence", a
     (copy) => { copy.source.remote_commit = "2".repeat(40); },
     (copy) => { copy.image.architecture = "arm64"; },
     (copy) => { copy.image.working_dir = "/tmp"; },
+    (copy) => { copy.image.entrypoint = null; },
     (copy) => { copy.image.cmd = ["node", "/app/other.mjs"]; },
     (copy) => { copy.image.container_files[0].sha256 = "0".repeat(64); },
     (copy) => { copy.image.runtime_smoke.node_version = "v22.0.0"; },
