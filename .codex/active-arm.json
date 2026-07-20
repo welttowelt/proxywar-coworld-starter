@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T09:59:00Z",
-  "cycle_id": "odin-nb1-20260720",
+  "updated_at": "2026-07-20T10:07:25Z",
+  "cycle_id": "odin-20260720T100450Z-64081",
   "lane": "odin",
   "arm": {
     "id": "nb1",
@@ -67,13 +67,15 @@
     "round_confirmed": false
   },
   "dispatch_checkpoint": {
-    "priority_packet": null,
-    "classification": "nb1_terminal_stop_waiting_structural_kimi_review",
+    "priority_packet": "/Users/olifreuler/.stormforge/team-mailbox/CODEX_ODIN_TO_KIMI_NB1_TERMINAL_STRUCTURAL_REVIEW_20260720.md",
+    "classification": "nb1_terminal_stop_structural_kimi_review_requested_ack_pending",
     "mailbox_message_written": true,
     "mailbox_commit": "0e0460e",
-    "checkpoint_reason": "NB1 was safe and reached seven times on World, but Pangaea reach was zero and candidate-control outcome deltas were exactly zero. No tuning or successor micro-guard is authorized."
+    "mailbox_head_checked_at": "2026-07-20T10:07:25Z",
+    "kimi_review_acknowledged": false,
+    "checkpoint_reason": "NB1 was safe and reached seven times on World, but Pangaea reach was zero and candidate-control outcome deltas were exactly zero. The structural review request is delivered at mailbox head 0e0460e; no newer Kimi reply exists. No tuning, source mutation, runner action, or successor micro-guard is authorized."
   },
-  "next_automatic_transition": "Send the compact NB1 terminal receipt and request one structural, replay-backed mechanism review from Kimi K3 Max. Do not mutate source or open another micro-guard until that review names one causal action change and stop condition.",
+  "next_automatic_transition": "When Kimi K3 Max replies, validate that the proposal names one distinct causal action change, one exact v89 losing replay cell where it is available, one safety guard and replay-visible marker, the smallest candidate-control screen, and a binary stop condition. Until then, preserve qd1n:v89 and do not mutate source, start a runner, or open another arm.",
   "prior_verified_champion_preserved": true,
   "prior_verified_champion": "qd1n:v89"
 }
