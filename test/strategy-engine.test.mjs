@@ -1232,6 +1232,36 @@ test("an Atom Bomb targeting katanasan is never built", () => {
   assert.equal(selected.id, city.id);
 });
 
+test("a protected Atom Bomb cannot re-enter through generic build fallback", () => {
+  const bomb = {
+    ...action("build:Atom Bomb:protected", "build", "Build Atom Bomb"),
+    metadata: {
+      unit: "Atom Bomb",
+      targetID: "katanasan",
+      targetName: "katanasan",
+      targetTileShare: 0.4,
+      targetSamCoverage: 0,
+    },
+  };
+  const hold = action("hold:1", "hold", "Hold");
+  const selected = choose(
+    [bomb, hold],
+    observation({
+      tileShare: 0.2,
+      troopRatio: 0.9,
+      rivals: [{
+        id: "katanasan",
+        name: "katanasan",
+        tileShare: 0.4,
+        relativeTroopRatio: 0.7,
+      }],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, hold.id);
+});
+
 test("an Atom Bomb under SAM coverage is skipped", () => {
   const bomb = {
     ...action("build:Atom Bomb:1", "build", "Build Atom Bomb"),
@@ -1749,13 +1779,15 @@ test("the current K1Z Gravity display name receives reciprocal alliance priority
 
 test("K1Z Gravity protection still ends immediately after observed betrayal", () => {
   const counter = action("attack:x262ww19:10", "attack", "Attack K1Z Gravity 10%");
+  const hold = action("hold:1", "hold", "Hold");
   const selected = choose(
-    [counter],
+    [counter, hold],
     observation({
       tileShare: 0.4,
       troopRatio: 0.9,
       incomingAttacks: 1,
       incomingAttackPlayerIDs: ["x262ww19"],
+      spawnTile: 1180588,
       rivals: [{
         id: "x262ww19",
         name: "K1Z Gravity",
