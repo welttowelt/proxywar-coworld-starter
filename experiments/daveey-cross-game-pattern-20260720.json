@@ -1,0 +1,180 @@
+{
+  "schema_version": 1,
+  "record_type": "cross_game_opponent_pattern",
+  "collected_at": "2026-07-20T17:33:17Z",
+  "player": {
+    "id": "ply_44ae9048-3242-4654-881f-6d9d43347fa3",
+    "name": "daveey"
+  },
+  "official_source": {
+    "api_base": "https://softmax.com/api",
+    "client": "coworld==0.1.28",
+    "routes": [
+      "/observatory/v2/leagues",
+      "/observatory/v2/divisions?league_id=...",
+      "/observatory/v2/divisions/{division_id}/leaderboard?include_recent_rounds=50",
+      "/observatory/v2/rounds/{round_id}"
+    ]
+  },
+  "user_supplied_architecture_context": {
+    "source_artifact": {
+      "basename": "ChatExport_2026-07-20/messages.html",
+      "sha256": "ebfac930e41ed88d737c9c318dbb2d7256e3824532ed0d134c0e387309ef0645",
+      "source_type": "private Telegram export supplied by the operator",
+      "raw_export_committed": false
+    },
+    "firsthand_platform_statements": [
+      {
+        "message_id": 8,
+        "timestamp": "2026-07-14T21:44:41+01:00",
+        "speaker": "Auri_0x",
+        "summary": "The starter uses an LLM for strategy and a deterministic executor for moment-to-moment actions."
+      },
+      {
+        "message_id": 62,
+        "timestamp": "2026-07-14T22:43:22+01:00",
+        "speaker": "Auri_0x",
+        "summary": "The LLM emits focus, target, and preferred action kinds; choose() ranks candidates, applies safety and loop rules, and emits an exact offered LegalAction ID."
+      },
+      {
+        "message_id": 63,
+        "timestamp": "2026-07-14T22:44:01+01:00",
+        "speaker": "Auri_0x",
+        "summary": "The starter's rules and action weights came from more than a month of scenario-level A/B testing."
+      },
+      {
+        "message_id": 65,
+        "timestamp": "2026-07-14T22:45:15+01:00",
+        "speaker": "Auri_0x",
+        "summary": "The executor can override model suggestions that violate hard-coded rules."
+      },
+      {
+        "message_ids": [
+          29,
+          38,
+          39,
+          44
+        ],
+        "date": "2026-07-14",
+        "summary": "Qualification failures were tied to absent legal actions, a 120-second non-response, and one reproduced JavaScript syntax crash."
+      },
+      {
+        "message_ids": [
+          197,
+          251
+        ],
+        "date_range": "2026-07-19/2026-07-20",
+        "summary": "Auri described offline fuzzing, replay mining, and stored per-decision data as available learning infrastructure."
+      }
+    ],
+    "participant_analysis": [
+      {
+        "message_id": 315,
+        "timestamp": "2026-07-20T19:43:50+01:00",
+        "speaker": "Odin Free",
+        "summary": "Daveey's transferable edge was described as a policy factory with structured variants, many rounds and seats, rapid promotion, and simple score-producing loops.",
+        "provenance_boundary": "This is Odin's analysis, not a firsthand statement by Daveey. Policy families, cadence, and replay metrics are testable; hidden implementation and cross-game objective compression remain unresolved."
+      },
+      {
+        "message_id": 316,
+        "timestamp": "2026-07-20T19:44:49+01:00",
+        "speaker": "Auri_0x",
+        "summary": "Auri asked why Daveey showed no fallbacks.",
+        "provenance_boundary": "Fallback flags are not comparable until both policies use the same telemetry definition; deterministic recovery may be labeled as fallback in one policy and not another."
+      }
+    ],
+    "operator_relayed_odin_take": {
+      "received_at": "2026-07-20",
+      "summary": "Daveey wins through a fast tested playbook rather than model deliberation on every turn: one early City, near-continuous expansion or attacks, delayed optional diplomacy and upgrades, deterministic exact actions, and model reasoning between matches.",
+      "odin_lane_plan": "Odin intends to test this independently as OS1 against his v89 champion.",
+      "hrafn_boundary": "This is coordination context supplied by the operator, not a formal Odin approval and not authority for Hrafn to touch OS1, v89, or the qd1n lane."
+    },
+    "architectural_implication": {
+      "supported": "Keep model intelligence off the exact-ID critical path. Use deterministic offered-action selection, safety checks, loop control, and bounded latency online; use models and automated analysis to generate hypotheses and revise measured policy components offline.",
+      "not_supported": "The export does not identify Daveey's internal architecture and does not prove that copying Auri's starter unchanged will match Daveey.",
+      "pure_llm_test_role": "Shadow or ablation only, gated on invalid-ID rate, timeout rate, decision-latency tail, context drift, and matched replay outcome before any live authority."
+    }
+  },
+  "current_division_ranks": [
+    { "game": "Cogtan", "division_id": "div_f4112124-cc1e-4616-9298-fd882e0b71a7", "rank": 1 },
+    { "game": "Cogtank", "division_id": "div_7ff13a32-59e9-4bfb-a118-c51eca436bd0", "rank": 1 },
+    { "game": "CTF", "division_id": "div_37361341-2970-4dac-9528-55398bab0d1a", "rank": 1 },
+    { "game": "Coguire", "division_id": "div_a9a52a55-1483-45c0-86d6-cda9d9c51418", "rank": 1 },
+    { "game": "Proxywar", "division_id": "div_b54268ee-6b2f-4156-9c2a-8542645e31bc", "rank": 1 },
+    { "game": "Cogsul", "division_id": "div_afd9e46c-0fe1-4102-ae69-61be4ebbc5da", "rank": 1 },
+    { "game": "Cogtionary", "division_id": "div_e2dcfc35-ce56-4a38-91f2-44bdad9c4a9a", "rank": 2 },
+    { "game": "Cogherence", "division_id": "div_0840d1a3-d73d-4333-bc5d-26b72d17dee2", "rank": 3 },
+    { "game": "Polis", "division_id": "div_adaaeee1-c41f-452c-be09-d803910efa4d", "rank": 3 },
+    { "game": "Agricogla", "division_id": "div_a740f9c6-67f4-46ff-99ff-7aec831df826", "rank": 4 },
+    { "game": "Crewrift", "division_id": "div_8d3ead22-1244-49f5-8ee8-1bd150be2f6e", "rank": 4 },
+    { "game": "Cognames", "division_id": "div_cdd02c7f-745f-4854-ae93-63f9e9a27176", "rank": 4 },
+    { "game": "Crewrift Prime", "division": "Competition", "division_id": "div_acbde92a-df21-4489-859c-4510bd4445f2", "rank": 13 },
+    { "game": "Crewrift Prime", "division": "Crew", "division_id": "div_d174ff44-fe1d-4399-95a5-38ee402b36a1", "rank": 14 },
+    { "game": "Crewrift Prime", "division": "Imposters", "division_id": "div_f19f993f-f800-455f-ab13-f9dc2b93af13", "rank": 14 }
+  ],
+  "cross_game_summary": {
+    "distinct_games": 13,
+    "divisions": 15,
+    "rank_1_games": 6,
+    "top_3_games": 9,
+    "recent_rank_sample_games": 10,
+    "recent_rank_rows": 200,
+    "recent_first_place_rows": 89,
+    "recent_top_3_rows": 158,
+    "aggregation_caveat": "Unweighted rank counts only. Games differ in entrants, episodes, ties, score direction, and leaderboard aggregation; scores are not pooled."
+  },
+  "strong_recent_first_place_samples": [
+    { "game": "Cogsul", "firsts": 20, "ranked_rounds": 20 },
+    { "game": "Coguire", "firsts": 18, "ranked_rounds": 20 },
+    { "game": "Cogtan", "firsts": 17, "ranked_rounds": 20 },
+    { "game": "Proxywar", "firsts": 16, "ranked_rounds": 20 },
+    { "game": "CTF", "firsts": 14, "ranked_rounds": 20 }
+  ],
+  "iteration_evidence": {
+    "proxywar_versions_20260715_20260720": [10, 13, 16, 17, 18, 20, 22, 24],
+    "ctf_versions_20260716_20260720": [11, 13, 14, 15, 18, 24, 28, 35],
+    "proxywar": [
+      { "version": 20, "firsts": 5, "ranked_rounds": 16, "mean_rank": 7.875 },
+      { "version": 22, "firsts": 21, "ranked_rounds": 52, "top_3": 37, "mean_rank": 2.942 },
+      { "version": 24, "firsts": 29, "ranked_rounds": 55, "top_3": 44, "latest_20_firsts": 16, "latest_20_top_3": 19 }
+    ]
+  },
+  "proxywar_replay_pattern": {
+    "scope": "Public official replay rows for daveey-proxywar:v22, rounds 476-495.",
+    "winner_vs_loss": {
+      "opening_tempo_adherence_pct": [76.7, 55.98],
+      "frontier_conversion_adherence_pct": [85.86, 70.45],
+      "conversion_hold_rate_pct": [0.33, 5.35],
+      "finish_hold_rate_pct": [6.39, 15.1],
+      "target_switch_rate_pct": [41.37, 31.52],
+      "mean_rival_attack_ratio": [3.87, 2.09],
+      "mean_attack_commitment_pct": [30.7, 24.2]
+    },
+    "map_split": [
+      { "map": "Asia", "matches": 24, "declared_wins": 0, "episode_points": 0 },
+      { "map": "Pangaea", "matches": 28, "declared_wins": 12, "episode_points": 12 },
+      { "map": "World", "matches": 28, "declared_wins": 8, "episode_points": 10 }
+    ],
+    "local_tables": [
+      "data/analysis/ffa_phase_profile.csv",
+      "data/analysis/tactical_adherence.csv",
+      "data/analysis/target_continuity.csv",
+      "data/analysis/map_policy_performance.csv"
+    ]
+  },
+  "inference": {
+    "supported": "Daveey's transferable advantage is a rapid empirical loop plus game-specific policies: low idle in opening and conversion, neutral compounding, adaptive retargeting toward stronger windows, harder commitment at favorable ratios, and fast single-mechanism replacement.",
+    "not_supported": "One hidden tactic or one policy copied unchanged across games.",
+    "hrafn_adaptation": "Copy the loop, not the code. Keep separate map arms and test one replay-visible mechanism against an exact parent before promotion."
+  },
+  "limitations": [
+    "Current ranks can move during collection.",
+    "No public Daveey replay rows were returned outside Proxywar under current access.",
+    "Cross-game action behavior remains unresolved; rankings, policy specialization, and iteration cadence are the cross-game evidence."
+  ],
+  "authority": {
+    "research_only": true,
+    "gameplay_merit": false,
+    "upload_or_submission": false
+  }
+}
