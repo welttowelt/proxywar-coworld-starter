@@ -22,6 +22,7 @@ import {
   consecutive,
   decisionsSince,
   incomingThreatCount,
+  isNeutralBoat,
   isNeutralExpansion,
   kingmakerAllianceAction,
   pickPercent,
@@ -191,7 +192,7 @@ export function chooseChassisAction(actions, state, plan = null, history = []) {
 export const ODIN_CHASSIS_MARKERS = [
   "odef", "odec1", "odec2", "odg10", "odg20", "odg35",
   "odc10", "odc25", "odc40", "odn8", "odn16", "odncap", "odecon",
-  "odsafe", "odguard", "odk1",
+  "odsafe", "odguard",
 ];
 
 function marked(action, marker) {
@@ -210,9 +211,26 @@ function odinActionIsHarmful(action) {
 }
 
 function odinProtectedActions(actions, state) {
-  return actions.filter((action) =>
-    !odinActionIsHarmful(action) || !actionTargetsK1Z(action, state)
-  );
+  return actions.filter((action) => {
+    if (!odinActionIsHarmful(action)) return true;
+    if (isNeutralExpansion(action) || isNeutralBoat(action)) return true;
+    if (
+      action.kind === "embargo_all" ||
+      action.kind === "move_warship" ||
+      (
+        action.kind === "build" &&
+        String(action?.metadata?.unit ?? "").toLowerCase() === "atom bomb"
+      )
+    ) {
+      return false;
+    }
+    const rival = rivalForAction(action, state);
+    return Boolean(
+      rival &&
+      !rivalIsK1Z(rival) &&
+      !actionTargetsK1Z(action, state),
+    );
+  });
 }
 
 function builtUnit(history, unit) {
@@ -312,50 +330,6 @@ function chooseOdinAtomBomb(actions, state, history) {
   return marked(candidates[0]?.action ?? null, "nk1");
 }
 
-function allRivalsAreK1Z(state) {
-  const visibleTileShare = state.self.tileShare +
-    state.rivals.reduce((total, rival) => total + rival.tileShare, 0);
-  return state.rivals.length > 0 &&
-    visibleTileShare >= 0.98 &&
-    state.rivals.every(rivalIsK1Z);
-}
-
-function chooseOdinK1ZEndgame(actions, state) {
-  if (!allRivalsAreK1Z(state)) return null;
-
-  const allianceBreak = safeActions(actions, (action) => {
-    if (action.kind !== "break_alliance" || !actionTargetsK1Z(action, state)) {
-      return false;
-    }
-    return rivalForAction(action, state)?.isAllied === true;
-  })[0];
-  if (allianceBreak) return marked(allianceBreak, "odk1");
-
-  const grouped = new Map();
-  for (const action of safeActions(actions, (candidate) =>
-    candidate.kind === "attack" && !isNeutralExpansion(candidate)
-  )) {
-    const rival = rivalForAction(action, state);
-    if (!rival || rival.isAllied || !rivalIsK1Z(rival)) continue;
-    const key = rival.id || rival.name;
-    if (!grouped.has(key)) grouped.set(key, { rival, actions: [] });
-    grouped.get(key).actions.push(action);
-  }
-  const target = [...grouped.values()].sort((left, right) => {
-    const leftRatio = Number.isFinite(left.rival.relativeTroopRatio)
-      ? left.rival.relativeTroopRatio
-      : -Infinity;
-    const rightRatio = Number.isFinite(right.rival.relativeTroopRatio)
-      ? right.rival.relativeTroopRatio
-      : -Infinity;
-    return rightRatio - leftRatio || right.rival.tileShare - left.rival.tileShare;
-  })[0];
-  return marked(
-    target ? pickPercent(target.actions, 40, new Set()) : null,
-    "odk1",
-  );
-}
-
 function chooseOdinRivalAction(actions, state, history, avoid) {
   const incoming = new Set(
     (state.self.allProtocolAttackerIDs || state.self.incomingAttackerIDs || [])
@@ -438,9 +412,6 @@ export function chooseOdinChassisAction(actions, state, _plan = null, history = 
   const spawn = safeActions(actions, (action) => action.kind === "spawn")
     .find((action) => !avoid.has(action.id));
   if (spawn) return spawn;
-
-  const k1zEndgame = chooseOdinK1ZEndgame(actions, state);
-  if (k1zEndgame) return k1zEndgame;
 
   const odinActions = odinProtectedActions(actions, state);
   const pendingHandshake = kingmakerAllianceAction(
@@ -554,5 +525,14 @@ export function chooseOdinChassisAction(actions, state, _plan = null, history = 
   if (hold) {
     return guardedOnly || dominantPreservation ? marked(hold, "odguard") : hold;
   }
-  return odinActions[0] ?? actions[0];
+  const finalSafe = odinActions.find((action) =>
+    action.kind !== "quick_chat" &&
+    action.kind !== "nuke" &&
+    !(
+      action.kind === "build" &&
+      String(action?.metadata?.unit ?? "").toLowerCase() === "atom bomb"
+    )
+  );
+  if (finalSafe) return finalSafe;
+  throw new Error("ODC1 found no admissible legal action");
 }

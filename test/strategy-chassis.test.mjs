@@ -537,7 +537,7 @@ test("ODC1 never retaliates against a non-allied K1Z current attacker", () => {
   assert.equal(selected.policyMarker, "odc25");
 });
 
-test("ODC1 breaks a K1Z alliance first in the exact K1Z-only endgame", () => {
+test("ODC1 never infers a K1Z-only endgame from visible territory", () => {
   const hrafnID = "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863";
   const allianceBreak = {
     ...action("break:hrafn", "break_alliance", "Break alliance with K1Z Hrafn"),
@@ -556,30 +556,30 @@ test("ODC1 breaks a K1Z alliance first in the exact K1Z-only endgame", () => {
       }],
     }),
   );
-  assert.equal(selected.id, allianceBreak.id);
-  assert.equal(selected.policyMarker, "odk1");
+  assert.equal(selected.id, "hold");
 });
 
-test("ODC1 attacks decisively in the exact non-allied K1Z-only endgame", () => {
+test("ODC1 fails closed when only K1Z attacks are offered without hold", () => {
   const hrafnID = "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863";
   const attacks = [10, 25, 40].map((percent) => ({
     ...action(`attack:hrafn:${percent}`, "attack", `Attack K1Z Hrafn ${percent}%`),
     metadata: { targetID: hrafnID, targetName: "K1Z Hrafn" },
   }));
-  const selected = chooseOdin(
-    attacks,
-    observation({
-      tileShare: 0.6,
-      rivals: [{
-        id: hrafnID,
-        name: "K1Z Hrafn",
-        tileShare: 0.4,
-        relativeTroopRatio: 1.5,
-      }],
-    }),
+  assert.throws(
+    () => chooseOdin(
+      attacks,
+      observation({
+        tileShare: 0.6,
+        rivals: [{
+          id: hrafnID,
+          name: "K1Z Hrafn",
+          tileShare: 0.4,
+          relativeTroopRatio: 1.5,
+        }],
+      }),
+    ),
+    /no admissible legal action/,
   );
-  assert.equal(selected.id, "attack:hrafn:40");
-  assert.equal(selected.policyMarker, "odk1");
 });
 
 test("ODC1 does not infer a K1Z-only endgame from partial visibility", () => {
@@ -878,6 +878,30 @@ test("ODC1 never emits unrestricted quick chat", () => {
   );
   assert.equal(selected.id, hold.id);
   assert.equal(selected.policyMarker, undefined);
+});
+
+test("ODC1 fails closed instead of reopening quick chat without hold", () => {
+  assert.throws(
+    () => chooseOdin(
+      [action("quick-chat:1", "quick_chat", "This is unrestricted public prose")],
+      observation({ tileShare: 0.1 }),
+    ),
+    /no admissible legal action/,
+  );
+});
+
+test("ODC1 excludes unresolved move-warship and global embargo actions", () => {
+  const unresolvedMove = {
+    ...action("move-warship:123", "move_warship", "Move warship"),
+    metadata: { targetTile: 123, unitCount: 1 },
+  };
+  const globalEmbargo = action("embargo-all", "embargo_all", "Embargo everyone");
+  const hold = action("hold", "hold", "Hold");
+  const selected = chooseOdin(
+    [unresolvedMove, globalEmbargo, hold],
+    observation({ tileShare: 0.1 }),
+  );
+  assert.equal(selected.id, hold.id);
 });
 
 test("ODC1 never attacks a metadata-resolved K1Z partner", () => {
