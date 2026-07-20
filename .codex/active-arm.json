@@ -1,72 +1,79 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T13:09:00Z",
-  "cycle_id": "odin-ht1-20260720",
+  "updated_at": "2026-07-20T14:16:57Z",
+  "cycle_id": "odin-odc1-20260720",
   "lane": "odin",
   "arm": {
-    "id": "ht1",
-    "name": "harvest_transition",
-    "branch": "rci/ht1-harvest-transition",
+    "id": "odc1",
+    "name": "clean_dispatcher",
+    "branch": "rci/odc1-clean-dispatcher",
     "exact_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
-    "candidate_source_commit": "48d57e95b12c1166cfb9b4a063c9aeead0e23c2d",
-    "marker": "ht1",
-    "closed": true
+    "candidate_source_commit": "576283d41e13646aec8bce9adbf58f56078ccce8",
+    "marker_family": "od*",
+    "closed": false
   },
-  "state": "closed_local_gate_zero_reach_exact_tie",
+  "state": "local_qualified_awaiting_seeded_field_gate",
   "runner": {
     "state": "free",
     "run_started": true,
-    "last_run_id": "ht1-screen-a-48d57e95"
+    "last_run_id": "odc1-seeded-b-576283d4"
   },
   "evidence": {
-    "source_tests": "147/147; red-first verified",
-    "independent_rci": "PASS after removing the redundant emergency-path hook and requiring finite ratios",
-    "qualifier": "34/34 accepted; zero holds; zero rejections; zero ht1 markers",
-    "candidate_image": "proxywar-agent-llm:qd1n-v89-ht1-amd64",
-    "candidate_image_digest": "sha256:996596306ba33ed46e82c707e7ba62755ef9a242e9fa4047163c0d7995593f4d",
-    "local_screen": {
-      "orientation": "A",
-      "map": "Pangaea",
-      "seed": 20260722,
-      "output_root": "/private/tmp/proxywar-ht1-screen-a-48d57e95",
-      "candidate_score": 0.19937530540092555,
-      "parent_score": 0.19937530540092555,
-      "candidate_ht1_markers": 0,
-      "parent_ht1_markers": 0,
-      "odin_decisions_each": 83,
-      "accepted_each": 83,
-      "holds_each": 0,
-      "rejections_each": 0,
-      "coalition_harm_each": 0,
-      "candidate_parent_delta_score": 0
+    "source_tests": "163/163; red-first verified",
+    "independent_rci": "PASS after nine bounded correctness and telemetry repairs",
+    "qualifier": "34/34 accepted; zero holds, rejections, fallbacks, or degradation",
+    "candidate_image": "proxywar-agent-llm:qd1n-v89-odc1-amd64",
+    "candidate_image_digest": "sha256:a9aa29ff41f7d77a3a29754c47ed7517d0513d0221eec3c34a874b1a3aa7f40d",
+    "local_pair": {
+      "pair_id": "odc1-pangaea-compact-20260720",
+      "seed": 20260720,
+      "candidate_scores": [
+        0.6897909514528527,
+        0.6907682247805497
+      ],
+      "parent_scores": [
+        0.3102090485471472,
+        0.30923177521945033
+      ],
+      "candidate_combined_tiles": 139444,
+      "parent_combined_tiles": 62567,
+      "candidate_decisions": 624,
+      "candidate_accepted": 624,
+      "candidate_causal_transitions": 111,
+      "candidate_holds": 0,
+      "candidate_rejections": 0,
+      "candidate_fallbacks": 0,
+      "candidate_degradation": 0,
+      "candidate_illegal_actions": 0,
+      "candidate_k1z_harm": 0,
+      "declared_wins": 0
     },
-    "receipt": "experiments/audit-qd1n-ht1-harvest-transition-pangaea-20260720.json",
-    "causal_finding": "The proposed weak-leader plus 1.5x harvest alternative state did not occur, so the bounded selector never activated.",
-    "prior_arm_addendum_preserved": "DS1 remained closed; PO1 was rejected as unpaired cross-policy evidence and was not bundled into DS1."
+    "receipt": "experiments/audit-qd1n-odc1-clean-dispatcher-seeded-20260720.json",
+    "causal_finding": "The clean dispatcher produced a strong, seat-independent local score and territory separation while preserving coalition safety and eliminating planner/runtime failures."
   },
   "gates": {
     "source_integrity": "passed_committed_and_pushed",
     "identity": "passed_qualifier_candidate_image",
-    "runner": "screen_completed_and_released",
+    "runner": "local_pair_completed_and_released",
     "coalition_integrity": "passed_zero_protected_rival_actions",
-    "local_screen": "STOP_zero_reach_and_exact_score_tie",
-    "orientation_b": "not_run_terminal_orientation_a",
-    "matrix": "not_run_terminal_orientation_a",
-    "diagnostic_uploaded": false,
-    "hosted_passed": false,
-    "regression_passed": true,
+    "local_seeded_pair": "PASS_LOCAL_QUALIFIED",
+    "seeded_current_field": "not_run",
+    "hosted_4_of_4": "not_run",
+    "league_regression_20_of_20": "not_run",
+    "source_regression_passed": true,
     "rci_audit_passed": true,
+    "diagnostic_uploaded": false,
     "submitted": false,
     "placed": false,
     "champion_verified": false,
     "round_confirmed": false
   },
   "dispatch_checkpoint": {
-    "classification": "ht1_rejected_zero_reach_no_league_event",
+    "classification": "odc1_local_qualified_no_league_event",
     "mailbox_message_written": false,
-    "checkpoint_reason": "Matched orientation A produced zero ht1 markers and an exact candidate-parent score tie. The preregistered stop fired."
+    "checkpoint_reason": "Both explicit-seed seat orientations passed with strong candidate separation and clean runtime evidence. The next test changes the roster, not the policy."
   },
-  "next_automatic_transition": "Return to replay evidence for one distinct post-opening transition mechanism. Do not tune HT1 thresholds, run orientation B, upload, submit, or change champion from this receipt.",
+  "next_automatic_transition": "Run one explicit-seed current-roster coalition matched gate through the Odin runner lease. Failure closes ODC1. Success advances automatically to hosted 4/4 and 20/20 regression. Only all-green gates authorize automatic upload, submission, champion verification, and round confirmation; no separate user GO is required.",
   "prior_verified_champion_preserved": true,
   "prior_verified_champion": "qd1n:v89"
 }

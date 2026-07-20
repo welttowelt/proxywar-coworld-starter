@@ -36,9 +36,11 @@ scoreboard narration, and new hypotheses. Do not open a second arm. Follow
 from an older mailbox packet or stale handover. PG2, A1, A2, and A3 are closed.
 PR1 is also closed because it duplicates the rejected DP1 Defense Post family.
 NB1 is closed after zero Pangaea reach and zero World outcome lift. No active
-candidate exists. The only authorized transition is a structural,
-replay-backed mechanism review from Kimi K3 Max; do not open another
-micro-guard or mutate source first.
+micro-guard exists. ODC1 is the active clean-dispatcher candidate at
+`PASS_LOCAL_QUALIFIED`; its source is frozen at `576283d4`. The only authorized
+transition is one explicit-seed current-roster coalition matched gate. Failure
+closes ODC1. Success advances it to hosted `4/4` and then `20/20` regression
+under `AUTONOMOUS_PROMOTION.md`; do not open or tune another arm first.
 
 ## Execution
 

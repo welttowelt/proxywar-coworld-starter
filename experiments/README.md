@@ -1723,3 +1723,23 @@ disproved causal variable without a new boundary or replay-derived reason.
 No source branch opens from this observation. The immutable census, source
 anchors, overlap checks, and required next evidence are in
 [`audit-qd1n-opening-commitment-overlap-20260720.json`](audit-qd1n-opening-commitment-overlap-20260720.json).
+
+## ODC1 clean-dispatcher local qualification (2026-07-20)
+
+ODC1 replaces the accumulated post-selection stack with one planner-free Odin
+dispatcher while retaining the exact v89 coalition identity and protection
+primitives. It passed red-first regression, `163/163` tests, independent RCI,
+linux/amd64 byte checks, and a `34/34` accepted qualifier with zero holds,
+rejections, fallbacks, or degradation.
+
+The explicit-seed Pangaea Compact A/B screen produced the same separation after
+the seat swap. ODC1 scored `0.689791` and `0.690768` against exact v89 scores
+of `0.310209` and `0.309232`; combined tiles were `139,444` versus `62,567`.
+All `624/624` ODC1 decisions were accepted with 111 causal transitions and zero
+holds, rejections, fallbacks, degradation, illegal actions, or K1Z harm.
+
+This is a local qualification, not a league win: both players survived the
+decision cap. It unlocks one explicit-seed current-roster coalition gate. ODC1
+receives no upload, submission, membership, or champion change unless that
+gate, hosted `4/4`, and `20/20` regression all pass. The durable receipt is
+[`audit-qd1n-odc1-clean-dispatcher-seeded-20260720.json`](audit-qd1n-odc1-clean-dispatcher-seeded-20260720.json).

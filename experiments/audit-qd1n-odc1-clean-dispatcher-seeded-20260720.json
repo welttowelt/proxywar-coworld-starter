@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "arm": {
+    "id": "odc1",
+    "name": "clean_dispatcher",
+    "branch": "rci/odc1-clean-dispatcher",
+    "exact_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
+    "candidate_source_commit": "576283d41e13646aec8bce9adbf58f56078ccce8"
+  },
+  "scope": "Local explicit-seed A/B qualification only. This receipt does not authorize upload, submission, membership, or champion changes.",
+  "verdict": "PASS_LOCAL_QUALIFIED",
+  "source": {
+    "tests": "163/163 passed",
+    "red_first": true,
+    "independent_rci": "PASS after repairing protected Atom Bomb fallback, tactical ordering, confirmed-alliance precedence, cross-map attacker attribution, targeted-build filtering, planner independence, kp2 marker preservation, and harmless-social anti-hold behavior",
+    "planner_independent": true,
+    "production_files": [
+      "strategy-chassis.mjs",
+      "strategy-engine.mjs",
+      "llm-player.mjs"
+    ],
+    "test_files": [
+      "test/strategy-chassis.test.mjs",
+      "test/llm-player.integration.test.mjs"
+    ],
+    "branch_pushed": true
+  },
+  "candidate_image": {
+    "tag": "proxywar-agent-llm:qd1n-v89-odc1-amd64",
+    "image_id": "sha256:a9aa29ff41f7d77a3a29754c47ed7517d0513d0221eec3c34a874b1a3aa7f40d",
+    "architecture": "amd64",
+    "policy_engine": "odc1",
+    "source_files_byte_identical": true
+  },
+  "exact_parent_image": {
+    "tag": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+    "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478"
+  },
+  "qualifier": {
+    "output_root": "/private/tmp/proxywar-odc1-qualifier-576283d4-20260720",
+    "accepted": 34,
+    "decisions": 34,
+    "holds": 0,
+    "rejections": 0,
+    "fallbacks": 0,
+    "degradation": 0,
+    "results_sha256": "dd5f083addff21016038f27492a5c957a29fa705bdfdf372ad831c25da0673c4",
+    "replay_sha256": "f67f9f0da00b258fab9d9ca794cfac1010f6b8ee20cb8f36a6a228b59ecb293f",
+    "decisions_sha256": "3a12ce95f4add3225d72a3a8c11870e467bab9ee9818d5a54de01a772f770322"
+  },
+  "local_gate": {
+    "pair_id": "odc1-pangaea-compact-20260720",
+    "seed": 20260720,
+    "map": "Pangaea",
+    "map_size": "Compact",
+    "difficulty": "Easy",
+    "players": 2,
+    "max_decision_steps": 300,
+    "turns_per_decision_step": 25,
+    "coworld_cli_version": "0.1.34",
+    "game_version": "0.1.10",
+    "gate_contract_sha256": "0fed1fb0d2649ad6889c40537162b7b4199b5c6f7330dad6316095c5ba713183",
+    "manifest_sha256": "f64cd51b21883a434d7c5e3eef924a6312e6ca74f1cb6b9d998dc0724dca65cf",
+    "differential_fixture_sha256": "4f5dd380013f4cdd125222a4ea0162c428d3c6f3f8668480042610ab3f303b1f",
+    "differential_proof_sha256": "bd741acecfa190debbd7c1b95571fe1751f3d263f54cf05e3c34843c0172210d",
+    "pair_audit_sha256": "1bde5cc21657e93a6311bc367fb8bf82dfc5dbaf1a73a7313654d364c816d3c4"
+  },
+  "runs": [
+    {
+      "orientation": "A",
+      "candidate_slot": 0,
+      "parent_slot": 1,
+      "candidate_score": 0.6897909514528527,
+      "parent_score": 0.3102090485471472,
+      "candidate_tiles": 69722,
+      "parent_tiles": 31355,
+      "candidate_decisions": 312,
+      "candidate_accepted": 312,
+      "candidate_holds": 0,
+      "candidate_rejections": 0,
+      "candidate_fallbacks": 0,
+      "candidate_degradation": 0,
+      "candidate_illegal_actions": 0,
+      "candidate_k1z_harm": 0,
+      "candidate_causal_transitions": 50,
+      "candidate_post_opening_transitions": 47,
+      "job_sha256": "f0ee713c84a31d17b7469aa168b50a8c6e97fcdb022742b639bbe1190c0ffc97",
+      "config_sha256": "1af4151597663b22f736e0b6d3817faa99c56e7bb0d34d9b5d62c27fa25cd558",
+      "results_sha256": "f55194749563d0989c007507e3bf25c4fd9d7f8e777d2c9ff2a28a56f8dcd0c2",
+      "replay_sha256": "d37eebd8189de126279cd09247d519be4815e7c104ff8be5d77556eec65d61ab",
+      "decisions_sha256": "9dfb65c790e0cce07a3808c0fb0241b377d95db74634f1a61db1230854437597"
+    },
+    {
+      "orientation": "B",
+      "candidate_slot": 1,
+      "parent_slot": 0,
+      "candidate_score": 0.6907682247805497,
+      "parent_score": 0.30923177521945033,
+      "candidate_tiles": 69722,
+      "parent_tiles": 31212,
+      "candidate_decisions": 312,
+      "candidate_accepted": 312,
+      "candidate_holds": 0,
+      "candidate_rejections": 0,
+      "candidate_fallbacks": 0,
+      "candidate_degradation": 0,
+      "candidate_illegal_actions": 0,
+      "candidate_k1z_harm": 0,
+      "candidate_causal_transitions": 61,
+      "candidate_post_opening_transitions": 58,
+      "job_sha256": "a3302cf7388bc38e9102f61044a30afb111f2202495e914b542f46b5276fce74",
+      "config_sha256": "30b031ca5db541707b0b84c109b769b55672a493cd34ed42ddef371de4d668a8",
+      "results_sha256": "c8b42fc47f4a69b97b5b9da191fa0e6321da30e2f8fd7ee81ef342745605f562",
+      "replay_sha256": "c19504a0da1ab4974691e59b5f0b8f71a86bf845a154a4798bbe4a62e970b577",
+      "decisions_sha256": "6c839cf0f018f530c06053a8f527af330a8f7200f5e5d2c617b9b693135d04e0"
+    }
+  ],
+  "paired_result": {
+    "candidate_mean_score": 0.6902795881167012,
+    "parent_mean_score": 0.3097204118832988,
+    "mean_score_delta": 0.3805591762334024,
+    "candidate_combined_tiles": 139444,
+    "parent_combined_tiles": 62567,
+    "combined_tile_delta": 76877,
+    "candidate_decisions": 624,
+    "candidate_accepted": 624,
+    "candidate_holds": 0,
+    "candidate_rejections": 0,
+    "candidate_fallbacks": 0,
+    "candidate_degradation": 0,
+    "candidate_illegal_actions": 0,
+    "candidate_k1z_harm": 0,
+    "declared_wins": 0,
+    "note": "Both players remained alive at the cap. The result proves a strong seeded local score and territory advantage, not a league win."
+  },
+  "telemetry_caveat": "Episode-level fallback and degradation totals include 300 control decisions because exact v89 has no planner. Candidate-row audit is the authoritative ODC1 runtime check and is clean.",
+  "next_gate": "Run one explicit-seed current-roster coalition matched gate. A failure closes ODC1. A pass unlocks hosted 4/4 and 20/20 regression; only completion of every gate can trigger automatic upload, submission, and champion verification."
+}
