@@ -406,6 +406,9 @@ function validateEpisodeSet(episodes, {
 function validateHostedReceipt(receipt, candidate, preflightValue) {
   if (!receipt) return;
   if (receipt.verdict !== "PASS_HOSTED") errors.push("hosted audit did not pass");
+  if (!emptyArray(receipt.violations)) {
+    errors.push("hosted audit has unresolved violations");
+  }
   receiptIdentityMatches(receipt, "hosted audit", candidate, {
     requirePolicyVersion: true,
   });

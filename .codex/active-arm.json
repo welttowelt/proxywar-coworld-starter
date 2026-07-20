@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T16:48:35Z",
+  "updated_at": "2026-07-20T17:31:32Z",
   "cycle_id": "odin-odc1-rci2-20260720",
   "lane": "odin",
   "authority": {
@@ -15,9 +15,9 @@
     "exact_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
     "candidate_source_commit": "23ada8a8cfc1f41b1c798cfcb3b71f6fc2f21587",
     "marker_family": "od*",
-    "closed": false
+    "closed": true
   },
-  "state": "hosted_4_of_4_running",
+  "state": "closed_hosted_gate_failed",
   "runner": {
     "state": "free",
     "required_path": "scripts/proxywar-runner-lease.sh run odin"
@@ -73,13 +73,29 @@
       "unresolved_violations": 0
     },
     "hosted_gate": {
+      "verdict": "STOP_HOSTED",
       "candidate_request_id": "xreq_78ea6880-1bba-4db6-88e1-9008e7f4966a",
       "parent_request_id": "xreq_21e492fa-fe11-46c2-9e06-0ed289a12d5e",
       "source_round_number": 575,
       "variant": "tournament-12p-pangaea",
       "episodes_per_request": 4,
       "odin_slot": 7,
-      "only_changed_policy_version": true
+      "only_changed_policy_version": true,
+      "receipt": "experiments/audit-qd1n-odc1-rci2-hosted-4x-20260720.json",
+      "receipt_sha256": "a00beee176a6a8cf0999737dab9fc7021f366dad445e8d0e8b67443994aecf03",
+      "candidate_wins": 0,
+      "parent_wins": 0,
+      "candidate_marker_executions": 24,
+      "candidate_final_tiles": [
+        2517,
+        5535,
+        2717,
+        0
+      ],
+      "candidate_holds": 1,
+      "candidate_rejections": 0,
+      "candidate_degradation": 0,
+      "candidate_k1z_harm": 0
     }
   },
   "gates": {
@@ -89,7 +105,7 @@
     "mechanism_screen": "passed_no_competitive_claim",
     "preupload_rci": "passed",
     "diagnostic_uploaded": true,
-    "hosted_4_of_4": "running",
+    "hosted_4_of_4": "failed_0_of_4",
     "league_regression_20_of_20": "not_run",
     "final_rci": "not_run",
     "submitted": false,
@@ -102,7 +118,7 @@
     "parent_runtime_excluded": "local parent lacked Bedrock credentials",
     "k1z_only_finish": "disabled_until_authoritative_alive_roster_signal"
   },
-  "next_automatic_transition": "Run matched current-top-12 hosted Pangaea requests for qd1n:v93 and exact qd1n:v89, audit the four candidate episodes fail-closed, and close ODC1 immediately unless Odin wins 4/4 with mechanism reach, zero holds, zero rejections, zero K1Z harm, and no unexplained planner regression. Do not submit to the league or change champion state before hosted 4/4, a distinct 20/20 regression, and final RCI all pass.",
+  "next_automatic_transition": "Keep qd1n:v89 champion. Open one bounded work-conserving opening scheduler derived from the verified Daveey replay invariant: one early City, otherwise highest-progress land conquest through decision 20, immediate neutral-to-rival frontier pivot, proactive social deferred, K1Z reverse handshakes and emergency defense preserved. Reject unless matched mirrors show mechanism reach, decision-20 tile lift, and placement lift. Do not submit or change champion state before hosted 4/4, distinct 20/20 regression, and final RCI all pass.",
   "prior_verified_champion_preserved": true,
   "prior_verified_champion": "qd1n:v89"
 }

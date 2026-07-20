@@ -1752,3 +1752,19 @@ The durable receipt is
 [`audit-qd1n-odc1-rci2-mechanism-20260720.json`](audit-qd1n-odc1-rci2-mechanism-20260720.json).
 The superseded baseline is
 [`audit-qd1n-odc1-clean-dispatcher-seeded-20260720.json`](audit-qd1n-odc1-clean-dispatcher-seeded-20260720.json).
+
+## ODC1 hosted rejection (2026-07-20)
+
+The matched current-field Pangaea gate compared diagnostic `qd1n:v93` with
+exact champion `qd1n:v89`, four hosted episodes per arm. Both won `0/4`.
+ODC1 reached its dispatcher 24 times and recorded zero rejected decisions,
+planner degradation, or K1Z harm, but finished at
+`2,517 / 5,535 / 2,717 / 0` tiles and selected one hold. Mechanism cleanliness
+did not create competitive lift, so ODC1 closed at `STOP_HOSTED`. No regression,
+league submission, membership, or champion change followed; v89 remains the
+preserved champion.
+
+The fail-closed audit also added scalar `submittedIntent.target` support for
+the engine's `targetPlayer` form, preventing missing-target false positives.
+The immutable result is
+[`audit-qd1n-odc1-rci2-hosted-4x-20260720.json`](audit-qd1n-odc1-rci2-hosted-4x-20260720.json).

@@ -294,6 +294,7 @@ function makePromotionPreflight(context) {
   const hostedAudit = path.join(context.directory, "hosted-audit.json");
   writeJson(hostedAudit, {
     verdict: "PASS_HOSTED",
+    violations: [],
     candidate_source_commit: context.sourceCommit,
     candidate_image_id: IMAGE,
     candidate_policy_version_id: POLICY_ID,

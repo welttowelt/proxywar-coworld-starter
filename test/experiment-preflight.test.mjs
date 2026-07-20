@@ -277,6 +277,7 @@ function addStrictPromotionEvidence(context) {
   value.hosted.request_id = "xreq_child";
   value.hosted.audit_receipt = receipt(directory, "hosted.json", {
     verdict: "PASS_HOSTED",
+    violations: [],
     candidate_source_commit: source,
     candidate_image_id: image,
     candidate_policy_version_id: policyId,
@@ -430,6 +431,16 @@ test("strict promotion verifies final RCI, K1Z safety, and distinct replay evide
   const regression = JSON.parse(readFileSync(regressionBinding.path, "utf8"));
   const hostedBinding = context.value.hosted.audit_receipt;
   const hosted = JSON.parse(readFileSync(hostedBinding.path, "utf8"));
+  hosted.violations = ["forged pass"];
+  writeFileSync(hostedBinding.path, JSON.stringify(hosted));
+  hostedBinding.sha256 = sha256(hostedBinding.path);
+  const contradicted = validate(context.value, "--require-promotion");
+  assert.equal(contradicted.status, 1);
+  assert.match(contradicted.report.errors.join(" "), /hosted audit has unresolved/);
+
+  hosted.violations = [];
+  writeFileSync(hostedBinding.path, JSON.stringify(hosted));
+  hostedBinding.sha256 = sha256(hostedBinding.path);
   const originalRegressionReplay = regression.episodes[0].replay_sha256;
   regression.episodes[0].replay_sha256 = hosted.episodes[0].replay_sha256;
   writeFileSync(regressionBinding.path, JSON.stringify(regression));
