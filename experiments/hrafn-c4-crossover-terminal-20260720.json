@@ -1,0 +1,217 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_candidate_crossover_terminal",
+  "campaign_id": "hrafn-c4-conversion",
+  "recorded_at": "2026-07-20T19:08:50Z",
+  "scope": "Hrafn only",
+  "candidate": {
+    "arm": "hrafn-clean-chassis-c4-cap-escape-precedence",
+    "source_commit": "9d2921cab1f1815f0cdc36862189dd22e3886f39",
+    "image": "hrafn-clean-chassis-c4:9d2921ca",
+    "image_digest": "sha256:197b3193fff7de86c112720ea710e87d453bde036fc360a637090236cf57ba3a"
+  },
+  "control": {
+    "arm": "hrafn-clean-chassis-c2",
+    "source_commit": "9c9ae7b6b3a978d971cde24688aba3995a88bdea",
+    "image": "hrafn-clean-chassis-c2:9c9ae7b6",
+    "image_digest": "sha256:79b3646454e53702414f5d6755adf445246e8a9a09af0a9e42ef3db85f3f5ff3"
+  },
+  "coordination": {
+    "odin_identity_window_packet": {
+      "message_id": "odin-000007",
+      "mailbox_commit": "1b8b2b6",
+      "file_sha256": "61f67c0a993e48ad62d8831d7ed6cb4dcf9683f9d308e5f4e3b3a9168ecfa002",
+      "content_sha256": "52b1b39f729120d5b404d882e48aa470dec5886077c15299cc796acb1e5a3428",
+      "protocol_valid": true,
+      "advisory": true,
+      "formal_approval": false,
+      "mutation_scope": "none",
+      "contract": "Run exactly two foreground mirrors as K1Z Hrafn, then restore the active identity to K1Z odin free after mirror two or any earlier terminal stop."
+    },
+    "aborted_pre_window_attempt": {
+      "run_id": "hrafn-c4-xo-a-r1-20260720",
+      "reason": "supervised_command_exit_78",
+      "coworld_episode_started": false,
+      "evidence_eligible": false,
+      "abort_receipt_sha256": "bed478b6ca54392562db96144a5734ba79ac782a6c13eaef4cf083649235320a"
+    }
+  },
+  "runtime": {
+    "coworld_client": "0.1.28",
+    "variant": "tournament-2p-pangaea",
+    "seed": 240720,
+    "max_decision_steps": 300,
+    "turns_per_decision_step": 25,
+    "foreground_runner_lease": true,
+    "manifest_sha256": "8feb5100ee63d5ccca66794c40e535f2715376e2a2cf8a3f8ed892880dfe65f3",
+    "candidate_first_job_sha256": "83209a1ec1ac569a5d585b3eddba9a65304341c3699b161b9d5a995dcbcc43f5",
+    "control_first_job_sha256": "3379a94ce0c163606161820cbee10a69f8c1c3d08c8e436f7aac9a14c8a967f7",
+    "arm_bound_names": true,
+    "both_names_k1z_tagged": true
+  },
+  "runs": [
+    {
+      "run_id": "hrafn-c4-xo-a-r2-20260720",
+      "orientation": "candidate_first",
+      "seat_map": [
+        {
+          "slot": 0,
+          "name": "K1Z Hrafn",
+          "arm": "candidate"
+        },
+        {
+          "slot": 1,
+          "name": "K1Z Hrafn comparison",
+          "arm": "control"
+        }
+      ],
+      "game_id": "CWAANSCM",
+      "turn_count": 7825,
+      "decision_count": 624,
+      "accepted_decision_count": 624,
+      "fallback_count": 0,
+      "degraded_count": 0,
+      "scores": [
+        0.6212884198699944,
+        0.3787115801300056
+      ],
+      "tiles": [
+        61935,
+        37753
+      ],
+      "results_sha256": "814270d9732de3a98c7f948b53cb7c7b84817b43d91162f4ecfd2009e2be9e02",
+      "replay_sha256": "bdee52f424c55f845fcf64c8d8b41e720761faeedf6fcf001b4e1bc67f51a2bb",
+      "operational_receipt_sha256": "e872bae4d5dea5c62a60e2f5591faedf4a2242cfc608bbad70831cde869d1e72",
+      "audit_sha256": "e95bbaed8e7bb91b523ac34184116da608223b333dfefdf15b3fcd69344ef803",
+      "candidate_audit": {
+        "policy_decisions": 300,
+        "accepted": 300,
+        "rejected": 0,
+        "fallbacks": 0,
+        "holds": 0,
+        "verified_holds": 0,
+        "hold_evidence_gaps": 0,
+        "harmful_k1z_actions": 0,
+        "hold_evidence_complete": true,
+        "hks1_builds": 1,
+        "hks1_moves": 22,
+        "hks1_total": 23,
+        "first_hks1_turn": 3825,
+        "first_hks1_action_id": "build:Warship:146701"
+      }
+    },
+    {
+      "run_id": "hrafn-c4-xo-b-r1-20260720",
+      "orientation": "control_first",
+      "seat_map": [
+        {
+          "slot": 0,
+          "name": "K1Z Hrafn comparison",
+          "arm": "control"
+        },
+        {
+          "slot": 1,
+          "name": "K1Z Hrafn",
+          "arm": "candidate"
+        }
+      ],
+      "game_id": "CWAANSCM",
+      "turn_count": 7825,
+      "decision_count": 624,
+      "accepted_decision_count": 624,
+      "fallback_count": 0,
+      "degraded_count": 0,
+      "scores": [
+        0.6212884198699944,
+        0.3787115801300056
+      ],
+      "tiles": [
+        61935,
+        37753
+      ],
+      "results_sha256": "a131081ec2d402a869805d09086657c0c0fda59386825fee95efb314cee213e4",
+      "replay_sha256": "2a263f0f0b8eb62f180cd24abb16b4c51feb355e23c986eb78245fb864a27336",
+      "operational_receipt_sha256": "dccb48072d142f7a83350ecd112aaec9e4a8383a1833d235fad5ed0649ac87e7",
+      "audit_sha256": "359b21a9f90bde2891a05c84dabdc9f343bfced756f46033a0440ff23b7a632f",
+      "candidate_audit": {
+        "policy_decisions": 300,
+        "accepted": 300,
+        "rejected": 0,
+        "fallbacks": 0,
+        "holds": 175,
+        "verified_holds": 162,
+        "hold_evidence_gaps": 13,
+        "hold_evidence_gap_turns": [
+          2475,
+          2500,
+          2525,
+          2550,
+          2575,
+          2600,
+          2625,
+          2650,
+          2675,
+          2700,
+          2725,
+          2750,
+          2775
+        ],
+        "harmful_k1z_actions": 0,
+        "hold_evidence_complete": false,
+        "hks1_builds": 1,
+        "hks1_moves": 29,
+        "hks1_total": 30,
+        "first_hks1_turn": 3975,
+        "first_hks1_action_id": "build:Warship:142674"
+      }
+    }
+  ],
+  "matched_analysis": {
+    "candidate_reached_in_both_orientations": true,
+    "candidate_mean_score": 0.5,
+    "control_mean_score": 0.5,
+    "candidate_mean_tiles": 49844,
+    "control_mean_tiles": 49844,
+    "score_delta": 0,
+    "tile_delta": 0,
+    "higher_score_followed_slot_zero": true,
+    "seat_independent_advantage": false,
+    "interpretation": "The C4 action delta was live in both seats, but the exact 0.621288/0.378712 score and 61,935/37,753 tile result followed physical slot zero after the arm-bound names and images swapped. The matched outcome is a tie between arms, not an advantage."
+  },
+  "identity_return": {
+    "verified_at": "2026-07-20T19:06:00Z",
+    "active_player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "active_player_name": "K1Z odin free",
+    "hrafn_player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "hrafn_active": false,
+    "runner_lease": "free",
+    "contract_satisfied": true
+  },
+  "rci": {
+    "critique": "C4 proves bounded branch reach and clean accepted execution, but it produces no matched score or territory lift. The reverse mirror also fails the independent hold-evidence-completeness check at thirteen early hncap holds.",
+    "refine": "Close C4 without requesting the one formal Odin approval. Preserve the live deterministic executor, exact artifacts, and replay-derived lesson; do not add another unmeasured rule.",
+    "iterate": "The next arm must target an observed conversion loss with a preregistered seat-independent metric and complete hold evidence. It starts from frozen Hrafn v5, not from an assumed C4 promotion.",
+    "classification": "REJECT"
+  },
+  "verdict": {
+    "code": "REJECT_MATCHED_ADVANTAGE_AND_EVIDENCE_INCOMPLETE",
+    "local_matched_reach": true,
+    "local_matched_advantage": false,
+    "fail_closed_evidence_complete": false,
+    "promotion_eligible": false,
+    "formal_odin_approval_requested": false,
+    "formal_odin_approval_consumed": false,
+    "upload_eligible": false,
+    "hosted_eligible": false,
+    "submission_eligible": false,
+    "champion_change": false,
+    "champion": "hrafn-fylking:v5",
+    "c3_status": "closed",
+    "c4_status": "closed"
+  },
+  "authority": {
+    "local_diagnostic_only": true,
+    "slack_interaction": false,
+    "odin_code_or_lane_touched": false
+  }
+}

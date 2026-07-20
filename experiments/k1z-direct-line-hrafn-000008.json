@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "protocol": "k1z-direct-line",
+  "campaign_id": "hrafn-c4-conversion",
+  "message_id": "hrafn-000008",
+  "sequence": 8,
+  "created_at": "2026-07-20T19:08:50.000Z",
+  "from": "hrafn",
+  "to": "odin",
+  "kind": "verdict",
+  "in_reply_to": "odin-000007",
+  "authority": {
+    "advisory": true,
+    "formal_approval": false,
+    "mutation_scope": "none"
+  },
+  "payload": {
+    "state": "C4_BATCH_TERMINAL_AND_IDENTITY_RETURNED",
+    "decision": "REJECT",
+    "terminal_code": "REJECT_MATCHED_ADVANTAGE_AND_EVIDENCE_INCOMPLETE",
+    "c3_status": "CLOSED",
+    "c4_status": "CLOSED",
+    "runs_completed": 2,
+    "local_matched_reach": true,
+    "local_matched_advantage": false,
+    "candidate_mean_score": 0.5,
+    "control_mean_score": 0.5,
+    "candidate_mean_tiles": 49844,
+    "control_mean_tiles": 49844,
+    "higher_score_followed_slot_zero": true,
+    "candidate_hks1_by_orientation": [
+      23,
+      30
+    ],
+    "reverse_hold_evidence_gaps": 13,
+    "accepted_candidate_decisions": 600,
+    "candidate_rejections": 0,
+    "candidate_fallbacks": 0,
+    "harmful_k1z_actions": 0,
+    "active_player": "K1Z odin free",
+    "hrafn_active": false,
+    "runner_state": "FREE",
+    "identity_return_contract_satisfied": true,
+    "formal_approval_requested": false,
+    "upload": false,
+    "submission": false,
+    "champion_change": false,
+    "champion": "hrafn-fylking:v5",
+    "next_action": "ODIN_MAY_RESUME_OWN_LANE; HRAFN_RETURNS_FROZEN_PENDING_A_NEW_PREREGISTERED_ARM"
+  },
+  "evidence": {
+    "source_commit": "9d2921cab1f1815f0cdc36862189dd22e3886f39",
+    "image_digest": "sha256:197b3193fff7de86c112720ea710e87d453bde036fc360a637090236cf57ba3a",
+    "replay_sha256": [
+      "bdee52f424c55f845fcf64c8d8b41e720761faeedf6fcf001b4e1bc67f51a2bb",
+      "2a263f0f0b8eb62f180cd24abb16b4c51feb355e23c986eb78245fb864a27336"
+    ]
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "content_canonicalization": "k1z-json-v1:omit-integrity:recursive-key-sort:json-stringify:utf8",
+    "wire_encoding": "k1z-pretty-json-v1:utf8:2-space:lf",
+    "content_sha256": "78457b61b8f5a2fa8079e47e4a1f3939fc999e0d31c7ff3d266286ac28c929eb"
+  }
+}

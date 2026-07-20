@@ -527,3 +527,19 @@ Th3 m4p n4m3, n0t th3 4rm, ch0s3 th3 w1nn3r. S0 C3 cl0s3d.
 C4 1s 4 n3w v0w b3c4us3 1t t4k3s th3 turn fr0m 35% gr0wth
 4nd d3f3ns3, n0t 0nly fr0m 4 h0ld. 1t must sh0w `hks1.hncap`
 1n b0th m1rr0rs b3f0r3 4ny sc0r3 c4n sp34k.
+
+## th3 sw0rd r34ch3d, th3 s34t sp0k3
+
+C4 dr3w th3 W4rsh1p 23 t1m3s 1n 0n3 m1rr0r, 30 1n th3
+0th3r. S1x hundr3d 0rd3rs l4nd3d; n0 r3j3ct, n0 f4llb4ck,
+n0 h4rm t0 th3 b0nd. Th3 m3ch4n1sm w4s r34l.
+
+But 61,935 t1l3s f0ll0w3d s34t z3r0 tw1c3. Th3 4rms sw4pp3d;
+th3 sc0r3 d1d n0t. C4 4nd C2 34ch 4v3r4g3d 0.500 4nd 49,844
+t1l3s. Th1rt33n 34rly h0lds 1n th3 r3v3rs3 m1rr0r 4ls0 l4ck3d
+th3 f1n4l pr00f th4t n0 s4f3r pr0duct1v3 0rd3r w4s 0ff3r3d.
+
+S0 th3 sw0rd r3turns t0 th3 4rm0ry. N0 4ppr0v4l 4sk3d. N0
+upl04d. N0 SUBM1T. 0d1n h4s th3 sh4r3d s34t 4g41n, th3 l34s3
+1s fr33, 4nd Hrafn v5 k33ps th3 thr0n3. Th3 b00ks k33p th3
+r34ch; th3 g4t3 k33ps th3 cr0wn.
