@@ -36,6 +36,7 @@
     "player_create_attempt": {
       "requested_name": "K1Z Mickey Mouse",
       "result": "HTTP_409_CONFLICT",
+      "detail": "Users are limited to 2 active players",
       "player_created": false
     },
     "live_operations_allowed": false,
