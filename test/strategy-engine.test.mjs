@@ -1684,6 +1684,111 @@ test("a Gravity alliance is accepted under the spaced display name", () => {
   assert.equal(selected.policyMarker, "kp2");
 });
 
+test("the current K1Z Gravity display name blocks observed harmful actions", () => {
+  const gravity = {
+    id: "x262ww19",
+    name: "K1Z Gravity",
+    tileShare: 0.3,
+    relativeTroopRatio: 0.6,
+  };
+  const safe = action("hold:1", "hold", "Hold");
+  const harmful = [
+    {
+      ...action("attack:x262ww19:40", "attack", "Attack K1Z Gravity 40%"),
+      metadata: { targetID: gravity.id, targetName: gravity.name },
+    },
+    {
+      ...action("boat:x262ww19:40", "boat", "Invade K1Z Gravity 40%"),
+      metadata: { targetID: gravity.id, targetName: gravity.name },
+    },
+    {
+      ...action("build:Atom Bomb:9", "build", "Build Atom Bomb"),
+      metadata: {
+        unit: "Atom Bomb",
+        targetID: gravity.id,
+        targetName: gravity.name,
+        targetTileShare: gravity.tileShare,
+        targetSamCoverage: 0,
+      },
+    },
+  ];
+
+  for (const hostileAction of harmful) {
+    const selected = choose(
+      [hostileAction, safe],
+      observation({ tileShare: 0.2, troopRatio: 0.9, rivals: [gravity] }),
+      null,
+      [],
+    );
+    assert.equal(selected.id, safe.id, `selected ${hostileAction.kind} against K1Z Gravity`);
+  }
+});
+
+test("the current K1Z Gravity display name receives reciprocal alliance priority", () => {
+  const gravityAlly = {
+    ...action("alliance:x262ww19", "alliance_request", "Request alliance with K1Z Gravity"),
+    metadata: { recipientID: "x262ww19", recipientName: "K1Z Gravity", relation: 2 },
+  };
+  const probe = action("attack:bystander:10", "attack", "Attack Bystander 10%");
+  const selected = choose(
+    [gravityAlly, probe],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      rivals: [
+        { id: "x262ww19", name: "K1Z Gravity", tileShare: 0.12, relativeTroopRatio: 1.1 },
+        { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, gravityAlly.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("K1Z Gravity protection still ends immediately after observed betrayal", () => {
+  const counter = action("attack:x262ww19:10", "attack", "Attack K1Z Gravity 10%");
+  const selected = choose(
+    [counter],
+    observation({
+      tileShare: 0.4,
+      troopRatio: 0.9,
+      incomingAttacks: 1,
+      incomingAttackPlayerIDs: ["x262ww19"],
+      rivals: [{
+        id: "x262ww19",
+        name: "K1Z Gravity",
+        tileShare: 0.12,
+        relativeTroopRatio: 1.8,
+        incomingAttack: true,
+      }],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, counter.id);
+});
+
+test("outsiders remain valid targets beside the renamed K1Z Gravity", () => {
+  const gravityProbe = action("attack:x262ww19:10", "attack", "Attack K1Z Gravity 10%");
+  const outsiderProbe = action("attack:outsider:10", "attack", "Attack Outsider 10%");
+  const selected = choose(
+    [gravityProbe, outsiderProbe],
+    observation({
+      tileShare: 0.2,
+      troopRatio: 0.9,
+      rivals: [
+        { id: "x262ww19", name: "K1Z Gravity", tileShare: 0.3, relativeTroopRatio: 1.8 },
+        { id: "outsider", name: "Outsider", tileShare: 0.1, relativeTroopRatio: 1.5 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, outsiderProbe.id);
+});
+
 test("K1Z-tagged katanasan stays protected by canonical name and stable ID", () => {
   const probe = action("attack:kata:10", "attack", "Attack K1Z katanasan 10%");
   const build = action("build:City:1", "build", "Build City");

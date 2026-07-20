@@ -23,7 +23,8 @@ function normalizedRivalName(value) {
 }
 
 const RECIPROCAL_RIVALS = new Set(
-  ["katanasan", "juryoku-koku", "hrafn"].map(normalizedRivalName),
+  // juryoku-koku and Gravity are the same protected player across display-name changes.
+  ["katanasan", "juryoku-koku", "gravity", "hrafn"].map(normalizedRivalName),
 );
 const RECIPROCAL_RIVAL_IDS = new Set([
   "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
@@ -649,7 +650,9 @@ function builtUnits(history) {
 
 export function chooseBuild(actions, history, defend = false) {
   const candidates = safeActions(actions, (action) =>
-    action.kind === "build" && !actionText(action).includes("defense post")
+    action.kind === "build" &&
+    !actionText(action).includes("defense post") &&
+    String(action?.metadata?.unit ?? "").toLowerCase() !== "atom bomb"
   );
   if (candidates.length === 0) return null;
   const built = builtUnits(history);
