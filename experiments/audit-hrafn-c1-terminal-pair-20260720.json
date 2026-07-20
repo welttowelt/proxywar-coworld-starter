@@ -1,0 +1,105 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_clean_chassis_c1_terminal_matched_pair_summary",
+  "recorded_at": "2026-07-20T15:35:20Z",
+  "scope": "terminal observational failure evidence only",
+  "auditor": {
+    "commit": "fc13504ab68fab2d4c4bd63148ae2a9bbab78b70",
+    "rci_red": {
+      "tests": 37,
+      "passed": 33,
+      "failed": 4
+    },
+    "rci_green": {
+      "tests": 38,
+      "passed": 38,
+      "failed": 0
+    },
+    "changes": [
+      "Retain a bounded 128 MiB streaming replay cap for the observed 77,295,841-byte replay.",
+      "Bind an all-result-rows-ID-less replay schema through exact result slot and name, exact final slot and name, one unique final runtime ID, and matching decision runtime rows.",
+      "Continue rejecting mixed or partial result IDs, duplicate identities, wrong slots, cross-surface ID mismatches, and decision runtime drift."
+    ]
+  },
+  "full_report": {
+    "path": "/private/tmp/hrafn-c1-terminal-pair-audit-rci2-20260720.json",
+    "bytes": 2815366,
+    "sha256": "a5590d1456bef16ab5374dc81fd80d5e2e45f70f48545dd38bc90ea4c929e3e4",
+    "pair_passed": false
+  },
+  "requests": {
+    "candidate": "xreq_01bc60c3-7aea-443d-af64-3cc2debf5ec4",
+    "control": "xreq_a8e07da9-ac69-4b97-bc06-a5cb133734ea",
+    "status": "completed",
+    "episodes_each": 4,
+    "failed_episodes": 0
+  },
+  "pair_checks": {
+    "candidate_and_control_request_ids_exact_and_distinct": true,
+    "request_provenance_complete": true,
+    "variant_map_seat_episode_count_coworld_version_and_game_config_identical": true,
+    "request_and_api_rosters_differ_only_v5_to_candidate_at_hrafn": true,
+    "all_eight_replay_hashes_present_and_unique": true,
+    "control_evidence_passed": true,
+    "candidate_strict_evidence_passed": false
+  },
+  "candidate": {
+    "label": "hrafn-fylking:v8",
+    "policy_version_id": "0b444466-abdd-422f-82e7-7652360a2015",
+    "wins": 0,
+    "scores": [
+      0,
+      0.1607394027900542,
+      0,
+      0
+    ],
+    "policy_decisions": 1354,
+    "accepted": 1354,
+    "rejected": 0,
+    "holds": 439,
+    "hold_evidence_gaps": 439,
+    "fallbacks": 4,
+    "planner_degradation_failures": 4,
+    "harmful_k1z_actions": 0,
+    "productive_marker_count": 12,
+    "replay_sha256": [
+      "7f8339c14df0d06e9c7dd6c2c2c35aa32817d0eeb76cbd163c5c08f100078217",
+      "cc35c5981b159e99dc5f317aba6ab31478b7c94dfedf6cc01a87c79eadef9fc4",
+      "dfdae256991f2304bd8be11ad247081fd1d53f31d29c7b7f32271934913876b2",
+      "126ea24ba3b16f660c26b221463aaa744d0f277e3d8ab4ce7e858b35b8ed0e3f"
+    ],
+    "strict_no_outcome_note": "The fractional 0.1607394027900542 episode ended without an outright winner. Its replay bytes, hash, participant, result slot, decision agent, and decision runtime evidence are present; strict candidate replay completeness intentionally does not treat a no-winner outcome as a qualifying win."
+  },
+  "control": {
+    "label": "hrafn-fylking:v5",
+    "policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+    "wins": 0,
+    "scores": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "policy_decisions": 864,
+    "accepted": 864,
+    "rejected": 0,
+    "holds": 0,
+    "fallbacks": 0,
+    "planner_degraded_decisions": 0,
+    "replay_sha256": [
+      "b2b48a26eeee9a5ce461608b27593cc6284f23fcb78652f6f488b778cd6f2539",
+      "5f2cdee27908ef0deab1478118692453fdb607310ada6f2c34a2a7cd42e6e710",
+      "13bd994dfdac34b23187542312b0d64b7da89645771ec9c48e9ded2df4c546f2",
+      "05e3ef31f4a99121624c3284a40cb2ce818f29d8f6f6302dbf60c8e5499850dd"
+    ],
+    "evidence_passed": true
+  },
+  "promotion_consequence": "None. C1 remains terminal NO SUBMIT and cannot be reopened by later evidence. C3 is a separately preregistered successor.",
+  "live_incumbent": {
+    "label": "hrafn-fylking:v5",
+    "membership_id": "lpm_e822de7f-1124-4b5f-b0ef-1025d46ae211",
+    "status": "competing active",
+    "champion": true
+  },
+  "verdict": "TERMINAL NO SUBMIT: candidate finished 0/4 with 439 cap-hold evidence gaps and one runtime fallback/degradation event in every episode. The matched control evidence passed. Hrafn v5 remains sole champion."
+}

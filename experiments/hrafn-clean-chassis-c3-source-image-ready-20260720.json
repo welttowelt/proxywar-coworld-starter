@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_clean_chassis_source_image_readiness",
+  "recorded_at": "2026-07-20T15:35:20Z",
+  "arm": "hrafn-clean-chassis-c3-cap-escape",
+  "scope": "Hrafn only",
+  "authority": {
+    "user_direction": [
+      "Implement the approved Hrafn plan and bring it operational.",
+      "Run RCI loops for every blocker until the lane works cleanly.",
+      "Odin is the only formal approver; no other approval is required."
+    ],
+    "formal_approver": "Codex Odin",
+    "formal_approval_status": "pending exact packet",
+    "slack_interaction": false
+  },
+  "preregistration": {
+    "mechanism_commit": "09756bc3c4854e035cf84f851307405d026cb3b9",
+    "roster_isolation_commit": "63710cfe6c29b4f71f50fbafc249a1031580b32a",
+    "exact_parent_source_commit": "9c9ae7b6b3a978d971cde24688aba3995a88bdea",
+    "exact_parent_source_evidence_commit": "7231e67420367b079052dcab1daa7b9c95bf8df2",
+    "audit_baseline_commit": "ab3eea34b4a9514321e059631d5e59adf0d17f65"
+  },
+  "source": {
+    "branch": "feature/k1z-hrafn-fylking",
+    "source_and_replay_audit_commit": "74c8bf79430aab92190fa24e3ce24d82347868ee",
+    "pushed_before_build": true,
+    "single_delta": "After every existing strategy and generic utility selector returns null under the latched two-launch naval cap, select a strictly schema-bound unattributed Warship move, else at most one strictly schema-bound Warship build, else preserve the hncap hold.",
+    "unchanged_runtime_parent": {
+      "hrafn-chassis-player.mjs": "39e3a658dcbaeea5e7c576b654838dcc1e646b4e44b82bb8b67db1130aa70054",
+      "hrafn-safety.mjs": "4016468cb15d7e225adaaac6d049a22cdde5629cc575b44caee207dc2d9d9c05"
+    },
+    "files": {
+      "hrafn-state.mjs": "374f216652a7620001558ba848a95c16eda85e171efeac2786b0df0704ebb692",
+      "hrafn-chassis.mjs": "1d379ec92aea441927212e95fc1e0671da328d0b91c5082680b27babcac1622b",
+      "scripts/audit-hrafn-chassis-replay.mjs": "76bc7cc63fbe13f70607e6bff40653d06ba4ab6bef87b316b4e4e75165025bf1",
+      "test/hrafn-c3-cap-escape.test.mjs": "229becae3bf6bc3d21014ed53decf6dbd96394258f42237c5735971bd1f60f05",
+      "test/fixtures/hrafn-c3-cap-escape-vectors.json": "af32baf72f4600a9e4e21e09d683f9ea73fa2d9839e2d14a22766a35263c2366"
+    }
+  },
+  "rci": {
+    "exact_parent_red": {
+      "tests": 13,
+      "passed": 6,
+      "failed": 7
+    },
+    "first_adversarial_revision_red": {
+      "tests": 20,
+      "passed": 15,
+      "failed": 5
+    },
+    "final_adversarial_revision_red": {
+      "tests": 57,
+      "passed": 50,
+      "failed": 7,
+      "classes": [
+        "fresh, marker, cached, and replay attribution drift",
+        "duplicate, third, and chronologically invalid naval antecedents",
+        "null, blank, fractional, and negative numeric coercion",
+        "conflicting canonical identities sharing one runtime ID",
+        "productive alternatives hidden under the hold kind"
+      ]
+    },
+    "final_hrafn_gate": {
+      "command": "node --test test/hrafn-state.test.mjs test/hrafn-chassis.test.mjs test/hrafn-chassis-player.integration.test.mjs test/audit-hrafn-chassis-replay.test.mjs test/hrafn-c3-cap-escape.test.mjs",
+      "tests": 155,
+      "passed": 155,
+      "failed": 0
+    },
+    "syntax_and_diff_check": "passed"
+  },
+  "image": {
+    "tag": "hrafn-clean-chassis-c3:74c8bf79",
+    "id": "sha256:5d854d0661a3b55f39b8badf262628a02aaf50a12e3b9f9371168386c162289b",
+    "platform": "linux/amd64",
+    "policy_codename": "hrafn-clean-chassis-c3",
+    "command": [
+      "node",
+      "/app/hrafn-chassis-player.mjs"
+    ],
+    "build": "git archive --format=tar 74c8bf79 | docker build --platform linux/amd64 --build-arg POLICY_CODENAME=hrafn-clean-chassis-c3 -f Dockerfile.hrafn-chassis -t hrafn-clean-chassis-c3:74c8bf79 -",
+    "dockerfile_sha256": "0ead1eadad1096578f8a0e19a63f2168f432a8e7746f9910bbbd7cfe66b17e7a",
+    "immutable_source_binding": {
+      "all_match_exact_commit": true,
+      "files": {
+        "hrafn-state.mjs": "374f216652a7620001558ba848a95c16eda85e171efeac2786b0df0704ebb692",
+        "hrafn-safety.mjs": "4016468cb15d7e225adaaac6d049a22cdde5629cc575b44caee207dc2d9d9c05",
+        "hrafn-chassis.mjs": "1d379ec92aea441927212e95fc1e0671da328d0b91c5082680b27babcac1622b",
+        "hrafn-chassis-player.mjs": "39e3a658dcbaeea5e7c576b654838dcc1e646b4e44b82bb8b67db1130aa70054",
+        "package.json": "9a3e9fc13997bce19c6601192f30b628bce1888aeb34beff84aaf457a2d82dba",
+        "package-lock.json": "39c03de8cf52b9dbf1a097871698ef1cabee8afac4be11927f3a5c612b2c77ec"
+      }
+    }
+  },
+  "exact_image_runtime_probe": {
+    "harness": "authoritative no-pong ping proof v2 logic",
+    "started_at": "2026-07-20T15:32:28.335Z",
+    "completed_at": "2026-07-20T15:32:29.412Z",
+    "connections": 1,
+    "heartbeat_ms": 50,
+    "ping_frames_before_request": 4,
+    "ping_frame_offsets_ms": [
+      40.446,
+      96.596,
+      152.237,
+      212.621
+    ],
+    "request_offset_ms": 234.774,
+    "response_ms": 37.122,
+    "selected_action_id": "expand:terra-nullius:35",
+    "public_reason": "[K1Z] r4vn:atk:hg35",
+    "fallback_used": false,
+    "planner_degraded": false,
+    "stderr_empty": true,
+    "exit_code": 0,
+    "passed": true
+  },
+  "runner_gate": {
+    "checked_at": "2026-07-20T15:25:00Z",
+    "lease_state": "free",
+    "shared_runner": "/Users/olifreuler/proxywar-coworld-starter/scripts/proxywar-runner-lease.sh",
+    "new_hrafn_run_state": "blocked by Odin-owned uncommitted retired-lane guard",
+    "bypass_attempted": false,
+    "odin_mailbox_response": "ODIN_TO_HRAFN_C3_REACTIVATION_BLOCKED_20260720T152448Z.md",
+    "odin_verdict": "DENIED / NO ACTION on incomplete packet",
+    "required_resolution": "The one consolidated Odin APPROVE must reactivate only the Hrafn foreground run path while preserving every lease and recovery safeguard."
+  },
+  "promotion_state": {
+    "SOURCE_READY": true,
+    "LOCAL_RUNTIME_DIAGNOSTIC_READY": true,
+    "LOCAL_QUALIFIED": false,
+    "DIAGNOSTIC_UPLOADED": false,
+    "HOSTED_PASSED": false,
+    "REGRESSION_PASSED": false,
+    "AUDIT_APPROVED": false,
+    "SUBMITTED": false,
+    "PLACED": false,
+    "CHAMPION_VERIFIED": false,
+    "ROUND_CONFIRMED": false
+  },
+  "evidence_boundary": "The mock-container probe and exact image hashes prove runtime and source binding only. They do not satisfy the foreground-leased Coworld qualifier, matched advantage, replay-visible hks1 reach, hosted gate, or regression gate.",
+  "verdict": "SOURCE_READY and LOCAL_RUNTIME_DIAGNOSTIC_READY. LOCAL_QUALIFIED remains false. NO UPLOAD, NO SUBMIT, and no membership or champion change.",
+  "next_gate": "Send the exact packet for the single consolidated Odin approval covering Hrafn runner reactivation, the registered local C3-versus-C2 qualifier, and automatic continuation only while every later gate passes."
+}
