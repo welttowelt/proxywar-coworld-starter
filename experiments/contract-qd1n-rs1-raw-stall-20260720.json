@@ -7,6 +7,7 @@
   "candidate": {
     "live_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
     "safety_invariant_base_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "source_commit": "ddb980e389c61915fafaa1c91fea282937ad85b5",
     "branch": "rci/rs1-raw-stall",
     "source_delta": "Conditionally persist validated own tiles as a selector-private, non-enumerable state field and veto the rounded-share stall only when the current raw count exceeds the oldest count in a complete four-record window. The optional planner therefore receives the exact parent JSON state. Preserve the exact parent state/history shape and tileShare behavior when raw history is absent or non-growing. The previously verified Gravity identity protection remains a mandatory K1Z invariant."
   },
@@ -31,7 +32,7 @@
     "candidate_full": "154/154 pass",
     "full_log_sha256": "09abe7f0343ae0a928d57dbcef7f4a58d6f606d38564ae04a13c557071757f00",
     "planner_prompt_parity": "red-first proof: raw tiles remain selector-readable and persist into history, but are non-enumerable and absent from JSON.stringify(state); old source failed; red log sha256 60de48b49ea62786b76dffd25dc6807fc0bf134f10c79f0cd7409438d8833fc8",
-    "independent_rci": "PASS after revision; 2,000 missing-raw differentials had zero parent mismatches and 5,000 targeted cases had zero false-positive rs1 markers"
+    "independent_rci": "PASS after revision; 5,000 randomized planner-state serializations matched the safety base byte-for-byte; missing-raw selector parity had zero mismatches; 5,000 targeted cases produced 2,934 truthful rs1 markers"
   },
   "local_canary": {
     "purpose": "Fail fast on one trace-proven repair cell. This canary proves mechanism reach and directional opening lift only; it is not the full local matched gate.",
@@ -56,9 +57,9 @@
       {
         "id": "candidate",
         "path": "/private/tmp/proxywar-rs1-slot0-canary-20260720/jobs/candidate.json",
-        "sha256": "23e09b3bfae7c55e38b907a3381a0d9f91e9c13b1c5b5f290019451f785f27c5",
-        "subject_image": "proxywar-agent-llm:qd1n-v89-rs1-4bfad888-amd64",
-        "subject_image_id": "sha256:29065128631a4e467a4b6c52bc3fa65bb218233a36f07277133ac5578dbfa157"
+        "sha256": "fe81e4d79fae86cbf05c8715c44e9e8d68fc17b501592754f4f4b04243722f6e",
+        "subject_image": "proxywar-agent-llm:qd1n-v89-rs1-ddb980e3-amd64",
+        "subject_image_id": "sha256:24051929164cb19a6ed95f6ed184c57c1b4f8a7c21efbe8ba3e879a9058e0637"
       }
     ],
     "control_opportunity": "The prior exact-parent trace first becomes RS1-eligible at active decision 21 / turn 2400, not turn 2200: observation-side own tiles are 32321 and the four raw history records are 32167/32167/32167/32168; rounded share remains 0.08 with three recent neutral land attacks; threat count is zero; no hostile attack ID is legal; cadence build is false; the only legal attacks are Terra Nullius 10/20/35; and control selects accepted boat:442484:8. At turn 2200 observation-side tiles are still flat, while at turn 2300 a disciplined rival attack retains precedence. The safety-invariant base differs only in K1Z Gravity identity protection and must reproduce the turn-2400 opportunity before the candidate may run.",
