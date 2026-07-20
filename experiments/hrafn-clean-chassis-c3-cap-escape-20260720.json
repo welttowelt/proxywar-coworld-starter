@@ -157,12 +157,19 @@
       "A matched exact-C2 control shows candidate advantage."
     ],
     "hosted": [
-      "A fresh matched current-roster exact-C2 control uses the same Coworld, variant, map, seat, roster, game config, and episode count.",
+      "A fresh matched exact-C2 control uses the same Coworld, variant, map, seat, roster, game config, and episode count.",
+      "The newly frozen roster contains no qd1n policy and no Odin player in any slot; historical C1 rosters are diagnosis evidence only and must not be cloned or rerun.",
       "Candidate finishes 4/4 with accepted hks1 reach and all zero-failure conditions.",
       "A separate map-and-seat regression finishes 20/20.",
       "The final cross-audit returns APPROVE before any submission."
     ]
   },
+  "amendments": [
+    {
+      "recorded_at": "2026-07-20T14:38:55Z",
+      "reason": "RCI made the lane boundary explicit: every new local or hosted C3 roster must exclude qd1n and Odin in every slot. Historical C1 evidence remains read-only diagnosis input. The hypothesis and single naval-cap delta are unchanged."
+    }
+  ],
   "promotion_state": {
     "SOURCE_READY": false,
     "LOCAL_QUALIFIED": false,
