@@ -162,16 +162,12 @@ function connect() {
   const activeSocket = new WebSocket(url);
   socket = activeSocket;
   activeSocket.on("open", () => {
-    activeSocket.hrafnAwaitingPong = false;
     console.log(
       `connected to match (grow=${chassisConfig.enableGrow ? "on" : "off"},` +
       `convert=${chassisConfig.enableConvert ? "on" : "off"},` +
       `naval=${chassisConfig.enableNaval ? "on" : "off"},` +
       "host-authority=external)",
     );
-  });
-  activeSocket.on("pong", () => {
-    if (activeSocket === socket) activeSocket.hrafnAwaitingPong = false;
   });
   activeSocket.on("message", (data) => handleMessage(activeSocket, data));
   activeSocket.on("close", (code, reason) => {
@@ -199,12 +195,6 @@ connect();
 const heartbeat = setInterval(() => {
   const activeSocket = socket;
   if (activeSocket?.readyState !== WebSocket.OPEN) return;
-  if (activeSocket.hrafnAwaitingPong === true) {
-    console.error("match socket missed heartbeat pong; reconnecting");
-    activeSocket.terminate();
-    return;
-  }
-  activeSocket.hrafnAwaitingPong = true;
   activeSocket.ping();
 }, heartbeatIntervalMs);
 heartbeat.unref();

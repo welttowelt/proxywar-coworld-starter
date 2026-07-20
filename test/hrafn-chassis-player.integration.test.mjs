@@ -457,6 +457,103 @@ test("wire player rejects a missing request ID before selecting or committing", 
   );
 });
 
+test("idle no-pong socket survives until the delayed first active request", async () => {
+  const server = new WebSocketServer({
+    host: "127.0.0.1",
+    port: 0,
+    autoPong: false,
+  });
+  await new Promise((resolve) => server.once("listening", resolve));
+  const { port } = server.address();
+  const firstActiveRequest = request(
+    "turn-400",
+    expansionMenu(),
+    activeObservation({
+      turnNumber: 400,
+      alivePlayerCount: 12,
+      visiblePlayers: Array.from({ length: 11 }, (_, index) => ({
+        id: `rival-${index + 1}`,
+        name: `Rival ${index + 1}`,
+        isAlive: true,
+        tileShare: 0.08,
+        relativeTroopRatio: 1,
+      })),
+    }),
+  );
+
+  let connections = 0;
+  let response = null;
+  let responseElapsedMs = Number.POSITIVE_INFINITY;
+  let delayedRequestTimer = null;
+  const player = spawnPlayer(port, { HRAFN_HEARTBEAT_MS: "50" });
+  const completed = new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      player.child.kill("SIGKILL");
+      reject(new Error(
+        `Hrafn delayed-first-request test timed out: ${player.stderr()}`,
+      ));
+    }, 8000);
+    server.on("connection", (socket) => {
+      connections += 1;
+      if (connections !== 1) return;
+      delayedRequestTimer = setTimeout(() => {
+        try {
+          assert.equal(
+            connections,
+            1,
+            "idle no-pong socket reconnected before the first active request",
+          );
+          assert.equal(
+            socket.readyState,
+            1,
+            "idle no-pong socket closed before the first active request",
+          );
+          const requestSentAt = Date.now();
+          socket.send(JSON.stringify(firstActiveRequest));
+          socket.once("message", (data) => {
+            responseElapsedMs = Date.now() - requestSentAt;
+            response = JSON.parse(String(data));
+            socket.send(JSON.stringify({ type: "final" }));
+          });
+        } catch (error) {
+          clearTimeout(timeout);
+          reject(error);
+        }
+      }, 175);
+    });
+    player.child.once("error", reject);
+    player.child.once("exit", (code) => {
+      clearTimeout(timeout);
+      if (code === 0) resolve();
+      else reject(new Error(
+        `Hrafn delayed-first-request player exited ${code}: ${
+          player.stderr()
+        }`,
+      ));
+    });
+  });
+
+  try {
+    await completed;
+  } finally {
+    if (delayedRequestTimer !== null) clearTimeout(delayedRequestTimer);
+    if (player.child.exitCode === null && player.child.signalCode === null) {
+      player.child.kill("SIGKILL");
+      await new Promise((resolve) => player.child.once("exit", resolve));
+    }
+    await closeServer(server);
+  }
+
+  assert.equal(connections, 1);
+  assert.equal(response?.selectedLegalActionId, "expand:terra-nullius:35");
+  assert.equal(response?.reason, "[K1Z] r4vn:atk:hg35");
+  assert.ok(
+    responseElapsedMs < 500,
+    `first active response took ${responseElapsedMs}ms`,
+  );
+  assert.doesNotMatch(player.stderr(), /missed heartbeat pong/);
+});
+
 test("handshake-close flapping retains exponential reconnect backoff", async () => {
   const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
   await new Promise((resolve) => server.once("listening", resolve));
@@ -515,5 +612,7 @@ test("candidate player source hard-disables midgame support", async () => {
   assert.match(source, /enableMidgameSupport:\s*false/);
   assert.doesNotMatch(source, /AWS_|BEDROCK|ANTHROPIC/);
   assert.doesNotMatch(source, /HRAFN_RUNTIME_|hrafn-runtime-guard/);
-  assert.match(source, /missed heartbeat pong/);
+  assert.doesNotMatch(source, /hrafnAwaitingPong|\.on\("pong"/);
+  assert.doesNotMatch(source, /missed heartbeat pong/);
+  assert.match(source, /activeSocket\.ping\(\)/);
 });
