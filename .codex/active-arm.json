@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T23:08:52Z",
+  "updated_at": "2026-07-20T23:18:19Z",
   "cycle_id": "odin-20260720T230625Z-26500",
   "lane": "odin",
   "arm": {
@@ -12,7 +12,7 @@
     "candidate_source_commit": "ddb980e389c61915fafaa1c91fea282937ad85b5",
     "closed": false
   },
-  "state": "odin_restored_mickey_source_ready_identity_blocked",
+  "state": "rs1_control_canary_running",
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
     "player_name": "K1Z odin free",
@@ -22,7 +22,7 @@
     "is_champion": true
   },
   "locks": {
-    "runner": "free; Hrafn source operations moved to Studio; local Mickey work requires the separate mickey lease",
+    "runner": "owned by odin run rs1-slot0-control-20260721-r2; foreground supervisor pid 45748; output /private/tmp/proxywar-rs1-slot0-control-20260721-r2",
     "qd1n_mutation": "free",
     "active_player": "K1Z odin free (live verified 2026-07-20T23:08:26Z)",
     "hrafn_identity_window": "hi1_studio_ready_local_slot_released",
@@ -71,14 +71,14 @@
     "targeted_marker_truth": "5000/5000; 2934 truthful markers"
   },
   "local_evidence": {
-    "status": "slot0_canary_preregistered_not_run",
+    "status": "slot0_control_running",
     "contract_sha256": "85830bd5b5a2e69b1e03ab320bd438db85f2069352ef99ec3237abd6d82f6205",
     "control_job_sha256": "60c479db19ddbb095c7f0d99b6acba6de79e0de27f6bafc52bb0167e9f6edaf8",
     "candidate_job_sha256": "fe81e4d79fae86cbf05c8715c44e9e8d68fc17b501592754f4f4b04243722f6e",
     "auditor_sha256": "771143a16a3f7f201f3ed018c23f6e991800db01002ffd5c35de8d53e686a4d3",
     "auditor_self_test_report_sha256": "8ba3fe5095cfe6ffe962d65552d66f7270094ce24fd52255820c69b870ce5828",
     "auditor_self_test": "parent-as-both failed closed on zero RS1 marker reach while reproducing the exact turn-2400 opportunity and AUC25 516155",
-    "reason": "Mailbox hrafn-000016 and odin-000018 establish a valid Hrafn-only Studio window at exact source 98288c8b. The user's direct local-slot transfer restores normal HOME to Odin without affecting Studio Hrafn. Mickey remains source/evidence-only until a distinct player credential exists."
+    "reason": "The sealed control started under the Odin foreground lease with coworld 0.1.30 at 2026-07-20T23:17:59Z. An earlier 0.1.28 invocation failed before game startup because that client rejects the manifest episode_timeout_minutes field; its partial output was fail-closed and quarantined. Candidate remains blocked until the r2 control reproduces the preregistered turn-2400 opportunity."
   },
   "gates": {
     "source_ready": true,
@@ -98,7 +98,7 @@
     "oi2": "closed_before_edit as redundant with HI1",
     "os1": "closed_without_run_as_recombined_complexity"
   },
-  "next_automatic_transition": "Run the preregistered RS1 slot-0 control first under the Odin lease. Hrafn runs only its approved Studio diagnostic window. Mickey stays local source/evidence-only until a distinct Softmax user credential or available player slot yields an exact Mickey player; then preregister one M0-versus-one-arm screen under the mickey lease. Reject either lane on zero reach, pre-marker divergence, any unexplained hold/reject/K1Z harm, or nonpositive measured lift.",
+  "next_automatic_transition": "Wait for supervised RS1 control r2 to finish, then verify the exact turn-2400 control opportunity. Run the sealed candidate only if that opportunity reproduces cleanly; otherwise close RS1 immediately. Hrafn stays Studio-only and Mickey stays local source/evidence-only until a distinct Softmax credential or player slot exists.",
   "prior_verified_champion_preserved": true,
   "latest_coordination_checkpoint": {
     "cycle_id": "odin-20260720T230625Z-26500",
