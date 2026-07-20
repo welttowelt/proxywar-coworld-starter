@@ -23,6 +23,8 @@ const IMAGE = `sha256:${"a".repeat(64)}`;
 const POLICY_ID = "11111111-1111-4111-8111-111111111111";
 const LABEL = "qd1n:v123";
 const SERVER = "https://softmax.com/api";
+const DIFFERENTIAL_VERIFIER = "experiments/odc1/verify-differential.mjs";
+const DIFFERENTIAL_FIXTURE = "experiments/odc1/differential-fixture.json";
 
 function sha256(file) {
   return createHash("sha256").update(readFileSync(file)).digest("hex");
@@ -44,6 +46,17 @@ function writeJson(file, value) {
 
 function localAudit(sourceCommit, parentCommit, directory) {
   const file = path.join(directory, "local-audit.json");
+  const evaluatorCommit = execFileSync("git", ["-C", root, "rev-parse", "HEAD"], {
+    encoding: "utf8",
+  }).trim();
+  const committedVerifier = execFileSync(
+    "git",
+    ["-C", root, "show", `${evaluatorCommit}:${DIFFERENTIAL_VERIFIER}`],
+  );
+  const committedFixture = execFileSync(
+    "git",
+    ["-C", root, "show", `${evaluatorCommit}:${DIFFERENTIAL_FIXTURE}`],
+  );
   const run = (orientation, replayCharacter) => ({
     orientation,
     replay_sha256: replayCharacter.repeat(64),
@@ -78,6 +91,14 @@ function localAudit(sourceCommit, parentCommit, directory) {
     differential_unit_proof: {
       same_fixture: true,
       test_exit_code: 0,
+      verifier: {
+        evaluator_commit: evaluatorCommit,
+        path: DIFFERENTIAL_VERIFIER,
+        sha256: createHash("sha256").update(committedVerifier).digest("hex"),
+      },
+      fixture: {
+        sha256: createHash("sha256").update(committedFixture).digest("hex"),
+      },
       parent: {
         source_commit: parentCommit,
         selected_action_id: "parent-action",
@@ -86,6 +107,15 @@ function localAudit(sourceCommit, parentCommit, directory) {
         source_commit: sourceCommit,
         selected_action_id: "candidate-action",
       },
+      test_command: [
+        "node",
+        DIFFERENTIAL_VERIFIER,
+        ".",
+        parentCommit,
+        sourceCommit,
+        DIFFERENTIAL_FIXTURE,
+        `experiments/odc1/differential-proof-${sourceCommit.slice(0, 8)}.json`,
+      ],
     },
     runs: [run("A", "b"), run("B", "c")],
   });

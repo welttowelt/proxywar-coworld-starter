@@ -1,10 +1,18 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { spawnSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
+
+const root = path.resolve(import.meta.dirname, "..");
+const DIFFERENTIAL_VERIFIER = "experiments/odc1/verify-differential.mjs";
+const DIFFERENTIAL_FIXTURE = "experiments/odc1/differential-fixture.json";
+
+function committedFile(commit, file) {
+  return execFileSync("git", ["-C", root, "show", `${commit}:${file}`]);
+}
 
 function fixture() {
   return {
@@ -153,6 +161,10 @@ function strictDiagnosticFixture() {
   value.local.runs = 2;
   value.local.independent_traces = 2;
   value.local.contract_sha256 = "e".repeat(64);
+  value.promotion.league_change_allowed = false;
+  const evaluatorCommit = execFileSync("git", ["-C", root, "rev-parse", "HEAD"], {
+    encoding: "utf8",
+  }).trim();
   value.local.audit_receipt = receipt(directory, "local.json", {
     schema_version: 2,
     verdict: "PASS_LOCAL_SCREEN",
@@ -165,6 +177,18 @@ function strictDiagnosticFixture() {
     differential_unit_proof: {
       same_fixture: true,
       test_exit_code: 0,
+      verifier: {
+        evaluator_commit: evaluatorCommit,
+        path: DIFFERENTIAL_VERIFIER,
+        sha256: createHash("sha256")
+          .update(committedFile(evaluatorCommit, DIFFERENTIAL_VERIFIER))
+          .digest("hex"),
+      },
+      fixture: {
+        sha256: createHash("sha256")
+          .update(committedFile(evaluatorCommit, DIFFERENTIAL_FIXTURE))
+          .digest("hex"),
+      },
       parent: {
         source_commit: value.candidate.parent_commit,
         selected_action_id: "parent-action",
@@ -173,6 +197,15 @@ function strictDiagnosticFixture() {
         source_commit: source,
         selected_action_id: "candidate-action",
       },
+      test_command: [
+        "node",
+        DIFFERENTIAL_VERIFIER,
+        ".",
+        value.candidate.parent_commit,
+        source,
+        DIFFERENTIAL_FIXTURE,
+        `experiments/odc1/differential-proof-${source.slice(0, 8)}.json`,
+      ],
     },
     runs: ["A", "B"].map((orientation, index) => ({
       orientation,
@@ -328,6 +361,14 @@ test("strict diagnostic mode requires hash-bound local and pre-upload RCI receip
   const tampered = validate(context.value, "--require-diagnostic");
   assert.equal(tampered.status, 1);
   assert.match(tampered.report.errors.join(" "), /local.audit_receipt SHA-256/);
+});
+
+test("strict diagnostic mode requires an explicit league-mutation prohibition", () => {
+  const context = strictDiagnosticFixture();
+  delete context.value.promotion.league_change_allowed;
+  const result = validate(context.value, "--require-diagnostic");
+  assert.equal(result.status, 1);
+  assert.match(result.report.errors.join(" "), /explicitly forbid league mutation/);
 });
 
 test("strict diagnostic accepts a safe mechanism screen without a lift claim", () => {

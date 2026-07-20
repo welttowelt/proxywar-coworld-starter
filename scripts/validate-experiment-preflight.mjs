@@ -1,6 +1,8 @@
 import { createHash } from "node:crypto";
+import { execFileSync } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const target = process.argv[2];
 if (!target) {
@@ -25,6 +27,9 @@ const COMMIT = /^[0-9a-f]{40}$/;
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 const POLICY_LABEL = /^qd1n:v[1-9][0-9]*$/;
 const ODIN_PLAYER_ID = "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c";
+const REPOSITORY = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const DIFFERENTIAL_VERIFIER = "experiments/odc1/verify-differential.mjs";
+const DIFFERENTIAL_FIXTURE = "experiments/odc1/differential-fixture.json";
 
 const requireString = (value, label) => {
   if (typeof value !== "string" || value.trim() === "") errors.push(`${label} is required`);
@@ -214,6 +219,71 @@ function validateLocalReceipt(receipt, candidate, preflightValue) {
     proof.parent.selected_action_id === proof.candidate.selected_action_id
   ) {
     errors.push("local audit differential proof is incomplete or mismatched");
+  }
+  const verifier = proof.verifier ?? {};
+  if (
+    verifier.path !== DIFFERENTIAL_VERIFIER ||
+    !COMMIT.test(verifier.evaluator_commit ?? "") ||
+    !SHA256.test(verifier.sha256 ?? "")
+  ) {
+    errors.push("local audit differential verifier provenance is incomplete");
+  } else {
+    try {
+      const committedVerifier = execFileSync(
+        "git",
+        [
+          "-C",
+          REPOSITORY,
+          "show",
+          `${verifier.evaluator_commit}:${DIFFERENTIAL_VERIFIER}`,
+        ],
+      );
+      const actualVerifierSha = createHash("sha256")
+        .update(committedVerifier)
+        .digest("hex");
+      if (actualVerifierSha !== verifier.sha256) {
+        errors.push("local audit differential verifier SHA-256 mismatched");
+      }
+    } catch {
+      errors.push("local audit differential verifier commit is unavailable");
+    }
+  }
+  if (!SHA256.test(proof.fixture?.sha256 ?? "")) {
+    errors.push("local audit differential fixture SHA-256 is invalid");
+  } else if (COMMIT.test(verifier.evaluator_commit ?? "")) {
+    try {
+      const committedFixture = execFileSync(
+        "git",
+        [
+          "-C",
+          REPOSITORY,
+          "show",
+          `${verifier.evaluator_commit}:${DIFFERENTIAL_FIXTURE}`,
+        ],
+      );
+      const actualFixtureSha = createHash("sha256")
+        .update(committedFixture)
+        .digest("hex");
+      if (actualFixtureSha !== proof.fixture.sha256) {
+        errors.push("local audit differential fixture SHA-256 mismatched");
+      }
+    } catch {
+      errors.push("local audit differential fixture commit is unavailable");
+    }
+  }
+  const command = proof.test_command;
+  if (
+    !Array.isArray(command) ||
+    command.length !== 7 ||
+    command[0] !== "node" ||
+    command[1] !== DIFFERENTIAL_VERIFIER ||
+    command[3] !== candidate.parent_commit ||
+    command[4] !== candidate.source_commit ||
+    command[5] !== DIFFERENTIAL_FIXTURE ||
+    command[6] !==
+      `experiments/odc1/differential-proof-${candidate.source_commit.slice(0, 8)}.json`
+  ) {
+    errors.push("local audit differential command is not reproducibly bound");
   }
 }
 
@@ -491,7 +561,7 @@ if (!baselineReady) warnings.push("no matched hosted baseline; this run cannot s
 
 if (requireDiagnostic) {
   if (!diagnosticOnly ||
-      (preflight.promotion?.league_change_allowed ?? false) !== false) {
+      preflight.promotion?.league_change_allowed !== false) {
     errors.push("diagnostic mode must explicitly forbid league mutation");
   }
 }
