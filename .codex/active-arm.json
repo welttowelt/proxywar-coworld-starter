@@ -1,125 +1,57 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T19:54:26Z",
-  "cycle_id": "odin-20260720T195217Z-79660",
+  "updated_at": "2026-07-20T20:01:49Z",
+  "cycle_id": "odin-kiz1-gravity-20260720",
   "lane": "odin",
-  "authority": {
-    "persistent_operator": "Codex Odin",
-    "hrafn": "separate_hrafn_fylking_runner_only_no_qd1n_or_league_mutation",
-    "slack": "frozen_through_2026-08-09T11:27:17Z"
-  },
   "arm": {
-    "id": "os1",
-    "name": "opening_scheduler",
-    "branch": "rci/os1-opening-scheduler",
+    "id": "kiz1",
+    "name": "gravity_identity_alias",
+    "branch": "rci/kiz1-gravity-alias",
     "exact_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
-    "candidate_source_commit": "316c7a111aeebed4ebce00032287773492e39912",
-    "marker_family": "os1",
+    "candidate_source_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
     "closed": false
   },
-  "state": "job_specs_ready_waiting_odin_foreground_runner",
+  "state": "source_ready_local_screen_preregistered",
   "live_control": {
-    "checked_at": "2026-07-20T18:23:19Z",
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
     "player_name": "K1Z odin free",
     "policy_label": "qd1n:v89",
     "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
     "membership_id": "lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6",
-    "membership_status": "competing",
     "is_champion": true
   },
   "locks": {
-    "checked_at": "2026-07-20T19:54:26Z",
     "runner": "free",
-    "runner_owner": null,
-    "runner_run_id": null,
     "qd1n_mutation": "free",
     "active_player": "K1Z odin free",
-    "active_player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
-    "identity_window": "odin_default_active_hrafn_inactive",
-    "identity_window_mailbox_commit": "1b8b2b6add8100c69b2f228de7283b374242c548"
+    "hrafn_identity_window": "closed"
   },
   "candidate": {
-    "source_tests": "158/158",
-    "source_pushed": true,
-    "postimplementation_rci": "SHIP_TO_MECHANISM_SCREEN",
-    "local_image_observed": true,
-    "accepted_image_identity": false,
-    "local_image_ref": "proxywar-agent-llm:qd1n-v89-os1-316c7a11-amd64",
-    "local_image_id": "sha256:ab8dcdd2064a71885c922cd4ba8634028359881aae8c42874d7452dc7e4ab032",
-    "image_observation": "quarantined_attempt_not_promotion_evidence",
-    "qualifier_run": false,
-    "mechanism_screen_run": false,
-    "uploaded": false,
-    "submitted": false
-  },
-  "runner": {
-    "status": "free_after_hrafn_completed_exit_0",
-    "owner": null,
-    "run_id": null,
-    "acquired_at": null,
-    "output_roots": [],
-    "qd1n_or_league_authority": false
-  },
-  "evidence": {
-    "replay_basis": "experiments/daveey-policy-factory-invariant-20260720.md",
-    "red_first": {
-      "exact_parent_core_failures": 4,
-      "lock_in_tests_passed": 8,
-      "rci_edge_failures_reproduced": 2
-    },
-    "source_rci": {
-      "verdict": "SHIP_TO_MECHANISM_SCREEN",
-      "receipt": "experiments/audit-qd1n-os1-source-rci-20260720.json",
-      "receipt_sha256": "c8b34305ab39d8f7b30c647958deb82c6ef7dacb40f2a68b0f88fa0f5f92aced",
-      "focused_tests": "114/114",
-      "full_tests": "158/158",
-      "diff_check": "clean"
-    },
-    "live_snapshot": {
-      "receipt": "experiments/receipt-qd1n-live-handover-20260720.json",
-      "receipt_sha256": "fc7fb11eb4c9d0cd8a080d37743286fb128eaf983403c81bc5b186b45fbd0166"
-    },
-    "local_screen_contract": {
-      "receipt": "experiments/contract-qd1n-os1-local-screen-20260720.json",
-      "receipt_sha256": "e174b07d77380450e40679346838d069c955768fbd44b203af4b6958c05633da"
-    },
-    "aborted_local_attempt": {
-      "receipt": "experiments/receipt-qd1n-os1-aborted-local-attempt-20260720.json",
-      "receipt_sha256": "26f857af22a59c2c56ee5f9df0b58371941cf46068edd658d899359aec1e6cdb",
-      "terminal_state": "QUARANTINED_NON_EVIDENCE"
-    },
-    "job_spec_addendum": {
-      "receipt": "experiments/addendum-qd1n-os1-local-screen-jobs-20260720.json",
-      "job_a_sha256": "3274ae62f3525a5804c15e2cd65a74e105a500ad90918cb3107be7014ea952c0",
-      "job_b_sha256": "30b13296326b222d0895ef487bdd67679944f206507e40a996d1428d087868e7",
-      "runner_started": false
-    }
+    "source_tests": "147/147",
+    "source_rci": "PASS",
+    "kimi_advice": "PASS",
+    "image_ref": "proxywar-agent-llm:qd1n-v89-kiz1-gravity-1ccaff73-amd64",
+    "image_id": "sha256:de2a15be36a86cf8f74029539f6576b0559554c89ac5800ebf4814c6b863677e",
+    "architecture": "amd64",
+    "policy_engine": "",
+    "contract": "experiments/contract-qd1n-kiz1-gravity-local-screen-20260720.json"
   },
   "gates": {
-    "source_integrity": "passed_committed_and_pushed",
-    "image_identity": "not_run",
-    "qualifier": "not_run",
-    "local_mechanism": "not_run",
-    "matched_advantage": "not_run",
-    "preupload_rci": "not_run",
+    "source_ready": true,
+    "local_mechanism_verified": false,
     "diagnostic_uploaded": false,
-    "hosted_4_of_4": "not_run",
-    "league_regression_20_of_20": "not_run",
-    "final_rci": "not_run",
+    "hosted_4_of_4": false,
+    "regression_20_of_20": false,
+    "final_rci": false,
     "submitted": false,
     "placed": false,
     "champion_verified": false,
     "round_confirmed": false
   },
-  "scope_limits": {
-    "promotion_evidence_claimed": false,
-    "competitive_lift_claimed": false,
-    "daveey_online_learning_proved": false,
-    "daveey_private_endpoint_proved": false,
-    "k1z_only_finish": "disabled_until_authoritative_alive_roster_signal"
+  "superseded": {
+    "os1": "closed_without_run_as_recombined_complexity",
+    "id1": "closed_directional_only_no_dynamic_llm_proof"
   },
-  "next_automatic_transition": "Acquire the Odin foreground runner lease using fresh dedicated qualifier and two-orientation outputs. Byte-verify the rebuilt candidate image, require an accepted qualifier, and execute only the two hash-bound Pangaea jobs in experiments/addendum-qd1n-os1-local-screen-jobs-20260720.json. Audit exactly against experiments/contract-qd1n-os1-local-screen-20260720.json. Any missing field or failure closes OS1 and preserves qd1n:v89. A pass advances to pre-upload RCI; do not begin another arm.",
-  "prior_verified_champion_preserved": true,
-  "prior_verified_champion": "qd1n:v89"
+  "next_automatic_transition": "Run the immutable qualifier and preregistered Gravity mechanism screen under the Odin foreground runner lease. Any failure closes KIZ1 and preserves qd1n:v89; a clean pass advances only to pre-upload RCI.",
+  "prior_verified_champion_preserved": true
 }

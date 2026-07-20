@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-20T20:01:49Z",
+  "arm": "kiz1",
+  "name": "gravity_identity_alias",
+  "hypothesis": "Adding the current canonical Gravity alias restores the existing reciprocal contract without changing behavior toward outsiders or a partner that attacks first.",
+  "candidate": {
+    "exact_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
+    "source_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "branch": "rci/kiz1-gravity-alias",
+    "source_delta": "Add gravity to RECIPROCAL_RIVALS; no other production-source change.",
+    "image_ref": "proxywar-agent-llm:qd1n-v89-kiz1-gravity-1ccaff73-amd64",
+    "image_id": "sha256:de2a15be36a86cf8f74029539f6576b0559554c89ac5800ebf4814c6b863677e",
+    "architecture": "amd64",
+    "policy_engine": ""
+  },
+  "replay_basis": {
+    "round": 579,
+    "gravity_player_id": "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+    "gravity_display_name": "K1Z Gravity",
+    "odin_harm_counts": [8, 33],
+    "gravity_prior_harm_to_odin": 0,
+    "replay_sha256": [
+      "72dfc25ec97af80d8e8f6f172f7adafc69cdf5a8b73521452b5fdc9b9904591f",
+      "af4df9b72a322224f0ee67fb76591c88deaf63601e65cb18cdb7b2e3e4b8bf86"
+    ]
+  },
+  "source_gate": {
+    "red_first": "exact parent: 3 fail, 1 betrayal lock-in pass",
+    "candidate_focused": "4/4 pass",
+    "candidate_full": "147/147 pass",
+    "full_test_log_sha256": "34701bf70d35eda46878306383adf43c87cd2f87cec185b57eae371b18d1bbed",
+    "rci_verdict": "PASS",
+    "kimi_verdict": "PASS"
+  },
+  "qualifier": {
+    "output": "/private/tmp/proxywar-kiz1-gravity-qualifier-1ccaff73",
+    "pass": "results exist; accepted_decision_count equals decision_count; fallback_count, degraded_count, rejects, unexplained holds, and K1Z harm are zero"
+  },
+  "mechanism_screen": {
+    "job": "/private/tmp/qd1n-kiz1-gravity-job-1ccaff73.json",
+    "job_sha256": "d8e49412fc43890a584dd446025fcea9e9ea4737bc6e0cc29823b56e6f7a9e41",
+    "output": "/private/tmp/proxywar-kiz1-gravity-screen-1ccaff73",
+    "map": "Asia",
+    "seed": 20260720,
+    "decision_steps": 40,
+    "players": ["K1Z odin free", "K1Z Gravity", "Outsider"],
+    "pass": "Odin selects at least one accepted kp2 alliance_request to K1Z Gravity; zero harmful Odin actions to Gravity; all Odin decisions accepted; zero fallback, degradation, rejects, or unexplained holds; trace contains the exact current Gravity display name"
+  },
+  "differential_fixture": {
+    "test": "the current K1Z Gravity display name blocks observed harmful actions",
+    "parent_action": "selects production-shaped nuke against K1Z Gravity",
+    "candidate_action": "selects hold",
+    "outsider_and_betrayal_lock_ins": true
+  },
+  "stop_conditions": {
+    "any_gate_failure": "NO UPLOAD; preserve qd1n:v89",
+    "local_pass": "advance only to pre-upload RCI",
+    "league_mutation_allowed": false
+  }
+}
