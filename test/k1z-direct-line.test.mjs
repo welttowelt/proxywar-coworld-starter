@@ -2,10 +2,14 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
+  K1Z_CONTENT_CANONICALIZATION,
+  K1Z_WIRE_ENCODING,
   sealK1ZPacket,
+  serializeK1ZPacket,
   summarizeK1ZLearning,
   validateK1ZPacket,
   validateK1ZPacketLedger,
+  verifyK1ZPacketFile,
 } from "../k1z-direct-line.mjs";
 
 const REPLAY_A = "a".repeat(64);
@@ -95,8 +99,50 @@ test("a sealed advisory packet is deterministic and validates", () => {
   const second = sealK1ZPacket(coordinationDraft());
 
   assert.deepEqual(first, second);
+  assert.equal(
+    first.integrity.content_canonicalization,
+    K1Z_CONTENT_CANONICALIZATION,
+  );
+  assert.equal(first.integrity.wire_encoding, K1Z_WIRE_ENCODING);
   assert.match(first.integrity.content_sha256, /^[a-f0-9]{64}$/);
   assert.deepEqual(validateK1ZPacket(first), { valid: true, errors: [] });
+});
+
+test("wire verification separates canonical content from exact file bytes", () => {
+  const packet = sealK1ZPacket(coordinationDraft());
+  const bytes = Buffer.from(serializeK1ZPacket(packet), "utf8");
+  const first = verifyK1ZPacketFile(packet, bytes);
+
+  assert.equal(first.valid, true);
+  assert.equal(first.content_sha256, packet.integrity.content_sha256);
+  assert.match(first.file_sha256, /^[a-f0-9]{64}$/);
+  assert.notEqual(first.file_sha256, first.content_sha256);
+
+  const checked = verifyK1ZPacketFile(packet, bytes, {
+    contentSHA256: first.content_sha256,
+    fileSHA256: first.file_sha256,
+  });
+  assert.equal(checked.valid, true);
+});
+
+test("wire verification rejects whitespace drift and digest-label confusion", () => {
+  const packet = sealK1ZPacket(coordinationDraft());
+  const bytes = Buffer.from(serializeK1ZPacket(packet), "utf8");
+  const report = verifyK1ZPacketFile(packet, bytes);
+  const whitespaceDrift = Buffer.from(JSON.stringify(packet), "utf8");
+
+  const drifted = verifyK1ZPacketFile(packet, whitespaceDrift, {
+    contentSHA256: report.content_sha256,
+    fileSHA256: report.file_sha256,
+  });
+  assert.equal(drifted.valid, false);
+  assert.match(drifted.errors.join(" "), /wire encoding|file digest/);
+
+  const mislabeled = verifyK1ZPacketFile(packet, bytes, {
+    fileSHA256: report.content_sha256,
+  });
+  assert.equal(mislabeled.valid, false);
+  assert.match(mislabeled.errors.join(" "), /file digest/);
 });
 
 test("packet validation detects content drift after sealing", () => {

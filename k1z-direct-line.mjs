@@ -6,6 +6,10 @@ const COMMIT = /^[a-f0-9]{40}$/;
 const KINDS = new Set(["coordination", "evidence", "hypothesis", "ack", "verdict"]);
 const DECISIONS = new Set(["APPROVE", "REVISE", "REJECT", "INSUFFICIENT"]);
 
+export const K1Z_CONTENT_CANONICALIZATION =
+  "k1z-json-v1:omit-integrity:recursive-key-sort:json-stringify:utf8";
+export const K1Z_WIRE_ENCODING = "k1z-pretty-json-v1:utf8:2-space:lf";
+
 function object(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
 }
@@ -24,6 +28,12 @@ function canonicalJSON(value) {
 
 function sha256(value) {
   return createHash("sha256").update(value).digest("hex");
+}
+
+function contentSHA256(packet) {
+  const unsigned = structuredClone(packet);
+  delete unsigned.integrity;
+  return sha256(canonicalJSON(unsigned));
 }
 
 function packetErrors(packet, requireIntegrity) {
@@ -143,11 +153,25 @@ function packetErrors(packet, requireIntegrity) {
     ) {
       errors.push("integrity digest is required");
     } else {
-      const unsigned = structuredClone(packet);
-      delete unsigned.integrity;
-      if (sha256(canonicalJSON(unsigned)) !== packet.integrity.content_sha256) {
+      if (contentSHA256(packet) !== packet.integrity.content_sha256) {
         errors.push("content digest does not match packet");
       }
+    }
+    const contractDeclared =
+      packet.integrity?.content_canonicalization !== undefined ||
+      packet.integrity?.wire_encoding !== undefined;
+    if (
+      contractDeclared &&
+      packet.integrity?.content_canonicalization !==
+        K1Z_CONTENT_CANONICALIZATION
+    ) {
+      errors.push("integrity content canonicalization is invalid");
+    }
+    if (
+      contractDeclared &&
+      packet.integrity?.wire_encoding !== K1Z_WIRE_ENCODING
+    ) {
+      errors.push("integrity wire encoding is invalid");
     }
   }
   return errors;
@@ -160,9 +184,51 @@ export function sealK1ZPacket(draft) {
   if (errors.length > 0) throw new Error(errors.join("; "));
   packet.integrity = {
     algorithm: "sha256",
-    content_sha256: sha256(canonicalJSON(packet)),
+    content_canonicalization: K1Z_CONTENT_CANONICALIZATION,
+    wire_encoding: K1Z_WIRE_ENCODING,
+    content_sha256: contentSHA256(packet),
   };
   return packet;
+}
+
+export function serializeK1ZPacket(packet) {
+  return `${JSON.stringify(packet, null, 2)}\n`;
+}
+
+export function verifyK1ZPacketFile(packet, bytes, expected = {}) {
+  const packetReport = validateK1ZPacket(packet);
+  const wireBytes =
+    typeof bytes === "string" ? Buffer.from(bytes, "utf8") : Buffer.from(bytes);
+  const expectedWireBytes = Buffer.from(serializeK1ZPacket(packet), "utf8");
+  const report = {
+    valid: false,
+    protocol: "k1z-direct-line",
+    content_canonicalization: K1Z_CONTENT_CANONICALIZATION,
+    wire_encoding: K1Z_WIRE_ENCODING,
+    content_sha256: contentSHA256(packet),
+    file_sha256: sha256(wireBytes),
+    errors: [...packetReport.errors],
+  };
+
+  if (!wireBytes.equals(expectedWireBytes)) {
+    report.errors.push("file bytes do not match declared wire encoding");
+  }
+  if (
+    expected.contentSHA256 !== undefined &&
+    (!SHA256.test(expected.contentSHA256) ||
+      report.content_sha256 !== expected.contentSHA256)
+  ) {
+    report.errors.push("expected content digest does not match");
+  }
+  if (
+    expected.fileSHA256 !== undefined &&
+    (!SHA256.test(expected.fileSHA256) ||
+      report.file_sha256 !== expected.fileSHA256)
+  ) {
+    report.errors.push("expected file digest does not match");
+  }
+  report.valid = report.errors.length === 0;
+  return report;
 }
 
 export function validateK1ZPacket(packet) {

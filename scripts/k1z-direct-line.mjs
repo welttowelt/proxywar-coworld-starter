@@ -3,8 +3,10 @@ import { readFile, rename, writeFile } from "node:fs/promises";
 
 import {
   sealK1ZPacket,
+  serializeK1ZPacket,
   summarizeK1ZLearning,
   validateK1ZPacketLedger,
+  verifyK1ZPacketFile,
 } from "../k1z-direct-line.mjs";
 
 function fail(message) {
@@ -16,12 +18,14 @@ async function readJSON(target) {
   return JSON.parse(await readFile(target, "utf8"));
 }
 
-async function atomicJSON(target, value) {
+async function atomicPacket(target, value) {
   const temporary = `${target}.tmp-${process.pid}`;
-  await writeFile(temporary, `${JSON.stringify(value, null, 2)}\n`, {
+  const bytes = Buffer.from(serializeK1ZPacket(value), "utf8");
+  await writeFile(temporary, bytes, {
     mode: 0o600,
   });
   await rename(temporary, target);
+  return bytes;
 }
 
 function option(args, name) {
@@ -36,8 +40,23 @@ try {
   if (command === "seal") {
     if (args.length !== 2) fail("usage: seal DRAFT.json OUTPUT.json");
     const sealed = sealK1ZPacket(await readJSON(args[0]));
-    await atomicJSON(args[1], sealed);
-    process.stdout.write(`${JSON.stringify(sealed)}\n`);
+    const bytes = await atomicPacket(args[1], sealed);
+    process.stdout.write(
+      `${JSON.stringify(verifyK1ZPacketFile(sealed, bytes))}\n`,
+    );
+  } else if (command === "verify") {
+    if (args.length !== 5) {
+      fail(
+        "usage: verify PACKET.json --file-sha256 SHA256 --content-sha256 SHA256",
+      );
+    }
+    const bytes = await readFile(args[0]);
+    const report = verifyK1ZPacketFile(JSON.parse(bytes.toString("utf8")), bytes, {
+      fileSHA256: option(args, "--file-sha256"),
+      contentSHA256: option(args, "--content-sha256"),
+    });
+    process.stdout.write(`${JSON.stringify(report)}\n`);
+    process.exitCode = report.valid ? 0 : 1;
   } else if (command === "validate") {
     if (args.length === 0) fail("usage: validate PACKET.json [PACKET.json ...]");
     const report = validateK1ZPacketLedger(
@@ -61,7 +80,7 @@ try {
     process.exitCode = report.valid ? 0 : 1;
   } else {
     fail(
-      "usage: k1z-direct-line.mjs seal|validate|learn ...",
+      "usage: k1z-direct-line.mjs seal|verify|validate|learn ...",
     );
   }
 } catch (error) {

@@ -41,6 +41,13 @@ NDJSON learning row per candidate or parent episode. Advisory packets never
 count as formal approval. Only one exact-artifact final `APPROVE` from Odin may
 count for a Hrafn campaign.
 
+Keep the two K1Z packet hashes distinct. `content_sha256` hashes UTF-8 compact
+JSON after omitting the top-level `integrity` field and recursively sorting
+object keys; arrays retain order. `file_sha256` hashes the exact committed
+UTF-8 packet bytes: two-space JSON plus one trailing LF. Bridges must label and
+carry both. Verify both with `npm run k1z:line -- verify PACKET.json
+--file-sha256 SHA --content-sha256 SHA`; never relabel one as the other.
+
 Commit and push verified Hrafn protocol, policy, evidence, lore, and merit
 checkpoints without waiting for another prompt. Update `LORE.md` and `MERIT.md`
 when evidence changes direction, proves a mechanism, closes a candidate, or
