@@ -18,10 +18,13 @@
     "failure": "The capped naval-recovery branch selected hold while safe 35 percent neutral land growth remained legal."
   },
   "fix": {
-    "behavior": "After the naval cap, prefer a safe exact 35 percent neutral land action with hg35 primary and hncap evidence before any hold.",
-    "red_first_evidence": "The completed matched replay supplied 61 counterexamples before the focused regression was added.",
-    "focused_test": "boat cap uses safe land growth instead of holding when growth remains legal",
-    "focused_suite": "147/147 passed"
+    "behavior": "After the naval cap, prefer an offered defensive build or safe exact 35 percent neutral land action before any hold.",
+    "red_first_evidence": "The first completed matched replay supplied 61 land-growth counterexamples; the corrected replay then supplied nine defensive-build counterexamples.",
+    "focused_tests": [
+      "boat cap uses safe land growth instead of holding when growth remains legal",
+      "boat cap uses an offered defensive build instead of holding"
+    ],
+    "focused_suite": "148/148 passed"
   },
   "promotion_state": {
     "source_ready": false,

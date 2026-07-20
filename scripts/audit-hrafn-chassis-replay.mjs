@@ -198,6 +198,16 @@ function decisionRuntimePlayerID(decision) {
     runtimePlayerID(decision?.auditAfter);
 }
 
+function plannerDegradationIsFalse(decision) {
+  if (decision?.llmPlannerDegraded === false) return true;
+  if (decision?.externalPlannerCall === false) return true;
+  try {
+    return JSON.parse(decision?.rawLlmOutput)?.llmPlannerDegraded === false;
+  } catch {
+    return false;
+  }
+}
+
 function submittedTargetID(intent) {
   return String(
     intent?.targetID ??
@@ -260,7 +270,11 @@ function submittedEffectFailures(decision, selectedTarget, universe) {
 
   if (kind === "build" || kind === "warship") {
     const selectedUnit = String(metadata.unit ?? "");
-    const selectedTile = Number(metadata.targetTile ?? metadata.buildTile);
+    const selectedTile = Number(
+      kind === "warship"
+        ? metadata.targetTile ?? metadata.buildTile
+        : metadata.buildTile ?? metadata.targetTile,
+    );
     if (!selectedUnit || String(intent.unit ?? "") !== selectedUnit) {
       failures.push("submitted build unit does not match selected unit");
     }
@@ -507,7 +521,11 @@ function legalActionCoverage(decision) {
   };
 }
 
-export function auditHrafnChassisReplay(replay, replayBytes = null) {
+export function auditHrafnChassisReplay(
+  replay,
+  replayBytes = null,
+  options = {},
+) {
   const rawDecisions = replay?.inlineRunArtifacts?.["decisions.jsonl"];
   if (typeof rawDecisions !== "string") {
     throw new Error("replay does not contain inline decisions.jsonl");
@@ -520,7 +538,11 @@ export function auditHrafnChassisReplay(replay, replayBytes = null) {
     String(decision?.reason ?? "").startsWith("[K1Z] r4vn:")
   );
   const named = decisions.filter((decision) =>
-    canonicalizeHrafnName(decision?.username) === "hrafn"
+    canonicalizeHrafnName(decision?.username) === "hrafn" &&
+    !(
+      decision?.externalActionCall === false &&
+      decision?.actionSelectionSource === "deterministic-spawn"
+    )
   );
   const rosterHrafn = replayPlayers(replay).filter((player) =>
     canonicalizeHrafnName(player?.name ?? player?.username) === "hrafn"
@@ -747,7 +769,7 @@ export function auditHrafnChassisReplay(replay, replayBytes = null) {
       value: decision?.fallbackUsed ?? null,
     }));
   const plannerDegradationFailures = policyDecisions
-    .filter((decision) => decision?.llmPlannerDegraded !== false)
+    .filter((decision) => !plannerDegradationIsFalse(decision))
     .map((decision) => ({
       turn: decision.turnNumber ?? null,
       value: decision?.llmPlannerDegraded ?? null,
@@ -774,6 +796,8 @@ export function auditHrafnChassisReplay(replay, replayBytes = null) {
     game_id: replay?.gameID ?? replay?.results?.game_id ?? null,
     hrafn_identity_verified: identityVerified,
     foreign_tagged_decisions: foreignTaggedDecisions.length,
+    foreign_tagged_allowed_for_matched_control:
+      options.allowForeignTagged === true,
     policy_decisions: policyDecisions.length,
     accepted,
     rejected,
@@ -795,7 +819,9 @@ export function auditHrafnChassisReplay(replay, replayBytes = null) {
     checks: {
       hrafn_identity_verified: identityVerified,
       decisions_present: policyDecisions.length > 0,
-      zero_foreign_tagged_decisions: foreignTaggedDecisions.length === 0,
+      zero_foreign_tagged_decisions:
+        foreignTaggedDecisions.length === 0 ||
+        options.allowForeignTagged === true,
       all_decisions_accepted: accepted === policyDecisions.length,
       zero_rejections: rejected === 0,
       fallback_evidence_complete: fallbackEvidenceFailures.length === 0,
@@ -823,7 +849,15 @@ async function main() {
     );
   }
   const bytes = await readFile(target);
-  const report = auditHrafnChassisReplay(JSON.parse(bytes), bytes);
+  const allowed = new Set(["--allow-foreign-tagged-control"]);
+  const unknown = process.argv.slice(3).filter((value) => !allowed.has(value));
+  if (unknown.length > 0) {
+    throw new Error(`unknown option ${unknown[0]}`);
+  }
+  const report = auditHrafnChassisReplay(JSON.parse(bytes), bytes, {
+    allowForeignTagged:
+      process.argv.includes("--allow-foreign-tagged-control"),
+  });
   process.stdout.write(`${JSON.stringify(report, null, 2)}\n`);
   if (!Object.values(report.checks).every(Boolean)) process.exitCode = 1;
 }

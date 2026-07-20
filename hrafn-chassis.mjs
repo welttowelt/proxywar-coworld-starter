@@ -710,6 +710,19 @@ function selectNavalCapRecovery(
       target: null,
     };
   }
+  const defensiveBuild = buildAction(actions, [
+    "defense post",
+    "sam launcher",
+  ]);
+  if (defensiveBuild) {
+    return {
+      action: defensiveBuild,
+      marker: "hncap",
+      evidenceMarkers: [],
+      phase: HRAFN_PHASES.RECOVERY,
+      target: null,
+    };
+  }
   const neutralGrowth = chooseExactPercent(
     actions.filter((action) =>
       action?.kind === "attack" && isNeutralAction(action)

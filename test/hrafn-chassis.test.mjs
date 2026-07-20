@@ -956,6 +956,25 @@ test("boat cap uses safe land growth instead of holding when growth remains lega
   assert.equal(result.nextState.naval.blocked, true);
 });
 
+test("boat cap uses an offered defensive build instead of holding", () => {
+  const defense = build("Defense Post");
+  const result = decide({
+    actions: [neutralBoat(100, 16), defense, hold()],
+    persistent: established({
+      selectedStructures: ["city", "factory", "port"],
+      naval: {
+        routeID: "boat:100",
+        attempts: 2,
+        noProgress: 2,
+        blocked: true,
+      },
+    }),
+  });
+  assert.equal(result.action.id, defense.id);
+  assert.equal(result.action.policyMarker, "hncap");
+  assert.equal(result.nextState.naval.blocked, true);
+});
+
 test("boat cap converts a viable outsider when no milestone build exists", () => {
   const foe = rival({
     id: "foe",
