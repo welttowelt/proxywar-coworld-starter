@@ -323,7 +323,7 @@ function reciprocalTrustIntact(state, history, rival) {
   return isReciprocalRival(rival) && recentHostility(state, history, rival, history.length) === 0;
 }
 
-function rivalIsProtected(state, history, rival) {
+export function rivalIsProtected(state, history, rival) {
   if (rival.isAllied) return true;
   if (reciprocalTrustIntact(state, history, rival)) return true;
   if (state.self.tileShare >= 0.35) return false;
