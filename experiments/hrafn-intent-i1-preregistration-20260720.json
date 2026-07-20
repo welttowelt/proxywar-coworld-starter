@@ -1,10 +1,13 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "record_type": "hrafn_intent_i1_preregistration",
   "recorded_at": "2026-07-20T19:26:10Z",
+  "amended_at": "2026-07-20T20:08:02Z",
+  "amends_commit": "4e2316ff88053cb0d294c194a5f12e86860718b3",
+  "amendment_boundary": "No HI1 Coworld episode or runtime result existed before this amendment. RCI tightened causal attribution, provenance, latency, reach, and identity gates without inspecting outcomes.",
   "campaign_id": "hrafn-intent-i1",
   "scope": "Hrafn only",
-  "status": "PREREGISTERED_NO_RUNTIME_AUTHORITY",
+  "status": "PREREGISTERED_AMENDED_NO_RUNTIME_AUTHORITY",
   "parent": {
     "label": "hrafn-fylking:v5",
     "source_commit": "0c151570f7e650a32a5705ff71692aa930012097",
@@ -12,12 +15,12 @@
     "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
     "local_rebuild_image": "hrafn-fylking-v5:0c151570",
     "local_rebuild_digest": "sha256:fb695574f4958beb29a036ed216c0882ee4da84ffa2f63c535f6c658f997522d",
-    "control_contract": "Both arms run the same HI1 wrapper and exact-v5 compatibility mode. The sole policy difference is whether a validated intent may restrict the executor's affordance set."
+    "control_contract": "Both arms run the same safety and public-text wrapper around the literal exact-v5 selector. The wrapper removes unsafe actions, quick_chat, emoji, and untrusted internal marker fields. The sole arm difference is HRAFN_INTENT_ENABLED=0 versus 1, which controls whether a validated intent may restrict the executor's affordance set."
   },
   "hypothesis": {
     "claim": "A small strategic intent with bounded lifetime can improve Hrafn's opening conversion while the exact-v5 executor retains action-ID choice, timing, commitment, retry behavior, and K1Z safety.",
-    "mechanism": "The planner chooses only grow or convert, an exact visible outsider ID when converting, and a horizon. It never receives or returns legal action IDs, action kinds, percentages, weights, labels, or free-form instructions. The executor filters to intent-compatible affordances and then runs the exact-v5 selector unchanged on that subset.",
-    "expected_causal_trace": "An accepted intent is causal only when the chosen exact action ID differs from the same-input exact-v5 baseline. Such decisions expose the hi1 sidecar marker and a structured log row containing both IDs."
+    "mechanism": "The planner chooses only grow or convert, an exact visible outsider ID when converting, and a horizon. It never receives or returns legal action IDs, action kinds, percentages, weights, labels, or free-form instructions. The common wrapper applies safety and public-text filtering. The executor then filters to intent-compatible affordances and runs the literal exact-v5 selector unchanged on that subset.",
+    "expected_causal_trace": "An accepted intent is causal only when the chosen exact action ID differs from the same-input wrapped exact-v5 baseline. Such decisions expose the hi1 sidecar marker and a structured log row containing both IDs."
   },
   "intent_contract": {
     "schema": {
@@ -28,37 +31,46 @@
     "planner": {
       "provider": "local Ollama only",
       "model": "llama3:latest",
+      "model_digest": "365c0bd3c000a25d28ddbf732fe1c6add414de7275464c4e4d1c3b5fcb5d8ad1",
+      "ollama_version": "0.32.1",
       "temperature": 0,
       "seed": 240721,
       "endpoint": "http://host.docker.internal:11434/api/generate",
       "response_schema_enforced": true,
       "nonblocking": true,
       "timeout_ms": 4000,
-      "refresh_rule": "Start in exact-v5 mode. Refresh in the background when no valid intent exists or its decision horizon expires; never delay an action response for planning."
+      "refresh_rule": "Start in wrapped exact-v5 mode. Refresh in the background after a committed action when no valid intent exists or its decision horizon expires; never delay an action response for planning. Reject a plan older than 12 committed decisions and use decision-count exponential retry backoff after failures.",
+      "prewarm": "Before each candidate episode, call the pinned model with the exact response schema, verify the returned model name, query the local Ollama model inventory for the pinned digest, and record the probe and Ollama version in the episode preflight receipt."
     },
     "validation": [
       "Reject unknown or extra fields, unknown objectives, noninteger or out-of-range horizons, and nonexact target IDs.",
       "grow requires targetID null and at least one current neutral growth affordance.",
       "convert requires an alive, visible, nonallied, non-K1Z target with a current exact-v5 conversion affordance.",
       "Reject stale, unavailable, protected, ambiguous, or unresolved targets and fall back to the same-input exact-v5 action.",
-      "Spawn, K1Z alliance, Odin support, and severe-defense decisions remain outside intent authority."
+      "Spawn, K1Z alliance, Odin support, and severe-defense decisions remain outside intent authority.",
+      "Both arms remove quick_chat and emoji before selection and strip policyMarker, intentMarker, requestMarker, and campaignStartDecision from every wire action.",
+      "Every committed fresh request keeps an unbounded match-lifetime semantic cache; changed semantics under a reused request ID fail closed."
     ],
-    "public_marker": "hi1 appears only when a valid intent changes the exact selected action ID from the same-input exact-v5 baseline."
+    "public_marker": "hi1 appears only when a valid intent changes the exact selected action ID from the same-input wrapped exact-v5 baseline. Every response also carries q plus the first 10 lowercase hex characters of SHA-256(requestID), allowing a strict policy-log to replay join without exposing the request ID."
   },
   "source_gate": {
     "red_first_tests": [
-      "Intent disabled, missing, malformed, expired, or unreachable preserves exact-v5 action and public reason across frozen fixtures.",
+      "Intent disabled, missing, malformed, expired, or unreachable preserves the wrapped exact-v5 action and policy marker across frozen fixtures; the q10 request sidecar is common to both arms.",
       "grow and convert can each cause a fresh legal action-ID delta on a reachable fixture.",
       "convert binds to one exact outsider ID; K1Z, allied, unknown, ambiguous, and unavailable targets cannot be selected.",
       "Intent cannot override spawn, K1Z alliance, Odin support, or severe defense.",
       "hi1 is absent without an action-ID delta and present exactly once with a delta.",
       "Planner timeout, malformed output, and transport failure keep response selection on exact-v5 and emit truthful degradation telemetry.",
-      "No candidate response contains an ID outside the current legal menu."
+      "No candidate response contains an ID outside the current legal menu.",
+      "A planner result older than 12 committed decisions, an intent that becomes unreachable, and an immediate retry after planner failure are rejected and truthfully logged.",
+      "The request cache retains at least 520 decisions and rejects changed action semantics under a duplicate request ID.",
+      "Untrusted legal-action fields cannot forge policy, hi1, or request markers."
     ],
     "required": [
       "Focused HI1 tests and the complete repository test suite pass.",
       "Exact-v5 compatibility is compared against the frozen 0c151570 implementation over the full strategy fixture corpus.",
       "A linux/amd64 image is built from an exact committed source tree and its digest is recorded.",
+      "A machine-readable image receipt binds the subject digest, full source commit, linux/amd64 platform, entrypoint, passing test gate, pinned model digest, and exact-v5 opponent digest.",
       "No qd1n or Odin source, image, process, identity, submission, or champion state is modified or run."
     ]
   },
@@ -82,18 +94,24 @@
     "coworld_client": "0.1.28",
     "manifest_sha256": "8feb5100ee63d5ccca66794c40e535f2715376e2a2cf8a3f8ed892880dfe65f3",
     "foreground_runner_lease_required": true,
-    "identity_window_required": "A fresh advisory Odin-to-Hrafn identity handoff must be committed before any Coworld episode. This is not the single formal promotion approval.",
+    "identity_window_required": "Before any Coworld episode, one and only one valid formal Odin APPROVE must bind the exact source commit, image digest, image receipt, four job hashes, preregistration file/content hashes, model digest, and declared Hrafn-only campaign scope. That single conditional packet authorizes the Hrafn identity window, diagnostic episodes, and later Hrafn promotion only if every frozen gate passes; no second Odin approval is requested or counted.",
+    "job_provenance": "Each job is generated by scripts/build-hrafn-intent-job.mjs from the pinned manifest and a matching subject image receipt. The subject image differs from the exact-v5 outsider image. Pair comparison must prove the jobs differ only at players[subject_slot].env.HRAFN_INTENT_ENABLED from 0 to 1.",
+    "execution": "Each episode runs through scripts/proxywar-runner-lease.sh with a foreground scripts/run-hrafn-supervised.mjs process and a direct uvx coworld==0.1.28 run-episode command. A preflight receipt records the full argv, job SHA-256, image digests, source commit, model probe, active identity, lease state, and output directory before dispatch.",
+    "evidence_join": "scripts/audit-hrafn-intent-pair.mjs must join every fresh nonspawn Hrafn policy row one-to-one with its replay row through the q10 request marker, prove both selected and baseline IDs were legal, and fail on missing, duplicate, ambiguous, degraded, fallback, rejected, held, disconnected, or K1Z-harm rows.",
     "primary_metric": {
       "name": "opening_auc20",
-      "definition": "Mean post-action tilesOwned over the subject's first 20 accepted nonspawn decisions; missing decisions after elimination are padded with zero.",
+      "definition": "Arithmetic mean of auditAfter.tilesOwned over the subject's first 20 fresh, accepted, external, nonspawn decisions after strict policy-log to replay joining. Fewer than 20 observations fail closed unless the replay, final state, and results all verify elimination; only then are the missing suffix observations padded with zero.",
       "pass": "Candidate lift is positive in both paired cells and mean relative lift is at least 10 percent."
     },
     "outcome_veto": "Candidate combined final score and combined final tiles must each be at least control.",
     "autonomy_reach": {
+      "denominator": "All fresh, joined, nonspawn candidate decisions, including pre-plan exact-v5 decisions.",
       "valid_intent_coverage_minimum": 0.8,
-      "intent_epochs_per_surviving_candidate_minimum": 2,
-      "action_deltas_per_surviving_candidate_minimum": 8,
-      "action_delta_rate_minimum": 0.1
+      "intent_epochs_per_candidate_minimum": 2,
+      "action_deltas_per_candidate_minimum": 8,
+      "action_delta_rate_minimum": 0.1,
+      "first_hi1_decision_maximum": 20,
+      "hi1_deltas_in_first_20_minimum": 2
     },
     "reliability": {
       "accepted_action_rate": 1,
@@ -103,8 +121,11 @@
       "maximum_unexplained_holds": 0,
       "maximum_disconnects_or_timeouts": 0,
       "maximum_planner_degraded_decisions_for_pass": 0,
-      "response_p95_ms_maximum": 5000,
-      "response_max_ms_maximum": 8000
+      "response_p95_ms_maximum": 50,
+      "response_max_ms_maximum": 250,
+      "replay_decision_p95_ms_maximum": 50,
+      "replay_decision_max_ms_maximum": 250,
+      "pretreatment_equivalence": "Before the candidate's first hi1 delta, control and candidate must have identical turn, selected action, selected metadata, legal-menu shape, and normalized pre-action state at every decision."
     },
     "sequential_stop": "Audit the Pangaea pair before Asia. Stop on a safety or reliability failure, intent coverage below 80 percent, or fewer than eight action deltas in a surviving candidate. Do not stop for performance alone if the pair is operationally clean.",
     "verdicts": {
@@ -117,7 +138,8 @@
   "authorization": {
     "allowed_now": "Hrafn-only source, tests, exact image build, local planner probes, preregistration, and advisory mailbox coordination.",
     "blocked_until_identity_window": "Any Coworld episode.",
-    "blocked_until_all_promotion_gates_and_one_exact_odin_approval": "Upload, submission, placement, or champion mutation.",
+    "blocked_until_one_exact_odin_approval": "Any identity mutation or Coworld episode. The one packet must be conditional on all frozen downstream gates and remains the only Odin approval for this campaign.",
+    "blocked_until_all_promotion_gates": "Upload, submission, placement, or champion mutation even after the single conditional Odin approval.",
     "slack": "No interaction through 2026-08-09."
   },
   "promotion_state": {
