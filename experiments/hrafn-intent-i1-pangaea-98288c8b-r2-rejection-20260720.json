@@ -1,0 +1,113 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_intent_i1_pangaea_pair_rejection",
+  "campaign_id": "hrafn-intent-i1",
+  "tested_source_commit": "98288c8b9211513cfb71ceb88707de1721f351e3",
+  "host": "studio",
+  "identity": {
+    "player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "player_name": "K1Z Hrafn",
+    "initial_and_final_match": true,
+    "isolated_home": "/Users/odin/.hrafn-coworld-home",
+    "shared_studio_profile_untouched": true
+  },
+  "execution": {
+    "first_attempt": {
+      "run_id": "hi1-pangaea-control-98288c8b-r1",
+      "status": "ABORTED_PRE_EPISODE",
+      "cause": "Studio lacked the pinned ProxyWar game image",
+      "episode_evidence": false,
+      "output_quarantine": "/private/tmp/hrafn-hi1-pangaea-control-98288c8b-r1.aborted-20260720T230758Z-hi1-pangaea-control-98288c8b-r1"
+    },
+    "control": {
+      "run_id": "hi1-pangaea-control-98288c8b-r2",
+      "output": "/private/tmp/hrafn-hi1-pangaea-control-98288c8b-r2",
+      "decisions": 300,
+      "accepted": 300,
+      "rejected": 0,
+      "fallbacks": 0,
+      "holds": 0,
+      "score": 0.15050436040670337,
+      "final_tiles": 14980,
+      "opening_auc20": 12314.55,
+      "results_sha256": "5ff324e31be79050ad9d37d98b6616d1bbe6da5d88bf517d42a67602561ec58f",
+      "replay_sha256": "055105a225bbb84547495be9a9176dbbb6e0968683ba073f8d71d7af8af55775",
+      "operational_receipt_sha256": "cfba2dbe0f2a77319f367876952bc1a3d46d7eec25871a7f53c76a09a3f57916"
+    },
+    "candidate": {
+      "run_id": "hi1-pangaea-candidate-98288c8b-r2",
+      "output": "/private/tmp/hrafn-hi1-pangaea-candidate-98288c8b-r2",
+      "decisions": 300,
+      "accepted": 300,
+      "rejected": 0,
+      "fallbacks": 0,
+      "holds": 0,
+      "score": 0.12298814753752274,
+      "final_tiles": 12234,
+      "opening_auc20": 10721.05,
+      "results_sha256": "d6812c3c50b9c9e80f700162fe2b1b5cabee1fc0023ded0872b2d3b616b578d9",
+      "replay_sha256": "e51b7377c0f01317b835459fb5f1a3b6e65e1ac2f87c7d5bf976c98d93751a14",
+      "operational_receipt_sha256": "1cd613b7399b73b95fd83981f2cff96af5e1bfa4dd90e5aad51a917faff185cf"
+    }
+  },
+  "intent_reach": {
+    "valid_intent_decisions": 299,
+    "intent_epochs": 43,
+    "planner_attempts": 44,
+    "action_deltas": 7,
+    "action_delta_rate": 0.023333333333333334,
+    "first_delta_decision": 8,
+    "opening_deltas": 3,
+    "planner_degradation_events": 0,
+    "runtime_error_lines": 0
+  },
+  "pair_audit": {
+    "path": "/private/tmp/hrafn-hi1-pangaea-pair-98288c8b-r2.json",
+    "sha256": "9f837c114811a79f8f6f110096f078328c4460329e8154c94a538c9d9b537bdd",
+    "verdict": "REJECT_SAFETY_OR_RELIABILITY",
+    "opening_auc20_relative_lift": -0.12939977506283218,
+    "pretreatment_compared_decisions": 7,
+    "pretreatment_failures": [
+      "pre-treatment decision 2 differs",
+      "pre-treatment decision 3 differs",
+      "pre-treatment decision 4 differs",
+      "pre-treatment decision 5 differs",
+      "pre-treatment decision 6 differs",
+      "pre-treatment decision 7 differs"
+    ],
+    "foreign_tagged_decisions_per_arm": 900,
+    "marker_failures_per_arm": 300,
+    "harmful_k1z_actions_per_arm": 0,
+    "provenance_bound": true,
+    "jobs_only_intent_flag": true,
+    "same_map_seed_slot": true
+  },
+  "diagnosis": [
+    "The three frozen-v5 sparring players emit Hrafn's [K1Z] r4vn public tag, so the replay cannot attribute that tag exclusively to the subject.",
+    "The subject's public reason often places the request hash in the primary policy-marker position when the selected action lacks a semantic policy marker.",
+    "The matched jobs share map, seed, slot, and every declared input except HRAFN_INTENT_ENABLED, but their normalized pre-treatment traces diverge at decisions 2 through 7 and require exact field-level diagnosis.",
+    "The intent layer was operational but changed too few actions and reduced both opening territory and final score in this episode."
+  ],
+  "stop": {
+    "asia_candidate_run": false,
+    "asia_control_run": false,
+    "reason": "The preregistered sequential gate stops after a safety, reliability, pretreatment, or reach failure in the Pangaea pair.",
+    "same_artifact_rerun_allowed": false,
+    "next_campaign_requires_new_source_and_seal": true
+  },
+  "authority": {
+    "odin_packet": "odin-000018",
+    "odin_packet_commit": "b4f4063b55c64b33060c45d199458ee359a6d7f5",
+    "advisory": true,
+    "formal_approval": false,
+    "formal_approvals_consumed": 0
+  },
+  "external_mutations": {
+    "upload": false,
+    "submission": false,
+    "membership": false,
+    "champion": false,
+    "odin_or_qd1n": false,
+    "slack": false
+  }
+}

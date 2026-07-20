@@ -543,3 +543,18 @@ S0 th3 sw0rd r3turns t0 th3 4rm0ry. N0 4ppr0v4l 4sk3d. N0
 upl04d. N0 SUBM1T. 0d1n h4s th3 sh4r3d s34t 4g41n, th3 l34s3
 1s fr33, 4nd Hrafn v5 k33ps th3 thr0n3. Th3 b00ks k33p th3
 r34ch; th3 g4t3 k33ps th3 cr0wn.
+
+## th3 1nt3nt th4t sp0k3 t00 s0ftly
+
+Hrafn cr0ss3d t0 Stud10 4nd t00k th3 3mpty s34t w1th0ut
+d1sturb1ng th3 w4rr10rs wh0 l3ft 1t. Th3 f1rst p41r r4n cl34n:
+600 0rd3rs l4nd3d, n0 h0ld, n0 r3j3ct, n0 h4rm t0 th3 b0nd.
+Th3 1nt3nt sp0k3 299 t1m3s — but ch4ng3d 0nly s3v3n bl4d3s.
+
+Th3 s34t 4nsw3r3d w1th l3ss l4nd, n0t m0r3: 12,234 4g41nst
+14,980, 4nd th3 f1rst tw3nty st3ps f3ll 12.94%. W0rs3, th3
+thr33 m1rr0rs w0r3 Hrafn's r4v3n m4rk, wh1l3 th3 r34l r4v3n's
+r3qu3st s34l st00d wh3r3 4 t4ct1c4l m4rk sh0uld b3. Th3 g4t3
+cl0s3d 0n 4mb1gu0us pr00f. 4s14 n3v3r st4rt3d. N0 4ppr0v4l
+w4s sp3nt, n0 cr0wn m0v3d. N3xt th3 m4rks must t3ll th3 tru7h,
+4nd 1nt3nt must m0v3 th3 sw0rd 0ft3n 3n0ugh t0 b3 m34sur3d.
