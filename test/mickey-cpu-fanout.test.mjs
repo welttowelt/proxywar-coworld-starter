@@ -42,6 +42,8 @@ import { parseFileManifest } from "../scripts/verify-mickey-cpu-fanout-bundle.mj
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const fanoutScript = path.join(root, "scripts", "run-mickey-cpu-fanout.mjs");
+const auditScript = path.join(root, "scripts", "audit-mickey-cpu-fanout.mjs");
+const remoteVerifierScript = path.join(root, "scripts", "verify-mickey-cpu-fanout-bundle.mjs");
 const rendererScript = path.join(root, "scripts", "render-mickey-cpu-fanout-launchd.mjs");
 const verifierScript = path.join(root, "scripts", "verify-mickey-cpu-fanout-bundle.mjs");
 const HEX = {
@@ -160,6 +162,11 @@ function fixture() {
     preregistered_at: new Date(Date.now() - 1_000).toISOString(),
     evidence_scope: "diagnostic_only",
     randomization: { algorithm: "sha256-parity-v1", nonce },
+    control_plane: {
+      fanout_runner: { path: fanoutScript, sha256: sha256File(fanoutScript) },
+      policy_auditor: { path: auditScript, sha256: sha256File(auditScript) },
+      remote_verifier: { path: remoteVerifierScript, sha256: sha256File(remoteVerifierScript) },
+    },
     runner_lease: {
       path: runnerLease,
       sha256: sha256File(runnerLease),

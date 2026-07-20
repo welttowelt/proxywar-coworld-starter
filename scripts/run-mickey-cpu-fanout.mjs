@@ -28,6 +28,7 @@ const REMOTE_VERIFIER = path.join(
   "scripts",
   "verify-mickey-cpu-fanout-bundle.mjs",
 );
+const AUDIT_SCRIPT = path.join(REPO_ROOT, "scripts", "audit-mickey-cpu-fanout.mjs");
 // The user transferred the Mac's existing Hrafn operator slot to this
 // incubator.  Mickey is the policy identity; Hrafn remains the machine-level
 // foreground lease understood by the shared runner guard.
@@ -413,6 +414,7 @@ export function validateManifest(document) {
       "preregistered_at",
       "evidence_scope",
       "randomization",
+      "control_plane",
       "runner_lease",
       "runpodctl",
       "pod",
@@ -438,6 +440,23 @@ export function validateManifest(document) {
     throw new Error("manifest.randomization.algorithm must be sha256-parity-v1");
   }
   assertString(document.randomization.nonce, "manifest.randomization.nonce", SHA256);
+
+  exactKeys(
+    document.control_plane,
+    ["fanout_runner", "policy_auditor", "remote_verifier"],
+    "manifest.control_plane",
+  );
+  const controlPlanePaths = {
+    fanout_runner: SCRIPT_PATH,
+    policy_auditor: AUDIT_SCRIPT,
+    remote_verifier: REMOTE_VERIFIER,
+  };
+  for (const [key, expectedPath] of Object.entries(controlPlanePaths)) {
+    validateHashedFileReference(document.control_plane[key], `manifest.control_plane.${key}`);
+    if (document.control_plane[key].path !== expectedPath) {
+      throw new Error(`manifest.control_plane.${key}.path must be the exact integration script`);
+    }
+  }
 
   exactKeys(document.runner_lease, ["path", "sha256", "operator_lane", "state_root"], "manifest.runner_lease");
   validateHashedFileReference(
@@ -760,6 +779,9 @@ export async function preflightManifest(manifestPath, expectedSha256) {
   }
   const document = JSON.parse(await readFile(manifestPath, "utf8"));
   const validated = validateManifest(document);
+  for (const [key, reference] of Object.entries(document.control_plane)) {
+    await verifyHashedLocalFile(reference, `pinned control-plane ${key}`);
+  }
   await verifyHashedLocalFile(
     { path: document.runpodctl.path, sha256: document.runpodctl.sha256 },
     "pinned runpodctl binary",
@@ -791,7 +813,7 @@ export async function preflightManifest(manifestPath, expectedSha256) {
       }
     }
   }
-  const verifierSha256 = await sha256File(REMOTE_VERIFIER);
+  const verifierSha256 = document.control_plane.remote_verifier.sha256;
   const sourceReceipt = await verifySourceReachReceipt(document);
   return {
     ...validated,

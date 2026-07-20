@@ -2,11 +2,25 @@
   "schema_version": 1,
   "kind": "mickey_cpu_fanout",
   "run_id": "mickey-screen-g000-20260720t234233z",
-  "preregistered_at": "2026-07-20T23:42:41.448Z",
+  "preregistered_at": "2026-07-20T23:48:17.599Z",
   "evidence_scope": "diagnostic_only",
   "randomization": {
     "algorithm": "sha256-parity-v1",
     "nonce": "640c105747768b644dc02c14e966620865c14cb6411d6b049b565705b793c74c"
+  },
+  "control_plane": {
+    "fanout_runner": {
+      "path": "/private/tmp/proxywar-mickey-incubator-integration-20260721/scripts/run-mickey-cpu-fanout.mjs",
+      "sha256": "fb0087cb27879c74af801ef2de8318cd698a97a763a117cf7d3a6f5e17f7bdab"
+    },
+    "policy_auditor": {
+      "path": "/private/tmp/proxywar-mickey-incubator-integration-20260721/scripts/audit-mickey-cpu-fanout.mjs",
+      "sha256": "4578634ddb16ca6c56796fd51a9e77f5362685b6da3e123d16ec0e2dbfa04f91"
+    },
+    "remote_verifier": {
+      "path": "/private/tmp/proxywar-mickey-incubator-integration-20260721/scripts/verify-mickey-cpu-fanout-bundle.mjs",
+      "sha256": "d71c9c468c4924ee534b7e316634cb867cf05ee406b85b2efa3dd329854b3973"
+    }
   },
   "runner_lease": {
     "path": "/Users/olifreuler/proxywar-coworld-starter/scripts/proxywar-runner-lease.sh",

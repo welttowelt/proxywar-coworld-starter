@@ -1,9 +1,10 @@
 #!/usr/bin/env node
 
-import { randomBytes } from "node:crypto";
+import { createHash, randomBytes } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+import { fileURLToPath } from "node:url";
 
 import { derivePairOrder } from "./run-mickey-cpu-fanout.mjs";
 
@@ -18,6 +19,16 @@ const RETAINED = new Map([
   ["convert-weakest", ["convert", "mixed-outsider-convert", "mm1c"]],
   ["convert-largest", ["convert", "mixed-outsider-convert", "mm1c"]],
 ]);
+const REPO_ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
+const CONTROL_PLANE_PATHS = {
+  fanout_runner: path.join(REPO_ROOT, "scripts", "run-mickey-cpu-fanout.mjs"),
+  policy_auditor: path.join(REPO_ROOT, "scripts", "audit-mickey-cpu-fanout.mjs"),
+  remote_verifier: path.join(REPO_ROOT, "scripts", "verify-mickey-cpu-fanout-bundle.mjs"),
+};
+
+async function sha256File(filePath) {
+  return createHash("sha256").update(await readFile(filePath)).digest("hex");
+}
 
 function fail(message) {
   throw new Error(message);
@@ -156,6 +167,12 @@ async function main(argv) {
     preregistered_at: new Date().toISOString(),
     evidence_scope: "diagnostic_only",
     randomization: { algorithm: "sha256-parity-v1", nonce: options.nonce },
+    control_plane: Object.fromEntries(await Promise.all(
+      Object.entries(CONTROL_PLANE_PATHS).map(async ([key, filePath]) => [
+        key,
+        { path: filePath, sha256: await sha256File(filePath) },
+      ]),
+    )),
     runner_lease: {
       path: options.runnerLease,
       sha256: options.runnerLeaseSha256,
