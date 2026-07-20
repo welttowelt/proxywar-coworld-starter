@@ -2112,3 +2112,149 @@ test("outsiders remain legal nuclear targets beside all three K1Z allies", () =>
   assert.equal(selected.id, bomb.id);
   assert.equal(selected.policyMarker, "nk1");
 });
+
+function neutralBoatPair(destination = "675041") {
+  return [8, 16].map((percent) => ({
+    ...action(
+      `boat:${destination}:${percent}`,
+      "boat",
+      `Boat to Terra Nullius ${percent}%`,
+    ),
+    metadata: { expansion: true, troopPercent: percent },
+  }));
+}
+
+test("nb1 resizes the parent neutral boat from 8 to 16 percent at high capacity", () => {
+  const [boat8, boat16] = neutralBoatPair();
+  const selected = choose(
+    [boat8, boat16, action("hold", "hold", "Hold")],
+    observation({ tileShare: 0.2, troopRatio: 0.87 }),
+  );
+  assert.equal(selected.id, boat16.id);
+  assert.equal(selected.policyMarker, "nb1");
+});
+
+test("nb1 leaves the parent 8 percent boat unchanged under current pressure", () => {
+  const [boat8, boat16] = neutralBoatPair();
+  const selected = choose(
+    [boat8, boat16],
+    observation({
+      tileShare: 0.2,
+      troopRatio: 0.95,
+      incomingAttacks: [{ attackerID: "raider" }],
+    }),
+  );
+  assert.equal(selected.id, boat8.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("nb1 leaves the parent 8 percent boat unchanged below the troop floor", () => {
+  const [boat8, boat16] = neutralBoatPair();
+  const selected = choose(
+    [boat8, boat16],
+    observation({ tileShare: 0.2, troopRatio: 0.86 }),
+  );
+  assert.equal(selected.id, boat8.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("nb1 never resizes a rival boat or makes a K1Z boat legal", () => {
+  const rivalBoats = [8, 16].map((percent) => ({
+    ...action(`boat:rival:${percent}`, "boat", `Boat to Rival ${percent}%`),
+    metadata: { targetID: "rival", troopPercent: percent },
+  }));
+  const rivalSelected = choose(
+    rivalBoats,
+    observation({
+      tileShare: 0.001,
+      troopRatio: 0.95,
+      rivals: [
+        { id: "rival", name: "Rival", tileShare: 0.4, relativeTroopRatio: 0.7 },
+      ],
+    }),
+  );
+  assert.equal(rivalSelected.id, rivalBoats[0].id);
+  assert.equal(rivalSelected.policyMarker, undefined);
+
+  const k1zBoats = [8, 16].map((percent) => ({
+    ...action(`boat:hrafn:${percent}`, "boat", `Boat to K1Z Hrafn ${percent}%`),
+    metadata: {
+      targetID: "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+      troopPercent: percent,
+    },
+  }));
+  const hold = action("hold", "hold", "Hold");
+  const k1zSelected = choose(
+    [...k1zBoats, hold],
+    observation({
+      tileShare: 0.001,
+      troopRatio: 0.95,
+      rivals: [{
+        id: "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+        name: "K1Z Hrafn",
+        tileShare: 0.4,
+        relativeTroopRatio: 0.7,
+      }],
+    }),
+  );
+  assert.equal(k1zSelected.id, hold.id);
+  assert.equal(k1zSelected.policyMarker, undefined);
+});
+
+test("nb1 cannot override a non-boat parent priority", () => {
+  const [boat8, boat16] = neutralBoatPair();
+  const land = action(
+    "expand:terra-nullius:10",
+    "attack",
+    "Expand into Terra Nullius 10%",
+  );
+  const selected = choose(
+    [boat8, boat16, land],
+    observation({ tileShare: 0.05, troopRatio: 0.95 }),
+  );
+  assert.equal(selected.id, land.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("nb1 preserves a neutral boat carrying an existing policy marker", () => {
+  for (const markedBoat of [
+    { ...neutralBoatPair()[0], policyMarker: "cv1" },
+    { ...neutralBoatPair()[0], policyMarkers: ["cv1"] },
+  ]) {
+    const boat16 = neutralBoatPair()[1];
+    const selected = choose(
+      [markedBoat, boat16],
+      observation({ tileShare: 0.2, troopRatio: 0.95 }),
+    );
+    assert.equal(selected.id, markedBoat.id);
+    assert.equal(selected.policyMarker, markedBoat.policyMarker);
+    assert.deepEqual(selected.policyMarkers, markedBoat.policyMarkers);
+  }
+});
+
+test("nb1 respects the parent cooldown avoidance for the 16 percent candidate", () => {
+  const [boat8, boat16] = neutralBoatPair();
+  const history = [
+    { actionID: boat16.id, kind: "emoji" },
+    { actionID: boat16.id, kind: "emoji" },
+  ];
+  const selected = choose(
+    [boat8, boat16],
+    observation({ tileShare: 0.2, troopRatio: 0.95 }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, boat8.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("nb1 never replaces a safe parent boat with a high-risk candidate", () => {
+  const [boat8, boat16] = neutralBoatPair();
+  boat16.risk = { level: "high" };
+  const selected = choose(
+    [boat8, boat16],
+    observation({ tileShare: 0.2, troopRatio: 0.95 }),
+  );
+  assert.equal(selected.id, boat8.id);
+  assert.equal(selected.policyMarker, undefined);
+});

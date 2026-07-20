@@ -767,7 +767,38 @@ export function chooseUtility(actions, state, plan, history) {
   return null;
 }
 
-export function chooseAction(actions, state, plan = null, history = []) {
+function neutralBoatDestination(action) {
+  return String(action?.id ?? "").replace(/:\d+(?:\.\d+)?$/, "");
+}
+
+function chooseNeutralBoatBoost(action, actions, state, history) {
+  if (
+    !isNeutralBoat(action) ||
+    actionPercent(action) !== 8 ||
+    action.policyMarker ||
+    (Array.isArray(action.policyMarkers)
+      ? action.policyMarkers.length > 0
+      : Boolean(action.policyMarkers)) ||
+    state.self.troopRatio < 0.87 ||
+    incomingThreatCount(state.self.incomingAttacks) > 0 ||
+    (state.self.incomingAttackerIDs || []).length > 0 ||
+    (state.self.allProtocolAttackerIDs || []).length > 0
+  ) {
+    return action;
+  }
+  const destination = neutralBoatDestination(action);
+  const avoid = new Set(avoidActionIDs(history));
+  const boosted = safeActions(actions, (candidate) =>
+    isNeutralBoat(candidate) &&
+    actionPercent(candidate) === 16 &&
+    neutralBoatDestination(candidate) === destination &&
+    !avoid.has(candidate.id) &&
+    candidate.risk?.level !== "high"
+  )[0];
+  return boosted ? { ...boosted, policyMarker: "nb1" } : action;
+}
+
+function chooseParentAction(actions, state, plan = null, history = []) {
   if (!Array.isArray(actions) || actions.length === 0) {
     throw new Error("decision request had no legal actions");
   }
@@ -909,6 +940,11 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (pressure) return pressure;
 
   return actions.find((action) => action.kind === "hold") ?? actions[0];
+}
+
+export function chooseAction(actions, state, plan = null, history = []) {
+  const parent = chooseParentAction(actions, state, plan, history);
+  return chooseNeutralBoatBoost(parent, actions, state, history);
 }
 
 export function recordDecision(history, action, state) {
