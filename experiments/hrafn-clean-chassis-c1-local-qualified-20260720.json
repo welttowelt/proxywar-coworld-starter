@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_clean_chassis_local_qualification",
+  "recorded_at": "2026-07-20T13:05:00Z",
+  "lane": "hrafn-fylking",
+  "candidate": {
+    "name": "hrafn-clean-chassis-c1",
+    "source_commit": "b74fa0d4db8786ca5016b382501fac40dc42a871",
+    "audit_commit": "09661d0f83ab36aba5ab4ae2167a7755c4352efb",
+    "image": "hrafn-clean-chassis-c1:b74fa0d4",
+    "image_id": "sha256:c4768848217605db6333fae1307a49960025ecb4d5a607b428eccafccee1447f",
+    "platform": "linux/amd64",
+    "run": [
+      "node",
+      "/app/hrafn-chassis-player.mjs"
+    ]
+  },
+  "exact_control": {
+    "label": "hrafn-fylking:v5",
+    "source_commit": "0c151570f7e650a32a5705ff71692aa930012097",
+    "image": "hrafn-fylking-v5:0c151570",
+    "rebuilt_image_id": "sha256:fb695574f4958beb29a036ed216c0882ee4da84ffa2f63c535f6c658f997522d",
+    "live_policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+    "live_membership_id": "lpm_e822de7f-1124-4b5f-b0ef-1025d46ae211"
+  },
+  "qualifier": {
+    "run_id": "hrafn-c1-fix2-qualifier-20260720",
+    "output": "/private/tmp/hrafn-c1-fix2-qualifier-20260720",
+    "decisions": 34,
+    "accepted": 34,
+    "fallbacks": 0,
+    "degraded": 0,
+    "replay_sha256": "00c79e529ca63e948d34bd3f15dd82e56bf3669d51c34a1d64e256130c6defc3",
+    "results_sha256": "8c75af4d00a03b05c383a73f8ac8a3d546fc969bf5d0af9ef9be6f8ae00b55dd",
+    "runner_receipt_sha256": "4c40afde939a5c20fe7393e86786d9ed1557641e8ea0040780e16b178d62d2a2",
+    "verified_replay": true
+  },
+  "matched_gate": {
+    "variant": "tournament-2p-pangaea",
+    "candidate_mean_score": 0.5538819389706967,
+    "control_mean_score": 0.4461180610293033,
+    "candidate_advantage": 0.1077638779413934,
+    "arms": [
+      {
+        "run_id": "hrafn-c1-fix2-pangaea-a-20260720",
+        "seat_order": [
+          "candidate",
+          "control"
+        ],
+        "candidate_score": 0.698380688057824,
+        "control_score": 0.301619311942176,
+        "candidate_policy_decisions": 300,
+        "candidate_accepted": 300,
+        "candidate_holds": 6,
+        "candidate_verified_holds": 6,
+        "candidate_rejects": 0,
+        "candidate_fallbacks": 0,
+        "candidate_degraded": 0,
+        "candidate_k1z_harm": 0,
+        "replay_sha256": "f7481e8801c77e5978c01a3bdfe21e2663c92515d4e828bbad225af0165d5cae",
+        "results_sha256": "7f1fd119430fd44bf7391f4fa518c9f11f129fa5b5a79ffd124bd3f223ba89d8",
+        "runner_receipt_sha256": "10af9f40473b43703665440f8b33991d585495d85a115bc3789fa48c7b81f77c",
+        "audit_sha256": "6a4bf3f1e0e1b0a204df9ba02cc199139ceb7f53da126fe777ba20a687f97a3b",
+        "audit_all_checks_passed": true
+      },
+      {
+        "run_id": "hrafn-c1-fix2-pangaea-b-20260720",
+        "seat_order": [
+          "control",
+          "candidate"
+        ],
+        "candidate_score": 0.4093831898835694,
+        "control_score": 0.5906168101164306,
+        "candidate_policy_decisions": 300,
+        "candidate_accepted": 300,
+        "candidate_holds": 0,
+        "candidate_verified_holds": 0,
+        "candidate_rejects": 0,
+        "candidate_fallbacks": 0,
+        "candidate_degraded": 0,
+        "candidate_k1z_harm": 0,
+        "replay_sha256": "7560bfc4447da1cabaef100a75b726de875fcf9c616899a604c23be311ebd02a",
+        "results_sha256": "7308a52a100f6258b4921549bce8b08f246ccd1e9925b4a50b19df772823740f",
+        "runner_receipt_sha256": "cb963d43691f882c3c1361450f3faa8c636ef69c1b4ecf2aaf0471b6e430ad63",
+        "audit_sha256": "d2e600d0c984da1ad37c784ce59427bfcf054ca683c616b2e21481e7e73409ca",
+        "audit_all_checks_passed": true
+      }
+    ]
+  },
+  "verification": {
+    "tests": "151/151 passed",
+    "foreground_runner_receipts": true,
+    "runner_lease_released": true,
+    "live_player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "live_player_name": "K1Z Hrafn",
+    "live_v5_status": "competing active",
+    "live_v5_champion": true
+  },
+  "promotion_states": {
+    "SOURCE_READY": true,
+    "LOCAL_QUALIFIED": true,
+    "DIAGNOSTIC_UPLOADED": false,
+    "HOSTED_PASSED": false,
+    "REGRESSION_PASSED": false,
+    "AUDIT_APPROVED": false,
+    "SUBMITTED": false,
+    "PLACED": false,
+    "CHAMPION_VERIFIED": false,
+    "ROUND_CONFIRMED": false
+  },
+  "next_gate": "Independent pre-upload cross-audit. No diagnostic upload or live mutation before APPROVE."
+}
