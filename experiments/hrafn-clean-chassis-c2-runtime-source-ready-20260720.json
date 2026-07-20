@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_clean_chassis_source_ready",
+  "recorded_at": "2026-07-20T14:26:59Z",
+  "arm": "hrafn-clean-chassis-c2-runtime-liveness",
+  "scope": "Hrafn only",
+  "preregistration": {
+    "commit": "3a7957c4731803f322f1af2de0bbb1611812a04a",
+    "file": "experiments/hrafn-clean-chassis-c2-runtime-liveness-20260720.json",
+    "recorded_before_source_change": true
+  },
+  "exact_parent": {
+    "label": "hrafn-fylking:v8",
+    "source_commit": "b74fa0d4db8786ca5016b382501fac40dc42a871",
+    "policy_version_id": "0b444466-abdd-422f-82e7-7652360a2015",
+    "player_source_sha256": "79105178b6d23d3682d26fdbd719033a482f33e705a78ef1caba7f4d4acbd76e"
+  },
+  "candidate": {
+    "source_commit": "9c9ae7b6b3a978d971cde24688aba3995a88bdea",
+    "pushed_branch": "feature/k1z-hrafn-fylking",
+    "player_source_sha256": "39e3a658dcbaeea5e7c576b654838dcc1e646b4e44b82bb8b67db1130aa70054",
+    "integration_test_sha256": "354024b40365cc440972c0085cd7da78fe2d0221ecff2f0554b7a7e00fbb7aa1"
+  },
+  "single_delta_audit": {
+    "changed_runtime_files": [
+      "hrafn-chassis-player.mjs"
+    ],
+    "changed_test_files": [
+      "test/hrafn-chassis-player.integration.test.mjs"
+    ],
+    "unchanged_strategy_hashes": {
+      "hrafn-state.mjs": "b36458b78dcf2d1f585b5b62552b17935c9bd837ee1c31f0af40fffd2c355334",
+      "hrafn-safety.mjs": "4016468cb15d7e225adaaac6d049a22cdde5629cc575b44caee207dc2d9d9c05",
+      "hrafn-chassis.mjs": "531c5affbea511c47bff1ba249e5b8811cacd48e76171b33213d9588068c5ae3"
+    },
+    "removed_behavior": [
+      "hrafnAwaitingPong state",
+      "pong listener",
+      "missing-pong socket termination"
+    ],
+    "retained_behavior": [
+      "ping-only heartbeat",
+      "real close and error reconnect",
+      "send-failure reconnect",
+      "socket-generation queue guards",
+      "exponential handshake reconnect backoff"
+    ],
+    "strategy_change": false,
+    "expected_action_change": "none"
+  },
+  "hosted_failure_binding": {
+    "source": "Authenticated Hrafn-only episode-request bundles with include=player_logs.",
+    "bundles": [
+      {
+        "episode_request_id": "ereq_4c85549c-6875-4fd4-8b83-a96996af0478",
+        "bundle_sha256": "9025cfd65f7d72391450e045c8aa3fd13809161501fafecaacc88446ffdfd0ec",
+        "hrafn_log_entry_sha256": "61dc564b55c8bc06be8bd012015092c9f2ea6a5c7691e34b8b77f4a146056d9c",
+        "manifest": [
+          "logs/policy_agent_5.log",
+          "manifest.json"
+        ],
+        "predecision_sequence": [
+          "connected to match (grow=on,convert=on,naval=on,host-authority=external)",
+          "match socket missed heartbeat pong; reconnecting",
+          "match socket closed (1006: none); reconnecting",
+          "connected to match (grow=on,convert=on,naval=on,host-authority=external)"
+        ],
+        "logged_hrafn_events": 286,
+        "first_active_decision_latency_ms": 15006
+      },
+      {
+        "episode_request_id": "ereq_b441d035-be66-4854-b199-111677f4bbd2",
+        "bundle_sha256": "b7a971d06e7f33c45032af0539da84153d169c361e3e13f1e67d09ac2e766e6f",
+        "hrafn_log_entry_sha256": "4f51fe88dcd15088e4171cc7f9614319719a39cb69002ab170e871dd592af8b3",
+        "manifest": [
+          "logs/policy_agent_5.log",
+          "manifest.json"
+        ],
+        "predecision_sequence": [
+          "connected to match (grow=on,convert=on,naval=on,host-authority=external)",
+          "match socket missed heartbeat pong; reconnecting",
+          "match socket closed (1006: none); reconnecting",
+          "connected to match (grow=on,convert=on,naval=on,host-authority=external)"
+        ],
+        "logged_hrafn_events": 276,
+        "first_active_decision_latency_ms": 15004
+      }
+    ],
+    "bundle_boundary": "Each retrieved archive contained only manifest.json and the Hrafn seat-5 player log. No raw bundle is committed."
+  },
+  "rci_loop": {
+    "problem": "The exact v8 wrapper destroys an idle viable socket after one unanswered ping and loses the first hosted active request across socket generations.",
+    "red": {
+      "fixture": "WebSocketServer autoPong false, 50 ms heartbeat, 175 ms idle, no spawn request, then a 12-player turn-400 active request.",
+      "exact_parent_result": "failed",
+      "failure": "idle no-pong socket reconnected before the first active request",
+      "observed_connections": 2,
+      "required_connections": 1
+    },
+    "smallest_correction": "Stop treating an absent pong as authoritative connection death; retain non-destructive ping and reconnect only on actual transport failure.",
+    "green": {
+      "targeted": "1/1 passed",
+      "integration": "8/8 passed",
+      "hrafn_chassis": "152/152 passed",
+      "matched_auditor_and_authoritative_replay": "60/60 passed",
+      "repository": "341/341 passed",
+      "selected_action_id": "expand:terra-nullius:35",
+      "public_reason": "[K1Z] r4vn:atk:hg35",
+      "connections": 1,
+      "response_budget_ms": 500
+    }
+  },
+  "live_safety_state": {
+    "active_player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "active_player_name": "K1Z Hrafn",
+    "champion_policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+    "champion_label": "hrafn-fylking:v5",
+    "champion_membership_id": "lpm_e822de7f-1124-4b5f-b0ef-1025d46ae211",
+    "champion_status": "competing active",
+    "champion_is_sole": true,
+    "league_mutation_performed": false
+  },
+  "known_separate_strategy_failure": {
+    "name": "naval launch-budget hold trap",
+    "status": "excluded from C2",
+    "promotion_consequence": "C2 is a runtime diagnostic only and cannot reopen C1, enter regression, be submitted, or become champion."
+  },
+  "promotion_state": {
+    "SOURCE_READY": true,
+    "LOCAL_QUALIFIED": false,
+    "DIAGNOSTIC_UPLOADED": false,
+    "HOSTED_PASSED": false,
+    "REGRESSION_PASSED": false,
+    "AUDIT_APPROVED": false,
+    "SUBMITTED": false,
+    "PLACED": false,
+    "CHAMPION_VERIFIED": false,
+    "ROUND_CONFIRMED": false
+  },
+  "next_gate": "Build and locally qualify the exact linux/amd64 image, then request an independent pre-upload cross-audit. No upload or hosted request before both pass.",
+  "verdict": "SOURCE_READY for the runtime-only diagnostic. NO SUBMIT and no champion change."
+}
