@@ -11,6 +11,8 @@ const [
   candidateImage,
   controlImage,
   order = "candidate-first",
+  controlKind = "v5-control",
+  seedText,
 ] = process.argv.slice(2);
 
 if (
@@ -21,7 +23,8 @@ if (
   !controlImage
 ) {
   throw new Error(
-    "usage: build-hrafn-matched-job MANIFEST OUTPUT VARIANT CANDIDATE CONTROL",
+    "usage: build-hrafn-matched-job MANIFEST OUTPUT VARIANT CANDIDATE CONTROL " +
+      "[candidate-first|control-first] [v5-control|chassis-control] [seed]",
   );
 }
 
@@ -34,13 +37,24 @@ if (variant.game_config?.num_agents !== 2) {
 if (!["candidate-first", "control-first"].includes(order)) {
   throw new Error("order must be candidate-first or control-first");
 }
+if (!["v5-control", "chassis-control"].includes(controlKind)) {
+  throw new Error("control kind must be v5-control or chassis-control");
+}
+const seed = seedText === undefined ? null : Number(seedText);
+if (
+  seed !== null &&
+  (!Number.isSafeInteger(seed) || seed < 0 || seed > 308915775)
+) {
+  throw new Error("seed must be an integer from 0 through 308915775");
+}
 
 const gameConfig = structuredClone(variant.game_config);
 gameConfig.tokens = null;
-const namedPlayers = [
-  { name: "K1Z Hrafn" },
-  { name: "Hrafn v5 control" },
-];
+if (seed !== null) gameConfig.seed = seed;
+const chassisControl = controlKind === "chassis-control";
+const namedPlayers = chassisControl
+  ? [{ name: "K1Z Hrafn" }, { name: "Hrafn comparison" }]
+  : [{ name: "K1Z Hrafn" }, { name: "Hrafn v5 control" }];
 const runnables = [
   {
     type: "player",
@@ -50,11 +64,16 @@ const runnables = [
   {
     type: "player",
     image: controlImage,
-    run: ["node", "/app/hrafn-player.mjs"],
+    run: [
+      "node",
+      chassisControl
+        ? "/app/hrafn-chassis-player.mjs"
+        : "/app/hrafn-player.mjs",
+    ],
   },
 ];
 if (order === "control-first") {
-  namedPlayers.reverse();
+  if (!chassisControl) namedPlayers.reverse();
   runnables.reverse();
 }
 gameConfig.players = namedPlayers;
