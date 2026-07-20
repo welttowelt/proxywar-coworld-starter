@@ -74,6 +74,12 @@ the credential-free RunPod rung; that rung exercises deterministic fallback
 unless a separately reviewed local intent fixture is used. A real hosted probe
 is still required for nondegraded planner evidence.
 
+The first CPU diagnostic is a preregistered five-player Pangaea/Normal matched
+pair at seed `20260720` and 80 decisions. Mickey occupies slot 1 in both arms;
+arm A runs `mickey-intent`, while arm B replaces only that process with exact
+`qd1n-v89`. Odin, Hrafn, Gravity, and Katanasan occupy identical slots in both
+arms. This is a one-seed mechanism/safety screen, not promotion evidence.
+
 The direct user instruction permits an experimental fresh-entry activation
 after these source/runtime/safety gates. It is not a claim that Mickey passed
 the standard `4/4` hosted performance or `20/20` regression promotion gates.
