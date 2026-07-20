@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T20:31:21Z",
+  "updated_at": "2026-07-20T20:44:05Z",
   "cycle_id": "odin-kiz1-gravity-20260720",
   "lane": "odin",
   "arm": {
@@ -9,9 +9,9 @@
     "branch": "rci/kiz1-gravity-alias",
     "exact_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
     "candidate_source_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
-    "closed": false
+    "closed": true
   },
-  "state": "hosted_pair_dispatched",
+  "state": "closed_hosted_failure",
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
     "player_name": "K1Z odin free",
@@ -51,7 +51,13 @@
     "candidate_request": "xreq_41f198c5-8ecf-4c1b-82bb-7628d949b672",
     "parent_request": "xreq_38a50cf3-0476-470e-b357-877cbf6285e7",
     "episodes_per_request": 4,
-    "status": "submitted"
+    "status": "terminal_early_stop",
+    "terminal_episode": "ereq_bdbaf1ce-aa44-41f7-9906-e10d57b98876",
+    "terminal_replay_sha256": "19f2461529699a2dea30d6eca88cac999de9192b38d9c27d92343bc36125b301",
+    "candidate_won": false,
+    "candidate_score": 0.0,
+    "candidate_final_tiles": 4342,
+    "verdict": "STOP_HOSTED"
   },
   "gates": {
     "source_ready": true,
@@ -69,6 +75,6 @@
     "os1": "closed_without_run_as_recombined_complexity",
     "id1": "closed_directional_only_no_dynamic_llm_proof"
   },
-  "next_automatic_transition": "Dispatch one current-roster hosted candidate/parent pair. A candidate 4/4 with zero holds, rejects, K1Z harm, or planner regression advances to the separate 20/20 gate; any failure closes KIZ1 and preserves qd1n:v89.",
+  "next_automatic_transition": "KIZ1 is closed. Preserve qd1n:v89 and carry the Gravity alias forward only as a mandatory safety invariant in the next single-mechanism offensive candidate.",
   "prior_verified_champion_preserved": true
 }
