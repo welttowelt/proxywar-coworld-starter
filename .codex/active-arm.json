@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T22:37:26Z",
+  "updated_at": "2026-07-20T22:56:00Z",
   "cycle_id": "odin-20260720T220201Z-40724",
   "lane": "odin",
   "arm": {
@@ -12,7 +12,7 @@
     "candidate_source_commit": "ddb980e389c61915fafaa1c91fea282937ad85b5",
     "closed": false
   },
-  "state": "blocked_hrafn_studio_reseal_and_migration",
+  "state": "waiting_hrafn_studio_e459_reseal",
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
     "player_name": "K1Z odin free",
@@ -25,23 +25,24 @@
     "runner": "free; Hrafn source operations moved to Studio; local Mickey work requires the separate mickey lease",
     "qd1n_mutation": "free",
     "active_player": "K1Z Hrafn (live verified 2026-07-20T22:03:52Z)",
-    "hrafn_identity_window": "open_advisory_only",
-    "mailbox_commit": "b648a04",
-    "hrafn_pickup": "Hrafn source and future execution moved to Studio. Source correction 67ae7362 passed independent audit and is pushed; Studio is resealing its later identity-isolation source and artifacts. No valid execution window remains. The local Hrafn Softmax identity stays untouched until Studio posts a terminal migration receipt.",
+    "hrafn_identity_window": "closed_pending_e459_reseal",
+    "mailbox_commit": "26c7a1e",
+    "hrafn_pickup": "Hrafn source and future execution are Studio-only. Odin rejected hrafn-000015 because post-seal commit e459c83a changed the preregistration and operational identity guard. The fresh bounded Studio operator is resealing exact e459c83a. No valid execution window exists. The local Hrafn Softmax identity stays untouched until Studio posts a terminal migration receipt.",
     "mickey_local_slot": "source, five-arm evaluation, linux/amd64 images, and CPU fanout ready; no live identity or league authority before the Hrafn terminal migration receipt"
   },
   "operator_topology": {
     "odin": "local qd1n owner",
     "hrafn": "Studio-only hrafn-fylking owner",
     "mickey": "local mickey-mouse-intent source and evidence owner",
-    "authority_receipt": "team-mailbox b648a04",
+    "authority_receipt": "team-mailbox 26c7a1e",
     "mickey_source_worktree": "/private/tmp/proxywar-mickey-cpu-surrogates-20260721",
     "mickey_ops_worktree": "/private/tmp/proxywar-mickey-cpu-fanout-ops-20260721",
     "mickey_source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
     "mickey_source_receipt_commit": "068afee40b55ee80e00b55966905c0e3f3c3df10",
     "mickey_ops_commit": "0ff0dbe563807a4c9bd16972eeb69e62df4a7153",
     "mickey_state": "five distinct arms; 184/184; zero K1Z harm; six linux/amd64 images verified; waiting only on migration and dedicated identity",
-    "live_identity_guard": "K1Z Hrafn remains active locally until the Studio terminal migration receipt"
+    "live_identity_guard": "K1Z Hrafn remains active locally until the Studio terminal migration receipt",
+    "hrafn_studio_reseal": "screen hrafn-e459-reseal-v4; exact source e459c83a; no Coworld or league authority"
   },
   "candidate": {
     "source_tests": "154/154",
@@ -77,7 +78,7 @@
     "auditor_sha256": "771143a16a3f7f201f3ed018c23f6e991800db01002ffd5c35de8d53e686a4d3",
     "auditor_self_test_report_sha256": "8ba3fe5095cfe6ffe962d65552d66f7270094ce24fd52255820c69b870ce5828",
     "auditor_self_test": "parent-as-both failed closed on zero RS1 marker reach while reproducing the exact turn-2400 opportunity and AUC25 516155",
-    "reason": "Shared active identity is K1Z Hrafn. Commit f9d569a1 replaced the original two-key rejection with another exact-root-key rejection, contradicting the sealed requirement to tolerate additional envelope metadata. Mailbox 036314b removes the obsolete ready packet and requires one permissive extraction fix plus a complete Studio reseal. Odin will not compete for the runner or switch identity mid-window."
+    "reason": "Shared active identity remains K1Z Hrafn. The corrected 0255a135 package was internally consistent, but post-seal commit e459c83a changed the preregistration and operational identity guard. Mailbox 26c7a1e closes the stale window and requires one exact Studio reseal. Odin will not compete for the runner or switch identity mid-window."
   },
   "gates": {
     "source_ready": true,
@@ -97,7 +98,7 @@
     "oi2": "closed_before_edit as redundant with HI1",
     "os1": "closed_without_run_as_recombined_complexity"
   },
-  "next_automatic_transition": "Studio finishes Hrafn's reseal and terminal migration receipt. Then restore K1Z odin free locally and run the preregistered RS1 slot-0 control first; Mickey may separately preregister one M0-versus-one-arm local screen under the mickey lease after its dedicated identity is verified. Reject either lane on zero reach, pre-marker divergence, any unexplained hold/reject/K1Z harm, or nonpositive measured lift.",
+  "next_automatic_transition": "Studio reseals exact e459c83a and posts the terminal migration receipt. Then restore K1Z odin free locally and run the preregistered RS1 slot-0 control first. Mickey may separately preregister one M0-versus-one-arm local screen under the mickey lease after its dedicated identity is verified. Reject either lane on zero reach, pre-marker divergence, any unexplained hold/reject/K1Z harm, or nonpositive measured lift.",
   "prior_verified_champion_preserved": true,
   "live_identity_checkpoint": {
     "cycle_id": "odin-20260720T220201Z-40724",
