@@ -41,7 +41,7 @@ work-conserving opening:
 | Median first rival attack turn | 1,700 | 6,250 |
 | Median first social turn | 3,050 | 400 |
 | Median territory at decision 20 | 86,652 | 26,491 |
-| Fallback decisions | 0 / 5,124 | 2,846 / 5,730 |
+| Reported planner-degraded / fallback flag | 0 / 5,124 | 2,846 / 5,730 |
 
 Daveey's conquest share remained similar in sampled wins and losses
 (`90.3%` versus `87.3%`) with the same `35% / 25%` commitment medians. Wins
@@ -50,9 +50,50 @@ wins versus 46,038 in losses. Target switching was lower than Odin's
 (`35.6%` versus `45.3%`), but not zero. The invariant is sustained throughput,
 not fixation on one rival.
 
+The fallback comparison is telemetry, not an action-quality measure. Qd1n sets
+`fallbackUsed=true` whenever its background planner is missing or degraded,
+even though the deterministic selector still submits an exact legal action.
+Daveey's zero count does not establish his architecture or prove that every
+decision used a preferred route. It is excluded from the causal claim.
+
+## Architecture boundary
+
+An operator-supplied ProxyWar Telegram export records Auri's 2026-07-14
+description of the starter: the model chooses high-level focus, target, and
+preferred action kinds; `choose()` ranks the offered actions, applies rules,
+and sends the exact legal ID. Auri said the rule weights came from more than a
+month of scenario-level A/B testing and doubted that a model choosing every
+action ID could avoid latency, invalid IDs, and context drift for 300-400
+decisions.
+
+The current official Coworld adapter confirms the contract: a policy must
+return exactly one offered `LegalAction.id`, the game validates it again, and
+the Commander-Executor policy refreshes model directives in the background
+while the executor answers synchronously. Qd1n uses this same hybrid boundary
+with an asynchronous plan refresh every eight decisions.
+
+This supports a selector-side experiment, not a pure-LLM rewrite. It does not
+identify Daveey's private implementation.
+
+## Platform context
+
+Auri reported on 2026-07-17 that the live leaderboard uses a 24-round EWMA
+multiplied by 100 and begins decaying after two days. This explains how an
+unchanged policy can become dominant: recent field-relative outcomes replace
+older rounds while inactive evidence loses weight. Treat the exact leaderboard
+formula as operator testimony until its implementation is public.
+
+The official adapter separately verifies episode scoring: a declared winner
+receives one and every other seat zero; without a winner, scores are normalized
+owned-tile shares. It also identifies ProxyWar as OpenFront-based. Human
+OpenFront play and the upstream engine are therefore valid hypothesis sources,
+but any borrowed idea still requires a replay-derived ProxyWar boundary and a
+matched gate.
+
 ## Lean next hypothesis
 
-Test one decision-20 scheduler, not another commitment-only rule:
+Test one deterministic, selector-side decision-20 scheduler, not another
+commitment-only rule or prompt revision:
 
 1. Build one early City.
 2. Otherwise select the legal land conquest with the highest immediate

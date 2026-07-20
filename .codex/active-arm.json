@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-20T17:31:32Z",
+  "updated_at": "2026-07-20T17:52:53Z",
   "cycle_id": "odin-odc1-rci2-20260720",
   "lane": "odin",
   "authority": {
@@ -118,7 +118,7 @@
     "parent_runtime_excluded": "local parent lacked Bedrock credentials",
     "k1z_only_finish": "disabled_until_authoritative_alive_roster_signal"
   },
-  "next_automatic_transition": "Keep qd1n:v89 champion. Open one bounded work-conserving opening scheduler derived from the verified Daveey replay invariant: one early City, otherwise highest-progress land conquest through decision 20, immediate neutral-to-rival frontier pivot, proactive social deferred, K1Z reverse handshakes and emergency defense preserved. Reject unless matched mirrors show mechanism reach, decision-20 tile lift, and placement lift. Do not submit or change champion state before hosted 4/4, distinct 20/20 regression, and final RCI all pass.",
+  "next_automatic_transition": "Keep qd1n:v89 champion. Open one bounded deterministic selector-side work-conserving scheduler derived from the verified Daveey replay invariant: one early City, otherwise highest-progress land conquest through decision 20, immediate neutral-to-rival frontier pivot, proactive social deferred, K1Z reverse handshakes and emergency defense preserved. Do not change the LLM/executor boundary or reopen a prompt-only arm. Reject unless matched mirrors show mechanism reach, decision-20 tile lift, and placement lift. Do not submit or change champion state before hosted 4/4, distinct 20/20 regression, and final RCI all pass.",
   "prior_verified_champion_preserved": true,
   "prior_verified_champion": "qd1n:v89"
 }
