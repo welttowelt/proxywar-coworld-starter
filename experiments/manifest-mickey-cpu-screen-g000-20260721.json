@@ -2,7 +2,7 @@
   "schema_version": 1,
   "kind": "mickey_cpu_fanout",
   "run_id": "mickey-screen-g000-20260720t234233z",
-  "preregistered_at": "2026-07-20T23:48:17.599Z",
+  "preregistered_at": "2026-07-20T23:49:35.268Z",
   "evidence_scope": "diagnostic_only",
   "randomization": {
     "algorithm": "sha256-parity-v1",
@@ -11,7 +11,7 @@
   "control_plane": {
     "fanout_runner": {
       "path": "/private/tmp/proxywar-mickey-incubator-integration-20260721/scripts/run-mickey-cpu-fanout.mjs",
-      "sha256": "fb0087cb27879c74af801ef2de8318cd698a97a763a117cf7d3a6f5e17f7bdab"
+      "sha256": "da21cdc7cab87693eca3853940f2ff239fe9b8d6ba35504b3ff44612f819eb18"
     },
     "policy_auditor": {
       "path": "/private/tmp/proxywar-mickey-incubator-integration-20260721/scripts/audit-mickey-cpu-fanout.mjs",

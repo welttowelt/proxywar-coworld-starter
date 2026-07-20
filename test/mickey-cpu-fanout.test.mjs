@@ -10,6 +10,7 @@ import {
   readFileSync,
   realpathSync,
   rmSync,
+  statSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -25,6 +26,7 @@ import {
   derivePairOrder,
   discoverNewExactNamePods,
   parseSshKeygenFingerprint,
+  prepareKnownHostsFile,
   preflightManifest,
   registerCreatedPod,
   validateCreateRequestAttestation,
@@ -466,6 +468,19 @@ test("SSH first contact binds the negotiated ED25519 host key to the control-pla
   };
   assert.equal(validateSshInfo(sshInfo, sshInfo.id, sshInfo.name), sshInfo);
   assert.throws(() => validateSshInfo({ ...sshInfo, id: "wrong" }, sshInfo.id, sshInfo.name), /unsafe or incomplete/);
+});
+
+test("SSH bootstrap pre-creates a private known_hosts file before accept-new", async () => {
+  const directory = tempDirectory("mickey-known-hosts-test-");
+  try {
+    const knownHosts = path.join(directory, "known_hosts");
+    await prepareKnownHostsFile(knownHosts);
+    assert.equal(statSync(knownHosts).mode & 0o777, 0o600);
+    assert.equal(readFileSync(knownHosts, "utf8"), "");
+    await assert.rejects(prepareKnownHostsFile(knownHosts), /EEXIST/);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
 });
 
 test("create request attestation binds CPU, cost, and typed server termination input", () => {

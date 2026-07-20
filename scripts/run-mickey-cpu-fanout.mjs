@@ -1358,6 +1358,21 @@ function scpArgs(info, knownHosts) {
   ];
 }
 
+export async function prepareKnownHostsFile(knownHosts) {
+  await writeFile(knownHosts, "", { flag: "wx", mode: 0o600 });
+  const info = await lstat(knownHosts).catch(() => null);
+  if (
+    !info?.isFile() ||
+    info.isSymbolicLink() ||
+    await realpath(knownHosts) !== knownHosts ||
+    (info.mode & 0o077) !== 0 ||
+    (typeof process.getuid === "function" && info.uid !== process.getuid())
+  ) {
+    throw new Error("SSH known_hosts bootstrap file is unsafe");
+  }
+  return knownHosts;
+}
+
 export function validateSshInfo(info, expectedPodId, expectedName) {
   if (
     !isObject(info) ||
@@ -1742,6 +1757,7 @@ async function runOnePair({
       throw new Error("SSH private key is not owned by this operator");
     }
     const knownHosts = path.join(activeRoot, "known_hosts");
+    await prepareKnownHostsFile(knownHosts);
     const remote = `root@${info.ip}`;
     const bootstrapResult = await executor.run(
       tools.ssh,
