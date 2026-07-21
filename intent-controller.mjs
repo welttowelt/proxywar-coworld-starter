@@ -11,11 +11,10 @@ function exactKeys(value) {
 }
 
 function eligibleTarget(state, targetID) {
-  const normalized = clean(targetID).toLowerCase();
-  return normalized.length > 0 && state?.rivals?.some((rival) => {
-    const rivalID = clean(rival.id).toLowerCase();
-    return rivalID.length > 0 && rivalID === normalized;
-  });
+  if (typeof targetID !== "string" || clean(targetID) !== targetID || targetID.length === 0) {
+    return false;
+  }
+  return state?.rivals?.some((rival) => clean(rival.id) === targetID) === true;
 }
 
 // Accept only a small mission-command packet. Unknown keys, coerced numbers,
@@ -24,8 +23,8 @@ export function normalizeIntentDirective(value, state, model = "unknown") {
   if (!value || typeof value !== "object" || Array.isArray(value) || !exactKeys(value)) {
     return null;
   }
-  const intent = clean(value.intent).toLowerCase();
-  if (!INTENTS.includes(intent)) return null;
+  if (typeof value.intent !== "string" || !INTENTS.includes(value.intent)) return null;
+  const intent = value.intent;
   if (!Number.isInteger(value.horizon) ||
       value.horizon < MIN_INTENT_HORIZON ||
       value.horizon > MAX_INTENT_HORIZON) {
@@ -40,10 +39,23 @@ export function normalizeIntentDirective(value, state, model = "unknown") {
 
   return {
     intent,
-    targetID: intent === "convert" ? clean(value.targetID) : null,
+    targetID: intent === "convert" ? value.targetID : null,
     horizon: value.horizon,
     model: clean(model) || "unknown",
   };
+}
+
+// The production planner response is a protocol packet, not prose. Parse the
+// complete response as JSON and reject wrappers, multiple objects, or repairs.
+export function parseIntentDirective(text, state, model = "unknown") {
+  if (typeof text !== "string") return null;
+  let value;
+  try {
+    value = JSON.parse(text);
+  } catch {
+    return null;
+  }
+  return normalizeIntentDirective(value, state, model);
 }
 
 export function intentRefreshInterval(plan, configuredMaximum = 8) {
@@ -53,7 +65,14 @@ export function intentRefreshInterval(plan, configuredMaximum = 8) {
 }
 
 export function executableIntentPlan(plan, decisionAge, degraded = false) {
-  if (!plan || degraded || !Number.isInteger(decisionAge) || decisionAge < 0 ||
+  const validShape = plan && INTENTS.includes(plan.intent) &&
+    Number.isInteger(plan.horizon) &&
+    plan.horizon >= MIN_INTENT_HORIZON && plan.horizon <= MAX_INTENT_HORIZON &&
+    (plan.intent === "grow"
+      ? plan.targetID === null
+      : typeof plan.targetID === "string" && plan.targetID.length > 0 &&
+        clean(plan.targetID) === plan.targetID);
+  if (!validShape || degraded || !Number.isInteger(decisionAge) || decisionAge < 0 ||
       !Number.isInteger(plan.horizon) || decisionAge > plan.horizon) {
     return null;
   }

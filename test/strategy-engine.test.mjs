@@ -128,6 +128,39 @@ test("productive boat growth does not trigger conversion mode", () => {
   assert.equal(boatConversionStalled(state, history), false);
 });
 
+test("MM1 convert requires the exact visible rival ID at the selector boundary", () => {
+  const weak = {
+    ...action("attack:weak:10", "attack", "Attack Weak 10%"),
+    metadata: { targetID: "weak", targetName: "Weak", troopPercent: 10 },
+  };
+  const large = {
+    ...action("attack:large:10", "attack", "Attack Large 10%"),
+    metadata: { targetID: "large", targetName: "Large", troopPercent: 10 },
+  };
+  const hold = action("hold", "hold", "Hold");
+  const obs = observation({
+    tileShare: 0.2,
+    rivals: [
+      { id: "weak", name: "Weak", tileShare: 0.08, relativeTroopRatio: 2.2 },
+      { id: "large", name: "Large", tileShare: 0.2, relativeTroopRatio: 1.5 },
+    ],
+  });
+  const menu = [weak, large, hold];
+  const baseline = choose(menu, obs, null, []);
+  const exact = choose(menu, obs, {
+    intent: "convert", targetID: "large", horizon: 4, model: "test",
+  }, []);
+  const wrongCase = choose(menu, obs, {
+    intent: "convert", targetID: "LARGE", horizon: 4, model: "test",
+  }, []);
+
+  assert.equal(baseline.id, weak.id);
+  assert.equal(exact.id, large.id);
+  assert.equal(exact.policyMarker, "mm1c");
+  assert.equal(wrongCase.id, baseline.id);
+  assert.notEqual(wrongCase.policyMarker, "mm1c");
+});
+
 test("alliance selection rejects a recent attacker when a peaceful rival is legal", () => {
   const attackerAlliance = {
     ...action("alliance:attacker", "alliance_request", "Alliance with Attacker"),

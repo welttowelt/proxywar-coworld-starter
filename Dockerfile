@@ -10,8 +10,9 @@ RUN --mount=type=cache,id=proxywar-npm-cache,target=/root/.npm,sharing=locked \
     npm ci --omit=dev --ignore-scripts
 
 FROM dependencies AS production-source
-COPY llm-player.mjs intent-controller.mjs strategy-engine.mjs strategy-chassis.mjs planner-backoff.mjs starter-player.mjs ./
+COPY llm-player.mjs mickey-production-doctrine.mjs intent-controller.mjs strategy-engine.mjs strategy-chassis.mjs planner-backoff.mjs starter-player.mjs ./
 RUN node --check llm-player.mjs \
+    && node --check mickey-production-doctrine.mjs \
     && node --check intent-controller.mjs \
     && node --check strategy-engine.mjs \
     && node --check strategy-chassis.mjs \

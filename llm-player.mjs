@@ -9,9 +9,10 @@
  * BACKGROUND every few decisions. The model still steers the doctrine without
  * blocking legal action selection.
  *
- * To change how it PLAYS, edit STRATEGY below and strategy-engine.mjs, which
- * controls the compact state, target scoring, action cadence, and legal move.
- * That's your agent. Everything else is plumbing.
+ * To change how it PLAYS, edit the compile-time selection in
+ * mickey-production-doctrine.mjs and strategy-engine.mjs, which controls the
+ * compact state, target scoring, action cadence, and legal move. That's your
+ * agent. Everything else is plumbing.
  */
 import { WebSocket } from "ws";
 import { AnthropicBedrock } from "@anthropic-ai/bedrock-sdk";
@@ -25,8 +26,9 @@ import {
   buildIntentSnapshot,
   executableIntentPlan,
   intentRefreshInterval,
-  normalizeIntentDirective,
+  parseIntentDirective,
 } from "./intent-controller.mjs";
+import { MICKEY_PRODUCTION_DOCTRINE } from "./mickey-production-doctrine.mjs";
 import { chooseChassisAction } from "./strategy-chassis.mjs";
 
 const chooseAction =
@@ -52,14 +54,8 @@ const TEST_INTENT_DIRECTIVE = process.env.NODE_ENV === "test"
   ? process.env.INTENT_TEST_DIRECTIVE
   : null;
 
-// -- YOUR STRATEGY -- edit this to change how your agent thinks ---------------
-const STRATEGY = [
-  "You command an autonomous nation in ProxyWar. Win by owning the most land.",
-  "INTENT: choose one outcome for the next few decisions: grow or convert.",
-  "CONSTRAINTS: never harm protected K1Z partners; preserve survival under active attack; use only offered action kinds.",
-  "SUCCESS: increase our chance of finishing with the most territory; name a rival only when it advances the intent.",
-  "FREEDOM: do not prescribe action IDs, action kinds, percentages, or turn timing. The deterministic selector chooses the exact legal move.",
-].join(" ");
+// -- YOUR STRATEGY -- final screen selection lives in one compile-time module -
+const STRATEGY = MICKEY_PRODUCTION_DOCTRINE;
 const PLAN_EVERY = Math.max(1, Number(process.env.PLAN_EVERY) || 8);
 const PLAN_TIMEOUT_MS = Math.max(1000, Number(process.env.PLAN_TIMEOUT_MS) || 12000);
 const PLAN_FAILURE_COOLDOWN_MS = Math.max(
@@ -77,20 +73,6 @@ const SECURITY =
 
 // -- anti-loop and target-continuity memory -----------------------------------
 const history = []; // compact decision records appended after each decision
-
-// -- lenient JSON extraction (models often wrap JSON in prose) ----------------
-function extractJson(text) {
-  const s = String(text);
-  let depth = 0, start = -1, inStr = false, esc = false;
-  for (let i = 0; i < s.length; i++) {
-    const c = s[i];
-    if (inStr) { if (esc) esc = false; else if (c === "\\") esc = true; else if (c === '"') inStr = false; continue; }
-    if (c === '"') inStr = true;
-    else if (c === "{") { if (depth === 0) start = i; depth++; }
-    else if (c === "}") { depth--; if (depth === 0 && start >= 0) { try { return JSON.parse(s.slice(start, i + 1)); } catch (e) {} } }
-  }
-  return null;
-}
 
 async function askBedrock(state, signal) {
   if (TEST_INTENT_DIRECTIVE) {
@@ -134,9 +116,7 @@ function refreshPlanInBackground(state) {
   const controller = new AbortController();
   withTimeout(askBedrock(state, controller.signal), PLAN_TIMEOUT_MS, () => controller.abort())
     .then(({ text, model }) => {
-      const parsed = extractJson(text);
-      if (!parsed || typeof parsed !== "object") throw new Error("plan reply had no JSON");
-      const nextPlan = normalizeIntentDirective(parsed, state, model);
+      const nextPlan = parseIntentDirective(text, state, model);
       if (!nextPlan) throw new Error("plan reply had no valid intent");
       plan = nextPlan;
       planDecisionAge = 0;

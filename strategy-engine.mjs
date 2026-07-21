@@ -965,12 +965,14 @@ function validIntentPlan(plan) {
     Number.isInteger(plan.horizon) &&
     plan.horizon >= 2 &&
     plan.horizon <= 12 &&
-    (plan.intent === "grow" ? plan.targetID === null : typeof plan.targetID === "string");
+    (plan.intent === "grow"
+      ? plan.targetID === null
+      : typeof plan.targetID === "string" && plan.targetID.length > 0 &&
+        clean(plan.targetID) === plan.targetID);
 }
 
 function exactIntentTarget(state, targetID) {
-  const normalized = clean(targetID).toLowerCase();
-  return state.rivals.find((rival) => rival.id.toLowerCase() === normalized) ?? null;
+  return state.rivals.find((rival) => clean(rival.id) === targetID) ?? null;
 }
 
 function intentTargetActions(actions, state, target) {
@@ -981,10 +983,10 @@ function intentTargetActions(actions, state, target) {
     if (isNeutralExpansion(action) || isNeutralBoat(action)) return false;
     const metadataTargetID = clean(
       action?.metadata?.targetID ?? action?.metadata?.recipientID ?? "",
-    ).toLowerCase();
+    );
     return metadataTargetID.length > 0 &&
-      !RECIPROCAL_RIVAL_IDS.has(metadataTargetID) &&
-      metadataTargetID === target.id.toLowerCase();
+      !RECIPROCAL_RIVAL_IDS.has(metadataTargetID.toLowerCase()) &&
+      metadataTargetID === target.id;
   });
 }
 

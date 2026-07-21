@@ -6,6 +6,7 @@ import {
   executableIntentPlan,
   intentRefreshInterval,
   normalizeIntentDirective,
+  parseIntentDirective,
 } from "../intent-controller.mjs";
 
 const state = {
@@ -48,6 +49,22 @@ test("accepts only exact grow or convert mission packets", () => {
   );
 });
 
+test("parses only a whole-response JSON mission packet", () => {
+  const packet = '{"intent":"grow","targetID":null,"horizon":4}';
+  assert.deepEqual(
+    parseIntentDirective(packet, state, "planner-model"),
+    { intent: "grow", targetID: null, horizon: 4, model: "planner-model" },
+  );
+  for (const wrapped of [
+    `Here is the plan: ${packet}`,
+    `${packet}\nDone.`,
+    `${packet}${packet}`,
+    "```json\n" + packet + "\n```",
+  ]) {
+    assert.equal(parseIntentDirective(wrapped, state), null);
+  }
+});
+
 test("rejects extra tactical keys and unknown intents", () => {
   assert.equal(normalizeIntentDirective({
     intent: "convert",
@@ -77,6 +94,15 @@ test("requires null grow target and an exact visible convert target ID", () => {
   }, state), null);
   assert.equal(normalizeIntentDirective({
     intent: "convert", targetID: "missing", horizon: 3,
+  }, state), null);
+  assert.equal(normalizeIntentDirective({
+    intent: "convert", targetID: "PLAYER-7", horizon: 3,
+  }, state), null);
+  assert.equal(normalizeIntentDirective({
+    intent: "convert", targetID: " player-7 ", horizon: 3,
+  }, state), null);
+  assert.equal(normalizeIntentDirective({
+    intent: "Grow", targetID: null, horizon: 3,
   }, state), null);
 });
 
@@ -109,4 +135,10 @@ test("stale or degraded directives fail closed to no intent", () => {
   assert.equal(executableIntentPlan(plan, 4, false), null);
   assert.equal(executableIntentPlan(plan, 1, true), null);
   assert.equal(executableIntentPlan(null, 1, false), null);
+  assert.equal(executableIntentPlan({
+    intent: "finish", targetID: null, horizon: 3, model: "test",
+  }, 1, false), null);
+  assert.equal(executableIntentPlan({
+    intent: "convert", targetID: "", horizon: 3, model: "test",
+  }, 1, false), null);
 });
