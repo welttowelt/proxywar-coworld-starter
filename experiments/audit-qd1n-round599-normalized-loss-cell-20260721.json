@@ -1,0 +1,358 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260721T080901Z-4204",
+  "recorded_at": "2026-07-21T08:12:52Z",
+  "transition": "round599_result_normalization_and_one_loss_cell_audit",
+  "active_arm": null,
+  "prior_closed_arm": {
+    "id": "pax1",
+    "verdict": "REJECTED_PREREG_FALSE_COOLDOWN_ASSUMPTION"
+  },
+  "official_round_result": {
+    "round_id": "round_5e702cb2-9a7a-4ead-9242-fbad9a461a7f",
+    "round_number": 599,
+    "completed_at": "2026-07-21T06:57:21.435532Z",
+    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "policy_label": "qd1n:v89",
+    "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "player_name": "K1Z odin free",
+    "rank": 3,
+    "score": 0.25,
+    "completed_episode_count": 4,
+    "leader": "daveey",
+    "leader_policy": "daveey-proxywar:v24",
+    "leader_score": 0.5,
+    "response_shape": "object.results[]"
+  },
+  "exact_policy_episode_resolution": {
+    "command_filter": "--round round_5e702cb2-9a7a-4ead-9242-fbad9a461a7f --policy ca4a4e76-fd83-4c92-bf9f-f2440d1f867f --with-replay",
+    "completed_replay_backed_episode_count": 4,
+    "episode_request_ids": [
+      "ereq_80856dad-ed86-4031-b7bd-bdcf7a8b1b07",
+      "ereq_b92ca006-e3bb-473f-8a13-9238e8452fc5",
+      "ereq_c602509e-3f2a-4ad2-afc1-1a7c4b47022f",
+      "ereq_fae2c477-84c5-4389-9a2b-c9a516610da3"
+    ],
+    "qd1n_episode_scores": [
+      0.37594117367093427,
+      0,
+      0,
+      1
+    ],
+    "round_win_points": [
+      0,
+      0,
+      0,
+      1
+    ]
+  },
+  "bounded_loss_cell": {
+    "episode_request_id": "ereq_b92ca006-e3bb-473f-8a13-9238e8452fc5",
+    "episode_id": "358ba53b-f2a9-459c-b0d4-7b9fbc770109",
+    "map": "Pangaea",
+    "qd1n_position_zero_based": 7,
+    "qd1n_score": 0,
+    "winner": "daveey",
+    "winner_position_zero_based": 11,
+    "winner_score": 1,
+    "replay_url": "https://softmax-public.s3.amazonaws.com/replays/432c7ce4-cf65-4db4-9397-dc48a86efaf5.replay",
+    "replay_sha256": "cfcbd9b7542f093f6a8d0a6740dbbd308085a8864fdf9adc54353fb31222fac7",
+    "replay_bytes": 33907943,
+    "replay_terminal_evidence": {
+      "runID": "coworld-2026-07-21T06-43-01-906Z-011d12ab",
+      "matchID": "COWRLD01",
+      "results": {
+        "scores": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1
+        ],
+        "winner_slot": 11,
+        "turn_count": 15300,
+        "tick": 15300,
+        "decision_count": 1199,
+        "accepted_decision_count": 1199,
+        "fallback_count": 443,
+        "degraded_count": 259,
+        "players": [
+          {
+            "slot": 0,
+            "name": "richard",
+            "score": 0,
+            "tiles_owned": 0,
+            "is_alive": false
+          },
+          {
+            "slot": 1,
+            "name": "James Boggs",
+            "score": 0,
+            "tiles_owned": 654,
+            "is_alive": true
+          },
+          {
+            "slot": 2,
+            "name": "djizus",
+            "score": 0,
+            "tiles_owned": 0,
+            "is_alive": false
+          },
+          {
+            "slot": 3,
+            "name": "Auri",
+            "score": 0,
+            "tiles_owned": 40682,
+            "is_alive": true
+          },
+          {
+            "slot": 4,
+            "name": "docxology",
+            "score": 0,
+            "tiles_owned": 0,
+            "is_alive": false
+          },
+          {
+            "slot": 5,
+            "name": "Ron @ SWGY",
+            "score": 0,
+            "tiles_owned": 0,
+            "is_alive": false
+          },
+          {
+            "slot": 6,
+            "name": "relh",
+            "score": 0,
+            "tiles_owned": 0,
+            "is_alive": false
+          },
+          {
+            "slot": 7,
+            "name": "K1Z odin free",
+            "score": 0,
+            "tiles_owned": 4617,
+            "is_alive": true
+          },
+          {
+            "slot": 8,
+            "name": "K1Z Hrafn",
+            "score": 0,
+            "tiles_owned": 0,
+            "is_alive": false
+          },
+          {
+            "slot": 9,
+            "name": "Sefirot",
+            "score": 0,
+            "tiles_owned": 24494,
+            "is_alive": true
+          },
+          {
+            "slot": 10,
+            "name": "K1Z katanasan",
+            "score": 0,
+            "tiles_owned": 215,
+            "is_alive": true
+          },
+          {
+            "slot": 11,
+            "name": "daveey",
+            "score": 1,
+            "tiles_owned": 348570,
+            "is_alive": true
+          }
+        ],
+        "seed": null,
+        "game_id": "COWRLD01"
+      },
+      "finalState": {
+        "phase": "winner:daveey",
+        "winnerSlot": 11,
+        "tick": 15300,
+        "turnCount": 15300,
+        "players": [
+          {
+            "agentID": "opportunistic-agent-1",
+            "username": "richard",
+            "profile": "opportunistic",
+            "playerID": "c4o8gv6v",
+            "isAlive": false,
+            "tilesOwned": 0,
+            "troops": 21984,
+            "gold": "0"
+          },
+          {
+            "agentID": "opportunistic-agent-2",
+            "username": "James Boggs",
+            "profile": "opportunistic",
+            "playerID": "28k1hctz",
+            "isAlive": true,
+            "tilesOwned": 654,
+            "troops": 662163,
+            "gold": "174800"
+          },
+          {
+            "agentID": "opportunistic-agent-3",
+            "username": "djizus",
+            "profile": "opportunistic",
+            "playerID": "r5o3pta1",
+            "isAlive": false,
+            "tilesOwned": 0,
+            "troops": 17268,
+            "gold": "0"
+          },
+          {
+            "agentID": "opportunistic-agent-4",
+            "username": "Auri",
+            "profile": "opportunistic",
+            "playerID": "xbt2wt14",
+            "isAlive": true,
+            "tilesOwned": 40682,
+            "troops": 1774348,
+            "gold": "974060"
+          },
+          {
+            "agentID": "opportunistic-agent-5",
+            "username": "docxology",
+            "profile": "opportunistic",
+            "playerID": "9h8tnrym",
+            "isAlive": false,
+            "tilesOwned": 0,
+            "troops": 24121,
+            "gold": "0"
+          },
+          {
+            "agentID": "opportunistic-agent-6",
+            "username": "Ron SWGY",
+            "profile": "opportunistic",
+            "playerID": "25ze9gxs",
+            "isAlive": false,
+            "tilesOwned": 0,
+            "troops": 22388,
+            "gold": "0"
+          },
+          {
+            "agentID": "opportunistic-agent-7",
+            "username": "relh",
+            "profile": "opportunistic",
+            "playerID": "idjkf73n",
+            "isAlive": false,
+            "tilesOwned": 0,
+            "troops": 8836,
+            "gold": "0"
+          },
+          {
+            "agentID": "opportunistic-agent-8",
+            "username": "K1Z odin free",
+            "profile": "opportunistic",
+            "playerID": "sjh3tur2",
+            "isAlive": true,
+            "tilesOwned": 4617,
+            "troops": 1165797,
+            "gold": "244822"
+          },
+          {
+            "agentID": "opportunistic-agent-9",
+            "username": "K1Z Hrafn",
+            "profile": "opportunistic",
+            "playerID": "2rmhbq4h",
+            "isAlive": false,
+            "tilesOwned": 0,
+            "troops": 12026,
+            "gold": "0"
+          },
+          {
+            "agentID": "opportunistic-agent-10",
+            "username": "Sefirot",
+            "profile": "opportunistic",
+            "playerID": "x262ww19",
+            "isAlive": true,
+            "tilesOwned": 24494,
+            "troops": 759701,
+            "gold": "1941884"
+          },
+          {
+            "agentID": "opportunistic-agent-11",
+            "username": "K1Z katanasan",
+            "profile": "opportunistic",
+            "playerID": "1wy62oh4",
+            "isAlive": true,
+            "tilesOwned": 215,
+            "troops": 279157,
+            "gold": "1933316"
+          },
+          {
+            "agentID": "opportunistic-agent-12",
+            "username": "daveey",
+            "profile": "opportunistic",
+            "playerID": "a6xyjvhc",
+            "isAlive": true,
+            "tilesOwned": 348570,
+            "troops": 1970586,
+            "gold": "43956581"
+          }
+        ]
+      },
+      "proxyWarArtifactKeys": [
+        "behaviorQualityJsonPath",
+        "behaviorQualityMarkdownPath",
+        "decisionsPath",
+        "directory",
+        "dramaReportJsonPath",
+        "dramaReportMarkdownPath",
+        "externalAgentFeedbackJsonPath",
+        "externalAgentFeedbackMarkdownPath",
+        "gameRecordPath",
+        "matchPackageHtmlPath",
+        "matchPackageJsonPath",
+        "matchPackageMarkdownPath",
+        "matchStoryJsonPath",
+        "matchStoryMarkdownPath",
+        "reportPath",
+        "runID",
+        "scorecardJsonPath",
+        "scorecardMarkdownPath",
+        "spectatorPath",
+        "spectatorReplayPath",
+        "spectatorTelemetryPath",
+        "summaryPath",
+        "visualReportPath"
+      ],
+      "inlineRunArtifactKeys": [
+        "decisions.jsonl",
+        "game-record.json",
+        "match-summary.json",
+        "spectator-telemetry.json"
+      ],
+      "spectatorSnapshotCount": 150
+    },
+    "audit_scope": "one replay-backed loss cell only"
+  },
+  "evidence_integrity": {
+    "result_normalized": true,
+    "exact_policy_filter_supported": true,
+    "replay_downloaded_and_hash_bound": true,
+    "selector_raw_input_reviewed": false,
+    "causal_mechanism_claimed": false,
+    "new_arm_opened": false
+  },
+  "decision": {
+    "verdict": "COMPLETE_ROUND599_NORMALIZED_ONE_LOSS_CELL_HASH_BOUND_NO_NEW_MECHANISM",
+    "reason": "The exact round result and one loss cell are now verified, but terminal replay evidence alone does not establish a selector-level causal mechanism or authorize a new arm.",
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "submitted": false,
+    "membership_changed": false,
+    "champion_changed": false,
+    "prior_verified_champion_preserved": true
+  },
+  "next": "Use only this single loss-cell audit to decide whether a distinct replay-backed selector mechanism can be preregistered from raw inputs. If raw selector evidence is absent, remain without an active arm and perform one bounded live checkpoint. Do not repair PAX1 in place; preserve qd1n:v89."
+}
