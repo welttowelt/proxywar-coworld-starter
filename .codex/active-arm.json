@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T03:13:30Z",
-  "cycle_id": "odin-cb1-cap-bank-capture-20260721",
+  "updated_at": "2026-07-21T03:39:31Z",
+  "cycle_id": "odin-cb1-zero-capture-stop-20260721",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "cb1_raw_request_capture_preregistered",
+  "state": "no_active_arm_cb1_stopped_zero_capture",
   "arm": {
     "id": "cb1",
     "name": "pangaea_cap_bank_conversion",
@@ -12,8 +12,8 @@
     "parent_commit": null,
     "candidate_commit": null,
     "preregistration": "experiments/preregister-qd1n-cb1-cap-bank-raw-capture-20260721.json",
-    "closed": false,
-    "verdict": null
+    "closed": true,
+    "verdict": "STOP_ZERO_CAPTURE"
   },
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
@@ -113,6 +113,18 @@
     "job": "experiments/job-qd1n-cb1-cap-bank-raw-capture-pangaea-20260721.json",
     "job_commit": "68c0092e6e9c411df572f8fb93384df490f250ff",
     "job_sha256": "698f63aa24c58c29e797d2fb505cc7418de80b534585c600e5ae2cce8f6f345d",
+    "run_result": {
+      "output": "/private/tmp/proxywar-cb1-capture-f6934f53",
+      "turn_count": 9300,
+      "decisions": 944,
+      "accepted": 944,
+      "holds": 0,
+      "rejects": 0,
+      "capture_records": 0,
+      "attributable_k1z_harmful_actions": 27,
+      "unresolved_warship_target_ownership": 20,
+      "audit": "experiments/audit-qd1n-cb1-zero-capture-stop-20260721.json"
+    },
     "rule": "Capture one complete raw observation plus full legal action set at the preregistered cap-bank boundary. Do not implement CB1 from post-decision tactical telemetry."
   },
   "discarded_capture_source": {
@@ -124,6 +136,6 @@
     "verdict": "REJECTED_ZERO_REACH",
     "audit": "experiments/audit-qd1n-pf1-zero-reach-stop-20260721.json"
   },
-  "next_automatic_transition": "Build the log-only exact-parent capture image and run exactly one 12-seat Pangaea capture job. If no raw request reaches the sealed boundary, stop CB1 without a policy edit. If captured, hash-bind one complete request and only then write the smallest red-first selector delta. No upload, submission, membership, or champion mutation from capture evidence.",
+  "next_automatic_transition": "CB1 is terminally stopped and must not be widened or rerun. Refresh the latest completed official round, audit one bounded loss cell, and open only a different replay-visible mechanism whose selector inputs are already faithful. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
   "prior_verified_champion_preserved": true
 }

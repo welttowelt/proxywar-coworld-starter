@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-21T03:39:31Z",
+  "cycle_id": "odin-cb1-cap-bank-capture-20260721",
+  "arm": "cb1",
+  "status": "TERMINAL_STOP_ZERO_CAPTURE",
+  "preregistration": "experiments/preregister-qd1n-cb1-cap-bank-raw-capture-20260721.json",
+  "provenance": {
+    "live_image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+    "live_strategy_sha256": "f2ee66d570033508c4158bcb83d56d81dc198cdcebb91098d7e67eefdc8e6a7a",
+    "live_chassis_sha256": "de45b447513ddcac5e9bf1be14417bfab0dd5e8e92156670539e8eda01478ca1",
+    "live_player_sha256": "1154115fdf5ebb89fa170bba6060d5a730615970d4cc23c00dbfa97e42b31563",
+    "instrumenter_commit": "e64d6a91",
+    "capture_image_id": "sha256:9326630e4485157eae4526d893408c8496043c7b6797a80f5299febba74e6fd6",
+    "instrumented_player_sha256": "5c6324ba008cc8836c6c4e53953fe7a5937898aec22b846b480d155960c80ae4",
+    "selector_bytes_unchanged": true,
+    "discarded_nonlive_capture_commit": "b7dc1d8344022f83fbf3d7a33d5e74f5dc08d8dc"
+  },
+  "job": {
+    "path": "experiments/job-qd1n-cb1-cap-bank-raw-capture-pangaea-20260721.json",
+    "commit": "68c0092e6e9c411df572f8fb93384df490f250ff",
+    "sha256": "698f63aa24c58c29e797d2fb505cc7418de80b534585c600e5ae2cce8f6f345d",
+    "map": "Pangaea",
+    "seed": 20260721,
+    "players": 12,
+    "max_decision_steps": 120,
+    "all_slots_instrumented": true
+  },
+  "run": {
+    "run_id": "cb1-capture-f6934f53",
+    "output": "/private/tmp/proxywar-cb1-capture-f6934f53",
+    "completed": true,
+    "exit_status": 0,
+    "turn_count": 9300,
+    "winner_slot": 8,
+    "winner_name": "K1Z Hrafn",
+    "decisions": 944,
+    "accepted": 944,
+    "rejected": 0,
+    "holds": 0,
+    "fallbacks": 908,
+    "degraded": 908,
+    "capture_records": 0,
+    "capture_write_or_serialization_errors": 0,
+    "attributable_k1z_harmful_actions": 27,
+    "attributable_k1z_attacks": 21,
+    "attributable_k1z_boats": 6,
+    "unresolved_warship_target_ownership": 20,
+    "policy_log_count": 12,
+    "policy_log_sha256_each": "c87027b2136ccae87dbdd27d6cfae0340705bc87ae2e78e3e21eb9a8edecb009",
+    "runner_released": true
+  },
+  "hashes": {
+    "config_sha256": "fcb56517037727b7b3200cd9c37693c0a9fe2f3cd4246aa19315af1483a9d015",
+    "results_sha256": "431c7cf36cdc7d2374c3035f1510905029aa5674eb566ea79954004a3caaa8c9",
+    "decisions_sha256": "6058e21ebd3383450d9daf2468a202136ef27f85e4b512e67d1d111f07765fe9",
+    "replay_sha256": "b0f3dc44613cd7cac52819f0fdac6cea2fbd3a33cdb94612e49612428184441f"
+  },
+  "safety_scope": {
+    "absolute_zero_k1z_harm_proven": false,
+    "attributable_harm_matrix": {
+      "Gravity_to_Odin": 16,
+      "Hrafn_to_Gravity": 4,
+      "Hrafn_to_Odin": 1,
+      "Katanasan_to_Odin": 3,
+      "Katanasan_to_Gravity": 2,
+      "Odin_to_Gravity": 1
+    },
+    "note": "This all-v89 clone fixture is acquisition evidence, not a faithful coalition-policy matchup. The harmful selections still block any safety claim from the run."
+  },
+  "verdict": {
+    "result": "STOP_ZERO_CAPTURE",
+    "reason": "The single preregistered job ended at turn 9300 without any seat reaching the sealed Pangaea flat-four-upgrade, troopRatio-at-least-0.90, legal-boat boundary. The contract forbids a second seed without a new preregistration.",
+    "hypothesis_falsified": false,
+    "source_ready": false,
+    "policy_edit_created": false,
+    "second_seed_run": false,
+    "matched_pair": false,
+    "diagnostic_upload": false,
+    "hosted_request": false,
+    "regression_20_of_20": false,
+    "submission": false,
+    "membership_change": false,
+    "champion_change": false,
+    "prior_champion_preserved": true
+  },
+  "next": "Do not widen or rerun CB1. Refresh the latest completed official round and select a different replay-visible mechanism whose raw selector inputs are already available or can be reproduced without another acquisition layer."
+}
