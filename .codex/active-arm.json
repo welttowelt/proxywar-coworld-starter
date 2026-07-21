@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T00:58:55Z",
-  "cycle_id": "odin-ds2-terminal-20260721",
+  "updated_at": "2026-07-21T01:19:40Z",
+  "cycle_id": "odin-20260721T011723Z-26365",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "ds2_closed_local_planner_degradation_no_submit",
+  "state": "fc1_preregistered_replay_fixture_pending",
   "arm": {
-    "id": "ds2",
-    "name": "raw_opening_collapse_counter",
-    "branch": "rci/ds2-raw-opening-collapse",
+    "id": "fc1",
+    "name": "deterministic_finish_continuity",
+    "branch": "rci/fc1-deterministic-finish-continuity",
     "parent_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
-    "candidate_commit": "5d1b72ee79331250d156544eb4505bc1e3d5a1f3",
-    "terminal_evidence_commit": "c55c87d4",
-    "closed": true,
-    "verdict": "STOP_LOCAL_PLANNER_DEGRADATION_NO_SUBMIT"
+    "candidate_commit": null,
+    "preregistration": "experiments/preregister-qd1n-fc1-deterministic-finish-continuity-world-20260721.json",
+    "closed": false,
+    "verdict": "PREREGISTERED_REPLAY_FIXTURE_PENDING"
   },
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
@@ -40,7 +40,7 @@
     "runner": "free",
     "qd1n_mutation": "free",
     "active_player": "K1Z odin free",
-    "mailbox_commit": "20ee9c0"
+    "mailbox_commit": "dadb40666dd3960420812a88022c75344a4f4166"
   },
   "operator_topology": {
     "odin": "sole writable qd1n operator and live authority",
@@ -48,29 +48,25 @@
     "hrafn": "Studio-only hrafn-fylking operator",
     "kimi": "external Kimi K3 Max adviser only"
   },
-  "source_evidence": {
-    "terminal_rci": "PASS",
-    "tests": "164/164",
-    "image_ref": "proxywar-agent-llm:qd1n-v89-ds2-5d1b72ee-amd64",
-    "image_id": "sha256:8cdfa62bab5ce6ea370be01320111d0fa0c482f8ce0de571394d6c41709c027e",
-    "architecture": "amd64",
-    "qualifier": "34/34 accepted; zero holds and rejects"
-  },
-  "local_evidence": {
-    "pair_id": "ds2-pressure-seed-20260722",
-    "marker_count": 3,
-    "marker_turns": [1900, 2100, 2300],
-    "post_trigger_tile_lift_pct": 30.16,
-    "final_tile_multiple": 5.07,
-    "holds": 0,
-    "rejects": 0,
-    "k1z_harm": 0,
-    "candidate_planner_degraded": "60/63",
-    "audit": "experiments/audit-qd1n-ds2-raw-opening-collapse-pangaea-20260721.json"
+  "bounded_evidence": {
+    "round": 588,
+    "map": "World",
+    "turn": 11100,
+    "target": "RelhAlpha",
+    "consecutive_target_attacks": 5,
+    "relative_troop_ratio": 1.44,
+    "selected_action": "build:Port",
+    "recommended_legal_action": "attack:idjkf73n:25",
+    "later_finish_tile_delta": 46112,
+    "packet_sha256": "94ea9d160f1846a030178733c4fc6cf6f431ec38fcb96c543d080b3d194f4ddf",
+    "replay_hash": null,
+    "fixture_integrity": "PENDING_EXACT_PUBLIC_REPLAY_EXTRACTION"
   },
   "gates": {
-    "source_ready": true,
-    "image_verified": true,
+    "source_ready": false,
+    "fixture_hash_bound": false,
+    "red_regression_reproduced": false,
+    "image_verified": false,
     "local_mechanism_verified": false,
     "diagnostic_uploaded": false,
     "hosted_4_of_4": false,
@@ -82,10 +78,10 @@
     "round_confirmed": false
   },
   "transport_truth": {
+    "mode": "DETERMINISTIC_NO_BEDROCK",
     "clean_local_bedrock_available": false,
-    "reason": "No AWS CLI, profile, credentials, SSO cache, relevant environment, or local Bedrock sidecar is configured on this Mac.",
-    "reuse_rule": "Reopen DS2 only in a new preregistered cycle after a supported clean planner transport exists; never weaken the zero-degradation gate."
+    "rule": "FC1 must not depend on planner output or weaken the zero-degradation gate."
   },
-  "next_automatic_transition": "Preserve qd1n:v89. Audit one bounded round-588 Odin loss cell for one replay-visible action defect not already closed. Preregister only a single-action mechanism with a direct matched discriminator. Do not rerun DS2, add a second mechanism, or mutate the league before the full autonomous gates pass.",
+  "next_automatic_transition": "Extract and hash the exact public R588 turn-11100 fixture, then write one red regression in a dedicated FC1 worktree from 1ccaff73. Stop if the fixture does not reproduce the parent Port choice. Do not implement FC1, start a runner, upload, or mutate league state before that evidence gate passes.",
   "prior_verified_champion_preserved": true
 }
