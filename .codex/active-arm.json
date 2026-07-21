@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T02:24:05Z",
-  "cycle_id": "odin-20260721T022138Z-64992",
+  "updated_at": "2026-07-21T02:25:40Z",
+  "cycle_id": "odin-pf1-source-rci-20260721",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "pf1_source_verified_pre_image_rci",
+  "state": "pf1_source_rci_approved_pre_image",
   "arm": {
     "id": "pf1",
     "name": "first_strike_pvp_floor",
@@ -68,6 +68,7 @@
     "fixture_integrity": "HASH_BOUND_CANONICAL_FIXTURE_PARENT_REPRODUCED",
     "fixture_commit": "a18095c973a3e00cc4098ecb5a0a943c747acaf2",
     "fixture_sha256": "71f2a15ae414dc89cc892d76f571097ea82fd95064aaef1a1b97d439edea78b7",
+    "source_audit": "experiments/audit-qd1n-pf1-source-ready-20260721.json",
     "source_test": {
       "parent_selected_action": "attack:idjkf73n:10",
       "parent_policy_marker": null,
@@ -98,6 +99,6 @@
     "clean_local_bedrock_available": false,
     "rule": "PF1 is a post-selector deterministic reroute and must not depend on planner output or weaken the zero-degradation gate."
   },
-  "next_automatic_transition": "Run one fresh fail-closed pre-image RCI on candidate 767b9eb4 against parent 1ccaff73 and the hash-bound R589 turn-4900 fixture. Audit exact guard reach, one-shot permanence, K1Z protection, marker non-stacking, same-target selection, and fail-open behavior. If and only if RCI passes, build and verify the exact linux/amd64 candidate image in a later cycle. Do not start Coworld, upload, or mutate league state in this transition.",
+  "next_automatic_transition": "Build an exact linux/amd64 PF1 image from commit 767b9eb4 and verify its strategy bytes. Then run one bounded deterministic mechanism screen through the foreground mickey lease. Stop on source/image mismatch, zero pf1 reach, any unexplained hold or rejection, or any K1Z harm. Do not upload or mutate league state from a local mechanism screen.",
   "prior_verified_champion_preserved": true
 }

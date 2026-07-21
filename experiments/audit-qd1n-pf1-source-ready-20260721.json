@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-21T02:25:40Z",
+  "cycle_id": "odin-pf1-source-rci-20260721",
+  "arm": "pf1",
+  "status": "SOURCE_RCI_APPROVED_PRE_IMAGE",
+  "parent": {
+    "commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "live_policy": "qd1n:v89"
+  },
+  "candidate": {
+    "branch": "rci/pf1-first-strike-pvp-floor",
+    "fixture_commit": "a18095c973a3e00cc4098ecb5a0a943c747acaf2",
+    "source_commit": "767b9eb4cff3effa57d3d521427dad700065541e",
+    "strategy_sha256": "6aa6f9f50162859c4d7a37fb4cfc50f8aa02af02245d209ad19a5a65eae00f7d",
+    "test_sha256": "df608d91f27e2a1302e6f73678066f89ea3b8c1937b89147eb7858037923229b",
+    "fixture_path": "test/fixtures/pf1-r589-turn4900.json",
+    "fixture_sha256": "71f2a15ae414dc89cc892d76f571097ea82fd95064aaef1a1b97d439edea78b7"
+  },
+  "red_first": {
+    "exact_parent_result": "12/16 pass; four intended PF1 behavior assertions fail",
+    "intended_failures": [
+      "R589 first contact changes 10 to 25 percent",
+      "a synthetic 40-only floor cell changes 10 to 40 percent",
+      "an avoided 25-percent action selects the safe 40-percent floor-clearer",
+      "PF1 remains available while the older cv1 route is cooling down"
+    ],
+    "candidate_focused": "16/16 pass",
+    "candidate_full": "163/163 pass"
+  },
+  "rci": {
+    "verdict": "APPROVE",
+    "closed_findings": [
+      "PF1 is globally first hostile contact, not first per target.",
+      "The active-decision bound prevents rearming after compact-history truncation.",
+      "PF1 skips the exact downstream cv1 route, but remains available during cv1 cooldown.",
+      "Executable action ID, metadata targetID, and resolved rival ID must agree exactly.",
+      "Direct and protocol-visible incoming pressure both disable PF1.",
+      "K1Z targets, high-risk replacements, avoided replacements, and incomplete metadata fail closed.",
+      "The smallest safe legal 25- or 40-percent commitment clearing exact integer 5/3 is selected."
+    ],
+    "bounded_disagreement": "One review preferred a 25-only arm because the bound R589 cell itself clears at 25 percent. PF1 retains the preregistered 25-or-40 rule because the exact engine invariant applies to both legal sizes, only the smallest clearing action is selected, and the matched outcome gate will accept or reject that causal hypothesis."
+  },
+  "current_truth": {
+    "source_ready": true,
+    "source_rci_approved": true,
+    "image_built": false,
+    "runner_started": false,
+    "mechanism_reached_in_coworld": false,
+    "diagnostic_uploaded": false,
+    "league_mutated": false,
+    "prior_champion_preserved": true
+  },
+  "next_gate": "Build the exact linux/amd64 candidate image, prove byte identity to source commit 767b9eb4, then run one bounded deterministic mechanism screen under the mickey lease. Stop on zero reach, any hold/reject/K1Z harm, or source/image mismatch."
+}
