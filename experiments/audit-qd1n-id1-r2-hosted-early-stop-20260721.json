@@ -69,5 +69,9 @@
     "unresolved_harmful_targets": 0
   },
   "regression_20_of_20": "NOT_RUN",
-  "upload_or_league_mutation": false
+  "diagnostic_upload": {
+    "label": "qd1n:v95",
+    "policy_version_id": "ccf3a01d-f4bd-4eaa-a1c4-a1c900b78844"
+  },
+  "league_submission_or_champion_mutation": false
 }
