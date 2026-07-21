@@ -1,6 +1,15 @@
 import assert from "node:assert/strict";
+import { spawnSync } from "node:child_process";
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import {
+  mkdirSync,
+  mkdtempSync,
+  readFileSync,
+  readlinkSync,
+  rmSync,
+  writeFileSync,
+} from "node:fs";
+import os from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
@@ -9,6 +18,9 @@ import {
   BASE_IMAGE,
   BASE_IMAGE_ID,
   NODE_SHA256,
+  adaptStandaloneOpponentEntrypoint,
+  deduplicateNodeModules,
+  rewriteGravityStandaloneEntrypoint,
   validateImageRecord,
   validateInput,
 } from "../scripts/prepare-mickey-runpod-bundle.mjs";
@@ -149,6 +161,76 @@ test("image validation rejects ID, architecture, user, CMD, and upload-label dri
     const copy = structuredClone(actual);
     mutate(copy);
     assert.throws(() => validateImageRecord(policy, copy), /mismatch/);
+  }
+});
+
+test("standalone opponent adapter removes Gravity's container-only /app roots exactly", () => {
+  const source = [
+    'import { createRequire } from "node:module";',
+    'import { chooseAction } from "file:///app/strategy-engine.mjs";',
+    'const require = createRequire("/app/package.json");',
+    'const { WebSocket } = require("ws");',
+  ].join("\n");
+  const adapted = rewriteGravityStandaloneEntrypoint(source);
+  assert.match(adapted, /from "\.\/strategy-engine\.mjs"/);
+  assert.match(adapted, /createRequire\(import\.meta\.url\)/);
+  assert.doesNotMatch(adapted, /file:\/\/\/app\/|createRequire\("\/app\//);
+  assert.throws(
+    () => rewriteGravityStandaloneEntrypoint(adapted),
+    /expected standalone-adapter source is absent/,
+  );
+});
+
+test("unrecognized opponents fail closed on container-only absolute roots", () => {
+  const policy = opponent();
+  assert.throws(
+    () => adaptStandaloneOpponentEntrypoint(
+      policy,
+      'import "file:///app/strategy-engine.mjs";',
+    ),
+    /unsupported absolute \/app import/,
+  );
+  assert.deepEqual(
+    adaptStandaloneOpponentEntrypoint(policy, 'import "./strategy-engine.mjs";'),
+    { body: 'import "./strategy-engine.mjs";', receipt: null },
+  );
+});
+
+test("deduplicated dependencies retain a node_modules ancestor for ESM imports", () => {
+  const root = mkdtempSync(path.join(os.tmpdir(), "mickey-node-modules-test."));
+  try {
+    const app = path.join(root, "policies", "opponent", "app");
+    const modules = path.join(app, "node_modules");
+    for (const packageName of ["outer", "inner"]) {
+      const packageRoot = path.join(modules, packageName);
+      mkdirSync(packageRoot, { recursive: true });
+      writeFileSync(
+        path.join(packageRoot, "package.json"),
+        `${JSON.stringify({ name: packageName, type: "module", exports: "./index.mjs" })}\n`,
+      );
+    }
+    writeFileSync(
+      path.join(modules, "outer", "index.mjs"),
+      'import value from "inner"; export default `outer:${value}`;\n',
+    );
+    writeFileSync(path.join(modules, "inner", "index.mjs"), 'export default "inner";\n');
+    writeFileSync(
+      path.join(app, "main.mjs"),
+      'import value from "outer"; console.log(value);\n',
+    );
+
+    const result = deduplicateNodeModules(root, [
+      { key: "opponent", bundle_root: "policies/opponent/app" },
+    ]);
+    assert.deepEqual(result, { unique_node_modules_trees: 1, linked_policy_trees: 1 });
+    assert.equal(path.basename(readlinkSync(path.join(app, "node_modules"))), "node_modules");
+    const launched = spawnSync(process.execPath, [path.join(app, "main.mjs")], {
+      encoding: "utf8",
+    });
+    assert.equal(launched.status, 0, launched.stderr);
+    assert.equal(launched.stdout.trim(), "outer:inner");
+  } finally {
+    rmSync(root, { recursive: true, force: true });
   }
 });
 

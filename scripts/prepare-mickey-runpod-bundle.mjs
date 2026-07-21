@@ -56,6 +56,16 @@ const REQUIRED_SHARED_FILES = Object.freeze([
   "intent-controller.mjs",
   "strategy-engine.mjs",
 ]);
+const GRAVITY_STANDALONE_ADAPTER = Object.freeze({
+  key: "opponent-gravity-kiz1-selector",
+  image_id: "sha256:39548883b562262c5bdbe6bcc0fcc6115d330bd1a099308fcea33723b0150194",
+  entrypoint: "kiz1-selector-player.mjs",
+  image_entrypoint_sha256: "fff9dd163284082b67a1a43ddb875f18b4ed83b245416d98cecd2f88cc7486c7",
+  import_before: 'from "file:///app/strategy-engine.mjs";',
+  import_after: 'from "./strategy-engine.mjs";',
+  require_before: 'createRequire("/app/package.json")',
+  require_after: "createRequire(import.meta.url)",
+});
 
 function usage() {
   return `Usage:
@@ -218,6 +228,53 @@ export function validateImageRecord(policy, actual) {
   return true;
 }
 
+function replaceExactlyOnce(body, before, after, label) {
+  const first = body.indexOf(before);
+  assert(first >= 0, `${label}: expected standalone-adapter source is absent`);
+  assert(body.indexOf(before, first + before.length) < 0, `${label}: standalone-adapter source is duplicated`);
+  return `${body.slice(0, first)}${after}${body.slice(first + before.length)}`;
+}
+
+export function rewriteGravityStandaloneEntrypoint(body) {
+  assert(typeof body === "string", "gravity standalone entrypoint must be text");
+  const adapter = GRAVITY_STANDALONE_ADAPTER;
+  let adapted = replaceExactlyOnce(body, adapter.import_before, adapter.import_after, adapter.key);
+  adapted = replaceExactlyOnce(adapted, adapter.require_before, adapter.require_after, adapter.key);
+  assert(!adapted.includes("file:///app/") && !adapted.includes('createRequire("/app/'), `${adapter.key}: standalone adapter left an absolute /app dependency`);
+  return adapted;
+}
+
+export function adaptStandaloneOpponentEntrypoint(policy, body) {
+  assert(policy?.kind === "opponent", "standalone adapter requires an opponent policy");
+  assert(typeof body === "string", `${policy.key}: entrypoint body must be text`);
+  if (policy.key !== GRAVITY_STANDALONE_ADAPTER.key) {
+    assert(!body.includes("file:///app/"), `${policy.key}: unsupported absolute /app import in standalone bundle`);
+    assert(!body.includes('createRequire("/app/'), `${policy.key}: unsupported absolute /app require root in standalone bundle`);
+    return { body, receipt: null };
+  }
+
+  const adapter = GRAVITY_STANDALONE_ADAPTER;
+  assert(policy.image_id === adapter.image_id, `${policy.key}: standalone-adapter image identity mismatch`);
+  assert(policy.run?.[1] === adapter.entrypoint, `${policy.key}: standalone-adapter entrypoint mismatch`);
+  assert(policy.entrypoint_sha256 === adapter.image_entrypoint_sha256, `${policy.key}: standalone-adapter source hash mismatch`);
+  assert(createHash("sha256").update(body).digest("hex") === adapter.image_entrypoint_sha256, `${policy.key}: standalone-adapter body hash mismatch`);
+  const adapted = rewriteGravityStandaloneEntrypoint(body);
+  return {
+    body: adapted,
+    receipt: {
+      kind: "container_app_to_standalone_bundle_v1",
+      policy_key: policy.key,
+      image_id: policy.image_id,
+      image_entrypoint_sha256: adapter.image_entrypoint_sha256,
+      bundle_entrypoint_sha256: createHash("sha256").update(adapted).digest("hex"),
+      rewrites: [
+        { from: adapter.import_before, to: adapter.import_after },
+        { from: adapter.require_before, to: adapter.require_after },
+      ],
+    },
+  };
+}
+
 function hashBytes(body) {
   return createHash("sha256").update(body).digest("hex");
 }
@@ -305,7 +362,7 @@ function treeDigest(root) {
   return hash.digest("hex");
 }
 
-function deduplicateNodeModules(bundleRoot, policies) {
+export function deduplicateNodeModules(bundleRoot, policies) {
   const sharedRoot = path.join(bundleRoot, "shared", "node-modules");
   mkdirSync(sharedRoot, { recursive: true });
   const unique = new Map();
@@ -315,8 +372,13 @@ function deduplicateNodeModules(bundleRoot, policies) {
     const modules = path.join(app, "node_modules");
     assert(existsSync(modules) && lstatSync(modules).isDirectory(), `${policy.key}: node_modules missing after extraction`);
     const digest = treeDigest(modules);
-    const canonical = path.join(sharedRoot, digest);
+    // Keep the canonical directory named `node_modules`. Node's ESM resolver
+    // realpaths symlinked packages before resolving their transitive imports;
+    // placing packages directly below the digest directory makes sibling
+    // packages invisible because no `node_modules` ancestor remains.
+    const canonical = path.join(sharedRoot, digest, "node_modules");
     if (!unique.has(digest)) {
+      mkdirSync(path.dirname(canonical), { recursive: true });
       renameSync(modules, canonical);
       unique.set(digest, canonical);
     } else {
@@ -457,11 +519,20 @@ function materialize(document, options) {
   chmodSync(path.join(bundleRoot, "runtime", "node", "bin", "node"), 0o755);
   assert(hashFile(path.join(bundleRoot, "runtime", "node", "bin", "node")) === NODE_SHA256, "bundled Node binary hash mismatch");
 
+  const standaloneAdapters = [];
   for (const policy of document.policies) {
     const app = path.join(bundleRoot, policy.bundle_root);
     copyFromImage(policy.local_reference, "/app/.", app);
     const entrypoint = path.join(app, policy.run[1]);
     assert(existsSync(entrypoint) && hashFile(entrypoint) === policy.entrypoint_sha256, `${policy.key}: extracted entrypoint hash mismatch`);
+    if (policy.kind === "opponent") {
+      const source = readFileSync(entrypoint, "utf8");
+      const adapted = adaptStandaloneOpponentEntrypoint(policy, source);
+      if (adapted.receipt) {
+        writeFileSync(entrypoint, adapted.body, { mode: lstatSync(entrypoint).mode & 0o777 });
+        standaloneAdapters.push(adapted.receipt);
+      }
+    }
     if (policy.kind === "evaluation") {
       for (const shared of document.shared_files) {
         assert(hashFile(path.join(app, shared.path)) === shared.sha256, `${policy.key}: shared file ${shared.path} mismatch`);
@@ -549,6 +620,7 @@ function materialize(document, options) {
     file_manifest: { path: "files.sha256", sha256: hashFile(path.join(bundleRoot, "files.sha256")), file_count: fileLines.length, uncompressed_file_bytes: fileBytes },
     symlink_manifest: { path: "links.tsv", sha256: hashFile(path.join(bundleRoot, "links.tsv")), symlink_count: linkLines.length },
     deduplication,
+    standalone_adapters: standaloneAdapters,
     policies: document.policies.map(canonicalPolicy),
   };
   writeFileSync(path.join(bundleRoot, "manifest.json"), `${JSON.stringify(bundleManifest, null, 2)}\n`, { mode: 0o644 });
