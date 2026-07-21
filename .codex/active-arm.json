@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T12:24:48Z",
-  "cycle_id": "odin-20260721T122139Z-35486",
+  "updated_at": "2026-07-21T15:43:09Z",
+  "cycle_id": "odin-20260721T154202Z-46336",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
   "state": "blocked_precontact_source_identity_mismatch",
@@ -215,6 +215,15 @@
     "source_change": false,
     "league_mutation": false
   },
-  "next_automatic_transition": "Obtain one hash-bound qd1n:v89 parent decision record before hostile contact, or reproduce the exact v89 selector on a hash-bound fixture. Seal a state only after that parent record proves a legal candidate-parent action difference. Carry the committed Mickey no-harm guard. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
+  "latest_checkpoint": {
+    "cycle_id": "odin-20260721T154202Z-46336",
+    "recorded_at": "2026-07-21T15:43:09Z",
+    "audit": "experiments/audit-qd1n-precontact-source-identity-checkpoint-20260721T154202Z.json",
+    "verdict": "BLOCK_EVIDENCE_IDENTITY_MISMATCH_NO_STATE_SEAL",
+    "source_change": false,
+    "runner_started": false,
+    "league_mutation": false
+  },
+  "next_automatic_transition": "Obtain one hash-bound qd1n:v89 parent decision record before hostile contact, or reproduce the exact v89 selector on a separately preregistered hash-bound fixture. Seal a state only after that parent record proves a legal candidate-parent action difference. Carry the committed Mickey no-harm guard. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
   "prior_verified_champion_preserved": true
 }
