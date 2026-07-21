@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-21T09:36:16Z",
+  "status": "dispatched",
+  "candidate_source_commit": "18c7fdebbafcb94f936c0e8182f6ba6e48a478f6",
+  "candidate_image_id": "sha256:d5660d978261137116dc1c617129ed0c16a1c6819adaff07874821b75f6812b0",
+  "candidate_policy_version_id": "ccf3a01d-f4bd-4eaa-a1c4-a1c900b78844",
+  "candidate": {
+    "request_id": "xreq_e1e6d695-e84d-4628-a7ef-3c48d296dcaa",
+    "request_body": "experiments/request-qd1n-id1-r2-hosted-candidate-4x.json",
+    "request_body_sha256": "cbc44cec5abe6154fcb9884230f1a3bd5681b037d9b301a6efdd61f543c54165",
+    "status_at_dispatch": "pending"
+  },
+  "parent": {
+    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "request_id": "xreq_cb3631e0-12f7-4617-b5c1-ce8275fc7e48",
+    "request_body": "experiments/request-qd1n-id1-r2-hosted-parent-4x.json",
+    "request_body_sha256": "b1c6f865f3d15c6683046a174a85f7baf51b668d52c83c1ddc49fa34dbb8e498",
+    "status_at_dispatch": "pending"
+  },
+  "match_contract": {
+    "coworld_id": "cow_236e7c2e-acdb-404a-b1b9-41852e5ac658",
+    "variant_id": "tournament-12p-pangaea",
+    "odin_slot": 7,
+    "episodes_per_request": 4,
+    "same_roster": true,
+    "only_changed_policy_version": true,
+    "roster_scope": "current 12-policy threat roster; not claimed as leaderboard top 12 while that endpoint returns HTTP 500"
+  },
+  "league_state": {
+    "candidate_submitted": false,
+    "candidate_memberships": 0,
+    "preserved_champion": "qd1n:v89",
+    "preserved_champion_membership": "lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6"
+  }
+}
