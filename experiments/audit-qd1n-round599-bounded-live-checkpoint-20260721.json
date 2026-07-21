@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260721T070500Z-94014",
+  "recorded_at": "2026-07-21T07:05:00Z",
+  "transition": "bounded_live_state_checkpoint",
+  "active_arm": null,
+  "prior_closed_arm": {
+    "id": "pax1",
+    "verdict": "REJECTED_PREREG_FALSE_COOLDOWN_ASSUMPTION"
+  },
+  "official_round_boundary": {
+    "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+    "division": "Competition",
+    "latest_completed_round_id": "round_5e702cb2-9a7a-4ead-9242-fbad9a461a7f",
+    "latest_completed_round": 599,
+    "latest_completed_at": "2026-07-21T06:57:21.435532Z",
+    "latest_completed_entrants": 14,
+    "running_round_id": "round_8e26e3ae-167f-45cf-b5f8-81a08bb5d182",
+    "running_round": 600,
+    "running_started_at": "2026-07-21T07:00:50.436604Z",
+    "running_entrants": 14
+  },
+  "bounded_result_check": {
+    "status": "BLOCKED_CLI_RESPONSE_SHAPE_NOT_NORMALIZED",
+    "scope": "round 599 plus exact qd1n:v89 policy-version ID",
+    "results_error": "jq could not index the current results response with the expected rank object shape",
+    "episode_error": "coworld 0.1.28 episodes does not support --policy-version; available filter is --policy",
+    "missing_evidence": [
+      "verified qd1n:v89 rank and score for round 599",
+      "exact qd1n:v89 episode request IDs",
+      "map and seat",
+      "replay URL and replay SHA256"
+    ],
+    "integrity_rule": "Do not infer an Odin result or open a mechanism from the confirmed round boundary alone."
+  },
+  "decision": {
+    "verdict": "CHECKPOINT_TOOL_BUDGET_EXHAUSTED_BEFORE_RESULT_NORMALIZATION",
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "submitted": false,
+    "membership_changed": false,
+    "champion_changed": false,
+    "prior_verified_champion_preserved": true
+  },
+  "next": "On the next Odin cycle, normalize only the exact round 599 results response, resolve qd1n:v89 episodes through the supported policy filter, and audit at most one replay-backed loss cell. Keep PAX1 closed and preserve qd1n:v89."
+}

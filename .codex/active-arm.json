@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T06:18:22Z",
-  "cycle_id": "odin-pax1-rci-close-20260721",
+  "updated_at": "2026-07-21T07:05:00Z",
+  "cycle_id": "odin-20260721T070500Z-94014",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "no_active_odin_arm_pax1_rejected_hrafn_studio_diagnostic_running",
+  "state": "no_active_odin_arm_round599_boundary_confirmed_result_normalization_blocked",
   "arm": {
     "id": "pax1",
     "name": "pact_before_doomed_probe",
@@ -162,14 +162,14 @@
     "league_mutation": false
   },
   "bounded_live_checkpoint": {
-    "audit": "experiments/audit-qd1n-round596-replay-cell-blocked-20260721.json",
-    "official_round": 596,
-    "round_id": "round_db58d6e7-8eb9-4314-8829-e2b5da6723fe",
-    "result": "qd1n:v89 rank 11, score 0 across 4 completed episodes",
-    "loss_cell_audit": "BLOCKED_NO_EPISODE_PAYLOAD",
+    "audit": "experiments/audit-qd1n-round599-bounded-live-checkpoint-20260721.json",
+    "official_round": 599,
+    "round_id": "round_5e702cb2-9a7a-4ead-9242-fbad9a461a7f",
+    "result": "BLOCKED_CLI_RESPONSE_SHAPE_NOT_NORMALIZED",
+    "loss_cell_audit": "NOT_STARTED_WITHOUT_VERIFIED_ODIN_RESULT",
     "policy_action_delta": false,
     "league_mutation": false
   },
-  "next_automatic_transition": "Let the fresh HI1 r2 diagnostic finish on Studio. Rebuild the corrected Gravity harness and all bound Mickey hashes, then permit only one new-run-ID canary before any CPU matrix relaunch. Do not repair PAX1 in place. Open another Odin arm only from a new replay-backed mechanism and exact preregistration. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
+  "next_automatic_transition": "Normalize only the exact round 599 results response, resolve qd1n:v89 episodes through the supported policy filter, and audit at most one replay-backed loss cell. Do not repair PAX1 in place. Open another Odin arm only from a new replay-backed mechanism and exact preregistration. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
   "prior_verified_champion_preserved": true
 }
