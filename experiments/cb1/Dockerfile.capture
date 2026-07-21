@@ -1,5 +1,5 @@
 FROM proxywar-agent-llm:qd1n-v89-exact-amd64
-COPY experiments/cb1/instrument-live-player.mjs /tmp/instrument-live-player.mjs
+COPY instrument-live-player.mjs /tmp/instrument-live-player.mjs
 RUN node /tmp/instrument-live-player.mjs /app/llm-player.mjs \
   && node --check /app/llm-player.mjs \
   && rm /tmp/instrument-live-player.mjs
