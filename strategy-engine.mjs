@@ -23,12 +23,17 @@ function normalizedRivalName(value) {
 }
 
 const RECIPROCAL_RIVALS = new Set(
-  ["katanasan", "juryoku-koku", "hrafn"].map(normalizedRivalName),
+  ["katanasan", "juryoku-koku", "hrafn", "mickey mouse"].map(normalizedRivalName),
 );
 const RECIPROCAL_RIVAL_IDS = new Set([
   "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
   "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
   "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+  "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+]);
+const ABSOLUTE_NO_HARM_RIVALS = new Set(["mickey mouse"].map(normalizedRivalName));
+const ABSOLUTE_NO_HARM_RIVAL_IDS = new Set([
+  "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
 ]);
 const MIN_DESPERATE_INVASION_RATIO = 0.5;
 const MIN_CONVERSION_TILE_SHARE = 0.002;
@@ -299,11 +304,17 @@ function isReciprocalRival(rival) {
     RECIPROCAL_RIVAL_IDS.has(String(rival?.id ?? "").toLowerCase());
 }
 
+function isAbsoluteNoHarmRival(rival) {
+  return ABSOLUTE_NO_HARM_RIVALS.has(normalizedRivalName(rival?.name)) ||
+    ABSOLUTE_NO_HARM_RIVAL_IDS.has(String(rival?.id ?? "").toLowerCase());
+}
+
 function reciprocalTrustIntact(state, history, rival) {
   return isReciprocalRival(rival) && recentHostility(state, history, rival, history.length) === 0;
 }
 
 function rivalIsProtected(state, history, rival) {
+  if (isAbsoluteNoHarmRival(rival)) return true;
   if (rival.isAllied) return true;
   if (reciprocalTrustIntact(state, history, rival)) return true;
   if (state.self.tileShare >= 0.35) return false;

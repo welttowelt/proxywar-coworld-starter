@@ -2112,3 +2112,91 @@ test("outsiders remain legal nuclear targets beside all three K1Z allies", () =>
   assert.equal(selected.id, bomb.id);
   assert.equal(selected.policyMarker, "nk1");
 });
+
+test("K1Z Mickey Mouse is protected by canonical name and stable player ID", () => {
+  const harmful = [
+    action("attack:mickey:40", "attack", "Attack K1Z Mickey Mouse 40%"),
+    action("boat:mickey:25", "boat", "Invade K1Z Mickey Mouse 25%"),
+    {
+      ...action("nuke:mickey", "nuke", "Launch strike"),
+      metadata: {
+        targetID: "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+        targetName: "K1Z Mickey Mouse",
+      },
+    },
+  ];
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [...harmful, build],
+    observation({
+      tileShare: 0.4,
+      troopRatio: 0.9,
+      rivals: [{
+        id: "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+        name: "K1Z Mickey Mouse",
+        tileShare: 0.12,
+        relativeTroopRatio: 1.8,
+      }],
+    }),
+    null,
+    [],
+  );
+  for (const hostile of harmful) assert.notEqual(selected.id, hostile.id);
+  assert.equal(selected.id, build.id);
+});
+
+test("Mickey remains protected even after observed incoming pressure", () => {
+  const counter = action("attack:mickey:40", "attack", "Attack Mickey Mouse 40%");
+  const build = action("build:City:1", "build", "Build City");
+  const selected = choose(
+    [counter, build],
+    observation({
+      tileShare: 0.4,
+      troopRatio: 0.9,
+      incomingAttacks: [{ attackerID: "ply_e982e621-9ca3-47cd-8151-f57ee9d99421" }],
+      incomingAttackPlayerIDs: ["ply_e982e621-9ca3-47cd-8151-f57ee9d99421"],
+      rivals: [{
+        id: "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+        name: "Mickey Mouse",
+        tileShare: 0.12,
+        relativeTroopRatio: 1.8,
+        incomingAttack: true,
+      }],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, build.id);
+});
+
+test("a Mickey alliance offer is accepted with coalition priority", () => {
+  const mickeyAlliance = {
+    ...action("alliance:mickey", "alliance_request", "Request alliance with K1Z Mickey Mouse"),
+    metadata: {
+      recipientID: "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+      recipientName: "K1Z Mickey Mouse",
+      relation: 2,
+    },
+  };
+  const outsider = action("attack:outsider:10", "attack", "Attack Outsider 10%");
+  const selected = choose(
+    [mickeyAlliance, outsider],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      rivals: [
+        {
+          id: "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+          name: "K1Z Mickey Mouse",
+          tileShare: 0.12,
+          relativeTroopRatio: 1.1,
+        },
+        { id: "outsider", name: "Outsider", tileShare: 0.12, relativeTroopRatio: 1.3 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, mickeyAlliance.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
