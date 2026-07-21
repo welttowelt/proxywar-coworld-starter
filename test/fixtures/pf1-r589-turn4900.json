@@ -1,0 +1,208 @@
+{
+  "schema_version": 1,
+  "scope": "Replay-derived selector fixture. The full ordered legal-action set is hash-bound; this fixture retains the three same-target land commitments that determine the isolated selector delta.",
+  "source": {
+    "round": 589,
+    "episode_request_id": "ereq_fdaf9154-fe26-4231-a0f1-88dac62e0bb1",
+    "episode_id": "50ccf8da-2199-4130-aba4-e21d08c9ed73",
+    "replay_sha256": "ec8a82e49ca6fbf77cafcea4ff5f7b7dffbbf3e87ce18793dc58fdc97b5a7923",
+    "decisions_sha256": "553b193024c4cef4d5e1f9e9b39bf2769060b2fdb9a88aa9b0ab1d20549acd6c",
+    "turn_record_sha256": "3631d8cb65976b90373deb79e856c67ae88bac165a781c11d8c777e8f2320313",
+    "ordered_legal_ids_sha256": "5814463d9c82e49a2362c0bb890ef08cdcbfd4f04f8223e3be54b3b8fdb0cb0d",
+    "game_image": "sha256:88d166c6c33609ec5b0dc1f70799001a1f1f34e1cd852ddbfc17a2eb43969ea1",
+    "game_version": "proxywar-0.1.8-0"
+  },
+  "observed": {
+    "map": "Pangaea",
+    "turn": 4900,
+    "prior_decision_count": 48,
+    "prior_hostile_land_attack_count": 0,
+    "selected_legal_action_id": "attack:idjkf73n:10",
+    "selected_action_accepted": true,
+    "target_id": "idjkf73n",
+    "target_name": "Ron SWGY",
+    "target_tile_share": 0.01,
+    "target_troops": 377067,
+    "own_troops": 2883001,
+    "own_troop_ratio": 0.98,
+    "incoming_threat_ratio": 0,
+    "home_danger": "low"
+  },
+  "state": {
+    "mapFingerprint": "Pangaea",
+    "phase": "active",
+    "decisionNumber": 48,
+    "self": {
+      "tileShare": 0.31,
+      "troops": 2883001,
+      "troopRatio": 0.98,
+      "incomingAttacks": [],
+      "incomingAttackerIDs": [],
+      "allProtocolAttackerIDs": []
+    },
+    "rivals": [
+      {
+        "id": "idjkf73n",
+        "name": "Ron SWGY",
+        "tileShare": 0.01,
+        "relativeTroopRatio": 7.65,
+        "sharesBorder": true,
+        "isAllied": false,
+        "relation": "Neutral",
+        "canAttack": true
+      }
+    ],
+    "topRivalTileShare": 0.31,
+    "recentKinds": [
+      "boat",
+      "boat",
+      "attack",
+      "attack",
+      "boat",
+      "boat",
+      "build",
+      "boat"
+    ],
+    "avoid": [],
+    "legalActions": []
+  },
+  "actions": [
+    {
+      "id": "attack:idjkf73n:10",
+      "kind": "attack",
+      "label": "Attack Ron SWGY 10%",
+      "risk": {
+        "level": "low"
+      },
+      "metadata": {
+        "targetID": "idjkf73n",
+        "targetName": "Ron SWGY",
+        "targetTroops": 377067,
+        "targetTileShare": 0.01,
+        "ownTroops": 2883001,
+        "troops": 288300,
+        "troopPercentage": 0.1,
+        "troopPercent": 10,
+        "relativeTroopRatio": 7.65,
+        "sharesBorder": true,
+        "incomingAttack": false,
+        "outgoingAttack": false,
+        "relation": 2
+      }
+    },
+    {
+      "id": "attack:idjkf73n:25",
+      "kind": "attack",
+      "label": "Attack Ron SWGY 25%",
+      "risk": {
+        "level": "low"
+      },
+      "metadata": {
+        "targetID": "idjkf73n",
+        "targetName": "Ron SWGY",
+        "targetTroops": 377067,
+        "targetTileShare": 0.01,
+        "ownTroops": 2883001,
+        "troops": 720750,
+        "troopPercentage": 0.25,
+        "troopPercent": 25,
+        "relativeTroopRatio": 7.65,
+        "sharesBorder": true,
+        "incomingAttack": false,
+        "outgoingAttack": false,
+        "relation": 2
+      }
+    },
+    {
+      "id": "attack:idjkf73n:40",
+      "kind": "attack",
+      "label": "Attack Ron SWGY 40%",
+      "risk": {
+        "level": "low"
+      },
+      "metadata": {
+        "targetID": "idjkf73n",
+        "targetName": "Ron SWGY",
+        "targetTroops": 377067,
+        "targetTileShare": 0.01,
+        "ownTroops": 2883001,
+        "troops": 1153200,
+        "troopPercentage": 0.4,
+        "troopPercent": 40,
+        "relativeTroopRatio": 7.65,
+        "sharesBorder": true,
+        "incomingAttack": false,
+        "outgoingAttack": false,
+        "relation": 2
+      }
+    }
+  ],
+  "history_action_ids": [
+    "spawn:423196",
+    "spawn:855528",
+    "spawn:132564",
+    "expand:terra-nullius:10",
+    "expand:terra-nullius:10",
+    "expand:terra-nullius:20",
+    "build:City:139561",
+    "expand:terra-nullius:20",
+    "expand:terra-nullius:35",
+    "expand:terra-nullius:10",
+    "expand:terra-nullius:10",
+    "expand:terra-nullius:20",
+    "expand:terra-nullius:35",
+    "expand:terra-nullius:35",
+    "expand:terra-nullius:35",
+    "expand:terra-nullius:10",
+    "expand:terra-nullius:10",
+    "expand:terra-nullius:20",
+    "expand:terra-nullius:35",
+    "build:Factory:125555",
+    "expand:terra-nullius:20",
+    "alliance:1wy62oh4",
+    "expand:terra-nullius:10",
+    "boat:115729:8",
+    "expand:terra-nullius:10",
+    "expand:terra-nullius:20",
+    "expand:terra-nullius:35",
+    "expand:terra-nullius:35",
+    "expand:terra-nullius:35",
+    "boat:41525:8",
+    "boat:31477:16",
+    "build:Port:111595",
+    "boat:146759:8",
+    "boat:172770:16",
+    "boat:45395:16",
+    "boat:187778:16",
+    "boat:233365:16",
+    "boat:217341:16",
+    "boat:229347:16",
+    "expand:terra-nullius:10",
+    "boat:195302:8",
+    "boat:210312:16",
+    "expand:terra-nullius:10",
+    "expand:terra-nullius:20",
+    "boat:282378:8",
+    "boat:260353:16",
+    "build:City:148573",
+    "boat:402491:8"
+  ],
+  "plan_variants": [
+    null,
+    {
+      "focus": "attack"
+    },
+    {
+      "focus": "attack",
+      "target": "Richard Higgins"
+    }
+  ],
+  "expected_parent": {
+    "id": "attack:idjkf73n:10",
+    "policyMarker": null
+  },
+  "expected_pf1": {
+    "id": "attack:idjkf73n:25",
+    "policyMarker": "pf1"
+  }
+}
