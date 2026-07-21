@@ -1,0 +1,55 @@
+{
+  "id": "id1-grow-vs-proactive-kp2",
+  "plan": { "intent": "grow" },
+  "legalActions": [
+    {
+      "id": "alliance:katanasan",
+      "kind": "alliance_request",
+      "label": "Alliance with K1Z katanasan",
+      "risk": { "level": "low" },
+      "metadata": {
+        "recipientID": "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+        "recipientName": "K1Z katanasan",
+        "relation": 2
+      }
+    },
+    {
+      "id": "expand:terra-nullius:10",
+      "kind": "attack",
+      "label": "Expand Terra Nullius 10%",
+      "risk": { "level": "low" },
+      "metadata": { "expansion": true, "troopPercent": 10 }
+    }
+  ],
+  "observation": {
+    "phase": "active",
+    "ownState": {
+      "tileShare": 0.05,
+      "troopRatio": 0.8,
+      "troops": 500000,
+      "gold": 250000,
+      "borderTiles": 100,
+      "incomingAttacks": []
+    },
+    "combat": { "incomingAttackPlayerIDs": [] },
+    "visiblePlayers": [
+      {
+        "id": "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+        "name": "K1Z katanasan",
+        "isAlive": true,
+        "sharesBorder": true,
+        "canAttack": true,
+        "isAllied": false,
+        "tileShare": 0.08,
+        "relativeTroopRatio": 1.2
+      }
+    ]
+  },
+  "history": [],
+  "expected": {
+    "parent_action_id": "alliance:katanasan",
+    "parent_policy_marker": "kp2",
+    "candidate_action_id": "expand:terra-nullius:10",
+    "candidate_policy_marker": "id1"
+  }
+}
