@@ -1,12 +1,21 @@
 {
   "schema_version": 1,
-  "checked_at": "2026-07-21T05:48:11Z",
+  "checked_at": "2026-07-21T05:53:29Z",
   "result": "MICKEY_LOCAL_SUCCESSOR_TERMINAL_VERIFIED",
   "authority": {
     "odin": "sole writable qd1n and league-mutation operator",
     "mickey": "sole local source, evaluation, Docker, and CPU-fanout successor under the mickey runner lease",
     "hrafn": "Studio-only hrafn-fylking operator with no local runner or identity window",
     "kimi": "external strategy adviser only"
+  },
+  "mickey_credential_isolation": {
+    "active_credentials_path": "/Users/olifreuler/.mickey-coworld-home/.softmax/credentials.yaml",
+    "active_credentials_present": false,
+    "disabled_copy": "/Users/olifreuler/.mickey-coworld-home/.softmax/credentials.yaml.disabled-shared-session-20260721",
+    "disabled_copy_sha256": "1ce752b9956d6227d64128a61281c4fd6c44cc03522f00fa14f14a3d61f196e5",
+    "disabled_copy_mode": "0400",
+    "mickey_players_probe_exit": 2,
+    "odin_credentials_untouched": true
   },
   "canonical_handover": {
     "file": "HANDOVER.md",
