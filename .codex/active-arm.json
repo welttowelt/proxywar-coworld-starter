@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T15:03:30Z",
+  "updated_at": "2026-07-21T15:14:35Z",
   "cycle_id": "odin-20260721T122139Z-35486",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
@@ -10,10 +10,10 @@
     "name": "lean_standard_controller_emergency_rebuild",
     "branch": "emergency/odin-standard-v1",
     "parent_commit": "d50f34058fe60de39fb932a9b7c81f1b54415ee3",
-    "candidate_commit": "4095e9ee3811a6e7094aaa42944302ae8557ad38",
-    "candidate_image": "proxywar-agent-llm:qd1n-std1-4095e9ee-amd64",
-    "candidate_image_id": "sha256:ce8a67ce5bb4cc82825d6fc161020aa9b8e96f13e53aeeb2b36f77a049d8802d",
-    "benchmark": "/private/tmp/qd1n-std1-emergency-4095e9ee3811a6e7094aaa42944302ae8557ad38/benchmark.json",
+    "candidate_commit": "1715977790772701444223f06e140f96e7afe2bc",
+    "candidate_image": "proxywar-agent-llm:qd1n-std1-17159777-amd64",
+    "candidate_image_id": "sha256:5c785309c5ebead5a14aa187ce5a7f9b1e10912033e78f84bc833f5f0ee57c25",
+    "benchmark": "/private/tmp/qd1n-std1-emergency-1715977790772701444223f06e140f96e7afe2bc/benchmark.json",
     "preregistration": "experiments/preregister-qd1n-std1-emergency-standard-rebuild-20260721.json",
     "closed": false,
     "verdict": null
