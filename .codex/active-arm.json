@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T05:43:34Z",
-  "cycle_id": "odin-20260721T053835Z-53531",
+  "updated_at": "2026-07-21T06:06:30Z",
+  "cycle_id": "odin-pax1-rci-close-20260721",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "no_active_arm_round596_replay_cell_blocked",
+  "state": "no_active_odin_arm_pax1_rejected_mickey_screen_running",
   "arm": {
-    "id": "cb1",
-    "name": "pangaea_cap_bank_conversion",
+    "id": "pax1",
+    "name": "pact_before_doomed_probe",
     "branch": null,
     "parent_commit": null,
     "candidate_commit": null,
-    "preregistration": "experiments/preregister-qd1n-cb1-cap-bank-raw-capture-20260721.json",
+    "preregistration": "experiments/preregister-qd1n-pax1-underdog-pact-world-20260721.json",
     "closed": true,
-    "verdict": "STOP_ZERO_CAPTURE"
+    "verdict": "REJECTED_PREREG_FALSE_COOLDOWN_ASSUMPTION"
   },
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
@@ -26,30 +26,31 @@
     "is_champion": true
   },
   "live_scoreboard": {
-    "checked_at": "2026-07-21T03:13:30Z",
+    "checked_at": "2026-07-21T06:04:29.090912Z",
     "leader": "daveey",
-    "leader_score": 38.7459525942,
+    "leader_score": 39.0635685991,
     "odin_rank": 3,
-    "odin_score": 16.2973203239,
-    "gap_to_leader": 22.4486322703,
-    "latest_round_checked_at": "2026-07-21T05:43:34Z",
-    "latest_completed_round": 596,
-    "latest_completed_round_id": "round_db58d6e7-8eb9-4314-8829-e2b5da6723fe",
-    "latest_completed_at": "2026-07-21T05:36:04.283733Z",
+    "odin_score": 16.3154353168,
+    "gap_to_leader": 22.7481332823,
+    "latest_round_checked_at": "2026-07-21T06:04:29.090912Z",
+    "latest_completed_round": 597,
+    "latest_completed_round_id": "round_c474dbf6-698c-4d93-8594-a47c64b4ddb1",
+    "latest_completed_at": "2026-07-21T06:02:35.361722Z",
     "latest_odin_rank": 11,
     "latest_odin_score": 0.0,
     "latest_odin_completed_episodes": 4,
-    "latest_round_leader": "Auri",
-    "latest_round_leader_policy": "proxywar-keystone:v42",
-    "latest_round_leader_score": 0.5,
-    "running_round": null,
-    "running_round_truth": "not_checked_this_cycle"
+    "latest_round_leader": "multiple episode winners; official round rank source used",
+    "latest_round_leader_policy": null,
+    "latest_round_leader_score": null,
+    "running_round": 598,
+    "running_round_id": "round_3aeb53ad-611e-4da5-8738-7ea9ff6c4cca",
+    "running_round_truth": "four World episodes running on qd1n:v89 at 2026-07-21T06:04:29.090912Z"
   },
   "locks": {
-    "runner": "free",
+    "runner": "owned:mickey:mickey-screen-g000-r9-20260721t040132z",
     "qd1n_mutation": "free",
     "active_player": "K1Z odin free",
-    "mailbox_commit": "70e3969842b0e8092b5def6bebfa264d0b5b3943"
+    "mailbox_commit": "75fe87d86cacb5606ac2c85b19ac8f1f7db34047"
   },
   "operator_topology": {
     "odin": "sole writable qd1n operator and live authority",
@@ -144,6 +145,13 @@
     "verdict": "REJECTED_ZERO_REACH",
     "audit": "experiments/audit-qd1n-pf1-zero-reach-stop-20260721.json"
   },
+  "latest_closed_arm": {
+    "id": "pax1",
+    "verdict": "REJECTED_PREREG_FALSE_COOLDOWN_ASSUMPTION",
+    "audit": "experiments/audit-qd1n-pax1-preregister-rci-reject-20260721.json",
+    "source_edit": false,
+    "league_mutation": false
+  },
   "bounded_live_checkpoint": {
     "audit": "experiments/audit-qd1n-round596-replay-cell-blocked-20260721.json",
     "official_round": 596,
@@ -153,6 +161,6 @@
     "policy_action_delta": false,
     "league_mutation": false
   },
-  "next_automatic_transition": "Retry only the round 596 qd1n:v89 episode listing and bind one replay-backed loss cell before opening a different mechanism. Do not infer a mechanism from aggregate rank. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
+  "next_automatic_transition": "Let the diagnostic-only Mickey G000 r9 CPU screen finish and release the shared runner. Do not repair PAX1 in place. Open another Odin arm only from a new replay-backed mechanism and exact preregistration. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
   "prior_verified_champion_preserved": true
 }
