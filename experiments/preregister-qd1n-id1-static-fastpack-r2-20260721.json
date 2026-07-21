@@ -1,0 +1,164 @@
+{
+  "schema_version": 1,
+  "record_type": "qd1n_id1_static_fastpack_r2_preregistration",
+  "experiment_id": "qd1n-id1-static-fastpack-r2-20260721",
+  "created_at": "2026-07-21T09:01:25Z",
+  "revision_of": {
+    "manifest_path": "experiments/preregister-qd1n-id1-static-fastpack-20260721.json",
+    "manifest_sha256": "66ef51ba53e01c92c6822824d27576a893404f96bbca60566d4f0ae9acc73ef6",
+    "receipt_path": "/private/tmp/proxywar-id1-static-fastpack-audit-20260721.json",
+    "verdict": "FAIL_EXECUTION",
+    "disposition": "Preserved. All four R1 calls failed before a game because the second positional file lacked the required embedded manifest, while the first manifest also carried a forbidden top-level tags field. R2 binds a validated manifest and fresh outputs."
+  },
+  "objective": "Run the unchanged ID1 four-game causal fastpack with a valid derived episode-request file and no R1 artifact reuse.",
+  "base": {
+    "branch": "rci/kiz1-gravity-alias",
+    "commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc"
+  },
+  "source": {
+    "branch": "rci/id1-static-fastpack",
+    "commit": "18c7fdebbafcb94f936c0e8182f6ba6e48a478f6",
+    "ported_from": "1c62664a43c0657e086845dc3b5c1a17e4910a54",
+    "sha256": {
+      "Dockerfile": "5179e2e9819dfe9a6aa442e65a3dda31219a612c5f04ec51e5cc75ad0d4dae0d",
+      "llm-player.mjs": "083893b2e0a513c45e8857d0a1e2727e1f93bfae682242d69fbc1d57ee5b3168",
+      "strategy-engine.mjs": "17c24a9b96fe6a04aa5c441993d98b6e9210f6dccc4f3d77340a28cd28c71913",
+      "strategy-chassis.mjs": "de45b447513ddcac5e9bf1be14417bfab0dd5e8e92156670539e8eda01478ca1",
+      "planner-backoff.mjs": "b286da97da20e388a8b33114520f15e2286ee2f0f63cc20f3e344d988280dbf3",
+      "starter-player.mjs": "3b9dd1906faec00fd61fe6738ab53233e13996ca82012b01223051f65cd086a5"
+    }
+  },
+  "runtime": {
+    "coworld_version": "0.1.30",
+    "request_shape": "{manifest: JSON.parse(bound_coworld_manifest), ...JSON.parse(bound_small_job)}"
+  },
+  "coworld_manifest": {
+    "path": "/Users/olifreuler/proxywar-coworld-starter/coworld/cow_15c39dab-eac1-4284-bf3e-bd723d4c2755/coworld_manifest.json",
+    "sha256": "f5e6b4dd247b2b2e534a415d293babab7fd655d44b2004db4257a2df3a01dab0"
+  },
+  "runner": {
+    "lane": "odin",
+    "run_id": "odin-id1-static-fastpack-r2-20260721"
+  },
+  "autopilot": {
+    "path": "scripts/run-id1-static-fastpack.mjs",
+    "sha256": "37fef2b817c90387b6c181f094cf26da71c04026664cd39f7cfc7267f3728e1e",
+    "invocation": "node scripts/run-id1-static-fastpack.mjs --manifest experiments/preregister-qd1n-id1-static-fastpack-r2-20260721.json"
+  },
+  "images": {
+    "candidate": {
+      "engine": "id1",
+      "image_id": "sha256:d5660d978261137116dc1c617129ed0c16a1c6819adaff07874821b75f6812b0",
+      "architecture": "amd64"
+    },
+    "control": {
+      "engine": "id1-static-parent",
+      "image_id": "sha256:ce69881dc51118d6f6537db7fdd17f9a535b4e26922b8f36f49be40ee29fbc8b",
+      "architecture": "amd64"
+    }
+  },
+  "coalition": {
+    "protected_names": [
+      "K1Z katanasan",
+      "katanasan",
+      "K1Z Gravity",
+      "Gravity",
+      "juryoku-koku",
+      "K1Z Hrafn",
+      "Hrafn"
+    ],
+    "exact_player_ids": [
+      "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+      "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863"
+    ]
+  },
+  "cell": {
+    "map": "Pangaea",
+    "map_size": "Normal",
+    "seed": 20260720,
+    "max_decision_steps": 24,
+    "turns_per_decision_step": 100,
+    "orientation_a": [
+      "K1Z Hrafn",
+      "daveey",
+      "Richard Higgins",
+      "Auri",
+      "Ron",
+      "K1Z Gravity",
+      "K1Z katanasan",
+      "K1Z odin free"
+    ],
+    "orientation_b": [
+      "K1Z odin free",
+      "daveey",
+      "Richard Higgins",
+      "Auri",
+      "Ron",
+      "K1Z Gravity",
+      "K1Z katanasan",
+      "K1Z Hrafn"
+    ]
+  },
+  "jobs": [
+    {
+      "id": "r2-a-control",
+      "orientation": "a",
+      "arm": "control",
+      "job_path": "experiments/job-qd1n-id1-fastpack-a-control-20260721.json",
+      "job_sha256": "405786de42f524961ae3119a85958e1d75762d0a133bf9ffa4ea469b5d40a16c",
+      "derived_request_sha256": "72be421b558f30cd8008e88df29199d3b5c0e9364257a9fe72c78e2068a3fd11",
+      "output_dir": "/private/tmp/proxywar-id1-static-fastpack-r2-a-control-20260721"
+    },
+    {
+      "id": "r2-a-candidate",
+      "orientation": "a",
+      "arm": "candidate",
+      "job_path": "experiments/job-qd1n-id1-fastpack-a-candidate-20260721.json",
+      "job_sha256": "e97e3b8153ff00705050737d6c7dd7f1b175d49115684ce454e5779bcb12fa48",
+      "derived_request_sha256": "8e7cdbb642ee674d30aea3d2d426512cb9e36d1f972381773e7c3d49e90baed1",
+      "output_dir": "/private/tmp/proxywar-id1-static-fastpack-r2-a-candidate-20260721"
+    },
+    {
+      "id": "r2-b-candidate",
+      "orientation": "b",
+      "arm": "candidate",
+      "job_path": "experiments/job-qd1n-id1-fastpack-b-candidate-20260721.json",
+      "job_sha256": "91ddb6c79b3a36aaf649702cc19f3095dff52dfca843b2cd1326a093b482ffd3",
+      "derived_request_sha256": "97047f55ca46cb9f86812374c096e843d063aec976060819b511cb16365407ef",
+      "output_dir": "/private/tmp/proxywar-id1-static-fastpack-r2-b-candidate-20260721"
+    },
+    {
+      "id": "r2-b-control",
+      "orientation": "b",
+      "arm": "control",
+      "job_path": "experiments/job-qd1n-id1-fastpack-b-control-20260721.json",
+      "job_sha256": "9fed7347087e3cbd1dabd00f551db06c084279a575002be7a5febd86dedc5847",
+      "derived_request_sha256": "668edfda8bb15dbe7158e13d12512efc7f1d58b701c9037955193cab2feefdeb",
+      "output_dir": "/private/tmp/proxywar-id1-static-fastpack-r2-b-control-20260721"
+    }
+  ],
+  "auditor": {
+    "path": "scripts/audit-id1-static-fastpack.mjs",
+    "sha256": "5279d074c4286474d716b3d772878c68e2191201d9579f8726a9223ccb9e6f2e",
+    "invocation": "node scripts/audit-id1-static-fastpack.mjs --manifest experiments/preregister-qd1n-id1-static-fastpack-r2-20260721.json"
+  },
+  "receipts": {
+    "local_audit_path": "/private/tmp/proxywar-id1-static-fastpack-r2-audit-20260721.json",
+    "next_preflight_path": "/private/tmp/proxywar-id1-static-fastpack-r2-next-preflight-20260721.json"
+  },
+  "pass_gate": {
+    "candidate_id1_reach_min_per_orientation": 1,
+    "all_odin_decisions_accepted": true,
+    "fallbacks_holds_rejects_degradations_harm_per_job": 0,
+    "candidate_auc20_strictly_greater_than_control_in_both_orientations": true,
+    "candidate_decision_20_tiles_strictly_greater_than_control_in_both_orientations": true
+  },
+  "stop_rule": "Any execution, reliability, reach, or strict mirrored metric failure closes ID1. R2 cannot reuse R1 outputs or receipts.",
+  "next_stage": {
+    "on_pass": "emit a bound hosted-preflight handoff only",
+    "preflight_output": "/private/tmp/proxywar-id1-static-fastpack-r2-next-preflight-20260721.json",
+    "league_mutation": false
+  },
+  "league_mutation": false
+}

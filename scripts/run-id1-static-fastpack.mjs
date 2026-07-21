@@ -2,7 +2,7 @@
 
 import { createHash } from "node:crypto";
 import { execFileSync, spawn, spawnSync } from "node:child_process";
-import { existsSync, readFileSync, readdirSync, writeFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, readdirSync, rmSync, writeFileSync } from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -22,6 +22,15 @@ const hash = (bytes) => createHash("sha256").update(bytes).digest("hex");
 const fileHash = (file) => hash(readFileSync(file));
 const json = (file) => JSON.parse(readFileSync(file, "utf8"));
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+
+function derivedRequestBytes(coworldManifestFile, jobFile) {
+  const job = json(jobFile);
+  if (Object.hasOwn(job, "manifest")) stop("small job must not override the bound manifest");
+  return Buffer.from(`${JSON.stringify({
+    manifest: json(coworldManifestFile),
+    ...job,
+  }, null, 2)}\n`);
+}
 
 function repoFile(relative, expected, label) {
   if (!SHA.test(expected ?? "") || path.isAbsolute(relative ?? "") ||
@@ -61,8 +70,17 @@ function loadPack(manifestPath, expectedManifestHash = null) {
       fileHash(pack.coworld_manifest.path) !== pack.coworld_manifest.sha256) {
     stop("Coworld manifest hash mismatch");
   }
+  if (pack.autopilot) {
+    const boundSelf = repoFile(pack.autopilot.path, pack.autopilot.sha256, "autopilot");
+    if (path.resolve(boundSelf) !== path.resolve(SELF)) stop("autopilot path mismatch");
+  }
   for (const job of pack.jobs) {
     job.file = repoFile(job.job_path, job.job_sha256, `job ${job.id}`);
+    job.requestBytes = derivedRequestBytes(pack.coworld_manifest.path, job.file);
+    if (!SHA.test(job.derived_request_sha256 ?? "") ||
+        hash(job.requestBytes) !== job.derived_request_sha256) {
+      stop(`job ${job.id} derived request hash mismatch`);
+    }
   }
   pack.auditor.file = repoFile(pack.auditor?.path, pack.auditor?.sha256, "auditor");
   for (const [field, value] of Object.entries(pack.receipts ?? {})) {
@@ -126,19 +144,32 @@ function run(command, args, options = {}) {
 async function execute(manifestPath, manifestHash) {
   const { pack } = loadPack(manifestPath, manifestHash);
   const binary = process.env.PROXYWAR_ID1_COWORLD_BIN;
-  const results = await Promise.all(pack.jobs.map((job) => {
-    const args = [pack.coworld_manifest.path, job.file, "-o", job.output_dir];
-    return binary
-      ? run(binary, args, { stdio: "inherit", env: process.env })
-      : run("uvx", ["--from", "coworld==0.1.30", "coworld", "run-episode", ...args],
-          { stdio: "inherit", env: process.env });
-  }));
+  const childEnv = { ...process.env, UV_NO_PROGRESS: "1", NO_COLOR: "1" };
+  const requestDir = mkdtempSync("/private/tmp/id1-static-fastpack-r2-requests-");
+  let results;
+  try {
+    results = await Promise.all(pack.jobs.map((job, index) => {
+      const requestFile = path.join(requestDir, `request-${index}.json`);
+      writeFileSync(requestFile, job.requestBytes, { flag: "wx", mode: 0o600 });
+      const args = [pack.coworld_manifest.path, requestFile, "-o", job.output_dir];
+      return binary
+        ? run(binary, args, { stdio: "inherit", env: childEnv })
+        : run("uvx", ["--from", "coworld==0.1.30", "coworld", "run-episode", ...args],
+            { stdio: "inherit", env: childEnv });
+    }));
+  } finally {
+    rmSync(requestDir, { recursive: true, force: true });
+  }
   if (results.some((result) => result.code !== 0 || result.signal || result.error)) {
     writeFileSync(pack.receipts.local_audit_path, `${JSON.stringify({
       schema_version: 1,
       manifest_sha256: manifestHash,
       verdict: "FAIL_EXECUTION",
-      failures: results.map((result, index) => ({ job: pack.jobs[index].id, ...result })),
+      failures: results.map((result, index) => ({
+        job: pack.jobs[index].id,
+        derived_request_sha256: pack.jobs[index].derived_request_sha256,
+        ...result,
+      })),
       league_mutation: false,
     }, null, 2)}\n`, { flag: "wx", mode: 0o600 });
     return 0;

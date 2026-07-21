@@ -10,7 +10,7 @@ import { fileURLToPath } from "node:url";
 const repoRoot = path.dirname(path.dirname(fileURLToPath(import.meta.url)));
 const preregPath = path.join(
   repoRoot,
-  "experiments/preregister-qd1n-id1-static-fastpack-20260721.json",
+  "experiments/preregister-qd1n-id1-static-fastpack-r2-20260721.json",
 );
 
 function digest(bytes) {
@@ -84,11 +84,16 @@ test("ID1 fastpack auditor accepts only a clean two-orientation lift", async () 
     assert.deepEqual(receipt.failures, []);
     assert.equal(receipt.league_mutation, false);
     assert.equal(receipt.jobs.length, 4);
+    assert.equal(receipt.jobs.every((job) =>
+      manifest.jobs.some((bound) =>
+        bound.id === job.id && bound.derived_request_sha256 === job.derived_request_sha256
+      )
+    ), true);
     assert.equal(receipt.comparisons.every((cell) =>
       cell.candidate_auc20_strict_win && cell.candidate_decision_20_strict_win
     ), true);
 
-    const harmfulJob = manifest.jobs.find((job) => job.id === "a-control");
+    const harmfulJob = manifest.jobs.find((job) => job.id.endsWith("a-control"));
     const decisionsPath = path.join(
       harmfulJob.output_dir,
       "proxywar-runs",

@@ -25,6 +25,17 @@ function sha256(bytes) {
   return createHash("sha256").update(bytes).digest("hex");
 }
 
+function derivedRequestBytes(coworldManifestBytes, jobBytes) {
+  const job = JSON.parse(jobBytes);
+  if (Object.hasOwn(job, "manifest")) {
+    throw new Error("small job must not override the bound manifest");
+  }
+  return Buffer.from(`${JSON.stringify({
+    manifest: JSON.parse(coworldManifestBytes),
+    ...job,
+  }, null, 2)}\n`);
+}
+
 function parseArgs(argv) {
   const index = argv.indexOf("--manifest");
   if (index < 0 || !argv[index + 1]) {
@@ -111,6 +122,13 @@ async function auditJob(job, manifest, repoRoot) {
   if (actualJobSha !== job.job_sha256) {
     throw new Error(`${job.id} job hash mismatch: ${actualJobSha}`);
   }
+  const derivedRequestSha = sha256(derivedRequestBytes(
+    await readFile(manifest.coworld_manifest.path),
+    jobBytes,
+  ));
+  if (derivedRequestSha !== job.derived_request_sha256) {
+    throw new Error(`${job.id} derived request hash mismatch: ${derivedRequestSha}`);
+  }
   const jobSpec = JSON.parse(jobBytes);
   const expectedRoster = manifest.cell[`orientation_${job.orientation}`];
   const actualRoster = jobSpec.game_config?.players?.map((player) => player.name);
@@ -181,6 +199,7 @@ async function auditJob(job, manifest, repoRoot) {
     orientation: job.orientation,
     arm: job.arm,
     job_sha256: actualJobSha,
+    derived_request_sha256: derivedRequestSha,
     decisions: decisions.length,
     active_decisions: active.length,
     accepted: decisions.filter((decision) => decision.result?.accepted === true).length,
