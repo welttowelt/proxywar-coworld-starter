@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-21T13:19:01Z",
+  "candidate": "mickey-mr1-attacker-continuity",
+  "verdict": "RETAIN_LOCAL_NO_PROMOTION_INCONCLUSIVE_NO_MATCHED_REACH",
+  "remote_state_changed": false,
+  "hypothesis": "When Mickey has already selected a land attack on Pangaea, retargeting the same-or-lower commitment to one current parity-or-weaker aggressor will reduce stale-target feeding without creating a new attack.",
+  "measured_window": {
+    "official_rounds": [605, 606, 607],
+    "completed_mickey_episodes_audited": 3,
+    "maps": ["Pangaea", "World", "Pangaea"],
+    "strongest_current_opponent": "daveey v24",
+    "note": "Round 607 was still running when the live field was measured; only its completed Mickey episode is used here."
+  },
+  "source_isolation": {
+    "parent_commit": "ce5c15b0a423590340595537ac5d7483e61d41a4",
+    "candidate_commit": "c9acdf27d7703fbf5546c5fdc60bb67b5ce6993f",
+    "branch": "rci/mickey-mr1-attacker-continuity-20260721",
+    "runtime_diff_files": ["llm-player.mjs", "strategy-engine.mjs"],
+    "test_diff_files": ["test/strategy-engine.test.mjs"],
+    "marker": "mr1",
+    "guard": [
+      "Pangaea only",
+      "baseline already selected a non-neutral land attack",
+      "exactly one current protocol attacker",
+      "attacker is visible, not protected, and at relative troop ratio at least 1.0",
+      "an exact non-high-risk metadata target ID is legal",
+      "replacement troop commitment cannot exceed the baseline commitment"
+    ],
+    "unchanged": [
+      "opening cadence",
+      "alliance selection",
+      "planner protocol and backoff",
+      "build, retreat, boat, hold, Asia, World, unknown-map, and qd1n parent behavior"
+    ]
+  },
+  "live_replay_evidence": [
+    {
+      "round": 605,
+      "map": "Pangaea",
+      "replay_sha256": "6423abe529478ee6687c5152418666a553ed10d725ceb845fd842a840e8a7a0a"
+    },
+    {
+      "round": 606,
+      "map": "World",
+      "replay_sha256": "48e578cf2088aea7963202f12a8d51225578cc64a3b52cad49b4e1800942b533"
+    },
+    {
+      "round": 607,
+      "map": "Pangaea",
+      "replay_sha256": "fe7ffb7b29d82e9743a1514d1a21adf16be60f1fc6c73a7f2482ab1b4f0a6873",
+      "counterfactual_reach": {
+        "turn": 3300,
+        "parent_action": "attack:r5o3pta1:10",
+        "parent_target": "Auri",
+        "current_attacker": "daveey",
+        "current_attacker_action": "attack:1wy62oh4:10",
+        "current_attacker_action_was_legal": true,
+        "current_attacker_attack_was_active": true,
+        "mickey_to_attacker_troop_ratio": 1.014,
+        "candidate_action": "attack:1wy62oh4:10",
+        "candidate_marker": "mr1"
+      }
+    }
+  ],
+  "verification": {
+    "red_regression": "Before the runtime redirect, the round-607-shaped fixture selected Auri instead of the reported active attacker daveey.",
+    "focused_tests": {
+      "passed": 114,
+      "failed": 0,
+      "scope": [
+        "strategy-engine",
+        "deployed llm-player integration",
+        "Mickey coalition safety"
+      ]
+    },
+    "repository_suite": {
+      "passed": 324,
+      "failed": 4,
+      "total": 328,
+      "baseline_note": "The four failures are path-bound r8/r9 CPU-fanout activation tests and reproduce unchanged on exact parent ce5c15b0; they are not caused by mr1."
+    },
+    "diff_check": "pass",
+    "image": {
+      "tag": "proxywar-agent-llm:mickey-mr1-c9acdf27-amd64",
+      "image_id": "sha256:64c81c3700065bb4710c9c9e84b2eb5ba3dff431599dd6aa4af4f68fcc5ab4ac",
+      "platform": "linux/amd64",
+      "user": "node",
+      "cmd": ["node", "/app/llm-player.mjs"],
+      "llm_player_sha256": "0be88862b54c9fc155450079615d445eaed744f0a4490ab38774dc8d911ed035",
+      "strategy_engine_sha256": "af7a6fc3fcaffa3916ba0fbd487f1ff3a6b49ef92fc58ee02b487c2490af1bc2",
+      "source_bytes_match_image": true
+    },
+    "qualifier": {
+      "path": "/private/tmp/proxywar-mickey-mr1-qualifier-r2-20260721",
+      "decisions": 34,
+      "accepted": 34,
+      "holds": 0,
+      "rejected": 0,
+      "expected_degraded_fallbacks": 10,
+      "replay_sha256": "06d617f1527b58e61709e355c9697ee36c7c015faae2d3e88cea7a0b10434086"
+    },
+    "matched_trials": {
+      "ledger": "experiments/ledger-mickey-mr1-pangaea-20260721.ndjson",
+      "pair": "mickey-mr1-pangaea-seat-swap",
+      "candidate_wins": 1,
+      "parent_wins": 1,
+      "candidate_marker_count": 0,
+      "accepted_decisions": 444,
+      "rejected_decisions": 0,
+      "holds": 4,
+      "holds_explanation": "The same physical seat zero held twice under candidate in orientation A and exact parent in orientation B; the full traces and outcomes were otherwise seat-identical.",
+      "runs": [
+        {
+          "orientation": "candidate-even-parent-odd",
+          "winner_slot": 2,
+          "winner_arm": "candidate",
+          "winner_tiles": 88133,
+          "replay_sha256": "d830c5399b80665292f828fdbf76312a8e03de3b1c577150c316ab38ede01f27"
+        },
+        {
+          "orientation": "parent-even-candidate-odd",
+          "winner_slot": 2,
+          "winner_arm": "parent",
+          "winner_tiles": 88133,
+          "replay_sha256": "b19b13740f82b1c9307ccc7bbd1016b70cc64e4cc02e406ebb4fa09ef6fdfbad"
+        }
+      ],
+      "verdict": "inconclusive because mr1 did not reach and physical-seat outcomes were identical"
+    }
+  },
+  "gates": {
+    "replay_shaped_mechanism_reach": true,
+    "matched_mechanism_reach": false,
+    "matched_outcome_advantage": false,
+    "zero_new_rejections": true,
+    "zero_new_holds": true,
+    "hosted_diagnostic_4_of_4": false,
+    "map_seat_regression_20_of_20": false,
+    "promotion_eligible": false
+  },
+  "source_state": "retained on the isolated local branch for a future reach-producing Pangaea gate",
+  "league_state": {
+    "live_policy": "mickey-mouse-intent:v1",
+    "live_policy_version_id": "7329eda7-b041-4853-9ee6-e05cc1a98ac2",
+    "candidate_uploaded": false,
+    "candidate_submitted": false,
+    "membership_changed": false,
+    "relaunch_performed": false
+  },
+  "next_bounded_test": "Use one matched Pangaea cell that reproduces a single active parity attacker while Mickey has already chosen a different legal land target; reject mr1 if it reaches without placement, survival, or final-tile improvement."
+}
