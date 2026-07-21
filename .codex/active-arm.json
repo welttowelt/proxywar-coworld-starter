@@ -111,6 +111,8 @@
     "builder_commit": "e64d6a91",
     "instrumenter": "experiments/cb1/instrument-live-player.mjs",
     "job": "experiments/job-qd1n-cb1-cap-bank-raw-capture-pangaea-20260721.json",
+    "job_commit": "68c0092e6e9c411df572f8fb93384df490f250ff",
+    "job_sha256": "698f63aa24c58c29e797d2fb505cc7418de80b534585c600e5ae2cce8f6f345d",
     "rule": "Capture one complete raw observation plus full legal action set at the preregistered cap-bank boundary. Do not implement CB1 from post-decision tactical telemetry."
   },
   "discarded_capture_source": {

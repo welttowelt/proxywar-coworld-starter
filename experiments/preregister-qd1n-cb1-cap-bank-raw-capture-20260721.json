@@ -54,6 +54,8 @@
       "legal_boat_min": 1
     },
     "job": "experiments/job-qd1n-cb1-cap-bank-raw-capture-pangaea-20260721.json",
+    "job_commit": "68c0092e6e9c411df572f8fb93384df490f250ff",
+    "job_sha256": "698f63aa24c58c29e797d2fb505cc7418de80b534585c600e5ae2cce8f6f345d",
     "map": "Pangaea",
     "players": 12,
     "seed": 20260721,
