@@ -2,6 +2,15 @@
 
 Snapshot: `2026-07-20T18:23:19Z`
 
+> **Archived snapshot — do not execute its operator sequence.** The local
+> Hrafn lane was retired on 2026-07-21. Hrafn now operates `hrafn-fylking`
+> from Studio only. Mickey owns this Mac's local source, evaluation, Docker,
+> and CPU-fanout work through the `mickey` runner lease; Mickey has no inherited
+> player or league authority. Current operational truth lives only in
+> [`.codex/active-arm.json`](.codex/active-arm.json),
+> [`MISSION_COMMAND.md`](MISSION_COMMAND.md), and
+> [`AUTONOMOUS_PROMOTION.md`](AUTONOMOUS_PROMOTION.md).
+
 Canonical repository:
 [`welttowelt/proxywar-coworld-starter`](https://github.com/welttowelt/proxywar-coworld-starter)
 
@@ -238,21 +247,11 @@ trace, matched outcome, upload, submission, membership, or champion change
 exists. See the
 [`aborted-attempt receipt`](experiments/receipt-qd1n-os1-aborted-local-attempt-20260720.json).
 
-## Exact next sequence
+## Historical OS1 sequence
 
-1. Wait for Hrafn to return the shared identity to `K1Z odin free`.
-2. Pull `rci/os1-opening-scheduler` and verify commit `316c7a11`.
-3. Commit and push an immutable addendum containing the exact two job
-   specifications and both file hashes. Pin the seed, map size, decision cap,
-   every player name, every image or policy identity, and the candidate-parent
-   seat mapping. The second job may change only that mapping.
-4. Build one exact `linux/amd64` image.
-5. Byte-compare every shipped executable file with the committed branch.
-6. Recheck active identity, runner state, Qd1n mutation lock, and exact-v89
-   parent identity.
-7. Run one accepted qualifier through the foreground Odin runner lease using
-   fresh output roots.
-8. Run the pinned Pangaea candidate-v89 A/B pair.
+The sequence formerly recorded here is closed and must not be resumed. Read
+`.codex/active-arm.json` for the single current transition. Local runs use only
+`odin` or `mickey`; any `hrafn` runner command must fail closed.
 9. Audit both decision 20 and decision 50 plus final placement.
 10. Close OS1 immediately on any failed condition. Do not tune it in place.
 11. If the local gate passes, run pre-upload RCI and upload diagnostic-only.
