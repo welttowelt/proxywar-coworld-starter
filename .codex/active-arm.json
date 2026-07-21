@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T08:12:52Z",
-  "cycle_id": "odin-20260721T080901Z-4204",
+  "updated_at": "2026-07-21T09:16:45Z",
+  "cycle_id": "odin-20260721T091359Z-56732",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "no_active_odin_arm_round599_loss_cell_hash_bound_no_new_mechanism",
+  "state": "no_active_odin_arm_round603_bounded_live_checkpoint_no_new_mechanism",
   "arm": {
     "id": "pax1",
     "name": "pact_before_doomed_probe",
@@ -32,26 +32,26 @@
     "odin_rank": 3,
     "odin_score": 16.3154353168,
     "gap_to_leader": 22.7481332823,
-    "latest_round_checked_at": "2026-07-21T08:12:52Z",
-    "latest_completed_round": 599,
-    "latest_completed_round_id": "round_5e702cb2-9a7a-4ead-9242-fbad9a461a7f",
-    "latest_completed_at": "2026-07-21T06:57:21.435532Z",
-    "latest_odin_rank": 3,
+    "latest_round_checked_at": "2026-07-21T09:16:45Z",
+    "latest_completed_round": 603,
+    "latest_completed_round_id": "round_7928ed44-4170-4dbd-9d89-76ec3f64834f",
+    "latest_completed_at": "2026-07-21T09:11:57.394150Z",
+    "latest_odin_rank": 4,
     "latest_odin_score": 0.25,
     "latest_odin_completed_episodes": 4,
-    "latest_round_leader": "daveey",
-    "latest_round_leader_policy": "daveey-proxywar:v24",
+    "latest_round_leader": "richard",
+    "latest_round_leader_policy": "co-gas-proxywar-richard:v7",
     "latest_round_leader_score": 0.5,
-    "running_round": 600,
-    "running_round_id": "round_8e26e3ae-167f-45cf-b5f8-81a08bb5d182",
-    "running_round_truth": "round 600 was running at the prior 2026-07-21T07:05:00Z boundary checkpoint; not refreshed in this single-transition cycle"
+    "running_round": 604,
+    "running_round_id": "round_aa4527ad-0247-4d6f-88d3-426ee5b8dd36",
+    "running_round_truth": "round 604 was running at the 2026-07-21T09:16:45Z bounded official checkpoint"
   },
   "locks": {
     "runner": "free",
     "studio_runner": "owned:hrafn:hi1-pangaea-control-65b83f97-r2",
     "qd1n_mutation": "free",
     "active_player": "K1Z odin free",
-    "mailbox_commit": "880fec2840dbb4f06ffa73a12ab8ef651d17c9a9"
+    "mailbox_commit": "deedb839f3f05be6841c7c9773f0cf2ab44209eb"
   },
   "operator_topology": {
     "odin": "sole writable qd1n operator and live authority",
@@ -162,14 +162,14 @@
     "league_mutation": false
   },
   "bounded_live_checkpoint": {
-    "audit": "experiments/audit-qd1n-round599-normalized-loss-cell-20260721.json",
-    "official_round": 599,
-    "round_id": "round_5e702cb2-9a7a-4ead-9242-fbad9a461a7f",
-    "result": "COMPLETE_ROUND599_NORMALIZED_ONE_LOSS_CELL_HASH_BOUND_NO_NEW_MECHANISM",
+    "audit": "experiments/audit-qd1n-round603-bounded-live-checkpoint-20260721.json",
+    "official_round": 603,
+    "round_id": "round_7928ed44-4170-4dbd-9d89-76ec3f64834f",
+    "result": "COMPLETE_ROUND603_BOUNDED_LIVE_CHECKPOINT_NO_NEW_MECHANISM",
     "loss_cell_audit": "experiments/audit-qd1n-round599-normalized-loss-cell-20260721.json",
     "policy_action_delta": false,
     "league_mutation": false
   },
-  "next_automatic_transition": "Use only the single round 599 loss-cell audit to decide whether a distinct replay-backed selector mechanism can be preregistered from raw inputs. If raw selector evidence is absent, remain without an active arm and perform one bounded live checkpoint. Do not repair PAX1 in place. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
+  "next_automatic_transition": "Remain without an active arm. On the next cycle, act on any newer hash-bound active-arm verdict first; otherwise perform one bounded live checkpoint or inspect one newest completed loss cell for raw selector evidence. Do not repair PAX1 in place. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
   "prior_verified_champion_preserved": true
 }
