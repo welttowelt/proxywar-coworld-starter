@@ -20,13 +20,19 @@ import {
   PLAN_KINDS,
   buildState,
   chooseAction as chooseSelectorAction,
+  chooseParentAction as chooseSelectorParentAction,
   clean,
   recordDecision,
 } from "./strategy-engine.mjs";
 import { chooseChassisAction } from "./strategy-chassis.mjs";
 
+const POLICY_ENGINE = process.env.POLICY_ENGINE;
 const chooseAction =
-  process.env.POLICY_ENGINE === "qd2n" ? chooseChassisAction : chooseSelectorAction;
+  POLICY_ENGINE === "qd2n"
+    ? chooseChassisAction
+    : POLICY_ENGINE === "id1-static-parent"
+      ? chooseSelectorParentAction
+      : chooseSelectorAction;
 import { classifyPlannerError, plannerCooldownMs } from "./planner-backoff.mjs";
 
 const url = process.env.COWORLD_PLAYER_WS_URL;
@@ -109,7 +115,7 @@ async function askBedrock(state, signal) {
   throw lastErr || new Error("no bedrock model responded");
 }
 
-const STATIC_INTENT = process.env.POLICY_ENGINE === "id1"
+const STATIC_INTENT = POLICY_ENGINE === "id1" || POLICY_ENGINE === "id1-static-parent"
   ? {
       intent: "grow",
       focus: "expand",

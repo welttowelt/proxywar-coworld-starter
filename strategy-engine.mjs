@@ -771,7 +771,7 @@ export function chooseUtility(actions, state, plan, history) {
   return null;
 }
 
-function chooseParentAction(actions, state, plan = null, history = []) {
+export function chooseParentAction(actions, state, plan = null, history = []) {
   if (!Array.isArray(actions) || actions.length === 0) {
     throw new Error("decision request had no legal actions");
   }
