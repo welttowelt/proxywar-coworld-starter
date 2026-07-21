@@ -25,6 +25,8 @@ test("standard rebuild dispatcher is valid shell with four pinned pod identities
   }
   assert.match(source, /trap cleanup EXIT/);
   assert.match(source, /stop_armed=1[\s\S]*pod start/);
+  assert.match(source, /start_one\(\)[\s\S]*attempt < 4[\s\S]*sleep 8/);
+  assert.doesNotMatch(source, /pod start[^\n]*&/);
 });
 
 test("candidate lanes execute and fetch a real transport qualifier", () => {

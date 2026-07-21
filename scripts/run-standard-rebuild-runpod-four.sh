@@ -196,19 +196,23 @@ done
 
 # Arm cleanup before any start request. Every exit stops these four exact IDs.
 stop_armed=1
-start_pids=()
-for index in 0 1 2 3; do
-  $runpodctl_bin pod start "${pod_ids[$index]}" -o json >/dev/null &
-  start_pids[$index]=$!
-done
-start_failed=0
-for index in 0 1 2 3; do
-  wait "${start_pids[$index]}" || start_failed=1
-done
-(( start_failed == 0 )) || {
-  echo "STD1_RUNPOD_START_FAILED" >&2
-  exit 1
+start_one() {
+  local index=$1 attempt=0
+  while (( attempt < 4 )); do
+    if $runpodctl_bin pod start "${pod_ids[$index]}" -o json >/dev/null; then
+      return 0
+    fi
+    attempt=$((attempt + 1))
+    (( attempt < 4 )) && sleep 8
+  done
+  return 1
 }
+for index in 0 1 2 3; do
+  start_one "$index" || {
+    echo "STD1_RUNPOD_START_FAILED pod=${pod_ids[$index]}" >&2
+    exit 1
+  }
+done
 
 wait_ready() {
   local index=$1 attempt=0 status info ip port key remote arch
