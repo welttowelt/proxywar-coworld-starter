@@ -1,0 +1,69 @@
+{
+  "id": "xreq_de1018ba-79ca-4f6a-9741-789121dfb42b",
+  "variant_id": "tournament-4p-asia",
+  "status": "completed",
+  "episode_count": 1,
+  "completed_count": 1,
+  "failed_count": 0,
+  "episodes": [
+    {
+      "id": "ereq_c551987a-3d8d-4c0b-8461-5407c63e3312",
+      "episode_id": "174fcbe1-f9f0-4ad1-bf17-a88cbbcb9e4e",
+      "status": "completed",
+      "game_config": {
+        "map": "Asia",
+        "map_size": "Compact",
+        "difficulty": "Easy",
+        "num_agents": 4
+      },
+      "participants": [
+        {
+          "position": 0,
+          "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+          "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+          "player_name": "K1Z odin free",
+          "label": "qd1n:v89"
+        },
+        {
+          "position": 1,
+          "policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+          "player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+          "player_name": "K1Z Hrafn",
+          "label": "hrafn-fylking:v5"
+        },
+        {
+          "position": 2,
+          "policy_version_id": "7329eda7-b041-4853-9ee6-e05cc1a98ac2",
+          "player_id": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+          "player_name": "K1Z Mickey Mouse",
+          "label": "mickey-mouse-intent:v1"
+        },
+        {
+          "position": 3,
+          "policy_version_id": "aeaf01bc-682b-4aa3-9bdc-20e2a3fe3922",
+          "player_id": "ply_ded11f40-3e30-4921-b019-f7f6bc3e9c83",
+          "player_name": "richard",
+          "label": "proxywar-starter-b:v1"
+        }
+      ],
+      "scores": [
+        {
+          "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+          "score": 0.4637364705882353
+        },
+        {
+          "policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+          "score": 0.5362635294117647
+        },
+        {
+          "policy_version_id": "7329eda7-b041-4853-9ee6-e05cc1a98ac2",
+          "score": 0
+        },
+        {
+          "policy_version_id": "aeaf01bc-682b-4aa3-9bdc-20e2a3fe3922",
+          "score": 0
+        }
+      ]
+    }
+  ]
+}

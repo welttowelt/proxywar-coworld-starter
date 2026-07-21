@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "kind": "mickey_pre_submit_incumbent_snapshot",
+  "recorded_at": "2026-07-21T09:15:31Z",
+  "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "memberships": [
+    {
+      "membership_id": "lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6",
+      "status": "competing",
+      "is_champion": true,
+      "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+      "player_name": "K1Z odin free",
+      "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+      "policy_label": "qd1n:v89"
+    },
+    {
+      "membership_id": "lpm_e822de7f-1124-4b5f-b0ef-1025d46ae211",
+      "status": "competing",
+      "is_champion": true,
+      "player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+      "player_name": "K1Z Hrafn",
+      "policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+      "policy_label": "hrafn-fylking:v5"
+    }
+  ]
+}

@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "lane": "mickey",
+  "action": "submit-experimental",
+  "expected_player_id": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+  "expected_league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "candidate": {
+    "policy_name": "mickey-mouse-intent",
+    "policy_ref": "proxywar-agent-llm:mickey-staging-ce5c15b0-amd64",
+    "source_commit": "ce5c15b0a423590340595537ac5d7483e61d41a4",
+    "parent_commit": "91d0928a7e6d4244b61a9817cdbec0fc71ef6762",
+    "image_id": "sha256:0768ff7450e4456755d133cfcf174448364417e6796f3c162bc5ab72ad2c9405",
+    "entrypoint": "/app/llm-player.mjs",
+    "uploaded_label": "mickey-mouse-intent:v1",
+    "policy_version_id": "7329eda7-b041-4853-9ee6-e05cc1a98ac2"
+  },
+  "gates": {
+    "source_ready": true,
+    "local_mechanism_verified": true,
+    "mechanism_reach": 2,
+    "accepted_actions": 2,
+    "unexplained_holds": 0,
+    "rejections": 0,
+    "k1z_harm": 0,
+    "preupload_rci_passed": true,
+    "diagnostic_uploaded": true,
+    "hosted_probe_passed": true,
+    "hosted_probe_completed_episodes": 1,
+    "hosted_probe_accepted_actions": 80,
+    "hosted_probe_nondegraded_marker_count": 4,
+    "hosted_4_of_4_passed": false,
+    "regression_20_of_20_passed": false,
+    "final_rci_passed": true
+  },
+  "evidence": {
+    "local_audit": {
+      "path": "/private/tmp/proxywar-mickey-incubator-integration-20260721/experiments/evidence-mickey-local-runtime-ce5c15b0-20260721.json",
+      "sha256": "1ae3fc8f236e739bd82be7787955796cc5d8e7fe95cebe8b2836f76cda04a471"
+    },
+    "preupload_rci": {
+      "path": "/private/tmp/proxywar-mickey-incubator-integration-20260721/experiments/evidence-mickey-preupload-rci-ce5c15b0-20260721.json",
+      "sha256": "0dd60f54d99d1a81a61fa0ba869d178cc4a5a576ff8889e531cabcc0598624f0"
+    },
+    "upload_receipt": {
+      "path": "/private/tmp/proxywar-mickey-incubator-integration-20260721/experiments/receipt-mickey-upload-ce5c15b0-20260721.json",
+      "sha256": "6d4b1ea3fa9c3c4e99b3c43bce217b0b105063af0d39e1e27ba86a9d910bfad9"
+    },
+    "hosted_probe_audit": {
+      "path": "/private/tmp/proxywar-mickey-incubator-integration-20260721/experiments/evidence-mickey-v1-hosted-probe-r2-audit-experimental-20260721.json",
+      "sha256": "4127609b451d89db67641fafa9b9ec7b68ad30595ec558923b304184451b5f07"
+    },
+    "final_rci": {
+      "path": "/private/tmp/proxywar-mickey-incubator-integration-20260721/experiments/evidence-mickey-final-rci-v1-20260721.json",
+      "sha256": "d9bc5f32256251fd325fdfbd1bf19e413afd8cf618db23f7c05ecffe0e5a0710"
+    }
+  }
+}

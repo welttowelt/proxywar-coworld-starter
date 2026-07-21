@@ -1,0 +1,32 @@
+{
+  "coworld_id": "cow_e1bcda38-8d9f-491b-bf9c-3703ccbbf36f",
+  "variant_id": "tournament-4p-asia",
+  "roster": [
+    {
+      "player": {
+        "policy_ref": "qd1n:v89"
+      },
+      "slot": 0
+    },
+    {
+      "player": {
+        "policy_ref": "hrafn-fylking:v5"
+      },
+      "slot": 1
+    },
+    {
+      "player": {
+        "policy_ref": "mickey-mouse-intent:v1"
+      },
+      "slot": 2
+    },
+    {
+      "player": {
+        "policy_ref": "proxywar-starter-b:v1"
+      },
+      "slot": 3
+    }
+  ],
+  "num_episodes": 1,
+  "notes": "Mickey experimental-entry probe r2: K1Z coalition handshake creates a real grow-intent action-delta opportunity; require accepted legal nondegraded mm1g and zero K1Z harm; no win claim; standard gates remain open"
+}

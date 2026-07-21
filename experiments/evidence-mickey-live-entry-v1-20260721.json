@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "kind": "mickey_live_entry_receipt",
+  "recorded_at": "2026-07-21T10:02:27Z",
+  "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "submission": {
+    "id": "sub_1b1138e9-4544-402f-b4a2-591a1917126c",
+    "status": "placed",
+    "auto_champion": "always"
+  },
+  "membership": {
+    "id": "lpm_e9476600-52e0-44c4-9582-7b21c86129b1",
+    "status": "competing",
+    "substatus": "champion",
+    "is_champion": true,
+    "division_id": "div_b54268ee-6b2f-4156-9c2a-8542645e31bc",
+    "division_name": "Competition",
+    "player_id": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+    "player_name": "K1Z Mickey Mouse",
+    "policy_version_id": "7329eda7-b041-4853-9ee6-e05cc1a98ac2",
+    "policy_label": "mickey-mouse-intent:v1"
+  },
+  "qualifier": {
+    "round_id": "round_ca8bcc51-dbc8-43b5-8910-e0581cb88c95",
+    "round_number": 435,
+    "status": "completed",
+    "rank": 1,
+    "round_score": 1.0,
+    "completed_episodes": 2,
+    "decisions": 68,
+    "accepted_decisions": 68,
+    "rejected_decisions": 0,
+    "holds": 0,
+    "episodes": [
+      {
+        "episode_request_id": "ereq_ce8aeffd-2ddb-4dd4-96e1-35cdc6cb3699",
+        "episode_id": "1d250232-7dff-4c84-a3b2-eec4f20093d7",
+        "replay_path": "evidence-mickey-qualifier-435-1d250232.replay",
+        "replay_sha256": "516ea6f52472c6b758e5c10057aa9e386df5cb523625363c76e056052d981bcd"
+      },
+      {
+        "episode_request_id": "ereq_8fd98402-e9a2-465f-bc8f-1ee22a053b6f",
+        "episode_id": "70b4ebab-73d7-48e2-baf4-239da34fa5e2",
+        "replay_path": "evidence-mickey-qualifier-435-70b4ebab.replay",
+        "replay_sha256": "5d5f38eeadc3fb78b9d0eea5d39523fed97e83b8d16466d8b4ed54c1407c7a20"
+      }
+    ]
+  },
+  "competition_entry": {
+    "round_id": "round_bcf3d3c9-7be0-491c-aee2-1b3823d4f43f",
+    "round_number": 605,
+    "status_at_receipt": "running",
+    "entrant_count": 15,
+    "entrant_index": 14,
+    "mickey_policy_version_id": "7329eda7-b041-4853-9ee6-e05cc1a98ac2",
+    "odin_policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "hrafn_policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+    "first_episode_request_id": "ereq_00bbb98f-f85c-4f3c-a946-30e0d9fc58e9",
+    "first_episode_status_at_receipt": "running",
+    "first_episode_position": 11
+  },
+  "incumbents_post_submit": [
+    {
+      "membership_id": "lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6",
+      "status": "competing",
+      "is_champion": true,
+      "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+      "player_name": "K1Z odin free",
+      "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+      "policy_label": "qd1n:v89"
+    },
+    {
+      "membership_id": "lpm_e822de7f-1124-4b5f-b0ef-1025d46ae211",
+      "status": "competing",
+      "is_champion": true,
+      "player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+      "player_name": "K1Z Hrafn",
+      "policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e",
+      "policy_label": "hrafn-fylking:v5"
+    }
+  ],
+  "standard_gates": {
+    "hosted_4_of_4_passed": false,
+    "regression_20_of_20_passed": false
+  }
+}

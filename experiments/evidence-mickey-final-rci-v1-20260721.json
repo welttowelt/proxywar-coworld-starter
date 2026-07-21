@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "kind": "mickey_final_rci",
+  "recorded_at": "2026-07-21T09:55:53Z",
+  "status": "passed",
+  "verdict": "PASS_RCI",
+  "candidate_source_commit": "ce5c15b0a423590340595537ac5d7483e61d41a4",
+  "candidate_image_id": "sha256:0768ff7450e4456755d133cfcf174448364417e6796f3c162bc5ab72ad2c9405",
+  "candidate_policy_version_id": "7329eda7-b041-4853-9ee6-e05cc1a98ac2",
+  "reviewed_gate_commit": "4f132988",
+  "experimental_probe": {
+    "request_id": "xreq_de1018ba-79ca-4f6a-9741-789121dfb42b",
+    "episode_id": "174fcbe1-f9f0-4ad1-bf17-a88cbbcb9e4e",
+    "replay_sha256": "af5ecc88d397c1d2d4cbf6d04e7da486961ae95b262a0b1b552e5f823d133c35",
+    "accepted_actions": 80,
+    "rejections": 0,
+    "illegal_final_selections": 0,
+    "k1z_harm": 0,
+    "unresolved_harmful_targets": 0,
+    "nondegraded_mm1g_executions": 4,
+    "disclosed_holds": 9
+  },
+  "standard_gates": {
+    "hosted_4_of_4_passed": false,
+    "regression_20_of_20_passed": false
+  },
+  "incumbents_pre_submit": {
+    "odin": "qd1n:v89",
+    "hrafn": "hrafn-fylking:v5",
+    "preservation_check_required_post_submit": true
+  },
+  "unresolved_violations": []
+}

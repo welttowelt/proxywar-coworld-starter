@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "kind": "mickey_hosted_probe_manifest",
+  "candidate": {
+    "player_id": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+    "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+    "source_commit": "ce5c15b0a423590340595537ac5d7483e61d41a4",
+    "image_id": "sha256:0768ff7450e4456755d133cfcf174448364417e6796f3c162bc5ab72ad2c9405",
+    "policy_ref": "proxywar-agent-llm:mickey-staging-ce5c15b0-amd64",
+    "uploaded_label": "mickey-mouse-intent:v1",
+    "policy_version_id": "7329eda7-b041-4853-9ee6-e05cc1a98ac2",
+    "marker": "mm1c"
+  },
+  "probe": {
+    "request": {
+      "path": "evidence-mickey-v1-hosted-probe-r3-request-sanitized-20260721.json",
+      "sha256": "656ba84a292660bb0626742501462ae6eda58541831f7f7950ffd0f9b44f2ea3"
+    },
+    "replays": [
+      {
+        "episode_request_id": "ereq_db0b356f-fc21-4113-a4e8-65857953b4c3",
+        "path": "evidence-mickey-v1-hosted-probe-r3-b7407ab3.replay",
+        "sha256": "c346c86ac11ad7ef3f30527f84c18b6f438e58655f3a3c6fb4d0b1808723124f"
+      }
+    ]
+  }
+}

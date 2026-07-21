@@ -1,0 +1,86 @@
+{
+  "id": "xreq_7ca115bc-6570-48a9-8e58-a79083c1cdcf",
+  "status": "completed",
+  "variant_id": "tournament-4p-asia",
+  "episode_count": 1,
+  "completed_count": 1,
+  "failed_count": 0,
+  "episodes": [
+    {
+      "id": "ereq_db0b356f-fc21-4113-a4e8-65857953b4c3",
+      "episode_id": "b7407ab3-0304-4507-93b2-1d9c6549d05f",
+      "status": "completed",
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/f3f15242-b47c-4047-827d-6eb38e03f8e4.replay",
+      "game_config": {
+        "map": "Asia",
+        "players": [
+          { "name": "Player 1" },
+          { "name": "Player 2" },
+          { "name": "Player 3" },
+          { "name": "Player 4" }
+        ],
+        "map_size": "Compact",
+        "difficulty": "Easy",
+        "num_agents": 4,
+        "max_decision_ms": 15000,
+        "replay_tail_turns": 500,
+        "max_decision_steps": 300,
+        "episode_timeout_seconds": 2400,
+        "turns_per_decision_step": 100,
+        "player_connect_timeout_seconds": 120
+      },
+      "participants": [
+        {
+          "position": 0,
+          "policy_version_id": "d0110b54-5466-42be-a4b5-71f446f5de1a",
+          "policy_id": "357692ad-68cd-4e15-88fe-5c3755516794",
+          "policy_name": "tsukuyomi-no-kage",
+          "version": 51,
+          "player_id": "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+          "player_name": "K1Z katanasan",
+          "is_filler": false,
+          "label": "tsukuyomi-no-kage:v51"
+        },
+        {
+          "position": 1,
+          "policy_version_id": "dffb6fb2-673e-4be5-9e35-ba69d6731754",
+          "policy_id": "bc050ff7-9da8-4718-9fa3-5864a2c28887",
+          "policy_name": "jamesboggs-warlord",
+          "version": 1,
+          "player_id": "ply_53fb05a6-73d1-494d-ab6c-8d566660d7ce",
+          "player_name": "James Boggs",
+          "is_filler": false,
+          "label": "jamesboggs-warlord:v1"
+        },
+        {
+          "position": 2,
+          "policy_version_id": "7329eda7-b041-4853-9ee6-e05cc1a98ac2",
+          "policy_id": "be3abbdc-21be-498c-8f4c-1f3953d9941b",
+          "policy_name": "mickey-mouse-intent",
+          "version": 1,
+          "player_id": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+          "player_name": "K1Z Mickey Mouse",
+          "is_filler": false,
+          "label": "mickey-mouse-intent:v1"
+        },
+        {
+          "position": 3,
+          "policy_version_id": "aeaf01bc-682b-4aa3-9bdc-20e2a3fe3922",
+          "policy_id": "8561ce82-4d34-4903-b5d0-6781fb4aff1d",
+          "policy_name": "proxywar-starter-b",
+          "version": 1,
+          "player_id": "ply_ded11f40-3e30-4921-b019-f7f6bc3e9c83",
+          "player_name": "richard",
+          "is_filler": false,
+          "label": "proxywar-starter-b:v1"
+        }
+      ],
+      "scores": [
+        { "policy_version_id": "d0110b54-5466-42be-a4b5-71f446f5de1a", "score": 0.4870287058823529 },
+        { "policy_version_id": "dffb6fb2-673e-4be5-9e35-ba69d6731754", "score": 0.0 },
+        { "policy_version_id": "7329eda7-b041-4853-9ee6-e05cc1a98ac2", "score": 0.5129712941176471 },
+        { "policy_version_id": "aeaf01bc-682b-4aa3-9bdc-20e2a3fe3922", "score": 0.0 }
+      ]
+    }
+  ]
+}

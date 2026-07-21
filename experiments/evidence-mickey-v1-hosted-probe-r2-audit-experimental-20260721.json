@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "kind": "mickey_hosted_probe_audit",
+  "evidence_scope": "hosted_probe_only",
+  "candidate": {
+    "player_id": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+    "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+    "source_commit": "ce5c15b0a423590340595537ac5d7483e61d41a4",
+    "image_id": "sha256:0768ff7450e4456755d133cfcf174448364417e6796f3c162bc5ab72ad2c9405",
+    "policy_ref": "proxywar-agent-llm:mickey-staging-ce5c15b0-amd64",
+    "uploaded_label": "mickey-mouse-intent:v1",
+    "policy_version_id": "7329eda7-b041-4853-9ee6-e05cc1a98ac2",
+    "marker": "mm1g"
+  },
+  "probe": {
+    "request_id": "xreq_de1018ba-79ca-4f6a-9741-789121dfb42b",
+    "status": "completed",
+    "passed": true,
+    "episodes": 1,
+    "completed_episodes": 1,
+    "wins": 0,
+    "decisions": 80,
+    "accepted": 80,
+    "rejected": 0,
+    "unconfirmed_acceptance": 0,
+    "illegal_selections": 0,
+    "holds": 9,
+    "unexplained_holds": 9,
+    "k1z_harm_count": 0,
+    "unresolved_harmful_targets": 0,
+    "selected_marker": "mm1g",
+    "marker_count": 4,
+    "nondegraded_marker_count": 4,
+    "invalid_marker_count": 0,
+    "checks": {
+      "request_completed": true,
+      "exact_episode_count": true,
+      "all_episode_records_completed": true,
+      "at_least_one_completed_episode": true,
+      "exact_replay_evidence_count": true,
+      "all_decisions_accepted": true,
+      "zero_unconfirmed_acceptance": true,
+      "all_selected_actions_legal": true,
+      "zero_rejected_decisions": true,
+      "zero_unexplained_holds": false,
+      "zero_k1z_harm": true,
+      "zero_unresolved_harmful_targets": true,
+      "selected_marker_reached": true,
+      "selected_marker_nondegraded": true,
+      "zero_invalid_marker_executions": true
+    },
+    "episode_audits": [
+      {
+        "episode_request_id": "ereq_c551987a-3d8d-4c0b-8461-5407c63e3312",
+        "episode_id": "174fcbe1-f9f0-4ad1-bf17-a88cbbcb9e4e",
+        "replay_sha256": "af5ecc88d397c1d2d4cbf6d04e7da486961ae95b262a0b1b552e5f823d133c35",
+        "map": "Asia",
+        "seat": 2,
+        "policy_version_id": "7329eda7-b041-4853-9ee6-e05cc1a98ac2",
+        "score": 0,
+        "won": false,
+        "decisions": 80,
+        "accepted": 80,
+        "rejected": 0,
+        "unconfirmed_acceptance": 0,
+        "illegal_selections": 0,
+        "holds": 9,
+        "unexplained_holds": 9,
+        "k1z_harm_count": 0,
+        "unresolved_harmful_targets": 0,
+        "selected_marker": "mm1g",
+        "marker_count": 4,
+        "nondegraded_marker_count": 4,
+        "invalid_marker_count": 0,
+        "other_mm1_marker_count": 0,
+        "marker_executions": [
+          {
+            "turn": 1400,
+            "marker": "mm1g",
+            "reason": "pln:atk:mm1g",
+            "selected_action_id": "expand:terra-nullius:10",
+            "selected_action_kind": "attack",
+            "accepted": true,
+            "legal_selection": true,
+            "nondegraded": true
+          },
+          {
+            "turn": 1500,
+            "marker": "mm1g",
+            "reason": "pln:atk:mm1g",
+            "selected_action_id": "expand:terra-nullius:10",
+            "selected_action_kind": "attack",
+            "accepted": true,
+            "legal_selection": true,
+            "nondegraded": true
+          },
+          {
+            "turn": 1600,
+            "marker": "mm1g",
+            "reason": "pln:atk:mm1g",
+            "selected_action_id": "expand:terra-nullius:20",
+            "selected_action_kind": "attack",
+            "accepted": true,
+            "legal_selection": true,
+            "nondegraded": true
+          },
+          {
+            "turn": 1700,
+            "marker": "mm1g",
+            "reason": "pln:atk:mm1g",
+            "selected_action_id": "expand:terra-nullius:35",
+            "selected_action_kind": "attack",
+            "accepted": true,
+            "legal_selection": true,
+            "nondegraded": true
+          }
+        ]
+      }
+    ]
+  },
+  "confirmation": {
+    "experimental_hosted_probe_passed": true,
+    "hosted_4_of_4_passed": false,
+    "regression_20_of_20_passed": false,
+    "promotion_allowed": false
+  }
+}
