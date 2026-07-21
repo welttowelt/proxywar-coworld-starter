@@ -138,7 +138,7 @@
   ],
   "auditor": {
     "path": "scripts/audit-id1-static-fastpack.mjs",
-    "sha256": "c45d102a288221aa71958f19c147b682219ee6f18e5ebc0988d9927dc34cb964",
+    "sha256": "16ac8c9b48fda182f9d522f087b5a2b3f33d0eefbf0d508aa894106770666f7b",
     "invocation": "node scripts/audit-id1-static-fastpack.mjs --manifest experiments/preregister-qd1n-id1-static-fastpack-20260721.json"
   },
   "receipts": {

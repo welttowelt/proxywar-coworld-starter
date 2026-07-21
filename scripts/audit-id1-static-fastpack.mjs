@@ -12,8 +12,11 @@ const HARMFUL_KINDS = new Set([
   "boat",
   "nuke",
   "move_warship",
+  "warship",
+  "target_player",
   "break_alliance",
   "alliance_break",
+  "alliance_reject",
   "embargo",
   "embargo_all",
 ]);
@@ -62,12 +65,41 @@ function isPartnerName(value, protectedNames) {
   return protectedNames.some((name) => candidate === name || candidate.includes(name));
 }
 
+function actionTargetID(decision) {
+  const metadata = decision.selectedActionMetadata ?? {};
+  const direct =
+    metadata.targetID ??
+    metadata.recipientID ??
+    metadata.playerID ??
+    decision.result?.submittedIntent?.targetID ??
+    null;
+  if (direct) return normalize(direct);
+  const match = String(decision.selectedLegalActionId ?? "").match(
+    /^(?:attack|boat|nuke|target|embargo|alliance|alliance_reject|break_alliance|move_warship|warship|quick_chat|emoji):([^:]+)/,
+  );
+  return normalize(match?.[1] ?? "");
+}
+
+function hasMarker(decision, needle) {
+  const fields = [
+    decision.policyMarker,
+    ...(Array.isArray(decision.policyMarkers) ? decision.policyMarkers : []),
+    decision.reason,
+  ];
+  return fields.some((field) =>
+    String(field ?? "")
+      .toLowerCase()
+      .split(/[^a-z0-9]+/)
+      .includes(needle.toLowerCase())
+  );
+}
+
 function countK1zHarm(decisions, protectedNames, protectedIDs) {
   return decisions.filter((decision) => {
     if (!HARMFUL_KINDS.has(decision.selectedActionKind)) return false;
     const metadata = decision.selectedActionMetadata || {};
     const targetName = metadata.targetName ?? metadata.recipientName ?? "";
-    const targetID = normalize(metadata.targetID ?? metadata.recipientID ?? "");
+    const targetID = actionTargetID(decision);
     return isPartnerName(targetName, protectedNames) || protectedIDs.has(targetID);
   }).length;
 }
@@ -107,6 +139,21 @@ async function auditJob(job, manifest, repoRoot) {
   if (decisions.length === 0) throw new Error(`${job.id} has no ${SUBJECT} decisions`);
 
   const summary = JSON.parse(await readFile(summaryPath, "utf8"));
+  const configPath = path.join(job.output_dir, "config.json");
+  const resultsPath = path.join(job.output_dir, "results.json");
+  const replayPath = path.join(job.output_dir, "replay");
+  const outputConfig = JSON.parse(await readFile(configPath, "utf8"));
+  if (
+    JSON.stringify(outputConfig.players?.map((player) => player.name)) !==
+      JSON.stringify(expectedRoster) ||
+    outputConfig.map !== manifest.cell.map ||
+    outputConfig.map_size !== manifest.cell.map_size ||
+    outputConfig.seed !== manifest.cell.seed ||
+    outputConfig.max_decision_steps !== manifest.cell.max_decision_steps ||
+    outputConfig.turns_per_decision_step !== manifest.cell.turns_per_decision_step
+  ) {
+    throw new Error(`${job.id} output config drifted from the bound cell`);
+  }
   const finalPlayers = Array.isArray(summary.finalState) ? summary.finalState : [];
   const protectedNames = manifest.coalition.protected_names.map(normalize);
   const protectedIDs = new Set(manifest.coalition.exact_player_ids.map(normalize));
@@ -146,13 +193,14 @@ async function auditJob(job, manifest, repoRoot) {
       decision.selectedActionKind === "hold" || decision.selectedLegalActionId === "hold"
     ).length,
     harmful_k1z_actions: countK1zHarm(decisions, protectedNames, protectedIDs),
-    id1_reach: decisions.filter((decision) =>
-      String(decision.reason ?? "").split(":").includes("id1")
-    ).length,
+    id1_reach: decisions.filter((decision) => hasMarker(decision, "id1")).length,
     opening_auc20: tiles.reduce((sum, value) => sum + value, 0),
     decision_20_tiles: tiles[19],
     decisions_sha256: sha256(await readFile(decisionsPath)),
     match_summary_sha256: sha256(await readFile(summaryPath)),
+    config_sha256: sha256(await readFile(configPath)),
+    results_sha256: sha256(await readFile(resultsPath)),
+    replay_sha256: sha256(await readFile(replayPath)),
   };
 }
 
