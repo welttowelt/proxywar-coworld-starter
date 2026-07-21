@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "purpose": "Bounded replay-visible PF1 reach and safety canary; not an outcome comparison or promotion gate.",
+  "source_evidence": {
+    "round": 589,
+    "episode_id": "50ccf8da-2199-4130-aba4-e21d08c9ed73",
+    "map": "Pangaea",
+    "observed_odin_seat_zero_based": 9,
+    "observed_first_hostile_turn": 4900
+  },
+  "candidate": {
+    "source_commit": "767b9eb4cff3effa57d3d521427dad700065541e",
+    "image": "sha256:393963d0226f85b54a1efe927a0046522d0cf04af2f551731c79e412915ae300",
+    "strategy_engine_sha256": "6aa6f9f50162859c4d7a37fb4cfc50f8aa02af02245d209ad19a5a65eae00f7d",
+    "seat_zero_based": 9
+  },
+  "parent": {
+    "label": "qd1n:v89 exact",
+    "image": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+    "strategy_engine_sha256": "f2ee66d570033508c4158bcb83d56d81dc198cdcebb91098d7e67eefdc8e6a7a"
+  },
+  "transport_scope": {
+    "local_bedrock_available": false,
+    "expected_planner_fallback": true,
+    "claim_allowed": "PF1 deterministic mechanism reach and safety only",
+    "claim_forbidden": "LOCAL_MECHANISM_VERIFIED, outcome advantage, hosted cleanliness, or promotion readiness"
+  },
+  "game_config": {
+    "difficulty": "Easy",
+    "episode_timeout_seconds": 1800,
+    "map": "Pangaea",
+    "map_size": "Normal",
+    "max_decision_ms": 15000,
+    "max_decision_steps": 70,
+    "num_agents": 12,
+    "player_connect_timeout_seconds": 120,
+    "players": [
+      { "name": "Calc" },
+      { "name": "Richard Higgins" },
+      { "name": "James Boggs" },
+      { "name": "djizus" },
+      { "name": "Auri" },
+      { "name": "docxology" },
+      { "name": "Ron @ SWGY" },
+      { "name": "RelhAlpha" },
+      { "name": "K1Z Gravity" },
+      { "name": "K1Z odin free" },
+      { "name": "K1Z Hrafn" },
+      { "name": "Sefirot" }
+    ],
+    "replay_tail_turns": 0,
+    "seed": 20260721,
+    "turns_per_decision_step": 100
+  },
+  "players": [
+    {
+      "type": "player",
+      "image": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+      "run": ["node", "/app/llm-player.mjs"]
+    },
+    {
+      "type": "player",
+      "image": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+      "run": ["node", "/app/llm-player.mjs"]
+    },
+    {
+      "type": "player",
+      "image": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+      "run": ["node", "/app/llm-player.mjs"]
+    },
+    {
+      "type": "player",
+      "image": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+      "run": ["node", "/app/llm-player.mjs"]
+    },
+    {
+      "type": "player",
+      "image": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+      "run": ["node", "/app/llm-player.mjs"]
+    },
+    {
+      "type": "player",
+      "image": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+      "run": ["node", "/app/llm-player.mjs"]
+    },
+    {
+      "type": "player",
+      "image": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+      "run": ["node", "/app/llm-player.mjs"]
+    },
+    {
+      "type": "player",
+      "image": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+      "run": ["node", "/app/llm-player.mjs"]
+    },
+    {
+      "type": "player",
+      "image": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+      "run": ["node", "/app/llm-player.mjs"]
+    },
+    {
+      "type": "player",
+      "image": "sha256:393963d0226f85b54a1efe927a0046522d0cf04af2f551731c79e412915ae300",
+      "run": ["node", "/app/llm-player.mjs"]
+    },
+    {
+      "type": "player",
+      "image": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+      "run": ["node", "/app/llm-player.mjs"]
+    },
+    {
+      "type": "player",
+      "image": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+      "run": ["node", "/app/llm-player.mjs"]
+    }
+  ]
+}

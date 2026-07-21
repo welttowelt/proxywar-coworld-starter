@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T02:25:40Z",
-  "cycle_id": "odin-pf1-source-rci-20260721",
+  "updated_at": "2026-07-21T02:43:21Z",
+  "cycle_id": "odin-pf1-local-reach-20260721",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "pf1_source_rci_approved_pre_image",
+  "state": "pf1_image_verified_reach_screen_preregistered",
   "arm": {
     "id": "pf1",
     "name": "first_strike_pvp_floor",
@@ -77,13 +77,21 @@
       "targeted_tests": "16/16",
       "full_suite": "163/163"
     },
-    "preregistration": "experiments/preregister-qd1n-pf1-first-strike-pvp-floor-pangaea-20260721.json"
+    "preregistration": "experiments/preregister-qd1n-pf1-first-strike-pvp-floor-pangaea-20260721.json",
+    "image_screen": {
+      "candidate_image_id": "sha256:393963d0226f85b54a1efe927a0046522d0cf04af2f551731c79e412915ae300",
+      "architecture": "linux/amd64",
+      "strategy_engine_sha256": "6aa6f9f50162859c4d7a37fb4cfc50f8aa02af02245d209ad19a5a65eae00f7d",
+      "source_bytes_match": true,
+      "job": "experiments/job-qd1n-pf1-mechanism-pangaea-seat9-20260721.json",
+      "job_sha256": "6057bdaf75aea8430d5cc9d6108f39a72b848102726aa873219a2ee54cd2c3f3"
+    }
   },
   "gates": {
     "source_ready": true,
     "fixture_hash_bound": true,
     "red_regression_reproduced": true,
-    "image_verified": false,
+    "image_verified": true,
     "local_mechanism_verified": false,
     "diagnostic_uploaded": false,
     "hosted_4_of_4": false,
@@ -99,6 +107,6 @@
     "clean_local_bedrock_available": false,
     "rule": "PF1 is a post-selector deterministic reroute and must not depend on planner output or weaken the zero-degradation gate."
   },
-  "next_automatic_transition": "Build an exact linux/amd64 PF1 image from commit 767b9eb4 and verify its strategy bytes. Then run one bounded deterministic mechanism screen through the foreground mickey lease. Stop on source/image mismatch, zero pf1 reach, any unexplained hold or rejection, or any K1Z harm. Do not upload or mutate league state from a local mechanism screen.",
+  "next_automatic_transition": "Run exactly experiments/job-qd1n-pf1-mechanism-pangaea-seat9-20260721.json through the foreground mickey lease into one fresh dedicated output directory. Treat it as deterministic reach and safety evidence only because local Bedrock is unavailable. Stop on zero pf1 reach, more than one pf1 action, any rejected decision, unexplained hold, or K1Z harm. Do not claim LOCAL_MECHANISM_VERIFIED, outcome advantage, upload readiness, or mutate league state from this canary.",
   "prior_verified_champion_preserved": true
 }
