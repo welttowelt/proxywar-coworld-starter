@@ -68,6 +68,7 @@ Keep Studio's normal `HOME`. Export only the Hrafn-specific identity and Git
 contexts:
 
 ```bash
+export PATH=/usr/local/bin:/opt/homebrew/bin:/Users/odin/.local/bin:$PATH
 export HRAFN_SOFTMAX_HOME=/Users/odin/.hrafn-coworld-home
 export GIT_ASKPASS=/Users/odin/.hrafn-github/askpass.sh
 export GIT_TERMINAL_PROMPT=0
@@ -152,6 +153,7 @@ Then run this import on Studio before creating the receipt:
 
 ```bash
 set -euo pipefail
+export PATH=/usr/local/bin:/opt/homebrew/bin:/Users/odin/.local/bin:$PATH
 BUNDLE=/private/tmp/hrafn-hi1-r2-neutral-and-parent.tar
 CHECKSUM=$BUNDLE.sha256
 (cd "$(dirname "$BUNDLE")" && \
