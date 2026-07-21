@@ -83,6 +83,35 @@ const SECURITY =
 
 // -- anti-loop and target-continuity memory -----------------------------------
 const history = []; // compact decision records appended after each decision
+let cb1RawRequestCaptured = false;
+
+function maybeCaptureCb1RawRequest(message, observation, actions, state) {
+  if (process.env.CB1_CAPTURE_RAW !== "1" || cb1RawRequestCaptured) return;
+  if (state.mapFingerprint !== "Pangaea" || state.self.troopRatio < 0.9) return;
+  const recent = history.slice(-4);
+  if (recent.length < 4 || recent.some((entry) => entry.kind !== "upgrade_structure")) return;
+  const shares = [state.self.tileShare, ...recent.map((entry) => Number(entry.tileShare))];
+  if (shares.some((share) => !Number.isFinite(share))) return;
+  if (Math.max(...shares) - Math.min(...shares) > 0.0005) return;
+  if (!actions.some((action) => action.kind === "boat")) return;
+
+  cb1RawRequestCaptured = true;
+  process.stdout.write(`CB1_RAW_REQUEST_V1 ${JSON.stringify({
+    schemaVersion: 1,
+    requestID: message.requestID,
+    trigger: {
+      mapFingerprint: state.mapFingerprint,
+      ownTroopRatio: state.self.troopRatio,
+      ownTileShare: state.self.tileShare,
+      recentKinds: recent.map((entry) => entry.kind),
+      recentTileShares: recent.map((entry) => entry.tileShare),
+      legalBoatCount: actions.filter((action) => action.kind === "boat").length,
+    },
+    selectorHistory: recent,
+    observation,
+    legalActions: actions,
+  })}\n`);
+}
 
 // -- lenient JSON extraction (models often wrap JSON in prose) ----------------
 function extractJson(text) {
@@ -224,6 +253,7 @@ function handleMessage(activeSocket, data) {
     console.log(`debug legal actions: ${JSON.stringify(actions)}`);
   }
   const state = buildState(obs, actions, history);
+  maybeCaptureCb1RawRequest(message, obs, actions, state);
 
   // Keep the plan fresh WITHOUT blocking — the answer below never waits on Bedrock.
   planDecisionAge += 1;
