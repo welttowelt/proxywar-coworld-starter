@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260721T111703Z-89596",
+  "recorded_at": "2026-07-21T11:21:00Z",
+  "transition": "rc1_source_replay_integrity_checkpoint",
+  "priority_packet": null,
+  "dispatch_mailbox_head": "e0e1e937c895efca2be871a8898165e28f5b0207",
+  "source_episode": {
+    "experience_request_id": "xreq_e1e6d695-e84d-4628-a7ef-3c48d296dcaa",
+    "episode_id": "f2b16473-b3b7-42ab-926b-dee8d0c2b357",
+    "map": "Pangaea",
+    "seat": 7,
+    "replay_url": "https://softmax-public.s3.amazonaws.com/replays/05ddf25d-887b-4d11-94a0-0605f52ac295.replay",
+    "expected_replay_sha256": "fb187d9ba23bfe2474886d97e3e378abc58de9b1e058cd461af184709f356c8f",
+    "verified_replay_sha256": "fb187d9ba23bfe2474886d97e3e378abc58de9b1e058cd461af184709f356c8f",
+    "integrity": "PASS_INDEPENDENT_NO_CACHE_REFETCH",
+    "run_id": "coworld-2026-07-21T09-42-26-227Z-cdd11340",
+    "match_id": "COWRLD01"
+  },
+  "checkpoint": {
+    "precontact_bound_exclusive": 2800,
+    "raw_selector_state_selected": false,
+    "legal_candidate_parent_action_difference_proven": false,
+    "new_arm_authorized": false,
+    "reason": "The exact RC1 source replay was independently refetched and hash-verified. The tool-call boundary arrived before one pre-contact selector state could be sealed and tested for a legal candidate-parent action difference."
+  },
+  "decision": {
+    "verdict": "CHECKPOINT_REPLAY_INTEGRITY_VERIFIED_PRECONTACT_SELECTION_PENDING",
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "submitted": false,
+    "membership_changed": false,
+    "champion_changed": false,
+    "prior_verified_champion_preserved": true
+  },
+  "next": "Inspect only the verified RC1 source replay before turn 2800 and seal one state only if it exposes a legal candidate-parent action difference. Carry the Mickey no-harm guard. Preserve qd1n:v89."
+}

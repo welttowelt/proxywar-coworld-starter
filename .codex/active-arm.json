@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T10:43:07Z",
-  "cycle_id": "odin-20260721T101401Z-44979",
+  "updated_at": "2026-07-21T11:21:00Z",
+  "cycle_id": "odin-20260721T111703Z-89596",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "no_active_odin_arm_mickey_no_harm_source_guarded",
+  "state": "no_active_odin_arm_precontact_selection_pending",
   "arm": {
     "id": "rc1",
     "name": "post_hit_retaliation_conversion",
@@ -187,6 +187,17 @@
     "policy_action_delta": false,
     "league_mutation": false
   },
-  "next_automatic_transition": "Select one earlier pre-contact state with a legal candidate-parent action difference before editing production source. Carry the committed Mickey no-harm guard into every candidate. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
+  "precontact_replay_checkpoint": {
+    "audit": "experiments/audit-qd1n-precontact-replay-integrity-checkpoint-20260721.json",
+    "source_episode_id": "f2b16473-b3b7-42ab-926b-dee8d0c2b357",
+    "exclusive_turn_bound": 2800,
+    "replay_sha256": "fb187d9ba23bfe2474886d97e3e378abc58de9b1e058cd461af184709f356c8f",
+    "integrity": "PASS_INDEPENDENT_NO_CACHE_REFETCH",
+    "raw_selector_state_selected": false,
+    "legal_candidate_parent_action_difference_proven": false,
+    "policy_action_delta": false,
+    "league_mutation": false
+  },
+  "next_automatic_transition": "Inspect only the hash-verified RC1 source episode before turn 2800. Seal one state only if it exposes a legal candidate-parent action difference before editing production source. Carry the committed Mickey no-harm guard into every candidate. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
   "prior_verified_champion_preserved": true
 }
