@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T02:43:21Z",
-  "cycle_id": "odin-pf1-local-reach-20260721",
+  "updated_at": "2026-07-21T02:57:20Z",
+  "cycle_id": "odin-pf1-zero-reach-stop-20260721",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "pf1_image_verified_reach_screen_preregistered",
+  "state": "no_active_arm_pf1_rejected_zero_reach",
   "arm": {
     "id": "pf1",
     "name": "first_strike_pvp_floor",
@@ -12,8 +12,8 @@
     "parent_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
     "candidate_commit": "767b9eb4cff3effa57d3d521427dad700065541e",
     "preregistration": "experiments/preregister-qd1n-pf1-first-strike-pvp-floor-pangaea-20260721.json",
-    "closed": false,
-    "verdict": null
+    "closed": true,
+    "verdict": "REJECTED_ZERO_REACH"
   },
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
@@ -40,7 +40,7 @@
     "runner": "free",
     "qd1n_mutation": "free",
     "active_player": "K1Z odin free",
-    "mailbox_commit": "dadb40666dd3960420812a88022c75344a4f4166"
+    "mailbox_commit": "70e3969842b0e8092b5def6bebfa264d0b5b3943"
   },
   "operator_topology": {
     "odin": "sole writable qd1n operator and live authority",
@@ -91,6 +91,23 @@
         "reason": "Coworld 0.1.30 rejected evidentiary metadata outside its four-key episode-job schema.",
         "episode_started": false,
         "output": "/private/tmp/proxywar-pf1-mechanism-seat9-e7e1ce9e.aborted-20260721T024434Z-pf1-mechanism-seat9-e7e1ce9e"
+      },
+      "canary_result": {
+        "run_id": "pf1-mechanism-seat9-ed2b9723",
+        "output": "/private/tmp/proxywar-pf1-mechanism-seat9-ed2b9723",
+        "turn_count": 7400,
+        "odin_decisions": 73,
+        "odin_accepted": 73,
+        "odin_fallbacks": 70,
+        "odin_holds": 0,
+        "odin_rejects": 0,
+        "odin_hostile_land_attacks": 0,
+        "pf1_reach": 0,
+        "attributable_k1z_harm": 0,
+        "unresolved_naval_target_ownership": 2,
+        "replay_sha256": "e6fc710d39f3a99a3428d08dc5f3147a47ac269ab1c8ba60feec889ff4500934",
+        "decisions_sha256": "a0de71354a790ac4d8944733929e4059061c6caf72bac12e35a2172fa819acf0",
+        "audit": "experiments/audit-qd1n-pf1-zero-reach-stop-20260721.json"
       }
     }
   },
@@ -114,6 +131,6 @@
     "clean_local_bedrock_available": false,
     "rule": "PF1 is a post-selector deterministic reroute and must not depend on planner output or weaken the zero-degradation gate."
   },
-  "next_automatic_transition": "Run exactly experiments/job-qd1n-pf1-mechanism-pangaea-seat9-20260721.json through the foreground mickey lease into one fresh dedicated output directory. Treat it as deterministic reach and safety evidence only because local Bedrock is unavailable. Stop on zero pf1 reach, more than one pf1 action, any rejected decision, unexplained hold, or K1Z harm. Do not claim LOCAL_MECHANISM_VERIFIED, outcome advantage, upload readiness, or mutate league state from this canary.",
+  "next_automatic_transition": "PF1 is terminally closed. Pull the team mailbox for a committed Kimi structural response to dadb406; if none exists, refresh the latest completed field and audit one bounded loss cell for a deterministic legal-action delta. Open only one new structural arm with a replay-visible guard and distinct marker. Do not tune, rerun, upload, or submit PF1.",
   "prior_verified_champion_preserved": true
 }
