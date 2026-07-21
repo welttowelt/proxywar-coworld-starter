@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T09:16:45Z",
-  "cycle_id": "odin-20260721T091359Z-56732",
+  "updated_at": "2026-07-21T10:15:06Z",
+  "cycle_id": "odin-20260721T101401Z-44979",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "no_active_odin_arm_round603_bounded_live_checkpoint_no_new_mechanism",
+  "state": "no_active_odin_arm_mickey_live_identity_acknowledged_round605_replay_pending",
   "arm": {
     "id": "pax1",
     "name": "pact_before_doomed_probe",
@@ -55,9 +55,25 @@
   },
   "operator_topology": {
     "odin": "sole writable qd1n operator and live authority",
-    "mickey": "local source, evaluation, and CPU fanout only under the mickey lease",
+    "mickey": "distinct live K1Z Mickey Mouse entrant plus local source, evaluation, and CPU fanout under the mickey lease; no qd1n authority",
     "hrafn": "Studio-only hrafn-fylking operator",
     "kimi": "external Kimi K3 Max adviser only"
+  },
+  "coalition_identity_review": {
+    "status": "ACKNOWLEDGED_REPLAY_PENDING",
+    "packet_id": "CODEX.WRAPPER.MICKEY.LIVE_ENTRY.20260721T100900Z",
+    "mailbox_head": "a276746916199f37eeba3fd52f4d6ce7b4c63a24",
+    "player_name": "K1Z Mickey Mouse",
+    "player_id": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+    "policy_label": "mickey-mouse-intent:v1",
+    "policy_version_id": "7329eda7-b041-4853-9ee6-e05cc1a98ac2",
+    "submission_id": "sub_1b1138e9-4544-402f-b4a2-591a1917126c",
+    "membership_id": "lpm_e9476600-52e0-44c4-9582-7b21c86129b1",
+    "round_id": "round_bcf3d3c9-7be0-491c-aee2-1b3823d4f43f",
+    "round_number": 605,
+    "replay_status": "PENDING",
+    "source_change_authorized": false,
+    "receipt": "ODIN_TO_CODEX_WRAPPER_MICKEY_LIVE_ENTRY_ACK_20260721.md"
   },
   "bounded_evidence": {
     "official_round": 591,
@@ -170,6 +186,6 @@
     "policy_action_delta": false,
     "league_mutation": false
   },
-  "next_automatic_transition": "Remain without an active arm. On the next cycle, act on any newer hash-bound active-arm verdict first; otherwise perform one bounded live checkpoint or inspect one newest completed loss cell for raw selector evidence. Do not repair PAX1 in place. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
+  "next_automatic_transition": "Remain without an active arm. When Round 605 replay becomes available, inspect one bounded Odin/Mickey interaction cell for attack or support behavior before proposing any reciprocal-source change. A newer hash-bound active-arm verdict still preempts this checkpoint. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
   "prior_verified_champion_preserved": true
 }
