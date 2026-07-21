@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-07-21T09:48:12.683Z",
+  "verdict": "FAIL_HOSTED_GATE",
+  "disposition": "NO_SUBMIT",
+  "reason": "One completed candidate loss makes the required hosted 4/4 mathematically impossible.",
+  "violations": [
+    "candidate first completed episode was not won; hosted 4/4 is impossible",
+    "candidate holds=4"
+  ],
+  "candidate_source_commit": "18c7fdebbafcb94f936c0e8182f6ba6e48a478f6",
+  "candidate_image_id": "sha256:d5660d978261137116dc1c617129ed0c16a1c6819adaff07874821b75f6812b0",
+  "candidate_policy_version_id": "ccf3a01d-f4bd-4eaa-a1c4-a1c900b78844",
+  "request_id": "xreq_e1e6d695-e84d-4628-a7ef-3c48d296dcaa",
+  "baseline_request_id": "xreq_cb3631e0-12f7-4617-b5c1-ce8275fc7e48",
+  "request_body_sha256": {
+    "candidate": "cbc44cec5abe6154fcb9884230f1a3bd5681b037d9b301a6efdd61f543c54165",
+    "parent": "b1c6f865f3d15c6683046a174a85f7baf51b668d52c83c1ddc49fa34dbb8e498"
+  },
+  "request_record_sha256": {
+    "candidate": "ca6b8cdb9d7372a8cd0edb86afd9ee425ad5a58bf36d2274ab798cf029eb56b7",
+    "parent": "e7cd2e765b03ba194eb6ae78ad5713204848cf054136aaa9aa495696727ee47b"
+  },
+  "roster_sha256": "bf30102bf06ab010fc312c75716d7a845519bc546619b569f746c103d79784d9",
+  "variant": "tournament-12p-pangaea",
+  "request_state": {
+    "candidate": {
+      "status": "running",
+      "episode_count": 4,
+      "completed_count": 3,
+      "running_count": 1,
+      "pending_count": 0,
+      "failed_count": 0
+    },
+    "parent": {
+      "status": "running",
+      "episode_count": 4,
+      "completed_count": 3,
+      "running_count": 1,
+      "pending_count": 0,
+      "failed_count": 0
+    }
+  },
+  "completed_candidate_episode": {
+    "experience_request_id": "xreq_e1e6d695-e84d-4628-a7ef-3c48d296dcaa",
+    "episode_request_id": "ereq_5f33733f-8a2f-4e99-bb14-a8201388d5ed",
+    "episode_id": "f2b16473-b3b7-42ab-926b-dee8d0c2b357",
+    "episode_record_sha256": "7cb77a07a971818becec34e0e205265bf8e011568e83da11daf61a8e6e697aab",
+    "replay_url": "https://softmax-public.s3.amazonaws.com/replays/05ddf25d-887b-4d11-94a0-0605f52ac295.replay",
+    "replay_sha256": "fb187d9ba23bfe2474886d97e3e378abc58de9b1e058cd461af184709f356c8f",
+    "decisions_sha256": "931ed55b2544789e63621d987e99c7eee9d78b1fe1d13d747ccee9bb3c179137",
+    "map": "Pangaea",
+    "seat": 7,
+    "candidate_policy_version_id": "ccf3a01d-f4bd-4eaa-a1c4-a1c900b78844",
+    "candidate_score": 0,
+    "winner_slot": 3,
+    "winner_player_id": "ply_626f8a94-0bc0-4697-b76b-cc909a98b4e4",
+    "winner_player_name": "Auri",
+    "winner_policy_version_id": "9f233579-4837-4a27-b352-ed3135301135",
+    "decisions": 107,
+    "accepted": 107,
+    "rejections": 0,
+    "fallbacks": 0,
+    "planner_degradations": 0,
+    "holds": 4,
+    "marker_executions": 11,
+    "harmful_targets_audited": 21,
+    "k1z_harm": 0,
+    "unresolved_harmful_targets": 0
+  },
+  "regression_20_of_20": "NOT_RUN",
+  "upload_or_league_mutation": false
+}
