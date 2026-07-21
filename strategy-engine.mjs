@@ -954,15 +954,11 @@ function protocolHostilityRecency(history, rival) {
 
 function exactDS2AttackRival(action, state) {
   if (action?.kind !== "attack") return null;
-  const metadataTargetID = clean(action?.metadata?.targetID ?? "").toLowerCase();
-  if (metadataTargetID) {
-    return state.rivals.find(
-      (rival) => rival.id.toLowerCase() === metadataTargetID,
-    ) ?? null;
-  }
   const idParts = String(action?.id ?? "").split(":");
   if (idParts.length < 3 || idParts[0].toLowerCase() !== "attack") return null;
   const actionTargetID = clean(idParts[1]).toLowerCase();
+  const metadataTargetID = clean(action?.metadata?.targetID ?? "").toLowerCase();
+  if (metadataTargetID && metadataTargetID !== actionTargetID) return null;
   return state.rivals.find(
     (rival) => rival.id.toLowerCase() === actionTargetID,
   ) ?? null;

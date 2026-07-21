@@ -293,6 +293,44 @@ test("DS2 metadata target ID prevents a grav alias from rerouting into Gravity",
   assert.equal(selected.policyMarker, undefined);
 });
 
+test("DS2 action target ID prevents attacker metadata from rerouting into Gravity", () => {
+  const gravityID = "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335";
+  const misleading = {
+    ...action(`attack:${gravityID}:40`, "attack", "Attack K1Z Gravity 40%"),
+    metadata: { targetID: "grav", targetName: "grav", troopPercent: 40 },
+  };
+  const retreat = action("boat_retreat:23", "boat_retreat", "Retreat boat 23");
+  const selected = choose(
+    [misleading, retreat],
+    observation({
+      tileShare: 0.02,
+      tilesOwned: 12_144,
+      turnNumber: 1_900,
+      spawnTile: 659528,
+      incomingAttackPlayerIDs: ["grav"],
+      rivals: [
+        {
+          id: "grav",
+          name: "grav",
+          tileShare: 0.12,
+          relativeTroopRatio: 0.4,
+          incomingAttack: true,
+        },
+        {
+          id: gravityID,
+          name: "K1Z Gravity",
+          tileShare: 0.1,
+          relativeTroopRatio: 0.4,
+        },
+      ],
+    }),
+    null,
+    ds2History(),
+  );
+  assert.equal(selected.id, retreat.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
 test("DS2 prioritizes a current attacker first seen now over an older attacker", () => {
   const oldCounter = {
     ...action("attack:old:40", "attack", "Attack Old 40%"),
