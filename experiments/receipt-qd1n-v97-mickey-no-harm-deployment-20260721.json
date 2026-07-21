@@ -62,6 +62,14 @@
     "previous_live": "qd1n:v89",
     "previous_substatus": "benched"
   },
+  "round_boundary": {
+    "round_606_id": "round_892afc97-4bfb-42ae-a1f2-98f214b75b31",
+    "round_606_status_at_promotion": "running",
+    "round_606_was_sealed_with_v89": true,
+    "round_606_includes_mickey": true,
+    "v97_first_eligible_round": 607,
+    "note": "A champion switch cannot replace a policy version already sealed into a running round; audit Round 606 after completion."
+  },
   "promotion_class": "DIRECT_USER_ORDER_SAFETY_FIX",
   "performance_experiment_mixed_in": false
 }
