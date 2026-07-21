@@ -96,6 +96,19 @@ function experienceRequest({
 function decisionRows(marker, options = {}) {
   const convert = marker === "mm1c";
   const selectedLegalActionId = convert ? "attack:auri-local:25" : "expand:terra-nullius:10";
+  const markerReason = `${options.degraded ? "dgd" : "pln"}:atk:${options.wrongMarker ?? marker}`;
+  const markerFallbackUsed = options.degraded ? true : false;
+  const markerPlannerDegraded = options.degraded ? true : false;
+  const rawDecisionEnvelope = {
+    type: "decision_response",
+    requestID: "req_fixture_marker",
+    selectedLegalActionId,
+    reason: markerReason,
+    confidence: 0.75,
+    fallbackUsed: markerFallbackUsed,
+    llmPlannerDegraded: markerPlannerDegraded,
+    ...(options.rawDecisionEnvelopePatch ?? {}),
+  };
   const rows = [
     {
       agentID: "opportunistic-agent-1",
@@ -130,14 +143,18 @@ function decisionRows(marker, options = {}) {
             expansion: true,
           },
       legalActionIDs: options.illegal ? ["hold"] : [selectedLegalActionId, "hold"],
-      reason: `${options.degraded ? "dgd" : "pln"}:atk:${options.wrongMarker ?? marker}`,
-      fallbackUsed: options.degraded ? true : false,
-      llmPlannerDegraded: options.degraded ? true : false,
+      reason: markerReason,
+      fallbackUsed: markerFallbackUsed,
+      llmPlannerDegraded: markerPlannerDegraded,
+      rawLlmOutput: options.rawLlmOutput ?? JSON.stringify(rawDecisionEnvelope),
       result: options.unconfirmed
         ? { reason: "outcome unavailable" }
         : { accepted: options.rejected ? false : true, reason: options.rejected ? "rejected" : "accepted" },
     },
   ];
+  if (options.omitTopLevelPlannerDegraded) {
+    delete rows[1].llmPlannerDegraded;
+  }
   if (options.k1zHarm) {
     rows.push({
       agentID: "opportunistic-agent-1",
@@ -158,11 +175,14 @@ function decisionRows(marker, options = {}) {
       result: { accepted: true, reason: "accepted" },
     });
   }
-  if (options.unexplainedHold) {
+  const unexplainedHoldCount = Number.isSafeInteger(options.unexplainedHolds)
+    ? options.unexplainedHolds
+    : options.unexplainedHold ? 1 : 0;
+  for (let index = 0; index < unexplainedHoldCount; index += 1) {
     rows.push({
       agentID: "opportunistic-agent-1",
       username: CANDIDATE.player_name,
-      turnNumber: 600,
+      turnNumber: 600 + index * 100,
       selectedLegalActionId: "hold",
       selectedActionKind: "hold",
       selectedActionMetadata: {},
@@ -482,11 +502,46 @@ test("a clean one-or-more-episode hosted probe passes without requiring a win", 
   }
 });
 
+test("hosted marker degradation can be derived from an exactly bound raw decision envelope", () => {
+  const report = auditMickeyHostedProbe(probeEvidence({
+    replayOptions: { omitTopLevelPlannerDegraded: true },
+  }));
+
+  assert.equal(report.probe.marker_count, 1);
+  assert.equal(report.probe.nondegraded_marker_count, 1);
+  assert.equal(report.probe.invalid_marker_count, 0);
+  assert.equal(report.confirmation.experimental_hosted_probe_passed, true);
+});
+
+for (const [name, replayOptions] of [
+  ["non-decision raw type", { rawDecisionEnvelopePatch: { type: "intent_response" } }],
+  ["raw selected action mismatch", {
+    rawDecisionEnvelopePatch: { selectedLegalActionId: "expand:terra-nullius:20" },
+  }],
+  ["raw reason mismatch", { rawDecisionEnvelopePatch: { reason: "pln:atk:mm1c" } }],
+  ["raw fallback mismatch", { rawDecisionEnvelopePatch: { fallbackUsed: true } }],
+  ["nonboolean raw degradation", {
+    rawDecisionEnvelopePatch: { llmPlannerDegraded: "false" },
+  }],
+  ["top-level and raw degradation disagreement", {
+    rawDecisionEnvelopePatch: { llmPlannerDegraded: true },
+  }],
+  ["malformed raw decision envelope", { rawLlmOutput: "{not-json" }],
+]) {
+  test(`hosted marker rejects ${name}`, () => {
+    const report = auditMickeyHostedProbe(probeEvidence({ replayOptions }));
+
+    assert.equal(report.probe.marker_count, 1);
+    assert.equal(report.probe.nondegraded_marker_count, 0);
+    assert.equal(report.probe.invalid_marker_count, 1);
+    assert.equal(report.confirmation.experimental_hosted_probe_passed, false);
+  });
+}
+
 for (const [name, replayOptions, counter] of [
   ["rejected action", { rejected: true }, "rejected"],
   ["unconfirmed action", { unconfirmed: true }, "unconfirmed_acceptance"],
   ["illegal action", { illegal: true }, "illegal_selections"],
-  ["hold", { unexplainedHold: true }, "unexplained_holds"],
   ["K1Z harm", { k1zHarm: true }, "k1z_harm_count"],
   ["unresolved harmful target", { unresolvedTarget: true }, "unresolved_harmful_targets"],
   ["invalid marker execution", { wrongMarker: "mm1c" }, "invalid_marker_count"],
@@ -501,6 +556,18 @@ for (const [name, replayOptions, counter] of [
     assert.equal(report.confirmation.regression_20_of_20_passed, false);
   });
 }
+
+test("hosted probe reports nine unexplained holds without treating them as an experimental safety failure", () => {
+  const report = auditMickeyHostedProbe(probeEvidence({ replayOptions: { unexplainedHolds: 9 } }));
+
+  assert.equal(report.probe.holds, 9);
+  assert.equal(report.probe.unexplained_holds, 9);
+  assert.equal(report.probe.checks.zero_unexplained_holds, false);
+  assert.equal(report.probe.checks.all_decisions_accepted, true);
+  assert.equal(report.probe.checks.all_selected_actions_legal, true);
+  assert.equal(report.probe.passed, true);
+  assert.equal(report.confirmation.experimental_hosted_probe_passed, true);
+});
 
 test("hosted probe rejects a reached marker when its execution is degraded", () => {
   const report = auditMickeyHostedProbe(probeEvidence({ replayOptions: { degraded: true } }));

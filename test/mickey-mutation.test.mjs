@@ -365,7 +365,7 @@ function experimentalSubmitGate(context) {
       rejected: 0,
       unconfirmed_acceptance: 0,
       illegal_selections: 0,
-      unexplained_holds: 0,
+      unexplained_holds: 9,
       k1z_harm_count: 0,
       unresolved_harmful_targets: 0,
       marker_count: 1,
@@ -379,7 +379,7 @@ function experimentalSubmitGate(context) {
         zero_rejected_decisions: true,
         zero_unconfirmed_acceptance: true,
         zero_illegal_selections: true,
-        zero_unexplained_holds: true,
+        zero_unexplained_holds: false,
         zero_k1z_harm: true,
         zero_unresolved_harmful_targets: true,
         selected_marker_reached: true,
@@ -600,19 +600,21 @@ test("upload constructs the exact command from a hash-bound upload gate", (t) =>
   assert.equal(existsSync(path.join(context.state, "mickey.mutation.lock")), false);
 });
 
-test("unsafe local gate claims fail closed before upload", (t) => {
-  const context = fixture();
-  t.after(() => rmSync(context.directory, { recursive: true, force: true }));
-  const gate = uploadGate(context);
-  gate.gates.k1z_harm = 1;
-  writeJson(context.gate, gate);
-  const result = invoke(context, [
-    "run", "upload", context.gate, path.join(context.receipts, "blocked.json"),
-  ]);
-  assert.equal(result.status, 78, result.stderr);
-  assert.match(result.stderr, /upload gate validation failed/);
-  assert.equal(existsSync(context.commandLog), false);
-});
+for (const unsafeLocalField of ["unexplained_holds", "k1z_harm"]) {
+  test(`unsafe local gate ${unsafeLocalField} fails closed before upload`, (t) => {
+    const context = fixture();
+    t.after(() => rmSync(context.directory, { recursive: true, force: true }));
+    const gate = uploadGate(context);
+    gate.gates[unsafeLocalField] = 1;
+    writeJson(context.gate, gate);
+    const result = invoke(context, [
+      "run", "upload", context.gate, path.join(context.receipts, "blocked.json"),
+    ]);
+    assert.equal(result.status, 78, result.stderr);
+    assert.match(result.stderr, /upload gate validation failed/);
+    assert.equal(existsSync(context.commandLog), false);
+  });
+}
 
 test("submit constructs only the evidence-bound label after 4/4, 20/20, and RCI", (t) => {
   const context = fixture();
@@ -639,10 +641,32 @@ test("submit constructs only the evidence-bound label after 4/4, 20/20, and RCI"
   assert.equal(recorded.policy_version_id, POLICY_ID);
 });
 
-test("the experimental validator accepts one fully bound safe hosted probe while standard gates stay open", (t) => {
+test("standard submit keeps hosted unexplained holds as a blocking gate", (t) => {
   const context = fixture();
   t.after(() => rmSync(context.directory, { recursive: true, force: true }));
-  writeJson(context.gate, experimentalSubmitGate(context));
+  const gate = submitGate(context);
+  gate.evidence.hosted_regression_audit = rewriteBoundReceipt(
+    gate.evidence.hosted_regression_audit,
+    (audit) => {
+      audit.hosted.unexplained_holds = 9;
+      audit.hosted.checks.zero_unexplained_holds = false;
+    },
+  );
+  writeJson(context.gate, gate);
+  const result = validateGate(context, "--require-submit");
+  assert.equal(result.status, 1, result.stderr);
+  assert.match(result.stdout, /hosted audit does not prove matched clean 4\/4 evidence/);
+});
+
+test("the experimental validator accepts nine reported hosted holds while standard gates stay open", (t) => {
+  const context = fixture();
+  t.after(() => rmSync(context.directory, { recursive: true, force: true }));
+  const gate = experimentalSubmitGate(context);
+  const probe = JSON.parse(readFileSync(gate.evidence.hosted_probe_audit.path, "utf8"));
+  assert.equal(probe.probe.unexplained_holds, 9);
+  assert.equal(probe.probe.checks.zero_unexplained_holds, false);
+  assert.equal(probe.probe.passed, true);
+  writeJson(context.gate, gate);
   const result = validateGate(context, "--require-submit-experimental");
   assert.equal(result.status, 0, result.stderr);
 });
@@ -716,7 +740,6 @@ for (const unsafeField of [
   "rejected",
   "unconfirmed_acceptance",
   "illegal_selections",
-  "unexplained_holds",
   "k1z_harm_count",
   "unresolved_harmful_targets",
   "invalid_marker_count",

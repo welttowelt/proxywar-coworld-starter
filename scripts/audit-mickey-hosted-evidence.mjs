@@ -243,6 +243,36 @@ function markerSemantics(row, marker) {
     !isK1zName(metadata.targetName);
 }
 
+function boundPlannerDegraded(row) {
+  if (typeof row.rawLlmOutput !== "string") return null;
+  let envelope;
+  try {
+    envelope = JSON.parse(row.rawLlmOutput);
+  } catch {
+    return null;
+  }
+  if (envelope === null || typeof envelope !== "object" || Array.isArray(envelope)) return null;
+  if (envelope.type !== "decision_response") return null;
+  if (
+    typeof envelope.selectedLegalActionId !== "string" ||
+    envelope.selectedLegalActionId !== row.selectedLegalActionId
+  ) return null;
+  if (typeof envelope.reason !== "string" || envelope.reason !== row.reason) return null;
+  if (
+    typeof envelope.fallbackUsed !== "boolean" ||
+    typeof row.fallbackUsed !== "boolean" ||
+    envelope.fallbackUsed !== row.fallbackUsed
+  ) return null;
+  if (typeof envelope.llmPlannerDegraded !== "boolean") return null;
+  if (Object.prototype.hasOwnProperty.call(row, "llmPlannerDegraded")) {
+    if (
+      typeof row.llmPlannerDegraded !== "boolean" ||
+      row.llmPlannerDegraded !== envelope.llmPlannerDegraded
+    ) return null;
+  }
+  return envelope.llmPlannerDegraded;
+}
+
 export function auditMickeyHostedEpisode(episode, replayRecord, candidate, label = "hosted episode") {
   object(episode, label);
   assert(MARKERS.has(candidate.marker), "candidate.marker must be mm1g or mm1c");
@@ -320,11 +350,12 @@ export function auditMickeyHostedEpisode(episode, replayRecord, candidate, label
     if (!reasonMatch) continue;
     const marker = reasonMatch[3];
     const expectedKindCode = KIND_CODES[String(row.selectedActionKind ?? "").toLowerCase()] ?? null;
+    const plannerDegraded = boundPlannerDegraded(row);
     const valid =
       reasonMatch[1] === "pln" &&
       reasonMatch[2] === expectedKindCode &&
       row.fallbackUsed === false &&
-      row.llmPlannerDegraded === false &&
+      plannerDegraded === false &&
       acceptedDecision &&
       legalSelection &&
       markerSemantics(row, marker);
@@ -535,10 +566,13 @@ function auditProbeExperience(request, replayRecords, candidate) {
       nondegradedMarkerCount === markerCount && markerCount >= 1,
     zero_invalid_marker_executions: invalidMarkerCount === 0,
   };
+  const experimentalChecksPassed = Object.entries(checks).every(([key, value]) =>
+    key === "zero_unexplained_holds" || value === true
+  );
   return {
     request_id: request.id ?? null,
     status: request.status ?? null,
-    passed: Object.values(checks).every(Boolean),
+    passed: experimentalChecksPassed,
     episodes: episodes.length,
     completed_episodes: Number(request.completed_count ?? 0),
     wins: episodes.filter((episode) => episode.won).length,

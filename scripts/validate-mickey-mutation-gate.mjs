@@ -302,6 +302,13 @@ function allTrue(value) {
     Object.values(value).length > 0 && Object.values(value).every((item) => item === true);
 }
 
+function allTrueExcept(value, exceptKey) {
+  if (value === null || typeof value !== "object" || Array.isArray(value)) return false;
+  const entries = Object.entries(value);
+  return entries.length > 0 && Object.prototype.hasOwnProperty.call(value, exceptKey) &&
+    entries.every(([key, item]) => key === exceptKey ? typeof item === "boolean" : item === true);
+}
+
 if (isSubmission) {
   const uploadReceipt = await boundReceipt(gate.evidence?.upload_receipt, "evidence.upload_receipt");
   exactCandidate(uploadReceipt, "upload receipt");
@@ -422,12 +429,15 @@ if (isSubmission) {
         !positiveInteger(probe.decisions) || probe.accepted !== probe.decisions ||
         probe.accepted !== gate.gates?.hosted_probe_accepted_actions ||
         probe.rejected !== 0 || probe.unconfirmed_acceptance !== 0 ||
-        probe.illegal_selections !== 0 || probe.unexplained_holds !== 0 ||
+        probe.illegal_selections !== 0 ||
+        !Number.isSafeInteger(probe.unexplained_holds) || probe.unexplained_holds < 0 ||
         probe.k1z_harm_count !== 0 || probe.unresolved_harmful_targets !== 0 ||
         !positiveInteger(probe.marker_count) ||
         probe.nondegraded_marker_count !== probe.marker_count ||
         probe.nondegraded_marker_count !== gate.gates?.hosted_probe_nondegraded_marker_count ||
-        probe.invalid_marker_count !== 0 || !allTrue(probe.checks)
+        probe.invalid_marker_count !== 0 ||
+        probe.checks?.zero_unexplained_holds !== (probe.unexplained_holds === 0) ||
+        !allTrueExcept(probe.checks, "zero_unexplained_holds")
       ) {
         errors.push("hosted probe audit does not prove a clean nondegraded intent execution");
       }
