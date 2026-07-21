@@ -344,7 +344,10 @@ test("official Normal-map spawn tiles identify every supported route", () => {
   const cases = {
     Asia: [1180588, 1228670, 1216916, 1214746, 1224834, 892476, 1020678, 1450648],
     World: [1088580, 1216626, 877134, 659476, 494334, 628394, 994502, 1333674],
-    Pangaea: [659528, 534350, 266554, 687420, 622372, 589302, 450306, 740346],
+    Pangaea: [
+      659528, 534350, 266554, 687420, 622372, 589302, 450306, 740346,
+      856604, 855528,
+    ],
   };
   for (const [map, spawnTiles] of Object.entries(cases)) {
     for (const spawnTile of spawnTiles) {
@@ -1429,17 +1432,19 @@ test("Mickey suppresses a repeated outgoing K1Z request on Pangaea", () => {
       tileShare: 0.1,
     })),
   ];
-  const state = buildState(observation({
-    tileShare: 0.1,
-    troopRatio: 0.9,
-    spawnTile: 659528,
-    rivals: [hrafn],
-  }), [ally, neutral], history);
+  for (const spawnTile of [659528, 856604, 855528]) {
+    const state = buildState(observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      spawnTile,
+      rivals: [hrafn],
+    }), [ally, neutral], history);
 
-  assert.equal(chooseAction([ally, neutral], state, null, history).id, ally.id);
-  const selected = chooseMickeyRuntimeAction([ally, neutral], state, null, history);
-  assert.equal(selected.id, neutral.id);
-  assert.equal(selected.policyMarker, "mr2");
+    assert.equal(chooseAction([ally, neutral], state, null, history).id, ally.id);
+    const selected = chooseMickeyRuntimeAction([ally, neutral], state, null, history);
+    assert.equal(selected.id, neutral.id);
+    assert.equal(selected.policyMarker, "mr2");
+  }
 });
 
 test("Mickey always accepts a real reverse K1Z handshake during cooldown", () => {
