@@ -16,6 +16,8 @@ function action(id, kind, label = id, risk = lowRisk) {
 
 function observation({
   tileShare = 0.05,
+  tilesOwned,
+  turnNumber,
   troopRatio = 0.8,
   rivals = [],
   incomingAttacks = [],
@@ -26,10 +28,12 @@ function observation({
 } = {}) {
   return {
     phase: "active",
+    ...(turnNumber === undefined ? {} : { turnNumber }),
     profile,
     objective,
     ownState: {
       tileShare,
+      ...(tilesOwned === undefined ? {} : { tilesOwned }),
       troopRatio,
       troops: 500000,
       gold: 250000,
@@ -47,6 +51,234 @@ function observation({
     })),
   };
 }
+
+function ds2History(tiles = [12_742, 12_297]) {
+  return tiles.map((tilesOwned, index) => ({
+    actionID: `boat_retreat:${18 + index}`,
+    kind: "boat_retreat",
+    tileShare: 0.02,
+    tilesOwned,
+  }));
+}
+
+function ds2RonActions({ risk = lowRisk } = {}) {
+  return [
+    ...[10, 25, 40].map((percent) => ({
+      ...action(
+        `attack:r5o3pta1:${percent}`,
+        "attack",
+        `Attack Ron ${percent}%`,
+        risk,
+      ),
+      metadata: { targetID: "r5o3pta1", troopPercent: percent },
+    })),
+    action("boat_retreat:23", "boat_retreat", "Retreat boat 23"),
+  ];
+}
+
+function ds2RonObservation(overrides = {}) {
+  return observation({
+    tileShare: 0.02,
+    tilesOwned: 12_144,
+    turnNumber: 1_900,
+    spawnTile: 659528,
+    incomingAttackPlayerIDs: ["r5o3pta1"],
+    rivals: [{
+      id: "r5o3pta1",
+      name: "Ron",
+      tileShare: 0.12,
+      relativeTroopRatio: 0.4,
+      incomingAttack: true,
+    }],
+    ...overrides,
+  });
+}
+
+test("DS2 exact R587 loss state counters Ron at maximum safe commitment", () => {
+  const selected = choose(ds2RonActions(), ds2RonObservation(), null, ds2History());
+  assert.equal(selected.id, "attack:r5o3pta1:40");
+  assert.equal(selected.policyMarker, "ds2");
+});
+
+test("DS2 paired R587 winner decline stays exact parent outside the opening", () => {
+  const selected = choose(
+    ds2RonActions(),
+    ds2RonObservation({ turnNumber: 7_100 }),
+    null,
+    ds2History(),
+  );
+  assert.equal(selected.id, "boat_retreat:23");
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("DS2 does not trigger after only one strict raw-tile decline", () => {
+  const selected = choose(
+    ds2RonActions(),
+    ds2RonObservation(),
+    null,
+    ds2History([12_742, 12_742]),
+  );
+  assert.equal(selected.id, "boat_retreat:23");
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("DS2 does not trigger without a current protocol attacker", () => {
+  const selected = choose(
+    ds2RonActions(),
+    ds2RonObservation({ incomingAttackPlayerIDs: [], rivals: [{
+      id: "r5o3pta1",
+      name: "Ron",
+      tileShare: 0.12,
+      relativeTroopRatio: 0.4,
+    }] }),
+    null,
+    ds2History(),
+  );
+  assert.equal(selected.id, "boat_retreat:23");
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("DS2 does not trigger without a legal verified counter", () => {
+  const retreat = action("boat_retreat:23", "boat_retreat", "Retreat boat 23");
+  const selected = choose([retreat], ds2RonObservation(), null, ds2History());
+  assert.equal(selected.id, retreat.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("DS2 leaves an exact-parent verified counter unchanged and unmarked", () => {
+  const counter = {
+    ...action("attack:r5o3pta1:10", "attack", "Attack Ron 10%"),
+    metadata: { targetID: "r5o3pta1", troopPercent: 10 },
+  };
+  const selected = choose(
+    [counter],
+    ds2RonObservation({ rivals: [{
+      id: "r5o3pta1",
+      name: "Ron",
+      tileShare: 0.12,
+      relativeTroopRatio: 1.5,
+      incomingAttack: true,
+    }] }),
+    null,
+    ds2History(),
+  );
+  assert.equal(selected.id, counter.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("DS2 takes the largest safe counter before a higher high-risk counter", () => {
+  const actions = ds2RonActions();
+  actions.find((candidate) => candidate.id.endsWith(":40")).risk = { level: "high" };
+  const selected = choose(actions, ds2RonObservation(), null, ds2History());
+  assert.equal(selected.id, "attack:r5o3pta1:25");
+  assert.equal(selected.policyMarker, "ds2");
+});
+
+test("DS2 uses the largest high-risk counter only when every counter is high risk", () => {
+  const selected = choose(
+    ds2RonActions({ risk: { level: "high" } }),
+    ds2RonObservation(),
+    null,
+    ds2History(),
+  );
+  assert.equal(selected.id, "attack:r5o3pta1:40");
+  assert.equal(selected.policyMarker, "ds2");
+});
+
+test("DS2 deterministically counters the most recently hostile verified attacker", () => {
+  const relhCounter = {
+    ...action("attack:xbt2wt14:40", "attack", "Attack RelhAlpha 40%"),
+    metadata: { targetID: "xbt2wt14", troopPercent: 40 },
+  };
+  const history = ds2History();
+  history[0].allProtocolAttackerIDs = ["r5o3pta1"];
+  history[1].allProtocolAttackerIDs = ["xbt2wt14"];
+  const selected = choose(
+    [...ds2RonActions(), relhCounter],
+    ds2RonObservation({
+      incomingAttackPlayerIDs: ["r5o3pta1", "xbt2wt14"],
+      rivals: [
+        {
+          id: "r5o3pta1",
+          name: "Ron",
+          tileShare: 0.2,
+          relativeTroopRatio: 0.4,
+          incomingAttack: true,
+        },
+        {
+          id: "xbt2wt14",
+          name: "RelhAlpha",
+          tileShare: 0.1,
+          relativeTroopRatio: 0.4,
+          incomingAttack: true,
+        },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, relhCounter.id);
+  assert.equal(selected.policyMarker, "ds2");
+});
+
+test("DS2 never creates a counterattack against a K1Z identity", () => {
+  for (const [id, name] of [
+    ["kata", "K1Z katanasan"],
+    ["gravity", "K1Z Gravity"],
+    ["juryoku", "K1Z juryoku-koku"],
+    ["hrafn", "K1Z Hrafn"],
+  ]) {
+    const counter = {
+      ...action(`attack:${id}:40`, "attack", `Attack ${name} 40%`),
+      metadata: { targetID: id, targetName: name, troopPercent: 40 },
+    };
+    const retreat = action("boat_retreat:23", "boat_retreat", "Retreat boat 23");
+    const selected = choose(
+      [counter, retreat],
+      observation({
+        tileShare: 0.02,
+        tilesOwned: 12_144,
+        turnNumber: 1_900,
+        spawnTile: 659528,
+        incomingAttackPlayerIDs: [id],
+        rivals: [{
+          id,
+          name,
+          tileShare: 0.12,
+          relativeTroopRatio: 0.4,
+          incomingAttack: true,
+        }],
+      }),
+      null,
+      ds2History(),
+    );
+    assert.equal(selected.id, retreat.id, name);
+    assert.equal(selected.policyMarker, undefined, name);
+  }
+});
+
+test("DS2 raw tiles and turn stay selector-private while history keeps raw tiles", () => {
+  const state = buildState(ds2RonObservation(), [], []);
+  assert.equal(state.self.tilesOwned, 12_144);
+  assert.equal(state.turnNumber, 1_900);
+  assert.equal(Object.prototype.propertyIsEnumerable.call(state.self, "tilesOwned"), false);
+  assert.equal(Object.prototype.propertyIsEnumerable.call(state, "turnNumber"), false);
+  assert.equal(JSON.stringify(state).includes('"tilesOwned"'), false);
+  assert.equal(JSON.stringify(state).includes('"turnNumber"'), false);
+
+  const history = [];
+  recordDecision(history, action("hold", "hold", "Hold"), state);
+  assert.equal(history[0].tilesOwned, 12_144);
+});
+
+test("DS2 accepts the policy tick when turnNumber is absent", () => {
+  const obs = ds2RonObservation();
+  obs.tick = obs.turnNumber;
+  delete obs.turnNumber;
+  const selected = choose(ds2RonActions(), obs, null, ds2History());
+  assert.equal(selected.id, "attack:r5o3pta1:40");
+  assert.equal(selected.policyMarker, "ds2");
+});
 
 function choose(actions, obs, plan = null, history = []) {
   const state = buildState(obs, actions, history);

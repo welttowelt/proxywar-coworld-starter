@@ -62,6 +62,12 @@ function finiteNumber(value, fallback = 0) {
   return Number.isFinite(number) ? number : fallback;
 }
 
+function validTileCount(value) {
+  if (value === null || value === undefined || value === "") return null;
+  const number = Number(value);
+  return Number.isFinite(number) && number >= 0 ? number : null;
+}
+
 function playerID(player) {
   return clean(
     player?.id ?? player?.playerID ?? player?.playerId ?? player?.player_id ?? "",
@@ -179,6 +185,7 @@ export function buildState(observation, actions, history = []) {
   const activeIncomingAttackerIDs = mapFingerprint === "Asia"
     ? currentProtocolIncomingAttackerIDs
     : baseIncomingAttackerIDs;
+  const tilesOwned = validTileCount(own.tilesOwned);
   const self = {
     tileShare: finiteNumber(own.tileShare),
     troops: finiteNumber(own.troops),
@@ -189,6 +196,12 @@ export function buildState(observation, actions, history = []) {
     incomingAttackerIDs: activeIncomingAttackerIDs,
     allProtocolAttackerIDs: currentProtocolIncomingAttackerIDs,
   };
+  if (tilesOwned !== null) {
+    Object.defineProperty(self, "tilesOwned", {
+      value: tilesOwned,
+      enumerable: false,
+    });
+  }
   const rivals = visiblePlayers.map((player) => ({
       id: playerID(player),
       name: clean(player.name),
@@ -205,7 +218,7 @@ export function buildState(observation, actions, history = []) {
     label: clean(action.label),
     risk: clean(action.risk?.level),
   }));
-  return {
+  const state = {
     mapFingerprint,
     phase: clean(observation?.phase),
     decisionNumber: history.length,
@@ -216,6 +229,14 @@ export function buildState(observation, actions, history = []) {
     avoid: avoidActionIDs(history),
     legalActions,
   };
+  const turnNumber = validTileCount(observation?.turnNumber ?? observation?.tick);
+  if (turnNumber !== null) {
+    Object.defineProperty(state, "turnNumber", {
+      value: turnNumber,
+      enumerable: false,
+    });
+  }
+  return state;
 }
 
 export function rivalForAction(action, state) {
@@ -768,7 +789,7 @@ export function chooseUtility(actions, state, plan, history) {
   return null;
 }
 
-export function chooseAction(actions, state, plan = null, history = []) {
+function chooseExactParentAction(actions, state, plan = null, history = []) {
   if (!Array.isArray(actions) || actions.length === 0) {
     throw new Error("decision request had no legal actions");
   }
@@ -912,6 +933,76 @@ export function chooseAction(actions, state, plan = null, history = []) {
   return actions.find((action) => action.kind === "hold") ?? actions[0];
 }
 
+function protocolHostilityRecency(history, rival) {
+  const rivalID = rival.id.toLowerCase();
+  const rivalName = rival.name.toLowerCase();
+  for (let index = history.length - 1; index >= 0; index--) {
+    const entry = history[index];
+    const attackerIDs = [
+      ...(entry?.allProtocolAttackerIDs || []),
+      ...(entry?.incomingAttackerIDs || []),
+    ].map((id) => String(id).toLowerCase());
+    const attackerNames = (entry?.incomingAttackerNames || [])
+      .map((name) => String(name).toLowerCase());
+    if (attackerIDs.includes(rivalID) || attackerNames.includes(rivalName)) return index;
+  }
+  return -1;
+}
+
+function chooseRawOpeningCollapseCounter(actions, state, history, parentAction) {
+  const turnNumber = validTileCount(state?.turnNumber);
+  const currentTiles = validTileCount(state?.self?.tilesOwned);
+  const previousTiles = validTileCount(history.at(-1)?.tilesOwned);
+  const priorTiles = validTileCount(history.at(-2)?.tilesOwned);
+  if (
+    turnNumber === null || turnNumber > 3500 ||
+    currentTiles === null || previousTiles === null || priorTiles === null ||
+    !(priorTiles > previousTiles && previousTiles > currentTiles)
+  ) return parentAction;
+
+  const attackerIDs = new Set(
+    (state.self.allProtocolAttackerIDs || [])
+      .map((id) => String(id).toLowerCase())
+      .filter(Boolean),
+  );
+  if (attackerIDs.size === 0) return parentAction;
+
+  const counters = actions
+    .map((action) => ({ action, rival: rivalForAction(action, state) }))
+    .filter(({ action, rival }) =>
+      action.kind === "attack" && !isNeutralExpansion(action) && rival &&
+      attackerIDs.has(rival.id.toLowerCase()) && !isReciprocalRival(rival) &&
+      !rivalIsProtected(state, history, rival)
+    );
+  if (counters.length === 0) return parentAction;
+
+  const parentRival = rivalForAction(parentAction, state);
+  if (
+    parentAction?.kind === "attack" && !isNeutralExpansion(parentAction) && parentRival &&
+    attackerIDs.has(parentRival.id.toLowerCase())
+  ) return parentAction;
+
+  const safeCounters = counters.filter(({ action }) => action.risk?.level !== "high");
+  const counterPool = safeCounters.length > 0 ? safeCounters : counters;
+  const counter = [...counterPool]
+    .sort((left, right) =>
+      protocolHostilityRecency(history, right.rival) -
+        protocolHostilityRecency(history, left.rival) ||
+      right.rival.tileShare - left.rival.tileShare ||
+      left.rival.id.localeCompare(right.rival.id) ||
+      finiteNumber(actionPercent(right.action), -1) -
+        finiteNumber(actionPercent(left.action), -1) ||
+      left.action.id.localeCompare(right.action.id)
+    )[0]?.action;
+  if (!counter || counter.id === parentAction?.id) return parentAction;
+  return { ...counter, policyMarker: "ds2" };
+}
+
+export function chooseAction(actions, state, plan = null, history = []) {
+  const parentAction = chooseExactParentAction(actions, state, plan, history);
+  return chooseRawOpeningCollapseCounter(actions, state, history, parentAction);
+}
+
 export function recordDecision(history, action, state) {
   const rival = rivalForAction(action, state);
   const metadataTargetID = clean(
@@ -931,6 +1022,7 @@ export function recordDecision(history, action, state) {
     targetName: rival?.name ?? (metadataTargetName || null),
     targetID: rival?.id?.toLowerCase() ?? (metadataTargetID || null),
     tileShare: state.self.tileShare,
+    ...(Object.hasOwn(state.self, "tilesOwned") ? { tilesOwned: state.self.tilesOwned } : {}),
     incomingAttackerIDs,
     allProtocolAttackerIDs: state.self.allProtocolAttackerIDs || [],
     incomingAttackerNames,
