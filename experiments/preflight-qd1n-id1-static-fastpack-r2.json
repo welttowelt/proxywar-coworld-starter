@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-llm:id1-static-fastpack-candidate-amd64",
+    "parent_ref": "proxywar-agent-llm:id1-static-fastpack-control-amd64",
+    "exact_deltas": [
+      "For grow intent during the first 20 active decisions, replace a proactive coalition request with safe neutral land while preserving reverse handshakes, pressure, collapse, stalls, and every other parent path."
+    ],
+    "source_commit": "18c7fdebbafcb94f936c0e8182f6ba6e48a478f6",
+    "parent_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "image_id": "sha256:d5660d978261137116dc1c617129ed0c16a1c6819adaff07874821b75f6812b0"
+  },
+  "hypothesis": "A bounded grow-intent reroute removes opening social tempo loss and increases early territory without alliance or reliability regressions.",
+  "mechanism": {
+    "marker": "id1",
+    "prior_reachable_decisions": 23
+  },
+  "local": {
+    "runs": 2,
+    "independent_traces": 2,
+    "contract_sha256": "15be7ee612509ead634edc4248d496f66da7525d0af3e822e4d832e5bb8a3645",
+    "audit_receipt": {
+      "path": "/private/tmp/proxywar-id1-static-fastpack/experiments/audit-qd1n-id1-static-fastpack-r2-local-screen-20260721.json",
+      "sha256": "224db430e1e38d9685e27156e0d2d6af061aafa8dc0ab2ae5b7c2d875c4e8c3e"
+    },
+    "differential_binding": {
+      "verifier_path": "experiments/id1/verify-differential.mjs",
+      "fixture_path": "experiments/id1/differential-fixture.json"
+    }
+  },
+  "preupload_rci": {
+    "receipt": {
+      "path": "/private/tmp/proxywar-id1-static-fastpack/experiments/audit-qd1n-id1-static-fastpack-r2-preupload-rci-20260721.json",
+      "sha256": "26789b6d5201d3be308028ca398826acc9e99f3135f361b9f0e937e695e80d38"
+    }
+  },
+  "matched_baseline": null,
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "max_k1z_harm": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  }
+}

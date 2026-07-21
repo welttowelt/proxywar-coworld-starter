@@ -1,0 +1,39 @@
+{
+  "schema_version": 2,
+  "arm": "id1",
+  "same_fixture": true,
+  "verifier": {
+    "evaluator_commit": "9b85ae8e5eb483caf9590ad0c853747755272b94",
+    "path": "experiments/id1/verify-differential.mjs",
+    "sha256": "be55264fcbf97dd2e813a5b25b357febd39856e7c5035814b12ec1c7e8d19aea"
+  },
+  "fixture": {
+    "id": "id1-grow-vs-proactive-kp2",
+    "path": "experiments/id1/differential-fixture.json",
+    "sha256": "000eb1fa7a382a82aa0fe30f6a20d86a3f3d1b1f79b5b404797e910b0e8f10c7",
+    "legal_action_ids_sha256": "6193e799786733c23e0bb6d6ba3b6c5424e004efd98c60e4aa6d4e74875513be"
+  },
+  "plan": {
+    "intent": "grow"
+  },
+  "parent": {
+    "source_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "selected_action_id": "alliance:katanasan",
+    "policy_marker": "kp2"
+  },
+  "candidate": {
+    "source_commit": "18c7fdebbafcb94f936c0e8182f6ba6e48a478f6",
+    "selected_action_id": "expand:terra-nullius:10",
+    "policy_marker": "id1"
+  },
+  "test_command": [
+    "node",
+    "experiments/id1/verify-differential.mjs",
+    ".",
+    "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "18c7fdebbafcb94f936c0e8182f6ba6e48a478f6",
+    "experiments/id1/differential-fixture.json",
+    "experiments/id1/differential-proof-18c7fdeb.json"
+  ],
+  "test_exit_code": 0
+}

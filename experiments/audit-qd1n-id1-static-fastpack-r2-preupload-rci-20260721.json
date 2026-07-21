@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-21T09:29:31Z",
+  "verdict": "PASS_PREUPLOAD_RCI",
+  "status": "passed",
+  "candidate_source_commit": "18c7fdebbafcb94f936c0e8182f6ba6e48a478f6",
+  "candidate_image_id": "sha256:d5660d978261137116dc1c617129ed0c16a1c6819adaff07874821b75f6812b0",
+  "parent_source_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+  "control_image_id": "sha256:ce69881dc51118d6f6537db7fdd17f9a535b4e26922b8f36f49be40ee29fbc8b",
+  "unresolved_violations": [],
+  "checks": {
+    "single_production_delta": true,
+    "source_pushed": true,
+    "source_tests_161_of_161": true,
+    "differential_parent_kp2_candidate_id1": true,
+    "candidate_image_identity": true,
+    "control_image_identity": true,
+    "two_orientation_marker_reach": true,
+    "two_orientation_auc20_lift": true,
+    "two_orientation_decision_20_tile_lift": true,
+    "all_candidate_decisions_accepted": true,
+    "zero_fallbacks_degradation_holds_rejections": true,
+    "zero_k1z_harm": true,
+    "no_upload_fields": true,
+    "league_mutation_forbidden": true
+  },
+  "evidence": {
+    "local_receipt": {
+      "path": "experiments/audit-qd1n-id1-static-fastpack-r2-local-screen-20260721.json",
+      "sha256": "224db430e1e38d9685e27156e0d2d6af061aafa8dc0ab2ae5b7c2d875c4e8c3e",
+      "contract_sha256": "15be7ee612509ead634edc4248d496f66da7525d0af3e822e4d832e5bb8a3645"
+    },
+    "raw_r2_receipt": {
+      "path": "/private/tmp/proxywar-id1-static-fastpack-r2-audit-20260721.json",
+      "sha256": "0ec8cf2aa2088c8049e3f0849e7171172d936dfb7dffadc73a2203ca44c59f28"
+    },
+    "differential_proof": {
+      "path": "experiments/id1/differential-proof-18c7fdeb.json",
+      "sha256": "c49071319ced16a9380c2b37ff9917e5a6cbf6e0d6dbe6c0f14d9fca167ae907",
+      "evaluator_commit": "9b85ae8e5eb483caf9590ad0c853747755272b94"
+    },
+    "orientation_a": {
+      "id1_reach": 11,
+      "opening_auc20_delta": 85809,
+      "decision_20_tile_delta": 6689
+    },
+    "orientation_b": {
+      "id1_reach": 12,
+      "opening_auc20_delta": 406896,
+      "decision_20_tile_delta": 15847
+    }
+  },
+  "scope_limits": {
+    "local_control": "The control shares the candidate's static-grow plan and isolates only the ID1 reroute.",
+    "runtime_equivalence": "This local ProxyWar 0.1.8 screen is not exact live-v89 or hosted 0.1.10 runtime equivalence.",
+    "next_gate": "Hosted 0.1.10 candidate versus qd1n:v89 remains mandatory before any league mutation.",
+    "league_mutation": false
+  }
+}

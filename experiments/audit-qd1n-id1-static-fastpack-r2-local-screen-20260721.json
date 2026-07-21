@@ -1,0 +1,164 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-07-21T09:29:31Z",
+  "arm": "id1",
+  "scope": "Two static-grow A/B orientations isolate the ID1 reroute; hosted runtime equivalence is not claimed.",
+  "verdict": "PASS_LOCAL_SCREEN",
+  "failures": [],
+  "candidate_source_commit": "18c7fdebbafcb94f936c0e8182f6ba6e48a478f6",
+  "candidate_image_id": "sha256:d5660d978261137116dc1c617129ed0c16a1c6819adaff07874821b75f6812b0",
+  "parent_source_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+  "parent_image_id": "sha256:ce69881dc51118d6f6537db7fdd17f9a535b4e26922b8f36f49be40ee29fbc8b",
+  "contract_path": "experiments/preregister-qd1n-id1-static-fastpack-r2-20260721.json",
+  "contract_sha256": "15be7ee612509ead634edc4248d496f66da7525d0af3e822e4d832e5bb8a3645",
+  "raw_r2_receipt": {
+    "path": "/private/tmp/proxywar-id1-static-fastpack-r2-audit-20260721.json",
+    "sha256": "0ec8cf2aa2088c8049e3f0849e7171172d936dfb7dffadc73a2203ca44c59f28",
+    "verdict": "PASS_FASTPACK"
+  },
+  "required_coalition_roles": ["gravity"],
+  "differential_unit_proof": {
+    "schema_version": 2,
+    "arm": "id1",
+    "same_fixture": true,
+    "verifier": {
+      "evaluator_commit": "9b85ae8e5eb483caf9590ad0c853747755272b94",
+      "path": "experiments/id1/verify-differential.mjs",
+      "sha256": "be55264fcbf97dd2e813a5b25b357febd39856e7c5035814b12ec1c7e8d19aea"
+    },
+    "fixture": {
+      "id": "id1-grow-vs-proactive-kp2",
+      "path": "experiments/id1/differential-fixture.json",
+      "sha256": "000eb1fa7a382a82aa0fe30f6a20d86a3f3d1b1f79b5b404797e910b0e8f10c7",
+      "legal_action_ids_sha256": "6193e799786733c23e0bb6d6ba3b6c5424e004efd98c60e4aa6d4e74875513be"
+    },
+    "plan": { "intent": "grow" },
+    "parent": {
+      "source_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+      "selected_action_id": "alliance:katanasan",
+      "policy_marker": "kp2"
+    },
+    "candidate": {
+      "source_commit": "18c7fdebbafcb94f936c0e8182f6ba6e48a478f6",
+      "selected_action_id": "expand:terra-nullius:10",
+      "policy_marker": "id1"
+    },
+    "test_command": [
+      "node",
+      "experiments/id1/verify-differential.mjs",
+      ".",
+      "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+      "18c7fdebbafcb94f936c0e8182f6ba6e48a478f6",
+      "experiments/id1/differential-fixture.json",
+      "experiments/id1/differential-proof-18c7fdeb.json"
+    ],
+    "test_exit_code": 0
+  },
+  "runs": [
+    {
+      "orientation": "A",
+      "map": "Pangaea",
+      "seed": 20260720,
+      "candidate_run_id": "r2-a-candidate",
+      "control_run_id": "r2-a-control",
+      "replay_sha256": "8795d2ddfb5e2c23567b9717b635b5385dfe8b2f02f3bf29915d699a4d2e3928",
+      "coalition_roles_present": ["odin", "gravity", "katanasan", "hrafn"],
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image": "proxywar-agent-llm:id1-static-fastpack-candidate-amd64",
+            "image_id": "sha256:d5660d978261137116dc1c617129ed0c16a1c6819adaff07874821b75f6812b0"
+          },
+          "control": {
+            "image": "proxywar-agent-llm:id1-static-fastpack-control-amd64",
+            "image_id": "sha256:ce69881dc51118d6f6537db7fdd17f9a535b4e26922b8f36f49be40ee29fbc8b"
+          }
+        }
+      },
+      "candidate": {
+        "decision_count": 27,
+        "accepted": 27,
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "unexplained_holds": [],
+        "harmful_k1z_actions": [],
+        "unresolved_harmful_targets": [],
+        "marker_counts": { "id1": 11 },
+        "route_execution_count": 11,
+        "opening_auc20": 322912,
+        "decision_20_tiles": 7502,
+        "decisions_sha256": "a3843c06591bc0f333ed7d3f54126e40c88e9f9131d6a2a7889b746571505272"
+      },
+      "control": {
+        "decision_count": 27,
+        "accepted": 27,
+        "marker_counts": { "id1": 0 },
+        "opening_auc20": 237103,
+        "decision_20_tiles": 813,
+        "replay_sha256": "47af8981ca5db0b6992d9799910ba55262875566c378573706c1e452b5a6b261",
+        "decisions_sha256": "944184dac0b1a4bb053d34ba637c1f6dcdb5985b0cf9cd06d88b148fa24552b7"
+      },
+      "orientation_advantage": {
+        "metric": "opening_auc20",
+        "score_delta": 85809,
+        "tile_delta": 6689
+      },
+      "violations": []
+    },
+    {
+      "orientation": "B",
+      "map": "Pangaea",
+      "seed": 20260720,
+      "candidate_run_id": "r2-b-candidate",
+      "control_run_id": "r2-b-control",
+      "replay_sha256": "a4bbb2b3fbddfe4120ec543e49cb6b4816acd97757111323294fd5234f2e5193",
+      "coalition_roles_present": ["odin", "gravity", "katanasan", "hrafn"],
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image": "proxywar-agent-llm:id1-static-fastpack-candidate-amd64",
+            "image_id": "sha256:d5660d978261137116dc1c617129ed0c16a1c6819adaff07874821b75f6812b0"
+          },
+          "control": {
+            "image": "proxywar-agent-llm:id1-static-fastpack-control-amd64",
+            "image_id": "sha256:ce69881dc51118d6f6537db7fdd17f9a535b4e26922b8f36f49be40ee29fbc8b"
+          }
+        }
+      },
+      "candidate": {
+        "decision_count": 27,
+        "accepted": 27,
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "unexplained_holds": [],
+        "harmful_k1z_actions": [],
+        "unresolved_harmful_targets": [],
+        "marker_counts": { "id1": 12 },
+        "route_execution_count": 12,
+        "opening_auc20": 433475,
+        "decision_20_tiles": 16860,
+        "decisions_sha256": "de3d845a7de4f25287c8a1e13ec2ab1926dd4a7b6919c72d420f8f9a1040090a"
+      },
+      "control": {
+        "decision_count": 27,
+        "accepted": 27,
+        "marker_counts": { "id1": 0 },
+        "opening_auc20": 26579,
+        "decision_20_tiles": 1013,
+        "replay_sha256": "bfc7d388614b7a74f8a391cc70f6c640b20ed8852a2d075eb6b9c80ede9af575",
+        "decisions_sha256": "abfb1b866d926e1f24e554597d6e68cffc3464c7d501e13112a60865d4048503"
+      },
+      "orientation_advantage": {
+        "metric": "opening_auc20",
+        "score_delta": 406896,
+        "tile_delta": 15847
+      },
+      "violations": []
+    }
+  ],
+  "league_mutation": false
+}
