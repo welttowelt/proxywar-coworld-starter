@@ -84,7 +84,14 @@
       "strategy_engine_sha256": "6aa6f9f50162859c4d7a37fb4cfc50f8aa02af02245d209ad19a5a65eae00f7d",
       "source_bytes_match": true,
       "job": "experiments/job-qd1n-pf1-mechanism-pangaea-seat9-20260721.json",
-      "job_sha256": "6057bdaf75aea8430d5cc9d6108f39a72b848102726aa873219a2ee54cd2c3f3"
+      "job_sha256": "ad9a0739a6ae13f0b3940bfb70a8ebb1299699ff958338bb9af4ec7b35b0aa3e",
+      "pre_game_schema_failure": {
+        "run_id": "pf1-mechanism-seat9-e7e1ce9e",
+        "result": "ABORTED_BEFORE_GAME_START",
+        "reason": "Coworld 0.1.30 rejected evidentiary metadata outside its four-key episode-job schema.",
+        "episode_started": false,
+        "output": "/private/tmp/proxywar-pf1-mechanism-seat9-e7e1ce9e.aborted-20260721T024434Z-pf1-mechanism-seat9-e7e1ce9e"
+      }
     }
   },
   "gates": {
