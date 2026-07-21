@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "checked_at": "2026-07-21T02:38:11Z",
+  "checked_at": "2026-07-21T05:48:11Z",
   "result": "MICKEY_LOCAL_SUCCESSOR_TERMINAL_VERIFIED",
   "authority": {
     "odin": "sole writable qd1n and league-mutation operator",
@@ -24,12 +24,32 @@
     "studio_clean": true,
     "archive_visible_from_studio": true
   },
+  "final_local_hrafn_archive": {
+    "branch": "archive/hrafn-local-final-20260721",
+    "commit": "65b83f974db4ae4622d559cb97c54e92556090a8",
+    "remote": "origin",
+    "pushed": true,
+    "files": [
+      "scripts/preflight-hrafn-intent-run.mjs",
+      "test/preflight-hrafn-intent-run.test.mjs"
+    ]
+  },
   "local_retirement": {
     "former_worktree": "/Users/olifreuler/proxywar-k1z-hrafn",
     "former_worktree_present": false,
     "retired_worktree": "/Users/olifreuler/proxywar-k1z-hrafn-retired-local-20260721",
     "retired_worktree_registered": true,
-    "dirty_patch_preserved_in_place": true,
+    "dirty_patch_preserved_in_place": false,
+    "retired_worktree_clean": true,
+    "registered_worktrees_before_cleanup": 41,
+    "registered_worktrees_after_cleanup": 5,
+    "clean_worktrees_removed": 36,
+    "preserved_dirty_worktrees": [
+      "/private/tmp/proxywar-id1-intent-20260720",
+      "/private/tmp/proxywar-mickey-incubator-integration-20260721",
+      "/Users/olifreuler/proxywar-auri-hunter",
+      "/Users/olifreuler/proxywar-qd1n-cf1"
+    ],
     "hrafn_processes": 0,
     "hrafn_launch_agents": 0
   },
@@ -53,6 +73,10 @@
     {
       "former_path": "/private/tmp/run-hrafn-dv2-gate.sh",
       "sha256": "5e54cbde8402e2bdcdf22df8a4389caa418805ff8964215c0370cedc1d46ba1d"
+    },
+    {
+      "former_path": "/private/tmp/run-hrafn-e459-reseal-20260721.zsh",
+      "sha256": "fe1298ba40a048441b35461435cf9e12a97e6d8183fc28cdc988ffd0a7f3b25a"
     }
   ],
   "quarantine": {
