@@ -449,6 +449,156 @@ function auditExperience(request, replayRecords, candidate, expectedEpisodes, { 
   };
 }
 
+function auditProbeExperience(request, replayRecords, candidate) {
+  object(request, "hosted probe request");
+  assert(Array.isArray(request.episodes), "hosted probe request episodes must be an array");
+  assert(Array.isArray(replayRecords), "hosted probe replay evidence must be an array");
+  const expectedEpisodes = Number(request.episode_count);
+  assert(Number.isSafeInteger(expectedEpisodes) && expectedEpisodes > 0,
+    "hosted probe request must contain at least one episode");
+  const byEpisodeRequestID = new Map();
+  for (const [index, record] of replayRecords.entries()) {
+    const id = string(record?.episode_request_id, `probe replays[${index}].episode_request_id`);
+    assert(!byEpisodeRequestID.has(id), `duplicate probe replay evidence for ${id}`);
+    byEpisodeRequestID.set(id, record);
+  }
+  const requestEpisodeIDs = request.episodes.map((episode) => episode.id);
+  assert(new Set(requestEpisodeIDs).size === requestEpisodeIDs.length,
+    "hosted probe request has duplicate episode IDs");
+  assert(
+    replayRecords.length === request.episodes.length &&
+      [...byEpisodeRequestID.keys()].every((id) => requestEpisodeIDs.includes(id)),
+    "probe replay evidence set does not exactly match the request",
+  );
+  const episodeCandidate = {
+    marker: candidate.marker,
+    player_name: "K1Z Mickey Mouse",
+    policy_ref: candidate.uploaded_label,
+    policy_version_id: candidate.policy_version_id,
+  };
+  const episodes = request.episodes.map((episode, index) => {
+    const participant = participantFor(
+      episode,
+      episodeCandidate.player_name,
+      episodeCandidate.policy_version_id,
+      episodeCandidate.policy_ref,
+      `hosted probe ${request.id ?? "unknown"} episode ${index + 1}`,
+    );
+    assert(
+      participant.player_id === candidate.player_id,
+      `hosted probe ${request.id ?? "unknown"} episode ${index + 1} player ID mismatch`,
+    );
+    return auditMickeyHostedEpisode(
+      episode,
+      byEpisodeRequestID.get(episode.id),
+      episodeCandidate,
+      `hosted probe ${request.id ?? "unknown"} episode ${index + 1}`,
+    );
+  });
+  const requestGateChecks = requestChecks(request, expectedEpisodes);
+  const decisions = episodes.reduce((sum, episode) => sum + episode.decisions, 0);
+  const accepted = episodes.reduce((sum, episode) => sum + episode.accepted, 0);
+  const rejected = episodes.reduce((sum, episode) => sum + episode.rejected, 0);
+  const unconfirmedAcceptance = episodes.reduce(
+    (sum, episode) => sum + episode.unconfirmed_acceptance,
+    0,
+  );
+  const illegalSelections = episodes.reduce((sum, episode) => sum + episode.illegal_selections, 0);
+  const unexplainedHolds = episodes.reduce((sum, episode) => sum + episode.unexplained_holds, 0);
+  const k1zHarm = episodes.reduce((sum, episode) => sum + episode.k1z_harm_count, 0);
+  const unresolvedTargets = episodes.reduce(
+    (sum, episode) => sum + episode.unresolved_harmful_targets,
+    0,
+  );
+  const markerCount = episodes.reduce((sum, episode) => sum + episode.marker_count, 0);
+  const nondegradedMarkerCount = episodes.reduce(
+    (sum, episode) => sum + episode.nondegraded_marker_count,
+    0,
+  );
+  const invalidMarkerCount = episodes.reduce(
+    (sum, episode) => sum + episode.invalid_marker_count,
+    0,
+  );
+  const checks = {
+    ...requestGateChecks,
+    at_least_one_completed_episode: episodes.length > 0,
+    exact_replay_evidence_count: episodes.length === expectedEpisodes,
+    all_decisions_accepted: decisions > 0 && accepted === decisions,
+    zero_unconfirmed_acceptance: unconfirmedAcceptance === 0,
+    all_selected_actions_legal: illegalSelections === 0,
+    zero_rejected_decisions: rejected === 0,
+    zero_unexplained_holds: unexplainedHolds === 0,
+    zero_k1z_harm: k1zHarm === 0,
+    zero_unresolved_harmful_targets: unresolvedTargets === 0,
+    selected_marker_reached: markerCount >= 1,
+    selected_marker_nondegraded:
+      nondegradedMarkerCount === markerCount && markerCount >= 1,
+    zero_invalid_marker_executions: invalidMarkerCount === 0,
+  };
+  return {
+    request_id: request.id ?? null,
+    status: request.status ?? null,
+    passed: Object.values(checks).every(Boolean),
+    episodes: episodes.length,
+    completed_episodes: Number(request.completed_count ?? 0),
+    wins: episodes.filter((episode) => episode.won).length,
+    decisions,
+    accepted,
+    rejected,
+    unconfirmed_acceptance: unconfirmedAcceptance,
+    illegal_selections: illegalSelections,
+    holds: episodes.reduce((sum, episode) => sum + episode.holds, 0),
+    unexplained_holds: unexplainedHolds,
+    k1z_harm_count: k1zHarm,
+    unresolved_harmful_targets: unresolvedTargets,
+    selected_marker: candidate.marker,
+    marker_count: markerCount,
+    nondegraded_marker_count: nondegradedMarkerCount,
+    invalid_marker_count: invalidMarkerCount,
+    checks,
+    episode_audits: episodes,
+  };
+}
+
+export function auditMickeyHostedProbe({ candidate, probeRequest, probeReplays }) {
+  exactKeys(
+    candidate,
+    [
+      "image_id",
+      "league_id",
+      "marker",
+      "player_id",
+      "policy_ref",
+      "policy_version_id",
+      "source_commit",
+      "uploaded_label",
+    ],
+    "probe candidate",
+  );
+  assert(/^ply_[0-9a-f-]{36}$/i.test(candidate.player_id), "probe candidate.player_id is invalid");
+  assert(/^league_[0-9a-f-]{36}$/i.test(candidate.league_id), "probe candidate.league_id is invalid");
+  assert(/^[0-9a-f]{40}$/.test(candidate.source_commit), "probe candidate.source_commit is invalid");
+  assert(/^sha256:[0-9a-f]{64}$/.test(candidate.image_id), "probe candidate.image_id is invalid");
+  string(candidate.policy_ref, "probe candidate.policy_ref");
+  string(candidate.uploaded_label, "probe candidate.uploaded_label");
+  string(candidate.policy_version_id, "probe candidate.policy_version_id");
+  assert(MARKERS.has(candidate.marker), "probe candidate.marker must be mm1g or mm1c");
+  const probe = auditProbeExperience(probeRequest, probeReplays, candidate);
+  return {
+    schema_version: 1,
+    kind: "mickey_hosted_probe_audit",
+    evidence_scope: "hosted_probe_only",
+    candidate: { ...candidate },
+    probe,
+    confirmation: {
+      experimental_hosted_probe_passed: probe.passed,
+      hosted_4_of_4_passed: false,
+      regression_20_of_20_passed: false,
+      promotion_allowed: false,
+    },
+  };
+}
+
 export function auditMickeyHostedEvidence({
   candidate,
   baseline,
@@ -607,13 +757,44 @@ export async function auditMickeyHostedEvidenceManifest(manifestPath, manifestSh
   });
 }
 
+export async function auditMickeyHostedProbeManifest(manifestPath, manifestSha256) {
+  assert(path.isAbsolute(manifestPath), "manifest path must be absolute");
+  assert(SHA256.test(manifestSha256), "manifest SHA-256 is invalid");
+  const manifestInfo = await lstat(manifestPath).catch(() => null);
+  assert(manifestInfo?.isFile() && !manifestInfo.isSymbolicLink(), "manifest is missing or unsafe");
+  const manifestBytes = await readFile(manifestPath);
+  assert(sha256(manifestBytes) === manifestSha256, "manifest SHA-256 mismatch");
+  let manifest;
+  try {
+    manifest = JSON.parse(manifestBytes.toString("utf8"));
+  } catch (error) {
+    throw new Error(`manifest is invalid JSON: ${error.message}`);
+  }
+  exactKeys(manifest, ["candidate", "kind", "probe", "schema_version"], "manifest");
+  assert(manifest.schema_version === 1, "manifest.schema_version must be 1");
+  assert(manifest.kind === "mickey_hosted_probe_manifest", "manifest.kind is invalid");
+  const directory = path.dirname(manifestPath);
+  const probe = await loadExperience(manifest.probe, directory, "manifest.probe");
+  return auditMickeyHostedProbe({
+    candidate: manifest.candidate,
+    probeRequest: probe.request,
+    probeReplays: probe.replays,
+  });
+}
+
 async function cli(argv) {
   const options = { manifest: null, manifestSha256: null, write: null };
   let requireComplete = false;
+  let probeMode = false;
   for (let index = 0; index < argv.length; index += 1) {
     if (argv[index] === "--require-complete") {
       assert(!requireComplete, "--require-complete is duplicated");
       requireComplete = true;
+      continue;
+    }
+    if (argv[index] === "--probe") {
+      assert(!probeMode, "--probe is duplicated");
+      probeMode = true;
       continue;
     }
     const field = {
@@ -625,14 +806,16 @@ async function cli(argv) {
     options[field] = argv[++index];
   }
   assert(options.manifest && options.manifestSha256, "--manifest and --manifest-sha256 are required");
-  const report = await auditMickeyHostedEvidenceManifest(
-    path.resolve(options.manifest),
-    options.manifestSha256,
-  );
+  const report = probeMode
+    ? await auditMickeyHostedProbeManifest(path.resolve(options.manifest), options.manifestSha256)
+    : await auditMickeyHostedEvidenceManifest(path.resolve(options.manifest), options.manifestSha256);
   const encoded = `${JSON.stringify(report, null, 2)}\n`;
   if (options.write) await writeFile(path.resolve(options.write), encoded, { flag: "wx", mode: 0o600 });
   process.stdout.write(encoded);
-  if (requireComplete && !report.confirmation.hosted_and_regression_evidence_passed) process.exitCode = 2;
+  const complete = probeMode
+    ? report.confirmation.experimental_hosted_probe_passed
+    : report.confirmation.hosted_and_regression_evidence_passed;
+  if (requireComplete && !complete) process.exitCode = 2;
 }
 
 if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {

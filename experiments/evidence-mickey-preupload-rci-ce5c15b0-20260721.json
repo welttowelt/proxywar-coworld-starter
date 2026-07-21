@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "kind": "mickey_preupload_rci",
+  "recorded_at": "2026-07-21T09:08:21Z",
+  "status": "passed",
+  "verdict": "PASS_PREUPLOAD_RCI",
+  "candidate_source_commit": "ce5c15b0a423590340595537ac5d7483e61d41a4",
+  "candidate_image_id": "sha256:0768ff7450e4456755d133cfcf174448364417e6796f3c162bc5ab72ad2c9405",
+  "candidate_policy_ref": "proxywar-agent-llm:mickey-staging-ce5c15b0-amd64",
+  "platform": "linux/amd64",
+  "runtime_user": "node",
+  "runtime_command": [
+    "node",
+    "/app/llm-player.mjs"
+  ],
+  "production_files_byte_identical_to_commit": true,
+  "evaluation_source_absent_from_image": true,
+  "intent_contract_fail_closed": true,
+  "coalition_safety_verified": true,
+  "focused_tests": {
+    "passed": 149,
+    "failed": 0
+  },
+  "upload_wrapper_sha256": "69cacfc16f209f260c3419d86cf0acc6dca7f75d79ad8bcbbba6e549c0bfe16b",
+  "unresolved_violations": []
+}

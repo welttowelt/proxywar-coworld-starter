@@ -4,16 +4,16 @@ import { createHash } from "node:crypto";
 import { readFile } from "node:fs/promises";
 
 const [gatePath, modeFlag] = process.argv.slice(2);
-const requiredAction = modeFlag === "--require-upload"
-  ? "upload"
-  : modeFlag === "--require-submit"
-    ? "submit"
-    : null;
+const requiredAction = ({
+  "--require-upload": "upload",
+  "--require-submit": "submit",
+  "--require-submit-experimental": "submit-experimental",
+})[modeFlag] ?? null;
 
 if (!gatePath || !requiredAction || process.argv.length !== 4) {
   throw new Error(
     "usage: node validate-mickey-mutation-gate.mjs GATE " +
-    "--require-upload|--require-submit",
+    "--require-upload|--require-submit|--require-submit-experimental",
   );
 }
 
@@ -26,6 +26,8 @@ const IMAGE_ID = /^sha256:[0-9a-f]{64}$/;
 const POLICY_NAME = "mickey-mouse-intent";
 const POLICY_LABEL = /^mickey-mouse-intent:v[1-9][0-9]*$/;
 const POLICY_REF = /^[a-z0-9][a-z0-9._/-]*:[A-Za-z0-9][A-Za-z0-9._-]*$/;
+const isSubmission = requiredAction !== "upload";
+const isExperimentalSubmission = requiredAction === "submit-experimental";
 
 const errors = [];
 const receiptCache = new Map();
@@ -135,7 +137,7 @@ const candidateKeys = [
   "image_id",
   "entrypoint",
 ];
-if (requiredAction === "submit") {
+if (isSubmission) {
   candidateKeys.push("uploaded_label", "policy_version_id");
 }
 requireExactKeys(gate.candidate, candidateKeys, "candidate");
@@ -160,7 +162,7 @@ if (!IMAGE_ID.test(gate.candidate?.image_id ?? "")) {
 if (gate.candidate?.entrypoint !== "/app/llm-player.mjs") {
   errors.push("candidate.entrypoint must be /app/llm-player.mjs");
 }
-if (requiredAction === "submit") {
+if (isSubmission) {
   if (!POLICY_LABEL.test(gate.candidate?.uploaded_label ?? "")) {
     errors.push("candidate.uploaded_label must be mickey-mouse-intent:vN");
   }
@@ -190,9 +192,24 @@ const submitGateKeys = [
   "regression_wins",
   "final_rci_passed",
 ];
+const experimentalSubmitGateKeys = [
+  ...uploadGateKeys,
+  "diagnostic_uploaded",
+  "hosted_probe_passed",
+  "hosted_probe_completed_episodes",
+  "hosted_probe_accepted_actions",
+  "hosted_probe_nondegraded_marker_count",
+  "hosted_4_of_4_passed",
+  "regression_20_of_20_passed",
+  "final_rci_passed",
+];
 requireExactKeys(
   gate.gates,
-  requiredAction === "upload" ? uploadGateKeys : submitGateKeys,
+  requiredAction === "upload"
+    ? uploadGateKeys
+    : isExperimentalSubmission
+      ? experimentalSubmitGateKeys
+      : submitGateKeys,
   "gates",
 );
 for (const key of ["source_ready", "local_mechanism_verified", "preupload_rci_passed"]) {
@@ -215,6 +232,21 @@ if (requiredAction === "submit") {
     errors.push("regression gate must be exactly 20/20");
   }
 }
+if (isExperimentalSubmission) {
+  for (const key of ["diagnostic_uploaded", "hosted_probe_passed", "final_rci_passed"]) {
+    if (gate.gates?.[key] !== true) errors.push(`gates.${key} must be true`);
+  }
+  for (const key of [
+    "hosted_probe_completed_episodes",
+    "hosted_probe_accepted_actions",
+    "hosted_probe_nondegraded_marker_count",
+  ]) {
+    if (!positiveInteger(gate.gates?.[key])) errors.push(`gates.${key} must be positive`);
+  }
+  for (const key of ["hosted_4_of_4_passed", "regression_20_of_20_passed"]) {
+    if (gate.gates?.[key] !== false) errors.push(`gates.${key} must remain explicitly false`);
+  }
+}
 
 const uploadEvidenceKeys = ["local_audit", "preupload_rci"];
 const submitEvidenceKeys = [
@@ -223,9 +255,19 @@ const submitEvidenceKeys = [
   "hosted_regression_audit",
   "final_rci",
 ];
+const experimentalSubmitEvidenceKeys = [
+  ...uploadEvidenceKeys,
+  "upload_receipt",
+  "hosted_probe_audit",
+  "final_rci",
+];
 requireExactKeys(
   gate.evidence,
-  requiredAction === "upload" ? uploadEvidenceKeys : submitEvidenceKeys,
+  requiredAction === "upload"
+    ? uploadEvidenceKeys
+    : isExperimentalSubmission
+      ? experimentalSubmitEvidenceKeys
+      : submitEvidenceKeys,
   "evidence",
 );
 
@@ -255,7 +297,12 @@ if (preuploadRci) {
   }
 }
 
-if (requiredAction === "submit") {
+function allTrue(value) {
+  return value !== null && typeof value === "object" && !Array.isArray(value) &&
+    Object.values(value).length > 0 && Object.values(value).every((item) => item === true);
+}
+
+if (isSubmission) {
   const uploadReceipt = await boundReceipt(gate.evidence?.upload_receipt, "evidence.upload_receipt");
   exactCandidate(uploadReceipt, "upload receipt");
   if (uploadReceipt) {
@@ -276,69 +323,123 @@ if (requiredAction === "submit") {
     }
   }
 
-  const hostedEvidence = await boundReceipt(
-    gate.evidence?.hosted_regression_audit,
-    "evidence.hosted_regression_audit",
-  );
-  if (hostedEvidence) {
-    const candidate = hostedEvidence.candidate ?? {};
-    const matched = hostedEvidence.matched_baseline ?? {};
-    const hosted = hostedEvidence.hosted ?? {};
-    const regression = hostedEvidence.regression ?? {};
-    const confirmation = hostedEvidence.confirmation ?? {};
-    const allTrue = (value) =>
-      value !== null && typeof value === "object" && !Array.isArray(value) &&
-      Object.values(value).length > 0 && Object.values(value).every((item) => item === true);
-    if (
-      hostedEvidence.schema_version !== 1 ||
-      hostedEvidence.kind !== "mickey_hosted_evidence_audit" ||
-      hostedEvidence.evidence_scope !== "hosted_and_regression_only"
-    ) {
-      errors.push("hosted/regression receipt is not a Mickey hosted evidence audit");
+  if (requiredAction === "submit") {
+    const hostedEvidence = await boundReceipt(
+      gate.evidence?.hosted_regression_audit,
+      "evidence.hosted_regression_audit",
+    );
+    if (hostedEvidence) {
+      const candidate = hostedEvidence.candidate ?? {};
+      const matched = hostedEvidence.matched_baseline ?? {};
+      const hosted = hostedEvidence.hosted ?? {};
+      const regression = hostedEvidence.regression ?? {};
+      const confirmation = hostedEvidence.confirmation ?? {};
+      if (
+        hostedEvidence.schema_version !== 1 ||
+        hostedEvidence.kind !== "mickey_hosted_evidence_audit" ||
+        hostedEvidence.evidence_scope !== "hosted_and_regression_only"
+      ) {
+        errors.push("hosted/regression receipt is not a Mickey hosted evidence audit");
+      }
+      if (
+        candidate.policy_ref !== gate.candidate?.uploaded_label ||
+        candidate.policy_version_id !== gate.candidate?.policy_version_id ||
+        !["mm1g", "mm1c"].includes(candidate.marker)
+      ) {
+        errors.push("hosted/regression candidate identity does not match the gate");
+      }
+      if (matched.passed !== true || !allTrue(matched.checks)) {
+        errors.push("hosted audit does not prove a matched baseline");
+      }
+      if (
+        hosted.status !== "completed" || hosted.passed !== true ||
+        hosted.episodes !== 4 || hosted.wins !== 4 ||
+        !positiveInteger(hosted.decisions) || hosted.accepted !== hosted.decisions ||
+        hosted.rejected !== 0 || hosted.unconfirmed_acceptance !== 0 ||
+        hosted.illegal_selections !== 0 || hosted.unexplained_holds !== 0 ||
+        hosted.k1z_harm_count !== 0 || hosted.unresolved_harmful_targets !== 0 ||
+        !positiveInteger(hosted.marker_count) ||
+        hosted.nondegraded_marker_count !== hosted.marker_count ||
+        hosted.invalid_marker_count !== 0 || !allTrue(hosted.checks)
+      ) {
+        errors.push("hosted audit does not prove matched clean 4/4 evidence");
+      }
+      if (
+        regression.status !== "completed" || regression.passed !== true ||
+        regression.episodes !== 20 || regression.wins !== 20 ||
+        !positiveInteger(regression.decisions) || regression.accepted !== regression.decisions ||
+        regression.rejected !== 0 || regression.unconfirmed_acceptance !== 0 ||
+        regression.illegal_selections !== 0 || regression.unexplained_holds !== 0 ||
+        regression.k1z_harm_count !== 0 || regression.unresolved_harmful_targets !== 0 ||
+        regression.invalid_marker_count !== 0 || !allTrue(regression.checks)
+      ) {
+        errors.push("regression audit does not prove separate clean 20/20 evidence");
+      }
+      if (
+        confirmation.matched_hosted_4_of_4_passed !== true ||
+        confirmation.separate_regression_20_of_20_passed !== true ||
+        confirmation.hosted_and_regression_evidence_passed !== true ||
+        confirmation.final_rci_still_required !== true ||
+        confirmation.live_identity_submission_membership_still_required !== true ||
+        confirmation.promotion_allowed !== false
+      ) {
+        errors.push("hosted/regression confirmation boundary is invalid");
+      }
     }
-    if (
-      candidate.policy_ref !== gate.candidate?.uploaded_label ||
-      candidate.policy_version_id !== gate.candidate?.policy_version_id ||
-      !["mm1g", "mm1c"].includes(candidate.marker)
-    ) {
-      errors.push("hosted/regression candidate identity does not match the gate");
-    }
-    if (matched.passed !== true || !allTrue(matched.checks)) {
-      errors.push("hosted audit does not prove a matched baseline");
-    }
-    if (
-      hosted.status !== "completed" || hosted.passed !== true ||
-      hosted.episodes !== 4 || hosted.wins !== 4 ||
-      !positiveInteger(hosted.decisions) || hosted.accepted !== hosted.decisions ||
-      hosted.rejected !== 0 || hosted.unconfirmed_acceptance !== 0 ||
-      hosted.illegal_selections !== 0 || hosted.unexplained_holds !== 0 ||
-      hosted.k1z_harm_count !== 0 || hosted.unresolved_harmful_targets !== 0 ||
-      !positiveInteger(hosted.marker_count) ||
-      hosted.nondegraded_marker_count !== hosted.marker_count ||
-      hosted.invalid_marker_count !== 0 || !allTrue(hosted.checks)
-    ) {
-      errors.push("hosted audit does not prove matched clean 4/4 evidence");
-    }
-    if (
-      regression.status !== "completed" || regression.passed !== true ||
-      regression.episodes !== 20 || regression.wins !== 20 ||
-      !positiveInteger(regression.decisions) || regression.accepted !== regression.decisions ||
-      regression.rejected !== 0 || regression.unconfirmed_acceptance !== 0 ||
-      regression.illegal_selections !== 0 || regression.unexplained_holds !== 0 ||
-      regression.k1z_harm_count !== 0 || regression.unresolved_harmful_targets !== 0 ||
-      regression.invalid_marker_count !== 0 || !allTrue(regression.checks)
-    ) {
-      errors.push("regression audit does not prove separate clean 20/20 evidence");
-    }
-    if (
-      confirmation.matched_hosted_4_of_4_passed !== true ||
-      confirmation.separate_regression_20_of_20_passed !== true ||
-      confirmation.hosted_and_regression_evidence_passed !== true ||
-      confirmation.final_rci_still_required !== true ||
-      confirmation.live_identity_submission_membership_still_required !== true ||
-      confirmation.promotion_allowed !== false
-    ) {
-      errors.push("hosted/regression confirmation boundary is invalid");
+  } else {
+    const probeEvidence = await boundReceipt(
+      gate.evidence?.hosted_probe_audit,
+      "evidence.hosted_probe_audit",
+    );
+    if (probeEvidence) {
+      const candidate = probeEvidence.candidate ?? {};
+      const probe = probeEvidence.probe ?? {};
+      const confirmation = probeEvidence.confirmation ?? {};
+      if (
+        probeEvidence.schema_version !== 1 ||
+        probeEvidence.kind !== "mickey_hosted_probe_audit" ||
+        probeEvidence.evidence_scope !== "hosted_probe_only"
+      ) {
+        errors.push("hosted probe receipt is not a Mickey hosted probe audit");
+      }
+      if (
+        candidate.player_id !== gate.expected_player_id ||
+        candidate.league_id !== gate.expected_league_id ||
+        candidate.source_commit !== gate.candidate?.source_commit ||
+        candidate.image_id !== gate.candidate?.image_id ||
+        candidate.policy_ref !== gate.candidate?.policy_ref ||
+        candidate.uploaded_label !== gate.candidate?.uploaded_label ||
+        candidate.policy_version_id !== gate.candidate?.policy_version_id ||
+        !["mm1g", "mm1c"].includes(candidate.marker)
+      ) {
+        errors.push("hosted probe candidate identity does not match the gate");
+      }
+      if (
+        probe.status !== "completed" || probe.passed !== true ||
+        !positiveInteger(probe.episodes) ||
+        probe.completed_episodes !== gate.gates?.hosted_probe_completed_episodes ||
+        probe.episodes !== probe.completed_episodes ||
+        !positiveInteger(probe.decisions) || probe.accepted !== probe.decisions ||
+        probe.accepted !== gate.gates?.hosted_probe_accepted_actions ||
+        probe.rejected !== 0 || probe.unconfirmed_acceptance !== 0 ||
+        probe.illegal_selections !== 0 || probe.unexplained_holds !== 0 ||
+        probe.k1z_harm_count !== 0 || probe.unresolved_harmful_targets !== 0 ||
+        !positiveInteger(probe.marker_count) ||
+        probe.nondegraded_marker_count !== probe.marker_count ||
+        probe.nondegraded_marker_count !== gate.gates?.hosted_probe_nondegraded_marker_count ||
+        probe.invalid_marker_count !== 0 || !allTrue(probe.checks)
+      ) {
+        errors.push("hosted probe audit does not prove a clean nondegraded intent execution");
+      }
+      if (
+        confirmation.experimental_hosted_probe_passed !== true ||
+        confirmation.hosted_4_of_4_passed !== false ||
+        confirmation.regression_20_of_20_passed !== false ||
+        gate.gates?.hosted_4_of_4_passed !== false ||
+        gate.gates?.regression_20_of_20_passed !== false
+      ) {
+        errors.push("experimental hosted-probe confirmation boundary is invalid");
+      }
     }
   }
 

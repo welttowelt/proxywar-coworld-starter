@@ -8,6 +8,8 @@ import test from "node:test";
 import {
   auditMickeyHostedEvidence,
   auditMickeyHostedEvidenceManifest,
+  auditMickeyHostedProbe,
+  auditMickeyHostedProbeManifest,
 } from "../scripts/audit-mickey-hosted-evidence.mjs";
 
 const CANDIDATE = Object.freeze({
@@ -21,6 +23,16 @@ const BASELINE = Object.freeze({
   policy_ref: "mickey-parent:v0",
   policy_version_id: "mickey-parent-0",
 });
+const PROBE_CANDIDATE = Object.freeze({
+  player_id: "ply_11111111-1111-4111-8111-111111111111",
+  league_id: "league_33333333-3333-4333-8333-333333333333",
+  source_commit: "c".repeat(40),
+  image_id: `sha256:${"a".repeat(64)}`,
+  policy_ref: "proxywar-agent-llm:mickey-test-amd64",
+  uploaded_label: "mickey-mouse-intent:v7",
+  policy_version_id: "44444444-4444-4444-8444-444444444444",
+  marker: "mm1g",
+});
 
 function digest(bytes) {
   return createHash("sha256").update(bytes).digest("hex");
@@ -31,6 +43,7 @@ function experienceRequest({
   count,
   policyVersionID = CANDIDATE.policy_version_id,
   playerName = CANDIDATE.player_name,
+  playerID = "ply_mickey",
   opponentVersionID = "odin-v89",
   policyRef = policyVersionID === BASELINE.policy_version_id ? BASELINE.policy_ref : CANDIDATE.policy_ref,
   wins = true,
@@ -55,7 +68,7 @@ function experienceRequest({
       participants: [
         {
           position: 0,
-          player_id: "ply_mickey",
+          player_id: playerID,
           player_name: playerName,
           policy_version_id: policyVersionID,
           label: policyRef,
@@ -120,7 +133,9 @@ function decisionRows(marker, options = {}) {
       reason: `${options.degraded ? "dgd" : "pln"}:atk:${options.wrongMarker ?? marker}`,
       fallbackUsed: options.degraded ? true : false,
       llmPlannerDegraded: options.degraded ? true : false,
-      result: { accepted: options.rejected ? false : true, reason: options.rejected ? "rejected" : "accepted" },
+      result: options.unconfirmed
+        ? { reason: "outcome unavailable" }
+        : { accepted: options.rejected ? false : true, reason: options.rejected ? "rejected" : "accepted" },
     },
   ];
   if (options.k1zHarm) {
@@ -153,6 +168,26 @@ function decisionRows(marker, options = {}) {
       selectedActionMetadata: {},
       legalActionIDs: ["expand:terra-nullius:10", "hold"],
       reason: "rul:h0d",
+      fallbackUsed: true,
+      llmPlannerDegraded: true,
+      result: { accepted: true, reason: "accepted" },
+    });
+  }
+  if (options.unresolvedTarget) {
+    rows.push({
+      agentID: "opportunistic-agent-1",
+      username: CANDIDATE.player_name,
+      turnNumber: 700,
+      selectedLegalActionId: "attack:unknown-local:10",
+      selectedActionKind: "attack",
+      selectedActionMetadata: {
+        targetID: "unknown-local",
+        targetName: "Unknown outsider",
+        troopPercent: 10,
+        expansion: false,
+      },
+      legalActionIDs: ["attack:unknown-local:10", "hold"],
+      reason: "rul:atk",
       fallbackUsed: true,
       llmPlannerDegraded: true,
       result: { accepted: true, reason: "accepted" },
@@ -223,6 +258,65 @@ function evidence(options = {}) {
     hostedReplays,
     regressionRequest,
     regressionReplays,
+  };
+}
+
+function probeEvidence({
+  episodes = 1,
+  wins = false,
+  candidate = PROBE_CANDIDATE,
+  replayOptions = {},
+} = {}) {
+  const probeRequest = experienceRequest({
+    id: "xreq_probe",
+    count: episodes,
+    policyVersionID: candidate.policy_version_id,
+    playerName: CANDIDATE.player_name,
+    playerID: candidate.player_id,
+    policyRef: candidate.uploaded_label,
+    wins,
+  });
+  const probeReplays = probeRequest.episodes.map((episode, index) =>
+    replayRecord(episode, {
+      marker: candidate.marker,
+      winnerSlot: wins ? 0 : 1,
+      ...(index === 0 ? replayOptions : {}),
+    })
+  );
+  return { candidate, probeRequest, probeReplays };
+}
+
+function probeManifestFixture(value = probeEvidence()) {
+  const directory = mkdtempSync(path.join(tmpdir(), "mickey-hosted-probe-audit-"));
+  const writeJson = (name, body) => {
+    const target = path.join(directory, name);
+    const bytes = Buffer.from(`${JSON.stringify(body, null, 2)}\n`);
+    writeFileSync(target, bytes);
+    return { path: name, sha256: digest(bytes) };
+  };
+  const request = writeJson("probe-request.json", value.probeRequest);
+  const replayReferences = value.probeReplays.map((record, index) => {
+    const name = `probe-${index}.replay`;
+    writeFileSync(path.join(directory, name), record.bytes);
+    return {
+      episode_request_id: record.episode_request_id,
+      path: name,
+      sha256: record.sha256,
+    };
+  });
+  const manifest = {
+    schema_version: 1,
+    kind: "mickey_hosted_probe_manifest",
+    candidate: value.candidate,
+    probe: { request, replays: replayReferences },
+  };
+  const manifestReference = writeJson("probe-manifest.json", manifest);
+  return {
+    directory,
+    manifest,
+    manifestPath: path.join(directory, manifestReference.path),
+    manifestSha256: manifestReference.sha256,
+    firstReplayPath: path.join(directory, replayReferences[0].path),
   };
 }
 
@@ -350,5 +444,133 @@ test("the manifest loader verifies every pinned local artifact before auditing",
       manifestReference.sha256,
     ),
     /sha256 mismatch/,
+  );
+});
+
+test("a clean one-or-more-episode hosted probe passes without requiring a win", () => {
+  for (const episodes of [1, 3]) {
+    const report = auditMickeyHostedProbe(probeEvidence({ episodes, wins: false }));
+
+    assert.equal(report.schema_version, 1);
+    assert.equal(report.kind, "mickey_hosted_probe_audit");
+    assert.equal(report.evidence_scope, "hosted_probe_only");
+    assert.deepEqual(report.candidate, PROBE_CANDIDATE);
+    assert.equal(report.probe.status, "completed");
+    assert.equal(report.probe.passed, true);
+    assert.equal(report.probe.episodes, episodes);
+    assert.equal(report.probe.completed_episodes, episodes);
+    assert.ok(report.probe.decisions >= episodes);
+    assert.equal(report.probe.accepted, report.probe.decisions);
+    assert.equal(report.probe.rejected, 0);
+    assert.equal(report.probe.unconfirmed_acceptance, 0);
+    assert.equal(report.probe.illegal_selections, 0);
+    assert.equal(report.probe.unexplained_holds, 0);
+    assert.equal(report.probe.k1z_harm_count, 0);
+    assert.equal(report.probe.unresolved_harmful_targets, 0);
+    assert.ok(report.probe.marker_count >= 1);
+    assert.equal(report.probe.nondegraded_marker_count, report.probe.marker_count);
+    assert.equal(report.probe.invalid_marker_count, 0);
+    assert.equal(report.probe.checks.request_completed, true);
+    assert.equal(report.probe.checks.at_least_one_completed_episode, true);
+    assert.equal(report.probe.checks.all_decisions_accepted, true);
+    assert.equal(report.probe.checks.all_selected_actions_legal, true);
+    assert.equal(report.probe.checks.selected_marker_reached, true);
+    assert.equal(report.probe.checks.selected_marker_nondegraded, true);
+    assert.equal(report.confirmation.experimental_hosted_probe_passed, true);
+    assert.equal(report.confirmation.hosted_4_of_4_passed, false);
+    assert.equal(report.confirmation.regression_20_of_20_passed, false);
+  }
+});
+
+for (const [name, replayOptions, counter] of [
+  ["rejected action", { rejected: true }, "rejected"],
+  ["unconfirmed action", { unconfirmed: true }, "unconfirmed_acceptance"],
+  ["illegal action", { illegal: true }, "illegal_selections"],
+  ["hold", { unexplainedHold: true }, "unexplained_holds"],
+  ["K1Z harm", { k1zHarm: true }, "k1z_harm_count"],
+  ["unresolved harmful target", { unresolvedTarget: true }, "unresolved_harmful_targets"],
+  ["invalid marker execution", { wrongMarker: "mm1c" }, "invalid_marker_count"],
+]) {
+  test(`hosted probe rejects a replay-bound ${name}`, () => {
+    const report = auditMickeyHostedProbe(probeEvidence({ replayOptions }));
+
+    assert.ok(report.probe[counter] > 0);
+    assert.equal(report.probe.passed, false);
+    assert.equal(report.confirmation.experimental_hosted_probe_passed, false);
+    assert.equal(report.confirmation.hosted_4_of_4_passed, false);
+    assert.equal(report.confirmation.regression_20_of_20_passed, false);
+  });
+}
+
+test("hosted probe rejects a reached marker when its execution is degraded", () => {
+  const report = auditMickeyHostedProbe(probeEvidence({ replayOptions: { degraded: true } }));
+
+  assert.equal(report.probe.marker_count, 1);
+  assert.equal(report.probe.nondegraded_marker_count, 0);
+  assert.equal(report.probe.checks.selected_marker_nondegraded, false);
+  assert.equal(report.probe.passed, false);
+  assert.equal(report.confirmation.experimental_hosted_probe_passed, false);
+});
+
+test("hosted probe rejects forged replay bytes even when the JSON remains parseable", () => {
+  const value = probeEvidence();
+  value.probeReplays[0] = {
+    ...value.probeReplays[0],
+    bytes: Buffer.concat([value.probeReplays[0].bytes, Buffer.from(" ")]),
+  };
+
+  assert.throws(
+    () => auditMickeyHostedProbe(value),
+    /sha256 mismatch/,
+  );
+});
+
+test("hosted probe binds the exact player, uploaded label, and policy version to the request", () => {
+  for (const candidatePatch of [
+    { uploaded_label: "mickey-mouse-intent:v8" },
+    { policy_version_id: "55555555-5555-4555-8555-555555555555" },
+    { player_id: "ply_22222222-2222-4222-8222-222222222222" },
+  ]) {
+    const value = probeEvidence();
+    value.candidate = { ...value.candidate, ...candidatePatch };
+    assert.throws(
+      () => auditMickeyHostedProbe(value),
+      /participant|candidate|policy|player/i,
+    );
+  }
+});
+
+test("hosted probe manifest binds the complete candidate and every local artifact", async () => {
+  const fixture = probeManifestFixture();
+  const report = await auditMickeyHostedProbeManifest(
+    fixture.manifestPath,
+    fixture.manifestSha256,
+  );
+
+  assert.deepEqual(report.candidate, PROBE_CANDIDATE);
+  assert.equal(report.confirmation.experimental_hosted_probe_passed, true);
+
+  writeFileSync(fixture.firstReplayPath, "{}\n");
+  await assert.rejects(
+    auditMickeyHostedProbeManifest(fixture.manifestPath, fixture.manifestSha256),
+    /sha256 mismatch/,
+  );
+});
+
+test("hosted probe manifest hash prevents candidate substitution", async () => {
+  const fixture = probeManifestFixture();
+  const substituted = {
+    ...fixture.manifest,
+    candidate: {
+      ...fixture.manifest.candidate,
+      source_commit: "d".repeat(40),
+      image_id: `sha256:${"b".repeat(64)}`,
+    },
+  };
+  writeFileSync(fixture.manifestPath, `${JSON.stringify(substituted, null, 2)}\n`);
+
+  await assert.rejects(
+    auditMickeyHostedProbeManifest(fixture.manifestPath, fixture.manifestSha256),
+    /manifest SHA-256 mismatch/,
   );
 });

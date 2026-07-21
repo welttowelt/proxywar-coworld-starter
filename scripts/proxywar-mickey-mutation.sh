@@ -67,7 +67,7 @@ usage() {
   cat >&2 <<'EOF'
 usage:
   proxywar-mickey-mutation.sh status [--json]
-  proxywar-mickey-mutation.sh run upload|submit ABS_GATE ABS_RECEIPT
+  proxywar-mickey-mutation.sh run upload|submit|submit-experimental ABS_GATE ABS_RECEIPT
   proxywar-mickey-mutation.sh reap-stale TOKEN
 
 Mutation commands require all of:
@@ -76,11 +76,14 @@ Mutation commands require all of:
   PROXYWAR_MICKEY_EXPECTED_PLAYER_ID    exact ply_ UUID for Mickey
   PROXYWAR_MICKEY_EXPECTED_LEAGUE_ID    exact league_ UUID
 
-The dedicated account must expose exactly one player: the expected active
-Mickey identity. The wrapper constructs the complete Coworld command from an
-immutable gate; callers cannot supply Coworld arguments. Upload requires the
-local and pre-upload RCI gates. Submit additionally requires bound diagnostic,
-hosted 4/4, regression 20/20, and final RCI evidence.
+The dedicated account must expose exactly one selected player: the expected
+active Mickey identity. Other unselected players are never mutated. The wrapper
+constructs the complete Coworld command from an immutable gate; callers cannot
+supply Coworld arguments. Upload requires the local and pre-upload RCI gates.
+Standard submit additionally requires bound diagnostic, hosted 4/4, regression
+20/20, and final RCI evidence. Submit-experimental is the separately authorized
+fresh-entry path: it requires one clean hosted intent probe and final RCI while
+recording both standard promotion gates as explicitly open.
 EOF
 }
 
@@ -225,7 +228,7 @@ verify_player_identity() {
   ACTIVE_PLAYER_ID=""
   EXCLUSIVE_PLAYER_ROSTER=false
   validate_local_identity_configuration || return 1
-  local rows total expected_count active_count active_id
+  local rows expected_count active_count active_id
   rows="$(coworld_read player list --server "$SERVER_URL" --json 2>/dev/null)" || {
     IDENTITY_STATE="query_failed"
     IDENTITY_REASON="dedicated Mickey player query failed"
@@ -236,7 +239,6 @@ verify_player_identity() {
     IDENTITY_REASON="dedicated Mickey player query did not return an array"
     return 1
   }
-  total="$(print -r -- "$rows" | "$JQ_BIN" -r 'length')" || return 1
   expected_count="$(print -r -- "$rows" | "$JQ_BIN" -r --arg id "$EXPECTED_PLAYER_ID" \
     '[.[] | select(.id == $id)] | length')" || return 1
   active_count="$(print -r -- "$rows" | "$JQ_BIN" -r \
@@ -244,11 +246,6 @@ verify_player_identity() {
   active_id="$(print -r -- "$rows" | "$JQ_BIN" -r \
     '[.[] | select(.active == true)] | if length == 1 then .[0].id // "" else "" end')" ||
     return 1
-  if (( total != 1 )); then
-    IDENTITY_STATE="same_account"
-    IDENTITY_REASON="dedicated credential exposes a non-exclusive player roster; same-account reuse is blocked"
-    return 1
-  fi
   if (( expected_count == 0 )); then
     IDENTITY_STATE="player_absent"
     IDENTITY_REASON="expected Mickey player is absent from the dedicated account"
@@ -578,7 +575,8 @@ run_action() {
   MODE="$2"
   GATE="$3"
   RECEIPT="$4"
-  [[ "$MODE" == "upload" || "$MODE" == "submit" ]] || { usage; return 64; }
+  [[ "$MODE" == "upload" || "$MODE" == "submit" ||
+    "$MODE" == "submit-experimental" ]] || { usage; return 64; }
   [[ "$GATE" == /* && -f "$GATE" && ! -L "$GATE" ]] || {
     print -r -- "ABS_GATE must be an existing absolute regular file" >&2
     return 64

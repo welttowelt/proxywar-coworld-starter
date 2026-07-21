@@ -324,6 +324,119 @@ function submitGate(context) {
   };
 }
 
+function experimentalSubmitGate(context) {
+  const upload = receipt(context.evidence, "experimental-upload", {
+    schema_version: 1,
+    lane: "mickey",
+    mode: "upload",
+    status: "completed",
+    active_player_id: PLAYER,
+    expected_player_id: PLAYER,
+    league_id: LEAGUE,
+    credential_isolated: true,
+    exclusive_player_roster: true,
+    candidate_source_commit: context.source,
+    candidate_image_id: IMAGE,
+    candidate_policy_ref: "proxywar-agent-llm:mickey-test-amd64",
+    uploaded_label: LABEL,
+    policy_version_id: POLICY_ID,
+  });
+  const hostedProbe = receipt(context.evidence, "hosted-probe", {
+    schema_version: 1,
+    kind: "mickey_hosted_probe_audit",
+    evidence_scope: "hosted_probe_only",
+    candidate: {
+      player_id: PLAYER,
+      league_id: LEAGUE,
+      source_commit: context.source,
+      image_id: IMAGE,
+      policy_ref: "proxywar-agent-llm:mickey-test-amd64",
+      uploaded_label: LABEL,
+      policy_version_id: POLICY_ID,
+      marker: "mm1g",
+    },
+    probe: {
+      status: "completed",
+      passed: true,
+      episodes: 1,
+      completed_episodes: 1,
+      decisions: 2,
+      accepted: 2,
+      rejected: 0,
+      unconfirmed_acceptance: 0,
+      illegal_selections: 0,
+      unexplained_holds: 0,
+      k1z_harm_count: 0,
+      unresolved_harmful_targets: 0,
+      marker_count: 1,
+      nondegraded_marker_count: 1,
+      invalid_marker_count: 0,
+      checks: {
+        request_completed: true,
+        at_least_one_completed_episode: true,
+        all_decisions_accepted: true,
+        all_selected_actions_legal: true,
+        zero_rejected_decisions: true,
+        zero_unconfirmed_acceptance: true,
+        zero_illegal_selections: true,
+        zero_unexplained_holds: true,
+        zero_k1z_harm: true,
+        zero_unresolved_harmful_targets: true,
+        selected_marker_reached: true,
+        selected_marker_nondegraded: true,
+        zero_invalid_marker_executions: true,
+      },
+    },
+    confirmation: {
+      experimental_hosted_probe_passed: true,
+      hosted_4_of_4_passed: false,
+      regression_20_of_20_passed: false,
+    },
+  });
+  const finalRci = receipt(context.evidence, "experimental-final-rci", {
+    status: "passed",
+    verdict: "PASS_RCI",
+    candidate_source_commit: context.source,
+    candidate_image_id: IMAGE,
+    candidate_policy_version_id: POLICY_ID,
+    unresolved_violations: [],
+  });
+  const common = uploadGate(context);
+  return {
+    ...common,
+    action: "submit-experimental",
+    candidate: {
+      ...common.candidate,
+      uploaded_label: LABEL,
+      policy_version_id: POLICY_ID,
+    },
+    gates: {
+      ...common.gates,
+      diagnostic_uploaded: true,
+      hosted_probe_passed: true,
+      hosted_probe_completed_episodes: 1,
+      hosted_probe_accepted_actions: 2,
+      hosted_probe_nondegraded_marker_count: 1,
+      hosted_4_of_4_passed: false,
+      regression_20_of_20_passed: false,
+      final_rci_passed: true,
+    },
+    evidence: {
+      ...common.evidence,
+      upload_receipt: upload,
+      hosted_probe_audit: hostedProbe,
+      final_rci: finalRci,
+    },
+  };
+}
+
+function rewriteBoundReceipt(bound, mutate) {
+  const value = JSON.parse(readFileSync(bound.path, "utf8"));
+  mutate(value);
+  writeJson(bound.path, value);
+  return binding(bound.path);
+}
+
 function environment(context, extra = {}) {
   return {
     ...process.env,
@@ -348,6 +461,15 @@ function invoke(context, args, extra = {}) {
     cwd: root,
     encoding: "utf8",
     env: environment(context, extra),
+    timeout: 30_000,
+  });
+}
+
+function validateGate(context, flag) {
+  return spawnSync(process.execPath, [validator, context.gate, flag], {
+    cwd: root,
+    encoding: "utf8",
+    env: environment(context),
     timeout: 30_000,
   });
 }
@@ -395,7 +517,7 @@ test("same primary credential is refused before any account query or mutation", 
   assert.equal(recorded.exclusive_player_roster, false);
 });
 
-test("a non-exclusive roster is refused as same-account reuse", (t) => {
+test("an unselected historical player does not prevent an exact Mickey mutation", (t) => {
   const context = fixture({
     roster: [
       { id: PLAYER, name: "K1Z Mickey Mouse", active: true },
@@ -404,15 +526,14 @@ test("a non-exclusive roster is refused as same-account reuse", (t) => {
   });
   t.after(() => rmSync(context.directory, { recursive: true, force: true }));
   writeJson(context.gate, uploadGate(context));
-  const receiptPath = path.join(context.receipts, "blocked.json");
+  const receiptPath = path.join(context.receipts, "selected-mickey.json");
   const result = invoke(context, ["run", "upload", context.gate, receiptPath]);
-  assert.equal(result.status, 78, result.stderr);
-  assert.match(result.stderr, /non-exclusive player roster/);
-  assert.equal(existsSync(context.commandLog), false);
+  assert.equal(result.status, 0, result.stderr);
+  assert.equal(existsSync(context.commandLog), true);
   const recorded = JSON.parse(readFileSync(receiptPath, "utf8"));
-  assert.equal(recorded.status, "blocked");
+  assert.equal(recorded.status, "completed");
   assert.equal(recorded.credential_isolated, true);
-  assert.equal(recorded.exclusive_player_roster, false);
+  assert.equal(recorded.exclusive_player_roster, true);
 });
 
 test("a dedicated account without the pinned Mickey player is refused as absent", (t) => {
@@ -516,6 +637,176 @@ test("submit constructs only the evidence-bound label after 4/4, 20/20, and RCI"
   assert.equal(recorded.mode, "submit");
   assert.equal(recorded.uploaded_label, LABEL);
   assert.equal(recorded.policy_version_id, POLICY_ID);
+});
+
+test("the experimental validator accepts one fully bound safe hosted probe while standard gates stay open", (t) => {
+  const context = fixture();
+  t.after(() => rmSync(context.directory, { recursive: true, force: true }));
+  writeJson(context.gate, experimentalSubmitGate(context));
+  const result = validateGate(context, "--require-submit-experimental");
+  assert.equal(result.status, 0, result.stderr);
+});
+
+test("submit-experimental constructs the exact evidence-bound submit command without weakening standard submit", (t) => {
+  const context = fixture();
+  t.after(() => rmSync(context.directory, { recursive: true, force: true }));
+  writeJson(context.gate, experimentalSubmitGate(context));
+  const gateSha = sha256File(context.gate);
+  const receiptPath = path.join(context.receipts, "submit-experimental.json");
+  const result = invoke(context, [
+    "run", "submit-experimental", context.gate, receiptPath,
+  ]);
+  assert.equal(result.status, 0, result.stderr);
+  assert.deepEqual(readFileSync(context.commandLog, "utf8").trim().split("\n"), [
+    "submit",
+    LABEL,
+    "--league",
+    LEAGUE,
+    "--no-open-browser",
+    "--auto-champion",
+    "always",
+    "--server",
+    SERVER,
+  ]);
+  const recorded = JSON.parse(readFileSync(receiptPath, "utf8"));
+  assert.equal(recorded.status, "completed");
+  assert.equal(recorded.mode, "submit-experimental");
+  assert.equal(recorded.active_player_id, PLAYER);
+  assert.equal(recorded.expected_player_id, PLAYER);
+  assert.equal(recorded.league_id, LEAGUE);
+  assert.equal(recorded.candidate_source_commit, context.source);
+  assert.equal(recorded.candidate_image_id, IMAGE);
+  assert.equal(recorded.gate_snapshot_sha256, gateSha);
+  assert.equal(recorded.uploaded_label, LABEL);
+  assert.equal(recorded.policy_version_id, POLICY_ID);
+});
+
+test("submit-experimental rejects a missing hosted probe before mutation", (t) => {
+  const context = fixture();
+  t.after(() => rmSync(context.directory, { recursive: true, force: true }));
+  const gate = experimentalSubmitGate(context);
+  delete gate.evidence.hosted_probe_audit;
+  writeJson(context.gate, gate);
+  const result = invoke(context, [
+    "run", "submit-experimental", context.gate,
+    path.join(context.receipts, "missing-probe.json"),
+  ]);
+  assert.equal(result.status, 78, result.stderr);
+  assert.match(result.stderr, /submit-experimental gate validation failed/);
+  assert.equal(existsSync(context.commandLog), false);
+});
+
+test("submit-experimental rejects a hosted probe whose bytes do not match its binding", (t) => {
+  const context = fixture();
+  t.after(() => rmSync(context.directory, { recursive: true, force: true }));
+  const gate = experimentalSubmitGate(context);
+  const probePath = gate.evidence.hosted_probe_audit.path;
+  writeFileSync(probePath, `${readFileSync(probePath, "utf8")} `);
+  writeJson(context.gate, gate);
+  const result = invoke(context, [
+    "run", "submit-experimental", context.gate,
+    path.join(context.receipts, "forged-probe.json"),
+  ]);
+  assert.equal(result.status, 78, result.stderr);
+  assert.match(result.stderr, /submit-experimental gate validation failed/);
+  assert.equal(existsSync(context.commandLog), false);
+});
+
+for (const unsafeField of [
+  "rejected",
+  "unconfirmed_acceptance",
+  "illegal_selections",
+  "unexplained_holds",
+  "k1z_harm_count",
+  "unresolved_harmful_targets",
+  "invalid_marker_count",
+]) {
+  test(`submit-experimental rejects hosted probe safety harm in ${unsafeField}`, (t) => {
+    const context = fixture();
+    t.after(() => rmSync(context.directory, { recursive: true, force: true }));
+    const gate = experimentalSubmitGate(context);
+    gate.evidence.hosted_probe_audit = rewriteBoundReceipt(
+      gate.evidence.hosted_probe_audit,
+      (probe) => {
+        probe.probe[unsafeField] = 1;
+      },
+    );
+    writeJson(context.gate, gate);
+    const result = invoke(context, [
+      "run", "submit-experimental", context.gate,
+      path.join(context.receipts, `unsafe-${unsafeField}.json`),
+    ]);
+    assert.equal(result.status, 78, result.stderr);
+    assert.match(result.stderr, /submit-experimental gate validation failed/);
+    assert.equal(existsSync(context.commandLog), false);
+  });
+}
+
+test("submit-experimental requires an accepted nondegraded mm1g or mm1c marker", (t) => {
+  const context = fixture();
+  t.after(() => rmSync(context.directory, { recursive: true, force: true }));
+  const gate = experimentalSubmitGate(context);
+  gate.evidence.hosted_probe_audit = rewriteBoundReceipt(
+    gate.evidence.hosted_probe_audit,
+    (probe) => {
+      probe.candidate.marker = "not-a-mickey-marker";
+      probe.probe.nondegraded_marker_count = 0;
+    },
+  );
+  writeJson(context.gate, gate);
+  const result = invoke(context, [
+    "run", "submit-experimental", context.gate,
+    path.join(context.receipts, "invalid-marker.json"),
+  ]);
+  assert.equal(result.status, 78, result.stderr);
+  assert.match(result.stderr, /submit-experimental gate validation failed/);
+  assert.equal(existsSync(context.commandLog), false);
+});
+
+for (const openGate of ["hosted_4_of_4_passed", "regression_20_of_20_passed"]) {
+  test(`submit-experimental rejects a false claim that ${openGate} is closed`, (t) => {
+    const context = fixture();
+    t.after(() => rmSync(context.directory, { recursive: true, force: true }));
+    const gate = experimentalSubmitGate(context);
+    gate.gates[openGate] = true;
+    writeJson(context.gate, gate);
+    const result = invoke(context, [
+      "run", "submit-experimental", context.gate,
+      path.join(context.receipts, `false-${openGate}.json`),
+    ]);
+    assert.equal(result.status, 78, result.stderr);
+    assert.match(result.stderr, /submit-experimental gate validation failed/);
+    assert.equal(existsSync(context.commandLog), false);
+  });
+}
+
+test("submit-experimental rejects a gate player that differs from the pinned Mickey identity", (t) => {
+  const context = fixture();
+  t.after(() => rmSync(context.directory, { recursive: true, force: true }));
+  const gate = experimentalSubmitGate(context);
+  gate.expected_player_id = OTHER_PLAYER;
+  writeJson(context.gate, gate);
+  const result = invoke(context, [
+    "run", "submit-experimental", context.gate,
+    path.join(context.receipts, "wrong-player.json"),
+  ]);
+  assert.equal(result.status, 78, result.stderr);
+  assert.match(result.stderr, /gate player ID does not match the exact expected Mickey identity/);
+  assert.equal(existsSync(context.commandLog), false);
+});
+
+test("free-form Coworld arguments are rejected for submit-experimental before identity lookup", (t) => {
+  const context = fixture();
+  t.after(() => rmSync(context.directory, { recursive: true, force: true }));
+  writeJson(context.gate, experimentalSubmitGate(context));
+  const result = invoke(context, [
+    "run", "submit-experimental", context.gate,
+    path.join(context.receipts, "forbidden-experimental.json"),
+    "--", "submit",
+  ]);
+  assert.equal(result.status, 64);
+  assert.equal(existsSync(context.queryLog), false);
+  assert.equal(existsSync(context.commandLog), false);
 });
 
 test("free-form Coworld arguments are rejected before mutation", (t) => {
