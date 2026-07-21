@@ -1,16 +1,16 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T02:03:36Z",
-  "cycle_id": "odin-pf1-preregister-20260721",
+  "updated_at": "2026-07-21T02:24:05Z",
+  "cycle_id": "odin-20260721T022138Z-64992",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "pf1_preregistered_pre_source",
+  "state": "pf1_source_verified_pre_image_rci",
   "arm": {
     "id": "pf1",
     "name": "first_strike_pvp_floor",
     "branch": "rci/pf1-first-strike-pvp-floor",
     "parent_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
-    "candidate_commit": null,
+    "candidate_commit": "767b9eb4cff3effa57d3d521427dad700065541e",
     "preregistration": "experiments/preregister-qd1n-pf1-first-strike-pvp-floor-pangaea-20260721.json",
     "closed": false,
     "verdict": null
@@ -65,13 +65,23 @@
     "candidate_attack_multiple": 1.912,
     "replay_hash": "ec8a82e49ca6fbf77cafcea4ff5f7b7dffbbf3e87ce18793dc58fdc97b5a7923",
     "turn_record_hash": "3631d8cb65976b90373deb79e856c67ae88bac165a781c11d8c777e8f2320313",
-    "fixture_integrity": "OBSERVED_FIELDS_PARENT_REPRODUCED",
+    "fixture_integrity": "HASH_BOUND_CANONICAL_FIXTURE_PARENT_REPRODUCED",
+    "fixture_commit": "a18095c973a3e00cc4098ecb5a0a943c747acaf2",
+    "fixture_sha256": "71f2a15ae414dc89cc892d76f571097ea82fd95064aaef1a1b97d439edea78b7",
+    "source_test": {
+      "parent_selected_action": "attack:idjkf73n:10",
+      "parent_policy_marker": null,
+      "candidate_selected_action": "attack:idjkf73n:25",
+      "candidate_policy_marker": "pf1",
+      "targeted_tests": "16/16",
+      "full_suite": "163/163"
+    },
     "preregistration": "experiments/preregister-qd1n-pf1-first-strike-pvp-floor-pangaea-20260721.json"
   },
   "gates": {
-    "source_ready": false,
-    "fixture_hash_bound": false,
-    "red_regression_reproduced": false,
+    "source_ready": true,
+    "fixture_hash_bound": true,
+    "red_regression_reproduced": true,
     "image_verified": false,
     "local_mechanism_verified": false,
     "diagnostic_uploaded": false,
@@ -88,6 +98,6 @@
     "clean_local_bedrock_available": false,
     "rule": "PF1 is a post-selector deterministic reroute and must not depend on planner output or weaken the zero-degradation gate."
   },
-  "next_automatic_transition": "Materialize the hash-bound R589 turn-4900 canonical red fixture on exact parent 1ccaff73. The parent must select unmarked attack:idjkf73n:10 from observed fields only. Implement only PF1's globally first-contact, same-target 5/3 floor reroute after the red test fails; run the full suite and stop on any boundary drift. Do not start Coworld, upload, or mutate league state before source and RCI gates pass.",
+  "next_automatic_transition": "Run one fresh fail-closed pre-image RCI on candidate 767b9eb4 against parent 1ccaff73 and the hash-bound R589 turn-4900 fixture. Audit exact guard reach, one-shot permanence, K1Z protection, marker non-stacking, same-target selection, and fail-open behavior. If and only if RCI passes, build and verify the exact linux/amd64 candidate image in a later cycle. Do not start Coworld, upload, or mutate league state in this transition.",
   "prior_verified_champion_preserved": true
 }
