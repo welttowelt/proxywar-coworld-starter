@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-07-21T02:38:11Z",
+  "result": "MICKEY_LOCAL_SUCCESSOR_TERMINAL_VERIFIED",
+  "authority": {
+    "odin": "sole writable qd1n and league-mutation operator",
+    "mickey": "sole local source, evaluation, Docker, and CPU-fanout successor under the mickey runner lease",
+    "hrafn": "Studio-only hrafn-fylking operator with no local runner or identity window",
+    "kimi": "external strategy adviser only"
+  },
+  "canonical_handover": {
+    "file": "HANDOVER.md",
+    "commit": "a207c8bdccbc1371f8fcb45597df1f728a3e02b1"
+  },
+  "hrafn_patch_preservation": {
+    "source_worktree_commit": "06c1c8794cbde3668230fb9508e39a4cb2cfc5cd",
+    "archive_branch": "archive/hrafn-local-preflight-20260721",
+    "archive_commit": "91cbc37f57a0097c16b970bd03d75d4987d0f9eb",
+    "changed_file": "scripts/preflight-hrafn-intent-run.mjs",
+    "studio_endpoint": "odin@100.86.99.100",
+    "studio_repository": "/Users/odin/proxywar-k1z-hrafn",
+    "studio_branch": "feature/k1z-hrafn-fylking",
+    "studio_commit": "06c1c8794cbde3668230fb9508e39a4cb2cfc5cd",
+    "studio_clean": true,
+    "archive_visible_from_studio": true
+  },
+  "local_retirement": {
+    "former_worktree": "/Users/olifreuler/proxywar-k1z-hrafn",
+    "former_worktree_present": false,
+    "retired_worktree": "/Users/olifreuler/proxywar-k1z-hrafn-retired-local-20260721",
+    "retired_worktree_registered": true,
+    "dirty_patch_preserved_in_place": true,
+    "hrafn_processes": 0,
+    "hrafn_launch_agents": 0
+  },
+  "quarantined_bypasses": [
+    {
+      "former_path": "/private/tmp/upload-hrafn-dv2-diagnostic.sh",
+      "sha256": "4db711ecbed16861b3c4e42ae3fe2b9c4527783a563149e61fd0d743f474faae"
+    },
+    {
+      "former_path": "/private/tmp/upload-hrafn-dv3-diagnostic.sh",
+      "sha256": "783c5f15a8b15c8d964f3312dc09195e1cb5507d70d41cc7f907851f0248b801"
+    },
+    {
+      "former_path": "/private/tmp/run-hrafn-dv1-gate.sh",
+      "sha256": "a254fbf264728202fc6798efde61a931f1a2d56901002f85644c30bb1d91b931"
+    },
+    {
+      "former_path": "/private/tmp/run-hrafn-dv1-pair.sh",
+      "sha256": "fed814567b6c8f319f0da665ff9df54dd9f60ff3473416483e64b1de164ea67b"
+    },
+    {
+      "former_path": "/private/tmp/run-hrafn-dv2-gate.sh",
+      "sha256": "5e54cbde8402e2bdcdf22df8a4389caa418805ff8964215c0370cedc1d46ba1d"
+    }
+  ],
+  "quarantine": {
+    "directory": "/private/tmp/proxywar-retired-hrafn-local-20260721",
+    "filename_suffix": ".disabled",
+    "mode": "0444"
+  },
+  "live_verification": {
+    "active_player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "active_player_name": "K1Z odin free",
+    "hrafn_player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "hrafn_active": false,
+    "runner_state": "free",
+    "qd1n_mutation_state": "free",
+    "canonical_hrafn_runner_probe_exit": 64,
+    "canonical_hrafn_runner_probe_created_output": false
+  },
+  "mutations": {
+    "coworld_episode_started": false,
+    "identity_changed": false,
+    "upload": false,
+    "submission": false,
+    "membership": false,
+    "champion": false
+  },
+  "scope_guard": "Historical Hrafn worktrees, images, and replays remain evidence only. The configured local operator path is Mickey; Hrafn continues only from its clean Studio repository."
+}
