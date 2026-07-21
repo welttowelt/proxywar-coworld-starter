@@ -40,6 +40,8 @@ credit for a name, an upload, a local anecdote, or a leaderboard snapshot alone.
 | v29 hosted | `0/4`; new dominance band had no credible strike window | rejected |
 | v30 hosted | `0/4`; veto fired on 230 decisions, 211 productive reranks | mechanism active, policy rejected |
 | RCI protocol | preflight validates reach, trace independence, marker, baseline, `4/4`, and `20/20` | enforced |
+| Mickey r9b CPU | all `8/8` remote episode receipt gates passed; one SSH refusal before the fourth remote hash triggered a shared-executor cascade; four exact workers retired | transport-aborted, no policy verdict |
+| Mickey r9c preflight | pinned retry-and-sibling-drain repair; `301/301` tests; deterministic bundle and relocated Linux lifecycle receipt unchanged; zero-network dry-run valid | ready for diagnostic launch only |
 | v14 current control | `0/4`; Auri `4/4`; reserve 0.48 at Auri's 1.66x turn-1900 entry in every episode | weak-seat opening confirmed |
 | v24 requalified parent | 28 replay-derived reserve interventions; prior `3/4` on the same roster | diagnostic parent only |
 | v31 hosted | `1/4`; opening reserve fired 28 times; bank-build fired zero times; four holds | rejected, no league change |

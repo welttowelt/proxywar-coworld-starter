@@ -1,5 +1,26 @@
 # Hosted policy experiments
 
+## Mickey r9b transport RCI and r9c repair, 2026-07-21
+
+The r9b CPU screen produced no policy verdict. All eight candidate/control
+episode commands passed their stable remote receipt gates, and three of four
+workers built their artifact manifests. The fourth worker then received one
+SSH connection refusal before remote hashing. The ordinary pair failure stopped
+the shared executor, terminating the three concurrent result fetches and
+turning one transport fault into a four-pair abort. All four exact worker
+records were subsequently retired with no current-run resource left unresolved.
+
+Commit `cc60a0e9` adds bounded hash/fetch retry after exact identity, endpoint,
+and account-key revalidation; clears only the exact partial fetch child before
+retry; and lets admitted siblings drain after ordinary pair failure. Explicit
+signals, the two-hour watchdog, and serialized create failure still stop all
+children. The complete suite passes `301/301`. The r9c manifest pins runner
+SHA-256 `04a48de...9cd6db8`, unchanged deterministic bundle SHA-256
+`c959112b...75a729`, and the passing relocated Linux lifecycle receipt. r9c is
+ready for a fresh diagnostic launch; it remains non-promotional by contract.
+Machine-readable record:
+`experiments/diagnosis-mickey-r9b-hash-fetch-transport-rci-20260721.json`.
+
 ## Pangaea seat-2 A/B, 2026-07-12
 
 Goal: test whether preserving an active favorable target finish across a Claude
