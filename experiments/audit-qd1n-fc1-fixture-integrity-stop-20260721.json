@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-21T01:30:57Z",
+  "cycle_id": "odin-fc1-fixture-stop-20260721",
+  "arm": "fc1",
+  "name": "deterministic_finish_continuity",
+  "status": "STOP_PRE_SOURCE_FIXTURE_INTEGRITY",
+  "parent": {
+    "commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "live_policy": "qd1n:v89"
+  },
+  "replay": {
+    "round": 588,
+    "episode_id": "8168e9e6-a863-499d-a510-1fbf30bebe1a",
+    "path": "/private/tmp/r588-68953143.replay",
+    "sha256": "d97f11715f04eb70cfaf47d9864547bdccdafa2c93adc68101123940189232be",
+    "decisions_sha256": "5770c2f6953efad310c1c2f1cb0e95ab1587196e52e4f7db28e296566a083dd3",
+    "turn_record_sha256": "807e1b1d5446c8c1e8a25b4b087d9e698794fb9e4744720038843b1b110417de",
+    "ordered_legal_ids_sha256": "ce7c623db2f41af9d631bdb91c5d0efc305f5db56ffd8b9be4f7acd7accce8ef",
+    "visible_history_sha256": "5998d5c5e86d64452e4224db659d5b2de4de784f201c4558ddd69a5383055c85"
+  },
+  "observed_cell": {
+    "map": "World",
+    "turn": 11100,
+    "selected_action": "build:Port:1435684",
+    "accepted": true,
+    "recommended_legal_action": "attack:idjkf73n:25",
+    "target": "RelhAlpha",
+    "target_id": "idjkf73n",
+    "relative_troop_ratio": 1.44,
+    "target_tile_share": 0.17,
+    "recent_target_attack_count": 6,
+    "planner_degraded": true
+  },
+  "integrity_check": {
+    "public_replay_omits": [
+      "raw observation",
+      "full ordered LegalAction objects",
+      "planner focus, target, and avoidTargets",
+      "visible-player objects",
+      "incoming-attacker arrays",
+      "complete internal decision history"
+    ],
+    "observed_fields_parent_action": "attack:idjkf73n:25",
+    "defend_plan_without_avoid_parent_action": "attack:idjkf73n:25",
+    "invented_avoid_target_parent_action": "build:Port:1435684",
+    "finding": "The exact parent reproduces the Port only after inventing the omitted planner avoidTargets field. The public replay cannot establish that state, so the preregistered red fixture cannot be built without guessing."
+  },
+  "verdict": {
+    "source_edited": false,
+    "runner_started": false,
+    "image_built": false,
+    "diagnostic_uploaded": false,
+    "league_mutated": false,
+    "candidate_closed": true,
+    "prior_champion_preserved": true
+  },
+  "next": "Do not implement or tune FC1. A replay fixture may use a minimal reconstruction only when replay-visible fields alone reproduce the exact parent action. Close any hypothesis that requires invented planner or observation state."
+}

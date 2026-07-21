@@ -31,7 +31,9 @@ wrapper, or one-off opponent rule.
 
 ## Promotion funnel for the next valid mechanism
 
-1. Red replay fixture, exact parent, full tests, immutable source.
+1. Replay-bound red fixture, exact parent, full tests, immutable source. Use
+   only observed fields; if reproducing the parent action requires invented
+   planner or observation state, close the arm before editing policy code.
 2. One exact linux/amd64 image and accepted qualifier.
 3. Smallest hash-bound mechanism/K1Z-safety screen and pre-upload RCI.
 4. Diagnostic upload, recorded separately from league state.

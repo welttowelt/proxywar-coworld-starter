@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T01:19:40Z",
-  "cycle_id": "odin-20260721T011723Z-26365",
+  "updated_at": "2026-07-21T01:30:57Z",
+  "cycle_id": "odin-fc1-fixture-stop-20260721",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "fc1_preregistered_replay_fixture_pending",
+  "state": "fc1_closed_fixture_integrity_no_submit",
   "arm": {
     "id": "fc1",
     "name": "deterministic_finish_continuity",
@@ -12,8 +12,8 @@
     "parent_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
     "candidate_commit": null,
     "preregistration": "experiments/preregister-qd1n-fc1-deterministic-finish-continuity-world-20260721.json",
-    "closed": false,
-    "verdict": "PREREGISTERED_REPLAY_FIXTURE_PENDING"
+    "closed": true,
+    "verdict": "STOP_PRE_SOURCE_FIXTURE_INTEGRITY"
   },
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
@@ -26,15 +26,15 @@
     "is_champion": true
   },
   "live_scoreboard": {
-    "checked_at": "2026-07-21T00:54:36Z",
+    "checked_at": "2026-07-21T01:25:24Z",
     "leader": "daveey",
-    "leader_score": 40.78777,
+    "leader_score": 41.05003956672219,
     "odin_rank": 3,
-    "odin_score": 15.488186,
-    "latest_completed_round": 588,
-    "latest_odin_rank": 11,
+    "odin_score": 15.047262262251257,
+    "latest_completed_round": 589,
+    "latest_odin_rank": 12,
     "latest_odin_score": 0,
-    "running_round": 589
+    "running_round": 590
   },
   "locks": {
     "runner": "free",
@@ -59,8 +59,9 @@
     "recommended_legal_action": "attack:idjkf73n:25",
     "later_finish_tile_delta": 46112,
     "packet_sha256": "94ea9d160f1846a030178733c4fc6cf6f431ec38fcb96c543d080b3d194f4ddf",
-    "replay_hash": null,
-    "fixture_integrity": "PENDING_EXACT_PUBLIC_REPLAY_EXTRACTION"
+    "replay_hash": "d97f11715f04eb70cfaf47d9864547bdccdafa2c93adc68101123940189232be",
+    "fixture_integrity": "FAILED_RAW_FIELDS_INSUFFICIENT",
+    "terminal_audit": "experiments/audit-qd1n-fc1-fixture-integrity-stop-20260721.json"
   },
   "gates": {
     "source_ready": false,
@@ -82,6 +83,6 @@
     "clean_local_bedrock_available": false,
     "rule": "FC1 must not depend on planner output or weaken the zero-degradation gate."
   },
-  "next_automatic_transition": "Extract and hash the exact public R588 turn-11100 fixture, then write one red regression in a dedicated FC1 worktree from 1ccaff73. Stop if the fixture does not reproduce the parent Port choice. Do not implement FC1, start a runner, upload, or mutate league state before that evidence gate passes.",
+  "next_automatic_transition": "Preserve qd1n:v89. Audit one bounded R589 loss cell for a replay-visible action defect that the exact parent reproduces using observed fields only. Do not reopen FC1, invent omitted planner state, or mutate league state.",
   "prior_verified_champion_preserved": true
 }
