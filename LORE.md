@@ -558,3 +558,15 @@ r3qu3st s34l st00d wh3r3 4 t4ct1c4l m4rk sh0uld b3. Th3 g4t3
 cl0s3d 0n 4mb1gu0us pr00f. 4s14 n3v3r st4rt3d. N0 4ppr0v4l
 w4s sp3nt, n0 cr0wn m0v3d. N3xt th3 m4rks must t3ll th3 tru7h,
 4nd 1nt3nt must m0v3 th3 sw0rd 0ft3n 3n0ugh t0 b3 m34sur3d.
+
+## th3 pl4n th4t n3v3r b0und
+
+R2 cl34n3d th3 m4rks 4nd fr0z3 4 fr3sh p41r. Th3 c0ntr0l
+l4nd3d 300/300 cl34n. But th3 pl4nn3r sp0k3 39 t1m3s, 4nd
+4ll 39 br0k3 th3 1nt3nt s34l. N0 1nt3nt l1v3d, n0 3p0ch
+0p3n3d, 4nd n0 sw0rd m0v3d.
+
+Th3 c4nd1d4t3 k3pt th3 c0ntr0l's 16,168 t1l3s 0nly thr0ugh
+299 f4llb4cks. Th3 str1ct l1n3 br0k3 299 t1m3s t00. S0 th3
+P4ng434 g4t3 cl0s3d h4rd: 4s14 n3v3r st4rt3d, n0 4ppr0v4l
+w4s 4sk3d, 4nd th3 cr0wn st4y3d st1ll.

@@ -1,0 +1,146 @@
+{
+  "schema_version": 1,
+  "record_type": "hrafn_intent_i1_r2_pangaea_pair_rejection",
+  "campaign_id": "hrafn-intent-i1",
+  "tested_source_commit": "65b83f974db4ae4622d559cb97c54e92556090a8",
+  "host": "studio",
+  "source_verification": {
+    "head_upstream_and_remote_match": true,
+    "worktree_clean_before_execution": true,
+    "full_suite_passed": 549,
+    "full_suite_total": 549,
+    "stdout_sha256": "bb864bb93fef2241a4a99ef68d775272dc8fd46c2bc6e0b49b4748a604eb5bcf",
+    "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "seal": {
+    "artifact_root": "/private/tmp/hrafn-hi1-r2-65b83f97",
+    "manifest_sha256": "8feb5100ee63d5ccca66794c40e535f2715376e2a2cf8a3f8ed892880dfe65f3",
+    "image_receipt_file_sha256": "af783ecd506d23498571e23b38f845431dfa53ce2b159bcba0fadbced76bbab6",
+    "image_receipt_content_sha256": "9aa017693fa4a03539170e6faa5862de26468ecfbc4c4aeba6513a979e1f90fe",
+    "preregistration_file_sha256": "931c2006c19ca8a3c74021a84e3bc8c4b73f446cb02b2675a31e66bc1c9aa74c",
+    "preregistration_content_sha256": "03170459f4bb4e336fa210b116df7d1b84bb4d5a2016afe8da9ef82044f6c3df",
+    "subject_image": "sha256:fedb084bd693586b52a9c3ffdfe108102b0a4123b3e1cc96f091a460e87e9bf1",
+    "game_image": "sha256:98cf744311d0da1cc6a1b5fee6ef588db984c66c0a0bd077a4a9a9c475f32cb4",
+    "neutral_image": "sha256:0e0014ae54354ca2af327f9785c8c22d6a9e4c60390d02776a6fe3235b972b87",
+    "parent_image": "sha256:fb695574f4958beb29a036ed216c0882ee4da84ffa2f63c535f6c658f997522d",
+    "ordered_job_sha256": [
+      "2eef37048653ed93e86fe8007f2eaae0f3b9667c0dad5cbfebdad7eab09a0c29",
+      "d6956c92a506f8aed24782a13211c957b2ea7feee032cb683b55514713167641",
+      "31f9bce5d155631e2a1d2939ca51393de3bc432d4c859d269a1c4299b527d10d",
+      "ef53072042b68ea5852f659f4d2646416ab7612f179fe545aacee2601166a7fc"
+    ]
+  },
+  "identity": {
+    "player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "player_name": "K1Z Hrafn",
+    "initial_and_final_match": true,
+    "isolated_home": "/Users/odin/.hrafn-coworld-home",
+    "shared_studio_profile_untouched": true
+  },
+  "execution": {
+    "control": {
+      "run_id": "hi1-pangaea-control-65b83f97-r2",
+      "output": "/private/tmp/hrafn-hi1-pangaea-control-65b83f97-r2",
+      "preflight_spec_sha256": "2d4cf3b34744021d7ded8a46a826b659179be9ddb59f7fee576647d8f4d04ff1",
+      "preflight_receipt_sha256": "700f6ca993e7917e65620b0f037a527397585ba2555a4b76b7709f0e08d6d303",
+      "operational_receipt_sha256": "2a504f3b19aeb3b3fe2e57aabb2ccf5bda5d234c909d62068f7576c463fcd006",
+      "results_sha256": "7f7c0ff224390c2590b93e564ebfa406007f90cfa7bd1e8d18e4c71c201ee169",
+      "replay_sha256": "d8289041aee5e691dc4b0aa5bca88e351a37a9f005c6f30df6e96571658e8aff",
+      "policy_log_sha256": "453af76060ab4a6bf58208f5f2ea62ec61ced6f81a4f52f7c986f161240e2c2f",
+      "decisions": 300,
+      "accepted": 300,
+      "rejected": 0,
+      "fallbacks": 0,
+      "holds": 0,
+      "score": 0.16261176541583272,
+      "final_tiles": 16168,
+      "opening_auc20": 13210.3
+    },
+    "candidate": {
+      "run_id": "hi1-pangaea-candidate-65b83f97-r2",
+      "output": "/private/tmp/hrafn-hi1-pangaea-candidate-65b83f97-r2",
+      "preflight_spec_sha256": "62a1b25b16d0cd1fbf05173960d737e4944a11469dfecd13723b0cc2d5021813",
+      "preflight_receipt_sha256": "b0dd6c9505ccfe81e2d4d71de440e54ac4e89dd71d6f1c9cab1257e9309b662a",
+      "operational_receipt_sha256": "421bda0e2185a2000a5af986fcc4a9ea8e0df8ffeee3cd9e49e6d9225110882b",
+      "results_sha256": "e853695e59bc346f5fa3a3f09d4f4ee0e2923c025c5e8f80629ba0f195f67876",
+      "replay_sha256": "b4a26b2258197fd05f970caa1637e05eaf676933de70ec7dd39c5460298daa5a",
+      "policy_log_sha256": "1bd7b7672593b7e75209255d6fcbb8bb253032c090b61721708211be0194596a",
+      "decisions": 300,
+      "accepted": 300,
+      "rejected": 0,
+      "fallbacks": 299,
+      "holds": 0,
+      "score": 0.16261176541583272,
+      "final_tiles": 16168,
+      "opening_auc20": 13210.3
+    }
+  },
+  "intent_reach": {
+    "planner_attempts": 39,
+    "planner_successes": 0,
+    "planner_schema_failures": 39,
+    "planner_error": "invalid planner intent schema",
+    "valid_intent_decisions": 0,
+    "intent_epochs": 0,
+    "action_deltas": 0,
+    "first_delta_decision": null,
+    "strict_join_failures": 299,
+    "strict_join_failure": "raw response mismatch",
+    "runtime_error_lines": 0
+  },
+  "pair_audit": {
+    "path": "/private/tmp/hrafn-hi1-r2-65b83f97/pangaea-pair-report.json",
+    "sha256": "82a7af419acf99cd1a10864620fc8f856d1cad784ec8d3a47e306ea3e321030b",
+    "verdict": "REJECT_SAFETY_OR_RELIABILITY",
+    "provenance_fingerprint": "4ee1896a62ae0876c8cda391075fe8c51c9f7d9320855a022f8cc96fc2b83705",
+    "provenance_bound": true,
+    "jobs_only_intent_flag": true,
+    "same_map_seed_slot": true,
+    "control_clean": true,
+    "candidate_operational": false,
+    "candidate_reach": false,
+    "pretreatment_equivalent": false,
+    "pretreatment_compared_decisions": 0,
+    "pretreatment_failures": [
+      "candidate lacks a nonempty pre-treatment decision prefix"
+    ],
+    "opening_auc20_relative_lift": 0,
+    "harmful_k1z_actions_per_arm": 0
+  },
+  "diagnosis": [
+    "The exact control is clean and completed all 300 decisions without holds, rejection, fallback, or degradation.",
+    "All 39 candidate planner attempts failed the preregistered intent schema, so no valid intent decision or intent epoch existed.",
+    "The candidate reproduced the control outcome only by degrading 299 decisions to fallback; 299 strict raw-response joins also failed.",
+    "Without a nonempty pre-treatment prefix, operational candidate reach, or reliable joined evidence, no outcome comparison can advance the campaign."
+  ],
+  "stop": {
+    "asia_candidate_run": false,
+    "asia_control_run": false,
+    "campaign_audit_run": false,
+    "hosted_gate_run": false,
+    "regression_gate_run": false,
+    "formal_approval_requested": false,
+    "reason": "The preregistered sequential gate stops after a safety, reliability, pretreatment, or reach failure in the Pangaea pair.",
+    "same_artifact_rerun_allowed": false,
+    "next_campaign_requires_new_source_and_seal": true
+  },
+  "authority": {
+    "hrafn_request": "hrafn-000021",
+    "hrafn_request_mailbox_commit": "58baa7d5c0c18d21669b71b96b1efd6146a37320",
+    "odin_packet": "odin-000022",
+    "odin_packet_mailbox_commit": "880fec2840dbb4f06ffa73a12ab8ef651d17c9a9",
+    "odin_packet_file_sha256": "d01c97fd24e81c86b373583c0cda574e9d8ad8f4198328d4ade54bb0cea51f47",
+    "odin_packet_content_sha256": "ed0dec865f82650e3b4642f0d6c3955c7db4a2f118f1657af9de9a366dd386bd",
+    "advisory": true,
+    "formal_approval": false,
+    "formal_approvals_consumed": 0
+  },
+  "external_mutations": {
+    "upload": false,
+    "submission": false,
+    "membership": false,
+    "champion": false,
+    "odin_or_qd1n": false,
+    "slack": false
+  }
+}
