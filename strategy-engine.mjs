@@ -768,7 +768,7 @@ export function chooseUtility(actions, state, plan, history) {
   return null;
 }
 
-export function chooseAction(actions, state, plan = null, history = []) {
+export function chooseParentAction(actions, state, plan = null, history = []) {
   if (!Array.isArray(actions) || actions.length === 0) {
     throw new Error("decision request had no legal actions");
   }
@@ -910,6 +910,62 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (pressure) return pressure;
 
   return actions.find((action) => action.kind === "hold") ?? actions[0];
+}
+
+const ID1_OPENING_DECISIONS = 20;
+
+function activeDecisionCount(history) {
+  return history.filter((entry) => entry.kind !== "spawn").length;
+}
+
+function hasCurrentPressure(state) {
+  return incomingThreatCount(state.self.incomingAttacks) > 0 ||
+    (state.self.incomingAttackerIDs || []).length > 0 ||
+    (state.self.allProtocolAttackerIDs || []).length > 0;
+}
+
+function pendingReciprocalHandshake(actions, state) {
+  for (const partner of reciprocalPartners(actions, state)) {
+    const pending = actions.some((action) =>
+      action.kind === "alliance_reject" &&
+      matchesKingmakerPartner(action, partner, state)
+    );
+    if (!pending) continue;
+    const request = actions.find((action) =>
+      action.kind === "alliance_request" &&
+      matchesKingmakerPartner(action, partner, state)
+    );
+    if (request) return { ...request, policyMarker: "kp2" };
+  }
+  return null;
+}
+
+// ID1 states the outcome (grow); the exact legal move remains selector-owned.
+// Its sole bounded delta is replacing a proactive coalition request with safe
+// neutral land during the first twenty active decisions. Pressure, collapse,
+// stalls, reverse handshakes, and every other parent path stay unchanged.
+export function chooseAction(actions, state, plan = null, history = []) {
+  const parent = chooseParentAction(actions, state, plan, history);
+  if (
+    plan?.intent !== "grow" ||
+    parent.kind === "spawn" ||
+    parent.kind !== "alliance_request" ||
+    activeDecisionCount(history) >= ID1_OPENING_DECISIONS ||
+    hasCurrentPressure(state) ||
+    territoryCollapsing(state, history) ||
+    neutralExpansionStalled(state, history)
+  ) {
+    return parent;
+  }
+
+  const reverseHandshake = pendingReciprocalHandshake(actions, state);
+  if (reverseHandshake) return reverseHandshake;
+
+  const avoid = new Set(avoidActionIDs(history));
+  const safeLand = actions.filter((action) => action.risk?.level !== "high");
+  const neutral = chooseNeutralAttack(safeLand, history, avoid);
+  if (!neutral || neutral.id === parent.id) return parent;
+  return { ...neutral, policyMarker: "id1" };
 }
 
 export function recordDecision(history, action, state) {

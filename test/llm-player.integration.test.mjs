@@ -203,6 +203,114 @@ test("planner doctrine encodes the hosted winner profile", async () => {
   assert.doesNotMatch(source, /Probe with 10%, escalate to 25%/);
 });
 
+test("id1 wiring isolates the adapter from its static-grow parent", async () => {
+  const lowRisk = { level: "low" };
+  const decision = request("intent-grow", [
+    {
+      id: "alliance:katanasan",
+      kind: "alliance_request",
+      label: "Alliance with K1Z katanasan",
+      risk: lowRisk,
+      metadata: {
+        recipientID: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+        recipientName: "K1Z katanasan",
+        relation: 2,
+      },
+    },
+    {
+      id: "expand:terra-nullius:10",
+      kind: "attack",
+      label: "Expand into neutral land with 10% troops",
+      risk: lowRisk,
+      metadata: { expansion: true, troopPercent: 10 },
+    },
+  ], {
+    phase: "active",
+    ownState: {
+      tileShare: 0.05,
+      troopRatio: 0.8,
+      troops: 500000,
+      gold: 250000,
+      borderTiles: 100,
+      incomingAttacks: [],
+    },
+    visiblePlayers: [{
+      id: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+      name: "K1Z katanasan",
+      isAlive: true,
+      tileShare: 0.08,
+      relativeTroopRatio: 1.2,
+      sharesBorder: true,
+      canAttack: true,
+      isAllied: false,
+    }],
+  });
+  const cases = [
+    {
+      engine: "id1",
+      selectedLegalActionId: "expand:terra-nullius:10",
+      reason: /id1/,
+    },
+    {
+      engine: "id1-static-parent",
+      selectedLegalActionId: "alliance:katanasan",
+      reason: /kp2/,
+    },
+  ];
+
+  for (const expected of cases) {
+    const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
+    await new Promise((resolve) => server.once("listening", resolve));
+    const { port } = server.address();
+    const responses = [];
+    let stderr = "";
+    const child = spawn(process.execPath, [playerPath], {
+      env: {
+        ...process.env,
+        COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
+        POLICY_ENGINE: expected.engine,
+        AWS_ACCESS_KEY_ID: "test",
+        AWS_SECRET_ACCESS_KEY: "test",
+        AWS_EC2_METADATA_DISABLED: "true",
+        BEDROCK_MODEL: "invalid-test-model",
+      },
+      stdio: ["ignore", "pipe", "pipe"],
+    });
+    child.stderr.on("data", (chunk) => { stderr += String(chunk); });
+
+    const completed = new Promise((resolve, reject) => {
+      const timeout = setTimeout(() => {
+        child.kill("SIGKILL");
+        reject(new Error(`${expected.engine} wiring test timed out: ${stderr}`));
+      }, 8000);
+      server.once("connection", (socket) => {
+        socket.send(JSON.stringify(decision));
+        socket.on("message", (data) => {
+          responses.push(JSON.parse(String(data)));
+          socket.send(JSON.stringify({ type: "final" }));
+        });
+      });
+      child.once("error", reject);
+      child.once("exit", (code) => {
+        clearTimeout(timeout);
+        if (code === 0) resolve();
+        else reject(new Error(`player exited ${code}: ${stderr}`));
+      });
+    });
+
+    try {
+      await completed;
+    } finally {
+      await new Promise((resolve) => server.close(resolve));
+    }
+
+    assert.equal(responses[0].selectedLegalActionId, expected.selectedLegalActionId);
+    assert.match(responses[0].reason, expected.reason);
+    assert.equal(responses[0].fallbackUsed, false);
+    assert.equal(responses[0].llmPlannerDegraded, false);
+  }
+});
+
 test("qd2n engine wiring grinds the opening at 35 percent", async () => {
   const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
   await new Promise((resolve) => server.once("listening", resolve));

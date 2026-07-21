@@ -19,13 +19,19 @@ import {
   PLAN_KINDS,
   buildState,
   chooseAction as chooseSelectorAction,
+  chooseParentAction as chooseSelectorParentAction,
   clean,
   recordDecision,
 } from "./strategy-engine.mjs";
 import { chooseChassisAction } from "./strategy-chassis.mjs";
 
+const POLICY_ENGINE = process.env.POLICY_ENGINE;
 const chooseAction =
-  process.env.POLICY_ENGINE === "qd2n" ? chooseChassisAction : chooseSelectorAction;
+  POLICY_ENGINE === "qd2n"
+    ? chooseChassisAction
+    : POLICY_ENGINE === "id1-static-parent"
+      ? chooseSelectorParentAction
+      : chooseSelectorAction;
 import { classifyPlannerError, plannerCooldownMs } from "./planner-backoff.mjs";
 
 const url = process.env.COWORLD_PLAYER_WS_URL;
@@ -122,8 +128,20 @@ async function askBedrock(state, signal) {
   throw lastErr || new Error("no bedrock model responded");
 }
 
+const STATIC_INTENT = POLICY_ENGINE === "id1" || POLICY_ENGINE === "id1-static-parent"
+  ? {
+      intent: "grow",
+      focus: "expand",
+      preferKinds: ["attack"],
+      target: null,
+      avoidTargets: [],
+      reason: "Gain territory while the selector enforces constraints.",
+      model: "static-id1",
+    }
+  : null;
+
 // -- the PLAN: written by the model in the background, executed instantly -----
-let plan = null;          // { focus, preferKinds, target, avoidTargets, reason, model }
+let plan = STATIC_INTENT;  // { intent, focus, preferKinds, target, avoidTargets, reason, model }
 let planDecisionAge = 0;  // decisions answered since the last successful refresh
 let planRefreshInFlight = false;
 let lastPlanError = null; // set when the most recent refresh failed (loud degradation)
@@ -132,6 +150,7 @@ let planFailureCount = 0;
 let nextPlanRefreshAt = 0;
 
 function refreshPlanInBackground(state) {
+  if (STATIC_INTENT) return;
   if (planRefreshInFlight || Date.now() < nextPlanRefreshAt) return;
   planRefreshInFlight = true;
   const controller = new AbortController();
@@ -227,7 +246,9 @@ function handleMessage(activeSocket, data) {
 
   // Keep the plan fresh WITHOUT blocking — the answer below never waits on Bedrock.
   planDecisionAge += 1;
-  if (plan === null || planDecisionAge >= PLAN_EVERY) refreshPlanInBackground(state);
+  if (!STATIC_INTENT && (plan === null || planDecisionAge >= PLAN_EVERY)) {
+    refreshPlanInBackground(state);
+  }
 
   const chosen = chooseAction(actions, state, plan, history);
   const degraded = lastPlanError !== null;
