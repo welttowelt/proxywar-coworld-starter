@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { createHash } from "node:crypto";
 import {
   mkdtempSync,
@@ -30,6 +31,7 @@ import {
   expectedHrafnIntentCoworldArgv,
   probeHrafnIntentOllama,
   probeHrafnIntentOllamaFromContainer,
+  verifyMailboxArtifactHistory,
   verifyHrafnIntentRunPreflight,
 } from "../scripts/preflight-hrafn-intent-run.mjs";
 import {
@@ -396,6 +398,9 @@ function setupFixture() {
         head_commit: "8".repeat(40),
         remote_commit: "8".repeat(40),
       };
+    },
+    async verifyMailboxArtifactHistory() {
+      return true;
     },
     readIdentity() {
       return { playerID: HRAFN_PLAYER_ID, playerName: "K1Z Hrafn" };
@@ -808,6 +813,185 @@ test("preflight enforces the exact four-run predecessor chain and Pangaea contin
     } finally {
       rmSync(fixture.directory, { recursive: true, force: true });
     }
+  }
+});
+
+test("append-only mailbox commits preserve an exact predecessor identity window", async () => {
+  const fixture = setupFixture();
+  try {
+    const { predecessors } = await prepareActiveOrder(fixture, 1);
+    fixture.runtime.verifyMailboxEnvironment = async () => ({
+      head_commit: "9".repeat(40),
+      remote_commit: "9".repeat(40),
+    });
+    let observedHistory = null;
+    fixture.runtime.verifyMailboxArtifactHistory = async (entry) => {
+      observedHistory = structuredClone(entry);
+      return entry.commit === "8".repeat(40) &&
+        entry.current_commit === "9".repeat(40) &&
+        entry.path === fixture.identityWindowPath &&
+        entry.file_sha256 === sha256(readFileSync(fixture.identityWindowPath));
+    };
+
+    const receipt = await verifyHrafnIntentRunPreflight(
+      fixture.spec,
+      verificationOptions(fixture),
+      fixture.runtime,
+    );
+    assert.equal(receipt.lifecycle.predecessors.length, 1);
+    assert.equal(
+      receipt.lifecycle.predecessors[0].file_sha256,
+      predecessors[0].sha256,
+    );
+    assert.equal(observedHistory.commit, "8".repeat(40));
+    assert.equal(observedHistory.current_commit, "9".repeat(40));
+  } finally {
+    rmSync(fixture.directory, { recursive: true, force: true });
+  }
+});
+
+test("preflight requires an exact boolean mailbox-history verdict", async () => {
+  const invalidVerifiers = [
+    async () => false,
+    async () => undefined,
+    async () => ({ valid: false }),
+    async () => { throw new Error("mailbox history probe failed"); },
+  ];
+  for (const verifier of invalidVerifiers) {
+    const fixture = setupFixture();
+    try {
+      await prepareActiveOrder(fixture, 1);
+      fixture.runtime.verifyMailboxEnvironment = async () => ({
+        head_commit: "9".repeat(40),
+        remote_commit: "9".repeat(40),
+      });
+      fixture.runtime.verifyMailboxArtifactHistory = verifier;
+      await assert.rejects(
+        verifyHrafnIntentRunPreflight(
+          fixture.spec,
+          verificationOptions(fixture),
+          fixture.runtime,
+        ),
+      );
+    } finally {
+      rmSync(fixture.directory, { recursive: true, force: true });
+    }
+  }
+});
+
+test("mailbox history verifies real ancestry and exact nested-path blob bytes", async () => {
+  const repository = realpathSync(
+    mkdtempSync(path.join(tmpdir(), "hrafn-mailbox-history-")),
+  );
+  const mailbox = path.join(repository, "nested", "mailbox");
+  mkdirSync(mailbox, { recursive: true });
+  const git = (...args) => execFileSync("git", ["-C", repository, ...args]);
+  const commit = () => String(git("rev-parse", "HEAD")).trim();
+  const runtime = {
+    async run(command, args, options = {}) {
+      return {
+        stdout: execFileSync(command, args, { cwd: options.cwd }),
+        stderr: Buffer.alloc(0),
+      };
+    },
+  };
+  try {
+    git("init", "-q", "-b", "main");
+    git("config", "user.name", "Hrafn Test");
+    git("config", "user.email", "hrafn-test@example.invalid");
+    const outsidePath = path.join(repository, "outside.json");
+    writeFileSync(outsidePath, "outside\n");
+    git("add", "--", "outside.json");
+    git("commit", "-qm", "base without window");
+    const missingBlobCommit = commit();
+
+    const windowPath = path.join(mailbox, "identity-window.json");
+    const exactBytes = Buffer.from('{"window":"exact"}\n');
+    writeFileSync(windowPath, exactBytes);
+    git("add", "--", "nested/mailbox/identity-window.json");
+    git("commit", "-qm", "add exact window");
+    const exactCommit = commit();
+
+    writeFileSync(path.join(mailbox, "unrelated.txt"), "append only\n");
+    git("add", "--", "nested/mailbox/unrelated.txt");
+    git("commit", "-qm", "append unrelated mailbox entry");
+    const appendCommit = commit();
+    const exactEntry = {
+      commit: exactCommit,
+      current_commit: appendCommit,
+      path: windowPath,
+      file_sha256: sha256(exactBytes),
+    };
+    assert.equal(
+      await verifyMailboxArtifactHistory(exactEntry, mailbox, runtime),
+      true,
+    );
+    assert.equal(
+      await verifyMailboxArtifactHistory(
+        { ...exactEntry, commit: missingBlobCommit },
+        mailbox,
+        runtime,
+      ),
+      false,
+    );
+    assert.equal(
+      await verifyMailboxArtifactHistory(
+        {
+          ...exactEntry,
+          path: outsidePath,
+          file_sha256: sha256(readFileSync(outsidePath)),
+        },
+        mailbox,
+        runtime,
+      ),
+      false,
+    );
+
+    writeFileSync(windowPath, '{"window":"exact"}\r\n');
+    git("add", "--", "nested/mailbox/identity-window.json");
+    git("commit", "-qm", "change window bytes");
+    const changedCommit = commit();
+    assert.equal(
+      await verifyMailboxArtifactHistory(
+        {
+          ...exactEntry,
+          commit: changedCommit,
+          current_commit: changedCommit,
+        },
+        mailbox,
+        runtime,
+      ),
+      false,
+    );
+
+    git("checkout", "-q", "-b", "sibling", exactCommit);
+    writeFileSync(path.join(mailbox, "sibling.txt"), "sibling\n");
+    git("add", "--", "nested/mailbox/sibling.txt");
+    git("commit", "-qm", "sibling history");
+    const siblingCommit = commit();
+    git("checkout", "-q", "main");
+    assert.equal(
+      await verifyMailboxArtifactHistory(
+        {
+          ...exactEntry,
+          commit: siblingCommit,
+          current_commit: changedCommit,
+        },
+        mailbox,
+        runtime,
+      ),
+      false,
+    );
+    assert.equal(
+      await verifyMailboxArtifactHistory(
+        { ...exactEntry, current_commit: "f".repeat(40) },
+        mailbox,
+        runtime,
+      ),
+      false,
+    );
+  } finally {
+    rmSync(repository, { recursive: true, force: true });
   }
 });
 

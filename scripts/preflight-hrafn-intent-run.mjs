@@ -52,6 +52,7 @@ import { verifyK1ZPacketBytes } from "../k1z-direct-line.mjs";
 const execFileAsync = promisify(execFile);
 const SHA256 = /^[a-f0-9]{64}$/;
 const IMAGE_ID = /^sha256:[a-f0-9]{64}$/;
+const COMMIT = /^[a-f0-9]{40}$/;
 export const DEFAULT_HRAFN_REPO = path.join(homedir(), "proxywar-k1z-hrafn");
 export const DEFAULT_HRAFN_MAILBOX_DIRECTORY = path.join(
   homedir(),
@@ -318,13 +319,53 @@ async function verifyMailboxFilesCommitted(paths, mailboxDirectory, runtime) {
     }
     await runtime.run("git", ["-C", mailboxDirectory, "ls-files", "--error-unmatch", "--", relative]);
     await runtime.run("git", ["-C", mailboxDirectory, "diff", "--quiet", "HEAD", "--", relative]);
-    const committed = await runtime.run("git", ["-C", mailboxDirectory, "show", `HEAD:${relative}`]);
+    const committed = await runtime.run("git", [
+      "-C",
+      mailboxDirectory,
+      "show",
+      `HEAD:./${relative}`,
+    ]);
     const live = await readPlainFile(target);
     if (!Buffer.from(committed.stdout ?? "").equals(live)) {
       throw new Error("coordination artifact bytes differ from committed mailbox bytes");
     }
   }
   return { head_commit: head, remote_commit: remoteCommit };
+}
+
+export async function verifyMailboxArtifactHistory(
+  { commit, current_commit: currentCommit, path: target, file_sha256: fileSHA256 },
+  mailboxDirectory,
+  runtime,
+) {
+  if (!COMMIT.test(commit ?? "") || !COMMIT.test(currentCommit ?? "") ||
+    !SHA256.test(fileSHA256 ?? "")
+  ) {
+    return false;
+  }
+  const relative = path.relative(mailboxDirectory, target ?? "");
+  if (!relative || relative.startsWith("..") || path.isAbsolute(relative)) {
+    return false;
+  }
+  try {
+    await runtime.run("git", [
+      "-C",
+      mailboxDirectory,
+      "merge-base",
+      "--is-ancestor",
+      commit,
+      currentCommit,
+    ]);
+    const committed = await runtime.run("git", [
+      "-C",
+      mailboxDirectory,
+      "show",
+      `${commit}:./${relative}`,
+    ]);
+    return sha256(Buffer.from(committed.stdout ?? "")) === fileSHA256;
+  } catch {
+    return false;
+  }
 }
 
 function validateSpec(spec) {
@@ -467,6 +508,31 @@ function canonicalArtifact(bytes, label) {
   return value;
 }
 
+function identityWindowHistoryBindingMatches(observed, expected) {
+  const keys = [
+    "path",
+    "message_id",
+    "content_sha256",
+    "file_sha256",
+    "formal_approval",
+    "formal_approvals_consumed",
+    "mailbox_head_commit",
+    "mailbox_remote_commit",
+  ];
+  return exactKeys(observed, keys) && exactKeys(expected, keys) &&
+    observed.path === expected.path &&
+    observed.message_id === expected.message_id &&
+    observed.content_sha256 === expected.content_sha256 &&
+    observed.file_sha256 === expected.file_sha256 &&
+    observed.formal_approval === false && expected.formal_approval === false &&
+    observed.formal_approvals_consumed === 0 &&
+    expected.formal_approvals_consumed === 0 &&
+    COMMIT.test(observed.mailbox_head_commit) &&
+    observed.mailbox_head_commit === observed.mailbox_remote_commit &&
+    COMMIT.test(expected.mailbox_head_commit) &&
+    expected.mailbox_head_commit === expected.mailbox_remote_commit;
+}
+
 function operationalCommonBindingMatches(bindings, expected) {
   return bindings?.source_commit === expected.source_commit &&
     equalJSON(bindings?.campaign_jobs, expected.campaign_jobs) &&
@@ -477,7 +543,10 @@ function operationalCommonBindingMatches(bindings, expected) {
     bindings?.planner?.model === HRAFN_INTENT_MODEL &&
     bindings?.planner?.model_digest === HRAFN_INTENT_MODEL_DIGEST &&
     bindings?.planner?.version === HRAFN_INTENT_OLLAMA_VERSION &&
-    equalJSON(bindings?.identity_window, expected.identity_window);
+    identityWindowHistoryBindingMatches(
+      bindings?.identity_window,
+      expected.identity_window,
+    );
 }
 
 function assertContinuationReport(report, expectedOperationalHashes) {
@@ -509,6 +578,7 @@ async function verifyLifecycleEvidence({
   active,
   expectedCommon,
   verifiedAt,
+  verifyMailboxArtifactHistory,
 }) {
   const expectedPredecessors = HRAFN_INTENT_CELLS.slice(0, active.order);
   if (spec.predecessor_operational_receipts.length !== expectedPredecessors.length ||
@@ -555,6 +625,17 @@ async function verifyLifecycleEvidence({
       observedOutputs.has(receipt?.output_directory)
     ) {
       throw new Error(`predecessor operational receipt is invalid: ${cell.id}`);
+    }
+    const mailboxHistoryValid = await verifyMailboxArtifactHistory({
+      commit: receipt.bindings.identity_window.mailbox_head_commit,
+      current_commit: expectedCommon.identity_window.mailbox_head_commit,
+      path: receipt.bindings.identity_window.path,
+      file_sha256: receipt.bindings.identity_window.file_sha256,
+    });
+    if (mailboxHistoryValid !== true) {
+      throw new Error(
+        `predecessor mailbox artifact history is invalid: ${cell.id}`,
+      );
     }
     const expectedPrefix = predecessors.map((entry) => ({
       job_id: entry.job_id,
@@ -684,6 +765,12 @@ export async function verifyHrafnIntentRunPreflight(
     }),
     verifyMailboxEnvironment: (paths) =>
       verifyMailboxFilesCommitted(paths, expectedMailboxDirectory, runtime),
+    verifyMailboxArtifactHistory: (entry) =>
+      verifyMailboxArtifactHistory(
+        entry,
+        expectedMailboxDirectory,
+        runtime,
+      ),
     ...runtimeOverrides,
   };
 
@@ -941,6 +1028,7 @@ export async function verifyHrafnIntentRunPreflight(
     spec,
     active,
     verifiedAt,
+    verifyMailboxArtifactHistory: runtime.verifyMailboxArtifactHistory,
     expectedCommon: {
       source_commit: subjectReceipt.source.commit,
       campaign_jobs: campaignBinding(spec.campaign_jobs),
