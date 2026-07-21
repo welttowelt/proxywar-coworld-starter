@@ -252,13 +252,6 @@ exists. See the
 The sequence formerly recorded here is closed and must not be resumed. Read
 `.codex/active-arm.json` for the single current transition. Local runs use only
 `odin` or `mickey`; any `hrafn` runner command must fail closed.
-9. Audit both decision 20 and decision 50 plus final placement.
-10. Close OS1 immediately on any failed condition. Do not tune it in place.
-11. If the local gate passes, run pre-upload RCI and upload diagnostic-only.
-12. Then require current-roster hosted actual wins `4/4`, a separate `20/20`
-    map-and-seat regression, and final fail-closed RCI.
-13. Only then automatically submit, wait for placement, verify the sole
-    champion membership, and confirm a completed official round.
 
 The preregistered
 [`local screen contract`](experiments/contract-qd1n-os1-local-screen-20260720.json)
