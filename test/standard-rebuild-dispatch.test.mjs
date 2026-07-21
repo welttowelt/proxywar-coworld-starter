@@ -15,8 +15,8 @@ const source = readFileSync(scriptPath, "utf8");
 test("standard rebuild dispatcher is valid shell with four pinned pod identities", () => {
   execFileSync("/bin/bash", ["-n", scriptPath]);
   for (const [id, name] of [
-    ["lb4zz7jzgq9tr2", "storm-lazy-a"],
-    ["2g5whxhph9bwbz", "storm-lazy-b"],
+    ["7p0nqjordosvuy", "storm-evidence-32a"],
+    ["9u8oumfcvyyhy5", "storm-evidence-32b"],
     ["877itccar33zdp", "storm-lazy-c"],
     ["76stn0v7q81d47", "storm-lazy-d"],
   ]) {

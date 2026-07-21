@@ -33,8 +33,8 @@ const BENCHMARK_RUNTIME_FILES = new Set([
   "controller-safety.mjs",
 ]);
 const DISPATCH_PODS = Object.freeze([
-  { id: "lb4zz7jzgq9tr2", name: "storm-lazy-a", map: "Pangaea", role: "candidate" },
-  { id: "2g5whxhph9bwbz", name: "storm-lazy-b", map: "Pangaea", role: "control" },
+  { id: "7p0nqjordosvuy", name: "storm-evidence-32a", map: "Pangaea", role: "candidate" },
+  { id: "9u8oumfcvyyhy5", name: "storm-evidence-32b", map: "Pangaea", role: "control" },
   { id: "877itccar33zdp", name: "storm-lazy-c", map: "World", role: "candidate" },
   { id: "76stn0v7q81d47", name: "storm-lazy-d", map: "World", role: "control" },
 ]);

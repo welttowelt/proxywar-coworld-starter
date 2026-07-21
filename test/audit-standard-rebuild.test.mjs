@@ -301,8 +301,8 @@ function createRun(base, {
 
 function writeDispatcherReceipts(runs, source) {
   const pods = [
-    { id: "lb4zz7jzgq9tr2", name: "storm-lazy-a" },
-    { id: "2g5whxhph9bwbz", name: "storm-lazy-b" },
+    { id: "7p0nqjordosvuy", name: "storm-evidence-32a" },
+    { id: "9u8oumfcvyyhy5", name: "storm-evidence-32b" },
     { id: "877itccar33zdp", name: "storm-lazy-c" },
     { id: "76stn0v7q81d47", name: "storm-lazy-d" },
   ].map((pod, index) => ({
