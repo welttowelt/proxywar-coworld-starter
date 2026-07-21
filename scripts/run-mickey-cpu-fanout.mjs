@@ -125,6 +125,20 @@ const RUNPODCTL_SERIALIZED_OUTPUT_GUARD =
 const SSH_HOST_KEY_ATTESTATION_DOMAIN = "mickey-ssh-host-key-v1";
 export const REMOTE_POST_RUN_ATTESTATION_STATUS = "stable";
 const EXACT_ID_DELETE_RETRY_DELAYS_MS = Object.freeze([0, 1_000, 2_000, 4_000, 8_000]);
+const HASH_FETCH_TRANSPORT_RETRY_DELAYS_MS = Object.freeze([
+  0,
+  5_000,
+  5_000,
+  5_000,
+  5_000,
+  5_000,
+  5_000,
+  5_000,
+  5_000,
+  5_000,
+  5_000,
+  5_000,
+]);
 const R8_ACTIVATION_RUN_ID = "mickey-screen-g000-r8-20260721t031448z";
 const R8_ACTIVATION_MANIFEST_PATH = path.join(
   REPO_ROOT,
@@ -175,15 +189,15 @@ const R8_RECOVERY_PREEXISTING_IDS = Object.freeze([
   "ne262xferohtdi", "og13wgkfcmblx9", "rkm013fsjsf87c", "rwvsgeancauyug",
   "sxrtmdyd62n3ia", "szlrnk3ucex44f", "vbo7a33nlvsrtf", "zadju8y8p6d5r9",
 ]);
-const R9_ACTIVATION_RUN_ID = "mickey-screen-g000-r9b-20260721t063347z";
+const R9_ACTIVATION_RUN_ID = "mickey-screen-g000-r9c-20260721t075155z";
 const R9_ACTIVATION_MANIFEST_PATH = path.join(
   REPO_ROOT,
   "experiments",
-  "manifest-mickey-cpu-screen-g000-r9b-20260721.json",
+  "manifest-mickey-cpu-screen-g000-r9c-20260721.json",
 );
 const R9_ACTIVATION_OUTPUT_PATH =
-  "/private/tmp/mickey-cpu-screen-g000-r9b-20260721t063347z";
-const R9_ACTIVATION_MANIFEST_DIGEST = "c1bd6fd36228e05384157ddd33abd83415dd1610443a0713446985b4ed7788af";
+  "/private/tmp/mickey-screen-g000-r9c-20260721t075155z";
+const R9_ACTIVATION_MANIFEST_DIGEST = "e6bceca345988bac6ea61264a4bd7db598d4e38e2fcf334c45a6767e6e036630";
 const R9_RELOCATED_BUNDLE_CANARY_PATH =
   "/private/tmp/mickey-r9-reloc-canary-b4nH5N/episode/receipt.json";
 const R9_RELOCATED_BUNDLE_CANARY_SHA256 =
@@ -761,7 +775,7 @@ function validateR9ActivationContract(document) {
   const compatibility = persistent.compatibility;
   if (
     document.run_id !== R9_ACTIVATION_RUN_ID ||
-    activation.kind !== "r7_canary_r8_pre_post_recovery_r9_bundle_fix_bound_g000_v1" ||
+    activation.kind !== "r7_canary_r8_pre_post_recovery_r9c_bundle_and_transport_fix_bound_g000_v1" ||
     activation.r8_source_commit !== R8_SOURCE_COMMIT ||
     activation.r8_manifest_sha256 !== R8_MANIFEST_SHA256 ||
     activation.r8_fanout_sha256 !== R8_FANOUT_SHA256 ||
@@ -3704,6 +3718,183 @@ async function waitForSsh(runpodctl, podId, expectedName, executor, stopState, l
   throw new Error(`SSH never became ready after 60 attempts${last ? `; final status ${last.code}` : ""}`);
 }
 
+export function transientPinnedTransportFailureCategory(result) {
+  if (
+    !isObject(result) ||
+    ![1, 255].includes(result.code) ||
+    result.signal != null ||
+    typeof result.stdout !== "string" ||
+    result.stdout !== "" ||
+    typeof result.stderr !== "string"
+  ) {
+    return null;
+  }
+  const patterns = [
+    ["connection_refused", /\bconnection refused\b/i],
+    ["connection_timed_out", /\bconnection timed out\b/i],
+    ["operation_timed_out", /\boperation timed out\b/i],
+    ["no_route_to_host", /\bno route to host\b/i],
+    ["connection_reset", /\bconnection reset(?: by peer)?\b/i],
+    ["connection_closed", /\bconnection closed(?: by (?:remote host|unknown port \d+))?\b/i],
+    ["broken_pipe", /\bbroken pipe\b/i],
+    ["lost_connection", /\blost connection\b/i],
+  ];
+  return patterns.find(([, pattern]) => pattern.test(result.stderr))?.[0] ?? null;
+}
+
+function assertPinnedTransportIdentity(current, pinned) {
+  if (current.id !== pinned.id || current.name !== pinned.name) {
+    throw new Error("SSH control-plane identity drifted during hash-and-fetch retry");
+  }
+  if (current.ip !== pinned.ip || current.port !== pinned.port) {
+    throw new Error("SSH public endpoint drifted during hash-and-fetch retry");
+  }
+  if (
+    current.ssh_key.path !== pinned.ssh_key.path ||
+    current.ssh_key.fingerprint !== pinned.ssh_key.fingerprint
+  ) {
+    throw new Error("SSH account key identity drifted during hash-and-fetch retry");
+  }
+}
+
+async function revalidatePinnedTransportIdentity({
+  runpodctl,
+  podId,
+  expectedName,
+  pinnedInfo,
+  executor,
+  label,
+  attempt,
+}) {
+  const result = await executor.run(
+    runpodctl,
+    ["ssh", "info", podId, "-o", "json"],
+    {
+      label: `${label}-identity-revalidate-${attempt}`,
+      allowFailure: true,
+      outputLogMode: "metadata-only",
+    },
+  );
+  if (result.code !== 0 || result.signal != null) {
+    throw new Error("SSH control-plane identity revalidation failed during hash-and-fetch retry");
+  }
+  let record;
+  try {
+    record = JSON.parse(result.stdout);
+  } catch {
+    throw new Error("SSH control-plane identity revalidation returned malformed JSON");
+  }
+  const current = validateSshInfo(record, podId, expectedName);
+  assertPinnedTransportIdentity(current, pinnedInfo);
+  return current;
+}
+
+export async function runPinnedTransportWithRetry({
+  command,
+  args,
+  label,
+  runpodctl,
+  podId,
+  expectedName,
+  pinnedInfo,
+  executor,
+  stopState,
+  retryDelaysMs = HASH_FETCH_TRANSPORT_RETRY_DELAYS_MS,
+  settle = null,
+  beforeAttempt = null,
+  onAttempt = null,
+}) {
+  if (
+    typeof command !== "string" ||
+    !Array.isArray(args) ||
+    typeof label !== "string" ||
+    typeof runpodctl !== "string" ||
+    !isObject(executor) ||
+    !isObject(stopState) ||
+    !Array.isArray(retryDelaysMs) ||
+    retryDelaysMs.length < 1 ||
+    retryDelaysMs[0] !== 0 ||
+    retryDelaysMs.some((milliseconds) => !Number.isSafeInteger(milliseconds) || milliseconds < 0) ||
+    (settle !== null && typeof settle !== "function") ||
+    (beforeAttempt !== null && typeof beforeAttempt !== "function") ||
+    (onAttempt !== null && typeof onAttempt !== "function")
+  ) {
+    throw new Error("invalid pinned hash-and-fetch retry contract");
+  }
+  validateSshInfo(pinnedInfo, podId, expectedName);
+  const wait = settle ?? ((milliseconds) => delay(milliseconds, stopState));
+  for (let index = 0; index < retryDelaysMs.length; index += 1) {
+    const attempt = index + 1;
+    if (stopState.requested) {
+      throw new Error(`fanout interrupted before ${label} retry by ${stopState.signal ?? "failure"}`);
+    }
+    if (attempt > 1) {
+      await wait(retryDelaysMs[index]);
+      if (stopState.requested) {
+        throw new Error(`fanout interrupted during ${label} retry by ${stopState.signal ?? "failure"}`);
+      }
+      await revalidatePinnedTransportIdentity({
+        runpodctl,
+        podId,
+        expectedName,
+        pinnedInfo,
+        executor,
+        label,
+        attempt,
+      });
+    }
+    await beforeAttempt?.({ attempt });
+    const result = await executor.run(command, args, {
+      label: `${label}-attempt-${attempt}`,
+      allowFailure: true,
+    });
+    if (result.code === 0 && result.signal == null) {
+      const observation = { attempt, status: "accepted", category: "completed" };
+      await onAttempt?.(observation);
+      return { result, attempt_count: attempt };
+    }
+    const category = transientPinnedTransportFailureCategory(result);
+    if (!category) {
+      await onAttempt?.({ attempt, status: "rejected", category: "non_transient_result" });
+      throw new Error(`${label} failed with a non-transient transport result`);
+    }
+    await onAttempt?.({ attempt, status: "retryable_failure", category });
+    if (attempt === retryDelaysMs.length) {
+      throw new Error(`${label} exhausted bounded pinned transport retries`);
+    }
+  }
+  throw new Error(`${label} retry loop ended unexpectedly`);
+}
+
+export async function runPinnedFetchWithRetry({
+  stagingRoot,
+  destinationPath,
+  beforeAttempt = null,
+  ...options
+}) {
+  const normalizedStagingRoot = typeof stagingRoot === "string" ? path.resolve(stagingRoot) : null;
+  const normalizedDestination = typeof destinationPath === "string" ? path.resolve(destinationPath) : null;
+  if (
+    typeof stagingRoot !== "string" ||
+    !path.isAbsolute(stagingRoot) ||
+    typeof destinationPath !== "string" ||
+    !path.isAbsolute(destinationPath) ||
+    normalizedStagingRoot === path.parse(normalizedStagingRoot).root ||
+    path.dirname(normalizedDestination) !== normalizedStagingRoot ||
+    !new Set(["runs", "evidence", "artifacts.sha256"]).has(path.basename(normalizedDestination)) ||
+    (beforeAttempt !== null && typeof beforeAttempt !== "function")
+  ) {
+    throw new Error("invalid exact fetch retry destination");
+  }
+  return runPinnedTransportWithRetry({
+    ...options,
+    beforeAttempt: async ({ attempt }) => {
+      if (attempt > 1) await rm(destinationPath, { recursive: true, force: true });
+      await beforeAttempt?.({ attempt });
+    },
+  });
+}
+
 function podAlreadyAbsent(result) {
   return isStructuredProviderNotFound(result.stdout, result.stderr);
 }
@@ -4485,23 +4676,44 @@ async function runOnePair({
 
     state.pairs[pair.id].phase = "hash-and-fetch";
     await writeJsonAtomic(path.join(output, "state.json"), state);
-    await executor.run(
-      tools.ssh,
-      [
+    const recordHashFetchAttempt = (operation) => (record) => appendEvent(
+      output,
+      "hash_fetch_transport_attempt",
+      { pair_id: pair.id, arm_id: arm.id, operation, ...record },
+    );
+    await runPinnedTransportWithRetry({
+      command: tools.ssh,
+      args: [
         ...ssh,
         remote,
         `set -euo pipefail; cp ${remoteQuote(`${remoteStage}/extract.json`)} ${remoteQuote(`${remoteRoot}/evidence/extract.json`)}; cp ${remoteQuote(`${remoteStage}/pair-contract.json`)} ${remoteQuote(`${remoteRoot}/evidence/pair-contract.json`)}; cd ${remoteQuote(remoteRoot)}; find runs evidence -type f -print0 | LC_ALL=C sort -z | xargs -0 sha256sum > artifacts.sha256.part; mv -- artifacts.sha256.part artifacts.sha256`,
       ],
-      { label: `${pair.id}-remote-hash` },
-    );
+      label: `${pair.id}-remote-hash`,
+      runpodctl: tools.runpodctl,
+      podId,
+      expectedName: name,
+      pinnedInfo: info,
+      executor,
+      stopState,
+      onAttempt: recordHashFetchAttempt("remote-hash"),
+    });
     const fetchPart = path.join(activeRoot, "fetched.part");
     await mkdir(fetchPart, { mode: 0o700 });
     for (const remoteItem of ["runs", "evidence", "artifacts.sha256"]) {
-      await executor.run(
-        tools.scp,
-        [...scp, "-r", `${remote}:${remoteRoot}/${remoteItem}`, `${fetchPart}/`],
-        { label: `${pair.id}-fetch-${remoteItem}` },
-      );
+      await runPinnedFetchWithRetry({
+        command: tools.scp,
+        args: [...scp, "-r", `${remote}:${remoteRoot}/${remoteItem}`, `${fetchPart}/`],
+        label: `${pair.id}-fetch-${remoteItem}`,
+        stagingRoot: fetchPart,
+        destinationPath: path.join(fetchPart, remoteItem),
+        runpodctl: tools.runpodctl,
+        podId,
+        expectedName: name,
+        pinnedInfo: info,
+        executor,
+        stopState,
+        onAttempt: recordHashFetchAttempt(`fetch-${remoteItem}`),
+      });
     }
     const fetchVerification = await verifyFetchedArtifacts(fetchPart);
     await writeJsonAtomic(path.join(activeRoot, "fetch-verification.json"), fetchVerification);
@@ -4544,8 +4756,10 @@ async function runOnePair({
     if (deadlineTimer) clearTimeout(deadlineTimer);
   } catch (error) {
     if (deadlineTimer) clearTimeout(deadlineTimer);
-    stopState.requested = true;
-    executor.stop();
+    // Ordinary pair failure must not kill transports owned by sibling pairs.
+    // Signals, the local watchdog, and serialized-create failure set the
+    // shared latch and retain immediate kill-all behavior.
+    if (stopState.requested) executor.stop();
     let terminalError = error;
     if (cleanupRecordId && !preProviderBoundaryFailed) {
       try {
@@ -4578,7 +4792,7 @@ async function runOnePair({
   }
 }
 
-async function runWorkerPool(items, concurrency, worker, stopState, onFailure) {
+export async function runWorkerPool(items, concurrency, worker) {
   let index = 0;
   let firstError = null;
   const threads = Array.from({ length: concurrency }, async () => {
@@ -4588,8 +4802,6 @@ async function runWorkerPool(items, concurrency, worker, stopState, onFailure) {
         await worker(item);
       } catch (error) {
         firstError ??= error;
-        stopState.requested = true;
-        onFailure?.(error);
       }
     }
   });
@@ -4898,8 +5110,6 @@ export async function runCli(argv) {
         stopState,
         state,
       }),
-      stopState,
-      () => executor.stop(),
     );
     if (stopState.signal) throw new Error(`received ${stopState.signal}`);
     if (createdIds.size !== 0) throw new Error("one or more exact created pod IDs remain after pair completion");

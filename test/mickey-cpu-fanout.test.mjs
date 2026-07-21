@@ -42,6 +42,9 @@ import {
   isExactR9ActivationCandidate,
   isExactR8PrePostRecoveryRecord,
   r9ActivationManifestDigest,
+  runPinnedFetchWithRetry,
+  runPinnedTransportWithRetry,
+  runWorkerPool,
   runR9SerializedCreateTransaction,
   normalizeForegroundReaperForR8Persistence,
   reconcileAndCleanupReaperRecord,
@@ -104,7 +107,7 @@ const r8Manifest = JSON.parse(readFileSync(r8ManifestPath, "utf8"));
 const r9ManifestPath = path.join(
   root,
   "experiments",
-  "manifest-mickey-cpu-screen-g000-r9b-20260721.json",
+  "manifest-mickey-cpu-screen-g000-r9c-20260721.json",
 );
 const r9Manifest = JSON.parse(readFileSync(r9ManifestPath, "utf8"));
 const acceptedCanaryFixture = JSON.parse(readFileSync(
@@ -453,7 +456,7 @@ test("r9 activation is the sole recovery-bound live candidate", () => {
   assert.equal(validated.pairs.length, 16);
   assert.equal(
     r9ActivationManifestDigest(r9Manifest),
-    "c1bd6fd36228e05384157ddd33abd83415dd1610443a0713446985b4ed7788af",
+    "e6bceca345988bac6ea61264a4bd7db598d4e38e2fcf334c45a6767e6e036630",
   );
   const activationEvidence = {
     receipt_sha256: r9Manifest.activation.canary_receipt.sha256,
@@ -510,6 +513,281 @@ test("remote episode gate uses the canonical stable post-run attestation status"
   const source = readFileSync(fanoutScript, "utf8");
   assert.match(source, /post_run_attestation\?\.status!==\$\{JSON\.stringify\(REMOTE_POST_RUN_ATTESTATION_STATUS\)\}/);
   assert.doesNotMatch(source, /post_run_attestation\?\.status!=='passed'/);
+});
+
+function pinnedTransportInfo() {
+  return {
+    id: "pod-unit-transport",
+    name: "proxywar-mickey-cpu-fanout-unit",
+    ip: "192.0.2.10",
+    port: 22022,
+    ssh_key: {
+      path: "/tmp/mickey-unit-id-ed25519",
+      exists: true,
+      source: "runpodctl doctor",
+      in_account: true,
+      fingerprint: `SHA256:${"A".repeat(43)}`,
+    },
+  };
+}
+
+test("hash-and-fetch retries one transient SSH refusal only after exact endpoint revalidation", async () => {
+  const pinned = pinnedTransportInfo();
+  const calls = [];
+  const operationResults = [
+    {
+      code: 255,
+      signal: null,
+      stdout: "",
+      stderr: "ssh: connect to host 192.0.2.10 port 22022: Connection refused\n",
+    },
+    { code: 0, signal: null, stdout: "hashed\n", stderr: "" },
+  ];
+  const executor = {
+    async run(command, args, options) {
+      calls.push({ command, args, options });
+      if (command === "/fake/runpodctl") {
+        return { code: 0, signal: null, stdout: JSON.stringify(pinned), stderr: "" };
+      }
+      return operationResults.shift();
+    },
+  };
+  const observations = [];
+  const outcome = await runPinnedTransportWithRetry({
+    command: "/usr/bin/ssh",
+    args: ["root@192.0.2.10", "hash"],
+    label: "unit-remote-hash",
+    runpodctl: "/fake/runpodctl",
+    podId: pinned.id,
+    expectedName: pinned.name,
+    pinnedInfo: pinned,
+    executor,
+    stopState: { requested: false, signal: null },
+    retryDelaysMs: [0, 0],
+    settle: async () => {},
+    onAttempt: (record) => observations.push(record),
+  });
+  assert.equal(outcome.attempt_count, 2);
+  assert.equal(calls.filter(({ command }) => command === "/usr/bin/ssh").length, 2);
+  assert.equal(calls.filter(({ command }) => command === "/fake/runpodctl").length, 1);
+  assert.deepEqual(observations, [
+    { attempt: 1, status: "retryable_failure", category: "connection_refused" },
+    { attempt: 2, status: "accepted", category: "completed" },
+  ]);
+});
+
+test("hash-and-fetch refuses endpoint drift before retrying a pinned transport command", async () => {
+  const pinned = pinnedTransportInfo();
+  const drifted = { ...pinned, port: pinned.port + 1 };
+  let operationCalls = 0;
+  const executor = {
+    async run(command) {
+      if (command === "/fake/runpodctl") {
+        return { code: 0, signal: null, stdout: JSON.stringify(drifted), stderr: "" };
+      }
+      operationCalls += 1;
+      return {
+        code: 255,
+        signal: null,
+        stdout: "",
+        stderr: "ssh: connect to host 192.0.2.10 port 22022: Connection refused\n",
+      };
+    },
+  };
+  await assert.rejects(
+    runPinnedTransportWithRetry({
+      command: "/usr/bin/ssh",
+      args: ["root@192.0.2.10", "hash"],
+      label: "unit-drifted-hash",
+      runpodctl: "/fake/runpodctl",
+      podId: pinned.id,
+      expectedName: pinned.name,
+      pinnedInfo: pinned,
+      executor,
+      stopState: { requested: false, signal: null },
+      retryDelaysMs: [0, 0],
+      settle: async () => {},
+    }),
+    /public endpoint drifted/,
+  );
+  assert.equal(operationCalls, 1);
+});
+
+test("a retried fetch removes only its exact partial destination before scp resumes", async () => {
+  const directory = tempDirectory("mickey-retried-fetch-test-");
+  try {
+    const destination = path.join(directory, "runs");
+    const pinned = pinnedTransportInfo();
+    let operationCalls = 0;
+    const executor = {
+      async run(command) {
+        if (command === "/fake/runpodctl") {
+          return { code: 0, signal: null, stdout: JSON.stringify(pinned), stderr: "" };
+        }
+        operationCalls += 1;
+        if (operationCalls === 1) {
+          mkdirSync(destination);
+          writeFileSync(path.join(destination, "partial"), "partial\n");
+          return {
+            code: 1,
+            signal: null,
+            stdout: "",
+            stderr: "lost connection\n",
+          };
+        }
+        assert.equal(existsSync(destination), false);
+        mkdirSync(destination);
+        writeFileSync(path.join(destination, "complete"), "complete\n");
+        return { code: 0, signal: null, stdout: "", stderr: "" };
+      },
+    };
+    const outcome = await runPinnedFetchWithRetry({
+      command: "/usr/bin/scp",
+      args: ["remote:/runs", directory],
+      label: "unit-fetch-runs",
+      stagingRoot: directory,
+      destinationPath: destination,
+      runpodctl: "/fake/runpodctl",
+      podId: pinned.id,
+      expectedName: pinned.name,
+      pinnedInfo: pinned,
+      executor,
+      stopState: { requested: false, signal: null },
+      retryDelaysMs: [0, 0],
+      settle: async () => {},
+    });
+    assert.equal(outcome.attempt_count, 2);
+    assert.equal(existsSync(path.join(destination, "partial")), false);
+    assert.equal(readFileSync(path.join(destination, "complete"), "utf8"), "complete\n");
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test("hash-and-fetch exhausts bounded retries while an admitted sibling drains safely", async () => {
+  const pinned = pinnedTransportInfo();
+  let operationCalls = 0;
+  let revalidationCalls = 0;
+  const executor = {
+    async run(command) {
+      if (command === "/fake/runpodctl") {
+        revalidationCalls += 1;
+        return { code: 0, signal: null, stdout: JSON.stringify(pinned), stderr: "" };
+      }
+      operationCalls += 1;
+      return {
+        code: 255,
+        signal: null,
+        stdout: "",
+        stderr: "ssh: connect to host 192.0.2.10 port 22022: Connection refused\n",
+      };
+    },
+  };
+  await assert.rejects(
+    runPinnedTransportWithRetry({
+      command: "/usr/bin/ssh",
+      args: ["root@192.0.2.10", "hash"],
+      label: "unit-exhausted-hash",
+      runpodctl: "/fake/runpodctl",
+      podId: pinned.id,
+      expectedName: pinned.name,
+      pinnedInfo: pinned,
+      executor,
+      stopState: { requested: false, signal: null },
+      retryDelaysMs: [0, 0, 0],
+      settle: async () => {},
+    }),
+    /exhausted bounded pinned transport retries/,
+  );
+  assert.equal(operationCalls, 3);
+  assert.equal(revalidationCalls, 2);
+
+  const started = [];
+  const finished = [];
+  await assert.rejects(
+    runWorkerPool(["terminal", "sibling", "not-admitted"], 2, async (item) => {
+      started.push(item);
+      if (item === "terminal") throw new Error("terminal pair failure");
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      finished.push(item);
+    }),
+    /terminal pair failure/,
+  );
+  assert.deepEqual(started.sort(), ["sibling", "terminal"]);
+  assert.deepEqual(finished, ["sibling"]);
+  const source = readFileSync(fanoutScript, "utf8");
+  const ordinaryFailureStart = source.indexOf("// Ordinary pair failure must not kill");
+  const ordinaryFailureBoundary = source.indexOf("let terminalError = error", ordinaryFailureStart);
+  const ordinaryFailureLatch = source.slice(ordinaryFailureStart, ordinaryFailureBoundary);
+  assert.equal(ordinaryFailureStart > 0 && ordinaryFailureBoundary > ordinaryFailureStart, true);
+  assert.doesNotMatch(ordinaryFailureLatch, /stopState\.requested\s*=\s*true/);
+  assert.match(ordinaryFailureLatch, /if \(stopState\.requested\) executor\.stop\(\)/);
+});
+
+test("hash-and-fetch gives authentication failure zero retries", async () => {
+  const pinned = pinnedTransportInfo();
+  let operationCalls = 0;
+  let revalidationCalls = 0;
+  const executor = {
+    async run(command) {
+      if (command === "/fake/runpodctl") {
+        revalidationCalls += 1;
+        return { code: 0, signal: null, stdout: JSON.stringify(pinned), stderr: "" };
+      }
+      operationCalls += 1;
+      return {
+        code: 255,
+        signal: null,
+        stdout: "",
+        stderr: "root@192.0.2.10: Permission denied (publickey).\n",
+      };
+    },
+  };
+  await assert.rejects(
+    runPinnedTransportWithRetry({
+      command: "/usr/bin/ssh",
+      args: ["root@192.0.2.10", "hash"],
+      label: "unit-auth-hash",
+      runpodctl: "/fake/runpodctl",
+      podId: pinned.id,
+      expectedName: pinned.name,
+      pinnedInfo: pinned,
+      executor,
+      stopState: { requested: false, signal: null },
+      retryDelaysMs: [0, 0, 0],
+      settle: async () => {},
+    }),
+    /non-transient transport result/,
+  );
+  assert.equal(operationCalls, 1);
+  assert.equal(revalidationCalls, 0);
+});
+
+test("fetch retry refuses recursive deletion outside its exact staging child", async () => {
+  const directory = tempDirectory("mickey-fetch-containment-test-");
+  try {
+    const sibling = path.join(directory, "sibling-sentinel");
+    writeFileSync(sibling, "keep\n");
+    await assert.rejects(
+      runPinnedFetchWithRetry({
+        command: "/usr/bin/scp",
+        args: [],
+        label: "unit-unsafe-fetch",
+        stagingRoot: path.join(directory, "stage"),
+        destinationPath: sibling,
+        runpodctl: "/fake/runpodctl",
+        podId: "unused",
+        expectedName: "unused",
+        pinnedInfo: {},
+        executor: {},
+        stopState: {},
+      }),
+      /invalid exact fetch retry destination/,
+    );
+    assert.equal(readFileSync(sibling, "utf8"), "keep\n");
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
 });
 
 test("final reaper identity is checked before evidence eligibility and rejects PID or receipt drift", () => {

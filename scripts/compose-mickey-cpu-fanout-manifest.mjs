@@ -57,7 +57,7 @@ function parseArgs(argv) {
       "--runpodctl", "--runpodctl-patch", "--runner-lease", "--runner-lease-sha256",
       "--runpodctl-series-dir",
       "--pod-image", "--max-concurrency", "--reaper", "--reaper-ledger",
-      "--reaper-service-receipt",
+      "--reaper-service-receipt", "--activation-template",
     ].includes(key)) fail(`unknown or incomplete option: ${key}`);
     if (Object.hasOwn(options, key)) fail(`duplicate option: ${key}`);
     options[key] = value;
@@ -70,7 +70,8 @@ function parseArgs(argv) {
   ]) {
     if (!options[key]) fail(`${key} is required`);
   }
-  for (const key of ["--fragment", "--output", "--source-receipt", "--runpodctl", "--runpodctl-patch", "--runpodctl-series-dir", "--runner-lease", "--reaper", "--reaper-ledger", "--reaper-service-receipt"]) {
+  for (const key of ["--fragment", "--output", "--source-receipt", "--runpodctl", "--runpodctl-patch", "--runpodctl-series-dir", "--runner-lease", "--reaper", "--reaper-ledger", "--reaper-service-receipt", "--activation-template"]) {
+    if (!options[key]) continue;
     if (!path.isAbsolute(options[key])) fail(`${key} must be absolute`);
   }
   const maxConcurrency = Number(options["--max-concurrency"] ?? 4);
@@ -96,6 +97,7 @@ function parseArgs(argv) {
     reaper: options["--reaper"],
     reaperLedger: options["--reaper-ledger"],
     reaperServiceReceipt: options["--reaper-service-receipt"],
+    activationTemplate: options["--activation-template"] ?? null,
     maxConcurrency,
   };
 }
@@ -314,6 +316,32 @@ async function main(argv) {
       zero_k1z_harm_required: true,
     },
   };
+  if (options.activationTemplate !== null) {
+    const template = JSON.parse(await readFile(options.activationTemplate, "utf8"));
+    if (
+      template.schema_version !== 5 ||
+      template.kind !== "mickey_cpu_fanout" ||
+      template.activation?.kind !== "r7_canary_r8_pre_post_recovery_r9_bundle_fix_bound_g000_v1" ||
+      template.activation?.persistent_reaper?.kind !== "adopt_existing_r8_immutable_cleanup_daemon_v1" ||
+      template.control_plane?.pre_post_recovery == null
+    ) {
+      fail("--activation-template is not the exact accepted r9 recovery-bound template");
+    }
+    manifest.schema_version = 5;
+    manifest.control_plane.pre_post_recovery = structuredClone(
+      template.control_plane.pre_post_recovery,
+    );
+    manifest.cleanup_watchdog = {
+      ...structuredClone(template.cleanup_watchdog),
+      service_receipt_path: options.reaperServiceReceipt,
+    };
+    manifest.runpodctl.path = template.runpodctl.path;
+    manifest.activation = {
+      ...structuredClone(template.activation),
+      kind: "r7_canary_r8_pre_post_recovery_r9c_bundle_and_transport_fix_bound_g000_v1",
+      output_path: `/private/tmp/${options.runId}`,
+    };
+  }
   await writeFile(options.output, `${JSON.stringify(manifest, null, 2)}\n`, { flag: "wx", mode: 0o600 });
   process.stdout.write(`${JSON.stringify({ output: options.output, run_id: options.runId, nonce: options.nonce, pair_count: 16 })}\n`);
 }
