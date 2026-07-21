@@ -1,132 +1,77 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T00:12:00Z",
-  "cycle_id": "odin-20260721T001052Z-77195",
+  "updated_at": "2026-07-21T00:58:55Z",
+  "cycle_id": "odin-ds2-terminal-20260721",
   "lane": "odin",
+  "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
+  "state": "ds2_closed_local_planner_degradation_no_submit",
   "arm": {
-    "id": "rs1",
-    "name": "raw_tile_stall_measurement",
-    "branch": "rci/rs1-raw-stall",
-    "exact_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
-    "safety_invariant_base_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
-    "candidate_source_commit": "ddb980e389c61915fafaa1c91fea282937ad85b5",
-    "closed": true
+    "id": "ds2",
+    "name": "raw_opening_collapse_counter",
+    "branch": "rci/ds2-raw-opening-collapse",
+    "parent_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "candidate_commit": "5d1b72ee79331250d156544eb4505bc1e3d5a1f3",
+    "terminal_evidence_commit": "c55c87d4",
+    "closed": true,
+    "verdict": "STOP_LOCAL_PLANNER_DEGRADATION_NO_SUBMIT"
   },
-  "state": "successor_selection_blocked_no_unique_replay_mechanism",
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
     "player_name": "K1Z odin free",
     "policy_label": "qd1n:v89",
     "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
     "membership_id": "lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6",
+    "status": "competing",
+    "substatus": "active",
     "is_champion": true
   },
+  "live_scoreboard": {
+    "checked_at": "2026-07-21T00:54:36Z",
+    "leader": "daveey",
+    "leader_score": 40.78777,
+    "odin_rank": 3,
+    "odin_score": 15.488186,
+    "latest_completed_round": 588,
+    "latest_odin_rank": 11,
+    "latest_odin_score": 0,
+    "running_round": 589
+  },
   "locks": {
-    "runner": "free after Mickey lease smoke; local lanes are odin|mickey and local hrafn is rejected",
+    "runner": "free",
     "qd1n_mutation": "free",
-    "active_player": "K1Z odin free (live verified 2026-07-20T23:08:26Z)",
-    "hrafn_identity_window": "hi1_terminal_rejected_studio_only",
-    "mailbox_commit": "20ee9c0",
-    "hrafn_pickup": "Hrafn source and execution are Studio-only. HI1 was terminally rejected at mailbox a53a5a0; no local Hrafn process, runner lane, or background operator remains.",
-    "mickey_local_slot": "active local source, evaluation, and CPU owner under the mickey lease; the live lease smoke passed and local hrafn is rejected; dedicated HOME has no active player because the account already has two players"
+    "active_player": "K1Z odin free",
+    "mailbox_commit": "20ee9c0"
   },
   "operator_topology": {
-    "odin": "local qd1n owner",
-    "hrafn": "Studio-only hrafn-fylking owner",
-    "mickey": "local mickey-mouse-intent source, evaluation, and CPU operator",
-    "authority_receipt": "team-mailbox 20ee9c0 terminal local takeover receipt",
-    "mickey_source_worktree": "/private/tmp/proxywar-mickey-cpu-surrogates-20260721",
-    "mickey_ops_worktree": "/private/tmp/proxywar-mickey-cpu-fanout-ops-20260721",
-    "mickey_source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
-    "mickey_source_receipt_commit": "068afee40b55ee80e00b55966905c0e3f3c3df10",
-    "mickey_ops_commit": "0ff0dbe563807a4c9bd16972eeb69e62df4a7153",
-    "mickey_state": "local runner wired and smoke-tested; five distinct arms; 184/184; zero K1Z harm; six prior linux/amd64 images; live operations blocked on a distinct Mickey player credential and a fresh image reseal",
-    "live_identity_guard": "released by direct user transfer after the verified Studio handoff; normal HOME is K1Z odin free and dedicated Mickey HOME has no active player",
-    "hrafn_studio_reseal": "exact source 98288c8b9211513cfb71ceb88707de1721f351e3 was tested and HI1 terminally rejected at mailbox a53a5a0; Hrafn remains Studio-only"
-  },
-  "candidate": {
-    "source_tests": "154/154",
-    "source_rci": "PASS after two revisions; planner JSON parity 5000/5000",
-    "image_ref": "proxywar-agent-llm:qd1n-v89-rs1-ddb980e3-amd64",
-    "image_id": "sha256:24051929164cb19a6ed95f6ed184c57c1b4f8a7c21efbe8ba3e879a9058e0637",
-    "architecture": "amd64",
-    "policy_engine": "",
-    "contract": "experiments/contract-qd1n-rs1-raw-stall-20260720.json"
-  },
-  "replay_basis": {
-    "round": 581,
-    "false_stalls": 5,
-    "true_stalls": 2,
-    "diagnosis": "experiments/diagnosis-qd1n-r581-opening-yield-20260720.json"
+    "odin": "sole writable qd1n operator and live authority",
+    "mickey": "local source, evaluation, and CPU fanout only under the mickey lease",
+    "hrafn": "Studio-only hrafn-fylking operator",
+    "kimi": "external Kimi K3 Max adviser only"
   },
   "source_evidence": {
-    "red_first": "1 core fail, 5 lock-ins pass",
-    "red_log_sha256": "5cd8ed9435f5bf7889342898ea7fb8f6b163d364e21ff0f88740f76072623fca",
-    "planner_prompt_red_first": "old source exposes tilesOwned in JSON.stringify(state); new selector-private regression passes",
-    "planner_prompt_red_log_sha256": "60de48b49ea62786b76dffd25dc6807fc0bf134f10c79f0cd7409438d8833fc8",
-    "focused": "6/6",
-    "full": "154/154",
-    "full_log_sha256": "09abe7f0343ae0a928d57dbcef7f4a58d6f606d38564ae04a13c557071757f00",
-    "randomized_parent_parity": "missing-raw selector parity exact; planner JSON parity 5000/5000",
-    "targeted_marker_truth": "5000/5000; 2934 truthful markers"
+    "terminal_rci": "PASS",
+    "tests": "164/164",
+    "image_ref": "proxywar-agent-llm:qd1n-v89-ds2-5d1b72ee-amd64",
+    "image_id": "sha256:8cdfa62bab5ce6ea370be01320111d0fa0c482f8ce0de571394d6c41709c027e",
+    "architecture": "amd64",
+    "qualifier": "34/34 accepted; zero holds and rejects"
   },
   "local_evidence": {
-    "status": "terminal_fail_negative_auc25",
-    "contract_sha256": "85830bd5b5a2e69b1e03ab320bd438db85f2069352ef99ec3237abd6d82f6205",
-    "control_job_sha256": "60c479db19ddbb095c7f0d99b6acba6de79e0de27f6bafc52bb0167e9f6edaf8",
-    "candidate_job_sha256": "fe81e4d79fae86cbf05c8715c44e9e8d68fc17b501592754f4f4b04243722f6e",
-    "auditor_sha256": "771143a16a3f7f201f3ed018c23f6e991800db01002ffd5c35de8d53e686a4d3",
-    "auditor_self_test_report_sha256": "8ba3fe5095cfe6ffe962d65552d66f7270094ce24fd52255820c69b870ce5828",
-    "auditor_self_test": "parent-as-both failed closed on zero RS1 marker reach while reproducing the exact turn-2400 opportunity and AUC25 516155",
-    "reason": "The pair reproduced the intended turn-2400 reroute with exact pre-marker parity and zero safety failures, but candidate AUC25 was 515570 versus control 516155, delta -585. The sealed contract therefore closes RS1 immediately; no adjacent-seed scan or promotion is authorized.",
-    "control_canary": {
-      "run_id": "rs1-slot0-control-20260721-r2",
-      "directory": "/private/tmp/proxywar-rs1-slot0-control-20260721-r2",
-      "game_id": "CWBSITMO",
-      "opportunity_turn": 2400,
-      "own_tiles": 32321,
-      "raw_tile_history": [32167, 32167, 32167, 32168],
-      "selected_escape": true,
-      "control_auc25": 516155,
-      "results_sha256": "6e45d2b242c596ffa9a6eec617469259fb285e6fae91f281fd66ee4865112026",
-      "replay_sha256": "2da4ef38833fca3ad3ecc3847fe30726b6b7751feb7182cbf9bcf6a1d912b32e",
-      "decisions_sha256": "76863cb241537dcc1b95b6f3aef5697f19bcba420c32f4b07a5124167c008737"
-    },
-    "pair_canary": {
-      "candidate_run_id": "rs1-slot0-candidate-20260721-r1",
-      "candidate_directory": "/private/tmp/proxywar-rs1-slot0-candidate-20260721-r1",
-      "game_id": "CWBSITMO",
-      "pre_marker_rows_exact": 184,
-      "subject_source_rows_exact": 23,
-      "marker_count": 7,
-      "first_marker_turn": 2400,
-      "candidate_action": "expand:terra-nullius:20",
-      "control_action": "boat:442484:8",
-      "candidate_auc25": 515570,
-      "control_auc25": 516155,
-      "auc25_delta": -585,
-      "results_sha256": "bd79d79c5e1454234e38211635dc923e55d0432024f514f6aa5dd8a6c0289566",
-      "replay_sha256": "028c30fcb9649ab03d8784b1cde7a9ab9f6cc9052b06960ed8f462fa738d0e01",
-      "decisions_sha256": "1fbf08db86dcf36036f929cb44c309776997642fbb246e2551a0c8653289d619",
-      "audit_sha256": "2e8c7ef3490151312be2974296e54f752d0123bf4a2f033295eab1e18481ce61"
-    }
-  },
-  "successor_selection": {
-    "status": "blocked_evidence_integrity",
-    "checkpoint": "experiments/checkpoint-qd1n-successor-selection-blocked-20260721.json",
-    "bounded_basis": "experiments/diagnosis-qd1n-r581-opening-yield-20260720.json",
-    "closed_routes": [
-      "percent_only",
-      "broad_opening_scheduler",
-      "boat_to_land_rs1",
-      "dynamic_grow_or_convert_hi1"
-    ],
-    "reason": "Every replay-backed opening-yield lever in the bounded diagnosis maps to a closed or terminally rejected mechanism. Selecting a named successor without a fresh bounded replay cell would invent causal support."
+    "pair_id": "ds2-pressure-seed-20260722",
+    "marker_count": 3,
+    "marker_turns": [1900, 2100, 2300],
+    "post_trigger_tile_lift_pct": 30.16,
+    "final_tile_multiple": 5.07,
+    "holds": 0,
+    "rejects": 0,
+    "k1z_harm": 0,
+    "candidate_planner_degraded": "60/63",
+    "audit": "experiments/audit-qd1n-ds2-raw-opening-collapse-pangaea-20260721.json"
   },
   "gates": {
     "source_ready": true,
     "image_verified": true,
-    "local_matched": false,
+    "local_mechanism_verified": false,
     "diagnostic_uploaded": false,
     "hosted_4_of_4": false,
     "regression_20_of_20": false,
@@ -136,45 +81,11 @@
     "champion_verified": false,
     "round_confirmed": false
   },
-  "superseded": {
-    "kiz1": "closed_hosted_failure; Gravity protection retained only as a mandatory safety invariant",
-    "oi2": "closed_before_edit as redundant with HI1",
-    "os1": "closed_without_run_as_recombined_complexity"
+  "transport_truth": {
+    "clean_local_bedrock_available": false,
+    "reason": "No AWS CLI, profile, credentials, SSO cache, relevant environment, or local Bedrock sidecar is configured on this Mac.",
+    "reuse_rule": "Reopen DS2 only in a new preregistered cycle after a supported clean planner transport exists; never weaken the zero-degradation gate."
   },
-  "next_automatic_transition": "Preserve qd1n:v89. In the next operator cycle, inspect one fresh bounded replay cell for a distinct reachable offensive action change outside closed percent, scheduler, boat-reroute, and dynamic-intent mechanisms; do not name or edit an arm until that evidence exists. Hrafn stays Studio-only and Mickey stays local source/evidence-only until a distinct Softmax credential or player slot exists.",
-  "prior_verified_champion_preserved": true,
-  "latest_coordination_checkpoint": {
-    "cycle_id": "mickey-local-runner-takeover-20260721",
-    "checked_at": "2026-07-20T23:58:52Z",
-    "receipt": "team-mailbox/CODEX_ODIN_MICKEY_LOCAL_TAKEOVER_TERMINAL_20260721.md",
-    "dispatch_mailbox_head": "20ee9c0",
-    "main_commit": "1213378cdb6b4770b394cbb1bc3ead2e7b5c0337",
-    "mickey_smoke_run_id": "mickey-local-takeover-smoke",
-    "hrafn_local_runner_exit": 64,
-    "result": "MICKEY_LOCAL_OPERATOR_ACTIVE_HRAFN_STUDIO_ONLY"
-  },
-  "live_identity_checkpoint": {
-    "cycle_id": "mickey-local-takeover-20260721",
-    "checked_at": "2026-07-20T23:08:26Z",
-    "receipt": "experiments/checkpoint-mickey-local-takeover-20260721.json",
-    "authenticated_player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
-    "authenticated_player_name": "K1Z odin free",
-    "hrafn_local_active": false,
-    "mickey_dedicated_home_active_player": null,
-    "mickey_player_create_result": "HTTP_409_CONFLICT",
-    "result": "ODIN_RESTORED_MICKEY_OPERATOR_READY_IDENTITY_BLOCKED"
-  },
-  "last_live_checkpoint": {
-    "cycle_id": "odin-20260720T205740Z-88030",
-    "checked_at": "2026-07-20T20:58:39Z",
-    "receipt": "experiments/checkpoint-qd1n-kiz1-post-failure-membership-20260720.json",
-    "membership_id": "lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6",
-    "policy_label": "qd1n:v89",
-    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
-    "status": "competing",
-    "substatus": "active",
-    "is_champion": true,
-    "candidate_submitted": false,
-    "result": "PRIOR_CHAMPION_PRESERVED"
-  }
+  "next_automatic_transition": "Preserve qd1n:v89. Audit one bounded round-588 Odin loss cell for one replay-visible action defect not already closed. Preregister only a single-action mechanism with a direct matched discriminator. Do not rerun DS2, add a second mechanism, or mutate the league before the full autonomous gates pass.",
+  "prior_verified_champion_preserved": true
 }
