@@ -7,6 +7,7 @@ import test from "node:test";
 import {
   ReaperIdentityRefusalError,
   ReaperProviderError,
+  blockExactPendingPrePostCreate,
   bindActivePod,
   confirmOwnedPodAbsent,
   ensureReaperLedger,
@@ -66,6 +67,109 @@ test("service startup materializes an empty durable 0600 ledger", async (t) => {
   const ledger = await ensureReaperLedger({ ledgerPath: fx.ledgerPath, clock: fx.clock });
   assert.equal(ledger.records.length, 0);
   assert.equal((await stat(fx.ledgerPath)).mode & 0o777, 0o600);
+});
+
+test("exact pre-POST recovery blocks only the sole pinned unbound record", async (t) => {
+  const baseline = [{ id: "existing-a", name: "unrelated-existing" }];
+  const fx = await fixture(t, { pods: baseline });
+  const historical = await prepare(fx, {
+    randomBytesFn: () => Buffer.from("44".repeat(16), "hex"),
+    randomUUIDFn: () => "00000000-0000-4000-8000-000000000044",
+  });
+  fx.client.add({ id: "historical-owned", name: historical.expected_name });
+  await bind(fx, historical, "historical-owned");
+  fx.client.pods.delete("historical-owned");
+  await confirmOwnedPodAbsent({
+    ledgerPath: fx.ledgerPath,
+    client: fx.client,
+    recordId: historical.record_id,
+    clock: fx.clock,
+    retryOptions: fx.retryOptions,
+  });
+  const pending = await prepare(fx, {
+    randomUUIDFn: () => "00000000-0000-4000-8000-000000000001",
+  });
+  fx.state.now += 1_000;
+  await runReaperOnce(fx);
+  const before = await readReaperLedger(fx.ledgerPath);
+  const historicalBefore = JSON.stringify(before.records[0]);
+  assert.equal(before.records[1].events.at(-1).type, "pending_name_absent");
+
+  const recovered = await blockExactPendingPrePostCreate({
+    ledgerPath: fx.ledgerPath,
+    client: fx.client,
+    expected: pending,
+    expectedProviderSnapshot: baseline,
+    recoveryEvidenceSha256: "b".repeat(64),
+    clock: fx.clock,
+    retryOptions: fx.retryOptions,
+  });
+  assert.equal(recovered.record.state, "blocked");
+  assert.equal(recovered.record.terminal_reason, "pre_post_create_not_invoked");
+  assert.equal(recovered.record.pod_id, null);
+  assert.equal(recovered.record.events.at(-1).type, "pre_post_create_not_invoked");
+  assert.equal(recovered.record.events.at(-1).recovery_evidence_sha256, "b".repeat(64));
+  assert.equal(recovered.provider_pod_count, 1);
+  assert.equal(recovered.other_records_unchanged, true);
+  assert.equal(fx.client.calls.some(({ method }) => method === "delete"), false);
+  const after = await readReaperLedger(fx.ledgerPath);
+  assert.equal(JSON.stringify(after.records[0]), historicalBefore);
+  const revisionAfterFirstRecovery = after.revision;
+  const repeated = await blockExactPendingPrePostCreate({
+    ledgerPath: fx.ledgerPath,
+    client: fx.client,
+    expected: pending,
+    expectedProviderSnapshot: baseline,
+    recoveryEvidenceSha256: "b".repeat(64),
+    clock: fx.clock,
+    retryOptions: fx.retryOptions,
+  });
+  assert.equal(repeated.already_recovered, true);
+  assert.equal(repeated.ledger_revision, revisionAfterFirstRecovery);
+  assert.equal((await readReaperLedger(fx.ledgerPath)).revision, revisionAfterFirstRecovery);
+});
+
+test("pre-POST recovery rejects inventory drift, exact-name presence, and a second nonterminal", async (t) => {
+  for (const fault of ["inventory", "exact-name", "second-record"]) {
+    const baseline = [{ id: "existing-a", name: "unrelated-existing" }];
+    const fx = await fixture(t, { pods: baseline });
+    const pending = await prepare(fx, {
+      randomUUIDFn: () => `00000000-0000-4000-8000-00000000000${fault.length % 10}`,
+    });
+    fx.state.now += 1_000;
+    await runReaperOnce(fx);
+    if (fault === "inventory") fx.client.add({ id: "unexpected", name: "unrelated-new" });
+    if (fault === "exact-name") fx.client.add({ id: "unexpected", name: pending.expected_name });
+    if (fault === "second-record") {
+      await preparePendingCreate({
+        ledgerPath: fx.ledgerPath,
+        client: fx.client,
+        runId: "second-pending",
+        manifestSha256: MANIFEST_SHA,
+        deadline: new Date(fx.state.now + 60_000).toISOString(),
+        namePrefix: "proxywar-mickey-test",
+        clock: fx.clock,
+        randomBytesFn: () => Buffer.from("33".repeat(16), "hex"),
+        randomUUIDFn: () => "00000000-0000-4000-8000-000000000099",
+        retryOptions: fx.retryOptions,
+      });
+    }
+    await assert.rejects(
+      blockExactPendingPrePostCreate({
+        ledgerPath: fx.ledgerPath,
+        client: fx.client,
+        expected: pending,
+        expectedProviderSnapshot: baseline,
+        recoveryEvidenceSha256: "c".repeat(64),
+        clock: fx.clock,
+        retryOptions: fx.retryOptions,
+      }),
+      ReaperIdentityRefusalError,
+    );
+    const after = await readReaperLedger(fx.ledgerPath);
+    assert.equal(after.records.find(({ record_id }) => record_id === pending.record_id).state, "pending");
+    assert.equal(fx.client.calls.some(({ method }) => method === "delete"), false);
+  }
 });
 
 class FakeRunPodClient {

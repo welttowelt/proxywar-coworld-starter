@@ -24,6 +24,13 @@ const EVENT_LIMIT = 256;
 const DEFAULT_RETRY_DELAYS_MS = Object.freeze([0, 250, 1_000, 2_500, 5_000, 10_000, 15_000]);
 
 export class ReaperValidationError extends Error {}
+export class ReaperLedgerLockedError extends ReaperValidationError {
+  constructor(ownerPid) {
+    super(`reaper ledger is locked by live PID ${ownerPid}`);
+    this.name = "ReaperLedgerLockedError";
+    this.ownerPid = ownerPid;
+  }
+}
 export class ReaperIdentityRefusalError extends Error {}
 export class ReaperProviderError extends Error {}
 
@@ -365,7 +372,7 @@ async function acquireLedgerLock(ledgerPath) {
       const sameHost = owner.host === hostname();
       const sameBoot = owner.boot === bootIdentity();
       if (sameHost && sameBoot && Number.isSafeInteger(owner.pid) && processExists(owner.pid)) {
-        throw new ReaperValidationError(`reaper ledger is locked by live PID ${owner.pid}`);
+        throw new ReaperLedgerLockedError(owner.pid);
       }
       if (!sameHost) {
         throw new ReaperValidationError("reaper ledger lock belongs to another host");
@@ -374,6 +381,140 @@ async function acquireLedgerLock(ledgerPath) {
     }
   }
   throw new ReaperValidationError("could not acquire reaper ledger lock");
+}
+
+function equalSnapshot(left, right) {
+  const canonical = (records) => [...records]
+    .map(({ id, name }) => ({ id, name }))
+    .sort((a, b) => a.id.localeCompare(b.id) || a.name.localeCompare(b.name));
+  return JSON.stringify(canonical(left)) === JSON.stringify(canonical(right));
+}
+
+/**
+ * One deliberately narrow incident-recovery transition.  This is not a
+ * general way to retire pending creates: callers must independently prove
+ * that the exact provider POST was never invoked and bind that proof by hash.
+ */
+export async function blockExactPendingPrePostCreate({
+  ledgerPath,
+  client,
+  expected,
+  expectedProviderSnapshot,
+  recoveryEvidenceSha256,
+  clock = Date.now,
+  retryOptions,
+}) {
+  if (!client || typeof client.listAll !== "function") {
+    throw new ReaperValidationError("recovery provider client must implement listAll");
+  }
+  if (!expected || typeof expected !== "object" || Array.isArray(expected)) {
+    throw new ReaperValidationError("exact recovery record expectation is invalid");
+  }
+  assertString(recoveryEvidenceSha256, "recovery evidence SHA-256", /^[a-f0-9]{64}$/, 64);
+  const baseline = normalizeSnapshot(expectedProviderSnapshot);
+  return withLedgerLock(ledgerPath, async () => {
+    const now = normalizeNow(clock);
+    const ledger = await readReaperLedger(ledgerPath);
+    const nonterminal = ledger.records.filter((record) => record.state !== "retired");
+    if (nonterminal.length !== 1 || nonterminal[0].record_id !== expected.record_id) {
+      throw new ReaperIdentityRefusalError(
+        "pre-POST recovery requires the exact record to be the sole non-retired record",
+      );
+    }
+    const record = nonterminal[0];
+    const exactFields = [
+      "record_id", "run_id", "manifest_sha256", "deadline", "ownership_kind",
+      "name_prefix", "name_nonce", "expected_name", "preexisting_snapshot_sha256",
+      "created_at",
+    ];
+    for (const field of exactFields) {
+      if (record[field] !== expected[field]) {
+        throw new ReaperIdentityRefusalError(`pre-POST recovery ${field} differs from pinned evidence`);
+      }
+    }
+    if (
+      !["pending", "blocked"].includes(record.state) ||
+      record.pod_id !== null ||
+      record.active_binding_sha256 !== null ||
+      record.bound_at !== null ||
+      record.retired_at !== null ||
+      (record.state === "pending" && record.terminal_reason !== null) ||
+      (record.state === "blocked" && record.terminal_reason !== "pre_post_create_not_invoked") ||
+      record.last_error !== null ||
+      !Array.isArray(record.preexisting_ids) ||
+      JSON.stringify(record.preexisting_ids) !== JSON.stringify(expected.preexisting_ids) ||
+      snapshotDigest(baseline) !== record.preexisting_snapshot_sha256 ||
+      !Array.isArray(record.events) ||
+      record.events.length < (record.state === "blocked" ? 3 : 2) ||
+      JSON.stringify(record.events[0]) !== JSON.stringify(expected.events[0]) ||
+      record.events.slice(1, record.state === "blocked" ? -1 : undefined).some((event) => (
+        !event ||
+        Object.keys(event).sort().join(",") !== "at,type" ||
+        event.type !== "pending_name_absent" ||
+        !Number.isFinite(Date.parse(event.at))
+      ))
+    ) {
+      throw new ReaperIdentityRefusalError("pending record is not the exact unbound r8 pre-POST sentinel");
+    }
+
+    const current = normalizeSnapshot(await retry(() => client.listAll(), retryOptions));
+    if (!equalSnapshot(current, baseline)) {
+      throw new ReaperIdentityRefusalError("provider inventory differs from the pinned pre-POST baseline");
+    }
+    if (current.some((pod) => pod.name === record.expected_name)) {
+      throw new ReaperIdentityRefusalError("exact pending name is present at the provider");
+    }
+
+    if (record.state === "blocked") {
+      const terminal = record.events.at(-1);
+      if (
+        record.terminal_reason !== "pre_post_create_not_invoked" ||
+        !terminal ||
+        Object.keys(terminal).sort().join(",") !==
+          "at,provider_snapshot_sha256,recovery_evidence_sha256,type" ||
+        terminal.type !== "pre_post_create_not_invoked" ||
+        terminal.recovery_evidence_sha256 !== recoveryEvidenceSha256 ||
+        terminal.provider_snapshot_sha256 !== snapshotDigest(current) ||
+        record.updated_at !== terminal.at
+      ) {
+        throw new ReaperIdentityRefusalError("already-blocked recovery sentinel lacks the exact terminal proof");
+      }
+      return {
+        record: structuredClone(record),
+        ledger_revision: ledger.revision,
+        provider_snapshot_sha256: snapshotDigest(current),
+        provider_pod_count: current.length,
+        other_records_unchanged: true,
+        already_recovered: true,
+      };
+    }
+
+    const otherBefore = ledger.records
+      .filter((candidate) => candidate.record_id !== record.record_id)
+      .map((candidate) => JSON.stringify(candidate));
+    record.state = "blocked";
+    record.terminal_reason = "pre_post_create_not_invoked";
+    record.last_error = null;
+    appendEvent(record, "pre_post_create_not_invoked", now, {
+      recovery_evidence_sha256: recoveryEvidenceSha256,
+      provider_snapshot_sha256: snapshotDigest(current),
+    });
+    const otherAfter = ledger.records
+      .filter((candidate) => candidate.record_id !== record.record_id)
+      .map((candidate) => JSON.stringify(candidate));
+    if (JSON.stringify(otherAfter) !== JSON.stringify(otherBefore)) {
+      throw new ReaperIdentityRefusalError("recovery changed a non-target record");
+    }
+    await persist(ledgerPath, ledger, now);
+    return {
+      record: structuredClone(record),
+      ledger_revision: ledger.revision,
+      provider_snapshot_sha256: snapshotDigest(current),
+      provider_pod_count: current.length,
+      other_records_unchanged: true,
+      already_recovered: false,
+    };
+  });
 }
 
 async function withLedgerLock(ledgerPath, operation) {
