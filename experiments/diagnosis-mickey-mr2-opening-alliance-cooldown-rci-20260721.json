@@ -160,6 +160,8 @@
     "hosted_matched_gate_4_of_4": false,
     "hosted_regression_gate_20_of_20": false,
     "dedicated_mickey_credential_active": false,
+    "dedicated_credential_status": "same_account",
+    "credential_blocker": "The dedicated credential exposes a non-exclusive player roster; the mutation wrapper blocks same-account reuse.",
     "live_upload_performed": false,
     "live_submission_performed": false,
     "promotion_eligible": false,
