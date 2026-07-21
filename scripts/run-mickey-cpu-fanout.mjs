@@ -49,6 +49,11 @@ const REAPER_LAUNCHD_RENDERER = path.join(
 // foreground lease understood by the shared runner guard.
 const RUNNER_OPERATOR_LANE = "mickey";
 const RUNNER_STATE_ROOT = "/Users/olifreuler/.stormforge/proxywar-operators";
+const DURABLE_REAPER_ROOT = `${RUNNER_STATE_ROOT}/mickey-runpod-reaper`;
+const DURABLE_REAPER_BIN_ROOT = `${DURABLE_REAPER_ROOT}/bin`;
+const DURABLE_REAPER_INSTALLATIONS_ROOT = `${DURABLE_REAPER_BIN_ROOT}/installations`;
+const DURABLE_REAPER_PLIST =
+  "/Users/olifreuler/Library/LaunchAgents/com.welttowelt.proxywar.mickey.runpod-reaper.plist";
 
 const SHA256 = /^[a-f0-9]{64}$/;
 const IMAGE_ID = /^sha256:[a-f0-9]{64}$/;
@@ -97,14 +102,43 @@ const REQUIRED_SHARED_FILES = Object.freeze([
 const FORBIDDEN_KEY = /(api.?key|secret|password|credential|access.?token|private.?key)/i;
 const RUNPODCTL_SOURCE_REPOSITORY = "https://github.com/runpod/runpodctl";
 const RUNPODCTL_UPSTREAM_BASE_COMMIT = "3928df943d67c89e66b4945bd5c8b38ffd512767";
-const RUNPODCTL_CREATE_INTERFACE = "rest-cpu-pod-create-v1";
+const RUNPODCTL_CREATE_INTERFACE = "rest-cpu-pod-create-stdin-v3";
 const RUNPODCTL_REQUEST_HASH_ALGORITHM = "sorted-json-sha256-v1";
 const RUNPODCTL_REQUEST_HASH_SCOPE = "raw-request-before-redaction";
-const RUNPODCTL_ENV_REDACTION_SCHEMA = "env-values-v1";
+const RUNPODCTL_ENV_REDACTION_SCHEMA = "env-map-v2";
 const RUNPODCTL_REDACTED_ENV_VALUE = "[REDACTED]";
+const RUNPODCTL_RESPONSE_SCRUB_CONTRACT =
+  "recursive-case-insensitive-string-leaves-and-map-keys";
+const RUNPODCTL_IDENTITY_CONTAMINATION_CONTRACT =
+  "redact-id-and-name-require-reconciliation";
+const RUNPODCTL_SERIALIZED_OUTPUT_GUARD =
+  "constant-value-free-failure-and-no-receipt";
 const SSH_HOST_KEY_ATTESTATION_DOMAIN = "mickey-ssh-host-key-v1";
 const EXACT_ID_DELETE_RETRY_DELAYS_MS = Object.freeze([0, 1_000, 2_000, 4_000, 8_000]);
 const FULL_FANOUT_LIVE_APPROVED = false;
+
+function durableInstallationId(document) {
+  return createHash("sha256").update([
+    document.runpodctl.source_commit,
+    document.runpodctl.source_tree,
+    document.runpodctl.sha256,
+    document.control_plane.exact_id_reaper.sha256,
+    document.cleanup_watchdog.node_runtime.sha256,
+  ].join("\n"), "utf8").digest("hex");
+}
+
+function durableInstallationPaths(installationId) {
+  const installationDirectory = `${DURABLE_REAPER_INSTALLATIONS_ROOT}/${installationId}`;
+  return {
+    root: DURABLE_REAPER_ROOT,
+    binRoot: DURABLE_REAPER_BIN_ROOT,
+    installationsRoot: DURABLE_REAPER_INSTALLATIONS_ROOT,
+    installationDirectory,
+    reaper: `${installationDirectory}/runpod-exact-id-reaper.mjs`,
+    runpodctl: `${installationDirectory}/runpodctl-darwin-arm64`,
+    plist: DURABLE_REAPER_PLIST,
+  };
+}
 
 function usage() {
   return `Usage:
@@ -124,9 +158,9 @@ Real execution must be the child of:
   scripts/proxywar-runner-lease.sh run mickey RUN_ID --output NEW_DIR -- <command>
 
 Safety status:
-  Full fanout live execution is fail-closed while the HMAC nonce would transit
-  runpodctl --env process argv. Only the separate one-pod no-env transport
-  canary is approved for a live provider mutation.
+  Full fanout live execution remains fail-closed pending a separate end-to-end
+  execution RCI. Source-level transport approval does not enable it. Only the
+  separate one-pod no-env transport canary is approved for a live mutation.
 `;
 }
 
@@ -448,8 +482,8 @@ export function validateManifest(document) {
     ],
     "manifest",
   );
-  if (document.schema_version !== 2 || document.kind !== "mickey_cpu_fanout") {
-    throw new Error("manifest schema_version/kind must be 2/mickey_cpu_fanout");
+  if (document.schema_version !== 3 || document.kind !== "mickey_cpu_fanout") {
+    throw new Error("manifest schema_version/kind must be 3/mickey_cpu_fanout");
   }
   assertString(document.run_id, "manifest.run_id", SAFE_ID);
   const preregistered = Date.parse(document.preregistered_at);
@@ -502,8 +536,11 @@ export function validateManifest(document) {
   exactKeys(
     document.runpodctl,
     [
-      "path", "sha256", "source_repository", "upstream_base_commit",
-      "source_commit", "patch_path", "patch_sha256", "patch_id", "create_interface",
+      "path", "sha256", "install_source_path", "source_repository", "upstream_base_commit",
+      "source_commit", "source_tree", "official_base_patch_series", "patch_path",
+      "patch_sha256", "patch_id", "create_interface", "nonce_input_channel",
+      "nonce_input_flag", "receipt_redaction_schema", "response_scrub_contract",
+      "provider_identity_contamination", "serialized_output_guard",
     ],
     "manifest.runpodctl",
   );
@@ -511,14 +548,37 @@ export function validateManifest(document) {
     { path: document.runpodctl.path, sha256: document.runpodctl.sha256 },
     "manifest.runpodctl binary",
   );
+  assertAbsoluteFilePath(document.runpodctl.install_source_path, "manifest.runpodctl.install_source_path");
+  assertString(document.runpodctl.source_tree, "manifest.runpodctl.source_tree", SOURCE_COMMIT);
   if (
     document.runpodctl.source_repository !== RUNPODCTL_SOURCE_REPOSITORY ||
     document.runpodctl.upstream_base_commit !== RUNPODCTL_UPSTREAM_BASE_COMMIT ||
     !SOURCE_COMMIT.test(document.runpodctl.source_commit) ||
     !SAFE_ID.test(document.runpodctl.patch_id) ||
-    document.runpodctl.create_interface !== RUNPODCTL_CREATE_INTERFACE
+    document.runpodctl.create_interface !== RUNPODCTL_CREATE_INTERFACE ||
+    document.runpodctl.nonce_input_channel !== "stdin" ||
+    document.runpodctl.nonce_input_flag !== "--env-stdin" ||
+    document.runpodctl.receipt_redaction_schema !== RUNPODCTL_ENV_REDACTION_SCHEMA ||
+    document.runpodctl.response_scrub_contract !== RUNPODCTL_RESPONSE_SCRUB_CONTRACT ||
+    document.runpodctl.provider_identity_contamination !==
+      RUNPODCTL_IDENTITY_CONTAMINATION_CONTRACT ||
+    document.runpodctl.serialized_output_guard !== RUNPODCTL_SERIALIZED_OUTPUT_GUARD
   ) {
-    throw new Error("manifest.runpodctl must identify a hash-pinned Mickey CPU REST fork");
+    throw new Error("manifest.runpodctl must identify the hash-pinned response-scrubbed CPU REST stdin fork");
+  }
+  if (
+    !Array.isArray(document.runpodctl.official_base_patch_series) ||
+    document.runpodctl.official_base_patch_series.length !== 4
+  ) {
+    throw new Error("manifest.runpodctl must pin the complete ordered four-patch official-base series");
+  }
+  for (const [index, patch] of document.runpodctl.official_base_patch_series.entries()) {
+    exactKeys(patch, ["sequence", "path", "sha256"], `manifest.runpodctl.official_base_patch_series[${index}]`);
+    if (patch.sequence !== index + 1) throw new Error("manifest.runpodctl official-base patch order is invalid");
+    validateHashedFileReference(
+      { path: patch.path, sha256: patch.sha256 },
+      `manifest.runpodctl.official_base_patch_series[${index}]`,
+    );
   }
   validateHashedFileReference(
     { path: document.runpodctl.patch_path, sha256: document.runpodctl.patch_sha256 },
@@ -589,7 +649,8 @@ export function validateManifest(document) {
   exactKeys(
     document.cleanup_watchdog,
     [
-      "kind", "script", "node_runtime", "ledger_path", "heartbeat_path",
+      "kind", "installation_id", "state_root", "bin_root", "installations_root",
+      "installation_directory", "script", "node_runtime", "plist_path", "ledger_path", "heartbeat_path",
       "heartbeat_max_age_seconds", "client_cleanup_deadline_seconds",
       "poll_interval_seconds", "provider_ttl_available", "exact_id_only",
       "launchd_required_for_live_run", "launchd_label", "service_receipt_path",
@@ -599,16 +660,38 @@ export function validateManifest(document) {
   if (document.cleanup_watchdog.kind !== "independent_exact_id_reaper_v1") {
     throw new Error("manifest.cleanup_watchdog.kind is unsupported");
   }
-  validateHashedFileReference(document.cleanup_watchdog.script, "manifest.cleanup_watchdog.script");
+  exactKeys(
+    document.cleanup_watchdog.script,
+    ["path", "sha256", "install_source_path"],
+    "manifest.cleanup_watchdog.script",
+  );
+  validateHashedFileReference(
+    { path: document.cleanup_watchdog.script.path, sha256: document.cleanup_watchdog.script.sha256 },
+    "manifest.cleanup_watchdog.script",
+  );
+  assertAbsoluteFilePath(
+    document.cleanup_watchdog.script.install_source_path,
+    "manifest.cleanup_watchdog.script.install_source_path",
+  );
   validateHashedFileReference(
     document.cleanup_watchdog.node_runtime,
     "manifest.cleanup_watchdog.node_runtime",
   );
+  const installationId = durableInstallationId(document);
+  const durable = durableInstallationPaths(installationId);
   if (
-    document.cleanup_watchdog.script.path !== REAPER_SCRIPT ||
-    document.cleanup_watchdog.script.sha256 !== document.control_plane.exact_id_reaper.sha256
+    document.cleanup_watchdog.installation_id !== installationId ||
+    document.cleanup_watchdog.state_root !== durable.root ||
+    document.cleanup_watchdog.bin_root !== durable.binRoot ||
+    document.cleanup_watchdog.installations_root !== durable.installationsRoot ||
+    document.cleanup_watchdog.installation_directory !== durable.installationDirectory ||
+    document.cleanup_watchdog.script.path !== durable.reaper ||
+    document.cleanup_watchdog.script.install_source_path !== REAPER_SCRIPT ||
+    document.cleanup_watchdog.script.sha256 !== document.control_plane.exact_id_reaper.sha256 ||
+    document.runpodctl.path !== durable.runpodctl ||
+    document.cleanup_watchdog.plist_path !== durable.plist
   ) {
-    throw new Error("manifest cleanup watchdog must pin the exact integration reaper script");
+    throw new Error("manifest cleanup watchdog must pin the exact durable versioned installation paths");
   }
   assertAbsoluteFilePath(document.cleanup_watchdog.ledger_path, "manifest.cleanup_watchdog.ledger_path");
   assertAbsoluteFilePath(document.cleanup_watchdog.heartbeat_path, "manifest.cleanup_watchdog.heartbeat_path");
@@ -621,6 +704,13 @@ export function validateManifest(document) {
     document.cleanup_watchdog.service_receipt_path,
     "manifest.cleanup_watchdog.service_receipt_path",
   );
+  if (
+    document.cleanup_watchdog.ledger_path !== `${durable.root}/ledger.json` ||
+    document.cleanup_watchdog.heartbeat_path !== `${durable.root}/provider-heartbeat.json` ||
+    document.cleanup_watchdog.service_receipt_path !== `${durable.root}/service-receipt.json`
+  ) {
+    throw new Error("manifest cleanup watchdog state files must stay in the exact durable reaper root");
+  }
   if (
     document.cleanup_watchdog.client_cleanup_deadline_seconds !== 7200 ||
     document.cleanup_watchdog.heartbeat_max_age_seconds !== 120 ||
@@ -759,6 +849,32 @@ async function verifyHashedLocalFile(reference, label) {
   return actual;
 }
 
+async function verifyOwnedDurableDirectory(directory, label) {
+  const info = await lstat(directory).catch(() => null);
+  if (
+    !info?.isDirectory() ||
+    info.isSymbolicLink() ||
+    await realpath(directory) !== directory ||
+    (info.mode & 0o777) !== 0o700 ||
+    (typeof process.getuid === "function" && info.uid !== process.getuid())
+  ) {
+    throw new Error(`${label} must be an operator-owned canonical 0700 directory`);
+  }
+}
+
+async function verifyOwnedDurableFile(filePath, mode, label) {
+  const info = await lstat(filePath).catch(() => null);
+  if (
+    !info?.isFile() ||
+    info.isSymbolicLink() ||
+    await realpath(filePath) !== filePath ||
+    (info.mode & 0o777) !== mode ||
+    (typeof process.getuid === "function" && info.uid !== process.getuid())
+  ) {
+    throw new Error(`${label} must be an operator-owned canonical ${mode.toString(8).padStart(4, "0")} file`);
+  }
+}
+
 function equalJson(left, right) {
   return JSON.stringify(left) === JSON.stringify(right);
 }
@@ -856,7 +972,11 @@ async function verifySourceReachReceipt(manifest) {
   return { receipt, records };
 }
 
-export async function preflightManifest(manifestPath, expectedSha256) {
+export async function preflightManifest(
+  manifestPath,
+  expectedSha256,
+  { requirePersistentServiceArtifacts = false } = {},
+) {
   assertAbsoluteFilePath(manifestPath, "--manifest");
   assertString(expectedSha256, "--manifest-sha256", SHA256);
   await requireRegularUnlinkedFile(manifestPath, "manifest");
@@ -870,27 +990,72 @@ export async function preflightManifest(manifestPath, expectedSha256) {
     await verifyHashedLocalFile(reference, `pinned control-plane ${key}`);
   }
   await verifyHashedLocalFile(
-    { path: document.runpodctl.path, sha256: document.runpodctl.sha256 },
-    "pinned runpodctl binary",
+    { path: document.runpodctl.install_source_path, sha256: document.runpodctl.sha256 },
+    "pinned runpodctl installation source",
   );
-  const runpodctlBody = await readFile(document.runpodctl.path);
-  if (!runpodctlBody.includes(Buffer.from(`cleanroom-${document.runpodctl.source_commit}`, "utf8"))) {
-    throw new Error("pinned runpodctl binary does not embed the declared cleanroom CLI version");
+  const sourceRunpodctlBody = await readFile(document.runpodctl.install_source_path);
+  if (!sourceRunpodctlBody.includes(Buffer.from(`cleanroom-${document.runpodctl.source_commit}`, "utf8"))) {
+    throw new Error("runpodctl installation source does not embed the declared cleanroom CLI version");
+  }
+  const sourceRunpodctlInfo = await stat(document.runpodctl.install_source_path);
+  if ((sourceRunpodctlInfo.mode & 0o111) === 0) {
+    throw new Error("runpodctl installation source must be executable");
+  }
+  const installedRunpodctl = await lstat(document.runpodctl.path).catch((error) => {
+    if (error?.code === "ENOENT") return null;
+    throw error;
+  });
+  const installedReaper = await lstat(document.cleanup_watchdog.script.path).catch((error) => {
+    if (error?.code === "ENOENT") return null;
+    throw error;
+  });
+  if (installedRunpodctl || installedReaper || requirePersistentServiceArtifacts) {
+    for (const [directory, label] of [
+      [document.cleanup_watchdog.state_root, "durable reaper state root"],
+      [document.cleanup_watchdog.bin_root, "durable reaper bin root"],
+      [document.cleanup_watchdog.installations_root, "durable reaper installations root"],
+      [document.cleanup_watchdog.installation_directory, "durable reaper version directory"],
+    ]) {
+      await verifyOwnedDurableDirectory(directory, label);
+    }
+    await verifyHashedLocalFile(
+      { path: document.runpodctl.path, sha256: document.runpodctl.sha256 },
+      "pinned durable runpodctl binary",
+    );
+    await verifyOwnedDurableFile(
+      document.runpodctl.path,
+      0o700,
+      "durable runpodctl binary",
+    );
+    await verifyHashedLocalFile(
+      {
+        path: document.cleanup_watchdog.script.path,
+        sha256: document.cleanup_watchdog.script.sha256,
+      },
+      "pinned durable reaper script",
+    );
+    await verifyOwnedDurableFile(
+      document.cleanup_watchdog.script.path,
+      0o600,
+      "durable reaper script",
+    );
   }
   await verifyHashedLocalFile(
     { path: document.runpodctl.patch_path, sha256: document.runpodctl.patch_sha256 },
     "pinned runpodctl patch",
   );
+  for (const [index, patch] of document.runpodctl.official_base_patch_series.entries()) {
+    await verifyHashedLocalFile(
+      { path: patch.path, sha256: patch.sha256 },
+      `pinned official-base runpodctl patch ${index + 1}`,
+    );
+  }
   await verifyHashedLocalFile(
     document.cleanup_watchdog.node_runtime,
     "pinned reaper Node runtime",
   );
   const nodeInfo = await stat(document.cleanup_watchdog.node_runtime.path);
   if ((nodeInfo.mode & 0o111) === 0) throw new Error("pinned reaper Node runtime must be executable");
-  const runpodctlInfo = await stat(document.runpodctl.path);
-  if ((runpodctlInfo.mode & 0o111) === 0) {
-    throw new Error("pinned runpodctl binary must be executable");
-  }
   await verifyHashedLocalFile(
     { path: document.runner_lease.path, sha256: document.runner_lease.sha256 },
     "pinned Mickey runner lease",
@@ -960,7 +1125,7 @@ export function buildPodCreateArgs(manifest, expectedName, controlSecret = null)
     "22/tcp",
   ];
   if (controlSecret !== null) {
-    args.push("--env", JSON.stringify({ MICKEY_CONTROL_PLANE_NONCE: controlSecret }));
+    args.push("--env-stdin");
   }
   args.push(
     "-o",
@@ -1081,7 +1246,10 @@ export function validateCreateRequestAttestation(
   }
   const expectedEcho = structuredClone(expectedRaw);
   if (controlSecret !== null) {
-    expectedEcho.env.MICKEY_CONTROL_PLANE_NONCE = RUNPODCTL_REDACTED_ENV_VALUE;
+    expectedEcho.env = {
+      redacted: true,
+      schema: RUNPODCTL_ENV_REDACTION_SCHEMA,
+    };
   }
   if (
     record.requestInputRedacted !== (controlSecret !== null) ||
@@ -1104,14 +1272,25 @@ export function validateCreateRequestAttestation(
     if (
       controlSecret === null ||
       record.responseEnvRedacted !== true ||
-      responseEnvKeys.length !== 1 ||
-      responseEnvKeys[0] !== "MICKEY_CONTROL_PLANE_NONCE" ||
-      responseEnv.MICKEY_CONTROL_PLANE_NONCE !== RUNPODCTL_REDACTED_ENV_VALUE
+      responseEnvKeys.sort().join(",") !== "redacted,schema" ||
+      responseEnv.redacted !== true ||
+      responseEnv.schema !== RUNPODCTL_ENV_REDACTION_SCHEMA
     ) {
       throw new Error("RunPod create response contains an unexpected or unredacted env");
     }
   }
-  if (controlSecret !== null && JSON.stringify(record).includes(controlSecret)) {
+  if (
+    typeof record.responseControlSecretScrubbed !== "boolean" ||
+    record.providerIdentityContaminated !== false ||
+    record.reconciliationRequired !== false ||
+    (controlSecret === null && record.responseControlSecretScrubbed !== false)
+  ) {
+    throw new Error("RunPod create response does not satisfy the response-wide scrub and identity contract");
+  }
+  if (
+    controlSecret !== null &&
+    JSON.stringify(record).toLowerCase().includes(controlSecret.toLowerCase())
+  ) {
     throw new Error("RunPod create receipt leaked the runtime control nonce");
   }
   return {
@@ -1119,6 +1298,9 @@ export function validateCreateRequestAttestation(
     request_input_hash_scope: record.requestInputHashScope,
     request_input_redaction_schema: record.requestInputRedactionSchema,
     response_env_redacted: record.responseEnvRedacted,
+    response_control_secret_scrubbed: record.responseControlSecretScrubbed,
+    provider_identity_contaminated: false,
+    reconciliation_required: false,
     transport: record.transport,
     client_max_cost_per_hour: Number(record.clientMaxCostPerHour),
     provider_ttl: null,
@@ -1238,6 +1420,8 @@ export class CommandExecutor {
       cwd = undefined,
       redactions = [],
       outputLogMode = "full",
+      stdinBytes = null,
+      sensitiveOutputToken = null,
     } = {},
   ) {
     if (this.stopping && !allowWhenStopping) throw new Error("fanout stopping before command launch");
@@ -1250,22 +1434,52 @@ export class CommandExecutor {
     if (!["full", "metadata-only"].includes(outputLogMode)) {
       throw new Error("command output log mode must be full or metadata-only");
     }
-    const redact = (value) => redactions.reduce(
-      (current, sensitive) => current.replaceAll(sensitive, "[REDACTED]"),
-      value,
-    );
+    if (
+      stdinBytes !== null &&
+      (!Buffer.isBuffer(stdinBytes) || stdinBytes.length < 1 || stdinBytes.length > 1_024)
+    ) {
+      throw new Error("command stdin must be a nonempty Buffer no larger than 1024 bytes");
+    }
+    if (
+      sensitiveOutputToken !== null &&
+      (typeof sensitiveOutputToken !== "string" || !SHA256.test(sensitiveOutputToken))
+    ) {
+      throw new Error("sensitive output token must be 64 lowercase hex characters");
+    }
+    const childEnvironment = { ...process.env };
+    if (sensitiveOutputToken !== null) {
+      const loweredToken = sensitiveOutputToken.toLowerCase();
+      const serializedArgv = JSON.stringify([command, ...args]).toLowerCase();
+      const serializedEnvironment = JSON.stringify(childEnvironment).toLowerCase();
+      const expectedStdin = Buffer.from(
+        JSON.stringify({ MICKEY_CONTROL_PLANE_NONCE: sensitiveOutputToken }),
+        "utf8",
+      );
+      const stdinMatches =
+        stdinBytes !== null &&
+        stdinBytes.length === expectedStdin.length &&
+        timingSafeEqual(stdinBytes, expectedStdin);
+      expectedStdin.fill(0);
+      if (
+        !stdinMatches ||
+        !args.includes("--env-stdin") ||
+        args.includes("--env") ||
+        serializedArgv.includes(loweredToken) ||
+        serializedEnvironment.includes(loweredToken)
+      ) {
+        throw new Error("sensitive stdin command contract rejected");
+      }
+    }
+    const redact = (value) => redactions.reduce((current, sensitive) => {
+      const escaped = sensitive.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+      return current.replace(new RegExp(escaped, "gi"), "[REDACTED]");
+    }, value);
     const loggedArgs = args.map((value) => redact(value));
-    await writeFile(
-      `${base}.argv.json.part`,
-      `${JSON.stringify({ command, args: loggedArgs, redaction_count: redactions.length }, null, 2)}\n`,
-      { mode: 0o600 },
-    );
-    await rename(`${base}.argv.json.part`, `${base}.argv.json`);
     const result = await new Promise((resolve, reject) => {
       const child = spawn(command, args, {
         cwd,
-        env: process.env,
-        stdio: ["ignore", "pipe", "pipe"],
+        env: childEnvironment,
+        stdio: [stdinBytes === null ? "ignore" : "pipe", "pipe", "pipe"],
       });
       this.children.add(child);
       const stdout = [];
@@ -1278,6 +1492,10 @@ export class CommandExecutor {
       };
       child.stdout.on("data", capture(stdout));
       child.stderr.on("data", capture(stderr));
+      if (stdinBytes !== null) {
+        child.stdin.on("error", () => {});
+        child.stdin.end(stdinBytes);
+      }
       child.once("error", reject);
       child.once("close", (code, signal) => {
         this.children.delete(child);
@@ -1289,6 +1507,29 @@ export class CommandExecutor {
         });
       });
     });
+    if (sensitiveOutputToken !== null) {
+      const loweredToken = sensitiveOutputToken.toLowerCase();
+      if (
+        result.stdout.toLowerCase().includes(loweredToken) ||
+        result.stderr.toLowerCase().includes(loweredToken)
+      ) {
+        result.stdout = "";
+        result.stderr = "";
+        throw new Error("sensitive child output rejected");
+      }
+    }
+    await writeFile(
+      `${base}.argv.json.part`,
+      `${JSON.stringify({
+        command,
+        args: loggedArgs,
+        redaction_count: redactions.length,
+        stdin_provided: stdinBytes !== null,
+        stdin_byte_count: stdinBytes?.length ?? 0,
+      }, null, 2)}\n`,
+      { mode: 0o600 },
+    );
+    await rename(`${base}.argv.json.part`, `${base}.argv.json`);
     const loggedStdout = outputLogMode === "metadata-only"
       ? `${JSON.stringify({ content_omitted: true, byte_count: Buffer.byteLength(result.stdout) })}\n`
       : redact(result.stdout);
@@ -1468,7 +1709,7 @@ export async function verifyLiveReaperService({
       "schema_version", "kind", "status", "manifest_sha256", "launchd_label",
       "launchd_domain", "plist_path", "plist_sha256", "ledger_path",
       "heartbeat_path", "runpodctl_sha256", "reaper_sha256", "node_path",
-      "node_sha256", "attested_at",
+      "node_sha256", "pid", "attested_at",
     ],
     "reaper service receipt",
   );
@@ -1485,8 +1726,10 @@ export async function verifyLiveReaperService({
     receipt.reaper_sha256 !== manifest.cleanup_watchdog.script.sha256 ||
     receipt.node_path !== manifest.cleanup_watchdog.node_runtime.path ||
     receipt.node_sha256 !== manifest.cleanup_watchdog.node_runtime.sha256 ||
+    !Number.isSafeInteger(receipt.pid) ||
+    receipt.pid < 1 ||
     !SHA256.test(receipt.plist_sha256 ?? "") ||
-    !path.isAbsolute(receipt.plist_path) ||
+    receipt.plist_path !== manifest.cleanup_watchdog.plist_path ||
     !Number.isFinite(Date.parse(receipt.attested_at))
   ) {
     throw new Error("independent reaper service receipt does not bind the exact manifest tools and ledger");
@@ -1509,6 +1752,9 @@ export async function verifyLiveReaperService({
     throw new Error("independent reaper LaunchAgent is not running");
   }
   const servicePid = Number(pidMatch[1]);
+  if (servicePid !== receipt.pid) {
+    throw new Error("independent reaper service PID differs from the attested receipt");
+  }
   const watchdogRoot = path.dirname(manifest.cleanup_watchdog.ledger_path);
   const rootInfo = await lstat(watchdogRoot).catch(() => null);
   if (
@@ -2175,6 +2421,10 @@ async function runOnePair({
     };
     await writeJsonAtomic(path.join(output, "state.json"), state);
     let createResult;
+    const controlStdin = Buffer.from(
+      JSON.stringify({ MICKEY_CONTROL_PLANE_NONCE: controlSecret }),
+      "utf8",
+    );
     try {
       createResult = await executor.run(
         tools.runpodctl,
@@ -2184,6 +2434,8 @@ async function runOnePair({
           allowFailure: true,
           redactions: [controlSecret],
           outputLogMode: "metadata-only",
+          stdinBytes: controlStdin,
+          sensitiveOutputToken: controlSecret,
         },
       );
     } catch (error) {
@@ -2192,6 +2444,8 @@ async function runOnePair({
         client: tools.reaperClient,
       }).catch(() => null);
       throw new Error(`RunPod create transport failed before a trustworthy response: ${error.message}`);
+    } finally {
+      controlStdin.fill(0);
     }
     let createRecord;
     try {
@@ -2212,10 +2466,11 @@ async function runOnePair({
       throw new Error(`RunPod create response was not cleanup-safe: ${error.message}`);
     }
     podRecords.set(podId, { pairId: pair.id, name, recordId: cleanupRecordId, preexistingIds: pairPreexistingIds });
+    const loweredControlSecret = controlSecret.toLowerCase();
     if (
-      createResult.stdout.includes(controlSecret) ||
-      createResult.stderr.includes(controlSecret) ||
-      JSON.stringify(createRecord).includes(controlSecret)
+      createResult.stdout.toLowerCase().includes(loweredControlSecret) ||
+      createResult.stderr.toLowerCase().includes(loweredControlSecret) ||
+      JSON.stringify(createRecord).toLowerCase().includes(loweredControlSecret)
     ) {
       throw new Error("RunPod create response leaked the runtime control nonce");
     }
@@ -2543,7 +2798,11 @@ export async function runCli(argv) {
     process.stdout.write(usage());
     return 0;
   }
-  const preflight = await preflightManifest(options.manifest, options.manifestSha256);
+  const preflight = await preflightManifest(
+    options.manifest,
+    options.manifestSha256,
+    { requirePersistentServiceArtifacts: !options.dryRun && FULL_FANOUT_LIVE_APPROVED },
+  );
   if (options.dryRun) {
     const plan = {
       ok: true,
@@ -2564,7 +2823,7 @@ export async function runCli(argv) {
       full_fanout_live_approved: FULL_FANOUT_LIVE_APPROVED,
       transport_canary_live_approved: true,
       full_fanout_blocking_reason:
-        "runtime control nonce would transit the runpodctl --env process argv",
+        "full fanout end-to-end execution awaits separate RCI approval",
       pairs: preflight.pairs.map(({ arm, pair }) => ({
         arm_id: arm.id,
         pair_id: pair.id,
@@ -2597,7 +2856,7 @@ export async function runCli(argv) {
 
   if (!FULL_FANOUT_LIVE_APPROVED) {
     throw new Error(
-      "full fanout live execution is blocked before mutation: the runtime control nonce would transit the runpodctl --env process argv; only the no-env one-pod transport canary is approved",
+      "full fanout live execution is blocked before mutation: end-to-end execution awaits separate RCI approval; only the no-env one-pod transport canary is approved",
     );
   }
 

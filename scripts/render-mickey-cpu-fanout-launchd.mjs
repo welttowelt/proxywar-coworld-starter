@@ -67,7 +67,9 @@ export async function render(argv) {
   const parent = path.dirname(options.output);
   const parentInfo = await lstat(parent).catch(() => null);
   if (!parentInfo?.isDirectory() || parentInfo.isSymbolicLink()) throw new Error("output parent is missing or unsafe");
-  await requireAbsoluteExistingFile(runpodctl, "--runpodctl");
+  if (await lstat(runpodctl).catch(() => null)) {
+    await requireAbsoluteExistingFile(runpodctl, "--runpodctl");
+  }
   await requireAbsoluteExistingFile(runner, "manifest.runner_lease.path");
   if (options.resumeFrom !== null) {
     if (!path.isAbsolute(options.resumeFrom)) throw new Error("--resume-from must be absolute");

@@ -1,0 +1,870 @@
+From 83d91b77ba08c76b5ad9f6d22411b66a9d095261 Mon Sep 17 00:00:00 2001
+From: welttowelt <welttowelt@users.noreply.github.com>
+Date: Tue, 21 Jul 2026 03:58:04 +0200
+Subject: [PATCH 4/4] Scrub CPU control nonce from all output
+
+---
+ cmd/pod/create.go               | 294 +++++++++++++++++++++++++---
+ cmd/pod/create_rest_cpu_test.go | 335 +++++++++++++++++++++++++++++++-
+ 2 files changed, 591 insertions(+), 38 deletions(-)
+
+diff --git a/cmd/pod/create.go b/cmd/pod/create.go
+index 9ba7566..bcd8d54 100644
+--- a/cmd/pod/create.go
++++ b/cmd/pod/create.go
+@@ -136,6 +136,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
+ 		cloudType = "SECURE"
+ 	}
+ 	resolvedCreateEnv := createEnv
++	cpuControlSecret := ""
+ 	if computeType == "CPU" {
+ 		if createEnvStdin && cmd != nil && cmd.Flags().Changed("env") {
+ 			return fmt.Errorf("cpu --env-stdin cannot be combined with --env")
+@@ -148,6 +149,11 @@ func runCreate(cmd *cobra.Command, args []string) error {
+ 		if err != nil {
+ 			return err
+ 		}
++		parsedEnv, err := parseCPUCreateEnv(resolvedCreateEnv)
++		if err != nil {
++			return err
++		}
++		cpuControlSecret = parsedEnv[cpuControlPlaneNonceEnvKey]
+ 	} else if createEnvStdin {
+ 		return fmt.Errorf("--env-stdin is supported only for compute type cpu")
+ 	}
+@@ -187,6 +193,9 @@ func runCreate(cmd *cobra.Command, args []string) error {
+ 		// GPU pods use GraphQL (supports startSsh)
+ 		result, err = createPodGraphQL(gpuTypeID, cloudType, supportPublicIP)
+ 	}
++	if computeType == "CPU" {
++		result, err = guardCPUCreateOutward(result, err, cpuControlSecret)
++	}
+ 	if err != nil {
+ 		// A CPU REST request may have created a pod before post-create validation
+ 		// failed. Emit the single structured receipt when one is available so an
+@@ -365,12 +374,19 @@ func createPodRESTWithEnv(computeType, gpuTypeID, cloudType string, supportPubli
+ 		return pod, nil
+ 	}
+ 
++	controlSecret := req.Env[cpuControlPlaneNonceEnvKey]
++	identityContaminated := cpuProviderIdentityContaminated(pod, controlSecret)
+ 	validationErr := validateCPUCreateResponse(pod, req, createMaxCostPerHour)
++	if identityContaminated {
++		validationErr = fmt.Errorf("provider identity contained the control-plane nonce")
++	}
+ 	receipt, receiptErr := createCPUCreateReceipt(
+ 		pod,
+ 		req,
+ 		createMaxCostPerHour,
+ 		validationErr,
++		controlSecret,
++		identityContaminated,
+ 	)
+ 	if receiptErr != nil {
+ 		return nil, receiptErr
+@@ -389,8 +405,9 @@ const (
+ 	cpuEnvStdinMaxBytes           = 1024
+ 	restRequestInputHashAlgorithm = "sorted-json-sha256-v1"
+ 	restRequestInputHashScope     = "raw-request-before-redaction"
+-	cpuEnvRedactionSchema         = "env-values-v1"
++	cpuEnvRedactionSchema         = "env-map-v2"
+ 	cpuEnvRedactedValueMarker     = "[REDACTED]"
++	cpuOutwardGuardError          = "cpu create output blocked by control-secret guard"
+ )
+ 
+ func validateCPUCreateConfig(cloudType string) error {
+@@ -434,6 +451,12 @@ func validateCPUCreateConfig(cloudType string) error {
+ 	if createEnvStdin && strings.TrimSpace(createEnv) != "" {
+ 		return fmt.Errorf("cpu --env-stdin cannot be combined with --env")
+ 	}
++	if createEnvStdin && !createPublicIP {
++		return fmt.Errorf("cpu --env-stdin requires --public-ip")
++	}
++	if createEnvStdin && createPorts != "22/tcp" {
++		return fmt.Errorf("cpu --env-stdin requires exactly --ports 22/tcp")
++	}
+ 	if !createEnvStdin {
+ 		if _, err := parseCPUCreateEnv(createEnv); err != nil {
+ 			return err
+@@ -477,19 +500,38 @@ func parseCPUCreateEnvSource(encoded, source string) (map[string]string, error)
+ 	if strings.TrimSpace(encoded) == "" {
+ 		return nil, nil
+ 	}
+-	var env map[string]string
+-	if err := json.Unmarshal([]byte(encoded), &env); err != nil {
++	decoder := json.NewDecoder(strings.NewReader(encoded))
++	opening, err := decoder.Token()
++	if err != nil || opening != json.Delim('{') {
+ 		return nil, fmt.Errorf("cpu %s must be a json object containing only a 64-hex %s value", source, cpuControlPlaneNonceEnvKey)
+ 	}
+-	nonce, ok := env[cpuControlPlaneNonceEnvKey]
+-	if !ok || len(env) != 1 || len(nonce) != 64 {
++	if !decoder.More() {
++		return nil, fmt.Errorf("cpu %s must contain only a 64-hex %s value", source, cpuControlPlaneNonceEnvKey)
++	}
++	keyToken, err := decoder.Token()
++	key, keyOK := keyToken.(string)
++	if err != nil || !keyOK || key != cpuControlPlaneNonceEnvKey {
++		return nil, fmt.Errorf("cpu %s must contain only a 64-hex %s value", source, cpuControlPlaneNonceEnvKey)
++	}
++	var nonce string
++	if err := decoder.Decode(&nonce); err != nil || len(nonce) != 64 {
++		return nil, fmt.Errorf("cpu %s must contain only a 64-hex %s value", source, cpuControlPlaneNonceEnvKey)
++	}
++	if decoder.More() {
++		return nil, fmt.Errorf("cpu %s must contain exactly one %s member", source, cpuControlPlaneNonceEnvKey)
++	}
++	closing, err := decoder.Token()
++	if err != nil || closing != json.Delim('}') {
+ 		return nil, fmt.Errorf("cpu %s must contain only a 64-hex %s value", source, cpuControlPlaneNonceEnvKey)
+ 	}
++	if decoder.Decode(&struct{}{}) != io.EOF {
++		return nil, fmt.Errorf("cpu %s must contain exactly one %s member", source, cpuControlPlaneNonceEnvKey)
++	}
+ 	decoded, err := hex.DecodeString(nonce)
+ 	if err != nil || len(decoded) != 32 {
+ 		return nil, fmt.Errorf("cpu %s must contain only a 64-hex %s value", source, cpuControlPlaneNonceEnvKey)
+ 	}
+-	return env, nil
++	return map[string]string{cpuControlPlaneNonceEnvKey: nonce}, nil
+ }
+ 
+ func redactCPUCreateError(err error, env map[string]string) error {
+@@ -499,12 +541,61 @@ func redactCPUCreateError(err error, env map[string]string) error {
+ 	message := err.Error()
+ 	for _, value := range env {
+ 		if value != "" {
+-			message = strings.ReplaceAll(message, value, cpuEnvRedactedValueMarker)
++			message, _ = scrubCPUControlSecretString(message, value)
+ 		}
+ 	}
+ 	return fmt.Errorf("%s", message)
+ }
+ 
++func guardCPUCreateOutward(result interface{}, err error, controlSecret string) (interface{}, error) {
++	if controlSecret == "" {
++		return result, err
++	}
++	if err != nil && containsCPUControlSecret(err.Error(), controlSecret) {
++		return nil, fmt.Errorf("%s", cpuOutwardGuardError)
++	}
++	if result == nil {
++		return nil, err
++	}
++	encoded, marshalErr := json.Marshal(result)
++	if marshalErr != nil || containsCPUControlSecret(string(encoded), controlSecret) {
++		return nil, fmt.Errorf("%s", cpuOutwardGuardError)
++	}
++	return result, err
++}
++
++func containsCPUControlSecret(value, controlSecret string) bool {
++	if controlSecret == "" || len(value) < len(controlSecret) {
++		return false
++	}
++	for index := 0; index+len(controlSecret) <= len(value); index++ {
++		if strings.EqualFold(value[index:index+len(controlSecret)], controlSecret) {
++			return true
++		}
++	}
++	return false
++}
++
++func scrubCPUControlSecretString(value, controlSecret string) (string, bool) {
++	if !containsCPUControlSecret(value, controlSecret) {
++		return value, false
++	}
++	var scrubbed strings.Builder
++	scrubbed.Grow(len(value))
++	changed := false
++	for index := 0; index < len(value); {
++		if index+len(controlSecret) <= len(value) && strings.EqualFold(value[index:index+len(controlSecret)], controlSecret) {
++			scrubbed.WriteString(cpuEnvRedactedValueMarker)
++			index += len(controlSecret)
++			changed = true
++			continue
++		}
++		scrubbed.WriteByte(value[index])
++		index++
++	}
++	return scrubbed.String(), changed
++}
++
+ func isFinitePositive(value float64) bool {
+ 	return value > 0 && !math.IsNaN(value) && !math.IsInf(value, 0)
+ }
+@@ -517,54 +608,176 @@ func validateCPUCreateResponse(pod *api.Pod, req *api.PodCreateRequest, maxCostP
+ 		return fmt.Errorf("provider response omitted pod id")
+ 	}
+ 	if pod.Name != req.Name {
+-		return fmt.Errorf("provider returned pod name %q, want %q", pod.Name, req.Name)
++		return fmt.Errorf("provider returned a pod name that does not exactly match the request")
+ 	}
+ 	if !isFinitePositive(pod.CostPerHr) {
+ 		return fmt.Errorf("provider response omitted a finite positive costPerHr")
+ 	}
+ 	if pod.CostPerHr > maxCostPerHour {
+-		return fmt.Errorf("provider costPerHr %.6f exceeds client ceiling %.6f", pod.CostPerHr, maxCostPerHour)
++		return fmt.Errorf("provider costPerHr exceeds client ceiling")
+ 	}
+ 	if pod.ContainerDiskInGb != req.ContainerDiskInGb {
+-		return fmt.Errorf("provider containerDiskInGb %d, want %d", pod.ContainerDiskInGb, req.ContainerDiskInGb)
++		return fmt.Errorf("provider containerDiskInGb does not match the request")
+ 	}
+ 	if pod.VolumeInGb != req.VolumeInGb {
+-		return fmt.Errorf("provider volumeInGb %d, want %d", pod.VolumeInGb, req.VolumeInGb)
++		return fmt.Errorf("provider volumeInGb does not match the request")
+ 	}
+ 	if pod.GpuCount != 0 {
+-		return fmt.Errorf("provider gpuCount %d, want 0", pod.GpuCount)
++		return fmt.Errorf("provider returned a nonzero gpuCount for a CPU request")
+ 	}
+ 	if pod.VcpuCount != 0 && pod.VcpuCount != req.VcpuCount {
+-		return fmt.Errorf("provider vcpuCount %d, want %d", pod.VcpuCount, req.VcpuCount)
++		return fmt.Errorf("provider vcpuCount does not match the request")
+ 	}
+ 	if pod.MemoryInGb != 0 && pod.MemoryInGb != 4 {
+-		return fmt.Errorf("provider memoryInGb %d, want 4", pod.MemoryInGb)
++		return fmt.Errorf("provider memoryInGb does not match the required CPU profile")
+ 	}
+ 	if pod.ComputeType != "" && !strings.EqualFold(pod.ComputeType, req.ComputeType) {
+-		return fmt.Errorf("provider computeType %q, want %q", pod.ComputeType, req.ComputeType)
++		return fmt.Errorf("provider computeType does not match the request")
+ 	}
+ 	if pod.CloudType != "" && !strings.EqualFold(pod.CloudType, req.CloudType) {
+-		return fmt.Errorf("provider cloudType %q, want %q", pod.CloudType, req.CloudType)
++		return fmt.Errorf("provider cloudType does not match the request")
+ 	}
+ 	if pod.CPUFlavorID != "" && pod.CPUFlavorID != requiredCPUFlavorIDs[0] && pod.CPUFlavorID != requiredCPUFlavorIDs[1] {
+-		return fmt.Errorf("provider cpuFlavorId %q is outside the requested fallback set", pod.CPUFlavorID)
++		return fmt.Errorf("provider cpuFlavorId is outside the requested fallback set")
+ 	}
+ 	if pod.ImageName != "" && pod.ImageName != req.ImageName {
+-		return fmt.Errorf("provider imageName %q, want %q", pod.ImageName, req.ImageName)
++		return fmt.Errorf("provider imageName does not match the request")
+ 	}
+ 	if pod.NetworkVolumeID != "" {
+-		return fmt.Errorf("provider attached unexpected networkVolumeId %q", pod.NetworkVolumeID)
++		return fmt.Errorf("provider attached an unexpected networkVolumeId")
+ 	}
+ 	return nil
+ }
+ 
++func cpuProviderIdentityContaminated(pod *api.Pod, controlSecret string) bool {
++	return pod != nil && (containsCPUControlSecret(pod.ID, controlSecret) || containsCPUControlSecret(pod.Name, controlSecret))
++}
++
++func scrubCPUCreatePod(pod *api.Pod, controlSecret string) (*api.Pod, bool) {
++	if pod == nil {
++		return nil, false
++	}
++	clean := *pod
++	changed := false
++	scrubString := func(value string) string {
++		scrubbed, fieldChanged := scrubCPUControlSecretString(value, controlSecret)
++		changed = changed || fieldChanged
++		return scrubbed
++	}
++
++	clean.ID = scrubString(pod.ID)
++	clean.Name = scrubString(pod.Name)
++	clean.ComputeType = scrubString(pod.ComputeType)
++	clean.CloudType = scrubString(pod.CloudType)
++	clean.DesiredStatus = scrubString(pod.DesiredStatus)
++	clean.ImageName = scrubString(pod.ImageName)
++	clean.GpuTypeID = scrubString(pod.GpuTypeID)
++	clean.CPUFlavorID = scrubString(pod.CPUFlavorID)
++	clean.VolumeMountPath = scrubString(pod.VolumeMountPath)
++	clean.NetworkVolumeID = scrubString(pod.NetworkVolumeID)
++
++	clean.Ports = make([]string, len(pod.Ports))
++	for index, port := range pod.Ports {
++		clean.Ports[index] = scrubString(port)
++	}
++
++	var nestedChanged bool
++	clean.CreatedAt, nestedChanged = scrubCPUOutwardValue(pod.CreatedAt, controlSecret)
++	changed = changed || nestedChanged
++	clean.LastStatusChange, nestedChanged = scrubCPUOutwardValue(pod.LastStatusChange, controlSecret)
++	changed = changed || nestedChanged
++	clean.UptimeSeconds, nestedChanged = scrubCPUOutwardValue(pod.UptimeSeconds, controlSecret)
++	changed = changed || nestedChanged
++	clean.Machine, nestedChanged = scrubCPUStringInterfaceMap(pod.Machine, controlSecret)
++	changed = changed || nestedChanged
++	clean.Runtime, nestedChanged = scrubCPUStringInterfaceMap(pod.Runtime, controlSecret)
++	changed = changed || nestedChanged
++
++	// The create receipt never needs raw provider environment entries or the
++	// GET-only raw network-volume inspection. Their outward forms are metadata.
++	if pod.Env != nil {
++		clean.Env = nil
++		changed = true
++	}
++	if pod.NetworkVolumeInspection != nil {
++		clean.NetworkVolumeInspection = nil
++		changed = true
++	}
++	return &clean, changed
++}
++
++func scrubCPUStringInterfaceMap(input map[string]interface{}, controlSecret string) (map[string]interface{}, bool) {
++	if input == nil {
++		return nil, false
++	}
++	clean := make(map[string]interface{}, len(input))
++	changed := false
++	for key, value := range input {
++		cleanKey, keyChanged := scrubCPUControlSecretString(key, controlSecret)
++		changed = changed || keyChanged
++		if strings.EqualFold(cleanKey, "env") {
++			clean[cleanKey] = cpuEnvRedactionMetadata()
++			changed = true
++			continue
++		}
++		cleanValue, valueChanged := scrubCPUOutwardValue(value, controlSecret)
++		changed = changed || valueChanged
++		clean[cleanKey] = cleanValue
++	}
++	return clean, changed
++}
++
++func scrubCPUOutwardValue(value interface{}, controlSecret string) (interface{}, bool) {
++	switch typed := value.(type) {
++	case nil:
++		return nil, false
++	case string:
++		return scrubCPUControlSecretString(typed, controlSecret)
++	case []string:
++		clean := make([]string, len(typed))
++		changed := false
++		for index, item := range typed {
++			var itemChanged bool
++			clean[index], itemChanged = scrubCPUControlSecretString(item, controlSecret)
++			changed = changed || itemChanged
++		}
++		return clean, changed
++	case []interface{}:
++		clean := make([]interface{}, len(typed))
++		changed := false
++		for index, item := range typed {
++			var itemChanged bool
++			clean[index], itemChanged = scrubCPUOutwardValue(item, controlSecret)
++			changed = changed || itemChanged
++		}
++		return clean, changed
++	case map[string]interface{}:
++		return scrubCPUStringInterfaceMap(typed, controlSecret)
++	case map[string]string:
++		clean := make(map[string]string, len(typed))
++		changed := false
++		for key, item := range typed {
++			cleanKey, keyChanged := scrubCPUControlSecretString(key, controlSecret)
++			cleanItem, itemChanged := scrubCPUControlSecretString(item, controlSecret)
++			changed = changed || keyChanged || itemChanged
++			clean[cleanKey] = cleanItem
++		}
++		return clean, changed
++	default:
++		return value, false
++	}
++}
++
+ func createCPUCreateReceipt(
+ 	pod *api.Pod,
+ 	req *api.PodCreateRequest,
+ 	maxCostPerHour float64,
+ 	validationErr error,
++	controlSecret string,
++	identityContaminated bool,
+ ) (map[string]interface{}, error) {
+-	podJSON, err := json.Marshal(pod)
++	scrubbedPod, responseControlSecretScrubbed := scrubCPUCreatePod(pod, controlSecret)
++	podJSON, err := json.Marshal(scrubbedPod)
+ 	if err != nil {
+ 		return nil, fmt.Errorf("encode cpu create response: %w", err)
+ 	}
+@@ -572,7 +785,14 @@ func createCPUCreateReceipt(
+ 	if err := json.Unmarshal(podJSON, &receipt); err != nil {
+ 		return nil, fmt.Errorf("decode cpu create response: %w", err)
+ 	}
+-	responseEnvRedacted := redactJSONEnvValues(receipt)
++	responseEnvRedacted := pod != nil && pod.Env != nil
++	if responseEnvRedacted {
++		receipt["env"] = cpuEnvRedactionMetadata()
++	}
++	if identityContaminated {
++		receipt["id"] = cpuEnvRedactedValueMarker
++		receipt["name"] = cpuEnvRedactedValueMarker
++	}
+ 
+ 	requestJSON, err := canonicalRESTRequestJSON(req)
+ 	if err != nil {
+@@ -583,7 +803,9 @@ func createCPUCreateReceipt(
+ 		return nil, fmt.Errorf("decode cpu REST request: %w", err)
+ 	}
+ 	digest := sha256.Sum256(requestJSON)
+-	requestInputRedacted := redactJSONEnvValues(requestInput)
++	requestInputRedacted := replaceJSONEnvWithRedactionMetadata(requestInput)
++	scrubbedRequestInput, _ := scrubCPUOutwardValue(requestInput, controlSecret)
++	requestInput = scrubbedRequestInput.(map[string]interface{})
+ 	receipt["requestInput"] = requestInput
+ 	receipt["requestInputSha256"] = hex.EncodeToString(digest[:])
+ 	receipt["requestInputHashAlgorithm"] = restRequestInputHashAlgorithm
+@@ -593,29 +815,37 @@ func createCPUCreateReceipt(
+ 	receipt["responseEnvRedacted"] = responseEnvRedacted
+ 	receipt["responseEnvRedactionSchema"] = cpuEnvRedactionSchema
+ 	receipt["redactedEnvValueMarker"] = cpuEnvRedactedValueMarker
++	receipt["responseControlSecretScrubbed"] = responseControlSecretScrubbed
++	receipt["providerIdentityContaminated"] = identityContaminated
++	receipt["reconciliationRequired"] = identityContaminated
+ 	receipt["transport"] = "rest-v1"
+ 	receipt["clientMaxCostPerHour"] = maxCostPerHour
+ 	receipt["validationPassed"] = validationErr == nil
+ 	if validationErr != nil {
+-		receipt["validationError"] = validationErr.Error()
++		scrubbedValidationError, _ := scrubCPUControlSecretString(validationErr.Error(), controlSecret)
++		receipt["validationError"] = scrubbedValidationError
+ 	}
+ 	receipt["cleanupAttempted"] = false
+ 	receipt["cleanupSucceeded"] = false
++	if _, guardErr := guardCPUCreateOutward(receipt, nil, controlSecret); guardErr != nil {
++		return nil, guardErr
++	}
+ 	return receipt, nil
+ }
+ 
+-func redactJSONEnvValues(object map[string]interface{}) bool {
+-	rawEnv, ok := object["env"]
+-	if !ok {
+-		return false
++func cpuEnvRedactionMetadata() map[string]interface{} {
++	return map[string]interface{}{
++		"redacted": true,
++		"schema":   cpuEnvRedactionSchema,
+ 	}
+-	env, ok := rawEnv.(map[string]interface{})
+-	if !ok || len(env) == 0 {
++}
++
++func replaceJSONEnvWithRedactionMetadata(object map[string]interface{}) bool {
++	_, ok := object["env"]
++	if !ok {
+ 		return false
+ 	}
+-	for key := range env {
+-		env[key] = cpuEnvRedactedValueMarker
+-	}
++	object["env"] = cpuEnvRedactionMetadata()
+ 	return true
+ }
+ 
+diff --git a/cmd/pod/create_rest_cpu_test.go b/cmd/pod/create_rest_cpu_test.go
+index eb4fe8c..91b9dce 100644
+--- a/cmd/pod/create_rest_cpu_test.go
++++ b/cmd/pod/create_rest_cpu_test.go
+@@ -135,6 +135,54 @@ func (reader nonceEchoingErrorReader) Read([]byte) (int, error) {
+ 	return 0, errors.New("reader echoed " + reader.nonce)
+ }
+ 
++func captureRunCreateOutput(t *testing.T, command *cobra.Command) ([]byte, []byte, error) {
++	t.Helper()
++	stdoutRead, stdoutWrite, err := os.Pipe()
++	if err != nil {
++		t.Fatalf("stdout pipe: %v", err)
++	}
++	stderrRead, stderrWrite, err := os.Pipe()
++	if err != nil {
++		_ = stdoutRead.Close()
++		_ = stdoutWrite.Close()
++		t.Fatalf("stderr pipe: %v", err)
++	}
++	oldStdout := os.Stdout
++	oldStderr := os.Stderr
++	os.Stdout = stdoutWrite
++	os.Stderr = stderrWrite
++	t.Cleanup(func() {
++		os.Stdout = oldStdout
++		os.Stderr = oldStderr
++		_ = stdoutRead.Close()
++		_ = stdoutWrite.Close()
++		_ = stderrRead.Close()
++		_ = stderrWrite.Close()
++	})
++
++	runErr := runCreate(command, nil)
++	_ = stdoutWrite.Close()
++	_ = stderrWrite.Close()
++	os.Stdout = oldStdout
++	os.Stderr = oldStderr
++	stdout, err := io.ReadAll(stdoutRead)
++	if err != nil {
++		t.Fatalf("read stdout: %v", err)
++	}
++	stderr, err := io.ReadAll(stderrRead)
++	if err != nil {
++		t.Fatalf("read stderr: %v", err)
++	}
++	return stdout, stderr, runErr
++}
++
++func assertNoNonceFold(t *testing.T, label string, value []byte, nonce string) {
++	t.Helper()
++	if strings.Contains(strings.ToLower(string(value)), strings.ToLower(nonce)) {
++		t.Fatalf("%s leaked nonce: %q", label, value)
++	}
++}
++
+ func TestCPUCreateRESTUsesExactRequestAndReturnsAttestedReceipt(t *testing.T) {
+ 	viper.Reset()
+ 	t.Cleanup(viper.Reset)
+@@ -280,21 +328,21 @@ func TestCPUCreateRESTNeverDeletesOnInvalidProviderResponse(t *testing.T) {
+ 			name:        "response uses protected storm name",
+ 			requestName: "proxywar-mickey-cpu-canary",
+ 			response:    `{"id":"possibly-preexisting-id","name":"storm-protected","containerDiskInGb":20,"volumeInGb":0,"costPerHr":0.06}`,
+-			wantError:   "provider returned pod name",
++			wantError:   "provider returned a pod name",
+ 			wantID:      "possibly-preexisting-id",
+ 		},
+ 		{
+ 			name:        "response normalizes request whitespace",
+ 			requestName: " proxywar-mickey-cpu-canary ",
+ 			response:    `{"id":"normalized-name-id","name":"proxywar-mickey-cpu-canary","containerDiskInGb":20,"volumeInGb":0,"costPerHr":0.06}`,
+-			wantError:   "provider returned pod name",
++			wantError:   "provider returned a pod name",
+ 			wantID:      "normalized-name-id",
+ 		},
+ 		{
+ 			name:        "response omits name",
+ 			requestName: "proxywar-mickey-cpu-canary",
+ 			response:    `{"id":"missing-name-id","containerDiskInGb":20,"volumeInGb":0,"costPerHr":0.06}`,
+-			wantError:   "provider returned pod name",
++			wantError:   "provider returned a pod name",
+ 			wantID:      "missing-name-id",
+ 		},
+ 	}
+@@ -454,11 +502,11 @@ func TestCPUCreateRESTHashesRawNonceButRedactsAllReceiptEnvValues(t *testing.T)
+ 		t.Fatalf("requestInput = %#v", receipt["requestInput"])
+ 	}
+ 	redactedRequestEnv, ok := requestInput["env"].(map[string]interface{})
+-	if !ok || redactedRequestEnv[cpuControlPlaneNonceEnvKey] != cpuEnvRedactedValueMarker {
++	if !ok || redactedRequestEnv["redacted"] != true || redactedRequestEnv["schema"] != cpuEnvRedactionSchema {
+ 		t.Fatalf("redacted request env = %#v", requestInput["env"])
+ 	}
+ 	redactedResponseEnv, ok := receipt["env"].(map[string]interface{})
+-	if !ok || redactedResponseEnv[cpuControlPlaneNonceEnvKey] != cpuEnvRedactedValueMarker {
++	if !ok || redactedResponseEnv["redacted"] != true || redactedResponseEnv["schema"] != cpuEnvRedactionSchema {
+ 		t.Fatalf("redacted response env = %#v", receipt["env"])
+ 	}
+ 	if receipt["requestInputRedacted"] != true || receipt["responseEnvRedacted"] != true {
+@@ -492,6 +540,8 @@ func TestCPUCreateEnvStdinHashesRawNonceWithoutArgvGlobalOrReceiptLeak(t *testin
+ 	t.Cleanup(viper.Reset)
+ 	setExactCPUCreateGlobals(t)
+ 	createEnvStdin = true
++	createPublicIP = true
++	createPorts = "22/tcp"
+ 	nonce := strings.Repeat("e1", 32)
+ 	encodedEnv := `{"MICKEY_CONTROL_PLANE_NONCE":"` + nonce + `"}`
+ 
+@@ -559,6 +609,9 @@ func TestCPUCreateEnvStdinHashesRawNonceWithoutArgvGlobalOrReceiptLeak(t *testin
+ 	if !ok || rawEnv[cpuControlPlaneNonceEnvKey] != nonce {
+ 		t.Fatalf("raw REST request env = %#v, want nonce", body["env"])
+ 	}
++	if body["supportPublicIp"] != true || !reflect.DeepEqual(body["ports"], []interface{}{"22/tcp"}) {
++		t.Fatalf("protected stdin request omitted canonical SSH exposure: %#v", body)
++	}
+ 	if createEnv != "" {
+ 		t.Fatalf("stdin nonce was copied into createEnv global")
+ 	}
+@@ -586,7 +639,7 @@ func TestCPUCreateEnvStdinHashesRawNonceWithoutArgvGlobalOrReceiptLeak(t *testin
+ 		t.Fatalf("requestInput = %#v", receipt["requestInput"])
+ 	}
+ 	redactedRequestEnv, ok := requestInput["env"].(map[string]interface{})
+-	if !ok || redactedRequestEnv[cpuControlPlaneNonceEnvKey] != cpuEnvRedactedValueMarker {
++	if !ok || redactedRequestEnv["redacted"] != true || redactedRequestEnv["schema"] != cpuEnvRedactionSchema {
+ 		t.Fatalf("redacted request env = %#v", requestInput["env"])
+ 	}
+ }
+@@ -689,6 +742,212 @@ func TestCPUCreateEnvStdinRejectsGPUWithoutReading(t *testing.T) {
+ 	}
+ }
+ 
++func TestCPUCreateEnvStdinScrubsHostileSuccessResponseEverywhere(t *testing.T) {
++	viper.Reset()
++	t.Cleanup(viper.Reset)
++	setExactCPUCreateGlobals(t)
++	createEnvStdin = true
++	createPublicIP = true
++	createPorts = "22/tcp"
++	nonce := strings.Repeat("aB", 32)
++	echo := strings.ToUpper(nonce)
++	encodedEnv := `{"MICKEY_CONTROL_PLANE_NONCE":"` + nonce + `"}`
++
++	var deleteCalls atomic.Int32
++	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		if r.Method == http.MethodDelete {
++			deleteCalls.Add(1)
++			w.WriteHeader(http.StatusNoContent)
++			return
++		}
++		if r.Method != http.MethodPost || r.URL.Path != "/pods" {
++			t.Errorf("request = %s %s, want POST /pods", r.Method, r.URL.Path)
++			w.WriteHeader(http.StatusNotFound)
++			return
++		}
++		_ = json.NewEncoder(w).Encode(map[string]interface{}{
++			"id":                "provider-id-" + echo,
++			"name":              createName + "-" + echo,
++			"computeType":       "CPU",
++			"cloudType":         "COMMUNITY",
++			"desiredStatus":     "running-" + echo,
++			"imageName":         createImageName + "-" + echo,
++			"gpuCount":          0,
++			"volumeInGb":        0,
++			"containerDiskInGb": 20,
++			"memoryInGb":        4,
++			"vcpuCount":         2,
++			"costPerHr":         0.06,
++			"networkVolumeId":   "network-" + echo,
++			"ports":             []string{"22/tcp", "port-" + echo},
++			"createdAt":         map[string]interface{}{echo: "created-" + echo},
++			"machine": map[string]interface{}{
++				echo: "machine-value-" + echo,
++				"nested": []interface{}{
++					map[string]interface{}{"unknown": "nested-" + echo},
++				},
++				"env": map[string]interface{}{echo: "env-" + echo},
++			},
++			"runtime": map[string]interface{}{"unknown-" + echo: "runtime-" + echo},
++			"env":     map[string]string{echo: "value-" + echo},
++			"unknownTopLevel": map[string]interface{}{
++				"unknown-" + echo: "top-level-" + echo,
++			},
++		})
++	}))
++	t.Cleanup(server.Close)
++	t.Setenv("RUNPOD_API_KEY", "test-key")
++	t.Setenv("RUNPOD_API_URL", server.URL)
++
++	command := &cobra.Command{}
++	command.Flags().String("output", "json", "")
++	command.SetIn(strings.NewReader(encodedEnv))
++	stdout, stderr, runErr := captureRunCreateOutput(t, command)
++	if runErr == nil || !strings.Contains(runErr.Error(), "provider identity contained") {
++		t.Fatalf("error = %v, want contaminated identity failure", runErr)
++	}
++	assertNoNonceFold(t, "stdout", stdout, nonce)
++	assertNoNonceFold(t, "stderr", stderr, nonce)
++	assertNoNonceFold(t, "returned error", []byte(runErr.Error()), nonce)
++	if got := deleteCalls.Load(); got != 0 {
++		t.Fatalf("DELETE calls = %d, want 0", got)
++	}
++
++	var receipt map[string]interface{}
++	if err := json.Unmarshal(stdout, &receipt); err != nil {
++		t.Fatalf("stdout is not a parseable redacted receipt: %v: %q", err, stdout)
++	}
++	if receipt["id"] != cpuEnvRedactedValueMarker || receipt["name"] != cpuEnvRedactedValueMarker {
++		t.Fatalf("contaminated provider identity was not suppressed: %#v", receipt)
++	}
++	if receipt["providerIdentityContaminated"] != true || receipt["reconciliationRequired"] != true || receipt["validationPassed"] != false {
++		t.Fatalf("identity reconciliation flags missing: %#v", receipt)
++	}
++	if receipt["responseControlSecretScrubbed"] != true {
++		t.Fatalf("response scrub marker missing: %#v", receipt)
++	}
++	envMetadata, ok := receipt["env"].(map[string]interface{})
++	if !ok || envMetadata["redacted"] != true || envMetadata["schema"] != cpuEnvRedactionSchema {
++		t.Fatalf("provider env was not replaced with metadata: %#v", receipt["env"])
++	}
++	if receipt["cleanupAttempted"] != false || receipt["cleanupSucceeded"] != false {
++		t.Fatalf("hostile response path must remain zero-delete: %#v", receipt)
++	}
++	encodedReceipt, err := json.Marshal(receipt)
++	if err != nil {
++		t.Fatalf("marshal receipt: %v", err)
++	}
++	assertNoNonceFold(t, "decoded receipt", encodedReceipt, nonce)
++}
++
++func TestCPUCreateEnvStdinScrubsProviderErrorVariants(t *testing.T) {
++	nonce := strings.Repeat("cD", 32)
++	echo := strings.ToUpper(nonce)
++	tests := []struct {
++		name       string
++		statusCode int
++		body       string
++	}{
++		{
++			name:       "http error nested key and value",
++			statusCode: http.StatusBadRequest,
++			body:       `{"error":{"` + echo + `":"provider-` + echo + `"}}`,
++		},
++		{
++			name:       "success status malformed numeric string",
++			statusCode: http.StatusOK,
++			body:       `{"id":"safe-id","name":"proxywar-mickey-cpu-canary","containerDiskInGb":20,"volumeInGb":0,"costPerHr":"` + echo + `"}`,
++		},
++		{
++			name:       "success status wrong typed name",
++			statusCode: http.StatusOK,
++			body:       `{"id":"safe-id","name":{"` + echo + `":"` + echo + `"},"containerDiskInGb":20,"volumeInGb":0,"costPerHr":0.06}`,
++		},
++	}
++
++	for _, tt := range tests {
++		t.Run(tt.name, func(t *testing.T) {
++			viper.Reset()
++			t.Cleanup(viper.Reset)
++			setExactCPUCreateGlobals(t)
++			createEnvStdin = true
++			createPublicIP = true
++			createPorts = "22/tcp"
++
++			var deleteCalls atomic.Int32
++			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++				if r.Method == http.MethodDelete {
++					deleteCalls.Add(1)
++					w.WriteHeader(http.StatusNoContent)
++					return
++				}
++				w.WriteHeader(tt.statusCode)
++				_, _ = w.Write([]byte(tt.body))
++			}))
++			t.Cleanup(server.Close)
++			t.Setenv("RUNPOD_API_KEY", "test-key")
++			t.Setenv("RUNPOD_API_URL", server.URL)
++
++			command := &cobra.Command{}
++			command.Flags().String("output", "json", "")
++			command.SetIn(strings.NewReader(`{"MICKEY_CONTROL_PLANE_NONCE":"` + nonce + `"}`))
++			stdout, stderr, runErr := captureRunCreateOutput(t, command)
++			if runErr == nil {
++				t.Fatal("expected provider response failure")
++			}
++			assertNoNonceFold(t, "stdout", stdout, nonce)
++			assertNoNonceFold(t, "stderr", stderr, nonce)
++			assertNoNonceFold(t, "returned error", []byte(runErr.Error()), nonce)
++			if len(stdout) != 0 {
++				t.Fatalf("provider parse/error path emitted a receipt: %q", stdout)
++			}
++			if got := deleteCalls.Load(); got != 0 {
++				t.Fatalf("DELETE calls = %d, want 0", got)
++			}
++		})
++	}
++}
++
++func TestCPUControlSecretScrubberIsExactCaseInsensitiveAndNonDestructive(t *testing.T) {
++	nonce := strings.Repeat("aB", 32)
++	otherHex := strings.Repeat("cd", 32)
++	input := "prefix-" + strings.ToUpper(nonce) + "-middle-" + otherHex + "-suffix-" + nonce
++	scrubbed, changed := scrubCPUControlSecretString(input, nonce)
++	if !changed {
++		t.Fatal("mixed-case exact secret was not detected")
++	}
++	assertNoNonceFold(t, "scrubbed string", []byte(scrubbed), nonce)
++	if !strings.Contains(scrubbed, otherHex) {
++		t.Fatalf("unrelated 64-hex value was corrupted: %q", scrubbed)
++	}
++	if strings.Count(scrubbed, cpuEnvRedactedValueMarker) != 2 {
++		t.Fatalf("scrubbed occurrences = %q, want two markers", scrubbed)
++	}
++
++	unchanged, changed := scrubCPUControlSecretString("legitimate-"+otherHex, nonce)
++	if changed || unchanged != "legitimate-"+otherHex {
++		t.Fatalf("non-secret value was modified: changed=%v value=%q", changed, unchanged)
++	}
++}
++
++func TestCPUCreateOutwardGuardDropsResultOnAnySurvivingSecret(t *testing.T) {
++	nonce := strings.Repeat("eF", 32)
++	result, err := guardCPUCreateOutward(
++		map[string]interface{}{"nested": map[string]interface{}{strings.ToUpper(nonce): "safe"}},
++		nil,
++		nonce,
++	)
++	if result != nil || err == nil || err.Error() != cpuOutwardGuardError {
++		t.Fatalf("guard result=%#v error=%v, want constant failure and no receipt", result, err)
++	}
++	assertNoNonceFold(t, "guard error", []byte(err.Error()), nonce)
++
++	result, err = guardCPUCreateOutward(map[string]interface{}{"safe": true}, errors.New("provider "+strings.ToUpper(nonce)), nonce)
++	if result != nil || err == nil || err.Error() != cpuOutwardGuardError {
++		t.Fatalf("error guard result=%#v error=%v, want constant failure and no receipt", result, err)
++	}
++}
++
+ func TestCPUCreateRESTScrubsNonceFromProviderError(t *testing.T) {
+ 	viper.Reset()
+ 	t.Cleanup(viper.Reset)
+@@ -755,6 +1014,70 @@ func TestCPUCreateConfigAllowsOnlyControlPlaneNonceEnv(t *testing.T) {
+ 	}
+ }
+ 
++func TestCPUCreateEnvRejectsDuplicateOrTrailingJSONMembers(t *testing.T) {
++	nonce := strings.Repeat("9a", 32)
++	tests := []struct {
++		name    string
++		encoded string
++	}{
++		{
++			name:    "duplicate nonce member",
++			encoded: `{"MICKEY_CONTROL_PLANE_NONCE":"` + nonce + `","MICKEY_CONTROL_PLANE_NONCE":"` + nonce + `"}`,
++		},
++		{
++			name:    "extra member",
++			encoded: `{"MICKEY_CONTROL_PLANE_NONCE":"` + nonce + `","EXTRA":"` + nonce + `"}`,
++		},
++		{
++			name:    "trailing object",
++			encoded: `{"MICKEY_CONTROL_PLANE_NONCE":"` + nonce + `"}{"EXTRA":"` + nonce + `"}`,
++		},
++	}
++	for _, tt := range tests {
++		t.Run(tt.name, func(t *testing.T) {
++			_, err := parseCPUCreateEnvSource(tt.encoded, "--env-stdin")
++			if err == nil || !strings.Contains(err.Error(), cpuControlPlaneNonceEnvKey) {
++				t.Fatalf("error = %v, want exact-one-member rejection", err)
++			}
++			assertNoNonceFold(t, "parser error", []byte(err.Error()), nonce)
++		})
++	}
++}
++
++func TestCPUCreateEnvStdinRequiresCanonicalSSHExposure(t *testing.T) {
++	tests := []struct {
++		name     string
++		publicIP bool
++		ports    string
++		want     string
++	}{
++		{name: "missing public ip", publicIP: false, ports: "22/tcp", want: "--public-ip"},
++		{name: "missing port", publicIP: true, ports: "", want: "exactly --ports 22/tcp"},
++		{name: "additional port", publicIP: true, ports: "22/tcp,8888/http", want: "exactly --ports 22/tcp"},
++		{name: "noncanonical whitespace", publicIP: true, ports: " 22/tcp", want: "exactly --ports 22/tcp"},
++	}
++	for _, tt := range tests {
++		t.Run(tt.name, func(t *testing.T) {
++			setExactCPUCreateGlobals(t)
++			createEnvStdin = true
++			createPublicIP = tt.publicIP
++			createPorts = tt.ports
++			err := validateCPUCreateConfig("COMMUNITY")
++			if err == nil || !strings.Contains(err.Error(), tt.want) {
++				t.Fatalf("error = %v, want %q", err, tt.want)
++			}
++		})
++	}
++
++	setExactCPUCreateGlobals(t)
++	createEnvStdin = true
++	createPublicIP = true
++	createPorts = "22/tcp"
++	if err := validateCPUCreateConfig("COMMUNITY"); err != nil {
++		t.Fatalf("canonical stdin CPU exposure rejected: %v", err)
++	}
++}
++
+ func TestRunCreateKeepsStdoutParseableWhenPostCreateValidationFails(t *testing.T) {
+ 	viper.Reset()
+ 	t.Cleanup(viper.Reset)

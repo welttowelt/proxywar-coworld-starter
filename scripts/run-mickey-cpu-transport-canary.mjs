@@ -239,6 +239,7 @@ async function executeTransportCanary({
   settle = async (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)),
   signalState = { requested: false, signal: null },
   sshProbe = defaultSshProbe,
+  beforeCreate = async () => {},
 }) {
   const receipt = {
     schema_version: 2,
@@ -302,9 +303,21 @@ async function executeTransportCanary({
     if (signalState.requested) throw new Error(`received ${signalState.signal}`);
 
     const createArgs = buildPodCreateArgs(manifest, pending.expected_name, null);
-    if (createArgs.includes("--env") || JSON.stringify(createArgs).match(/api.?key|credential|password/i)) {
+    if (
+      createArgs.includes("--env") ||
+      createArgs.includes("--env-stdin") ||
+      JSON.stringify(createArgs).match(/api.?key|credential|password/i)
+    ) {
       throw new Error("transport canary create argv contains a forbidden secret-bearing field");
     }
+    // The pending exact-name ownership record is durable before this point.
+    // Revalidate the installed assets, service heartbeat/PID, and foreground
+    // runner as the final awaited operation before dispatching the one POST.
+    await beforeCreate({
+      expectedName: pending.expected_name,
+      reaperRecordId: pending.record_id,
+    });
+    if (signalState.requested) throw new Error(`received ${signalState.signal}`);
     receipt.create_attempts = 1;
     let createResult;
     try {
@@ -513,7 +526,11 @@ export async function runCli(argv, { executor = new EphemeralExecutor() } = {}) 
   }
   const actualSelfSha256 = await sha256File(SELF_PATH);
   if (actualSelfSha256 !== options.selfSha256) throw new Error("transport canary self SHA-256 mismatch");
-  const preflight = await preflightManifest(options.manifest, options.manifestSha256);
+  const preflight = await preflightManifest(
+    options.manifest,
+    options.manifestSha256,
+    { requirePersistentServiceArtifacts: !options.dryRun },
+  );
   const plannedName = dryRunName(preflight.document);
   const dryArgs = buildPodCreateArgs(preflight.document, plannedName, null);
   if (options.dryRun) {
@@ -567,6 +584,32 @@ export async function runCli(argv, { executor = new EphemeralExecutor() } = {}) 
     output: options.output,
     executor,
     signalState,
+    beforeCreate: async () => {
+      await preflightManifest(
+        options.manifest,
+        options.manifestSha256,
+        { requirePersistentServiceArtifacts: true },
+      );
+      await validateClaimedOutputShape(
+        options.output,
+        preflight.document.run_id,
+        preflight.document.runner_lease.state_root,
+      );
+      const currentRunnerStatus = await executor.run(
+        preflight.document.runner_lease.path,
+        ["status", "--json"],
+        { label: "canary-immediate-pre-post-runner-status" },
+      );
+      validateLiveRunnerStatus(parseJson(currentRunnerStatus, "immediate pre-POST runner status"), {
+        manifest: preflight.document,
+        output: options.output,
+      });
+      await verifyLiveReaperService({
+        manifest: preflight.document,
+        manifestSha256: preflight.manifestSha256,
+        executor,
+      });
+    },
   }));
   await writeJsonAtomic(path.join(evidenceRoot, "transport-canary-receipt.json"), receipt);
   if (receipt.status !== "passed") throw new Error(receipt.failure_reason || "transport canary failed");

@@ -9,10 +9,21 @@ import { fileURLToPath } from "node:url";
 import { derivePairOrder } from "./run-mickey-cpu-fanout.mjs";
 
 const SOURCE_RECEIPT_SHA256 = "127d60ee51f4e4b2d50c7b6908d1e571ce8f9e40f1939f61c25e3cdb4abaa129";
-const RUNPODCTL_SHA256 = "4b34a2b8c474b2925df67b9dbcbee7643b1d7ed0ba22c9f725ecf61602ca89c0";
+const RUNPODCTL_SHA256 = "95555bf636ee752c2da617a27d1bcc59d78481a624d82025a8042b27c2f07ad0";
 const RUNPODCTL_UPSTREAM_BASE_COMMIT = "3928df943d67c89e66b4945bd5c8b38ffd512767";
-const RUNPODCTL_SOURCE_COMMIT = "5eafbd3aead9b50b7b70ae064a0d9d7cdea5273c";
-const RUNPODCTL_PATCH_SHA256 = "1775778d2dc220a0de4e2b40c37f279c803c1ec60183428b7dae727ce357fc36";
+const RUNPODCTL_SOURCE_COMMIT = "83d91b77ba08c76b5ad9f6d22411b66a9d095261";
+const RUNPODCTL_SOURCE_TREE = "b542ea965b32794f9735389e2a8a8acb8d25f1f3";
+const RUNPODCTL_PATCH_SHA256 = "448a5d0bf42427f877b48d1b64d78ca2a229dfbe86496c89601ab4d51169746b";
+const RUNPODCTL_SERIES = Object.freeze([
+  ["0001-Add-bounded-REST-CPU-pod-creation.patch", "8907e09b47a9586d01782a16cda3289348988b7ab96258e0d69ece598211287b"],
+  ["0002-Make-REST-CPU-cleanup-recovery-only.patch", "797e97ad2f89203804b72d77cab3a9c6cf2c5977d153934e91bd8aadf74ff8ca"],
+  ["0003-Read-CPU-control-nonce-from-stdin.patch", "c9bd800d79ebf06b56e0556f41c51e72354e7792fbcfa96c5e68807b2cf689df"],
+  ["0004-Scrub-CPU-control-nonce-from-all-output.patch", "b96d2147d42d0c12c3bbf8a8ee75feccd00e8188c891792e137aca2aa0fec804"],
+]);
+const DURABLE_REAPER_ROOT = "/Users/olifreuler/.stormforge/proxywar-operators/mickey-runpod-reaper";
+const DURABLE_BIN_ROOT = `${DURABLE_REAPER_ROOT}/bin`;
+const DURABLE_INSTALLATIONS_ROOT = `${DURABLE_BIN_ROOT}/installations`;
+const DURABLE_PLIST = "/Users/olifreuler/Library/LaunchAgents/com.welttowelt.proxywar.mickey.runpod-reaper.plist";
 const RETAINED = new Map([
   ["grow-opening", ["grow", "all-k1z-grow", "mm1g"]],
   ["grow-low-share", ["grow", "all-k1z-grow", "mm1g"]],
@@ -44,6 +55,7 @@ function parseArgs(argv) {
     if (!value || ![
       "--fragment", "--output", "--run-id", "--nonce", "--source-receipt",
       "--runpodctl", "--runpodctl-patch", "--runner-lease", "--runner-lease-sha256",
+      "--runpodctl-series-dir",
       "--pod-image", "--max-concurrency", "--reaper", "--reaper-ledger",
       "--reaper-service-receipt",
     ].includes(key)) fail(`unknown or incomplete option: ${key}`);
@@ -53,11 +65,12 @@ function parseArgs(argv) {
   for (const key of [
     "--fragment", "--output", "--run-id", "--source-receipt", "--runpodctl",
     "--runpodctl-patch", "--runner-lease", "--runner-lease-sha256", "--pod-image",
+    "--runpodctl-series-dir",
     "--reaper", "--reaper-ledger", "--reaper-service-receipt",
   ]) {
     if (!options[key]) fail(`${key} is required`);
   }
-  for (const key of ["--fragment", "--output", "--source-receipt", "--runpodctl", "--runpodctl-patch", "--runner-lease", "--reaper", "--reaper-ledger", "--reaper-service-receipt"]) {
+  for (const key of ["--fragment", "--output", "--source-receipt", "--runpodctl", "--runpodctl-patch", "--runpodctl-series-dir", "--runner-lease", "--reaper", "--reaper-ledger", "--reaper-service-receipt"]) {
     if (!path.isAbsolute(options[key])) fail(`${key} must be absolute`);
   }
   const maxConcurrency = Number(options["--max-concurrency"] ?? 4);
@@ -76,6 +89,7 @@ function parseArgs(argv) {
     sourceReceipt: options["--source-receipt"],
     runpodctl: options["--runpodctl"],
     runpodctlPatch: options["--runpodctl-patch"],
+    runpodctlSeriesDir: options["--runpodctl-series-dir"],
     runnerLease: options["--runner-lease"],
     runnerLeaseSha256: options["--runner-lease-sha256"],
     podImage: options["--pod-image"],
@@ -112,6 +126,14 @@ async function main(argv) {
   }
   if (await sha256File(options.runpodctlPatch) !== RUNPODCTL_PATCH_SHA256) {
     fail("--runpodctl-patch does not match the frozen cleanroom patch");
+  }
+  const officialBasePatchSeries = [];
+  for (const [index, [fileName, sha256]] of RUNPODCTL_SERIES.entries()) {
+    const filePath = path.join(options.runpodctlSeriesDir, fileName);
+    if (await sha256File(filePath) !== sha256) {
+      fail(`--runpodctl-series-dir patch ${index + 1} does not match the frozen official-base series`);
+    }
+    officialBasePatchSeries.push({ sequence: index + 1, path: filePath, sha256 });
   }
   const fragment = JSON.parse(await readFile(options.fragment, "utf8"));
   if (
@@ -176,19 +198,37 @@ async function main(argv) {
       }),
     });
   }
+  const controlPlane = Object.fromEntries(await Promise.all(
+    Object.entries(CONTROL_PLANE_PATHS).map(async ([key, filePath]) => [
+      key,
+      { path: filePath, sha256: await sha256File(filePath) },
+    ]),
+  ));
+  const nodeRuntime = { path: process.execPath, sha256: await sha256File(process.execPath) };
+  const installationId = createHash("sha256").update([
+    RUNPODCTL_SOURCE_COMMIT,
+    RUNPODCTL_SOURCE_TREE,
+    RUNPODCTL_SHA256,
+    controlPlane.exact_id_reaper.sha256,
+    nodeRuntime.sha256,
+  ].join("\n"), "utf8").digest("hex");
+  const installationDirectory = `${DURABLE_INSTALLATIONS_ROOT}/${installationId}`;
+  const durableReaper = `${installationDirectory}/runpod-exact-id-reaper.mjs`;
+  const durableRunpodctl = `${installationDirectory}/runpodctl-darwin-arm64`;
+  if (
+    options.reaperLedger !== `${DURABLE_REAPER_ROOT}/ledger.json` ||
+    options.reaperServiceReceipt !== `${DURABLE_REAPER_ROOT}/service-receipt.json`
+  ) {
+    fail("reaper ledger and service receipt must use the exact durable Mickey reaper root");
+  }
   const manifest = {
-    schema_version: 2,
+    schema_version: 3,
     kind: "mickey_cpu_fanout",
     run_id: options.runId,
     preregistered_at: new Date().toISOString(),
     evidence_scope: "diagnostic_only",
     randomization: { algorithm: "sha256-parity-v1", nonce: options.nonce },
-    control_plane: Object.fromEntries(await Promise.all(
-      Object.entries(CONTROL_PLANE_PATHS).map(async ([key, filePath]) => [
-        key,
-        { path: filePath, sha256: await sha256File(filePath) },
-      ]),
-    )),
+    control_plane: controlPlane,
     runner_lease: {
       path: options.runnerLease,
       sha256: options.runnerLeaseSha256,
@@ -196,15 +236,24 @@ async function main(argv) {
       state_root: "/Users/olifreuler/.stormforge/proxywar-operators",
     },
     runpodctl: {
-      path: options.runpodctl,
+      path: durableRunpodctl,
       sha256: RUNPODCTL_SHA256,
+      install_source_path: options.runpodctl,
       source_repository: "https://github.com/runpod/runpodctl",
       upstream_base_commit: RUNPODCTL_UPSTREAM_BASE_COMMIT,
       source_commit: RUNPODCTL_SOURCE_COMMIT,
+      source_tree: RUNPODCTL_SOURCE_TREE,
+      official_base_patch_series: officialBasePatchSeries,
       patch_path: options.runpodctlPatch,
       patch_sha256: RUNPODCTL_PATCH_SHA256,
-      patch_id: "mickey-cpu-rest-create-no-delete-v2",
-      create_interface: "rest-cpu-pod-create-v1",
+      patch_id: "mickey-cpu-rest-stdin-scrub-no-delete-v4",
+      create_interface: "rest-cpu-pod-create-stdin-v3",
+      nonce_input_channel: "stdin",
+      nonce_input_flag: "--env-stdin",
+      receipt_redaction_schema: "env-map-v2",
+      response_scrub_contract: "recursive-case-insensitive-string-leaves-and-map-keys",
+      provider_identity_contamination: "redact-id-and-name-require-reconciliation",
+      serialized_output_guard: "constant-value-free-failure-and-no-receipt",
     },
     pod: {
       name_prefix: "proxywar-mickey-cpu-fanout",
@@ -227,8 +276,18 @@ async function main(argv) {
     },
     cleanup_watchdog: {
       kind: "independent_exact_id_reaper_v1",
-      script: { path: options.reaper, sha256: await sha256File(options.reaper) },
-      node_runtime: { path: process.execPath, sha256: await sha256File(process.execPath) },
+      installation_id: installationId,
+      state_root: DURABLE_REAPER_ROOT,
+      bin_root: DURABLE_BIN_ROOT,
+      installations_root: DURABLE_INSTALLATIONS_ROOT,
+      installation_directory: installationDirectory,
+      script: {
+        path: durableReaper,
+        sha256: controlPlane.exact_id_reaper.sha256,
+        install_source_path: options.reaper,
+      },
+      node_runtime: nodeRuntime,
+      plist_path: DURABLE_PLIST,
       ledger_path: options.reaperLedger,
       heartbeat_path: path.join(path.dirname(options.reaperLedger), "provider-heartbeat.json"),
       heartbeat_max_age_seconds: 120,

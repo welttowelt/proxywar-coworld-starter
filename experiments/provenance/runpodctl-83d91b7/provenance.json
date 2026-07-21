@@ -1,0 +1,59 @@
+{
+  "schema_version": 1,
+  "kind": "mickey_runpodctl_cleanroom_provenance",
+  "upstream_repository": "https://github.com/runpod/runpodctl",
+  "upstream_base_commit": "3928df943d67c89e66b4945bd5c8b38ffd512767",
+  "source_commit": "83d91b77ba08c76b5ad9f6d22411b66a9d095261",
+  "source_tree": "b542ea965b32794f9735389e2a8a8acb8d25f1f3",
+  "binary": {
+    "target": "darwin/arm64",
+    "sha256": "95555bf636ee752c2da617a27d1bcc59d78481a624d82025a8042b27c2f07ad0",
+    "embedded_version": "cleanroom-83d91b77ba08c76b5ad9f6d22411b66a9d095261",
+    "reproducible_builds_byte_identical": true
+  },
+  "official_base_patch_series": [
+    {
+      "sequence": 1,
+      "path": "series-from-official-base/0001-Add-bounded-REST-CPU-pod-creation.patch",
+      "sha256": "8907e09b47a9586d01782a16cda3289348988b7ab96258e0d69ece598211287b"
+    },
+    {
+      "sequence": 2,
+      "path": "series-from-official-base/0002-Make-REST-CPU-cleanup-recovery-only.patch",
+      "sha256": "797e97ad2f89203804b72d77cab3a9c6cf2c5977d153934e91bd8aadf74ff8ca"
+    },
+    {
+      "sequence": 3,
+      "path": "series-from-official-base/0003-Read-CPU-control-nonce-from-stdin.patch",
+      "sha256": "c9bd800d79ebf06b56e0556f41c51e72354e7792fbcfa96c5e68807b2cf689df"
+    },
+    {
+      "sequence": 4,
+      "path": "series-from-official-base/0004-Scrub-CPU-control-nonce-from-all-output.patch",
+      "sha256": "b96d2147d42d0c12c3bbf8a8ee75feccd00e8188c891792e137aca2aa0fec804"
+    }
+  ],
+  "followup_patch": {
+    "path": "0001-Scrub-CPU-control-nonce-from-all-output.patch",
+    "sha256": "448a5d0bf42427f877b48d1b64d78ca2a229dfbe86496c89601ab4d51169746b"
+  },
+  "contract": {
+    "nonce_input": "exact-one-member-json-on-stdin-with-eof",
+    "nonce_in_argv": false,
+    "nonce_in_process_environment": false,
+    "receipt_redaction_schema": "env-map-v2",
+    "response_scrub": "recursive-case-insensitive-string-leaves-and-map-keys",
+    "provider_identity_contamination": "redact-id-and-name-require-reconciliation",
+    "serialized_output_guard": "constant-value-free-failure-and-no-receipt",
+    "create_path_delete_calls": 0
+  },
+  "independent_source_rci": {
+    "verdict": "GO",
+    "condition": "outer durable pending record, exact-ID reaper, and immediate pre-POST revalidation remain mandatory"
+  },
+  "operator_boundary": {
+    "live_api_calls_for_artifact_build_or_review": 0,
+    "full_fanout_live_approved": false,
+    "transport_canary_only": true
+  }
+}

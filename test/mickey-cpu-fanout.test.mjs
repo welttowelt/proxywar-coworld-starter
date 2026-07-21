@@ -11,6 +11,7 @@ import {
   realpathSync,
   rmSync,
   statSync,
+  symlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -43,6 +44,10 @@ import {
   mirroredSeatsPass,
 } from "../scripts/audit-mickey-cpu-fanout.mjs";
 import { parseFileManifest } from "../scripts/verify-mickey-cpu-fanout-bundle.mjs";
+import {
+  renderReaperPlistForTest,
+  stageDurableReaperInstallation,
+} from "../scripts/render-runpod-exact-id-reaper-launchd.mjs";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const fanoutScript = path.join(root, "scripts", "run-mickey-cpu-fanout.mjs");
@@ -52,6 +57,10 @@ const rendererScript = path.join(root, "scripts", "render-mickey-cpu-fanout-laun
 const reaperScript = path.join(root, "scripts", "runpod-exact-id-reaper.mjs");
 const reaperRendererScript = path.join(root, "scripts", "render-runpod-exact-id-reaper-launchd.mjs");
 const verifierScript = path.join(root, "scripts", "verify-mickey-cpu-fanout-bundle.mjs");
+const durableReaperRoot = "/Users/olifreuler/.stormforge/proxywar-operators/mickey-runpod-reaper";
+const durableBinRoot = `${durableReaperRoot}/bin`;
+const durableInstallationsRoot = `${durableBinRoot}/installations`;
+const durablePlist = "/Users/olifreuler/Library/LaunchAgents/com.welttowelt.proxywar.mickey.runpod-reaper.plist";
 const HEX = {
   source: "1".repeat(40),
   m0Entry: "1".repeat(64),
@@ -146,12 +155,15 @@ function fixture() {
   const extractor = path.join(directory, "extract.py");
   const runpodctl = path.join(directory, "runpodctl-mickey-pinned");
   const runpodctlPatch = path.join(directory, "runpodctl.patch");
+  const runpodctlSeries = [1, 2, 3, 4].map((sequence) =>
+    path.join(directory, `runpodctl-series-${sequence}.patch`));
   const runnerLease = path.join(directory, "proxywar-runner-lease.sh");
   const receiptPath = path.join(directory, "source-reach.json");
   writeFileSync(bundle, "immutable-bundle\n");
   writeFileSync(extractor, "#!/usr/bin/env python3\n");
-  writeFileSync(runpodctl, "runpodctl cleanroom-5eafbd3aead9b50b7b70ae064a0d9d7cdea5273c\n");
+  writeFileSync(runpodctl, "runpodctl cleanroom-39906d06bfc0558e9b76d217fa6be6f3740a0423\n");
   writeFileSync(runpodctlPatch, "fixture patch\n");
+  runpodctlSeries.forEach((filePath, index) => writeFileSync(filePath, `fixture series ${index + 1}\n`));
   writeFileSync(runnerLease, "#!/bin/sh\nexit 99\n");
   chmodSync(runpodctl, 0o755);
   chmodSync(runnerLease, 0o755);
@@ -161,8 +173,21 @@ function fixture() {
   const draw = derivePairOrder(nonce, "grow-opening", pairId);
   const m0 = identity("m0", HEX.m0Entry, HEX.m0Image);
   const candidate = identity("grow-opening", HEX.goEntry, HEX.goImage);
+  const runpodctlSha256 = sha256File(runpodctl);
+  const reaperSha256 = sha256File(reaperScript);
+  const nodeSha256 = sha256File(process.execPath);
+  const sourceCommit = "39906d06bfc0558e9b76d217fa6be6f3740a0423";
+  const sourceTree = "f6d47598c72f0d78fd9c660c4589996c8a8be033";
+  const installationId = sha256([
+    sourceCommit,
+    sourceTree,
+    runpodctlSha256,
+    reaperSha256,
+    nodeSha256,
+  ].join("\n"));
+  const installationDirectory = `${durableInstallationsRoot}/${installationId}`;
   const manifest = {
-    schema_version: 2,
+    schema_version: 3,
     kind: "mickey_cpu_fanout",
     run_id: "mickey-fanout-unit",
     preregistered_at: new Date(Date.now() - 1_000).toISOString(),
@@ -185,15 +210,28 @@ function fixture() {
       state_root: "/Users/olifreuler/.stormforge/proxywar-operators",
     },
     runpodctl: {
-      path: runpodctl,
-      sha256: sha256File(runpodctl),
+      path: `${installationDirectory}/runpodctl-darwin-arm64`,
+      sha256: runpodctlSha256,
+      install_source_path: runpodctl,
       source_repository: "https://github.com/runpod/runpodctl",
       upstream_base_commit: "3928df943d67c89e66b4945bd5c8b38ffd512767",
-      source_commit: "5eafbd3aead9b50b7b70ae064a0d9d7cdea5273c",
+      source_commit: sourceCommit,
+      source_tree: sourceTree,
+      official_base_patch_series: runpodctlSeries.map((filePath, index) => ({
+        sequence: index + 1,
+        path: filePath,
+        sha256: sha256File(filePath),
+      })),
       patch_path: runpodctlPatch,
       patch_sha256: sha256File(runpodctlPatch),
-      patch_id: "mickey-cpu-rest-create-v1",
-      create_interface: "rest-cpu-pod-create-v1",
+      patch_id: "mickey-cpu-rest-stdin-no-delete-v3",
+      create_interface: "rest-cpu-pod-create-stdin-v3",
+      nonce_input_channel: "stdin",
+      nonce_input_flag: "--env-stdin",
+      receipt_redaction_schema: "env-map-v2",
+      response_scrub_contract: "recursive-case-insensitive-string-leaves-and-map-keys",
+      provider_identity_contamination: "redact-id-and-name-require-reconciliation",
+      serialized_output_guard: "constant-value-free-failure-and-no-receipt",
     },
     pod: {
       name_prefix: "proxywar-mickey-cpu-fanout",
@@ -216,10 +254,20 @@ function fixture() {
     },
     cleanup_watchdog: {
       kind: "independent_exact_id_reaper_v1",
-      script: { path: reaperScript, sha256: sha256File(reaperScript) },
-      node_runtime: { path: process.execPath, sha256: sha256File(process.execPath) },
-      ledger_path: path.join(directory, "reaper", "ledger.json"),
-      heartbeat_path: path.join(directory, "reaper", "provider-heartbeat.json"),
+      installation_id: installationId,
+      state_root: durableReaperRoot,
+      bin_root: durableBinRoot,
+      installations_root: durableInstallationsRoot,
+      installation_directory: installationDirectory,
+      script: {
+        path: `${installationDirectory}/runpod-exact-id-reaper.mjs`,
+        sha256: reaperSha256,
+        install_source_path: reaperScript,
+      },
+      node_runtime: { path: process.execPath, sha256: nodeSha256 },
+      plist_path: durablePlist,
+      ledger_path: `${durableReaperRoot}/ledger.json`,
+      heartbeat_path: `${durableReaperRoot}/provider-heartbeat.json`,
       heartbeat_max_age_seconds: 120,
       client_cleanup_deadline_seconds: 7200,
       poll_interval_seconds: 60,
@@ -227,7 +275,7 @@ function fixture() {
       exact_id_only: true,
       launchd_required_for_live_run: true,
       launchd_label: "com.welttowelt.proxywar.mickey.runpod-reaper",
-      service_receipt_path: path.join(directory, "reaper", "service-receipt.json"),
+      service_receipt_path: `${durableReaperRoot}/service-receipt.json`,
     },
     source_reach_receipt: { path: receiptPath, sha256: sha256File(receiptPath) },
     arms: [
@@ -530,7 +578,7 @@ test("create request attestation binds the exact bounded REST CPU and SSH input 
       volumeMountPath: "/workspace",
     };
     const requestInput = structuredClone(requestInputRaw);
-    requestInput.env.MICKEY_CONTROL_PLANE_NONCE = "[REDACTED]";
+    requestInput.env = { redacted: true, schema: "env-map-v2" };
     const record = {
       transport: "rest-v1",
       validationPassed: true,
@@ -542,10 +590,13 @@ test("create request attestation binds the exact bounded REST CPU and SSH input 
       requestInputHashAlgorithm: "sorted-json-sha256-v1",
       requestInputHashScope: "raw-request-before-redaction",
       requestInputRedacted: true,
-      requestInputRedactionSchema: "env-values-v1",
+      requestInputRedactionSchema: "env-map-v2",
       responseEnvRedacted: false,
-      responseEnvRedactionSchema: "env-values-v1",
+      responseEnvRedactionSchema: "env-map-v2",
       redactedEnvValueMarker: "[REDACTED]",
+      responseControlSecretScrubbed: false,
+      providerIdentityContaminated: false,
+      reconciliationRequired: false,
     };
     assert.equal(
       validateCreateRequestAttestation(record, {
@@ -556,8 +607,9 @@ test("create request attestation binds the exact bounded REST CPU and SSH input 
       null,
     );
     const responseEnvRedacted = structuredClone(record);
-    responseEnvRedacted.env = { MICKEY_CONTROL_PLANE_NONCE: "[REDACTED]" };
+    responseEnvRedacted.env = { redacted: true, schema: "env-map-v2" };
     responseEnvRedacted.responseEnvRedacted = true;
+    responseEnvRedacted.responseControlSecretScrubbed = true;
     assert.equal(
       validateCreateRequestAttestation(responseEnvRedacted, {
         manifest,
@@ -567,7 +619,7 @@ test("create request attestation binds the exact bounded REST CPU and SSH input 
       true,
     );
     const responseEnvLeaked = structuredClone(responseEnvRedacted);
-    responseEnvLeaked.env.MICKEY_CONTROL_PLANE_NONCE = controlSecret;
+    responseEnvLeaked.env.leaked = controlSecret;
     assert.throws(
       () => validateCreateRequestAttestation(responseEnvLeaked, {
         manifest,
@@ -740,24 +792,71 @@ test("parallel workers serialize the shared event ledger without loss or rename 
   }
 });
 
-test("command logs redact the runtime nonce from argv, stdout, and stderr while the child receives it", async () => {
-  const directory = tempDirectory("mickey-redacted-command-test-");
+test("the runtime nonce travels only over stdin and never reaches argv, env, disk, or logs", async () => {
+  const directory = tempDirectory("mickey-stdin-command-test-");
   try {
     const logs = path.join(directory, "logs");
     mkdirSync(logs);
-    const fake = path.join(directory, "echo-sensitive");
-    writeFileSync(fake, "#!/bin/sh\nprintf '%s\\n' \"$1\"\nprintf '%s\\n' \"$1\" >&2\n");
-    chmodSync(fake, 0o755);
+    const fake = path.join(directory, "read-sensitive-stdin.mjs");
+    writeFileSync(fake, `
+import { createHash } from "node:crypto";
+const chunks = [];
+for await (const chunk of process.stdin) chunks.push(chunk);
+const body = Buffer.concat(chunks).toString("utf8");
+const parsed = JSON.parse(body);
+const value = parsed.MICKEY_CONTROL_PLANE_NONCE;
+if (!/^[a-f0-9]{64}$/.test(value)) process.exit(91);
+if (JSON.stringify(process.argv).toLowerCase().includes(value.toLowerCase())) process.exit(92);
+if (JSON.stringify(process.env).toLowerCase().includes(value.toLowerCase())) process.exit(93);
+process.stdout.write(createHash("sha256").update(body).digest("hex") + "\\n");
+`);
     const nonce = "a".repeat(64);
+    const stdin = Buffer.from(JSON.stringify({ MICKEY_CONTROL_PLANE_NONCE: nonce }), "utf8");
     const executor = new CommandExecutor(logs);
-    const result = await executor.run(fake, [nonce], { redactions: [nonce] });
-    assert.equal(result.stdout.trim(), nonce);
-    assert.equal(result.stderr.trim(), nonce);
+    const result = await executor.run(process.execPath, [fake, "--env-stdin"], {
+      redactions: [nonce],
+      outputLogMode: "metadata-only",
+      stdinBytes: stdin,
+      sensitiveOutputToken: nonce,
+    });
+    assert.equal(result.stdout.trim(), sha256(JSON.stringify({ MICKEY_CONTROL_PLANE_NONCE: nonce })));
+    assert.equal(result.stderr, "");
+    stdin.fill(0);
     const serializedLogs = readdirSync(logs)
       .map((name) => readFileSync(path.join(logs, name), "utf8"))
       .join("\n");
     assert.doesNotMatch(serializedLogs, new RegExp(nonce));
-    assert.match(serializedLogs, /\[REDACTED\]/);
+    assert.match(serializedLogs, /--env-stdin/);
+    assert.doesNotMatch(serializedLogs, /"--env"/);
+    assert.match(serializedLogs, /"stdin_provided": true/);
+    const allDiskBodies = [
+      readFileSync(fake, "utf8"),
+      ...readdirSync(logs).map((name) => readFileSync(path.join(logs, name), "utf8")),
+    ].join("\n");
+    assert.doesNotMatch(allDiskBodies, new RegExp(nonce, "i"));
+
+    const leakingLogs = path.join(directory, "leaking-logs");
+    mkdirSync(leakingLogs);
+    const leaker = path.join(directory, "leak-sensitive-stdin.mjs");
+    writeFileSync(leaker, `
+const chunks = [];
+for await (const chunk of process.stdin) chunks.push(chunk);
+const value = JSON.parse(Buffer.concat(chunks).toString("utf8")).MICKEY_CONTROL_PLANE_NONCE;
+process.stdout.write(value.toUpperCase());
+`);
+    const leakingStdin = Buffer.from(JSON.stringify({ MICKEY_CONTROL_PLANE_NONCE: nonce }), "utf8");
+    const leakingExecutor = new CommandExecutor(leakingLogs);
+    await assert.rejects(
+      leakingExecutor.run(process.execPath, [leaker, "--env-stdin"], {
+        redactions: [nonce],
+        outputLogMode: "metadata-only",
+        stdinBytes: leakingStdin,
+        sensitiveOutputToken: nonce,
+      }),
+      (error) => error?.message === "sensitive child output rejected",
+    );
+    leakingStdin.fill(0);
+    assert.deepEqual(readdirSync(leakingLogs), []);
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
@@ -827,13 +926,15 @@ test("dry-run performs zero network calls even when every external command is a 
     assert.equal(plan.pairs[0].pod_create_argv.includes("0.10"), true);
     assert.equal(plan.pairs[0].pod_create_argv.includes("--vcpu-count"), true);
     assert.equal(plan.pairs[0].pod_create_argv.includes("--terminateAfter"), false);
+    assert.equal(plan.pairs[0].pod_create_argv.includes("--env"), false);
+    assert.equal(plan.pairs[0].pod_create_argv.includes("--env-stdin"), true);
     assert.equal(plan.pairs[0].pod_create_argv.includes("--public-ip"), true);
     assert.equal(plan.pairs[0].pod_create_argv.includes("22/tcp"), true);
     assert.equal(plan.pairs[0].pod_create_argv.includes("--network-volume-id"), false);
     assert.equal(plan.cleanup_watchdog.provider_ttl_available, false);
     assert.equal(plan.full_fanout_live_approved, false);
     assert.equal(plan.transport_canary_live_approved, true);
-    assert.match(plan.full_fanout_blocking_reason, /nonce.*process argv/);
+    assert.match(plan.full_fanout_blocking_reason, /end-to-end execution.*separate RCI/);
     assert.deepEqual(plan.pairs[0].order, manifestOrder(manifestPath));
   } finally {
     rmSync(directory, { recursive: true, force: true });
@@ -855,7 +956,7 @@ test("full fanout live mode fails closed before output or provider mutation", ()
       { cwd: root, encoding: "utf8" },
     );
     assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /blocked before mutation.*--env process argv/);
+    assert.match(result.stderr, /blocked before mutation.*end-to-end execution.*separate RCI/);
     assert.equal(existsSync(output), false);
   } finally {
     rmSync(directory, { recursive: true, force: true });
@@ -921,19 +1022,165 @@ test("dedicated reaper LaunchAgent renderer is inert and pins poll heartbeat wit
     assert.match(body, /runpod-exact-id-reaper\.mjs/);
     assert.match(body, /provider-heartbeat\.json/);
     assert.match(body, /<string>poll<\/string>/);
+    assert.match(body, /<key>HOME<\/key>\s*<string>\/Users\/olifreuler<\/string>/);
+    assert.match(body, /<key>Umask<\/key>\s*<integer>63<\/integer>/);
+    assert.doesNotMatch(body, /\/private\/tmp|\/tmp\//);
     assert.doesNotMatch(body, /api.?key|authorization|bearer/i);
-    assert.equal(plan.exact_commands[0][1], "bootstrap");
+    assert.equal(plan.exact_commands[0][2], "install");
+    assert.equal(plan.exact_commands[1][1], "bootstrap");
+    assert.equal(plan.plist_path, durablePlist);
+    assert.equal(plan.durable_reaper_path.startsWith(`${durableBinRoot}/installations/`), true);
   } finally {
     rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+function stageManifestAtTemporaryDurableRoot(sourceManifest, stateRoot) {
+  const manifest = structuredClone(sourceManifest);
+  const binRoot = path.join(stateRoot, "bin");
+  const installationsRoot = path.join(binRoot, "installations");
+  const installationDirectory = path.join(
+    installationsRoot,
+    manifest.cleanup_watchdog.installation_id,
+  );
+  manifest.cleanup_watchdog.state_root = stateRoot;
+  manifest.cleanup_watchdog.bin_root = binRoot;
+  manifest.cleanup_watchdog.installations_root = installationsRoot;
+  manifest.cleanup_watchdog.installation_directory = installationDirectory;
+  manifest.cleanup_watchdog.script.path = path.join(
+    installationDirectory,
+    "runpod-exact-id-reaper.mjs",
+  );
+  manifest.runpodctl.path = path.join(installationDirectory, "runpodctl-darwin-arm64");
+  manifest.cleanup_watchdog.plist_path = path.join(
+    stateRoot,
+    "LaunchAgents",
+    "com.welttowelt.proxywar.mickey.runpod-reaper.plist",
+  );
+  manifest.cleanup_watchdog.ledger_path = path.join(stateRoot, "ledger.json");
+  manifest.cleanup_watchdog.heartbeat_path = path.join(stateRoot, "provider-heartbeat.json");
+  manifest.cleanup_watchdog.service_receipt_path = path.join(stateRoot, "service-receipt.json");
+  return manifest;
+}
+
+test("durable reaper installation is staged atomically with exact modes and refuses drift", async () => {
+  const source = fixture();
+  const stateRoot = realpathSync(mkdtempSync("/private/tmp/mickey-durable-install-test-"));
+  try {
+    const manifest = stageManifestAtTemporaryDurableRoot(source.manifest, stateRoot);
+    const plistSourcePath = path.join(stateRoot, "rendered-reaper.plist");
+    const plist = renderReaperPlistForTest(manifest);
+    writeFileSync(plistSourcePath, plist, { mode: 0o600 });
+    const manifestSha256 = "f".repeat(64);
+    const receipt = await stageDurableReaperInstallation({
+      manifest,
+      manifestSha256,
+      plistSourcePath,
+      allowTemporaryPathsForTest: true,
+    });
+    assert.equal(receipt.provider_calls, 0);
+    assert.equal(receipt.launchctl_calls, 0);
+    assert.equal(receipt.installation_directory, manifest.cleanup_watchdog.installation_directory);
+    for (const directory of [
+      manifest.cleanup_watchdog.state_root,
+      manifest.cleanup_watchdog.bin_root,
+      manifest.cleanup_watchdog.installations_root,
+      manifest.cleanup_watchdog.installation_directory,
+    ]) {
+      assert.equal(statSync(directory).mode & 0o777, 0o700, directory);
+      assert.equal(realpathSync(directory), directory);
+    }
+    for (const filePath of [
+      manifest.cleanup_watchdog.script.path,
+      manifest.cleanup_watchdog.plist_path,
+      manifest.cleanup_watchdog.ledger_path,
+      path.join(stateRoot, "runpod-reaper.stdout.log"),
+      path.join(stateRoot, "runpod-reaper.stderr.log"),
+    ]) {
+      assert.equal(statSync(filePath).mode & 0o777, 0o600, filePath);
+      assert.equal(realpathSync(filePath), filePath);
+    }
+    assert.equal(statSync(manifest.runpodctl.path).mode & 0o777, 0o700);
+    assert.equal(sha256File(manifest.cleanup_watchdog.script.path), manifest.cleanup_watchdog.script.sha256);
+    assert.equal(sha256File(manifest.runpodctl.path), manifest.runpodctl.sha256);
+    assert.equal(readFileSync(manifest.cleanup_watchdog.plist_path, "utf8"), plist);
+    assert.doesNotMatch(plist, /MICKEY_CONTROL_PLANE_NONCE|--env(?:-stdin)?/i);
+
+    const repeated = await stageDurableReaperInstallation({
+      manifest,
+      manifestSha256,
+      plistSourcePath,
+      allowTemporaryPathsForTest: true,
+    });
+    assert.equal(repeated.runpodctl_sha256, receipt.runpodctl_sha256);
+
+    writeFileSync(manifest.cleanup_watchdog.script.path, "tampered\n", { mode: 0o600 });
+    await assert.rejects(
+      stageDurableReaperInstallation({
+        manifest,
+        manifestSha256,
+        plistSourcePath,
+        allowTemporaryPathsForTest: true,
+      }),
+      /durable file hash drift/,
+    );
+    assert.equal(readFileSync(manifest.cleanup_watchdog.script.path, "utf8"), "tampered\n");
+  } finally {
+    rmSync(stateRoot, { recursive: true, force: true });
+    rmSync(source.directory, { recursive: true, force: true });
+  }
+});
+
+test("durable reaper installation rejects symlinked sources and never replaces an existing plist", async () => {
+  const source = fixture();
+  const stateRoot = realpathSync(mkdtempSync("/private/tmp/mickey-durable-refusal-test-"));
+  try {
+    const manifest = stageManifestAtTemporaryDurableRoot(source.manifest, stateRoot);
+    const plistSourcePath = path.join(stateRoot, "rendered-reaper.plist");
+    writeFileSync(plistSourcePath, renderReaperPlistForTest(manifest), { mode: 0o600 });
+    const linkedRunpodctl = path.join(stateRoot, "runpodctl-source-link");
+    symlinkSync(manifest.runpodctl.install_source_path, linkedRunpodctl);
+    manifest.runpodctl.install_source_path = linkedRunpodctl;
+    await assert.rejects(
+      stageDurableReaperInstallation({
+        manifest,
+        manifestSha256: "e".repeat(64),
+        plistSourcePath,
+        allowTemporaryPathsForTest: true,
+      }),
+      /installation source is unsafe/,
+    );
+
+    manifest.runpodctl.install_source_path = source.manifest.runpodctl.install_source_path;
+    mkdirSync(path.dirname(manifest.cleanup_watchdog.plist_path), { mode: 0o700 });
+    writeFileSync(manifest.cleanup_watchdog.plist_path, "unrelated plist\n", { mode: 0o600 });
+    await assert.rejects(
+      stageDurableReaperInstallation({
+        manifest,
+        manifestSha256: "e".repeat(64),
+        plistSourcePath,
+        allowTemporaryPathsForTest: true,
+      }),
+      /durable file hash drift/,
+    );
+    assert.equal(readFileSync(manifest.cleanup_watchdog.plist_path, "utf8"), "unrelated plist\n");
+  } finally {
+    rmSync(stateRoot, { recursive: true, force: true });
+    rmSync(source.directory, { recursive: true, force: true });
   }
 });
 
 test("live reaper preflight requires a fresh service-context provider heartbeat from the launchd PID", async () => {
   const { directory, manifest, manifestSha256 } = fixture();
   try {
-    const stateRoot = path.dirname(manifest.cleanup_watchdog.ledger_path);
+    const stateRoot = path.join(directory, "live-reaper-state");
+    manifest.cleanup_watchdog.state_root = stateRoot;
+    manifest.cleanup_watchdog.ledger_path = path.join(stateRoot, "ledger.json");
+    manifest.cleanup_watchdog.heartbeat_path = path.join(stateRoot, "provider-heartbeat.json");
+    manifest.cleanup_watchdog.service_receipt_path = path.join(stateRoot, "service-receipt.json");
+    manifest.cleanup_watchdog.plist_path = path.join(directory, "active-reaper.plist");
     mkdirSync(stateRoot, { mode: 0o700 });
-    const plist = path.join(directory, "active-reaper.plist");
+    const plist = manifest.cleanup_watchdog.plist_path;
     writeFileSync(plist, "plist\n", { mode: 0o600 });
     writeFileSync(manifest.cleanup_watchdog.ledger_path, `${JSON.stringify({ empty: true })}\n`, { mode: 0o600 });
     writeFileSync(manifest.cleanup_watchdog.heartbeat_path, `${JSON.stringify({
@@ -963,6 +1210,7 @@ test("live reaper preflight requires a fresh service-context provider heartbeat 
       reaper_sha256: manifest.cleanup_watchdog.script.sha256,
       node_path: manifest.cleanup_watchdog.node_runtime.path,
       node_sha256: manifest.cleanup_watchdog.node_runtime.sha256,
+      pid: 4321,
       attested_at: new Date().toISOString(),
     }, null, 2)}\n`, { mode: 0o600 });
     const executor = {

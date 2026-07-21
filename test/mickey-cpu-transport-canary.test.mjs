@@ -94,10 +94,13 @@ function createRecord(args, id = NEW_ID, nameOverride = null) {
     requestInputHashAlgorithm: "sorted-json-sha256-v1",
     requestInputHashScope: "raw-request-before-redaction",
     requestInputRedacted: false,
-    requestInputRedactionSchema: "env-values-v1",
+    requestInputRedactionSchema: "env-map-v2",
     responseEnvRedacted: false,
-    responseEnvRedactionSchema: "env-values-v1",
+    responseEnvRedactionSchema: "env-map-v2",
     redactedEnvValueMarker: "[REDACTED]",
+    responseControlSecretScrubbed: false,
+    providerIdentityContaminated: false,
+    reconciliationRequired: false,
   };
 }
 
@@ -198,6 +201,9 @@ async function execute(t, fake, overrides = {}) {
       pod_name: expectedName,
       command: "static_readiness_probe_only",
     })),
+    beforeCreate: overrides.beforeCreate === undefined
+      ? undefined
+      : (details) => overrides.beforeCreate(details, root, fake),
   });
 }
 
@@ -221,6 +227,39 @@ test("transport canary prepares ownership before one REST POST, proves SSH, and 
   const post = fake.calls.findIndex(({ args }) => args[0] === "pod" && args[1] === "create");
   assert.ok(firstList >= 0 && firstList < post, "reaper snapshot must precede POST");
   assert.equal(fake.calls.some(({ args }) => args.includes(STORM_ID) && args.includes("delete")), false);
+});
+
+test("transport canary runs the final revalidation after durable ownership and immediately before POST", async (t) => {
+  const fake = new FakeRunPod();
+  let revalidationCount = 0;
+  const receipt = await execute(t, fake, {
+    beforeCreate: async ({ expectedName, reaperRecordId }, root) => {
+      revalidationCount += 1;
+      assert.equal(fake.createCount, 0);
+      const ledger = JSON.parse(await import("node:fs/promises").then(({ readFile }) =>
+        readFile(path.join(root, "reaper-ledger.json"), "utf8")));
+      const pending = ledger.records.find((record) => record.record_id === reaperRecordId);
+      assert.equal(pending.state, "pending");
+      assert.equal(pending.expected_name, expectedName);
+      assert.equal(fake.calls.at(-1).args[1], "list");
+    },
+  });
+  assert.equal(receipt.status, "passed");
+  assert.equal(revalidationCount, 1);
+  assert.equal(fake.createCount, 1);
+});
+
+test("failed immediate pre-POST revalidation prevents pod creation", async (t) => {
+  const fake = new FakeRunPod();
+  const receipt = await execute(t, fake, {
+    beforeCreate: async () => {
+      throw new Error("unit durable asset drift");
+    },
+  });
+  assert.equal(receipt.status, "failed");
+  assert.equal(fake.createCount, 0);
+  assert.equal(receipt.create_attempts, 0);
+  assert.match(receipt.failure_reason, /unit durable asset drift/);
 });
 
 test("malformed create output is reconciled by exact generated name and cleaned", async (t) => {
