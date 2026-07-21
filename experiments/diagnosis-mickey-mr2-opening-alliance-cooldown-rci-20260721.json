@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "kind": "mickey_mr2_opening_alliance_cooldown_rci",
+  "recorded_at": "2026-07-21T14:55:09Z",
+  "candidate": {
+    "branch": "rci/mickey-mr2-alliance-cooldown-20260721",
+    "exact_live_parent_commit": "ce5c15b0a423590340595537ac5d7483e61d41a4",
+    "mechanism_commit": "388d81bdd4e6bf63736a0a745ce7d98caf50a88c",
+    "route_fix_commit": "c50025ef2775fcc5193b2cdb56b0abbbd7f71261",
+    "policy_marker": "mr2",
+    "mechanism": "During the first 20 active Pangaea decisions, after one optional outbound reciprocal K1Z alliance request, rerun the unchanged deterministic selector without alliance actions and take its exact offered neutral-land action. Preserve reverse handshakes, pressure, collapse, non-Pangaea routes, and the exact parent whenever no productive replacement is legal."
+  },
+  "direct_replay_diagnosis": {
+    "official_replays_examined": [
+      "r607a",
+      "r607b",
+      "r609a",
+      "r609b"
+    ],
+    "recent_pangaea_decisions": 1637,
+    "alliance_requests": 357,
+    "static_upper_bound_eligible_repeated_requests": 265,
+    "counterfactual_examples": [
+      {
+        "replay": "r609a",
+        "turn": 900,
+        "parent_action": "repeat K1Z Hrafn alliance request",
+        "exact_non_social_replacement": "expand:terra-nullius:20"
+      },
+      {
+        "replay": "r607b",
+        "turn": 2200,
+        "parent_action": "repeat K1Z Hrafn alliance request",
+        "exact_non_social_replacement": "expand:terra-nullius:20"
+      }
+    ],
+    "causal_count_known": false
+  },
+  "route_correction": {
+    "problem": "The runtime inferred map identity only from ownState.spawnTile, but Mickey's two recent official Pangaea final spawn tiles were absent from the route table, silently leaving MR2 on the exact parent.",
+    "official_spawn_tiles_added": [
+      856604,
+      855528
+    ],
+    "observed_in_replays": {
+      "r607a": 856604,
+      "r607b": 855528,
+      "r609a": 856604,
+      "r609b": 855528
+    },
+    "red_regression": "Before the correction, the exact route test returned null instead of Pangaea.",
+    "post_fix_regression": "Both official spawn IDs route into Pangaea and reach the MR2 replacement selector."
+  },
+  "image": {
+    "tag": "proxywar-agent-llm:mickey-mr2-c50025ef-amd64",
+    "image_id": "sha256:b75fb6e00c89b66e870ee97a5427ce2536d8a614bd66729db74e0d7a553ad340",
+    "architecture": "amd64",
+    "user": "node",
+    "cmd": [
+      "node",
+      "/app/llm-player.mjs"
+    ],
+    "revision_label": "c50025ef2775fcc5193b2cdb56b0abbbd7f71261",
+    "policy_marker_label": "mr2",
+    "host_container_hash_match": true,
+    "file_sha256": {
+      "llm-player.mjs": "0be88862b54c9fc155450079615d445eaed744f0a4490ab38774dc8d911ed035",
+      "strategy-engine.mjs": "feae412d4a34fc4a65d9d4df4b97c421854e743c79e47f0788aa0318208575a1",
+      "mickey-production-doctrine.mjs": "a479b563e381b27308623578a32a2939b32bb6f9afdd134ea49e0de738a4e34b",
+      "intent-controller.mjs": "98c991b05d9b76e5780119a04d8be01a11d5a5a2c602909f5c3a57b2dd51caa6"
+    }
+  },
+  "validation": {
+    "normalized_coworld_manifest_sha256": "90fe0b95824fc419f866ac0b6cb4e09afde92fba5cb9de1d90614bb26594eef8",
+    "focused_tests": {
+      "passed": 116,
+      "failed": 0
+    },
+    "full_suite": {
+      "passed": 329,
+      "failed": 4,
+      "baseline_has_same_four_failures": true,
+      "failure_scope": "pre-existing path-bound Mickey CPU fanout activation tests"
+    },
+    "qualifier": {
+      "job": "experiments/job-mickey-mr2-qualifier-20260721.json",
+      "request_sha256": "88de5c9f90a52358d76d76668493773224fea6306004eccf4d34b06538b33107",
+      "replay_sha256": "5fa033be8d9b5f8857b78034a5c10a924fb9eea80d6b3eef85fb317e95359a38",
+      "results_sha256": "0882c9be5ecc72bc6efc2cd74f6595120c328e77d0583b4aab87c3affe95e1aa",
+      "decisions": 34,
+      "accepted": 34,
+      "holds": 0
+    },
+    "matched_opening": {
+      "scope": "two mirrored, seed-null, 12-player, Normal Pangaea runs capped at 20 active decisions; this is not a full-game or hosted gate",
+      "run_a": {
+        "job": "experiments/job-mickey-mr2-official-shape-a-20260721.json",
+        "request_sha256": "ef62de45e933ba7d7254165d6a3cb5e948d22f1f97d537f8407110a8cebe411f",
+        "replay_sha256": "3ceac9cd7e9ad8d4ff98cb1b5703c9da85cd23505772da7a8d911e7f7ad64e94",
+        "results_sha256": "af238a9edfc4faab850590d98caa202cf106e66f36d7b60c1d1a0a38f7567281",
+        "candidate": {
+          "seat": 10,
+          "spawn_tile": 856604,
+          "tiles": 52830,
+          "score": 0.20001362954886193,
+          "accepted": 23,
+          "holds": 0,
+          "alliance_requests": 7,
+          "mr2_marker_count": 9
+        },
+        "parent": {
+          "seat": 11,
+          "spawn_tile": 855528,
+          "tiles": 41664,
+          "score": 0.15773931216210077,
+          "accepted": 23,
+          "holds": 0,
+          "alliance_requests": 8,
+          "mr2_marker_count": 0
+        },
+        "candidate_tile_lift_percent": 26.800115
+      },
+      "run_b": {
+        "job": "experiments/job-mickey-mr2-official-shape-b-20260721.json",
+        "request_sha256": "d30099b66af32d96be51fbedd5d9aa72da0de1933e6fff9479fc9df742c878bb",
+        "replay_sha256": "58bbde0d2c8f25fa0ba48d2d4059a390d45de440df944e4aa80e5af85a76e560",
+        "results_sha256": "ca31bf40f126daf7952800e9a322a4611ce51d2f566639ba654b82b973fa8160",
+        "candidate": {
+          "seat": 11,
+          "spawn_tile": 855528,
+          "tiles": 58754,
+          "score": 0.22333639964420657,
+          "accepted": 23,
+          "holds": 0,
+          "alliance_requests": 6,
+          "mr2_marker_count": 10
+        },
+        "parent": {
+          "seat": 10,
+          "spawn_tile": 856604,
+          "tiles": 34712,
+          "score": 0.13194766491557508,
+          "accepted": 23,
+          "holds": 0,
+          "alliance_requests": 9,
+          "mr2_marker_count": 0
+        },
+        "candidate_tile_lift_percent": 69.261351
+      },
+      "aggregate": {
+        "candidate_tiles": 111584,
+        "parent_tiles": 76376,
+        "candidate_tile_lift_percent": 46.098251,
+        "candidate_won_both_seat_comparisons": true
+      }
+    }
+  },
+  "promotion": {
+    "source_and_local_image_ready": true,
+    "hosted_matched_gate_4_of_4": false,
+    "hosted_regression_gate_20_of_20": false,
+    "dedicated_mickey_credential_active": false,
+    "live_upload_performed": false,
+    "live_submission_performed": false,
+    "promotion_eligible": false,
+    "live_policy_remains": "mickey-mouse-intent:v1"
+  }
+}
