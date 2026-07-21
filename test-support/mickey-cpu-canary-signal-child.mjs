@@ -1,13 +1,14 @@
+// Process-level fixture; kept outside test/ so Node's test discovery does not execute it directly.
 import { createHash } from "node:crypto";
 import { writeFile } from "node:fs/promises";
 
 import {
   canonicalRequestInputSha256,
-} from "../../scripts/run-mickey-cpu-fanout.mjs";
+} from "../scripts/run-mickey-cpu-fanout.mjs";
 import {
   simulateTransportCanaryForTest,
   withTerminationSignals,
-} from "../../scripts/run-mickey-cpu-transport-canary.mjs";
+} from "../scripts/run-mickey-cpu-transport-canary.mjs";
 
 const [readyPath, receiptPath] = process.argv.slice(2);
 if (!readyPath || !receiptPath) throw new Error("ready and receipt paths are required");

@@ -20,7 +20,7 @@ import {
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CANARY = path.join(ROOT, "scripts", "run-mickey-cpu-transport-canary.mjs");
 const MANIFEST = path.join(ROOT, "experiments", "manifest-mickey-cpu-screen-g000-r2-20260721.json");
-const SIGNAL_FIXTURE = path.join(ROOT, "test", "fixtures", "mickey-cpu-canary-signal-child.mjs");
+const SIGNAL_FIXTURE = path.join(ROOT, "test-support", "mickey-cpu-canary-signal-child.mjs");
 const MANIFEST_SHA256 = "7a950dadc34c018c10f2bf3c1f58ee253bb717e787c2a82210379cbd896d9dca";
 const SELF = "8".repeat(64);
 const NEW_ID = "mickey-canary-new-001";
