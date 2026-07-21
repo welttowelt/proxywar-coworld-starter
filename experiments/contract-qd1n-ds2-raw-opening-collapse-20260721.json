@@ -1,0 +1,87 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-21T00:25:00Z",
+  "arm": "ds2",
+  "name": "raw_opening_collapse_counter",
+  "hypothesis": "During an opening collapse, qd1n:v89 can retreat, build, or attack a bystander while a current attacker remains legally counterattackable. Two consecutive policy-visible raw-tile declines before turn 3500 should reroute only that non-counter action to the largest safe counterattack against a verified current protocol attacker.",
+  "candidate": {
+    "live_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
+    "safety_invariant_base_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "branch": "rci/ds2-raw-opening-collapse",
+    "source_delta": "Add selector-private validated own-tile history, then apply one stateless opening-only post-selection guard. Preserve the exact safety base outside the guard. Keep Gravity, katanasan, juryoku-koku, and Hrafn protection unchanged. Do not add a scheduler, persistent mode, social ban, build ban, boat ban, or planner-state branch."
+  },
+  "causal_contract": {
+    "guard": "The current policy-visible turn is at most 3500; current, previous, and prior validated raw own-tile counts exist and prior > previous > current; at least one authoritative current protocol attacker ID maps to a visible non-K1Z rival; a legal non-neutral counterattack against that attacker exists; and the exact-parent selected action is not already a counterattack against any current attacker.",
+    "action_change": "Replace only that exact-parent non-counter action with the highest-percentage safe legal counterattack against the most recently hostile verified attacker. If every verified counter is high risk, use the highest-percentage legal counter. If no verified counter exists, return the exact-parent action.",
+    "marker": "ds2 only when the selected action ID differs from the exact-parent action ID.",
+    "scope": "Opening only. The turn ceiling is the smallest paired-replay discriminator: the eliminated R587 loss first reaches at turn 1900 and again at 2700, while the paired R587 win first reaches a raw two-decline pattern at turn 7100.",
+    "failure": "Reject on zero marker reach in the pressure screen, any marker in the paired official winner before turn 3500, any pre-marker divergence, any unexplained hold or rejection, any K1Z harm, or nonpositive matched post-trigger territory outcome."
+  },
+  "official_replay_basis": {
+    "round": 587,
+    "map": "Pangaea",
+    "winner": {
+      "episode_request_id": "ereq_5a603d7c-fa6d-4f9c-8206-c7f462b03cf7",
+      "replay_id": "404ecdd1-76f6-4a80-a771-c64833475042",
+      "replay_sha256": "897970beecb46299d831d4b9265e59b6b2b5a768bcf9d13fbc09f8f5e1f9f5fb",
+      "odin_final_tiles": 326881,
+      "first_two_decline_turn": 7100,
+      "opening_reach_before_or_at_3500": 0
+    },
+    "eliminated_loss": {
+      "episode_request_id": "ereq_697fcc16-7228-46fd-aa24-d6c8718e6cfa",
+      "replay_id": "d49638e0-2c75-4fce-8025-a9aba4e9662c",
+      "replay_sha256": "dde133f0031977dd03ca79a1709ca8d0b80d8d3d80a7f4d37fff744470eda070",
+      "odin_final_tiles": 0,
+      "first_reach": {
+        "turn": 1900,
+        "tiles": [12742, 12297, 12144],
+        "parent_action": "boat_retreat:23",
+        "attacker_id": "r5o3pta1",
+        "legal_counters": ["attack:r5o3pta1:10", "attack:r5o3pta1:25", "attack:r5o3pta1:40"]
+      },
+      "major_reach": {
+        "turn": 2700,
+        "tiles": [19309, 16578, 15499],
+        "parent_action": "build:Factory:561370",
+        "verified_legal_counter_targets": ["r5o3pta1", "xbt2wt14"]
+      },
+      "eliminated_between_policy_turn_and_audit_tick": [2900, 3000]
+    }
+  },
+  "source_gate": {
+    "red_first": "Core loss-state regression must fail on the safety base: with raw tiles 12742 -> 12297 -> 12144, turn 1900, Ron as current protocol attacker, and legal 10/25/40 counters, the base selects the parent retreat while DS2 must select Ron 40 with marker ds2.",
+    "lock_ins": [
+      "paired winner state at turn 7100 is unchanged because it is outside the opening ceiling",
+      "one decline only is unchanged",
+      "no current protocol attacker is unchanged",
+      "no legal counter is unchanged",
+      "an already-selected verified counter is unchanged and unmarked",
+      "every K1Z target remains protected",
+      "raw tiles remain absent from JSON.stringify(state)"
+    ],
+    "full_suite": "All tests pass and new core test is red without the DS2 implementation."
+  },
+  "local_screen": {
+    "control_image": "proxywar-agent-llm:qd1n-v89-kiz1-gravity-1ccaff73-amd64",
+    "fixture_job_template": "/private/tmp/proxywar-ds1-screen3-8c3cf6ec-b/jobs/parent.json",
+    "fixture_job_sha256": "1332f80cbba0acf0a4888293f4335a6a3055b592bb5097eee18563e605a8d3b8",
+    "map": "Pangaea",
+    "seed": 20260722,
+    "subject_slot": 0,
+    "pressure_slot": 7,
+    "max_decision_steps": 60,
+    "pressure_image": "proxywar-pressure-fixture:ds1-v2-amd64",
+    "pressure_image_id": "sha256:df36af73f3b0966cacfa44be389d1b1acde1a491bd60f17a57cecdc1b0f37f21",
+    "known_parent_trace": "At turn 1800, after raw tiles 13093 -> 12444 -> 12320 and a 40 percent attack from fixture ID aaljvkkc, legal 10/25/40 counters exist but the parent selects an alliance request. The parent later falls to 140 tiles.",
+    "pass": "Control reproduces the known collapse. Candidate has exact pre-marker selected-action and ordered-legal-action trace, emits ds2 on an accepted attack:aaljvkkc:40 at the first eligible reach, has zero unexplained holds/rejections/K1Z harm, and strictly improves post-trigger territory AUC and final tiles over control.",
+    "failure": "Stop DS2 immediately if the control collapse is absent, marker reach is zero, pre-marker trace diverges, any safety condition fails, or neither post-trigger territory AUC nor final tiles improves. No adjacent seeds and no broad matrix after failure."
+  },
+  "gates": {
+    "source": "red-first core and lock-ins, full suite, exact linux/amd64 image byte check, qualifier accepted with zero unexplained holds/rejections/K1Z harm",
+    "local": "one exact deterministic pressure control/candidate pair only; direct marker reach plus strict matched territory improvement",
+    "next_on_pass": "One fresh bounded official-roster diagnostic cell, then the existing autonomous promotion gates. Do not expand locally before the deterministic pair passes.",
+    "promotion": "No league mutation from source or local evidence. Automatic promotion remains governed by AUTONOMOUS_PROMOTION.md."
+  },
+  "league_mutation_allowed_now": false
+}
