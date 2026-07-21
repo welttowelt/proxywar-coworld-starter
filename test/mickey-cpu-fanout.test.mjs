@@ -104,7 +104,7 @@ const r8Manifest = JSON.parse(readFileSync(r8ManifestPath, "utf8"));
 const r9ManifestPath = path.join(
   root,
   "experiments",
-  "manifest-mickey-cpu-screen-g000-r9-20260721.json",
+  "manifest-mickey-cpu-screen-g000-r9b-20260721.json",
 );
 const r9Manifest = JSON.parse(readFileSync(r9ManifestPath, "utf8"));
 const acceptedCanaryFixture = JSON.parse(readFileSync(
@@ -453,13 +453,14 @@ test("r9 activation is the sole recovery-bound live candidate", () => {
   assert.equal(validated.pairs.length, 16);
   assert.equal(
     r9ActivationManifestDigest(r9Manifest),
-    "1f671075f28da27ce350ae2f443325f3c895f9a2ce8fe0efcd7815893c2460e4",
+    "c1bd6fd36228e05384157ddd33abd83415dd1610443a0713446985b4ed7788af",
   );
   const activationEvidence = {
     receipt_sha256: r9Manifest.activation.canary_receipt.sha256,
     known_hosts_sha256: r9Manifest.activation.canary_known_hosts.sha256,
     failure_evidence_sha256: r9Manifest.activation.r8_failure_evidence.sha256,
     recovery_receipt_sha256: r9Manifest.activation.r8_recovery_receipt.sha256,
+    relocated_bundle_canary_sha256: r9Manifest.activation.relocated_bundle_canary.sha256,
     recovery_status: "passed",
     recovery_record_state: "blocked",
     recovery_terminal_reason: "pre_post_create_not_invoked",

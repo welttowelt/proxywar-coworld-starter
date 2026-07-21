@@ -390,7 +390,7 @@ function equalSnapshot(left, right) {
   return JSON.stringify(canonical(left)) === JSON.stringify(canonical(right));
 }
 
-const R9_RUN_PREFIX = "mickey-screen-g000-r9-20260721t040132z:";
+const R9_RUN_PREFIX = "mickey-screen-g000-r9b-20260721t063347z:";
 
 function sortedCanonicalValue(value) {
   if (Array.isArray(value)) return value.map(sortedCanonicalValue);
@@ -855,7 +855,7 @@ export async function blockPendingBeforeProviderPost({
   if (!expected || typeof expected !== "object" || Array.isArray(expected)) {
     throw new ReaperValidationError("r9 pre-provider block expectation is invalid");
   }
-  const exactRunPrefix = "mickey-screen-g000-r9-20260721t040132z:";
+  const exactRunPrefix = "mickey-screen-g000-r9b-20260721t063347z:";
   return withLedgerLock(ledgerPath, async () => {
     const now = normalizeNow(clock);
     const ledger = await readReaperLedger(ledgerPath);

@@ -215,7 +215,7 @@ test("r9 local pre-provider block terminalizes only the exact pending record wit
     retryOptions: fx.retryOptions,
   });
   const pending = await prepare(fx, {
-    runId: "mickey-screen-g000-r9-20260721t040132z:grow-opening-asia-s0-c",
+    runId: "mickey-screen-g000-r9b-20260721t063347z:grow-opening-asia-s0-c",
     randomUUIDFn: () => "00000000-0000-4000-8000-000000000009",
   });
   const before = await readReaperLedger(fx.ledgerPath);
@@ -352,7 +352,7 @@ async function prepareR9(fx, overrides = {}) {
     ledgerPath: fx.ledgerPath,
     client: overrides.client || fx.client,
     runId: overrides.runId ||
-      "mickey-screen-g000-r9-20260721t040132z:grow-opening-asia-s0-c",
+      "mickey-screen-g000-r9b-20260721t063347z:grow-opening-asia-s0-c",
     manifestSha256: MANIFEST_SHA,
     deadline: new Date(fx.state.now + 60_000).toISOString(),
     expectedLedgerRevision: ledger.revision,
@@ -382,7 +382,7 @@ test("r9 prepare and immediate name check keep provider LIST outside the lock an
   const registering = preparePendingCreateR9({
     ledgerPath: fx.ledgerPath,
     client: r9Client,
-    runId: "mickey-screen-g000-r9-20260721t040132z:grow-opening-asia-s0-c",
+    runId: "mickey-screen-g000-r9b-20260721t063347z:grow-opening-asia-s0-c",
     manifestSha256: MANIFEST_SHA,
     deadline: new Date(fx.state.now + 60_000).toISOString(),
     expectedLedgerRevision: boundary.revision,
@@ -405,7 +405,7 @@ test("r9 prepare and immediate name check keep provider LIST outside the lock an
   await assert.rejects(registering, /ledger changed during provider discovery/);
   let ledger = await readReaperLedger(fx.ledgerPath);
   assert.equal(ledger.records.some((record) => record.run_id.startsWith(
-    "mickey-screen-g000-r9-20260721t040132z:",
+    "mickey-screen-g000-r9b-20260721t063347z:",
   )), false);
 
   const exact = await fixture(t);
@@ -452,7 +452,7 @@ test("r9 bind and absence confirmation keep LIST and GET unlocked across daemon 
   const fx = await fixture(t);
   await ensureReaperLedger({ ledgerPath: fx.ledgerPath, clock: fx.clock });
   const pending = await prepareR9(fx, {
-    runId: "mickey-screen-g000-r9-20260721t040132z:convert-weakest-asia-s0-c",
+    runId: "mickey-screen-g000-r9b-20260721t063347z:convert-weakest-asia-s0-c",
     randomUUIDFn: () => "00000000-0000-4000-8000-000000000078",
   });
   const daemonClient = new FakeRunPodClient();
@@ -559,7 +559,7 @@ test("r9 reconcile keeps provider I/O unlocked and refuses a different-ID daemon
   const fx = await fixture(t);
   await ensureReaperLedger({ ledgerPath: fx.ledgerPath, clock: fx.clock });
   const pending = await prepareR9(fx, {
-    runId: "mickey-screen-g000-r9-20260721t040132z:convert-largest-asia-s0-c",
+    runId: "mickey-screen-g000-r9b-20260721t063347z:convert-largest-asia-s0-c",
     randomUUIDFn: () => "00000000-0000-4000-8000-000000000079",
   });
   fx.client.add({ id: "foreground-candidate", name: pending.expected_name });

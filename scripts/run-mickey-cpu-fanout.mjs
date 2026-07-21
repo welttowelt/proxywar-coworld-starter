@@ -175,15 +175,26 @@ const R8_RECOVERY_PREEXISTING_IDS = Object.freeze([
   "ne262xferohtdi", "og13wgkfcmblx9", "rkm013fsjsf87c", "rwvsgeancauyug",
   "sxrtmdyd62n3ia", "szlrnk3ucex44f", "vbo7a33nlvsrtf", "zadju8y8p6d5r9",
 ]);
-const R9_ACTIVATION_RUN_ID = "mickey-screen-g000-r9-20260721t040132z";
+const R9_ACTIVATION_RUN_ID = "mickey-screen-g000-r9b-20260721t063347z";
 const R9_ACTIVATION_MANIFEST_PATH = path.join(
   REPO_ROOT,
   "experiments",
-  "manifest-mickey-cpu-screen-g000-r9-20260721.json",
+  "manifest-mickey-cpu-screen-g000-r9b-20260721.json",
 );
 const R9_ACTIVATION_OUTPUT_PATH =
-  "/private/tmp/mickey-cpu-screen-g000-r9-20260721t040132z";
-const R9_ACTIVATION_MANIFEST_DIGEST = "1f671075f28da27ce350ae2f443325f3c895f9a2ce8fe0efcd7815893c2460e4";
+  "/private/tmp/mickey-cpu-screen-g000-r9b-20260721t063347z";
+const R9_ACTIVATION_MANIFEST_DIGEST = "c1bd6fd36228e05384157ddd33abd83415dd1610443a0713446985b4ed7788af";
+const R9_RELOCATED_BUNDLE_CANARY_PATH =
+  "/private/tmp/mickey-r9-reloc-canary-b4nH5N/episode/receipt.json";
+const R9_RELOCATED_BUNDLE_CANARY_SHA256 =
+  "e197c7b99f2de67435fda763966360154f0e858fef49ea79bf3b256597ba66e5";
+const R9_RELOCATED_BUNDLE_CANARY_RUN_ID = "mickey-r9-reloc-r2-canary-candidate";
+const R9_RELOCATED_BUNDLE_SHA256 =
+  "c959112ba3d63ceb72a266b7e8b3b2ec5a5576cc57592b97629cf7e99b75a729";
+const R9_RELOCATED_BUNDLE_MANIFEST_SHA256 =
+  "524aff8efd40559c4a0a5eab6801f1c0029688442bfe0386647b268bc77b4099";
+const R9_RELOCATED_BUNDLE_BASE_IMAGE =
+  "public.ecr.aws/q5f4m8t9/cogames@sha256:88d166c6c33609ec5b0dc1f70799001a1f1f34e1cd852ddbfc17a2eb43969ea1";
 const R7_ACTIVATION_BASE_COMMIT = "a9977d67d33630643a46117963cf1c08a503d21b";
 const R7_CANARY_RUN_ID = "mickey-screen-g000-r7-20260721t025105z";
 const R7_CANARY_MANIFEST_SHA256 =
@@ -703,7 +714,7 @@ function validateR9ActivationContract(document) {
       "kind", "r8_source_commit", "r8_manifest_sha256", "r8_fanout_sha256",
       "r8_failure_evidence", "r8_recovery_tool", "r8_recovery_receipt_template",
       "r8_recovery_receipt", "r8_record_id", "r8_record_state", "r8_terminal_reason",
-      "persistent_reaper",
+      "persistent_reaper", "relocated_bundle_canary",
       "r7_base_commit", "canary_receipt", "canary_known_hosts", "canary_run_id",
       "canary_manifest_sha256", "canary_script_sha256", "screen_pair_count",
       "max_concurrency", "one_pod_per_pair", "nonce_input_channel",
@@ -718,6 +729,7 @@ function validateR9ActivationContract(document) {
     ["r8_recovery_tool", activation.r8_recovery_tool],
     ["r8_recovery_receipt_template", activation.r8_recovery_receipt_template],
     ["r8_recovery_receipt", activation.r8_recovery_receipt],
+    ["relocated_bundle_canary", activation.relocated_bundle_canary],
     ["canary_receipt", activation.canary_receipt],
     ["canary_known_hosts", activation.canary_known_hosts],
   ]) validateHashedFileReference(reference, `manifest.activation.${label}`);
@@ -749,7 +761,7 @@ function validateR9ActivationContract(document) {
   const compatibility = persistent.compatibility;
   if (
     document.run_id !== R9_ACTIVATION_RUN_ID ||
-    activation.kind !== "r7_canary_r8_pre_post_recovery_bound_g000_v1" ||
+    activation.kind !== "r7_canary_r8_pre_post_recovery_r9_bundle_fix_bound_g000_v1" ||
     activation.r8_source_commit !== R8_SOURCE_COMMIT ||
     activation.r8_manifest_sha256 !== R8_MANIFEST_SHA256 ||
     activation.r8_fanout_sha256 !== R8_FANOUT_SHA256 ||
@@ -778,6 +790,8 @@ function validateR9ActivationContract(document) {
     compatibility.normalized_foreground_sha256 !== R8_PERSISTENT_REAPER_SHA256 ||
     compatibility.allowed_delta !==
       "typed-live-lock-error-plus-foreground-r8-recovery-and-r9-short-lock-cas-only" ||
+    activation.relocated_bundle_canary.path !== R9_RELOCATED_BUNDLE_CANARY_PATH ||
+    activation.relocated_bundle_canary.sha256 !== R9_RELOCATED_BUNDLE_CANARY_SHA256 ||
     activation.r7_base_commit !== R7_ACTIVATION_BASE_COMMIT ||
     activation.canary_receipt.path !== R7_CANARY_RECEIPT_PATH ||
     activation.canary_receipt.sha256 !== R7_CANARY_RECEIPT_SHA256 ||
@@ -1195,6 +1209,7 @@ async function verifyR9ActivationEvidence(document, { requireRecoveryReceipt = f
     ["r8 failure evidence", document.activation.r8_failure_evidence],
     ["r8 recovery tool", document.activation.r8_recovery_tool],
     ["r8 recovery receipt template", document.activation.r8_recovery_receipt_template],
+    ["relocated bundle episode canary", document.activation.relocated_bundle_canary],
   ]) await verifyHashedLocalFile(reference, label);
   if (
     document.control_plane.pre_post_recovery.path !== document.activation.r8_recovery_tool.path ||
@@ -1204,6 +1219,9 @@ async function verifyR9ActivationEvidence(document, { requireRecoveryReceipt = f
   }
   const failure = JSON.parse(await readFile(document.activation.r8_failure_evidence.path, "utf8"));
   const template = JSON.parse(await readFile(document.activation.r8_recovery_receipt_template.path, "utf8"));
+  const relocatedCanary = JSON.parse(await readFile(document.activation.relocated_bundle_canary.path, "utf8"));
+  const relocatedOutcomes = Object.values(relocatedCanary.process_outcomes ?? {});
+  const manifestBundleHashes = new Set(document.arms.map((arm) => arm.bundle.sha256));
   if (
     failure.schema_version !== 1 || failure.kind !== "mickey_r8_pre_post_create_failure_evidence" ||
     failure.status !== "verified_failure_only" || failure.evidence_eligible !== false ||
@@ -1220,7 +1238,25 @@ async function verifyR9ActivationEvidence(document, { requireRecoveryReceipt = f
     template.terminal_reason !== "pre_post_create_not_invoked" ||
     template.create_calls !== 0 || template.delete_calls !== 0 ||
     template.evidence_eligible !== false || template.promotion_eligible !== false ||
-    template.resume_allowed !== false || template.rerun_r8_allowed !== false
+    template.resume_allowed !== false || template.rerun_r8_allowed !== false ||
+    relocatedCanary.schema_version !== 1 || relocatedCanary.status !== "passed" ||
+    relocatedCanary.error !== null || relocatedCanary.run_id !== R9_RELOCATED_BUNDLE_CANARY_RUN_ID ||
+    relocatedCanary.receipt_scope !== "transport_and_artifact_integrity_only" ||
+    relocatedCanary.execution_class !== "transport_canary" ||
+    relocatedCanary.evaluation_verdict !== "not_evaluated" ||
+    relocatedCanary.base_image !== R9_RELOCATED_BUNDLE_BASE_IMAGE ||
+    relocatedCanary.bundle_verification?.manifest_sha256 !== R9_RELOCATED_BUNDLE_MANIFEST_SHA256 ||
+    relocatedCanary.post_run_attestation?.status !== REMOTE_POST_RUN_ATTESTATION_STATUS ||
+    relocatedCanary.post_run_attestation?.bundle_verification?.status !== "verified" ||
+    relocatedCanary.post_run_attestation?.bundle_verification?.manifest_sha256 !== R9_RELOCATED_BUNDLE_MANIFEST_SHA256 ||
+    relocatedCanary.post_run_attestation?.runtime_fingerprint?.status !== "verified" ||
+    relocatedCanary.run_spec?.relative_path !== "specs/canary-candidate-player-specs.json" ||
+    relocatedCanary.run_spec?.manifest_label !== "transport-canary-candidate" ||
+    relocatedCanary.run_spec?.manifest_role !== "candidate" ||
+    relocatedCanary.results?.accepted_decision_count !== 24 ||
+    relocatedOutcomes.length !== 5 ||
+    relocatedOutcomes.some((outcome) => outcome?.code !== 0 || outcome?.signal !== null || outcome?.error !== null) ||
+    manifestBundleHashes.size !== 1 || !manifestBundleHashes.has(R9_RELOCATED_BUNDLE_SHA256)
   ) {
     throw new Error("r9 r8-failure or recovery-receipt evidence is invalid");
   }
@@ -1232,6 +1268,7 @@ async function verifyR9ActivationEvidence(document, { requireRecoveryReceipt = f
       recovery_receipt_sha256: R8_RECOVERY_RECEIPT_SHA256,
       recovery_status: "expected_not_live_verified",
       recovery_record_state: "unverified",
+      relocated_bundle_canary_sha256: R9_RELOCATED_BUNDLE_CANARY_SHA256,
     };
   }
   await verifyHashedLocalFile(document.activation.r8_recovery_receipt, "live r8 recovery receipt");
@@ -1248,6 +1285,7 @@ async function verifyR9ActivationEvidence(document, { requireRecoveryReceipt = f
     recovery_status: "passed",
     recovery_record_state: "blocked",
     recovery_terminal_reason: "pre_post_create_not_invoked",
+    relocated_bundle_canary_sha256: R9_RELOCATED_BUNDLE_CANARY_SHA256,
     recovery_record_id: boundary.r8_recovery_record_id,
     ledger_revision: boundary.revision,
     pending_count: boundary.pending_count,
@@ -2001,6 +2039,7 @@ export function isFullFanoutLiveApproved(preflight) {
     preflight.activationEvidence?.known_hosts_sha256 === R7_CANARY_KNOWN_HOSTS_SHA256 &&
     preflight.activationEvidence?.failure_evidence_sha256 === R8_FAILURE_EVIDENCE_SHA256 &&
     preflight.activationEvidence?.recovery_receipt_sha256 === R8_RECOVERY_RECEIPT_SHA256 &&
+    preflight.activationEvidence?.relocated_bundle_canary_sha256 === R9_RELOCATED_BUNDLE_CANARY_SHA256 &&
     preflight.activationEvidence?.recovery_status === "passed" &&
     preflight.activationEvidence?.recovery_record_state === "blocked" &&
     preflight.activationEvidence?.recovery_terminal_reason === "pre_post_create_not_invoked"
@@ -2017,7 +2056,8 @@ export function isExactR9ActivationCandidate(preflight) {
     preflight.activationEvidence?.receipt_sha256 === R7_CANARY_RECEIPT_SHA256 &&
     preflight.activationEvidence?.known_hosts_sha256 === R7_CANARY_KNOWN_HOSTS_SHA256 &&
     preflight.activationEvidence?.failure_evidence_sha256 === R8_FAILURE_EVIDENCE_SHA256 &&
-    preflight.activationEvidence?.recovery_receipt_sha256 === R8_RECOVERY_RECEIPT_SHA256
+    preflight.activationEvidence?.recovery_receipt_sha256 === R8_RECOVERY_RECEIPT_SHA256 &&
+    preflight.activationEvidence?.relocated_bundle_canary_sha256 === R9_RELOCATED_BUNDLE_CANARY_SHA256
   );
 }
 
