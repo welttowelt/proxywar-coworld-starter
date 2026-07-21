@@ -84,6 +84,7 @@
   },
   "gates": {
     "raw_request_captured": false,
+    "capture_image_verified": true,
     "source_ready": false,
     "fixture_hash_bound": false,
     "red_regression_reproduced": false,
@@ -104,6 +105,10 @@
     "live_image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
     "live_strategy_sha256": "f2ee66d570033508c4158bcb83d56d81dc198cdcebb91098d7e67eefdc8e6a7a",
     "live_player_sha256": "1154115fdf5ebb89fa170bba6060d5a730615970d4cc23c00dbfa97e42b31563",
+    "live_chassis_sha256": "de45b447513ddcac5e9bf1be14417bfab0dd5e8e92156670539e8eda01478ca1",
+    "capture_image_id": "sha256:9326630e4485157eae4526d893408c8496043c7b6797a80f5299febba74e6fd6",
+    "instrumented_player_sha256": "5c6324ba008cc8836c6c4e53953fe7a5937898aec22b846b480d155960c80ae4",
+    "builder_commit": "e64d6a91",
     "instrumenter": "experiments/cb1/instrument-live-player.mjs",
     "job": "experiments/job-qd1n-cb1-cap-bank-raw-capture-pangaea-20260721.json",
     "rule": "Capture one complete raw observation plus full legal action set at the preregistered cap-bank boundary. Do not implement CB1 from post-decision tactical telemetry."
