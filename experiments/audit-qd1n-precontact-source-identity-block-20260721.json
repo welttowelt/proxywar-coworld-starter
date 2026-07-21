@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260721T122139Z-35486",
+  "recorded_at": "2026-07-21T12:24:48Z",
+  "transition": "rc1_precontact_source_identity_gate",
+  "priority_packet": null,
+  "dispatch_mailbox_head": "e0e1e937c895efca2be871a8898165e28f5b0207",
+  "source_episode": {
+    "experience_request_id": "xreq_e1e6d695-e84d-4628-a7ef-3c48d296dcaa",
+    "episode_id": "f2b16473-b3b7-42ab-926b-dee8d0c2b357",
+    "map": "Pangaea",
+    "seat": 7,
+    "replay_sha256": "fb187d9ba23bfe2474886d97e3e378abc58de9b1e058cd461af184709f356c8f",
+    "replay_integrity": "PASS_INDEPENDENT_REFETCH"
+  },
+  "identity_evidence": {
+    "episode_policy_label": "qd1n:v95",
+    "episode_policy_version_id": "ccf3a01d-f4bd-4eaa-a1c4-a1c900b78844",
+    "episode_source_commit": "18c7fdebbafcb94f936c0e8182f6ba6e48a478f6",
+    "episode_prior_arm": "ID1",
+    "decision_marker": "pln:atk:id1",
+    "live_parent_policy_label": "qd1n:v89",
+    "live_parent_policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "live_parent_strategy_sha256": "f2ee66d570033508c4158bcb83d56d81dc198cdcebb91098d7e67eefdc8e6a7a",
+    "identity_match": false
+  },
+  "bounded_observation": {
+    "turn": 2700,
+    "episode_selected_action": "attack:xbt2wt14:40",
+    "episode_selected_target": "Auri",
+    "episode_selected_relative_troop_ratio": 1.11,
+    "episode_selected_outgoing_attack": true,
+    "legal_alternative": "build:Factory:398282",
+    "economy_affordance_recommended": true,
+    "hostile_attack_actions": 3,
+    "favorable_hostile_attack_actions": 0,
+    "executor_ready_hostile_attack_actions": 0,
+    "neutral_boat_actions": 18,
+    "sealed_as_parent_state": false
+  },
+  "blocker": {
+    "verdict": "BLOCK_EVIDENCE_IDENTITY_MISMATCH_NO_STATE_SEAL",
+    "reason": "The hash-verified episode exposes an ID1 candidate action and legal alternative, but it does not expose the qd1n:v89 parent selector. Treating its turn-2700 action as the live parent's choice would invalidate the required candidate-parent action difference.",
+    "source_edit_authorized": false,
+    "new_arm_authorized": false
+  },
+  "decision": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "submitted": false,
+    "membership_changed": false,
+    "champion_changed": false,
+    "prior_verified_champion_preserved": true
+  },
+  "next": "Obtain one hash-bound qd1n:v89 parent decision record before hostile contact, or reproduce the exact v89 selector on a hash-bound fixture. Seal a state only after that parent record proves a legal candidate-parent action difference; keep the Mickey no-harm guard."
+}

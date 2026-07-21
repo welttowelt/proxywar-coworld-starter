@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T11:21:00Z",
-  "cycle_id": "odin-20260721T111703Z-89596",
+  "updated_at": "2026-07-21T12:24:48Z",
+  "cycle_id": "odin-20260721T122139Z-35486",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "no_active_odin_arm_precontact_selection_pending",
+  "state": "blocked_precontact_source_identity_mismatch",
   "arm": {
     "id": "rc1",
     "name": "post_hit_retaliation_conversion",
@@ -198,6 +198,23 @@
     "policy_action_delta": false,
     "league_mutation": false
   },
-  "next_automatic_transition": "Inspect only the hash-verified RC1 source episode before turn 2800. Seal one state only if it exposes a legal candidate-parent action difference before editing production source. Carry the committed Mickey no-harm guard into every candidate. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
+  "precontact_source_identity_block": {
+    "audit": "experiments/audit-qd1n-precontact-source-identity-block-20260721.json",
+    "verdict": "BLOCK_EVIDENCE_IDENTITY_MISMATCH_NO_STATE_SEAL",
+    "source_episode_id": "f2b16473-b3b7-42ab-926b-dee8d0c2b357",
+    "source_episode_policy_label": "qd1n:v95",
+    "source_episode_policy_version_id": "ccf3a01d-f4bd-4eaa-a1c4-a1c900b78844",
+    "source_episode_commit": "18c7fdebbafcb94f936c0e8182f6ba6e48a478f6",
+    "live_parent_policy_label": "qd1n:v89",
+    "live_parent_policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "observed_unsealed_turn": 2700,
+    "observed_episode_action": "attack:xbt2wt14:40",
+    "observed_legal_alternative": "build:Factory:398282",
+    "raw_selector_state_selected": false,
+    "legal_candidate_parent_action_difference_proven": false,
+    "source_change": false,
+    "league_mutation": false
+  },
+  "next_automatic_transition": "Obtain one hash-bound qd1n:v89 parent decision record before hostile contact, or reproduce the exact v89 selector on a hash-bound fixture. Seal a state only after that parent record proves a legal candidate-parent action difference. Carry the committed Mickey no-harm guard. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
   "prior_verified_champion_preserved": true
 }
