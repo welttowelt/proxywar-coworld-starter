@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-21T06:18:22Z",
+  "run_id": "mickey-screen-g000-r9-20260721t040132z",
+  "manifest_sha256": "8eaaddd9714e7dd7bab53b187b24e52d35d6bfb275ac1466e788ee42361cb664",
+  "verdict": "ABORTED_PACKAGING_DEFECT_NO_COMPETITIVE_EVIDENCE",
+  "quarantined_output": "/private/tmp/mickey-cpu-screen-g000-r9-20260721t040132z.aborted-20260721T061029Z-mickey-screen-g000-r9-20260721t040132z",
+  "receipts": {
+    "state_sha256": "28d1313f20e46db96eaf6b980076d4b5f83e039d9f60eac212b8d52865656f1d",
+    "runner_abort_sha256": "4f7935a2230efd6e7a0a1ef4ca2dc3f5ad43ff1fefa4fa1523c47f6a83c89090",
+    "run_verdict_sha256": "35cbb9099eb663d009a16f05930901b2a75cbf6a7bee02ffb35672621031436e",
+    "trigger_stderr_sha256": "cbad56c011109a31a7300d7e48b51011fce3f0f891db3f5da3d6dd2053a7f4ac"
+  },
+  "failure": {
+    "pair": "grow-opening-asia-s0-c",
+    "phase": "run-candidate",
+    "status": 1,
+    "engine_reason": "player-02-opponent-gravity-kiz1-selector exited before the game",
+    "root_cause": "The selector imported file:///app/strategy-engine.mjs and required /app/package.json, but the CPU runner starts it from the relocated extracted policy directory.",
+    "classification": "transport packaging, not policy behavior or fixture logic"
+  },
+  "evidence_scope": {
+    "planned_pairs": 16,
+    "usable_competitive_pairs": 0,
+    "policy_audit_completed": false,
+    "evidence_eligible": false
+  },
+  "cleanup": {
+    "runner_released": true,
+    "exact_id_reaper_confirmed_no_running_runpod_pods": true,
+    "runpod_cost_per_hour_after_cleanup_usd": 0.0,
+    "league_mutated": false
+  },
+  "repair": {
+    "scope": "two source lines plus one relocated-cwd cold-start lock-in",
+    "selector_player_sha256": "2d723e3726c49acb23ec38e7f3614ee4a9d987bfa8b76c58cb8013a1bd59c72d",
+    "test_file_sha256": "ca2294f1555242b33e85fd42815615e76e35d699f337c37fc7b7bfd62d5496d4",
+    "targeted_test": "13/13 pass",
+    "full_suite": "233/234 pass; the sole failure is the unrelated dashboard streak test reading updater-owned dirty data (565 versus committed/generated 533)",
+    "image_rebuilt": false,
+    "bundle_rebuilt": false,
+    "rerun_started": false
+  },
+  "next": "Rebuild the Gravity harness and all bound hashes, then run one pair canary under a new run ID before any matrix relaunch."
+}

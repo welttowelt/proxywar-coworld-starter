@@ -1,7 +1,14 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
 import { execFileSync, spawnSync } from "node:child_process";
-import { mkdtempSync, readFileSync, writeFileSync } from "node:fs";
+import {
+  copyFileSync,
+  mkdtempSync,
+  readFileSync,
+  rmSync,
+  symlinkSync,
+  writeFileSync,
+} from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -505,6 +512,39 @@ test("strict mechanism screen honestly binds a derived selector harness", () => 
   const mismatched = validate(context.value, "--require-diagnostic");
   assert.equal(mismatched.status, 1);
   assert.match(mismatched.report.errors.join(" "), /resolved image ID mismatched/);
+});
+
+test("the KIZ1 selector cold-starts from a relocated CPU-runner cwd", () => {
+  const source = readFileSync(
+    path.join(root, "experiments/kiz1/selector-player.mjs"),
+    "utf8",
+  );
+  assert.doesNotMatch(source, /file:\/\/\/app\//);
+  assert.doesNotMatch(source, /createRequire\("\/app\//);
+  assert.match(source, /createRequire\(import\.meta\.url\)/);
+
+  const directory = mkdtempSync(path.join(tmpdir(), "kiz1-relocated-"));
+  try {
+    copyFileSync(
+      path.join(root, "experiments/kiz1/selector-player.mjs"),
+      path.join(directory, "selector-player.mjs"),
+    );
+    copyFileSync(
+      path.join(root, "strategy-engine.mjs"),
+      path.join(directory, "strategy-engine.mjs"),
+    );
+    symlinkSync(path.join(root, "node_modules"), path.join(directory, "node_modules"));
+    const result = spawnSync(process.execPath, ["selector-player.mjs"], {
+      cwd: directory,
+      encoding: "utf8",
+      env: { ...process.env, COWORLD_PLAYER_WS_URL: "" },
+    });
+    assert.equal(result.status, 1);
+    assert.match(result.stderr, /COWORLD_PLAYER_WS_URL is required/);
+    assert.doesNotMatch(result.stderr, /ERR_MODULE_NOT_FOUND/);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
 });
 
 test("strict promotion rejects self-attested counters without immutable receipts", () => {

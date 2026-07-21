@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T06:10:35Z",
+  "updated_at": "2026-07-21T06:18:22Z",
   "cycle_id": "odin-pax1-rci-close-20260721",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "no_active_odin_arm_pax1_rejected_parallel_diagnostics_running",
+  "state": "no_active_odin_arm_pax1_rejected_hrafn_studio_diagnostic_running",
   "arm": {
     "id": "pax1",
     "name": "pact_before_doomed_probe",
@@ -47,7 +47,7 @@
     "running_round_truth": "four World episodes running on qd1n:v89 at 2026-07-21T06:04:29.090912Z"
   },
   "locks": {
-    "runner": "owned:mickey:mickey-screen-g000-r9-20260721t040132z",
+    "runner": "free",
     "studio_runner": "owned:hrafn:hi1-pangaea-control-65b83f97-r2",
     "qd1n_mutation": "free",
     "active_player": "K1Z odin free",
@@ -153,6 +153,14 @@
     "source_edit": false,
     "league_mutation": false
   },
+  "latest_cpu_screen": {
+    "run_id": "mickey-screen-g000-r9-20260721t040132z",
+    "verdict": "ABORTED_PACKAGING_DEFECT_NO_COMPETITIVE_EVIDENCE",
+    "audit": "experiments/audit-mickey-g000-r9-packaging-abort-20260721.json",
+    "runner_released": true,
+    "running_runpod_pods": 0,
+    "league_mutation": false
+  },
   "bounded_live_checkpoint": {
     "audit": "experiments/audit-qd1n-round596-replay-cell-blocked-20260721.json",
     "official_round": 596,
@@ -162,6 +170,6 @@
     "policy_action_delta": false,
     "league_mutation": false
   },
-  "next_automatic_transition": "Let the diagnostic-only Mickey G000 r9 CPU screen finish locally and the fresh HI1 r2 diagnostic finish on Studio. Do not repair PAX1 in place. Open another Odin arm only from a new replay-backed mechanism and exact preregistration. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
+  "next_automatic_transition": "Let the fresh HI1 r2 diagnostic finish on Studio. Rebuild the corrected Gravity harness and all bound Mickey hashes, then permit only one new-run-ID canary before any CPU matrix relaunch. Do not repair PAX1 in place. Open another Odin arm only from a new replay-backed mechanism and exact preregistration. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
   "prior_verified_champion_preserved": true
 }

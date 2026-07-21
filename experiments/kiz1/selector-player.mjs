@@ -5,9 +5,9 @@ import {
   chooseAction,
   clean,
   recordDecision,
-} from "file:///app/strategy-engine.mjs";
+} from "./strategy-engine.mjs";
 
-const require = createRequire("/app/package.json");
+const require = createRequire(import.meta.url);
 const { WebSocket } = require("ws");
 const url = process.env.COWORLD_PLAYER_WS_URL;
 if (!url) throw new Error("COWORLD_PLAYER_WS_URL is required");
