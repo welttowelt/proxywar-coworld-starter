@@ -31,6 +31,9 @@ import {
 const SHA256 = /^[a-f0-9]{64}$/;
 const SELF_PATH = fileURLToPath(import.meta.url);
 const MAX_CAPTURE_BYTES = 8 * 1024 * 1024;
+const SSH_TRANSPORT_MAX_ATTEMPTS = 12;
+const SSH_RETRY_DELAY_MS = 5_000;
+const SIGNAL_POLL_INTERVAL_MS = 250;
 
 function usage() {
   return `Usage:
@@ -158,29 +161,144 @@ function sshArgs(info, knownHosts, bootstrap) {
   ];
 }
 
-async function waitForSshInfo({ runpodctl, podId, expectedName, executor, signalState, settle }) {
-  let last = null;
+async function settleWithSignal(milliseconds, settle, signalState) {
+  let remaining = milliseconds;
+  while (remaining > 0) {
+    if (signalState.requested) throw new Error(`received ${signalState.signal}`);
+    const slice = Math.min(SIGNAL_POLL_INTERVAL_MS, remaining);
+    await settle(slice);
+    remaining -= slice;
+  }
+  if (signalState.requested) throw new Error(`received ${signalState.signal}`);
+}
+
+function readinessRejectionCategory(record) {
+  if (!record || typeof record !== "object" || Array.isArray(record)) return "malformed_record";
+  if (record.ip == null || record.port == null) return "public_endpoint_incomplete";
+  if (record.ssh_key?.in_account !== true) return "account_key_unconfirmed";
+  return "identity_or_key_contract_incomplete";
+}
+
+async function waitForSshInfo({
+  runpodctl,
+  podId,
+  expectedName,
+  executor,
+  signalState,
+  settle,
+  onObservation,
+}) {
+  let finalCategory = "no_response";
   for (let attempt = 1; attempt <= 60; attempt += 1) {
     if (signalState.requested) throw new Error(`received ${signalState.signal}`);
     const result = await executor.run(
       runpodctl,
-      ["ssh", "info", podId, "-o", "json"],
+      ["ssh", "info", podId, "--verbose", "-o", "json"],
       { label: `canary-ssh-info-${attempt}`, allowFailure: true },
     );
-    last = result;
-    if (result.code === 0) {
+    if (signalState.requested) throw new Error(`received ${signalState.signal}`);
+    let record = null;
+    if (result.code === 0 && result.signal == null) {
       try {
-        return validateSshInfo(parseJson(result, "RunPod SSH info"), podId, expectedName);
+        record = parseJson(result, "RunPod SSH info");
       } catch {
-        // Poll until the exact identity and public endpoint are complete.
+        finalCategory = readinessRejectionCategory(record);
       }
+      if (record?.id !== undefined && (record.id !== podId || record.name !== expectedName)) {
+        throw new Error("SSH control-plane readiness returned a different pod identity");
+      }
+      if (record !== null) {
+        try {
+          const info = validateSshInfo(record, podId, expectedName);
+          onObservation?.({ attempt, status: "accepted", category: "complete_exact_identity" });
+          return info;
+        } catch {
+          finalCategory = readinessRejectionCategory(record);
+        }
+      }
+    } else {
+      finalCategory = result.signal == null ? "provider_not_ready" : "provider_command_signaled";
     }
-    await settle(5_000);
+    onObservation?.({ attempt, status: "rejected", category: finalCategory });
+    if (attempt < 60) await settleWithSignal(SSH_RETRY_DELAY_MS, settle, signalState);
   }
-  throw new Error(`SSH never became ready: ${last?.stderr || "no response"}`);
+  throw new Error(`SSH identity and public endpoint never became ready (${finalCategory})`);
 }
 
-async function defaultSshProbe({ manifest, podId, expectedName, output, executor, signalState, settle }) {
+function assertPinnedSshIdentity(current, pinned) {
+  if (current.id !== pinned.id || current.name !== pinned.name) {
+    throw new Error("SSH control-plane identity drifted during transport retry");
+  }
+  if (current.ip !== pinned.ip || current.port !== pinned.port) {
+    throw new Error("SSH public endpoint drifted during transport retry");
+  }
+  if (
+    current.ssh_key.path !== pinned.ssh_key.path ||
+    current.ssh_key.fingerprint !== pinned.ssh_key.fingerprint
+  ) {
+    throw new Error("SSH account key identity drifted during transport retry");
+  }
+}
+
+function transientSshFailureCategory(result) {
+  if (result?.code !== 255 || result.signal != null || result.stdout !== "") return null;
+  const stderr = result.stderr ?? "";
+  if (/\bconnection refused\b/i.test(stderr)) return "connection_refused";
+  if (/\bconnection timed out\b/i.test(stderr)) return "connection_timed_out";
+  if (/\boperation timed out\b/i.test(stderr)) return "operation_timed_out";
+  return null;
+}
+
+function validateChallengeOutput(stdout, challenge) {
+  if (typeof stdout !== "string") throw new Error("SSH transport probe output was not text");
+  const nonempty = stdout
+    .replace(/\r\n/g, "\n")
+    .replace(/\r/g, "\n")
+    .split("\n")
+    .filter((line) => line.trim() !== "");
+  if (nonempty.length !== 1 || nonempty[0] !== challenge) {
+    throw new Error("SSH transport probe returned an unexpected payload");
+  }
+}
+
+async function revalidatePinnedSshInfo({
+  runpodctl,
+  podId,
+  expectedName,
+  pinned,
+  attempt,
+  executor,
+  signalState,
+}) {
+  if (signalState.requested) throw new Error(`received ${signalState.signal}`);
+  const result = await executor.run(
+    runpodctl,
+    ["ssh", "info", podId, "--verbose", "-o", "json"],
+    { label: `canary-ssh-info-revalidate-${attempt}`, allowFailure: true },
+  );
+  if (signalState.requested) throw new Error(`received ${signalState.signal}`);
+  if (result.code !== 0 || result.signal != null) {
+    throw new Error("SSH control-plane identity revalidation failed during transport retry");
+  }
+  const record = parseJson(result, "RunPod SSH info revalidation");
+  if (record?.id !== podId || record?.name !== expectedName) {
+    throw new Error("SSH control-plane identity drifted during transport retry");
+  }
+  const current = validateSshInfo(record, podId, expectedName);
+  assertPinnedSshIdentity(current, pinned);
+}
+
+async function defaultSshProbe({
+  manifest,
+  podId,
+  expectedName,
+  output,
+  executor,
+  signalState,
+  settle,
+  onReadinessObservation,
+  onTransportAttempt,
+}) {
   const info = await waitForSshInfo({
     runpodctl: manifest.runpodctl.path,
     podId,
@@ -188,6 +306,7 @@ async function defaultSshProbe({ manifest, podId, expectedName, output, executor
     executor,
     signalState,
     settle,
+    onObservation: onReadinessObservation,
   });
   const keyInfo = await lstat(info.ssh_key.path).catch(() => null);
   if (!keyInfo?.isFile() || keyInfo.isSymbolicLink()) throw new Error("SSH private key is missing or unsafe");
@@ -199,17 +318,57 @@ async function defaultSshProbe({ manifest, podId, expectedName, output, executor
 
   const knownHosts = path.join(output, "evidence", "transport-canary-known-hosts");
   await prepareKnownHostsFile(knownHosts);
-  const ready = await executor.run(
-    "/usr/bin/ssh",
-    [
-      ...sshArgs(info, knownHosts, true),
-      `root@${info.ip}`,
-      "printf 'MICKEY_SSH_TRANSPORT_READY\\n'",
-    ],
-    { label: "canary-ssh-transport-probe" },
-  );
-  if (ready.stdout !== "MICKEY_SSH_TRANSPORT_READY\n") {
-    throw new Error("SSH transport probe returned an unexpected payload");
+  const challenge = `MICKEY_SSH_TRANSPORT_READY_${randomBytes(16).toString("hex")}`;
+  let acceptedAttempt = null;
+  for (let attempt = 1; attempt <= SSH_TRANSPORT_MAX_ATTEMPTS; attempt += 1) {
+    if (signalState.requested) throw new Error(`received ${signalState.signal}`);
+    if (attempt > 1) {
+      try {
+        await revalidatePinnedSshInfo({
+          runpodctl: manifest.runpodctl.path,
+          podId,
+          expectedName,
+          pinned: info,
+          attempt,
+          executor,
+          signalState,
+        });
+      } catch (error) {
+        onTransportAttempt?.({ attempt, status: "rejected", category: "identity_revalidation_rejected" });
+        throw error;
+      }
+    }
+    const ready = await executor.run(
+      "/usr/bin/ssh",
+      [
+        ...sshArgs(info, knownHosts, true),
+        `root@${info.ip}`,
+        `printf '%s\\n' '${challenge}'`,
+      ],
+      { label: `canary-ssh-transport-probe-${attempt}`, allowFailure: true },
+    );
+    if (signalState.requested) throw new Error(`received ${signalState.signal}`);
+    if (ready.code === 0 && ready.signal == null) {
+      try {
+        validateChallengeOutput(ready.stdout, challenge);
+      } catch (error) {
+        onTransportAttempt?.({ attempt, status: "rejected", category: "unexpected_challenge_output" });
+        throw error;
+      }
+      acceptedAttempt = attempt;
+      onTransportAttempt?.({ attempt, status: "accepted", category: "challenge_exact_one_line" });
+      break;
+    }
+    const category = transientSshFailureCategory(ready);
+    if (!category) {
+      onTransportAttempt?.({ attempt, status: "rejected", category: "non_transient_result" });
+      throw new Error("SSH transport probe failed with a non-transient result");
+    }
+    onTransportAttempt?.({ attempt, status: "rejected", category });
+    if (attempt === SSH_TRANSPORT_MAX_ATTEMPTS) {
+      throw new Error("SSH transport probe exhausted bounded startup retries");
+    }
+    await settleWithSignal(SSH_RETRY_DELAY_MS, settle, signalState);
   }
   const fingerprintResult = await executor.run(
     "/usr/bin/ssh-keygen",
@@ -224,7 +383,9 @@ async function defaultSshProbe({ manifest, podId, expectedName, output, executor
     account_ssh_key_fingerprint: info.ssh_key.fingerprint,
     negotiated_host_key_fingerprint: parseSshKeygenFingerprint(fingerprintResult.stdout),
     trust_scope: "transport_canary_tofu_after_exact_control_plane_identity",
-    command: "static_readiness_probe_only",
+    command: "random_one_line_readiness_challenge_only",
+    challenge: "random_128_bit_hex_suffix",
+    transport_attempt_count: acceptedAttempt,
   };
 }
 
@@ -242,7 +403,7 @@ async function executeTransportCanary({
   beforeCreate = async () => {},
 }) {
   const receipt = {
-    schema_version: 3,
+    schema_version: 5,
     kind: "mickey_cpu_transport_canary_receipt",
     run_id: manifest.run_id,
     manifest_sha256: manifestSha256,
@@ -277,6 +438,10 @@ async function executeTransportCanary({
     deleted_exact_pod_ids: [],
     already_absent_exact_pod_ids: [],
     external_deadline_cleanup_required: false,
+    create_request_attestation: null,
+    network_volume_attestation: null,
+    ssh_readiness_observations: [],
+    ssh_transport_attempts: [],
     started_at: new Date(now).toISOString(),
     completed_at: null,
     status: "running",
@@ -353,25 +518,29 @@ async function executeTransportCanary({
     if (createResult.code !== 0) {
       throw new Error(`RunPod create returned status ${createResult.code} after binding exact pod ID ${podId}`);
     }
-    receipt.create_request_attestation = validateCreateRequestAttestation(createRecord, {
+    const createRequestAttestation = validateCreateRequestAttestation(createRecord, {
       manifest,
       expectedName: pending.expected_name,
       controlSecret: null,
     });
+    receipt.create_request_attestation = createRequestAttestation;
     validateCreatedPod(createRecord, {
       expectedName: pending.expected_name,
       preexistingIds: new Set(pending.preexisting_ids),
     });
     const got = await reaperClient.get(podId);
     if (!got) throw new Error("exact created pod disappeared before transport inspection");
-    validateCreatedPod(
+    const podAttestation = validateCreatedPod(
       { ...createRecord, ...got, id: podId },
       {
         expectedName: pending.expected_name,
         preexistingIds: new Set(pending.preexisting_ids),
         requireNetworkVolumeInspection: true,
+        createRequestAttestation,
+        returnAttestation: true,
       },
     );
+    receipt.network_volume_attestation = podAttestation.network_volume_attestation;
     receipt.attested_pod = {
       id: podId,
       name: pending.expected_name,
@@ -391,6 +560,8 @@ async function executeTransportCanary({
       executor,
       signalState,
       settle,
+      onReadinessObservation: (observation) => receipt.ssh_readiness_observations.push(observation),
+      onTransportAttempt: (attempt) => receipt.ssh_transport_attempts.push(attempt),
     });
     if (receipt.ssh_transport?.status !== "ready") throw new Error("SSH transport did not become ready");
   } catch (error) {
@@ -553,7 +724,7 @@ export async function runCli(argv, { executor = new EphemeralExecutor() } = {}) 
       client_cleanup_deadline_seconds:
         preflight.document.cleanup_watchdog.client_cleanup_deadline_seconds,
       create_argv: dryArgs,
-      ssh_probe: "exact-id/name readiness plus static command; no game",
+      ssh_probe: "verbose exact-id/name readiness plus bounded pinned-endpoint random challenge; no game",
       cleanup: "exact-id retries then reaper confirm-absent",
     }, null, 2)}\n`);
     return 0;

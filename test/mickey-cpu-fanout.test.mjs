@@ -493,14 +493,86 @@ test("pod registration rejects pre-existing IDs and enforces the exact CPU cost/
       networkVolumeInspection: {
         includeNetworkVolumeRequested: true,
         networkVolumeId: { present: false },
-        networkVolume: { present: false },
+        networkVolume: { present: true, value: { id: "nv-attached" } },
       },
     }, {
       expectedName: base.name,
       preexistingIds: new Set(),
       requireNetworkVolumeInspection: true,
     }),
-    /omitted both network-volume fields/,
+    /has an attached networkVolume/,
+  );
+  const zeroVolumeRequest = { volumeInGb: 0 };
+  const requestInputSha256 = canonicalRequestInputSha256(zeroVolumeRequest);
+  const zeroVolumeCreateProof = {
+    request_input_sha256: requestInputSha256,
+    request_input_hash_scope: "raw-request-before-redaction",
+    request_input_redaction_schema: "env-map-v2",
+    requested_volume_gb: 0,
+    network_volume_id_supplied: false,
+    network_volume_request: "none",
+  };
+  const omittedWhenNone = {
+    ...inspected,
+    requestInput: zeroVolumeRequest,
+    requestInputSha256,
+    networkVolumeInspection: {
+      includeNetworkVolumeRequested: true,
+      networkVolumeId: { present: false },
+      networkVolume: { present: false },
+    },
+  };
+  assert.throws(
+    () => validateCreatedPod(omittedWhenNone, {
+      expectedName: base.name,
+      preexistingIds: new Set(),
+      requireNetworkVolumeInspection: true,
+    }),
+    /without exact zero-volume create proof/,
+  );
+  const omittedAttestation = validateCreatedPod(omittedWhenNone, {
+    expectedName: base.name,
+    preexistingIds: new Set(),
+    requireNetworkVolumeInspection: true,
+    createRequestAttestation: zeroVolumeCreateProof,
+    returnAttestation: true,
+  });
+  assert.equal(omittedAttestation.pod_id, base.id);
+  assert.deepEqual(omittedAttestation.network_volume_attestation, {
+    status: "omitted_when_none",
+    include_network_volume_requested: true,
+    network_volume_id_present: false,
+    network_volume_present: false,
+    network_volume_attached: false,
+    request_input_sha256: requestInputSha256,
+    requested_volume_gb: 0,
+    network_volume_id_supplied: false,
+  });
+  assert.throws(
+    () => validateCreatedPod(omittedWhenNone, {
+      expectedName: base.name,
+      preexistingIds: new Set(),
+      requireNetworkVolumeInspection: true,
+      createRequestAttestation: { ...zeroVolumeCreateProof, requested_volume_gb: 1 },
+      returnAttestation: true,
+    }),
+    /without exact zero-volume create proof/,
+  );
+  assert.throws(
+    () => validateCreatedPod({
+      ...omittedWhenNone,
+      networkVolumeInspection: {
+        includeNetworkVolumeRequested: true,
+        networkVolumeId: { present: false, value: null },
+        networkVolume: { present: false },
+      },
+    }, {
+      expectedName: base.name,
+      preexistingIds: new Set(),
+      requireNetworkVolumeInspection: true,
+      createRequestAttestation: zeroVolumeCreateProof,
+    }),
+    /inspection is malformed/,
   );
 });
 

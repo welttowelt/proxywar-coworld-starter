@@ -1,0 +1,66 @@
+{
+  "fixture_label": "reconstructed_sanitized",
+  "description": "Sanitized reconstruction of RunPod verbose SSH-info readiness transitions; identifiers and endpoint are documentation-only values.",
+  "sequence": [
+    {
+      "phase": "public_mapping_absent",
+      "id": "mickey-live-shape-001",
+      "name": "proxywar-mickey-cpu-fanout-live-shape-fixture",
+      "publicIp": null,
+      "portMappings": [],
+      "ip": null,
+      "port": null,
+      "ssh_key": {
+        "path": "/fixture/RunPod-Key-Go",
+        "exists": true,
+        "source": "runpodctl doctor",
+        "in_account": true,
+        "fingerprint": "SHA256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      }
+    },
+    {
+      "phase": "account_membership_unconfirmed",
+      "id": "mickey-live-shape-001",
+      "name": "proxywar-mickey-cpu-fanout-live-shape-fixture",
+      "publicIp": "192.0.2.10",
+      "portMappings": [
+        {
+          "privatePort": 22,
+          "publicPort": 22022,
+          "type": "tcp"
+        }
+      ],
+      "ip": "192.0.2.10",
+      "port": 22022,
+      "ssh_key": {
+        "path": "/fixture/RunPod-Key-Go",
+        "exists": true,
+        "source": "runpodctl doctor",
+        "in_account": false,
+        "fingerprint": "SHA256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      }
+    },
+    {
+      "phase": "complete",
+      "id": "mickey-live-shape-001",
+      "name": "proxywar-mickey-cpu-fanout-live-shape-fixture",
+      "publicIp": "192.0.2.10",
+      "portMappings": [
+        {
+          "privatePort": 22,
+          "publicPort": 22022,
+          "type": "tcp"
+        }
+      ],
+      "ip": "192.0.2.10",
+      "port": 22022,
+      "ssh_key": {
+        "path": "/fixture/RunPod-Key-Go",
+        "exists": true,
+        "source": "runpodctl doctor",
+        "in_account": true,
+        "fingerprint": "SHA256:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      }
+    }
+  ]
+}

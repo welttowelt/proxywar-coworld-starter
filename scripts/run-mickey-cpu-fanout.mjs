@@ -1143,9 +1143,31 @@ export function buildPodCreateArgs(manifest, expectedName, controlSecret = null)
   return args;
 }
 
+function validateNetworkVolumeObservation(observation, label) {
+  if (!isObject(observation) || typeof observation.present !== "boolean") {
+    throw new Error(`created pod ${label} inspection is malformed`);
+  }
+  const expectedKeys = observation.present ? ["present", "value"] : ["present"];
+  const actualKeys = Object.keys(observation).sort();
+  if (
+    actualKeys.length !== expectedKeys.length ||
+    actualKeys.some((key, index) => key !== expectedKeys[index])
+  ) {
+    throw new Error(`created pod ${label} inspection is malformed`);
+  }
+  return observation;
+}
+
 export function validateCreatedPod(
   record,
-  { expectedName, preexistingIds, maxCost = 0.1, requireNetworkVolumeInspection = false },
+  {
+    expectedName,
+    preexistingIds,
+    maxCost = 0.1,
+    requireNetworkVolumeInspection = false,
+    createRequestAttestation = null,
+    returnAttestation = false,
+  },
 ) {
   if (!isObject(record)) throw new Error("RunPod create response must be an object");
   assertString(record.id, "created pod id", /^[a-zA-Z0-9][a-zA-Z0-9-]{2,79}$/);
@@ -1170,19 +1192,47 @@ export function validateCreatedPod(
       }
     }
   }
+  let networkVolumeAttestation = null;
   if (requireNetworkVolumeInspection) {
     const inspection = record.networkVolumeInspection;
-    if (!isObject(inspection) || inspection.includeNetworkVolumeRequested !== true) {
+    const inspectionKeys = isObject(inspection) ? Object.keys(inspection).sort() : [];
+    if (
+      !isObject(inspection) ||
+      inspection.includeNetworkVolumeRequested !== true ||
+      inspectionKeys.join(",") !==
+        "includeNetworkVolumeRequested,networkVolume,networkVolumeId"
+    ) {
       throw new Error("created pod lacks explicit network-volume inspection");
     }
-    const idObservation = inspection.networkVolumeId;
-    const volumeObservation = inspection.networkVolume;
-    if (!isObject(idObservation) || !isObject(volumeObservation)) {
-      throw new Error("created pod network-volume inspection is malformed");
-    }
+    const idObservation = validateNetworkVolumeObservation(
+      inspection.networkVolumeId,
+      "networkVolumeId",
+    );
+    const volumeObservation = validateNetworkVolumeObservation(
+      inspection.networkVolume,
+      "networkVolume",
+    );
     const observations = [idObservation, volumeObservation].filter((entry) => entry.present === true);
     if (observations.length === 0) {
-      throw new Error("RunPod omitted both network-volume fields from explicit inspection");
+      // RunPod's includeNetworkVolume response may omit both optional fields
+      // when none is attached. Accept that shape only when it is bound back to
+      // the already-validated zero-volume create request.
+      if (
+        !isObject(createRequestAttestation) ||
+        !SHA256.test(createRequestAttestation.request_input_sha256 ?? "") ||
+        createRequestAttestation.request_input_sha256 !== record.requestInputSha256 ||
+        createRequestAttestation.request_input_hash_scope !== RUNPODCTL_REQUEST_HASH_SCOPE ||
+        createRequestAttestation.request_input_redaction_schema !==
+          RUNPODCTL_ENV_REDACTION_SCHEMA ||
+        createRequestAttestation.requested_volume_gb !== 0 ||
+        createRequestAttestation.network_volume_id_supplied !== false ||
+        createRequestAttestation.network_volume_request !== "none" ||
+        !isObject(record.requestInput) ||
+        record.requestInput.volumeInGb !== 0 ||
+        Object.hasOwn(record.requestInput, "networkVolumeId")
+      ) {
+        throw new Error("RunPod omitted network-volume fields without exact zero-volume create proof");
+      }
     }
     if (idObservation.present === true && idObservation.value !== null && idObservation.value !== "") {
       throw new Error("created pod has a networkVolumeId");
@@ -1190,6 +1240,20 @@ export function validateCreatedPod(
     if (volumeObservation.present === true && volumeObservation.value !== null) {
       throw new Error("created pod has an attached networkVolume");
     }
+    networkVolumeAttestation = {
+      status: observations.length === 0 ? "omitted_when_none" : "explicit_none",
+      include_network_volume_requested: true,
+      network_volume_id_present: idObservation.present,
+      network_volume_present: volumeObservation.present,
+      network_volume_attached: false,
+      request_input_sha256: createRequestAttestation?.request_input_sha256 ?? null,
+      requested_volume_gb: createRequestAttestation?.requested_volume_gb ?? null,
+      network_volume_id_supplied:
+        createRequestAttestation?.network_volume_id_supplied ?? null,
+    };
+  }
+  if (returnAttestation) {
+    return { pod_id: record.id, network_volume_attestation: networkVolumeAttestation };
   }
   return record.id;
 }
@@ -1315,6 +1379,9 @@ export function validateCreateRequestAttestation(
     transport: record.transport,
     client_max_cost_per_hour: Number(record.clientMaxCostPerHour),
     provider_ttl: null,
+    requested_volume_gb: expectedRaw.volumeInGb,
+    network_volume_id_supplied: Object.hasOwn(expectedRaw, "networkVolumeId"),
+    network_volume_request: "none",
   };
 }
 
@@ -2529,9 +2596,19 @@ async function runOnePair({
     );
     const got = parseJsonOutput(getResult, "RunPod get");
     if (got.id !== podId || got.name !== name) throw new Error("RunPod get returned a different pod identity");
-    validateCreatedPod(
+    const podAttestation = validateCreatedPod(
       { ...createRecord, ...listed[0], ...got, id: podId },
-      { expectedName: name, preexistingIds: pairPreexistingIds, requireNetworkVolumeInspection: true },
+      {
+        expectedName: name,
+        preexistingIds: pairPreexistingIds,
+        requireNetworkVolumeInspection: true,
+        createRequestAttestation: requestAttestation,
+        returnAttestation: true,
+      },
+    );
+    await writeJsonAtomic(
+      path.join(activeRoot, "pod-network-volume-attestation.json"),
+      podAttestation.network_volume_attestation,
     );
 
     state.pairs[pair.id].phase = "ssh-ready";
