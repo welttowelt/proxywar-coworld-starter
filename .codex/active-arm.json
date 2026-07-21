@@ -1,26 +1,26 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T12:24:48Z",
+  "updated_at": "2026-07-21T14:23:50Z",
   "cycle_id": "odin-20260721T122139Z-35486",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "blocked_precontact_source_identity_mismatch",
+  "state": "source_building",
   "arm": {
-    "id": "rc1",
-    "name": "post_hit_retaliation_conversion",
-    "branch": null,
-    "parent_commit": null,
+    "id": "std1",
+    "name": "lean_standard_controller_emergency_rebuild",
+    "branch": "emergency/odin-standard-v1",
+    "parent_commit": "d50f34058fe60de39fb932a9b7c81f1b54415ee3",
     "candidate_commit": null,
-    "preregistration": "experiments/audit-qd1n-rc1-post-hit-reach-stop-20260721.json",
-    "closed": true,
-    "verdict": "STOP_PRE_SOURCE_ZERO_PRODUCTIVE_REACH"
+    "preregistration": "experiments/preregister-qd1n-std1-emergency-standard-rebuild-20260721.json",
+    "closed": false,
+    "verdict": null
   },
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
     "player_name": "K1Z odin free",
-    "policy_label": "qd1n:v89",
-    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
-    "membership_id": "lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6",
+    "policy_label": "qd1n:v97",
+    "policy_version_id": "e83d7832-ff6e-4dde-a049-037cbf25c821",
+    "membership_id": "lpm_d8ca71ea-a783-4e36-ac2b-d1a18981a83a",
     "status": "competing",
     "substatus": "active",
     "is_champion": true
@@ -112,9 +112,9 @@
   "gates": {
     "raw_request_captured": false,
     "capture_image_verified": true,
-    "source_ready": false,
+    "source_ready": true,
     "fixture_hash_bound": false,
-    "red_regression_reproduced": false,
+    "red_regression_reproduced": true,
     "image_verified": false,
     "local_mechanism_verified": false,
     "diagnostic_uploaded": false,
@@ -215,6 +215,6 @@
     "source_change": false,
     "league_mutation": false
   },
-  "next_automatic_transition": "Obtain one hash-bound qd1n:v89 parent decision record before hostile contact, or reproduce the exact v89 selector on a hash-bound fixture. Seal a state only after that parent record proves a legal candidate-parent action difference. Carry the committed Mickey no-harm guard. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
+  "next_automatic_transition": "Build and freeze std1, then run the user-authorized four-cell local standard-rebuild gate against exact qd1n:v97. A complete pass proceeds automatically to upload and promotion; any failed criterion preserves qd1n:v97 with no league mutation.",
   "prior_verified_champion_preserved": true
 }

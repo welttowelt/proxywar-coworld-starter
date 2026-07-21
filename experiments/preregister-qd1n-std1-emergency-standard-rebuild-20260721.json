@@ -1,0 +1,89 @@
+{
+  "schema_version": 1,
+  "profile": "standard-rebuild",
+  "arm": "std1",
+  "date": "2026-07-21",
+  "objective": "Replace the legacy mixed planner with one fast deterministic standard controller only if it beats the exact qd1n:v97 deterministic fallback backbone in both preregistered maps and wins at least one cell outright.",
+  "controller_contract": {
+    "hot_path": "deterministic controller; no LLM or Bedrock call",
+    "opening": "territorial growth on at least 17 of the first 20 active decisions; 35 percent neutral commitment; at most one build; no upgrades or proactive social actions",
+    "conversion": "continue a productive target, finish weak non-K1Z rivals, answer real pressure, and use neutral boats when land growth is unavailable",
+    "coalition": "Katanasan, Gravity/Juryoku, Hrafn, and Mickey are protected unconditionally. If only K1Z remain, keep protecting all K1Z and choose safe growth, building, or hold.",
+    "safety": "select only an offered exact action ID; reject unresolved harmful targets; never reject or harm K1Z"
+  },
+  "control": {
+    "label": "qd1n:v97",
+    "policy_key": "qd1n-v97",
+    "policy_version_id": "e83d7832-ff6e-4dde-a049-037cbf25c821",
+    "source_commit": "d50f34058fe60de39fb932a9b7c81f1b54415ee3",
+    "image_id": "sha256:b1edb1f4957300de57615e10bfc4e1f33897d5ebd3cdc01c35a8fcff865f3abf",
+    "runpod_mode": "credential-free deterministic fallback; expected only for the exact control"
+  },
+  "candidate_policy_key": "qd1n-std1",
+  "cells": [
+    {
+      "map": "Pangaea",
+      "seed": 20260721,
+      "seat": 0,
+      "candidate_spec": "experiments/std1-emergency-pangaea-candidate-20260721.json",
+      "control_spec": "experiments/std1-emergency-pangaea-control-20260721.json"
+    },
+    {
+      "map": "World",
+      "seed": 20260722,
+      "seat": 4,
+      "candidate_spec": "experiments/std1-emergency-world-candidate-20260721.json",
+      "control_spec": "experiments/std1-emergency-world-control-20260721.json"
+    }
+  ],
+  "specs": [
+    {
+      "map": "Pangaea",
+      "arm": "candidate",
+      "seat": 0,
+      "path": "experiments/std1-emergency-pangaea-candidate-20260721.json",
+      "sha256": "f6411d92885455b7fabea2f37010f6b52266c86e0d7e1160a280590c25807650"
+    },
+    {
+      "map": "Pangaea",
+      "arm": "control",
+      "seat": 0,
+      "path": "experiments/std1-emergency-pangaea-control-20260721.json",
+      "sha256": "557984a0770f0dc7ac8ec759f6c1322663be21863f4be14f0ddce779de8a0d6b"
+    },
+    {
+      "map": "World",
+      "arm": "candidate",
+      "seat": 4,
+      "path": "experiments/std1-emergency-world-candidate-20260721.json",
+      "sha256": "0d38e8370dc448ea7e7128d79cf12a3ffa91d22e84add3be42eb954131ad5584"
+    },
+    {
+      "map": "World",
+      "arm": "control",
+      "seat": 4,
+      "path": "experiments/std1-emergency-world-control-20260721.json",
+      "sha256": "7e4ac166f814a188b999f9104fb6f54b2d5a70352f8877561daf354a2a29ceb9"
+    }
+  ],
+  "release_gate": {
+    "required_cells": 4,
+    "candidate_runtime": "zero fallback, zero degradation, zero rejected decisions, zero unexplained holds, zero K1Z harm",
+    "opening": "each candidate cell satisfies the controller opening contract",
+    "per_map": "candidate score and final tiles are both strictly greater than the matched control",
+    "combined": "candidate final tiles are at least 1.20 times control final tiles",
+    "finish": "candidate wins at least one of the two maps",
+    "provenance": "source commit, full runtime closure, image ID, benchmark, qualifier, RunPod receipts, results, replay, and decisions are hash-bound"
+  },
+  "terminal_action": {
+    "pass": "automatically upload without Bedrock, submit with auto-champion, and verify the resulting membership",
+    "fail": "do not upload, submit, or change the champion; leave qd1n:v97 live"
+  },
+  "forbidden": [
+    "Slack interaction",
+    "policy mixing",
+    "hosted gate expansion",
+    "manual result reinterpretation",
+    "promotion from partial evidence"
+  ]
+}

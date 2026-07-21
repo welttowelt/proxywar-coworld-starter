@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "game_config": {
+    "seed": 20260722,
+    "map": "World",
+    "map_size": "Normal",
+    "difficulty": "Easy",
+    "num_agents": 8,
+    "max_decision_steps": 300,
+    "turns_per_decision_step": 100,
+    "max_decision_ms": 15000,
+    "replay_tail_turns": 0,
+    "episode_timeout_seconds": 3600,
+    "player_connect_timeout_seconds": 120
+  },
+  "players": [
+    {"name":"K1Z Hrafn","policy":"qd1n-v97","cwd":"policies/qd1n-v97/app","run":["node","llm-player.mjs"],"env":{"AWS_EC2_METADATA_DISABLED":"true"}},
+    {"name":"K1Z Gravity","policy":"qd1n-v97","cwd":"policies/qd1n-v97/app","run":["node","llm-player.mjs"],"env":{"AWS_EC2_METADATA_DISABLED":"true"}},
+    {"name":"K1Z katanasan","policy":"qd1n-v97","cwd":"policies/qd1n-v97/app","run":["node","llm-player.mjs"],"env":{"AWS_EC2_METADATA_DISABLED":"true"}},
+    {"name":"K1Z Mickey Mouse","policy":"qd1n-v97","cwd":"policies/qd1n-v97/app","run":["node","llm-player.mjs"],"env":{"AWS_EC2_METADATA_DISABLED":"true"}},
+    {"name":"K1Z odin free","policy":"qd1n-std1","cwd":"policies/qd1n-std1/app","run":["node","llm-player.mjs"],"env":{"POLICY_CODENAME":"std1","AWS_EC2_METADATA_DISABLED":"true"}},
+    {"name":"daveey","policy":"qd1n-v97","cwd":"policies/qd1n-v97/app","run":["node","llm-player.mjs"],"env":{"AWS_EC2_METADATA_DISABLED":"true"}},
+    {"name":"Richard Higgins","policy":"qd1n-v97","cwd":"policies/qd1n-v97/app","run":["node","llm-player.mjs"],"env":{"AWS_EC2_METADATA_DISABLED":"true"}},
+    {"name":"Auri","policy":"qd1n-v97","cwd":"policies/qd1n-v97/app","run":["node","llm-player.mjs"],"env":{"AWS_EC2_METADATA_DISABLED":"true"}}
+  ]
+}

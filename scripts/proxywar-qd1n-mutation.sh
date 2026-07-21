@@ -12,10 +12,13 @@ STATE_ROOT="${PROXYWAR_OPERATOR_STATE_ROOT:-/Users/olifreuler/.stormforge/proxyw
 LOCK_DIR="$STATE_ROOT/qd1n.mutation.lock"
 RUNNER="${PROXYWAR_RUNNER_LEASE_SCRIPT:-$REPO/scripts/proxywar-runner-lease.sh}"
 VALIDATOR="${PROXYWAR_PREFLIGHT_VALIDATOR:-$REPO/scripts/validate-experiment-preflight.mjs}"
+STANDARD_VALIDATOR="${PROXYWAR_STANDARD_REBUILD_VALIDATOR:-$REPO/scripts/validate-standard-rebuild.mjs}"
 JQ_BIN="${PROXYWAR_JQ_BIN:-jq}"
 DOCKER_BIN="${PROXYWAR_DOCKER_BIN:-docker}"
 SIGNAL_GRACE_SECONDS="${PROXYWAR_MUTATION_SIGNAL_GRACE_SECONDS:-5}"
 LOOKUP_ATTEMPTS="${PROXYWAR_POLICY_LOOKUP_ATTEMPTS:-15}"
+CHAMPION_LOOKUP_ATTEMPTS="${PROXYWAR_CHAMPION_LOOKUP_ATTEMPTS:-30}"
+CHAMPION_LOOKUP_INTERVAL_SECONDS="${PROXYWAR_CHAMPION_LOOKUP_INTERVAL_SECONDS:-2}"
 
 typeset -a COWORLD_PREFIX COMMAND
 if [[ -n "${PROXYWAR_COWORLD_BIN:-}" ]]; then
@@ -44,14 +47,20 @@ CANDIDATE_COMMIT=""
 CANDIDATE_PARENT_COMMIT=""
 CANDIDATE_IMAGE_ID=""
 CANDIDATE_POLICY_REF=""
+PREFLIGHT_PROFILE=""
 UPLOADED_LABEL=""
 POLICY_VERSION_ID=""
+MEMBERSHIP_ID=""
+CHAMPION_OBSERVED_COUNT=""
+CHAMPION_OBSERVED_POLICY_VERSION_ID=""
+CHAMPION_LOOKUP_SHA256=""
 CHILD_PID=""
 CHILD_STARTED=""
 CHILD_PGID=""
 REQUESTED_SIGNAL=""
 REQUESTED_EXIT=0
 EXTERNAL_OUTCOME_UNKNOWN=false
+MUTATION_RETRY_PROHIBITED=false
 
 usage() {
   cat >&2 <<'EOF'
@@ -64,6 +73,10 @@ The wrapper constructs the complete Coworld command. Callers cannot supply
 command arguments. Diagnostic mode uploads the exact image pinned by the
 preflight. Promotion mode submits the exact qd1n:vN label and policy-version ID
 bound by the diagnostic receipt and promotion evidence.
+
+Preflights with profile=standard-rebuild use the separately validated emergency
+four-game contract and omit Bedrock from the uploaded runtime. The normal
+hosted 4/4 plus 20/20 profile remains unchanged.
 
 After a killed wrapper, read the private token from the stale lock and use
 reap-stale. Recovery terminates the exact recorded child group and writes an
@@ -201,10 +214,16 @@ write_receipt() {
     --arg candidate_parent_commit "$CANDIDATE_PARENT_COMMIT" \
     --arg candidate_image_id "$CANDIDATE_IMAGE_ID" \
     --arg candidate_policy_ref "$CANDIDATE_POLICY_REF" \
+    --arg preflight_profile "$PREFLIGHT_PROFILE" \
     --arg uploaded_label "$UPLOADED_LABEL" \
     --arg policy_version_id "$POLICY_VERSION_ID" \
+    --arg membership_id "$MEMBERSHIP_ID" \
+    --arg champion_observed_count "$CHAMPION_OBSERVED_COUNT" \
+    --arg champion_observed_policy_version_id "$CHAMPION_OBSERVED_POLICY_VERSION_ID" \
+    --arg champion_lookup_sha256 "$CHAMPION_LOOKUP_SHA256" \
     --argjson command_exit "$COMMAND_EXIT_JSON" \
     --argjson external_outcome_unknown "$EXTERNAL_OUTCOME_UNKNOWN" \
+    --argjson mutation_retry_prohibited "$MUTATION_RETRY_PROHIBITED" \
     '{
       schema_version:2,
       recorded_at:$recorded_at,
@@ -222,12 +241,23 @@ write_receipt() {
       command_stderr_sha256:($stderr_sha256 | select(length>0) // null),
       command_exit:$command_exit,
       external_outcome_unknown:$external_outcome_unknown,
+      mutation_retry_prohibited:$mutation_retry_prohibited,
       candidate_source_commit:($candidate_source_commit | select(length>0) // null),
       candidate_parent_commit:($candidate_parent_commit | select(length>0) // null),
       candidate_image_id:($candidate_image_id | select(length>0) // null),
       candidate_policy_ref:($candidate_policy_ref | select(length>0) // null),
+      preflight_profile:($preflight_profile | select(length>0) // null),
       uploaded_label:($uploaded_label | select(length>0) // null),
-      policy_version_id:($policy_version_id | select(length>0) // null)
+      policy_version_id:($policy_version_id | select(length>0) // null),
+      champion_membership_id:($membership_id | select(length>0) // null),
+      champion_observed_count:(
+        if ($champion_observed_count | length) > 0
+        then ($champion_observed_count | tonumber)
+        else null
+        end
+      ),
+      champion_observed_policy_version_id:($champion_observed_policy_version_id | select(length>0) // null),
+      champion_lookup_sha256:($champion_lookup_sha256 | select(length>0) // null)
     }' > "$temp" || {
       rm -f "$temp"
       return 1
@@ -282,6 +312,15 @@ block() {
   FINAL_REASON="$1"
   print -r -- "$1" >&2
   cleanup "${2:-78}"
+}
+
+external_outcome_unknown() {
+  EXTERNAL_OUTCOME_UNKNOWN=true
+  MUTATION_RETRY_PROHIBITED=true
+  FINAL_STATUS="external_outcome_unknown"
+  FINAL_REASON="$1"
+  print -r -- "$1; do not retry submission until live membership is reconciled" >&2
+  cleanup "${2:-75}"
 }
 
 forward_signal() {
@@ -340,6 +379,70 @@ verified_policy_lookup() {
   return 1
 }
 
+membership_lookup() {
+  if [[ -n "${PROXYWAR_MEMBERSHIP_LOOKUP_BIN:-}" ]]; then
+    "$PROXYWAR_MEMBERSHIP_LOOKUP_BIN" "$EXPECTED_LEAGUE_ID" "$EXPECTED_PLAYER_ID"
+    return
+  fi
+  "${COWORLD_PREFIX[@]}" memberships \
+    --league "$EXPECTED_LEAGUE_ID" \
+    --json \
+    --server "$SERVER_URL"
+}
+
+verify_live_champion_membership() {
+  local expected_policy_version_id="$1"
+  local attempt rows summary count membership_id observed_policy_id
+  local observation="$LOCK_DIR/champion-memberships.json"
+  for (( attempt = 1; attempt <= CHAMPION_LOOKUP_ATTEMPTS; attempt++ )); do
+    rows="$(membership_lookup 2>/dev/null)" || rows=""
+    if [[ -n "$rows" ]] && print -r -- "$rows" | "$JQ_BIN" -e . >/dev/null 2>&1; then
+      printf '%s\n' "$rows" > "$observation"
+      chmod 600 "$observation"
+      CHAMPION_LOOKUP_SHA256="$(file_sha_or_empty "$observation")"
+      summary="$(print -r -- "$rows" | "$JQ_BIN" -c \
+        --arg player_id "$EXPECTED_PLAYER_ID" '
+          def membership_rows:
+            if type == "array" then .
+            elif (.entries | type) == "array" then .entries
+            elif (.memberships | type) == "array" then .memberships
+            elif (.items | type) == "array" then .items
+            else [] end;
+          [membership_rows[] |
+            select((.player.id // .player_id // "") == $player_id) |
+            select(.is_champion == true) |
+            select(((.status // "") | ascii_downcase) == "competing") |
+            select(
+              .active == true or
+              (((.substatus // "") | ascii_downcase) == "active")
+            ) |
+            {
+              membership_id:(.id // ""),
+              policy_version_id:(.policy_version.id // .policy_version_id // "")
+            }
+          ] as $champions |
+          {
+            count:($champions | length),
+            membership_id:(if ($champions | length) == 1 then $champions[0].membership_id else "" end),
+            policy_version_id:(if ($champions | length) == 1 then $champions[0].policy_version_id else "" end)
+          }
+        ' 2>/dev/null)" || summary=""
+      count="$(print -r -- "$summary" | "$JQ_BIN" -r '.count // empty' 2>/dev/null)" || count=""
+      membership_id="$(print -r -- "$summary" | "$JQ_BIN" -r '.membership_id // empty' 2>/dev/null)" || membership_id=""
+      observed_policy_id="$(print -r -- "$summary" | "$JQ_BIN" -r '.policy_version_id // empty' 2>/dev/null)" || observed_policy_id=""
+      CHAMPION_OBSERVED_COUNT="$count"
+      CHAMPION_OBSERVED_POLICY_VERSION_ID="$observed_policy_id"
+      if [[ "$count" == "1" && "$membership_id" =~ '^lpm_[A-Za-z0-9-]+$' &&
+        "$observed_policy_id" == "$expected_policy_version_id" ]]; then
+        MEMBERSHIP_ID="$membership_id"
+        return 0
+      fi
+    fi
+    (( attempt < CHAMPION_LOOKUP_ATTEMPTS )) && sleep "$CHAMPION_LOOKUP_INTERVAL_SECONDS"
+  done
+  return 1
+}
+
 start_supervised_command() {
   COMMAND_STDOUT="$LOCK_DIR/command.stdout"
   COMMAND_STDERR="$LOCK_DIR/command.stderr"
@@ -392,6 +495,7 @@ start_supervised_command() {
 }
 
 load_candidate_identity() {
+  PREFLIGHT_PROFILE="$("$JQ_BIN" -r '.profile // "default"' "$PREFLIGHT_SNAPSHOT")"
   CANDIDATE_COMMIT="$("$JQ_BIN" -r '.candidate.source_commit // empty' "$PREFLIGHT_SNAPSHOT")"
   CANDIDATE_PARENT_COMMIT="$("$JQ_BIN" -r '.candidate.parent_commit // empty' "$PREFLIGHT_SNAPSHOT")"
   CANDIDATE_IMAGE_ID="$("$JQ_BIN" -r '.candidate.image_id // empty' "$PREFLIGHT_SNAPSHOT")"
@@ -414,6 +518,15 @@ load_candidate_identity() {
   git -C "$REPO" branch -r --contains "$CANDIDATE_PARENT_COMMIT" |
     grep -q '[^[:space:]]' ||
     block "candidate parent commit is not pushed"
+}
+
+validate_preflight() {
+  local strict_flag="$1"
+  if [[ "$PREFLIGHT_PROFILE" == "standard-rebuild" ]]; then
+    node "$STANDARD_VALIDATOR" "$PREFLIGHT_SNAPSHOT" "$strict_flag"
+  else
+    node "$VALIDATOR" "$PREFLIGHT_SNAPSHOT" "$strict_flag"
+  fi
 }
 
 run_action() {
@@ -463,13 +576,17 @@ run_action() {
       block "candidate image cannot be inspected"
     [[ "$resolved_image_id" == "$CANDIDATE_IMAGE_ID" ]] ||
       block "candidate image ID does not match preflight"
-    node "$VALIDATOR" "$PREFLIGHT_SNAPSHOT" --require-diagnostic >/dev/null ||
+    validate_preflight --require-diagnostic >/dev/null ||
       block "diagnostic preflight validation failed"
     COMMAND=(
       "${COWORLD_PREFIX[@]}"
       upload-policy "$CANDIDATE_POLICY_REF"
       --name "$EXPECTED_POLICY_NAME"
-      --use-bedrock
+    )
+    if [[ "$PREFLIGHT_PROFILE" != "standard-rebuild" ]]; then
+      COMMAND+=(--use-bedrock)
+    fi
+    COMMAND+=(
       --run node
       --run /app/llm-player.mjs
       --tag "source_commit=$CANDIDATE_COMMIT"
@@ -477,7 +594,7 @@ run_action() {
       --server "$SERVER_URL"
     )
   else
-    node "$VALIDATOR" "$PREFLIGHT_SNAPSHOT" --require-promotion >/dev/null ||
+    validate_preflight --require-promotion >/dev/null ||
       block "promotion preflight validation failed"
     UPLOADED_LABEL="$("$JQ_BIN" -r '.candidate.uploaded_label // empty' \
       "$PREFLIGHT_SNAPSHOT")"
@@ -526,6 +643,11 @@ run_action() {
       block "upload completed but qd1n version label was not verified"
     POLICY_VERSION_ID="$(verified_policy_lookup "$UPLOADED_LABEL")" ||
       block "upload completed but policy-version identity was not verified"
+  else
+    MUTATION_RETRY_PROHIBITED=true
+    verify_live_champion_membership "$POLICY_VERSION_ID" ||
+      external_outcome_unknown \
+        "submission returned success but a unique active competing champion membership was not verified"
   fi
   FINAL_STATUS="completed"
   FINAL_REASON="$MODE command completed under verified Qd1n identity and immutable gate"
@@ -571,6 +693,7 @@ reap_stale_action() {
   CHILD_STARTED="$(read_lock child_started_at)"
   CHILD_PGID="$(read_lock child_pgid)"
   EXTERNAL_OUTCOME_UNKNOWN=true
+  MUTATION_RETRY_PROHIBITED=true
   FINAL_STATUS="recovered_stale"
   FINAL_REASON="stale wrapper reaped; reconcile external outcome before any retry"
   COMMAND_EXIT_JSON="null"

@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "license": "MIT",
-  "description": "ProxyWar LLM agent (Bedrock). Claude plans in the background; every decision is answered instantly within the hosted response cap. Keeps playing, loudly degraded, if Bedrock is unreachable.",
+  "description": "ProxyWar deterministic standard controller with exact legal-action selection.",
   "scripts": {
     "test": "node --test",
     "data:collect": "node scripts/collect-proxywar-data.mjs --rounds 20",
@@ -19,7 +19,6 @@
     "dashboard:update": "bash scripts/publish-dashboard.sh"
   },
   "dependencies": {
-    "ws": "^8.18.0",
-    "@anthropic-ai/bedrock-sdk": "^0.29.2"
+    "ws": "^8.18.0"
   }
 }

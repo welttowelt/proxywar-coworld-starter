@@ -13,6 +13,10 @@ CANDIDATE_KEY='qd1n-gc2'
 CANDIDATE_IMAGE='proxywar-agent-llm:qd1n-v89-gc2-amd64'
 CANDIDATE_ID='sha256:593eedf2fa9dd7ee70c24800da6fedcbc203baf5b8310ca0185022be14207677'
 CANDIDATE_ENTRYPOINT='llm-player.mjs'
+CONTROL_KEY='qd1n-v97'
+CONTROL_IMAGE='proxywar-agent-llm:qd1n-v89-mickey-guard-d50f3405-amd64'
+CONTROL_ID='sha256:b1edb1f4957300de57615e10bfc4e1f33897d5ebd3cdc01c35a8fcff865f3abf'
+CONTROL_ENTRYPOINT='llm-player.mjs'
 MATCHED_SPEC_A=''
 MATCHED_SPEC_A_SHA=''
 MATCHED_SPEC_B=''
@@ -29,6 +33,9 @@ Options:
   --candidate-key <key>      Bundle key for the candidate (default: qd1n-gc2).
   --candidate-image <image>  Exact local candidate image reference.
   --candidate-id <sha256>    Expected Docker image ID for the candidate.
+  --control-key <key>        Bundle key for the exact parent (default: qd1n-v97).
+  --control-image <image>    Exact local parent image reference.
+  --control-id <sha256>      Expected Docker image ID for the exact parent.
   --matched-spec-a <json>    Formal candidate-arm experiment spec.
   --matched-spec-a-sha <hex> Expected SHA-256 of the candidate-arm spec.
   --matched-spec-b <json>    Formal exact-parent experiment spec.
@@ -64,6 +71,21 @@ while [[ $# -gt 0 ]]; do
     --candidate-id)
       [[ $# -ge 2 ]] || { command echo '--candidate-id requires a value' >&2; exit 2; }
       CANDIDATE_ID="$2"
+      shift 2
+      ;;
+    --control-key)
+      [[ $# -ge 2 ]] || { command echo '--control-key requires a value' >&2; exit 2; }
+      CONTROL_KEY="$2"
+      shift 2
+      ;;
+    --control-image)
+      [[ $# -ge 2 ]] || { command echo '--control-image requires a value' >&2; exit 2; }
+      CONTROL_IMAGE="$2"
+      shift 2
+      ;;
+    --control-id)
+      [[ $# -ge 2 ]] || { command echo '--control-id requires a value' >&2; exit 2; }
+      CONTROL_ID="$2"
       shift 2
       ;;
     --matched-spec-a)
@@ -110,20 +132,22 @@ while [[ $# -gt 0 ]]; do
   esac
 done
 
-[[ "$CANDIDATE_KEY" =~ ^[a-zA-Z0-9._-]{1,80}$ ]] || {
-  command echo 'candidate key must use only letters, numbers, dot, dash, or underscore' >&2
-  exit 2
-}
-case "$CANDIDATE_KEY" in
-  qd1n-v89|hrafn-v5|juryoku-v3|katanasan-v39)
-    command echo "candidate key conflicts with a fixed policy key: $CANDIDATE_KEY" >&2
+for policy_key in "$CANDIDATE_KEY" "$CONTROL_KEY"; do
+  [[ "$policy_key" =~ ^[a-zA-Z0-9._-]{1,80}$ ]] || {
+    command echo 'policy keys must use only letters, numbers, dot, dash, or underscore' >&2
     exit 2
-    ;;
-esac
-[[ "$CANDIDATE_ID" =~ ^sha256:[a-f0-9]{64}$ ]] || {
-  command echo 'candidate ID must be an exact sha256:<64 lowercase hex> Docker image ID' >&2
+  }
+done
+[[ "$CANDIDATE_KEY" != "$CONTROL_KEY" ]] || {
+  command echo 'candidate and control keys must differ' >&2
   exit 2
 }
+for image_id in "$CANDIDATE_ID" "$CONTROL_ID"; do
+  [[ "$image_id" =~ ^sha256:[a-f0-9]{64}$ ]] || {
+    command echo 'image IDs must be exact sha256:<64 lowercase hex> Docker image IDs' >&2
+    exit 2
+  }
+done
 for spec_sha in "$MATCHED_SPEC_A_SHA" "$MATCHED_SPEC_B_SHA"; do
   if [[ -n "$spec_sha" && ! "$spec_sha" =~ ^[a-f0-9]{64}$ ]]; then
     command echo 'matched spec hashes must be 64 lowercase hex characters' >&2
@@ -160,10 +184,7 @@ done
 
 POLICY_ROWS=(
   "$CANDIDATE_KEY|$CANDIDATE_IMAGE|$CANDIDATE_ID|$CANDIDATE_ENTRYPOINT"
-  'qd1n-v89|proxywar-agent-llm:qd1n-v89-exact-amd64|sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478|llm-player.mjs'
-  'hrafn-v5|proxywar-agent-llm:hrafn-v5-exact-amd64|sha256:3f427fd382daa521f0f3af31096b1326fdab0277eff7fc7638e03c944abb058d|hrafn-player.mjs'
-  'juryoku-v3|proxywar-agent-llm:santai-juryoku-v3-hrafn-amd64|sha256:2ebf15372e8cf59b194ebb20f06b818a6a54f96994f4125e103b6a26070491c2|llm-player.mjs'
-  'katanasan-v39|proxywar-agent-llm:tsukuyomi-v39-hrafn-amd64|sha256:0afece2db25675b0b744844769c64e02960270f56502c33d62bf0702f7b58cf6|llm-player.mjs'
+  "$CONTROL_KEY|$CONTROL_IMAGE|$CONTROL_ID|$CONTROL_ENTRYPOINT"
 )
 
 verify_image() {
@@ -197,7 +218,7 @@ base_actual="$(docker image inspect "$BASE_IMAGE" --format '{{.Id}}|{{.Architect
 }
 
 if [[ "$CHECK_ONLY" -eq 1 ]]; then
-  command echo "OK: base image, candidate $CANDIDATE_KEY ($CANDIDATE_ID), and four fixed policies match their pinned amd64 IDs"
+  command echo "OK: base image, candidate $CANDIDATE_KEY, and control $CONTROL_KEY match their pinned amd64 IDs"
   exit 0
 fi
 
@@ -271,6 +292,12 @@ git -C "$REPO_ROOT" diff --cached --quiet HEAD -- "${SOURCE_FILES[@]}" || {
   exit 1
 }
 source_commit="$(git -C "$REPO_ROOT" rev-parse HEAD)"
+candidate_revision="$(docker image inspect "$CANDIDATE_IMAGE" --format \
+  '{{index .Config.Labels "org.opencontainers.image.revision"}}')"
+[[ "$candidate_revision" == "$source_commit" ]] || {
+  command echo "candidate image revision label does not match bundle source commit: $candidate_revision" >&2
+  exit 1
+}
 preparer_source_sha="$(shasum -a 256 \
   "$REPO_ROOT/scripts/prepare-runpod-proxywar-bundle.sh" | awk '{print $1}')"
 runner_source_sha="$(shasum -a 256 \
@@ -411,34 +438,13 @@ command cat >"$BUNDLE_ROOT/specs/canary-candidate-player-specs.json" <<EOF
       "run": ["node", "llm-player.mjs"],
       "env": {
         "POLICY_CODENAME": "s4ntai",
-        "POLICY_ENGINE": "",
         "AWS_EC2_METADATA_DISABLED": "true"
       }
     },
     {
-      "name": "K1Z Hrafn",
-      "policy": "hrafn-v5",
-      "cwd": "policies/hrafn-v5/app",
-      "run": ["node", "hrafn-player.mjs"],
-      "env": {
-        "POLICY_CODENAME": "hrafn-gjof",
-        "POLICY_ENGINE": "",
-        "HRAFN_RV1": "1"
-      }
-    },
-    {
-      "name": "K1Z juryoku-koku",
-      "policy": "juryoku-v3",
-      "cwd": "policies/juryoku-v3/app",
-      "run": ["node", "llm-player.mjs"],
-      "env": {
-        "AWS_EC2_METADATA_DISABLED": "true"
-      }
-    },
-    {
-      "name": "K1Z katanasan",
-      "policy": "katanasan-v39",
-      "cwd": "policies/katanasan-v39/app",
+      "name": "Coworld Starter 2",
+      "policy": "$CONTROL_KEY",
+      "cwd": "policies/$CONTROL_KEY/app",
       "run": ["node", "llm-player.mjs"],
       "env": {
         "AWS_EC2_METADATA_DISABLED": "true"
@@ -448,7 +454,7 @@ command cat >"$BUNDLE_ROOT/specs/canary-candidate-player-specs.json" <<EOF
 }
 EOF
 
-command cat >"$BUNDLE_ROOT/specs/canary-control-player-specs.json" <<'EOF'
+command cat >"$BUNDLE_ROOT/specs/canary-control-player-specs.json" <<EOF
 {
   "schema_version": 1,
   "game_config": {
@@ -465,39 +471,18 @@ command cat >"$BUNDLE_ROOT/specs/canary-control-player-specs.json" <<'EOF'
   "players": [
     {
       "name": "K1Z odin free",
-      "policy": "qd1n-v89",
-      "cwd": "policies/qd1n-v89/app",
+      "policy": "$CONTROL_KEY",
+      "cwd": "policies/$CONTROL_KEY/app",
       "run": ["node", "llm-player.mjs"],
       "env": {
         "POLICY_CODENAME": "s4ntai",
-        "POLICY_ENGINE": "",
         "AWS_EC2_METADATA_DISABLED": "true"
       }
     },
     {
-      "name": "K1Z Hrafn",
-      "policy": "hrafn-v5",
-      "cwd": "policies/hrafn-v5/app",
-      "run": ["node", "hrafn-player.mjs"],
-      "env": {
-        "POLICY_CODENAME": "hrafn-gjof",
-        "POLICY_ENGINE": "",
-        "HRAFN_RV1": "1"
-      }
-    },
-    {
-      "name": "K1Z juryoku-koku",
-      "policy": "juryoku-v3",
-      "cwd": "policies/juryoku-v3/app",
-      "run": ["node", "llm-player.mjs"],
-      "env": {
-        "AWS_EC2_METADATA_DISABLED": "true"
-      }
-    },
-    {
-      "name": "K1Z katanasan",
-      "policy": "katanasan-v39",
-      "cwd": "policies/katanasan-v39/app",
+      "name": "Coworld Starter 2",
+      "policy": "$CONTROL_KEY",
+      "cwd": "policies/$CONTROL_KEY/app",
       "run": ["node", "llm-player.mjs"],
       "env": {
         "AWS_EC2_METADATA_DISABLED": "true"
@@ -521,6 +506,10 @@ Runtime provenance (the pod itself may use a generic amd64 Ubuntu image):
 Candidate bundled as $CANDIDATE_KEY:
   $CANDIDATE_IMAGE
   $CANDIDATE_ID
+
+Exact control bundled as $CONTROL_KEY:
+  $CONTROL_IMAGE
+  $CONTROL_ID
 
 Bundle source commit:
   $source_commit

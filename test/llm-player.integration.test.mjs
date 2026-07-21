@@ -15,7 +15,7 @@ function request(requestID, legalActions, observation) {
   };
 }
 
-test("deployed player wiring expands first and converts a weak rival next", async () => {
+test("deployed standard player keeps the opening on neutral conquest", async () => {
   const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
   await new Promise((resolve) => server.once("listening", resolve));
   const { port } = server.address();
@@ -115,7 +115,7 @@ test("deployed player wiring expands first and converts a weak rival next", asyn
 
   assert.deepEqual(
     responses.map((response) => response.selectedLegalActionId),
-    ["spawn:100", "expand:terra-nullius:10", "attack:weak:10"],
+    ["spawn:100", "expand:terra-nullius:10", "expand:terra-nullius:10"],
   );
   for (const response of responses) {
     assert.match(response.reason, /^[a-z0-9:]+$/);
@@ -194,7 +194,7 @@ test("deployed player reconnects after an unexpected match socket close", async 
   );
 });
 
-test("deployed player exposes gc1 beside the retained tactical marker", async () => {
+test("deployed standard player accepts a handshake then counters pressure", async () => {
   const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
   await new Promise((resolve) => server.once("listening", resolve));
   const { port } = server.address();
@@ -339,19 +339,17 @@ test("deployed player exposes gc1 beside the retained tactical marker", async ()
     responses.map((response) => response.selectedLegalActionId),
     ["alliance:kata:0", "attack:raider:10"],
   );
-  assert.match(responses[1].reason, /:gc1:ia1$/);
+  assert.equal(responses[1].reason, "std1:pressurecounter");
 });
 
-test("planner doctrine encodes the hosted winner profile", async () => {
+test("deployed transport contains no model planner or legacy selector", async () => {
   const { readFile } = await import("node:fs/promises");
   const source = await readFile(playerPath, "utf8");
-  assert.match(source, /do not attack any rival before that threshold unless they attacked you first/i);
-  assert.match(source, /only at relativeTroopRatio 1\.3 or better/i);
-  assert.match(source, /Commit 35% to neutral expansion/);
-  assert.doesNotMatch(source, /Probe with 10%, escalate to 25%/);
+  assert.match(source, /createStandardController/);
+  assert.doesNotMatch(source, /Bedrock|Anthropic|POLICY_ENGINE|strategy-engine/i);
 });
 
-test("qd2n engine wiring grinds the opening at 35 percent", async () => {
+test("standard controller wiring grinds the opening at 35 percent", async () => {
   const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
   await new Promise((resolve) => server.once("listening", resolve));
   const { port } = server.address();
@@ -396,7 +394,6 @@ test("qd2n engine wiring grinds the opening at 35 percent", async () => {
     env: {
       ...process.env,
       COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
-      POLICY_ENGINE: "qd2n",
       AWS_ACCESS_KEY_ID: "test",
       AWS_SECRET_ACCESS_KEY: "test",
       AWS_EC2_METADATA_DISABLED: "true",
@@ -433,5 +430,5 @@ test("qd2n engine wiring grinds the opening at 35 percent", async () => {
   }
 
   assert.equal(responses[0].selectedLegalActionId, "expand:terra-nullius:35");
-  assert.match(responses[0].reason, /ch1/);
+  assert.equal(responses[0].reason, "std1:openinggrind");
 });

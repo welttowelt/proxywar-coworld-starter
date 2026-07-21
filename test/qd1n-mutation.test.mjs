@@ -182,6 +182,20 @@ case "$1" in
     [[ "\${FAKE_MUTATION_FAIL:-0}" != "1" ]] || exit 43
     print -r -- 'Submitted to league'
     ;;
+  memberships)
+    case "\${FAKE_MEMBERSHIP_MODE:-verified}" in
+      verified)
+        print -r -- '[{"id":"lpm_verified","player":{"id":"${ODIN}"},"is_champion":true,"status":"competing","substatus":"active","policy_version":{"id":"${POLICY_ID}"}}]'
+        ;;
+      ambiguous)
+        print -r -- '[{"id":"lpm_first","player":{"id":"${ODIN}"},"is_champion":true,"status":"competing","substatus":"active","policy_version":{"id":"${POLICY_ID}"}},{"id":"lpm_second","player":{"id":"${ODIN}"},"is_champion":true,"status":"competing","substatus":"active","policy_version":{"id":"${POLICY_ID}"}}]'
+        ;;
+      wrong-policy)
+        print -r -- '[{"id":"lpm_wrong","player":{"id":"${ODIN}"},"is_champion":true,"status":"competing","substatus":"active","policy_version":{"id":"22222222-2222-4222-8222-222222222222"}}]'
+        ;;
+      *) exit 44 ;;
+    esac
+    ;;
   *)
     exit 64
     ;;
@@ -366,6 +380,8 @@ function environment(context, extra = {}) {
     PROXYWAR_DOCKER_BIN: context.docker,
     PROXYWAR_POLICY_LOOKUP_BIN: context.lookup,
     PROXYWAR_POLICY_LOOKUP_ATTEMPTS: "1",
+    PROXYWAR_CHAMPION_LOOKUP_ATTEMPTS: "1",
+    PROXYWAR_CHAMPION_LOOKUP_INTERVAL_SECONDS: "0",
     PROXYWAR_MUTATION_SIGNAL_GRACE_SECONDS: "1",
     COWORLD_ARGS_LOG: context.commandLog,
     FAKE_MUTATION_READY: context.ready,
@@ -491,6 +507,34 @@ test("promotion submits only the evidence-bound label after live ID verification
   assert.equal(recorded.status, "completed");
   assert.equal(recorded.uploaded_label, LABEL);
   assert.equal(recorded.policy_version_id, POLICY_ID);
+  assert.equal(recorded.champion_membership_id, "lpm_verified");
+  assert.equal(recorded.champion_observed_count, 1);
+  assert.equal(recorded.champion_observed_policy_version_id, POLICY_ID);
+  assert.match(recorded.champion_lookup_sha256, /^[a-f0-9]{64}$/);
+  assert.equal(recorded.external_outcome_unknown, false);
+  assert.equal(recorded.mutation_retry_prohibited, true);
+});
+
+test("promotion records external-outcome-unknown when live champion state is ambiguous", (t) => {
+  const context = fixture();
+  t.after(() => rmSync(context.directory, { recursive: true, force: true }));
+  makePromotionPreflight(context);
+  const receipt = path.join(context.receipts, "ambiguous-membership.json");
+  const result = invoke(
+    context,
+    ["run", "promotion", context.preflight, receipt],
+    { FAKE_MEMBERSHIP_MODE: "ambiguous" },
+  );
+  assert.equal(result.status, 75, result.stderr);
+  assert.match(result.stderr, /do not retry submission/);
+  assert.match(readFileSync(context.commandLog, "utf8"), /^submit\n/);
+  const recorded = JSON.parse(readFileSync(receipt, "utf8"));
+  assert.equal(recorded.status, "external_outcome_unknown");
+  assert.equal(recorded.external_outcome_unknown, true);
+  assert.equal(recorded.mutation_retry_prohibited, true);
+  assert.equal(recorded.champion_membership_id, null);
+  assert.equal(recorded.champion_observed_count, 2);
+  assert.equal(existsSync(path.join(context.state, "qd1n.mutation.lock")), false);
 });
 
 test("promotion blocks when live policy-version identity differs", (t) => {
