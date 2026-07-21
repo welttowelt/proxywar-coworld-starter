@@ -2,26 +2,35 @@
 
 import { spawn } from "node:child_process";
 import { createHash, randomBytes, randomUUID } from "node:crypto";
-import { mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { lstat, mkdir, readFile, realpath, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import {
+  ExecutorRunPodClient,
   buildPodCreateArgs,
-  canonicalRequestInputSha256,
-  deleteExactPod,
+  deleteExactOwnedPodWithRetry,
+  parseSshKeygenFingerprint,
   preflightManifest,
+  prepareKnownHostsFile,
   registerCreatedPod,
   validateClaimedOutputShape,
+  validateCreateRequestAttestation,
   validateCreatedPod,
+  validateSshInfo,
+  verifyLiveReaperService,
 } from "./run-mickey-cpu-fanout.mjs";
+import {
+  bindActivePod,
+  confirmOwnedPodAbsent,
+  preparePendingCreate,
+  readReaperLedger,
+  runReaperOnce,
+} from "./runpod-exact-id-reaper.mjs";
 
 const SHA256 = /^[a-f0-9]{64}$/;
 const SELF_PATH = fileURLToPath(import.meta.url);
 const MAX_CAPTURE_BYTES = 8 * 1024 * 1024;
-const CLEANUP_RETRY_DELAYS_MS = Object.freeze([0, 1_000, 2_000, 4_000, 8_000]);
-
-class CleanupIdentityRefusalError extends Error {}
 
 function usage() {
   return `Usage:
@@ -32,12 +41,12 @@ function usage() {
     --output /private/tmp/new-run-output
 
 Options:
-  --dry-run  Validate all local pins and print one redacted create/delete plan.
+  --dry-run  Validate local pins and print one redacted REST create/SSH/delete plan.
              It performs zero RunPod or other network calls.
 
 Real execution must be the child of the canonical foreground Mickey runner lease.
-The canary creates at most one CPU pod, starts no game, and deletes only an exact
-new pod ID before returning.
+The canary creates at most one CPU pod, starts no game, verifies SSH transport,
+and only cleans an exact ID owned by the durable reaper ledger.
 `;
 }
 
@@ -86,12 +95,6 @@ function parseJson(result, label) {
   }
 }
 
-function flagValue(args, flag) {
-  const index = args.indexOf(flag);
-  if (index < 0 || index + 1 >= args.length) throw new Error(`create plan lacks ${flag}`);
-  return args[index + 1];
-}
-
 function redactError(error) {
   return error instanceof Error ? error.message : String(error);
 }
@@ -134,82 +137,95 @@ export class EphemeralExecutor {
   }
 }
 
-function newCanaryPairId(now) {
-  return `transport-${now}-${randomBytes(4).toString("hex")}`;
+function dryRunName(manifest) {
+  return `${manifest.pod.name_prefix}-${"0".repeat(32)}`;
 }
 
-function redactedCreatePlan(args) {
-  return [...args];
+function sshArgs(info, knownHosts, bootstrap) {
+  return [
+    "-i", info.ssh_key.path,
+    "-p", String(info.port),
+    "-o", "BatchMode=yes",
+    "-o", `StrictHostKeyChecking=${bootstrap ? "accept-new" : "yes"}`,
+    "-o", `UserKnownHostsFile=${knownHosts}`,
+    "-o", "IdentitiesOnly=yes",
+    "-o", "HostKeyAlgorithms=ssh-ed25519",
+    "-o", "PasswordAuthentication=no",
+    "-o", "KbdInteractiveAuthentication=no",
+    "-o", "ConnectTimeout=20",
+    "-o", "ServerAliveInterval=20",
+    "-o", "ServerAliveCountMax=3",
+  ];
 }
 
-function buildTransportPodCreateArgs(manifest, pairId, now) {
-  const args = buildPodCreateArgs(manifest, "transport-canary", pairId, now, "0".repeat(64));
-  const envIndex = args.indexOf("--env");
-  if (envIndex < 0 || envIndex + 1 >= args.length) throw new Error("base CPU create plan lacks env pair");
-  args.splice(envIndex, 2);
-  return args;
-}
-
-function sortedJsonValue(value) {
-  if (Array.isArray(value)) return value.map(sortedJsonValue);
-  if (!value || typeof value !== "object") return value;
-  return Object.fromEntries(Object.keys(value).sort().map((key) => [key, sortedJsonValue(value[key])]));
-}
-
-function validateTransportCreateRequest(record, { manifest, expectedName, expectedTerminateAfter }) {
-  if (!record || typeof record !== "object") throw new Error("RunPod create response must be an object");
-  if (record.requestInputHashAlgorithm !== "sorted-json-sha256-v1") {
-    throw new Error("RunPod create response uses an unapproved request-input hash algorithm");
+async function waitForSshInfo({ runpodctl, podId, expectedName, executor, signalState, settle }) {
+  let last = null;
+  for (let attempt = 1; attempt <= 60; attempt += 1) {
+    if (signalState.requested) throw new Error(`received ${signalState.signal}`);
+    const result = await executor.run(
+      runpodctl,
+      ["ssh", "info", podId, "-o", "json"],
+      { label: `canary-ssh-info-${attempt}`, allowFailure: true },
+    );
+    last = result;
+    if (result.code === 0) {
+      try {
+        return validateSshInfo(parseJson(result, "RunPod SSH info"), podId, expectedName);
+      } catch {
+        // Poll until the exact identity and public endpoint are complete.
+      }
+    }
+    await settle(5_000);
   }
-  if (record.requestInputSha256 !== canonicalRequestInputSha256(record.requestInput)) {
-    throw new Error("RunPod create request-input SHA-256 is invalid");
+  throw new Error(`SSH never became ready: ${last?.stderr || "no response"}`);
+}
+
+async function defaultSshProbe({ manifest, podId, expectedName, output, executor, signalState, settle }) {
+  const info = await waitForSshInfo({
+    runpodctl: manifest.runpodctl.path,
+    podId,
+    expectedName,
+    executor,
+    signalState,
+    settle,
+  });
+  const keyInfo = await lstat(info.ssh_key.path).catch(() => null);
+  if (!keyInfo?.isFile() || keyInfo.isSymbolicLink()) throw new Error("SSH private key is missing or unsafe");
+  if (await realpath(info.ssh_key.path) !== info.ssh_key.path) throw new Error("SSH private key path is not canonical");
+  if ((keyInfo.mode & 0o077) !== 0) throw new Error("SSH private key permissions are too broad");
+  if (typeof process.getuid === "function" && keyInfo.uid !== process.getuid()) {
+    throw new Error("SSH private key is not owned by this operator");
   }
-  if (record.requestedTerminateAfter !== expectedTerminateAfter) {
-    throw new Error("RunPod create response does not echo the exact server-side termination request");
-  }
-  const expected = {
-    cloudType: manifest.pod.cloud_type,
-    computeType: manifest.pod.compute_type,
-    containerDiskInGb: manifest.pod.container_disk_gb,
-    deployCost: manifest.pod.max_cost_per_hour,
-    dockerArgs: "",
-    dataCenterId: "",
-    env: [],
-    imageName: manifest.pod.image,
-    instanceIds: [
-      `cpu5c-${manifest.pod.vcpu_count}-${manifest.pod.memory_gb}`,
-      `cpu3c-${manifest.pod.vcpu_count}-${manifest.pod.memory_gb}`,
+
+  const knownHosts = path.join(output, "evidence", "transport-canary-known-hosts");
+  await prepareKnownHostsFile(knownHosts);
+  const ready = await executor.run(
+    "/usr/bin/ssh",
+    [
+      ...sshArgs(info, knownHosts, true),
+      `root@${info.ip}`,
+      "printf 'MICKEY_SSH_TRANSPORT_READY\\n'",
     ],
-    minMemoryInGb: manifest.pod.memory_gb,
-    minVcpuCount: manifest.pod.vcpu_count,
-    name: expectedName,
-    networkVolumeId: "",
-    ports: "",
-    supportPublicIp: false,
-    startSsh: true,
-    templateId: "",
-    terminateAfter: expectedTerminateAfter,
-    volumeInGb: manifest.pod.volume_gb,
-    volumeMountPath: "/workspace",
-  };
-  if (JSON.stringify(sortedJsonValue(record.requestInput)) !== JSON.stringify(sortedJsonValue(expected))) {
-    throw new Error("RunPod create request echo differs from the exact transport contract");
+    { label: "canary-ssh-transport-probe" },
+  );
+  if (ready.stdout !== "MICKEY_SSH_TRANSPORT_READY\n") {
+    throw new Error("SSH transport probe returned an unexpected payload");
   }
+  const fingerprintResult = await executor.run(
+    "/usr/bin/ssh-keygen",
+    ["-lf", knownHosts, "-E", "sha256"],
+    { label: "canary-known-host-fingerprint" },
+  );
   return {
-    request_input_sha256: record.requestInputSha256,
-    requested_terminate_after: record.requestedTerminateAfter,
+    status: "ready",
+    pod_id: podId,
+    pod_name: expectedName,
+    public_endpoint: { ip: info.ip, port: info.port },
+    account_ssh_key_fingerprint: info.ssh_key.fingerprint,
+    negotiated_host_key_fingerprint: parseSshKeygenFingerprint(fingerprintResult.stdout),
+    trust_scope: "transport_canary_tofu_after_exact_control_plane_identity",
+    command: "static_readiness_probe_only",
   };
-}
-
-function exactNameRecords(records, expectedName, preexistingIds) {
-  if (!Array.isArray(records)) throw new Error("RunPod exact-name listing is not an array");
-  return records.filter((record) => (
-    record &&
-    typeof record === "object" &&
-    record.name === expectedName &&
-    typeof record.id === "string" &&
-    !preexistingIds.has(record.id)
-  ));
 }
 
 async function executeTransportCanary({
@@ -218,21 +234,14 @@ async function executeTransportCanary({
   selfSha256,
   output,
   executor,
+  reaperClient = new ExecutorRunPodClient(manifest.runpodctl.path, executor, "canary-reaper"),
   now = Date.now(),
-  pairId = newCanaryPairId(now),
   settle = async (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)),
   signalState = { requested: false, signal: null },
+  sshProbe = defaultSshProbe,
 }) {
-  const runpodctl = manifest.runpodctl.path;
-  const createArgs = buildTransportPodCreateArgs(manifest, pairId, now);
-  const expectedName = flagValue(createArgs, "--name");
-  const expectedTerminateAfter = flagValue(createArgs, "--terminateAfter");
-  if (expectedName.startsWith("storm-") || !expectedName.startsWith("proxywar-mickey-")) {
-    throw new Error("transport canary name is outside the Mickey namespace");
-  }
-
   const receipt = {
-    schema_version: 1,
+    schema_version: 2,
     kind: "mickey_cpu_transport_canary_receipt",
     run_id: manifest.run_id,
     manifest_sha256: manifestSha256,
@@ -241,196 +250,117 @@ async function executeTransportCanary({
     evidence_eligible: false,
     promotion_possible_from_this_run: false,
     game_processes_started: 0,
-    pod_name: expectedName,
+    create_attempts: 0,
+    secret_in_argv: false,
     requested_contract: {
+      transport: "rest-v1",
       compute_type: "CPU",
       cloud_type: manifest.pod.cloud_type,
+      cpu_flavor_ids: manifest.pod.cpu_flavor_ids,
       vcpu_count: manifest.pod.vcpu_count,
-      memory_gb: manifest.pod.memory_gb,
       max_cost_per_hour: manifest.pod.max_cost_per_hour,
       container_disk_gb: manifest.pod.container_disk_gb,
       volume_gb: manifest.pod.volume_gb,
       network_volume_id: null,
-      terminate_after: expectedTerminateAfter,
+      public_ip: true,
+      ports: ["22/tcp"],
+      provider_ttl: null,
+      client_cleanup_deadline_seconds:
+        manifest.cleanup_watchdog.client_cleanup_deadline_seconds,
     },
-    secret_in_argv: false,
-    request_correlation: "unique_exact_name_plus_manifest_hash",
-    preexisting_pod_count: null,
+    reaper_record_id: null,
+    pod_name: null,
     observed_new_pod_ids: [],
     deleted_exact_pod_ids: [],
     already_absent_exact_pod_ids: [],
-    cleanup_reconciliation: {
-      indeterminate_window_seconds: 30,
-      provider_terminate_after: expectedTerminateAfter,
-      exact_id_delete_attempts: CLEANUP_RETRY_DELAYS_MS.length,
-      exact_id_delete_backoff_ms: CLEANUP_RETRY_DELAYS_MS.slice(1),
-    },
+    external_deadline_cleanup_required: false,
     started_at: new Date(now).toISOString(),
     completed_at: null,
     status: "running",
     failure_reason: null,
   };
 
-  const createdIds = new Set();
   const observedIds = new Set();
-  const deletedIds = new Set();
-  const alreadyAbsentIds = new Set();
-  let preexistingIds = new Set();
+  let pending = null;
+  let podId = null;
   let fatal = null;
-  let createAttempted = false;
-
-  const rememberClaims = (ids) => {
-    for (const id of ids) observedIds.add(id);
-  };
-
-  const reconcile = async (label) => {
-    const result = await executor.run(
-      runpodctl,
-      ["pod", "list", "--name", expectedName, "-a", "-o", "json"],
-      { label, allowFailure: true },
-    );
-    if (result.code !== 0) throw new Error(`${label} failed with status ${result.code}`);
-    const listed = parseJson(result, label);
-    if (!Array.isArray(listed)) throw new Error(`${label} did not return an array`);
-    const claimed = [];
-    for (const record of listed) {
-      if (
-        !record ||
-        typeof record !== "object" ||
-        record.name !== expectedName ||
-        preexistingIds.has(record.id) ||
-        createdIds.has(record.id)
-      ) continue;
-      const id = registerCreatedPod(record, expectedName, preexistingIds, createdIds);
-      claimed.push(id);
-    }
-    rememberClaims(claimed);
-    return claimed;
-  };
-
-  const deleteCleanupOwnedId = async (id, label) => {
-    const inspection = await executor.run(
-      runpodctl,
-      ["pod", "get", id, "--include-network-volume", "-o", "json"],
-      { label: `${label}-identity-check`, allowFailure: true },
-    );
-    if (inspection.code !== 0) {
-      const body = `${inspection.stdout}\n${inspection.stderr}`.toLowerCase();
-      if (body.includes("pod not found") || body.includes('"status":404') || body.includes("status 404")) {
-        createdIds.delete(id);
-        alreadyAbsentIds.add(id);
-        return;
-      }
-      throw new Error(`pre-delete identity check failed for exact pod ${id}`);
-    }
-    const current = parseJson(inspection, "pre-delete exact-ID identity check");
-    if (current.id !== id || current.name !== expectedName || current.name.startsWith("storm-")) {
-      throw new CleanupIdentityRefusalError(`pre-delete identity check refused pod ${id}`);
-    }
-    const deletion = await deleteExactPod(runpodctl, id, executor, label);
-    createdIds.delete(id);
-    if (deletion.status === "already_absent") alreadyAbsentIds.add(id);
-    else deletedIds.add(id);
-  };
-
-  const deleteCleanupOwnedIdWithRetry = async (id, label) => {
-    let lastError = null;
-    for (let attempt = 0; attempt < CLEANUP_RETRY_DELAYS_MS.length; attempt += 1) {
-      if (attempt > 0) await settle(CLEANUP_RETRY_DELAYS_MS[attempt]);
-      try {
-        await deleteCleanupOwnedId(id, `${label}-attempt-${attempt + 1}`);
-        return;
-      } catch (error) {
-        if (error instanceof CleanupIdentityRefusalError) throw error;
-        lastError = error;
-      }
-    }
-    throw new Error(
-      `exact pod cleanup retries exhausted for ${id}: ${redactError(lastError)}`,
-    );
-  };
-
   try {
-    const snapshotResult = await executor.run(runpodctl, ["pod", "list", "-a", "-o", "json"], {
-      label: "canary-preexisting-snapshot",
+    const deadline = new Date(
+      now + manifest.cleanup_watchdog.client_cleanup_deadline_seconds * 1_000,
+    ).toISOString();
+    pending = await preparePendingCreate({
+      ledgerPath: manifest.cleanup_watchdog.ledger_path,
+      client: reaperClient,
+      runId: `${manifest.run_id}:transport-canary`,
+      manifestSha256,
+      deadline,
+      namePrefix: manifest.pod.name_prefix,
     });
-    const snapshot = parseJson(snapshotResult, "pre-existing pod snapshot");
-    if (!Array.isArray(snapshot) || snapshot.some((pod) => !pod || typeof pod.id !== "string")) {
-      throw new Error("pre-existing pod snapshot is not a complete JSON array");
-    }
-    preexistingIds = new Set(snapshot.map((pod) => pod.id));
-    receipt.preexisting_pod_count = preexistingIds.size;
-    if (snapshot.some((pod) => pod.name === expectedName)) {
-      throw new Error("unique canary name already exists before creation");
-    }
+    receipt.reaper_record_id = pending.record_id;
+    receipt.pod_name = pending.expected_name;
+    receipt.preexisting_pod_count = pending.preexisting_ids.length;
     if (signalState.requested) throw new Error(`received ${signalState.signal}`);
 
-    createAttempted = true;
+    const createArgs = buildPodCreateArgs(manifest, pending.expected_name, null);
+    if (createArgs.includes("--env") || JSON.stringify(createArgs).match(/api.?key|credential|password/i)) {
+      throw new Error("transport canary create argv contains a forbidden secret-bearing field");
+    }
+    receipt.create_attempts = 1;
     let createResult;
     try {
-      createResult = await executor.run(runpodctl, createArgs, {
+      createResult = await executor.run(manifest.runpodctl.path, createArgs, {
         label: "canary-pod-create",
         allowFailure: true,
       });
     } catch (error) {
-      await reconcile("canary-reconcile-create-exception").catch(() => []);
       throw new Error(`RunPod create transport failed before a trustworthy response: ${error.message}`);
     }
-
     let createRecord;
     try {
       createRecord = parseJson(createResult, "RunPod create");
-      if (createRecord.name !== expectedName || createRecord.name.startsWith("storm-")) {
-        throw new Error("RunPod create response does not bind the exact non-storm canary name");
-      }
-      const podId = registerCreatedPod(createRecord, expectedName, preexistingIds, createdIds);
+      const createdIds = new Set();
+      podId = registerCreatedPod(
+        createRecord,
+        pending.expected_name,
+        new Set(pending.preexisting_ids),
+        createdIds,
+      );
       observedIds.add(podId);
+      await bindActivePod({
+        ledgerPath: manifest.cleanup_watchdog.ledger_path,
+        client: reaperClient,
+        recordId: pending.record_id,
+        podId,
+      });
     } catch (error) {
-      await reconcile("canary-reconcile-create-response").catch(() => []);
       throw new Error(`RunPod create response was not cleanup-safe: ${error.message}`);
     }
-    if (signalState.requested) throw new Error(`received ${signalState.signal}`);
     if (createResult.code !== 0) {
-      throw new Error(`RunPod create returned status ${createResult.code} after returning a pod ID`);
+      throw new Error(`RunPod create returned status ${createResult.code} after binding exact pod ID ${podId}`);
     }
-
-    receipt.create_request_attestation = validateTransportCreateRequest(createRecord, {
+    receipt.create_request_attestation = validateCreateRequestAttestation(createRecord, {
       manifest,
-      expectedName,
-      expectedTerminateAfter,
+      expectedName: pending.expected_name,
+      controlSecret: null,
     });
-    validateCreatedPod(createRecord, { expectedName, preexistingIds });
-
-    const listResult = await executor.run(
-      runpodctl,
-      ["pod", "list", "--name", expectedName, "-a", "-o", "json"],
-      { label: "canary-post-create-list" },
-    );
-    const listed = parseJson(listResult, "post-create exact-name listing");
-    const exactNew = exactNameRecords(listed, expectedName, preexistingIds);
-    if (exactNew.length !== 1 || !createdIds.has(exactNew[0].id)) {
-      throw new Error("post-create exact-name listing does not resolve to the one cleanup-owned pod");
-    }
-
-    const podId = exactNew[0].id;
-    const getResult = await executor.run(
-      runpodctl,
-      ["pod", "get", podId, "--include-network-volume", "-o", "json"],
-      { label: "canary-post-create-get" },
-    );
-    const got = parseJson(getResult, "post-create exact-ID inspection");
-    if (got.id !== podId || got.name !== expectedName) {
-      throw new Error("post-create exact-ID inspection returned a different pod");
-    }
+    validateCreatedPod(createRecord, {
+      expectedName: pending.expected_name,
+      preexistingIds: new Set(pending.preexisting_ids),
+    });
+    const got = await reaperClient.get(podId);
+    if (!got) throw new Error("exact created pod disappeared before transport inspection");
     validateCreatedPod(
-      { ...createRecord, ...exactNew[0], ...got, id: podId },
-      { expectedName, preexistingIds, requireNetworkVolumeInspection: true },
+      { ...createRecord, ...got, id: podId },
+      {
+        expectedName: pending.expected_name,
+        preexistingIds: new Set(pending.preexisting_ids),
+        requireNetworkVolumeInspection: true,
+      },
     );
-    if (signalState.requested) throw new Error(`received ${signalState.signal}`);
     receipt.attested_pod = {
       id: podId,
-      name: expectedName,
-      cost_per_hour: got.costPerHr ?? createRecord.costPerHr,
+      name: pending.expected_name,
+      cost_per_hour: Number(got.costPerHr ?? createRecord.costPerHr),
       vcpu_count: got.vcpuCount ?? createRecord.vcpuCount,
       memory_gb: got.memoryInGb ?? createRecord.memoryInGb,
       gpu_count: got.gpuCount ?? createRecord.gpuCount,
@@ -438,78 +368,87 @@ async function executeTransportCanary({
       volume_gb: got.volumeInGb ?? createRecord.volumeInGb,
       network_volume_attached: false,
     };
+    receipt.ssh_transport = await sshProbe({
+      manifest,
+      podId,
+      expectedName: pending.expected_name,
+      output,
+      executor,
+      signalState,
+      settle,
+    });
+    if (receipt.ssh_transport?.status !== "ready") throw new Error("SSH transport did not become ready");
   } catch (error) {
     fatal = error;
   } finally {
-    if (createAttempted) {
-      const reconciliationRounds = fatal && observedIds.size === 0 ? 7 : 1;
-      for (let round = 0; round < reconciliationRounds; round += 1) {
-        if (round > 0) await settle(5_000);
-        await reconcile(`canary-final-reconcile-${round + 1}`).catch((error) => {
-          fatal ??= error;
+    if (pending) {
+      try {
+        await runReaperOnce({
+          ledgerPath: manifest.cleanup_watchdog.ledger_path,
+          client: reaperClient,
         });
-        for (const id of [...createdIds]) {
-          try {
-            await deleteCleanupOwnedIdWithRetry(id, `canary-exact-delete-${id}`);
-          } catch (error) {
-            fatal ??= error;
-          }
+        let ledger = await readReaperLedger(manifest.cleanup_watchdog.ledger_path);
+        let owned = ledger.records.find((record) => record.record_id === pending.record_id);
+        if (!owned) throw new Error("reaper ownership record disappeared");
+        if (owned.state === "active") {
+          podId ??= owned.pod_id;
+          observedIds.add(owned.pod_id);
+          const deletion = await deleteExactOwnedPodWithRetry({
+            runpodctl: manifest.runpodctl.path,
+            podId: owned.pod_id,
+            expectedName: owned.expected_name,
+            preexistingIds: new Set(owned.preexisting_ids),
+            executor,
+            label: "canary-normal-cleanup",
+            settle,
+          });
+          owned = await confirmOwnedPodAbsent({
+            ledgerPath: manifest.cleanup_watchdog.ledger_path,
+            client: reaperClient,
+            recordId: pending.record_id,
+          });
+          if (deletion.status === "confirmed_absent") receipt.already_absent_exact_pod_ids.push(owned.pod_id);
+          else receipt.deleted_exact_pod_ids.push(owned.pod_id);
+          receipt.cleanup = {
+            status: owned.terminal_reason,
+            reaper_state: owned.state,
+            exact_id_get_before_each_delete: true,
+            final_absence_confirmed: true,
+          };
+        } else if (owned.state === "retired") {
+          owned = await confirmOwnedPodAbsent({
+            ledgerPath: manifest.cleanup_watchdog.ledger_path,
+            client: reaperClient,
+            recordId: pending.record_id,
+          });
+          receipt.already_absent_exact_pod_ids.push(owned.pod_id);
+          receipt.cleanup = {
+            status: owned.terminal_reason,
+            reaper_state: owned.state,
+            final_absence_confirmed: true,
+          };
+        } else if (owned.state === "pending") {
+          receipt.external_deadline_cleanup_required = true;
+          receipt.cleanup = {
+            status: "pending_exact_name_reconciliation",
+            reaper_state: owned.state,
+            deadline: owned.deadline,
+            final_absence_confirmed: false,
+          };
+          fatal ??= new Error("create outcome remains pending under the external exact-ID deadline reaper");
+        } else {
+          throw new Error(`reaper record ended in unsafe state ${owned.state}`);
         }
-      }
-
-      try {
-        const lateResult = await executor.run(
-          runpodctl,
-          ["pod", "list", "--name", expectedName, "-a", "-o", "json"],
-          { label: "canary-late-arrival-check" },
-        );
-        const lateRecords = exactNameRecords(
-          parseJson(lateResult, "late exact-name arrival check"),
-          expectedName,
-          preexistingIds,
-        );
-        for (const record of lateRecords) {
-          if (!createdIds.has(record.id)) {
-            const id = registerCreatedPod(record, expectedName, preexistingIds, createdIds);
-            observedIds.add(id);
-          }
-        }
-      } catch (error) {
-        fatal ??= error;
-      }
-
-      for (const id of [...createdIds]) {
-        try {
-          await deleteCleanupOwnedIdWithRetry(id, `canary-late-exact-delete-${id}`);
-        } catch (error) {
-          fatal ??= error;
-        }
-      }
-
-      try {
-        const finalResult = await executor.run(
-          runpodctl,
-          ["pod", "list", "--name", expectedName, "-a", "-o", "json"],
-          { label: "canary-final-absence-check" },
-        );
-        const finalRecords = exactNameRecords(
-          parseJson(finalResult, "final exact-name absence check"),
-          expectedName,
-          preexistingIds,
-        );
-        if (finalRecords.length !== 0 || createdIds.size !== 0) {
-          fatal ??= new Error("one or more exact canary pod IDs remain after cleanup");
-        }
-      } catch (error) {
-        fatal ??= error;
+      } catch (cleanupError) {
+        fatal = new Error(`${fatal?.message || "transport canary failed"}; exact-ID cleanup: ${cleanupError.message}`);
       }
     }
   }
 
   if (signalState.requested) fatal ??= new Error(`received ${signalState.signal}`);
   receipt.observed_new_pod_ids = [...observedIds].sort();
-  receipt.deleted_exact_pod_ids = [...deletedIds].sort();
-  receipt.already_absent_exact_pod_ids = [...alreadyAbsentIds].sort();
+  receipt.deleted_exact_pod_ids = [...new Set(receipt.deleted_exact_pod_ids)].sort();
+  receipt.already_absent_exact_pod_ids = [...new Set(receipt.already_absent_exact_pod_ids)].sort();
   receipt.completed_at = new Date().toISOString();
   receipt.status = fatal ? "failed" : "passed";
   receipt.failure_reason = fatal ? redactError(fatal) : null;
@@ -517,7 +456,7 @@ async function executeTransportCanary({
 }
 
 export async function simulateTransportCanaryForTest(options) {
-  if (options?.manifest?.runpodctl?.path !== "/fake/runpodctl" || options.output !== "/unused") {
+  if (options?.manifest?.runpodctl?.path !== "/fake/runpodctl") {
     throw new Error("test simulation is restricted to the non-network fake RunPod path");
   }
   return executeTransportCanary(options);
@@ -557,12 +496,7 @@ export function validateLiveRunnerStatus(status, { manifest, output, childPid = 
   ) {
     throw new Error("live runner status does not bind this exact Mickey child and output");
   }
-  return {
-    owner: status.owner,
-    run_id: status.run_id,
-    child_pid: status.child_pid,
-    output,
-  };
+  return { owner: status.owner, run_id: status.run_id, child_pid: status.child_pid, output };
 }
 
 export async function acquireCanaryOnce(output) {
@@ -580,9 +514,8 @@ export async function runCli(argv, { executor = new EphemeralExecutor() } = {}) 
   const actualSelfSha256 = await sha256File(SELF_PATH);
   if (actualSelfSha256 !== options.selfSha256) throw new Error("transport canary self SHA-256 mismatch");
   const preflight = await preflightManifest(options.manifest, options.manifestSha256);
-
-  const dryPairId = "transport-dry-run";
-  const dryArgs = buildTransportPodCreateArgs(preflight.document, dryPairId, 0);
+  const plannedName = dryRunName(preflight.document);
+  const dryArgs = buildPodCreateArgs(preflight.document, plannedName, null);
   if (options.dryRun) {
     process.stdout.write(`${JSON.stringify({
       ok: true,
@@ -594,8 +527,13 @@ export async function runCli(argv, { executor = new EphemeralExecutor() } = {}) 
       game_processes_started: 0,
       evidence_eligible: false,
       promotion_possible_from_this_run: false,
-      create_argv: redactedCreatePlan(dryArgs),
-      cleanup: "exact_new_pod_ids_only",
+      reaper_prepare_before_post: true,
+      provider_ttl: null,
+      client_cleanup_deadline_seconds:
+        preflight.document.cleanup_watchdog.client_cleanup_deadline_seconds,
+      create_argv: dryArgs,
+      ssh_probe: "exact-id/name readiness plus static command; no game",
+      cleanup: "exact-id retries then reaper confirm-absent",
     }, null, 2)}\n`);
     return 0;
   }
@@ -613,6 +551,11 @@ export async function runCli(argv, { executor = new EphemeralExecutor() } = {}) 
   validateLiveRunnerStatus(parseJson(runnerStatusResult, "live runner status"), {
     manifest: preflight.document,
     output: options.output,
+  });
+  await verifyLiveReaperService({
+    manifest: preflight.document,
+    manifestSha256: preflight.manifestSha256,
+    executor,
   });
   await acquireCanaryOnce(options.output);
   const evidenceRoot = path.join(options.output, "evidence");
@@ -633,9 +576,7 @@ export async function runCli(argv, { executor = new EphemeralExecutor() } = {}) 
 
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   runCli(process.argv.slice(2)).then(
-    (code) => {
-      process.exitCode = code;
-    },
+    (code) => { process.exitCode = code; },
     (error) => {
       process.stderr.write(`MICKEY_CPU_TRANSPORT_CANARY_FAILED: ${error.message}\n`);
       process.exitCode = 1;

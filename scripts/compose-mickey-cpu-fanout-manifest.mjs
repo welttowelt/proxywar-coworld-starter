@@ -9,10 +9,10 @@ import { fileURLToPath } from "node:url";
 import { derivePairOrder } from "./run-mickey-cpu-fanout.mjs";
 
 const SOURCE_RECEIPT_SHA256 = "127d60ee51f4e4b2d50c7b6908d1e571ce8f9e40f1939f61c25e3cdb4abaa129";
-const RUNPODCTL_SHA256 = "9e376b334c8d16666fa58dee7d7053b88e0ff580db3c714811e13c8640cd7838";
+const RUNPODCTL_SHA256 = "4b34a2b8c474b2925df67b9dbcbee7643b1d7ed0ba22c9f725ecf61602ca89c0";
 const RUNPODCTL_UPSTREAM_BASE_COMMIT = "3928df943d67c89e66b4945bd5c8b38ffd512767";
-const RUNPODCTL_SOURCE_COMMIT = "729623f7093b6854a9d641c7924dc2a418eaeddc";
-const RUNPODCTL_PATCH_SHA256 = "020e4c6198c79dcdd596b582222aacb027970c282540186378fc7f480baa91c2";
+const RUNPODCTL_SOURCE_COMMIT = "5eafbd3aead9b50b7b70ae064a0d9d7cdea5273c";
+const RUNPODCTL_PATCH_SHA256 = "1775778d2dc220a0de4e2b40c37f279c803c1ec60183428b7dae727ce357fc36";
 const RETAINED = new Map([
   ["grow-opening", ["grow", "all-k1z-grow", "mm1g"]],
   ["grow-low-share", ["grow", "all-k1z-grow", "mm1g"]],
@@ -24,6 +24,8 @@ const CONTROL_PLANE_PATHS = {
   fanout_runner: path.join(REPO_ROOT, "scripts", "run-mickey-cpu-fanout.mjs"),
   policy_auditor: path.join(REPO_ROOT, "scripts", "audit-mickey-cpu-fanout.mjs"),
   remote_verifier: path.join(REPO_ROOT, "scripts", "verify-mickey-cpu-fanout-bundle.mjs"),
+  exact_id_reaper: path.join(REPO_ROOT, "scripts", "runpod-exact-id-reaper.mjs"),
+  reaper_launchd_renderer: path.join(REPO_ROOT, "scripts", "render-runpod-exact-id-reaper-launchd.mjs"),
 };
 
 async function sha256File(filePath) {
@@ -42,7 +44,8 @@ function parseArgs(argv) {
     if (!value || ![
       "--fragment", "--output", "--run-id", "--nonce", "--source-receipt",
       "--runpodctl", "--runpodctl-patch", "--runner-lease", "--runner-lease-sha256",
-      "--pod-image", "--max-concurrency",
+      "--pod-image", "--max-concurrency", "--reaper", "--reaper-ledger",
+      "--reaper-service-receipt",
     ].includes(key)) fail(`unknown or incomplete option: ${key}`);
     if (Object.hasOwn(options, key)) fail(`duplicate option: ${key}`);
     options[key] = value;
@@ -50,10 +53,11 @@ function parseArgs(argv) {
   for (const key of [
     "--fragment", "--output", "--run-id", "--source-receipt", "--runpodctl",
     "--runpodctl-patch", "--runner-lease", "--runner-lease-sha256", "--pod-image",
+    "--reaper", "--reaper-ledger", "--reaper-service-receipt",
   ]) {
     if (!options[key]) fail(`${key} is required`);
   }
-  for (const key of ["--fragment", "--output", "--source-receipt", "--runpodctl", "--runpodctl-patch", "--runner-lease"]) {
+  for (const key of ["--fragment", "--output", "--source-receipt", "--runpodctl", "--runpodctl-patch", "--runner-lease", "--reaper", "--reaper-ledger", "--reaper-service-receipt"]) {
     if (!path.isAbsolute(options[key])) fail(`${key} must be absolute`);
   }
   const maxConcurrency = Number(options["--max-concurrency"] ?? 4);
@@ -75,6 +79,9 @@ function parseArgs(argv) {
     runnerLease: options["--runner-lease"],
     runnerLeaseSha256: options["--runner-lease-sha256"],
     podImage: options["--pod-image"],
+    reaper: options["--reaper"],
+    reaperLedger: options["--reaper-ledger"],
+    reaperServiceReceipt: options["--reaper-service-receipt"],
     maxConcurrency,
   };
 }
@@ -97,6 +104,15 @@ function policyIdentity(policy) {
 
 async function main(argv) {
   const options = parseArgs(argv);
+  if (options.reaper !== CONTROL_PLANE_PATHS.exact_id_reaper) {
+    fail("--reaper must be the exact integration reaper script");
+  }
+  if (await sha256File(options.runpodctl) !== RUNPODCTL_SHA256) {
+    fail("--runpodctl does not match the frozen cleanroom arm64 binary");
+  }
+  if (await sha256File(options.runpodctlPatch) !== RUNPODCTL_PATCH_SHA256) {
+    fail("--runpodctl-patch does not match the frozen cleanroom patch");
+  }
   const fragment = JSON.parse(await readFile(options.fragment, "utf8"));
   if (
     fragment.schema_version !== 1 ||
@@ -161,7 +177,7 @@ async function main(argv) {
     });
   }
   const manifest = {
-    schema_version: 1,
+    schema_version: 2,
     kind: "mickey_cpu_fanout",
     run_id: options.runId,
     preregistered_at: new Date().toISOString(),
@@ -187,8 +203,8 @@ async function main(argv) {
       source_commit: RUNPODCTL_SOURCE_COMMIT,
       patch_path: options.runpodctlPatch,
       patch_sha256: RUNPODCTL_PATCH_SHA256,
-      patch_id: "mickey-cpu-terminate-after-compute-type-v2",
-      create_interface: "legacy-graphql-json-v2",
+      patch_id: "mickey-cpu-rest-create-no-delete-v2",
+      create_interface: "rest-cpu-pod-create-v1",
     },
     pod: {
       name_prefix: "proxywar-mickey-cpu-fanout",
@@ -203,8 +219,26 @@ async function main(argv) {
       container_disk_gb: 20,
       volume_gb: 0,
       network_volume_id: null,
-      terminate_after_seconds: 7200,
+      cpu_flavor_ids: ["cpu5c", "cpu3c"],
+      cpu_flavor_priority: "custom",
+      public_ip: true,
+      ports: ["22/tcp"],
       max_concurrency: options.maxConcurrency,
+    },
+    cleanup_watchdog: {
+      kind: "independent_exact_id_reaper_v1",
+      script: { path: options.reaper, sha256: await sha256File(options.reaper) },
+      node_runtime: { path: process.execPath, sha256: await sha256File(process.execPath) },
+      ledger_path: options.reaperLedger,
+      heartbeat_path: path.join(path.dirname(options.reaperLedger), "provider-heartbeat.json"),
+      heartbeat_max_age_seconds: 120,
+      client_cleanup_deadline_seconds: 7200,
+      poll_interval_seconds: 60,
+      provider_ttl_available: false,
+      exact_id_only: true,
+      launchd_required_for_live_run: true,
+      launchd_label: "com.welttowelt.proxywar.mickey.runpod-reaper",
+      service_receipt_path: options.reaperServiceReceipt,
     },
     source_reach_receipt: { path: options.sourceReceipt, sha256: SOURCE_RECEIPT_SHA256 },
     arms,

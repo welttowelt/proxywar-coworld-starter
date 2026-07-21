@@ -6,13 +6,67 @@ import test from "node:test";
 
 import {
   ReaperIdentityRefusalError,
+  ReaperProviderError,
   bindActivePod,
+  confirmOwnedPodAbsent,
+  ensureReaperLedger,
+  isStructuredProviderNotFound,
   preparePendingCreate,
   readReaperLedger,
   runReaperOnce,
+  writeProviderHeartbeat,
 } from "../scripts/runpod-exact-id-reaper.mjs";
 
 const MANIFEST_SHA = "a".repeat(64);
+
+test("structured not-found classifier uses the final HTTP marker and rejects nested 404 text in a 502", () => {
+  const notFound = JSON.stringify({
+    error: 'failed to get pod: api error: {"error":"pod not found","status":404}\\n (status 404)',
+  });
+  const duplicate = JSON.stringify({
+    error: 'api error: {"error":"pod not found","status":404}\\n (status 404)',
+  });
+  assert.equal(isStructuredProviderNotFound("", `${notFound}\nUsage: runpodctl pod get\n${duplicate}\n`), true);
+
+  const adversarial502 = JSON.stringify({
+    error: "failed to get pod: status 502; upstream text contained status 404 (status 502)",
+  });
+  assert.equal(isStructuredProviderNotFound("", adversarial502), false);
+  assert.equal(isStructuredProviderNotFound("", "pod not found status 404"), false);
+  assert.equal(isStructuredProviderNotFound("", `${notFound}\n${adversarial502}`), false);
+});
+
+test("service-context heartbeat performs a provider list but records only a sanitized count", async (t) => {
+  const fx = await fixture(t, {
+    pods: [
+      { id: "secret-id-a", name: "storm-private-a" },
+      { id: "secret-id-b", name: "unrelated-private-b" },
+    ],
+  });
+  const heartbeatPath = path.join(fx.root, "provider-heartbeat.json");
+  const heartbeat = await writeProviderHeartbeat({
+    heartbeatPath,
+    ledgerPath: fx.ledgerPath,
+    runpodctlPath: "/private/tmp/pinned-runpodctl",
+    client: fx.client,
+    clock: fx.clock,
+    retryOptions: fx.retryOptions,
+  });
+  assert.equal(heartbeat.status, "provider_list_succeeded");
+  assert.equal(heartbeat.pod_count, 2);
+  assert.equal(heartbeat.identifiers_recorded, false);
+  assert.equal((await stat(heartbeatPath)).mode & 0o777, 0o600);
+  const serialized = await readFile(heartbeatPath, "utf8");
+  assert.doesNotMatch(serialized, /secret-id|storm-private|unrelated-private/);
+  assert.doesNotMatch(serialized, /api[-_]?key|authorization|bearer/i);
+});
+
+test("service startup materializes an empty durable 0600 ledger", async (t) => {
+  const fx = await fixture(t);
+  const ledger = await ensureReaperLedger({ ledgerPath: fx.ledgerPath, clock: fx.clock });
+  assert.equal(ledger.records.length, 0);
+  assert.equal((await stat(fx.ledgerPath)).mode & 0o777, 0o600);
+});
 
 class FakeRunPodClient {
   constructor(pods = []) {
@@ -258,4 +312,65 @@ test("a delete acknowledgement without final absence never retires the record", 
   const ledger = await readReaperLedger(fx.ledgerPath);
   assert.equal(ledger.records[0].state, "active");
   assert.match(ledger.records[0].last_error, /verified absence/);
+});
+
+test("pre-deadline normal cleanup becomes terminal only after exact bound ID is absent", async (t) => {
+  const fx = await fixture(t);
+  const pending = await prepare(fx, {
+    randomUUIDFn: () => "00000000-0000-4000-8000-000000000005",
+  });
+  fx.client.add({ id: "normally-cleaned-pod", name: pending.expected_name });
+  await bind(fx, pending, "normally-cleaned-pod");
+
+  await assert.rejects(
+    confirmOwnedPodAbsent({
+      ledgerPath: fx.ledgerPath,
+      client: fx.client,
+      recordId: pending.record_id,
+      clock: fx.clock,
+      retryOptions: fx.retryOptions,
+    }),
+    ReaperProviderError,
+  );
+  let ledger = await readReaperLedger(fx.ledgerPath);
+  assert.equal(ledger.records[0].state, "active");
+  assert.match(ledger.records[0].last_error, /remains present/);
+
+  fx.client.pods.delete("normally-cleaned-pod");
+  const retired = await confirmOwnedPodAbsent({
+    ledgerPath: fx.ledgerPath,
+    client: fx.client,
+    recordId: pending.record_id,
+    clock: fx.clock,
+    retryOptions: fx.retryOptions,
+  });
+  assert.equal(retired.state, "retired");
+  assert.equal(retired.terminal_reason, "normal_cleanup_confirmed_absent");
+  ledger = await readReaperLedger(fx.ledgerPath);
+  assert.equal(ledger.records[0].state, "retired");
+});
+
+test("normal cleanup absence confirmation blocks on exact-ID name drift", async (t) => {
+  const fx = await fixture(t);
+  const pending = await prepare(fx, {
+    randomUUIDFn: () => "00000000-0000-4000-8000-000000000006",
+  });
+  fx.client.add({ id: "identity-drift-pod", name: pending.expected_name });
+  await bind(fx, pending, "identity-drift-pod");
+  fx.client.rename("identity-drift-pod", "storm-protected-drift");
+
+  await assert.rejects(
+    confirmOwnedPodAbsent({
+      ledgerPath: fx.ledgerPath,
+      client: fx.client,
+      recordId: pending.record_id,
+      clock: fx.clock,
+      retryOptions: fx.retryOptions,
+    }),
+    ReaperIdentityRefusalError,
+  );
+  const ledger = await readReaperLedger(fx.ledgerPath);
+  assert.equal(ledger.records[0].state, "blocked");
+  assert.equal(ledger.records[0].terminal_reason, "identity_refusal");
+  assert.equal(fx.client.calls.some((call) => call.method === "delete"), false);
 });

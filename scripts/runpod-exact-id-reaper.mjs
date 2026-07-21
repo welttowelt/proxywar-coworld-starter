@@ -22,12 +22,6 @@ const SAFE_NAME_PREFIX = "proxywar-mickey-";
 const MAX_NAME_LENGTH = 63;
 const EVENT_LIMIT = 256;
 const DEFAULT_RETRY_DELAYS_MS = Object.freeze([0, 250, 1_000, 2_500, 5_000, 10_000, 15_000]);
-const NOT_FOUND_PATTERNS = Object.freeze([
-  "pod not found",
-  '"status":404',
-  "status 404",
-  "http 404",
-]);
 
 export class ReaperValidationError extends Error {}
 export class ReaperIdentityRefusalError extends Error {}
@@ -76,7 +70,13 @@ function normalizeSnapshot(records) {
   if (!Array.isArray(records)) {
     throw new ReaperProviderError("pre-create pod snapshot is not an array");
   }
-  const normalized = records.map((record, index) => normalizePod(record, `pre-create snapshot[${index}]`));
+  // Provider pod lists may include each pod's environment. The reaper only
+  // needs identity, so discard every other field before the snapshot can flow
+  // into ownership records, digests, heartbeats, or caller-visible results.
+  const normalized = records.map((record, index) => {
+    const pod = normalizePod(record, `pre-create snapshot[${index}]`);
+    return { id: pod.id, name: pod.name };
+  });
   const ids = new Set();
   for (const record of normalized) {
     if (ids.has(record.id)) {
@@ -261,6 +261,31 @@ async function atomicWriteLedger(ledgerPath, ledger) {
   }
 }
 
+async function atomicWriteJson0600(filePath, value) {
+  await ensureLedgerParent(filePath);
+  const temporary = `${filePath}.part-${process.pid}-${randomBytes(8).toString("hex")}`;
+  let handle;
+  try {
+    handle = await open(
+      temporary,
+      fsConstants.O_WRONLY | fsConstants.O_CREAT | fsConstants.O_EXCL | fsConstants.O_NOFOLLOW,
+      0o600,
+    );
+    await handle.writeFile(`${JSON.stringify(value, null, 2)}\n`, "utf8");
+    await handle.chmod(0o600);
+    await handle.sync();
+    await handle.close();
+    handle = null;
+    await rename(temporary, filePath);
+    await chmod(filePath, 0o600);
+    await fsyncDirectory(path.dirname(filePath));
+  } catch (error) {
+    await handle?.close().catch(() => {});
+    await unlink(temporary).catch(() => {});
+    throw error;
+  }
+}
+
 export async function readReaperLedger(ledgerPath, { allowMissing = false, clock = Date.now } = {}) {
   if (!path.isAbsolute(ledgerPath)) throw new ReaperValidationError("ledger path must be absolute");
   let info;
@@ -373,6 +398,19 @@ async function persist(ledgerPath, ledger, now) {
   await atomicWriteLedger(ledgerPath, ledger);
 }
 
+export async function ensureReaperLedger({ ledgerPath, clock = Date.now }) {
+  return withLedgerLock(ledgerPath, async () => {
+    const existing = await lstat(ledgerPath).catch((error) => {
+      if (error?.code === "ENOENT") return null;
+      throw error;
+    });
+    if (existing) return readReaperLedger(ledgerPath);
+    const ledger = emptyLedger(normalizeNow(clock));
+    await atomicWriteLedger(ledgerPath, ledger);
+    return ledger;
+  });
+}
+
 async function retry(operation, {
   delays = DEFAULT_RETRY_DELAYS_MS,
   sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)),
@@ -390,9 +428,22 @@ async function retry(operation, {
   throw new ReaperProviderError(`provider operation exhausted ${delays.length} attempts: ${lastError?.message || "unknown failure"}`);
 }
 
-function isNotFoundBody(stdout, stderr) {
-  const body = `${stdout}\n${stderr}`.toLowerCase();
-  return NOT_FOUND_PATTERNS.some((pattern) => body.includes(pattern));
+export function isStructuredProviderNotFound(stdout, stderr) {
+  const statuses = [];
+  for (const line of `${stdout}\n${stderr}`.split(/\r?\n/)) {
+    const trimmed = line.trim();
+    if (!trimmed.startsWith("{") || !trimmed.endsWith("}")) continue;
+    let parsed;
+    try {
+      parsed = JSON.parse(trimmed);
+    } catch {
+      continue;
+    }
+    if (!parsed || typeof parsed !== "object" || typeof parsed.error !== "string") continue;
+    const match = parsed.error.match(/\(status\s+([1-5][0-9]{2})\)\s*$/i);
+    if (match) statuses.push(Number(match[1]));
+  }
+  return statuses.length > 0 && statuses.every((status) => status === 404);
 }
 
 function parseProviderJson(result, label) {
@@ -465,7 +516,7 @@ export class RunpodctlClient {
       "json",
     ]);
     if (result.code !== 0) {
-      if (isNotFoundBody(result.stdout, result.stderr)) return null;
+      if (isStructuredProviderNotFound(result.stdout, result.stderr)) return null;
       throw new ReaperProviderError(`runpodctl pod get failed with status ${result.code}`);
     }
     return normalizePod(parseProviderJson(result, "runpodctl pod get"), "runpodctl pod get");
@@ -475,7 +526,7 @@ export class RunpodctlClient {
     assertString(podId, "pod ID", /^[A-Za-z0-9_-]+$/, 256);
     const result = await this.#run(["pod", "delete", podId, "-o", "json"]);
     if (result.code !== 0) {
-      if (isNotFoundBody(result.stdout, result.stderr)) return { status: "already_absent" };
+      if (isStructuredProviderNotFound(result.stdout, result.stderr)) return { status: "already_absent" };
       throw new ReaperProviderError(`runpodctl pod delete failed with status ${result.code}`);
     }
     return { status: "delete_acknowledged" };
@@ -657,6 +708,74 @@ export async function bindActivePod({
   });
 }
 
+export async function confirmOwnedPodAbsent({
+  ledgerPath,
+  client,
+  recordId,
+  clock = Date.now,
+  retryOptions,
+}) {
+  if (!client || typeof client.get !== "function") {
+    throw new ReaperValidationError("provider client must implement get");
+  }
+  return withLedgerLock(ledgerPath, async () => {
+    const now = normalizeNow(clock);
+    const ledger = await readReaperLedger(ledgerPath);
+    const record = findRecord(ledger, recordId);
+    if (record.state === "pending") {
+      throw new ReaperIdentityRefusalError("cannot confirm absence for an unbound pending record");
+    }
+    if (record.state === "blocked") {
+      throw new ReaperIdentityRefusalError("cannot confirm absence for a blocked record");
+    }
+    assertRecordOwnership(record);
+
+    let current;
+    try {
+      current = await retry(() => client.get(record.pod_id), retryOptions);
+    } catch (error) {
+      const message = safeErrorMessage(error);
+      record.last_error = message;
+      appendEvent(record, "normal_cleanup_absence_check_error", now, {
+        pod_id: record.pod_id,
+        error: message,
+      });
+      await persist(ledgerPath, ledger, now);
+      throw error;
+    }
+
+    if (current !== null) {
+      try {
+        attestExactPod(record, current);
+      } catch (error) {
+        const message = safeErrorMessage(error);
+        record.state = "blocked";
+        record.terminal_reason = "identity_refusal";
+        record.last_error = message;
+        appendEvent(record, "normal_cleanup_identity_refusal", now, {
+          pod_id: record.pod_id,
+          error: message,
+        });
+        await persist(ledgerPath, ledger, now);
+        throw error;
+      }
+      const error = new ReaperProviderError("exact owned pod remains present after normal cleanup");
+      record.last_error = error.message;
+      appendEvent(record, "normal_cleanup_pod_still_present", now, { pod_id: record.pod_id });
+      await persist(ledgerPath, ledger, now);
+      throw error;
+    }
+
+    record.state = "retired";
+    record.retired_at ??= new Date(now).toISOString();
+    record.terminal_reason = "normal_cleanup_confirmed_absent";
+    record.last_error = null;
+    appendEvent(record, "normal_cleanup_absence_confirmed", now, { pod_id: record.pod_id });
+    await persist(ledgerPath, ledger, now);
+    return structuredClone(record);
+  });
+}
+
 async function finalAbsence(client, podId, retryOptions) {
   return retry(async () => {
     const current = await client.get(podId);
@@ -816,6 +935,8 @@ export async function runReaperOnce({
 export async function pollReaper({
   ledgerPath,
   client,
+  heartbeatPath = null,
+  runpodctlPath = null,
   intervalSeconds = 60,
   signalState = { requested: false },
   clock = Date.now,
@@ -826,11 +947,53 @@ export async function pollReaper({
   if (!Number.isSafeInteger(intervalSeconds) || intervalSeconds < 5 || intervalSeconds > 3_600) {
     throw new ReaperValidationError("poll interval must be an integer from 5 through 3600 seconds");
   }
+  await ensureReaperLedger({ ledgerPath, clock });
   while (!signalState.requested) {
+    if (heartbeatPath !== null) {
+      await writeProviderHeartbeat({
+        heartbeatPath,
+        ledgerPath,
+        runpodctlPath,
+        client,
+        clock,
+        retryOptions,
+      });
+    }
     const result = await runReaperOnce({ ledgerPath, client, clock, retryOptions });
     await onResult(result);
     if (!signalState.requested) await sleep(intervalSeconds * 1_000);
   }
+}
+
+export async function writeProviderHeartbeat({
+  heartbeatPath,
+  ledgerPath,
+  runpodctlPath,
+  client,
+  clock = Date.now,
+  retryOptions,
+}) {
+  if (!client || typeof client.listAll !== "function") {
+    throw new ReaperValidationError("provider client must implement listAll");
+  }
+  if (!path.isAbsolute(heartbeatPath) || !path.isAbsolute(ledgerPath) || !path.isAbsolute(runpodctlPath)) {
+    throw new ReaperValidationError("heartbeat, ledger, and runpodctl paths must be absolute");
+  }
+  const pods = normalizeSnapshot(await retry(() => client.listAll(), retryOptions));
+  const heartbeat = {
+    schema_version: 1,
+    kind: "mickey_runpod_exact_id_reaper_provider_heartbeat",
+    status: "provider_list_succeeded",
+    probed_at: new Date(normalizeNow(clock)).toISOString(),
+    pod_count: pods.length,
+    ledger_path: ledgerPath,
+    runpodctl_path: runpodctlPath,
+    pid: process.pid,
+    identifiers_recorded: false,
+    credentials_recorded: false,
+  };
+  await atomicWriteJson0600(heartbeatPath, heartbeat);
+  return heartbeat;
 }
 
 function makeInterruptibleSleep(signalState) {
@@ -886,8 +1049,9 @@ function printUsage() {
   process.stdout.write(`Usage:
   runpod-exact-id-reaper.mjs prepare --ledger ABS --runpodctl ABS --run-id ID --manifest-sha256 HEX --deadline ISO [--name-prefix proxywar-mickey-reaper]
   runpod-exact-id-reaper.mjs bind --ledger ABS --runpodctl ABS --record-id ID --pod-id ID
+  runpod-exact-id-reaper.mjs confirm-absent --ledger ABS --runpodctl ABS --record-id ID
   runpod-exact-id-reaper.mjs run-once --ledger ABS --runpodctl ABS
-  runpod-exact-id-reaper.mjs poll --ledger ABS --runpodctl ABS [--interval-seconds 60]
+  runpod-exact-id-reaper.mjs poll --ledger ABS --runpodctl ABS [--interval-seconds 60] [--heartbeat ABS]
   runpod-exact-id-reaper.mjs status --ledger ABS
 
 The tool reads provider credentials only through runpodctl's normal environment/config.
@@ -938,6 +1102,21 @@ async function main(argv = process.argv.slice(2)) {
     })}\n`);
     return;
   }
+  if (command === "confirm-absent") {
+    const record = await confirmOwnedPodAbsent({
+      ledgerPath,
+      client,
+      recordId: required(options, "record-id"),
+    });
+    process.stdout.write(`${JSON.stringify({
+      record_id: record.record_id,
+      state: record.state,
+      pod_id: record.pod_id,
+      expected_name: record.expected_name,
+      terminal_reason: record.terminal_reason,
+    })}\n`);
+    return;
+  }
   if (command === "run-once") {
     process.stdout.write(`${JSON.stringify(await runReaperOnce({ ledgerPath, client }))}\n`);
     return;
@@ -954,6 +1133,8 @@ async function main(argv = process.argv.slice(2)) {
       await pollReaper({
         ledgerPath,
         client,
+        heartbeatPath: options.has("heartbeat") ? path.resolve(options.get("heartbeat")) : null,
+        runpodctlPath: path.resolve(required(options, "runpodctl")),
         intervalSeconds,
         signalState,
         onResult: (result) => process.stdout.write(`${JSON.stringify(result)}\n`),

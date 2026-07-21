@@ -20,6 +20,15 @@ import process from "node:process";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { auditMickeyCpuFanout } from "./audit-mickey-cpu-fanout.mjs";
+import {
+  ReaperIdentityRefusalError,
+  bindActivePod,
+  confirmOwnedPodAbsent,
+  isStructuredProviderNotFound,
+  preparePendingCreate,
+  readReaperLedger,
+  runReaperOnce,
+} from "./runpod-exact-id-reaper.mjs";
 
 const SCRIPT_PATH = fileURLToPath(import.meta.url);
 const REPO_ROOT = path.resolve(path.dirname(SCRIPT_PATH), "..");
@@ -29,6 +38,12 @@ const REMOTE_VERIFIER = path.join(
   "verify-mickey-cpu-fanout-bundle.mjs",
 );
 const AUDIT_SCRIPT = path.join(REPO_ROOT, "scripts", "audit-mickey-cpu-fanout.mjs");
+const REAPER_SCRIPT = path.join(REPO_ROOT, "scripts", "runpod-exact-id-reaper.mjs");
+const REAPER_LAUNCHD_RENDERER = path.join(
+  REPO_ROOT,
+  "scripts",
+  "render-runpod-exact-id-reaper-launchd.mjs",
+);
 // The user transferred the Mac's former Hrafn operator slot to this
 // incubator. Mickey is now both the policy identity and the machine-level
 // foreground lease understood by the shared runner guard.
@@ -82,11 +97,14 @@ const REQUIRED_SHARED_FILES = Object.freeze([
 const FORBIDDEN_KEY = /(api.?key|secret|password|credential|access.?token|private.?key)/i;
 const RUNPODCTL_SOURCE_REPOSITORY = "https://github.com/runpod/runpodctl";
 const RUNPODCTL_UPSTREAM_BASE_COMMIT = "3928df943d67c89e66b4945bd5c8b38ffd512767";
-const RUNPODCTL_PATCHED_SOURCE_COMMIT = "729623f7093b6854a9d641c7924dc2a418eaeddc";
-const RUNPODCTL_PATCH_ID = "mickey-cpu-terminate-after-compute-type-v2";
-const RUNPODCTL_CREATE_INTERFACE = "legacy-graphql-json-v2";
+const RUNPODCTL_CREATE_INTERFACE = "rest-cpu-pod-create-v1";
 const RUNPODCTL_REQUEST_HASH_ALGORITHM = "sorted-json-sha256-v1";
+const RUNPODCTL_REQUEST_HASH_SCOPE = "raw-request-before-redaction";
+const RUNPODCTL_ENV_REDACTION_SCHEMA = "env-values-v1";
+const RUNPODCTL_REDACTED_ENV_VALUE = "[REDACTED]";
 const SSH_HOST_KEY_ATTESTATION_DOMAIN = "mickey-ssh-host-key-v1";
+const EXACT_ID_DELETE_RETRY_DELAYS_MS = Object.freeze([0, 1_000, 2_000, 4_000, 8_000]);
+const FULL_FANOUT_LIVE_APPROVED = false;
 
 function usage() {
   return `Usage:
@@ -104,6 +122,11 @@ Options:
 
 Real execution must be the child of:
   scripts/proxywar-runner-lease.sh run mickey RUN_ID --output NEW_DIR -- <command>
+
+Safety status:
+  Full fanout live execution is fail-closed while the HMAC nonce would transit
+  runpodctl --env process argv. Only the separate one-pod no-env transport
+  canary is approved for a live provider mutation.
 `;
 }
 
@@ -418,14 +441,15 @@ export function validateManifest(document) {
       "runner_lease",
       "runpodctl",
       "pod",
+      "cleanup_watchdog",
       "source_reach_receipt",
       "arms",
       "promotion_gates",
     ],
     "manifest",
   );
-  if (document.schema_version !== 1 || document.kind !== "mickey_cpu_fanout") {
-    throw new Error("manifest schema_version/kind must be 1/mickey_cpu_fanout");
+  if (document.schema_version !== 2 || document.kind !== "mickey_cpu_fanout") {
+    throw new Error("manifest schema_version/kind must be 2/mickey_cpu_fanout");
   }
   assertString(document.run_id, "manifest.run_id", SAFE_ID);
   const preregistered = Date.parse(document.preregistered_at);
@@ -443,13 +467,18 @@ export function validateManifest(document) {
 
   exactKeys(
     document.control_plane,
-    ["fanout_runner", "policy_auditor", "remote_verifier"],
+    [
+      "fanout_runner", "policy_auditor", "remote_verifier", "exact_id_reaper",
+      "reaper_launchd_renderer",
+    ],
     "manifest.control_plane",
   );
   const controlPlanePaths = {
     fanout_runner: SCRIPT_PATH,
     policy_auditor: AUDIT_SCRIPT,
     remote_verifier: REMOTE_VERIFIER,
+    exact_id_reaper: REAPER_SCRIPT,
+    reaper_launchd_renderer: REAPER_LAUNCHD_RENDERER,
   };
   for (const [key, expectedPath] of Object.entries(controlPlanePaths)) {
     validateHashedFileReference(document.control_plane[key], `manifest.control_plane.${key}`);
@@ -485,11 +514,11 @@ export function validateManifest(document) {
   if (
     document.runpodctl.source_repository !== RUNPODCTL_SOURCE_REPOSITORY ||
     document.runpodctl.upstream_base_commit !== RUNPODCTL_UPSTREAM_BASE_COMMIT ||
-    document.runpodctl.source_commit !== RUNPODCTL_PATCHED_SOURCE_COMMIT ||
-    document.runpodctl.patch_id !== RUNPODCTL_PATCH_ID ||
+    !SOURCE_COMMIT.test(document.runpodctl.source_commit) ||
+    !SAFE_ID.test(document.runpodctl.patch_id) ||
     document.runpodctl.create_interface !== RUNPODCTL_CREATE_INTERFACE
   ) {
-    throw new Error("manifest.runpodctl must identify the pinned Mickey CPU termination fork");
+    throw new Error("manifest.runpodctl must identify a hash-pinned Mickey CPU REST fork");
   }
   validateHashedFileReference(
     { path: document.runpodctl.patch_path, sha256: document.runpodctl.patch_sha256 },
@@ -511,7 +540,10 @@ export function validateManifest(document) {
       "container_disk_gb",
       "volume_gb",
       "network_volume_id",
-      "terminate_after_seconds",
+      "cpu_flavor_ids",
+      "cpu_flavor_priority",
+      "public_ip",
+      "ports",
       "max_concurrency",
     ],
     "manifest.pod",
@@ -538,12 +570,67 @@ export function validateManifest(document) {
   if (
     document.pod.container_disk_gb !== 20 ||
     document.pod.volume_gb !== 0 ||
-    document.pod.network_volume_id !== null ||
-    document.pod.terminate_after_seconds !== 7200
+    document.pod.network_volume_id !== null
   ) {
-    throw new Error("manifest pod must use 20GB ephemeral disk, no volume, no network volume, and a 2h termination");
+    throw new Error("manifest pod must use 20GB ephemeral disk, no volume, and no network volume");
+  }
+  if (
+    !Array.isArray(document.pod.cpu_flavor_ids) ||
+    document.pod.cpu_flavor_ids.join(",") !== "cpu5c,cpu3c" ||
+    document.pod.cpu_flavor_priority !== "custom" ||
+    document.pod.public_ip !== true ||
+    !Array.isArray(document.pod.ports) ||
+    document.pod.ports.join(",") !== "22/tcp"
+  ) {
+    throw new Error("manifest pod must request cpu5c/cpu3c fallback plus public 22/tcp for SSH transport");
   }
   assertInteger(document.pod.max_concurrency, "manifest.pod.max_concurrency", 1, 4);
+
+  exactKeys(
+    document.cleanup_watchdog,
+    [
+      "kind", "script", "node_runtime", "ledger_path", "heartbeat_path",
+      "heartbeat_max_age_seconds", "client_cleanup_deadline_seconds",
+      "poll_interval_seconds", "provider_ttl_available", "exact_id_only",
+      "launchd_required_for_live_run", "launchd_label", "service_receipt_path",
+    ],
+    "manifest.cleanup_watchdog",
+  );
+  if (document.cleanup_watchdog.kind !== "independent_exact_id_reaper_v1") {
+    throw new Error("manifest.cleanup_watchdog.kind is unsupported");
+  }
+  validateHashedFileReference(document.cleanup_watchdog.script, "manifest.cleanup_watchdog.script");
+  validateHashedFileReference(
+    document.cleanup_watchdog.node_runtime,
+    "manifest.cleanup_watchdog.node_runtime",
+  );
+  if (
+    document.cleanup_watchdog.script.path !== REAPER_SCRIPT ||
+    document.cleanup_watchdog.script.sha256 !== document.control_plane.exact_id_reaper.sha256
+  ) {
+    throw new Error("manifest cleanup watchdog must pin the exact integration reaper script");
+  }
+  assertAbsoluteFilePath(document.cleanup_watchdog.ledger_path, "manifest.cleanup_watchdog.ledger_path");
+  assertAbsoluteFilePath(document.cleanup_watchdog.heartbeat_path, "manifest.cleanup_watchdog.heartbeat_path");
+  assertString(
+    document.cleanup_watchdog.launchd_label,
+    "manifest.cleanup_watchdog.launchd_label",
+    /^[a-zA-Z0-9][a-zA-Z0-9.-]{2,127}$/,
+  );
+  assertAbsoluteFilePath(
+    document.cleanup_watchdog.service_receipt_path,
+    "manifest.cleanup_watchdog.service_receipt_path",
+  );
+  if (
+    document.cleanup_watchdog.client_cleanup_deadline_seconds !== 7200 ||
+    document.cleanup_watchdog.heartbeat_max_age_seconds !== 120 ||
+    document.cleanup_watchdog.poll_interval_seconds !== 60 ||
+    document.cleanup_watchdog.provider_ttl_available !== false ||
+    document.cleanup_watchdog.exact_id_only !== true ||
+    document.cleanup_watchdog.launchd_required_for_live_run !== true
+  ) {
+    throw new Error("manifest cleanup watchdog must declare the truthful 2h client-side exact-ID contract");
+  }
   validateHashedFileReference(document.source_reach_receipt, "manifest.source_reach_receipt");
 
   exactKeys(
@@ -643,7 +730,7 @@ export function validateManifest(document) {
   }
   const worstCaseCost = flattenedPairs.length *
     document.pod.max_cost_per_hour *
-    (document.pod.terminate_after_seconds / 3600);
+    (document.cleanup_watchdog.client_cleanup_deadline_seconds / 3600);
   if (worstCaseCost > document.pod.max_total_cost_usd + Number.EPSILON) {
     throw new Error(`manifest worst-case pod cost ${worstCaseCost.toFixed(2)} exceeds total cap`);
   }
@@ -787,13 +874,19 @@ export async function preflightManifest(manifestPath, expectedSha256) {
     "pinned runpodctl binary",
   );
   const runpodctlBody = await readFile(document.runpodctl.path);
-  if (!runpodctlBody.includes(Buffer.from(`vcs.revision=${document.runpodctl.source_commit}`, "utf8"))) {
-    throw new Error("pinned runpodctl binary does not embed the declared patched source commit");
+  if (!runpodctlBody.includes(Buffer.from(`cleanroom-${document.runpodctl.source_commit}`, "utf8"))) {
+    throw new Error("pinned runpodctl binary does not embed the declared cleanroom CLI version");
   }
   await verifyHashedLocalFile(
     { path: document.runpodctl.patch_path, sha256: document.runpodctl.patch_sha256 },
     "pinned runpodctl patch",
   );
+  await verifyHashedLocalFile(
+    document.cleanup_watchdog.node_runtime,
+    "pinned reaper Node runtime",
+  );
+  const nodeInfo = await stat(document.cleanup_watchdog.node_runtime.path);
+  if ((nodeInfo.mode & 0o111) === 0) throw new Error("pinned reaper Node runtime must be executable");
   const runpodctlInfo = await stat(document.runpodctl.path);
   if ((runpodctlInfo.mode & 0o111) === 0) {
     throw new Error("pinned runpodctl binary must be executable");
@@ -829,52 +922,51 @@ function safeTimestamp() {
   return new Date().toISOString().replaceAll(/[:.]/g, "-");
 }
 
-function podName(manifest, armId, pairId) {
-  const suffix = createHash("sha256")
-    .update(`${manifest.run_id}\n${armId}\n${pairId}\n`)
-    .digest("hex")
-    .slice(0, 10);
-  const tail = `${armId}-${pairId}`.replaceAll(/[^a-z0-9-]/g, "-").slice(0, 24);
-  return `${manifest.pod.name_prefix}-${tail}-${suffix}`.slice(0, 63);
+function dryRunPodName(manifest) {
+  return `${manifest.pod.name_prefix}-${"0".repeat(32)}`;
 }
 
-export function buildPodCreateArgs(manifest, armId, pairId, now, controlSecret) {
-  assertString(controlSecret, "runtime pod control secret", SHA256);
-  const terminateAfter = new Date(
-    (now ?? Date.now()) + manifest.pod.terminate_after_seconds * 1000,
-  ).toISOString();
-  return [
-    "create",
+export function buildPodCreateArgs(manifest, expectedName, controlSecret = null) {
+  assertString(expectedName, "exact reaper-owned pod name", /^[a-z0-9][a-z0-9-]{2,62}$/);
+  if (!expectedName.startsWith(`${manifest.pod.name_prefix}-`) || expectedName.startsWith("storm-")) {
+    throw new Error("pod name is not in the exact reaper-owned Mickey namespace");
+  }
+  if (controlSecret !== null) assertString(controlSecret, "runtime pod control secret", SHA256);
+  const args = [
     "pod",
-    "--name",
-    podName(manifest, armId, pairId),
-    "--computeType",
+    "create",
+    "--compute-type",
     "CPU",
-    "--communityCloud",
-    "--gpuCount",
-    "0",
-    "--imageName",
+    "--image",
     manifest.pod.image,
-    "--vcpu",
+    "--name",
+    expectedName,
+    "--cpu-flavor-id",
+    manifest.pod.cpu_flavor_ids[0],
+    "--cpu-flavor-id",
+    manifest.pod.cpu_flavor_ids[1],
+    "--vcpu-count",
     String(manifest.pod.vcpu_count),
-    "--mem",
-    String(manifest.pod.memory_gb),
-    "--cost",
+    "--max-cost-per-hour",
     manifest.pod.max_cost_per_hour.toFixed(2),
-    "--containerDiskSize",
+    "--container-disk-in-gb",
     "20",
-    "--volumeSize",
+    "--volume-in-gb",
     "0",
-    "--volumePath",
-    "/workspace",
-    "--startSSH",
-    "--env",
-    `MICKEY_CONTROL_PLANE_NONCE=${controlSecret}`,
-    "--terminateAfter",
-    terminateAfter,
+    "--cloud-type",
+    manifest.pod.cloud_type,
+    "--public-ip",
+    "--ports",
+    "22/tcp",
+  ];
+  if (controlSecret !== null) {
+    args.push("--env", JSON.stringify({ MICKEY_CONTROL_PLANE_NONCE: controlSecret }));
+  }
+  args.push(
     "-o",
     "json",
-  ];
+  );
+  return args;
 }
 
 export function validateCreatedPod(
@@ -890,7 +982,8 @@ export function validateCreatedPod(
     throw new Error("created pod name is not the exact Mickey fanout name");
   }
   if (record.gpuCount !== 0) throw new Error("created pod gpuCount must be zero");
-  assertFinite(record.costPerHr, "created pod costPerHr", 0, maxCost);
+  const costPerHr = typeof record.costPerHr === "string" ? Number(record.costPerHr) : record.costPerHr;
+  assertFinite(costPerHr, "created pod costPerHr", 0, maxCost);
   if (record.containerDiskInGb !== 20) throw new Error("created pod must have exactly 20GB container disk");
   if (record.volumeInGb !== 0) throw new Error("created pod must have zero persistent volume");
   if (record.vcpuCount !== 2 || record.memoryInGb !== 4) {
@@ -941,82 +1034,94 @@ export function canonicalRequestInputSha256(value) {
 
 export function validateCreateRequestAttestation(
   record,
-  { manifest, armId, pairId, expectedName, expectedTerminateAfter, controlSecret },
+  { manifest, expectedName, controlSecret = null },
 ) {
-  void armId;
-  void pairId;
-  assertString(controlSecret, "runtime pod control secret", SHA256);
+  if (controlSecret !== null) assertString(controlSecret, "runtime pod control secret", SHA256);
   if (!isObject(record)) throw new Error("RunPod create response must be an object");
+  if (
+    record.transport !== "rest-v1" ||
+    record.validationPassed !== true ||
+    record.cleanupAttempted !== false ||
+    record.cleanupSucceeded !== false ||
+    Number(record.clientMaxCostPerHour) !== manifest.pod.max_cost_per_hour
+  ) {
+    throw new Error("RunPod create response does not prove a clean bounded REST create");
+  }
   if (record.requestInputHashAlgorithm !== RUNPODCTL_REQUEST_HASH_ALGORITHM) {
     throw new Error("RunPod create response uses an unapproved request-input hash algorithm");
   }
+  if (
+    record.requestInputHashScope !== RUNPODCTL_REQUEST_HASH_SCOPE ||
+    record.requestInputRedactionSchema !== RUNPODCTL_ENV_REDACTION_SCHEMA ||
+    record.responseEnvRedactionSchema !== RUNPODCTL_ENV_REDACTION_SCHEMA ||
+    record.redactedEnvValueMarker !== RUNPODCTL_REDACTED_ENV_VALUE
+  ) {
+    throw new Error("RunPod create response has an unapproved request/response redaction contract");
+  }
   assertString(record.requestInputSha256, "RunPod requestInputSha256", SHA256);
-  if (record.requestInputSha256 !== canonicalRequestInputSha256(record.requestInput)) {
-    throw new Error("RunPod create request-input SHA-256 is invalid");
-  }
-  if (record.requestedTerminateAfter !== expectedTerminateAfter) {
-    throw new Error("RunPod create response does not echo the exact server-side termination request");
-  }
-  exactKeys(
-    record.requestInput,
-    [
-      "cloudType",
-      "computeType",
-      "containerDiskInGb",
-      "deployCost",
-      "dockerArgs",
-      "dataCenterId",
-      "env",
-      "imageName",
-      "instanceIds",
-      "minMemoryInGb",
-      "minVcpuCount",
-      "name",
-      "networkVolumeId",
-      "ports",
-      "supportPublicIp",
-      "startSsh",
-      "templateId",
-      "terminateAfter",
-      "volumeInGb",
-      "volumeMountPath",
-    ],
-    "RunPod create requestInput",
-  );
-  const expected = {
+  const expectedRaw = {
     cloudType: manifest.pod.cloud_type,
     computeType: manifest.pod.compute_type,
     containerDiskInGb: manifest.pod.container_disk_gb,
-    deployCost: manifest.pod.max_cost_per_hour,
-    dockerArgs: "",
-    dataCenterId: "",
-    env: [{
-      key: "MICKEY_CONTROL_PLANE_NONCE",
-      value: controlSecret,
-    }],
+    cpuFlavorIds: manifest.pod.cpu_flavor_ids,
+    cpuFlavorPriority: manifest.pod.cpu_flavor_priority,
     imageName: manifest.pod.image,
-    instanceIds: [
-      `cpu5c-${manifest.pod.vcpu_count}-${manifest.pod.memory_gb}`,
-      `cpu3c-${manifest.pod.vcpu_count}-${manifest.pod.memory_gb}`,
-    ],
-    minMemoryInGb: manifest.pod.memory_gb,
-    minVcpuCount: manifest.pod.vcpu_count,
     name: expectedName,
-    networkVolumeId: "",
-    ports: "",
-    supportPublicIp: false,
-    startSsh: true,
-    templateId: "",
-    terminateAfter: expectedTerminateAfter,
+    ports: manifest.pod.ports,
+    supportPublicIp: true,
+    vcpuCount: manifest.pod.vcpu_count,
     volumeInGb: manifest.pod.volume_gb,
     volumeMountPath: "/workspace",
   };
-  if (JSON.stringify(sortedJsonValue(record.requestInput)) !== JSON.stringify(sortedJsonValue(expected))) {
-    throw new Error("RunPod create request echo differs from the exact CPU/cost/termination contract");
+  if (controlSecret !== null) {
+    expectedRaw.env = { MICKEY_CONTROL_PLANE_NONCE: controlSecret };
+  }
+  if (record.requestInputSha256 !== canonicalRequestInputSha256(expectedRaw)) {
+    throw new Error("RunPod create raw pre-redaction request-input SHA-256 is invalid");
+  }
+  const expectedEcho = structuredClone(expectedRaw);
+  if (controlSecret !== null) {
+    expectedEcho.env.MICKEY_CONTROL_PLANE_NONCE = RUNPODCTL_REDACTED_ENV_VALUE;
+  }
+  if (
+    record.requestInputRedacted !== (controlSecret !== null) ||
+    JSON.stringify(sortedJsonValue(record.requestInput)) !== JSON.stringify(sortedJsonValue(expectedEcho))
+  ) {
+    throw new Error("RunPod create redacted request echo differs from the exact CPU/SSH/ephemeral-volume REST contract");
+  }
+  for (const forbidden of ["terminateAfter", "stopAfter", "deployCost", "maxCostPerHour", "networkVolumeId", "startSsh"]) {
+    if (Object.hasOwn(record.requestInput, forbidden)) {
+      throw new Error(`RunPod REST request must not contain ${forbidden}`);
+    }
+  }
+  const responseEnv = isObject(record.env) ? record.env : null;
+  const responseEnvKeys = responseEnv ? Object.keys(responseEnv) : [];
+  if (responseEnvKeys.length === 0) {
+    if (record.responseEnvRedacted !== false) {
+      throw new Error("RunPod response env redaction flag is inconsistent with an absent env");
+    }
+  } else {
+    if (
+      controlSecret === null ||
+      record.responseEnvRedacted !== true ||
+      responseEnvKeys.length !== 1 ||
+      responseEnvKeys[0] !== "MICKEY_CONTROL_PLANE_NONCE" ||
+      responseEnv.MICKEY_CONTROL_PLANE_NONCE !== RUNPODCTL_REDACTED_ENV_VALUE
+    ) {
+      throw new Error("RunPod create response contains an unexpected or unredacted env");
+    }
+  }
+  if (controlSecret !== null && JSON.stringify(record).includes(controlSecret)) {
+    throw new Error("RunPod create receipt leaked the runtime control nonce");
   }
   return {
     request_input_sha256: record.requestInputSha256,
-    requested_terminate_after: record.requestedTerminateAfter,
+    request_input_hash_scope: record.requestInputHashScope,
+    request_input_redaction_schema: record.requestInputRedactionSchema,
+    response_env_redacted: record.responseEnvRedacted,
+    transport: record.transport,
+    client_max_cost_per_hour: Number(record.clientMaxCostPerHour),
+    provider_ttl: null,
   };
 }
 
@@ -1044,6 +1149,32 @@ function parseJsonOutput(result, label) {
   }
 }
 
+export function sanitizePodInventory(records) {
+  if (!Array.isArray(records)) throw new Error("provider pod inventory must be an array");
+  const sanitized = records.map((record, index) => {
+    if (!isObject(record)) throw new Error(`provider pod inventory[${index}] must be an object`);
+    assertString(record.id, `provider pod inventory[${index}].id`, /^[A-Za-z0-9_-]+$/);
+    assertString(
+      record.name,
+      `provider pod inventory[${index}].name`,
+      /^[A-Za-z0-9][A-Za-z0-9._-]*$/,
+    );
+    if (record.id.length > 256 || record.name.length > 256) {
+      throw new Error(`provider pod inventory[${index}] identity is too long`);
+    }
+    return {
+      id: record.id,
+      name: record.name,
+    };
+  });
+  const ids = new Set();
+  for (const record of sanitized) {
+    if (ids.has(record.id)) throw new Error(`provider pod inventory repeats ID ${record.id}`);
+    ids.add(record.id);
+  }
+  return sanitized.sort((left, right) => left.id.localeCompare(right.id));
+}
+
 export async function discoverNewExactNamePods({
   runpodctl,
   expectedName,
@@ -1055,7 +1186,12 @@ export async function discoverNewExactNamePods({
   const result = await executor.run(
     runpodctl,
     ["pod", "list", "--name", expectedName, "-a", "-o", "json"],
-    { label, allowFailure: true, allowWhenStopping: true },
+    {
+      label,
+      allowFailure: true,
+      allowWhenStopping: true,
+      outputLogMode: "metadata-only",
+    },
   );
   if (result.code !== 0) {
     throw new Error(`indeterminate create reconciliation failed with status ${result.code}`);
@@ -1095,13 +1231,35 @@ export class CommandExecutor {
   async run(
     command,
     args,
-    { label = "command", allowFailure = false, allowWhenStopping = false, cwd = undefined } = {},
+    {
+      label = "command",
+      allowFailure = false,
+      allowWhenStopping = false,
+      cwd = undefined,
+      redactions = [],
+      outputLogMode = "full",
+    } = {},
   ) {
     if (this.stopping && !allowWhenStopping) throw new Error("fanout stopping before command launch");
     const sequence = String(++this.sequence).padStart(4, "0");
     const safeLabel = label.replaceAll(/[^a-zA-Z0-9._-]/g, "-").slice(0, 80);
     const base = path.join(this.logRoot, `${sequence}-${safeLabel}`);
-    await writeFile(`${base}.argv.json.part`, `${JSON.stringify({ command, args }, null, 2)}\n`, { mode: 0o600 });
+    if (!Array.isArray(redactions) || redactions.some((value) => typeof value !== "string" || value.length < 16)) {
+      throw new Error("command log redactions must be an array of nontrivial strings");
+    }
+    if (!["full", "metadata-only"].includes(outputLogMode)) {
+      throw new Error("command output log mode must be full or metadata-only");
+    }
+    const redact = (value) => redactions.reduce(
+      (current, sensitive) => current.replaceAll(sensitive, "[REDACTED]"),
+      value,
+    );
+    const loggedArgs = args.map((value) => redact(value));
+    await writeFile(
+      `${base}.argv.json.part`,
+      `${JSON.stringify({ command, args: loggedArgs, redaction_count: redactions.length }, null, 2)}\n`,
+      { mode: 0o600 },
+    );
     await rename(`${base}.argv.json.part`, `${base}.argv.json`);
     const result = await new Promise((resolve, reject) => {
       const child = spawn(command, args, {
@@ -1131,9 +1289,15 @@ export class CommandExecutor {
         });
       });
     });
-    await writeFile(`${base}.stdout.log.part`, result.stdout, { mode: 0o600 });
+    const loggedStdout = outputLogMode === "metadata-only"
+      ? `${JSON.stringify({ content_omitted: true, byte_count: Buffer.byteLength(result.stdout) })}\n`
+      : redact(result.stdout);
+    const loggedStderr = outputLogMode === "metadata-only"
+      ? `${JSON.stringify({ content_omitted: true, byte_count: Buffer.byteLength(result.stderr) })}\n`
+      : redact(result.stderr);
+    await writeFile(`${base}.stdout.log.part`, loggedStdout, { mode: 0o600 });
     await rename(`${base}.stdout.log.part`, `${base}.stdout.log`);
-    await writeFile(`${base}.stderr.log.part`, result.stderr, { mode: 0o600 });
+    await writeFile(`${base}.stderr.log.part`, loggedStderr, { mode: 0o600 });
     await rename(`${base}.stderr.log.part`, `${base}.stderr.log`);
     if (!allowFailure && result.code !== 0) {
       throw new Error(`${label} failed with status ${result.code}${result.signal ? ` signal ${result.signal}` : ""}`);
@@ -1278,6 +1442,134 @@ export async function validateClaimedOutputShape(output, runId, stateRoot = RUNN
     throw new Error("output is not claimed by the exact Mickey runner lease/run ID");
   }
   return Object.fromEntries(fields);
+}
+
+export async function verifyLiveReaperService({
+  manifest,
+  manifestSha256,
+  executor,
+  uid = typeof process.getuid === "function" ? process.getuid() : null,
+}) {
+  if (!Number.isSafeInteger(uid) || uid < 0) throw new Error("cannot identify the launchd GUI domain owner");
+  const receiptPath = manifest.cleanup_watchdog.service_receipt_path;
+  const info = await lstat(receiptPath).catch(() => null);
+  if (
+    !info?.isFile() ||
+    info.isSymbolicLink() ||
+    (info.mode & 0o777) !== 0o600 ||
+    await realpath(receiptPath) !== receiptPath
+  ) {
+    throw new Error("independent reaper service receipt is missing or unsafe");
+  }
+  const receipt = JSON.parse(await readFile(receiptPath, "utf8"));
+  exactKeys(
+    receipt,
+    [
+      "schema_version", "kind", "status", "manifest_sha256", "launchd_label",
+      "launchd_domain", "plist_path", "plist_sha256", "ledger_path",
+      "heartbeat_path", "runpodctl_sha256", "reaper_sha256", "node_path",
+      "node_sha256", "attested_at",
+    ],
+    "reaper service receipt",
+  );
+  if (
+    receipt.schema_version !== 1 ||
+    receipt.kind !== "mickey_runpod_exact_id_reaper_service" ||
+    receipt.status !== "active" ||
+    receipt.manifest_sha256 !== manifestSha256 ||
+    receipt.launchd_label !== manifest.cleanup_watchdog.launchd_label ||
+    receipt.launchd_domain !== `gui/${uid}` ||
+    receipt.ledger_path !== manifest.cleanup_watchdog.ledger_path ||
+    receipt.heartbeat_path !== manifest.cleanup_watchdog.heartbeat_path ||
+    receipt.runpodctl_sha256 !== manifest.runpodctl.sha256 ||
+    receipt.reaper_sha256 !== manifest.cleanup_watchdog.script.sha256 ||
+    receipt.node_path !== manifest.cleanup_watchdog.node_runtime.path ||
+    receipt.node_sha256 !== manifest.cleanup_watchdog.node_runtime.sha256 ||
+    !SHA256.test(receipt.plist_sha256 ?? "") ||
+    !path.isAbsolute(receipt.plist_path) ||
+    !Number.isFinite(Date.parse(receipt.attested_at))
+  ) {
+    throw new Error("independent reaper service receipt does not bind the exact manifest tools and ledger");
+  }
+  await verifyHashedLocalFile(
+    { path: receipt.plist_path, sha256: receipt.plist_sha256 },
+    "active reaper LaunchAgent plist",
+  );
+  const service = await executor.run(
+    "/bin/launchctl",
+    ["print", `${receipt.launchd_domain}/${receipt.launchd_label}`],
+    { label: "verify-independent-reaper-service", allowFailure: true },
+  );
+  const pidMatch = service.stdout.match(/(?:^|\n)\s*pid\s*=\s*([1-9][0-9]*)\s*(?:\n|$)/);
+  if (
+    service.code !== 0 ||
+    !/(?:^|\n)\s*state\s*=\s*running\s*(?:\n|$)/.test(service.stdout) ||
+    !pidMatch
+  ) {
+    throw new Error("independent reaper LaunchAgent is not running");
+  }
+  const servicePid = Number(pidMatch[1]);
+  const watchdogRoot = path.dirname(manifest.cleanup_watchdog.ledger_path);
+  const rootInfo = await lstat(watchdogRoot).catch(() => null);
+  if (
+    !rootInfo?.isDirectory() ||
+    rootInfo.isSymbolicLink() ||
+    (rootInfo.mode & 0o777) !== 0o700 ||
+    await realpath(watchdogRoot) !== watchdogRoot ||
+    (typeof process.getuid === "function" && rootInfo.uid !== process.getuid())
+  ) {
+    throw new Error("independent reaper state directory is missing or unsafe");
+  }
+  for (const [filePath, label] of [
+    [manifest.cleanup_watchdog.ledger_path, "ledger"],
+    [manifest.cleanup_watchdog.heartbeat_path, "heartbeat"],
+  ]) {
+    const fileInfo = await lstat(filePath).catch(() => null);
+    if (
+      !fileInfo?.isFile() ||
+      fileInfo.isSymbolicLink() ||
+      (fileInfo.mode & 0o777) !== 0o600 ||
+      await realpath(filePath) !== filePath ||
+      (typeof process.getuid === "function" && fileInfo.uid !== process.getuid())
+    ) {
+      throw new Error(`independent reaper ${label} is missing or unsafe`);
+    }
+  }
+  const heartbeat = JSON.parse(await readFile(manifest.cleanup_watchdog.heartbeat_path, "utf8"));
+  exactKeys(
+    heartbeat,
+    [
+      "schema_version", "kind", "status", "probed_at", "pod_count", "ledger_path",
+      "runpodctl_path", "pid", "identifiers_recorded", "credentials_recorded",
+    ],
+    "reaper provider heartbeat",
+  );
+  const heartbeatAgeMs = Date.now() - Date.parse(heartbeat.probed_at);
+  if (
+    heartbeat.schema_version !== 1 ||
+    heartbeat.kind !== "mickey_runpod_exact_id_reaper_provider_heartbeat" ||
+    heartbeat.status !== "provider_list_succeeded" ||
+    !Number.isSafeInteger(heartbeat.pod_count) ||
+    heartbeat.pod_count < 0 ||
+    heartbeat.ledger_path !== manifest.cleanup_watchdog.ledger_path ||
+    heartbeat.runpodctl_path !== manifest.runpodctl.path ||
+    heartbeat.pid !== servicePid ||
+    heartbeat.identifiers_recorded !== false ||
+    heartbeat.credentials_recorded !== false ||
+    !Number.isFinite(heartbeatAgeMs) ||
+    heartbeatAgeMs < -5_000 ||
+    heartbeatAgeMs > manifest.cleanup_watchdog.heartbeat_max_age_seconds * 1_000
+  ) {
+    throw new Error("independent reaper provider heartbeat is stale or does not bind the running service");
+  }
+  return {
+    status: "active",
+    label: receipt.launchd_label,
+    domain: receipt.launchd_domain,
+    ledger_path: receipt.ledger_path,
+    receipt_path: receiptPath,
+    provider_probe: { status: heartbeat.status, pod_count: heartbeat.pod_count, age_ms: heartbeatAgeMs },
+  };
 }
 
 async function assertClaimedMickeyOutput(output, runId, runnerLease, stateRoot, executor) {
@@ -1470,7 +1762,11 @@ async function waitForSsh(runpodctl, podId, expectedName, executor, stopState, l
     const result = await executor.run(
       runpodctl,
       ["ssh", "info", podId, "-o", "json"],
-      { label: `${label}-ssh-info-${attempt}`, allowFailure: true },
+      {
+        label: `${label}-ssh-info-${attempt}`,
+        allowFailure: true,
+        outputLogMode: "metadata-only",
+      },
     );
     last = result;
     if (result.code === 0) {
@@ -1482,24 +1778,223 @@ async function waitForSsh(runpodctl, podId, expectedName, executor, stopState, l
     }
     await delay(5_000, stopState);
   }
-  throw new Error(`SSH never became ready: ${last?.stderr || "no response"}`);
+  throw new Error(`SSH never became ready after 60 attempts${last ? `; final status ${last.code}` : ""}`);
 }
 
 function podAlreadyAbsent(result) {
-  const body = `${result.stdout}\n${result.stderr}`.toLowerCase();
-  return body.includes("pod not found") || body.includes('"status":404') || body.includes("status 404");
+  return isStructuredProviderNotFound(result.stdout, result.stderr);
+}
+
+export class ExecutorRunPodClient {
+  constructor(runpodctl, executor, labelPrefix = "reaper") {
+    this.runpodctl = runpodctl;
+    this.executor = executor;
+    this.labelPrefix = labelPrefix;
+  }
+
+  async listAll() {
+    const result = await this.executor.run(
+      this.runpodctl,
+      ["pod", "list", "-a", "-o", "json"],
+      {
+        label: `${this.labelPrefix}-list`,
+        allowFailure: true,
+        allowWhenStopping: true,
+        outputLogMode: "metadata-only",
+      },
+    );
+    if (result.code !== 0) throw new Error(`RunPod list failed with status ${result.code}`);
+    const records = parseJsonOutput(result, "RunPod list");
+    if (!Array.isArray(records)) throw new Error("RunPod list did not return an array");
+    return records;
+  }
+
+  async get(podId) {
+    const result = await this.executor.run(
+      this.runpodctl,
+      ["pod", "get", podId, "--include-network-volume", "-o", "json"],
+      {
+        label: `${this.labelPrefix}-get-${podId}`,
+        allowFailure: true,
+        allowWhenStopping: true,
+        outputLogMode: "metadata-only",
+      },
+    );
+    if (result.code !== 0) {
+      if (podAlreadyAbsent(result)) return null;
+      throw new Error(`RunPod get failed with status ${result.code}`);
+    }
+    return parseJsonOutput(result, "RunPod get");
+  }
+
+  async delete(podId) {
+    const result = await this.executor.run(
+      this.runpodctl,
+      ["pod", "delete", podId, "-o", "json"],
+      {
+        label: `${this.labelPrefix}-delete-${podId}`,
+        allowFailure: true,
+        allowWhenStopping: true,
+        outputLogMode: "metadata-only",
+      },
+    );
+    if (result.code !== 0) {
+      if (podAlreadyAbsent(result)) return { status: "already_absent" };
+      throw new Error(`RunPod delete failed with status ${result.code}`);
+    }
+    return { status: "delete_acknowledged" };
+  }
 }
 
 export async function deleteExactPod(runpodctl, podId, executor, label) {
   const result = await executor.run(
     runpodctl,
     ["pod", "delete", podId, "-o", "json"],
-    { label, allowFailure: true, allowWhenStopping: true },
+    {
+      label,
+      allowFailure: true,
+      allowWhenStopping: true,
+      outputLogMode: "metadata-only",
+    },
   );
   if (result.code !== 0 && !podAlreadyAbsent(result)) {
     throw new Error(`exact pod cleanup failed for ${podId}`);
   }
   return { id: podId, status: result.code === 0 ? "deleted" : "already_absent" };
+}
+
+export async function deleteExactOwnedPodWithRetry({
+  runpodctl,
+  podId,
+  expectedName,
+  preexistingIds,
+  executor,
+  label,
+  settle = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)),
+}) {
+  let deleteAcknowledged = false;
+  let lastError = null;
+  for (let attempt = 0; attempt < EXACT_ID_DELETE_RETRY_DELAYS_MS.length; attempt += 1) {
+    if (attempt > 0) await settle(EXACT_ID_DELETE_RETRY_DELAYS_MS[attempt]);
+    const suffix = `${label}-attempt-${attempt + 1}`;
+    try {
+      const inspection = await executor.run(
+        runpodctl,
+        ["pod", "get", podId, "--include-network-volume", "-o", "json"],
+        {
+          label: `${suffix}-identity-check`,
+          allowFailure: true,
+          allowWhenStopping: true,
+          outputLogMode: "metadata-only",
+        },
+      );
+      if (inspection.code !== 0) {
+        if (podAlreadyAbsent(inspection)) {
+          return {
+            id: podId,
+            status: deleteAcknowledged ? "deleted_and_absent" : "confirmed_absent",
+            attempts: attempt + 1,
+          };
+        }
+        throw new Error(`exact-ID identity check failed with status ${inspection.code}`);
+      }
+      const current = parseJsonOutput(inspection, "exact-ID cleanup identity check");
+      if (
+        current.id !== podId ||
+        current.name !== expectedName ||
+        current.name.startsWith("storm-") ||
+        preexistingIds.has(podId)
+      ) {
+        throw new ReaperIdentityRefusalError(`exact-ID cleanup identity refusal for ${podId}`);
+      }
+      const deletion = await deleteExactPod(runpodctl, podId, executor, `${suffix}-delete`);
+      deleteAcknowledged ||= deletion.status === "deleted";
+    } catch (error) {
+      if (error instanceof ReaperIdentityRefusalError) throw error;
+      lastError = error;
+    }
+  }
+  throw new Error(
+    `exact-ID cleanup retries exhausted for ${podId}: ${lastError?.message || "pod never reached verified absence"}`,
+  );
+}
+
+async function reaperRecord(ledgerPath, recordId) {
+  const ledger = await readReaperLedger(ledgerPath);
+  const record = ledger.records.find((candidate) => candidate.record_id === recordId);
+  if (!record) throw new Error(`reaper ledger lost record ${recordId}`);
+  return record;
+}
+
+export async function reconcileAndCleanupReaperRecord({
+  ledgerPath,
+  recordId,
+  runpodctl,
+  reaperClient,
+  executor,
+  label,
+  createdIds = new Set(),
+  podRecords = new Map(),
+  settle,
+}) {
+  await runReaperOnce({ ledgerPath, client: reaperClient });
+  let record = await reaperRecord(ledgerPath, recordId);
+  if (record.state === "pending") {
+    return {
+      record_id: recordId,
+      state: "pending",
+      outcome: "exact_generated_name_not_currently_observed",
+      external_deadline_cleanup_required: true,
+    };
+  }
+  if (record.state === "blocked") {
+    throw new ReaperIdentityRefusalError(`reaper record ${recordId} is blocked`);
+  }
+  if (record.state === "retired") {
+    record = await confirmOwnedPodAbsent({
+      ledgerPath,
+      client: reaperClient,
+      recordId,
+    });
+    return {
+      record_id: recordId,
+      pod_id: record.pod_id,
+      state: record.state,
+      outcome: record.terminal_reason,
+      external_deadline_cleanup_required: false,
+    };
+  }
+  const preexistingIds = new Set(record.preexisting_ids);
+  createdIds.add(record.pod_id);
+  podRecords.set(record.pod_id, {
+    recordId,
+    name: record.expected_name,
+    preexistingIds,
+  });
+  const deletion = await deleteExactOwnedPodWithRetry({
+    runpodctl,
+    podId: record.pod_id,
+    expectedName: record.expected_name,
+    preexistingIds,
+    executor,
+    label,
+    settle,
+  });
+  record = await confirmOwnedPodAbsent({
+    ledgerPath,
+    client: reaperClient,
+    recordId,
+  });
+  createdIds.delete(record.pod_id);
+  podRecords.delete(record.pod_id);
+  return {
+    record_id: recordId,
+    pod_id: record.pod_id,
+    state: record.state,
+    outcome: record.terminal_reason,
+    delete: deletion,
+    external_deadline_cleanup_required: false,
+  };
 }
 
 async function verifyFetchedArtifacts(fetchRoot) {
@@ -1628,9 +2123,9 @@ async function runOnePair({
   output,
   executor,
   tools,
-  preexistingIds,
   createdIds,
   podRecords,
+  reaperRecords,
   stopState,
   state,
 }) {
@@ -1643,8 +2138,9 @@ async function runOnePair({
   const contractPath = path.join(activeRoot, "pair-contract.json");
   await writeJsonAtomic(contractPath, contract);
   const contractSha256 = await sha256File(contractPath);
-  const name = podName(preflight.document, arm.id, pair.id);
-  state.pairs[pair.id] = { status: "running", phase: "create", arm_id: arm.id, pod_name: name };
+  let name = null;
+  let cleanupRecordId = null;
+  state.pairs[pair.id] = { status: "running", phase: "register-cleanup", arm_id: arm.id };
   state.updated_at = new Date().toISOString();
   await writeJsonAtomic(path.join(output, "state.json"), state);
   await appendEvent(output, "pair_started", { pair_id: pair.id, arm_id: arm.id, order: pair.order });
@@ -1654,68 +2150,92 @@ async function runOnePair({
   try {
     const createNow = Date.now();
     const controlSecret = randomBytes(32).toString("hex");
-    const expectedTerminateAfter = new Date(
-      createNow + preflight.document.pod.terminate_after_seconds * 1000,
+    const watchdogDeadline = new Date(
+      createNow + preflight.document.cleanup_watchdog.client_cleanup_deadline_seconds * 1000,
     ).toISOString();
+    const pendingOwnership = await preparePendingCreate({
+      ledgerPath: preflight.document.cleanup_watchdog.ledger_path,
+      client: tools.reaperClient,
+      runId: `${preflight.document.run_id}:${pair.id}`,
+      manifestSha256: preflight.manifestSha256,
+      deadline: watchdogDeadline,
+      namePrefix: preflight.document.pod.name_prefix,
+    });
+    cleanupRecordId = pendingOwnership.record_id;
+    reaperRecords.set(cleanupRecordId, { pairId: pair.id });
+    name = pendingOwnership.expected_name;
+    const pairPreexistingIds = new Set(pendingOwnership.preexisting_ids);
+    await writeJsonAtomic(path.join(activeRoot, "reaper-pending-create.json"), pendingOwnership);
+    state.pairs[pair.id] = {
+      ...state.pairs[pair.id],
+      phase: "create",
+      pod_name: name,
+      reaper_record_id: cleanupRecordId,
+      client_cleanup_deadline: watchdogDeadline,
+    };
+    await writeJsonAtomic(path.join(output, "state.json"), state);
     let createResult;
     try {
       createResult = await executor.run(
         tools.runpodctl,
-        buildPodCreateArgs(preflight.document, arm.id, pair.id, createNow, controlSecret),
-        { label: `${pair.id}-pod-create`, allowFailure: true },
+        buildPodCreateArgs(preflight.document, name, controlSecret),
+        {
+          label: `${pair.id}-pod-create`,
+          allowFailure: true,
+          redactions: [controlSecret],
+          outputLogMode: "metadata-only",
+        },
       );
     } catch (error) {
-      const claimed = await discoverNewExactNamePods({
-        runpodctl: tools.runpodctl,
-        expectedName: name,
-        preexistingIds,
-        createdIds,
-        executor,
-        label: `${pair.id}-reconcile-create-exception`,
-      }).catch(() => []);
-      for (const id of claimed) podRecords.set(id, { pairId: pair.id, name });
+      await runReaperOnce({
+        ledgerPath: preflight.document.cleanup_watchdog.ledger_path,
+        client: tools.reaperClient,
+      }).catch(() => null);
       throw new Error(`RunPod create transport failed before a trustworthy response: ${error.message}`);
     }
     let createRecord;
     try {
       createRecord = parseJsonOutput(createResult, "RunPod create");
-      podId = registerCreatedPod(createRecord, name, preexistingIds, createdIds);
+      podId = registerCreatedPod(createRecord, name, pairPreexistingIds, createdIds);
+      const activeOwnership = await bindActivePod({
+        ledgerPath: preflight.document.cleanup_watchdog.ledger_path,
+        client: tools.reaperClient,
+        recordId: cleanupRecordId,
+        podId,
+      });
+      await writeJsonAtomic(path.join(activeRoot, "reaper-active-binding.json"), activeOwnership);
     } catch (error) {
-      const claimed = await discoverNewExactNamePods({
-        runpodctl: tools.runpodctl,
-        expectedName: name,
-        preexistingIds,
-        createdIds,
-        executor,
-        label: `${pair.id}-reconcile-create-response`,
-      }).catch(() => []);
-      for (const id of claimed) podRecords.set(id, { pairId: pair.id, name });
+      await runReaperOnce({
+        ledgerPath: preflight.document.cleanup_watchdog.ledger_path,
+        client: tools.reaperClient,
+      }).catch(() => null);
       throw new Error(`RunPod create response was not cleanup-safe: ${error.message}`);
     }
-    podRecords.set(podId, { pairId: pair.id, name });
+    podRecords.set(podId, { pairId: pair.id, name, recordId: cleanupRecordId, preexistingIds: pairPreexistingIds });
+    if (
+      createResult.stdout.includes(controlSecret) ||
+      createResult.stderr.includes(controlSecret) ||
+      JSON.stringify(createRecord).includes(controlSecret)
+    ) {
+      throw new Error("RunPod create response leaked the runtime control nonce");
+    }
     if (createResult.code !== 0) {
       throw new Error(`RunPod create returned status ${createResult.code} after pod ID ${podId}`);
     }
     const requestAttestation = validateCreateRequestAttestation(createRecord, {
       manifest: preflight.document,
-      armId: arm.id,
-      pairId: pair.id,
       expectedName: name,
-      expectedTerminateAfter,
       controlSecret,
     });
     validateCreatedPod(createRecord, {
       expectedName: name,
-      preexistingIds,
+      preexistingIds: pairPreexistingIds,
     });
-    const watchdogDeadline = new Date(
-      Date.now() + preflight.document.pod.terminate_after_seconds * 1000,
-    ).toISOString();
     deadlineTimer = setTimeout(() => {
       stopState.requested = true;
       stopState.signal = "LOCAL_2H_WATCHDOG";
       executor.stop();
-    }, preflight.document.pod.terminate_after_seconds * 1000);
+    }, preflight.document.cleanup_watchdog.client_cleanup_deadline_seconds * 1000);
     deadlineTimer.unref();
     await writeJsonAtomic(path.join(activeRoot, "pod-create.json"), createRecord);
     await writeJsonAtomic(path.join(activeRoot, "pod-create-request-attestation.json"), requestAttestation);
@@ -1730,7 +2250,7 @@ async function runOnePair({
     const listResult = await executor.run(
       tools.runpodctl,
       ["pod", "list", "--name", name, "-a", "-o", "json"],
-      { label: `${pair.id}-pod-list` },
+      { label: `${pair.id}-pod-list`, outputLogMode: "metadata-only" },
     );
     const listed = parseJsonOutput(listResult, "RunPod list");
     if (!Array.isArray(listed) || listed.length !== 1 || listed[0].id !== podId || listed[0].name !== name) {
@@ -1739,13 +2259,13 @@ async function runOnePair({
     const getResult = await executor.run(
       tools.runpodctl,
       ["pod", "get", podId, "--include-network-volume", "-o", "json"],
-      { label: `${pair.id}-pod-get` },
+      { label: `${pair.id}-pod-get`, outputLogMode: "metadata-only" },
     );
     const got = parseJsonOutput(getResult, "RunPod get");
     if (got.id !== podId || got.name !== name) throw new Error("RunPod get returned a different pod identity");
     validateCreatedPod(
       { ...createRecord, ...listed[0], ...got, id: podId },
-      { expectedName: name, preexistingIds, requireNetworkVolumeInspection: true },
+      { expectedName: name, preexistingIds: pairPreexistingIds, requireNetworkVolumeInspection: true },
     );
 
     state.pairs[pair.id].phase = "ssh-ready";
@@ -1909,9 +2429,19 @@ async function runOnePair({
     await writeJsonAtomic(path.join(activeRoot, "fetch-verification.json"), fetchVerification);
     await rename(fetchPart, path.join(activeRoot, "fetched"));
 
-    const deletion = await deleteExactPod(tools.runpodctl, podId, executor, `${pair.id}-pod-delete`);
-    createdIds.delete(podId);
-    podRecords.delete(podId);
+    const deletion = await reconcileAndCleanupReaperRecord({
+      ledgerPath: preflight.document.cleanup_watchdog.ledger_path,
+      recordId: cleanupRecordId,
+      runpodctl: tools.runpodctl,
+      reaperClient: tools.reaperClient,
+      executor,
+      label: `${pair.id}-pod-delete`,
+      createdIds,
+      podRecords,
+    });
+    if (deletion.state !== "retired" || deletion.external_deadline_cleanup_required) {
+      throw new Error("normal pair cleanup did not reach reaper-confirmed exact-ID absence");
+    }
     await writeJsonAtomic(path.join(activeRoot, "pod-delete.json"), deletion);
     await writeJsonAtomic(path.join(activeRoot, "pair-complete.json"), {
       schema_version: 1,
@@ -1919,6 +2449,7 @@ async function runOnePair({
       arm_id: arm.id,
       manifest_sha256: preflight.manifestSha256,
       pod_id: podId,
+      reaper_record_id: cleanupRecordId,
       execution_order: pair.order,
       order_draw_sha256: pair.order_draw_sha256,
       fetched_manifest_sha256: fetchVerification.manifest_sha256,
@@ -1933,15 +2464,33 @@ async function runOnePair({
     if (deadlineTimer) clearTimeout(deadlineTimer);
   } catch (error) {
     if (deadlineTimer) clearTimeout(deadlineTimer);
+    let terminalError = error;
+    if (cleanupRecordId) {
+      try {
+        const cleanup = await reconcileAndCleanupReaperRecord({
+          ledgerPath: preflight.document.cleanup_watchdog.ledger_path,
+          recordId: cleanupRecordId,
+          runpodctl: tools.runpodctl,
+          reaperClient: tools.reaperClient,
+          executor,
+          label: `${pair.id}-failure-cleanup`,
+          createdIds,
+          podRecords,
+        });
+        await writeJsonAtomic(path.join(activeRoot, "failure-cleanup.json"), cleanup);
+      } catch (cleanupError) {
+        terminalError = new Error(`${error.message}; exact-ID cleanup: ${cleanupError.message}`);
+      }
+    }
     state.pairs[pair.id] = {
       ...state.pairs[pair.id],
       status: "failed",
-      error: error.message,
+      error: terminalError.message,
       evidence_eligible: false,
     };
     state.updated_at = new Date().toISOString();
     await writeJsonAtomic(path.join(output, "state.json"), state).catch(() => {});
-    throw error;
+    throw terminalError;
   }
 }
 
@@ -2005,6 +2554,17 @@ export async function runCli(argv) {
       source_commit: preflight.sourceReceipt.receipt.source_commit,
       pair_count: preflight.pairs.length,
       max_concurrency: preflight.document.pod.max_concurrency,
+      cleanup_watchdog: {
+        kind: preflight.document.cleanup_watchdog.kind,
+        provider_ttl_available: false,
+        client_cleanup_deadline_seconds:
+          preflight.document.cleanup_watchdog.client_cleanup_deadline_seconds,
+        exact_generated_name_registered_before_post: true,
+      },
+      full_fanout_live_approved: FULL_FANOUT_LIVE_APPROVED,
+      transport_canary_live_approved: true,
+      full_fanout_blocking_reason:
+        "runtime control nonce would transit the runpodctl --env process argv",
       pairs: preflight.pairs.map(({ arm, pair }) => ({
         arm_id: arm.id,
         pair_id: pair.id,
@@ -2014,17 +2574,16 @@ export async function runCli(argv) {
         roster_class: arm.roster_class,
         order: pair.order,
         order_draw_sha256: pair.order_draw_sha256,
-        pod_name: podName(preflight.document, arm.id, pair.id),
+        pod_name: dryRunPodName(preflight.document),
         pod_create_argv: buildPodCreateArgs(
           preflight.document,
-          arm.id,
-          pair.id,
-          0,
+          dryRunPodName(preflight.document),
           "0".repeat(64),
         ).map((value) => {
-          if (value.startsWith("1970-")) return "RUNTIME_NOW_PLUS_2H";
-          if (value.startsWith("MICKEY_CONTROL_PLANE_NONCE=")) {
-            return "MICKEY_CONTROL_PLANE_NONCE=RUNTIME_RANDOM_256_BIT_SECRET";
+          if (value.includes("MICKEY_CONTROL_PLANE_NONCE")) {
+            return JSON.stringify({
+              MICKEY_CONTROL_PLANE_NONCE: "RUNTIME_RANDOM_NONCREDENTIAL_256_BIT_VALUE",
+            });
           }
           return value;
         }),
@@ -2034,6 +2593,12 @@ export async function runCli(argv) {
     };
     process.stdout.write(`${JSON.stringify(plan, null, 2)}\n`);
     return 0;
+  }
+
+  if (!FULL_FANOUT_LIVE_APPROVED) {
+    throw new Error(
+      "full fanout live execution is blocked before mutation: the runtime control nonce would transit the runpodctl --env process argv; only the no-env one-pod transport canary is approved",
+    );
   }
 
   const output = options.output;
@@ -2051,6 +2616,7 @@ export async function runCli(argv) {
     scp: "/usr/bin/scp",
     sshKeygen: "/usr/bin/ssh-keygen",
   };
+  tools.reaperClient = new ExecutorRunPodClient(tools.runpodctl, executor, preflight.document.run_id);
   if (
     process.env.RUNPODCTL_BIN &&
     path.resolve(process.env.RUNPODCTL_BIN) !== preflight.document.runpodctl.path
@@ -2077,6 +2643,11 @@ export async function runCli(argv) {
     preflight.document.runner_lease.state_root,
     executor,
   );
+  const reaperService = await verifyLiveReaperService({
+    manifest: preflight.document,
+    manifestSha256: preflight.manifestSha256,
+    executor,
+  });
   await cp(options.manifest, path.join(output, "evidence", "manifest.json"), { errorOnExist: true, force: false });
   await writeFile(
     path.join(output, "evidence", "manifest.sha256"),
@@ -2099,6 +2670,7 @@ export async function runCli(argv) {
     pairs: {},
   };
   await writeJsonAtomic(path.join(output, "state.json"), state);
+  await writeJsonAtomic(path.join(output, "control", "reaper-service.json"), reaperService);
   await appendEvent(output, "preflight_passed", { pair_count: preflight.pairs.length });
 
   const stopState = { requested: false, signal: null };
@@ -2113,15 +2685,14 @@ export async function runCli(argv) {
   }
   const createdIds = new Set();
   const podRecords = new Map();
+  const reaperRecords = new Map();
   let fatal = null;
   try {
     const snapshotResult = await executor.run(tools.runpodctl, ["pod", "list", "-a", "-o", "json"], {
       label: "preexisting-pod-snapshot",
+      outputLogMode: "metadata-only",
     });
-    const snapshot = parseJsonOutput(snapshotResult, "pre-existing pod snapshot");
-    if (!Array.isArray(snapshot) || snapshot.some((pod) => !isObject(pod) || typeof pod.id !== "string")) {
-      throw new Error("pre-existing pod snapshot is not a complete JSON array");
-    }
+    const snapshot = sanitizePodInventory(parseJsonOutput(snapshotResult, "pre-existing pod snapshot"));
     const preexistingIds = new Set(snapshot.map((pod) => pod.id));
     await writeJsonAtomic(path.join(output, "control", "preexisting-pods.json"), snapshot);
     await writeJsonAtomic(path.join(output, "control", "preexisting-pod-ids.json"), [...preexistingIds].sort());
@@ -2140,9 +2711,9 @@ export async function runCli(argv) {
         output,
         executor,
         tools,
-        preexistingIds,
         createdIds,
         podRecords,
+        reaperRecords,
         stopState,
         state,
       }),
@@ -2190,10 +2761,24 @@ export async function runCli(argv) {
     executor.stop();
   } finally {
     const cleanupErrors = [];
-    for (const id of [...createdIds]) {
+    for (const recordId of reaperRecords.keys()) {
       try {
-        await deleteExactPod(tools.runpodctl, id, executor, `final-cleanup-${id}`);
-        createdIds.delete(id);
+        const cleanup = await reconcileAndCleanupReaperRecord({
+          ledgerPath: preflight.document.cleanup_watchdog.ledger_path,
+          recordId,
+          runpodctl: tools.runpodctl,
+          reaperClient: tools.reaperClient,
+          executor,
+          label: `final-cleanup-${recordId}`,
+          createdIds,
+          podRecords,
+        });
+        if (cleanup.external_deadline_cleanup_required) {
+          await appendEvent(output, "cleanup_pending_external_reaper", {
+            record_id: recordId,
+            deadline_cleanup_required: true,
+          });
+        }
       } catch (error) {
         cleanupErrors.push(error.message);
       }
