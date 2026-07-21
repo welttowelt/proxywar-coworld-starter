@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-21T03:13:30Z",
+  "cycle_id": "odin-cb1-cap-bank-capture-20260721",
+  "arm": "cb1",
+  "hypothesis": "On Pangaea, qd1n can freeze on upgrades while land is flat, troop capacity is nearly full, no transport is active, and legal naval conversion exists. A safe non-K1Z boat may convert otherwise wasted regeneration into territory, but production code requires one complete raw selector request before the action can be chosen faithfully.",
+  "causal_mechanism": "After four consecutive flat upgrades at own troopRatio at least 0.90, retain the exact observation and full legal-action objects before selection. This acquisition phase changes logging only and cannot alter the selected action.",
+  "official_evidence": {
+    "round": 591,
+    "episode_id": "1f84274e-bd8b-4f06-b3c0-abf8930f49f1",
+    "map": "Pangaea",
+    "turn": 12000,
+    "selected_action": "upgrade:City:1852",
+    "flat_tiles": 33255,
+    "flat_window": "turns 10000 through 14000, 41 decisions",
+    "upgrade_count": 26,
+    "troop_ratio": 0.94,
+    "active_transports": 0,
+    "legal_boat_ids": 14,
+    "post_decision_evaluator_best": "boat:556167:16 to non-K1Z Ron SWGY",
+    "replay_sha256": "91cb15ebf82c87b0e772966deece8c09b5c3e2ee1fa8cd20b6a2a1159ced8fab",
+    "turn_record_sha256_with_lf": "7baa7a57726f4712e4b59b89572ad4ee64bfe55a0df01070aebee0cd0a8d19d6"
+  },
+  "public_replay_limit": {
+    "verdict": "NO_GO_FOR_PRODUCTION_FIXTURE",
+    "reason": "The replay omits the raw observation and full offered LegalAction objects. Tactical affordances are computed after qd1n responds. Filling target ratios, source tiles, per-action risk, or legal reasons from later state would fabricate selector input."
+  },
+  "historical_recurrence": {
+    "query_definition": "Odin episode with at least 20 decisions where banking_recommended=true and selected action_kind=upgrade_structure",
+    "dataset_latest_completed_at": "2026-07-19T13:44:51.930Z",
+    "episodes": 13,
+    "wins": 0,
+    "pangaea": 4,
+    "world": 9,
+    "decisions_parquet_sha256": "ef532d32c09b6c26b1422b9288898c5cba17e0f0fca7688145a2f083a2319c21",
+    "episodes_parquet_sha256": "73de9b71fc1b6f00868a70ae00465e7fa917b83b2832b72b20c058b2b6210f7e",
+    "participants_parquet_sha256": "fbec3e44ccc21f2ab17b7fc06422c659203c7ae4ed5497ad2e1cfbaccced5656"
+  },
+  "capture_contract": {
+    "parent_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "parent_strategy_sha256": "f2ee66d570033508c4158bcb83d56d81dc198cdcebb91098d7e67eefdc8e6a7a",
+    "instrumentation": "One environment-gated stdout record containing requestID, observation, legalActions, and compact selector history. No strategy-engine or choice-path edit.",
+    "trigger": {
+      "map": "Pangaea",
+      "own_troop_ratio_min": 0.9,
+      "recent_consecutive_upgrades": 4,
+      "max_tile_share_delta": 0.0005,
+      "legal_boat_min": 1
+    },
+    "job": "experiments/job-qd1n-cb1-cap-bank-raw-capture-pangaea-20260721.json",
+    "map": "Pangaea",
+    "players": 12,
+    "seed": 20260721,
+    "max_decision_steps": 120,
+    "all_slots_instrumented": true
+  },
+  "capture_pass": [
+    "At least one policy log contains exactly one CB1_RAW_REQUEST_V1 record.",
+    "The record includes the complete raw observation and all legal-action objects before selection.",
+    "The record satisfies the sealed trigger using only fields present in that request.",
+    "At least one legal non-K1Z boat contains targetID, targetName, relativeTroopRatio, troopPercent, risk, and legalReason.",
+    "The strategy-engine bytes match exact parent and all parent tests pass."
+  ],
+  "capture_stop": [
+    "No trigger reaches in the single preregistered job.",
+    "The log omits or truncates raw observation or legal actions.",
+    "No legal boat can be resolved safely away from K1Z.",
+    "Any policy selection code differs from exact parent."
+  ],
+  "promotion_boundary": "Raw capture can only make CB1 source-ready. It cannot justify a matched pair, upload, hosted request, regression, submission, membership, or champion change.",
+  "forbidden": [
+    "Use post-decision tacticalAffordances as if they were policy input.",
+    "Invent missing boat metadata from later replay state.",
+    "Tune or run a second seed after zero capture without a new preregistration.",
+    "Mutate qd1n:v89 or any league state."
+  ]
+}

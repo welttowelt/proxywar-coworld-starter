@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T02:57:20Z",
-  "cycle_id": "odin-pf1-zero-reach-stop-20260721",
+  "updated_at": "2026-07-21T03:13:30Z",
+  "cycle_id": "odin-cb1-cap-bank-capture-20260721",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "no_active_arm_pf1_rejected_zero_reach",
+  "state": "cb1_raw_request_capture_preregistered",
   "arm": {
-    "id": "pf1",
-    "name": "first_strike_pvp_floor",
-    "branch": "rci/pf1-first-strike-pvp-floor",
+    "id": "cb1",
+    "name": "pangaea_cap_bank_conversion",
+    "branch": "rci/cb1-cap-bank",
     "parent_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
-    "candidate_commit": "767b9eb4cff3effa57d3d521427dad700065541e",
-    "preregistration": "experiments/preregister-qd1n-pf1-first-strike-pvp-floor-pangaea-20260721.json",
-    "closed": true,
-    "verdict": "REJECTED_ZERO_REACH"
+    "candidate_commit": null,
+    "preregistration": "experiments/preregister-qd1n-cb1-cap-bank-raw-capture-20260721.json",
+    "closed": false,
+    "verdict": null
   },
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
@@ -26,15 +26,16 @@
     "is_champion": true
   },
   "live_scoreboard": {
-    "checked_at": "2026-07-21T01:25:24Z",
+    "checked_at": "2026-07-21T03:13:30Z",
     "leader": "daveey",
-    "leader_score": 41.05003956672219,
+    "leader_score": 38.7459525942,
     "odin_rank": 3,
-    "odin_score": 15.047262262251257,
-    "latest_completed_round": 589,
-    "latest_odin_rank": 12,
-    "latest_odin_score": 0,
-    "running_round": 590
+    "odin_score": 16.2973203239,
+    "gap_to_leader": 22.4486322703,
+    "latest_completed_round": 591,
+    "latest_odin_rank": 3,
+    "latest_odin_score": 0.25,
+    "running_round": 592
   },
   "locks": {
     "runner": "free",
@@ -49,73 +50,44 @@
     "kimi": "external Kimi K3 Max adviser only"
   },
   "bounded_evidence": {
-    "round": 589,
+    "official_round": 591,
+    "episode_id": "1f84274e-bd8b-4f06-b3c0-abf8930f49f1",
     "map": "Pangaea",
-    "turn": 4900,
-    "target": "Ron SWGY",
-    "target_id": "idjkf73n",
-    "target_tile_share": 0.01,
-    "target_troops": 377067,
-    "own_troops": 2883001,
-    "own_troop_ratio": 0.98,
-    "relative_troop_ratio": 7.65,
-    "selected_action": "attack:idjkf73n:10",
-    "preregistered_action": "attack:idjkf73n:25",
-    "parent_attack_multiple": 0.764,
-    "candidate_attack_multiple": 1.912,
-    "replay_hash": "ec8a82e49ca6fbf77cafcea4ff5f7b7dffbbf3e87ce18793dc58fdc97b5a7923",
-    "turn_record_hash": "3631d8cb65976b90373deb79e856c67ae88bac165a781c11d8c777e8f2320313",
-    "fixture_integrity": "HASH_BOUND_CANONICAL_FIXTURE_PARENT_REPRODUCED",
-    "fixture_commit": "a18095c973a3e00cc4098ecb5a0a943c747acaf2",
-    "fixture_sha256": "71f2a15ae414dc89cc892d76f571097ea82fd95064aaef1a1b97d439edea78b7",
-    "source_audit": "experiments/audit-qd1n-pf1-source-ready-20260721.json",
-    "source_test": {
-      "parent_selected_action": "attack:idjkf73n:10",
-      "parent_policy_marker": null,
-      "candidate_selected_action": "attack:idjkf73n:25",
-      "candidate_policy_marker": "pf1",
-      "targeted_tests": "16/16",
-      "full_suite": "163/163"
-    },
-    "preregistration": "experiments/preregister-qd1n-pf1-first-strike-pvp-floor-pangaea-20260721.json",
-    "image_screen": {
-      "candidate_image_id": "sha256:393963d0226f85b54a1efe927a0046522d0cf04af2f551731c79e412915ae300",
-      "architecture": "linux/amd64",
-      "strategy_engine_sha256": "6aa6f9f50162859c4d7a37fb4cfc50f8aa02af02245d209ad19a5a65eae00f7d",
-      "source_bytes_match": true,
-      "job": "experiments/job-qd1n-pf1-mechanism-pangaea-seat9-20260721.json",
-      "job_sha256": "ad9a0739a6ae13f0b3940bfb70a8ebb1299699ff958338bb9af4ec7b35b0aa3e",
-      "pre_game_schema_failure": {
-        "run_id": "pf1-mechanism-seat9-e7e1ce9e",
-        "result": "ABORTED_BEFORE_GAME_START",
-        "reason": "Coworld 0.1.30 rejected evidentiary metadata outside its four-key episode-job schema.",
-        "episode_started": false,
-        "output": "/private/tmp/proxywar-pf1-mechanism-seat9-e7e1ce9e.aborted-20260721T024434Z-pf1-mechanism-seat9-e7e1ce9e"
-      },
-      "canary_result": {
-        "run_id": "pf1-mechanism-seat9-ed2b9723",
-        "output": "/private/tmp/proxywar-pf1-mechanism-seat9-ed2b9723",
-        "turn_count": 7400,
-        "odin_decisions": 73,
-        "odin_accepted": 73,
-        "odin_fallbacks": 70,
-        "odin_holds": 0,
-        "odin_rejects": 0,
-        "odin_hostile_land_attacks": 0,
-        "pf1_reach": 0,
-        "attributable_k1z_harm": 0,
-        "unresolved_naval_target_ownership": 2,
-        "replay_sha256": "e6fc710d39f3a99a3428d08dc5f3147a47ac269ab1c8ba60feec889ff4500934",
-        "decisions_sha256": "a0de71354a790ac4d8944733929e4059061c6caf72bac12e35a2172fa819acf0",
-        "audit": "experiments/audit-qd1n-pf1-zero-reach-stop-20260721.json"
-      }
+    "turn": 12000,
+    "selected_action": "upgrade:City:1852",
+    "flat_tiles": 33255,
+    "flat_decisions_10000_to_14000": 41,
+    "upgrade_decisions_in_window": 26,
+    "own_troop_ratio": 0.94,
+    "active_transports": 0,
+    "legal_boat_ids": 14,
+    "post_decision_best_boat": "boat:556167:16",
+    "post_decision_best_target": "Ron SWGY",
+    "replay_sha256": "91cb15ebf82c87b0e772966deece8c09b5c3e2ee1fa8cd20b6a2a1159ced8fab",
+    "turn_record_sha256_with_lf": "7baa7a57726f4712e4b59b89572ad4ee64bfe55a0df01070aebee0cd0a8d19d6",
+    "fixture_integrity": "NO_GO_PUBLIC_REPLAY_MISSING_RAW_SELECTOR_INPUT",
+    "missing_fields": [
+      "raw observation",
+      "full legal action objects",
+      "point-in-time target troop ratios",
+      "per-action risk and legal reason"
+    ],
+    "historical_recurrence": {
+      "dataset_latest_completed_at": "2026-07-19T13:44:51.930Z",
+      "definition": "at least 20 banking-recommended upgrade decisions in one Odin episode",
+      "episodes": 13,
+      "wins": 0,
+      "pangaea_episodes": 4,
+      "world_episodes": 9,
+      "decisions_parquet_sha256": "ef532d32c09b6c26b1422b9288898c5cba17e0f0fca7688145a2f083a2319c21"
     }
   },
   "gates": {
-    "source_ready": true,
-    "fixture_hash_bound": true,
-    "red_regression_reproduced": true,
-    "image_verified": true,
+    "raw_request_captured": false,
+    "source_ready": false,
+    "fixture_hash_bound": false,
+    "red_regression_reproduced": false,
+    "image_verified": false,
     "local_mechanism_verified": false,
     "diagnostic_uploaded": false,
     "hosted_4_of_4": false,
@@ -126,11 +98,17 @@
     "champion_verified": false,
     "round_confirmed": false
   },
-  "transport_truth": {
-    "mode": "DETERMINISTIC_NO_BEDROCK",
-    "clean_local_bedrock_available": false,
-    "rule": "PF1 is a post-selector deterministic reroute and must not depend on planner output or weaken the zero-degradation gate."
+  "capture_truth": {
+    "mode": "LOG_ONLY_EXACT_PARENT_SELECTOR",
+    "policy_action_delta": false,
+    "job": "experiments/job-qd1n-cb1-cap-bank-raw-capture-pangaea-20260721.json",
+    "rule": "Capture one complete raw observation plus full legal action set at the preregistered cap-bank boundary. Do not implement CB1 from post-decision tactical telemetry."
   },
-  "next_automatic_transition": "PF1 is terminally closed. Pull the team mailbox for a committed Kimi structural response to dadb406; if none exists, refresh the latest completed field and audit one bounded loss cell for a deterministic legal-action delta. Open only one new structural arm with a replay-visible guard and distinct marker. Do not tune, rerun, upload, or submit PF1.",
+  "prior_closed_arm": {
+    "id": "pf1",
+    "verdict": "REJECTED_ZERO_REACH",
+    "audit": "experiments/audit-qd1n-pf1-zero-reach-stop-20260721.json"
+  },
+  "next_automatic_transition": "Build the log-only exact-parent capture image and run exactly one 12-seat Pangaea capture job. If no raw request reaches the sealed boundary, stop CB1 without a policy edit. If captured, hash-bind one complete request and only then write the smallest red-first selector delta. No upload, submission, membership, or champion mutation from capture evidence.",
   "prior_verified_champion_preserved": true
 }
