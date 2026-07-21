@@ -221,6 +221,154 @@ test("DS2 deterministically counters the most recently hostile verified attacker
   assert.equal(selected.policyMarker, "ds2");
 });
 
+test("DS2 exact target parsing never treats annex as attacker ann", () => {
+  const annexAttack = action("attack:annex:40", "attack", "Attack Annex 40%");
+  const retreat = action("boat_retreat:23", "boat_retreat", "Retreat boat 23");
+  const selected = choose(
+    [annexAttack, retreat],
+    observation({
+      tileShare: 0.02,
+      tilesOwned: 12_144,
+      turnNumber: 1_900,
+      spawnTile: 659528,
+      incomingAttackPlayerIDs: ["ann"],
+      rivals: [
+        {
+          id: "ann",
+          name: "Ann",
+          tileShare: 0.12,
+          relativeTroopRatio: 0.4,
+          incomingAttack: true,
+        },
+        {
+          id: "annex",
+          name: "Annex",
+          tileShare: 0.1,
+          relativeTroopRatio: 0.4,
+        },
+      ],
+    }),
+    null,
+    ds2History(),
+  );
+  assert.equal(selected.id, retreat.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("DS2 metadata target ID prevents a grav alias from rerouting into Gravity", () => {
+  const gravityID = "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335";
+  const misleading = {
+    ...action("attack:grav:40", "attack", "Attack grav 40%"),
+    metadata: { targetID: gravityID, targetName: "K1Z Gravity", troopPercent: 40 },
+  };
+  const retreat = action("boat_retreat:23", "boat_retreat", "Retreat boat 23");
+  const selected = choose(
+    [misleading, retreat],
+    observation({
+      tileShare: 0.02,
+      tilesOwned: 12_144,
+      turnNumber: 1_900,
+      spawnTile: 659528,
+      incomingAttackPlayerIDs: ["grav"],
+      rivals: [
+        {
+          id: "grav",
+          name: "grav",
+          tileShare: 0.12,
+          relativeTroopRatio: 0.4,
+          incomingAttack: true,
+        },
+        {
+          id: gravityID,
+          name: "K1Z Gravity",
+          tileShare: 0.1,
+          relativeTroopRatio: 0.4,
+        },
+      ],
+    }),
+    null,
+    ds2History(),
+  );
+  assert.equal(selected.id, retreat.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("DS2 prioritizes a current attacker first seen now over an older attacker", () => {
+  const oldCounter = {
+    ...action("attack:old:40", "attack", "Attack Old 40%"),
+    metadata: { targetID: "old", troopPercent: 40 },
+  };
+  const newCounter = {
+    ...action("attack:new:40", "attack", "Attack New 40%"),
+    metadata: { targetID: "new", troopPercent: 40 },
+  };
+  const history = ds2History();
+  history[1].allProtocolAttackerIDs = ["old"];
+  const selected = choose(
+    [oldCounter, newCounter, action("boat_retreat:23", "boat_retreat", "Retreat")],
+    ds2RonObservation({
+      incomingAttackPlayerIDs: ["old", "new"],
+      rivals: [
+        {
+          id: "old",
+          name: "Old",
+          tileShare: 0.2,
+          relativeTroopRatio: 0.4,
+          incomingAttack: true,
+        },
+        {
+          id: "new",
+          name: "New",
+          tileShare: 0.1,
+          relativeTroopRatio: 0.4,
+          incomingAttack: true,
+        },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, newCounter.id);
+  assert.equal(selected.policyMarker, "ds2");
+});
+
+test("DS2 breaks simultaneous-new-attacker ties by stable rival ID", () => {
+  const alpha = {
+    ...action("attack:alpha:40", "attack", "Attack Alpha 40%"),
+    metadata: { targetID: "alpha", troopPercent: 40 },
+  };
+  const beta = {
+    ...action("attack:beta:40", "attack", "Attack Beta 40%"),
+    metadata: { targetID: "beta", troopPercent: 40 },
+  };
+  const selected = choose(
+    [beta, alpha, action("boat_retreat:23", "boat_retreat", "Retreat")],
+    ds2RonObservation({
+      incomingAttackPlayerIDs: ["beta", "alpha"],
+      rivals: [
+        {
+          id: "beta",
+          name: "Beta",
+          tileShare: 0.1,
+          relativeTroopRatio: 0.4,
+          incomingAttack: true,
+        },
+        {
+          id: "alpha",
+          name: "Alpha",
+          tileShare: 0.1,
+          relativeTroopRatio: 0.4,
+          incomingAttack: true,
+        },
+      ],
+    }),
+    null,
+    ds2History(),
+  );
+  assert.equal(selected.id, alpha.id);
+  assert.equal(selected.policyMarker, "ds2");
+});
+
 test("DS2 never creates a counterattack against a K1Z identity", () => {
   for (const [id, name] of [
     ["kata", "K1Z katanasan"],

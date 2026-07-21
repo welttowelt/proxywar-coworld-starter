@@ -946,7 +946,26 @@ function protocolHostilityRecency(history, rival) {
       .map((name) => String(name).toLowerCase());
     if (attackerIDs.includes(rivalID) || attackerNames.includes(rivalName)) return index;
   }
-  return -1;
+  // A current attacker absent from history is first seen now, after every
+  // archived event. Multiple first-seen attackers tie and fall through to the
+  // stable territory/ID ordering below.
+  return history.length;
+}
+
+function exactDS2AttackRival(action, state) {
+  if (action?.kind !== "attack") return null;
+  const metadataTargetID = clean(action?.metadata?.targetID ?? "").toLowerCase();
+  if (metadataTargetID) {
+    return state.rivals.find(
+      (rival) => rival.id.toLowerCase() === metadataTargetID,
+    ) ?? null;
+  }
+  const idParts = String(action?.id ?? "").split(":");
+  if (idParts.length < 3 || idParts[0].toLowerCase() !== "attack") return null;
+  const actionTargetID = clean(idParts[1]).toLowerCase();
+  return state.rivals.find(
+    (rival) => rival.id.toLowerCase() === actionTargetID,
+  ) ?? null;
 }
 
 function chooseRawOpeningCollapseCounter(actions, state, history, parentAction) {
@@ -968,7 +987,7 @@ function chooseRawOpeningCollapseCounter(actions, state, history, parentAction) 
   if (attackerIDs.size === 0) return parentAction;
 
   const counters = actions
-    .map((action) => ({ action, rival: rivalForAction(action, state) }))
+    .map((action) => ({ action, rival: exactDS2AttackRival(action, state) }))
     .filter(({ action, rival }) =>
       action.kind === "attack" && !isNeutralExpansion(action) && rival &&
       attackerIDs.has(rival.id.toLowerCase()) && !isReciprocalRival(rival) &&
@@ -976,7 +995,7 @@ function chooseRawOpeningCollapseCounter(actions, state, history, parentAction) 
     );
   if (counters.length === 0) return parentAction;
 
-  const parentRival = rivalForAction(parentAction, state);
+  const parentRival = exactDS2AttackRival(parentAction, state);
   if (
     parentAction?.kind === "attack" && !isNeutralExpansion(parentAction) && parentRival &&
     attackerIDs.has(parentRival.id.toLowerCase())
