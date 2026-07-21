@@ -140,6 +140,13 @@ function durableInstallationPaths(installationId) {
   };
 }
 
+function durableServiceReceiptPaths(runId) {
+  return new Set([
+    `${DURABLE_REAPER_ROOT}/service-receipt.json`,
+    `${DURABLE_REAPER_ROOT}/service-receipt-${runId}.json`,
+  ]);
+}
+
 function usage() {
   return `Usage:
   node scripts/run-mickey-cpu-fanout.mjs \\
@@ -707,9 +714,11 @@ export function validateManifest(document) {
   if (
     document.cleanup_watchdog.ledger_path !== `${durable.root}/ledger.json` ||
     document.cleanup_watchdog.heartbeat_path !== `${durable.root}/provider-heartbeat.json` ||
-    document.cleanup_watchdog.service_receipt_path !== `${durable.root}/service-receipt.json`
+    !durableServiceReceiptPaths(document.run_id).has(
+      document.cleanup_watchdog.service_receipt_path,
+    )
   ) {
-    throw new Error("manifest cleanup watchdog state files must stay in the exact durable reaper root");
+    throw new Error("manifest cleanup watchdog state files must stay at exact run-bound durable paths");
   }
   if (
     document.cleanup_watchdog.client_cleanup_deadline_seconds !== 7200 ||
@@ -1270,7 +1279,6 @@ export function validateCreateRequestAttestation(
     }
   } else {
     if (
-      controlSecret === null ||
       record.responseEnvRedacted !== true ||
       responseEnvKeys.sort().join(",") !== "redacted,schema" ||
       responseEnv.redacted !== true ||
@@ -1283,7 +1291,10 @@ export function validateCreateRequestAttestation(
     typeof record.responseControlSecretScrubbed !== "boolean" ||
     record.providerIdentityContaminated !== false ||
     record.reconciliationRequired !== false ||
-    (controlSecret === null && record.responseControlSecretScrubbed !== false)
+    (
+      controlSecret === null &&
+      record.responseControlSecretScrubbed !== record.responseEnvRedacted
+    )
   ) {
     throw new Error("RunPod create response does not satisfy the response-wide scrub and identity contract");
   }

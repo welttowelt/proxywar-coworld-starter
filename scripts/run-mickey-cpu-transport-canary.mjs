@@ -242,7 +242,7 @@ async function executeTransportCanary({
   beforeCreate = async () => {},
 }) {
   const receipt = {
-    schema_version: 2,
+    schema_version: 3,
     kind: "mickey_cpu_transport_canary_receipt",
     run_id: manifest.run_id,
     manifest_sha256: manifestSha256,
@@ -265,6 +265,8 @@ async function executeTransportCanary({
       network_volume_id: null,
       public_ip: true,
       ports: ["22/tcp"],
+      requested_env: false,
+      control_secret_supplied: false,
       provider_ttl: null,
       client_cleanup_deadline_seconds:
         manifest.cleanup_watchdog.client_cleanup_deadline_seconds,
@@ -546,6 +548,8 @@ export async function runCli(argv, { executor = new EphemeralExecutor() } = {}) 
       promotion_possible_from_this_run: false,
       reaper_prepare_before_post: true,
       provider_ttl: null,
+      requested_env: false,
+      control_secret_supplied: false,
       client_cleanup_deadline_seconds:
         preflight.document.cleanup_watchdog.client_cleanup_deadline_seconds,
       create_argv: dryArgs,

@@ -361,6 +361,23 @@ test("manifest pins a fair M0, exact identities, fixture, randomized order, and 
   }
 });
 
+test("manifest permits only the legacy or exact run-bound durable service receipt", () => {
+  const { directory, manifest } = fixture();
+  try {
+    manifest.cleanup_watchdog.service_receipt_path =
+      `${durableReaperRoot}/service-receipt-${manifest.run_id}.json`;
+    assert.equal(validateManifest(manifest).document, manifest);
+    manifest.cleanup_watchdog.service_receipt_path =
+      `${durableReaperRoot}/service-receipt-another-run.json`;
+    assert.throws(
+      () => validateManifest(manifest),
+      /exact run-bound durable paths/,
+    );
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
 test("manifest rejects old qd1n-style control, pruned arms, outsider grow rosters, and manipulated order", () => {
   const cases = [
     (manifest) => { manifest.arms[0].m0.arm = "qd1n-v89"; },

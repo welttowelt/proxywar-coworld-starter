@@ -1,11 +1,14 @@
 import assert from "node:assert/strict";
 import { createHash } from "node:crypto";
-import { existsSync, mkdtempSync, rmSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 
-import { canonicalRequestInputSha256 } from "../scripts/run-mickey-cpu-fanout.mjs";
+import {
+  canonicalRequestInputSha256,
+  validateCreateRequestAttestation,
+} from "../scripts/run-mickey-cpu-fanout.mjs";
 import {
   acquireCanaryOnce,
   simulateTransportCanaryForTest,
@@ -16,6 +19,13 @@ const MANIFEST_SHA256 = createHash("sha256").update("manifest-v3").digest("hex")
 const SELF = "8".repeat(64);
 const NEW_ID = "mickey-canary-new-001";
 const STORM_ID = "storm-existing-001";
+const PROVIDER_ENV_LIVE_SHAPE = JSON.parse(readFileSync(
+  new URL(
+    "../test-support/fixtures/runpod-create-provider-env-redacted-reconstructed_sanitized.json",
+    import.meta.url,
+  ),
+  "utf8",
+));
 
 function manifest(root) {
   return {
@@ -112,6 +122,7 @@ class FakeRunPod {
     returnedName = null,
     cleanupGetFailures = 0,
     adversarialAfterDelete = false,
+    providerResponseEnv = false,
   } = {}) {
     this.malformed = malformed;
     this.transportError = transportError;
@@ -119,6 +130,7 @@ class FakeRunPod {
     this.returnedName = returnedName;
     this.cleanupGetFailures = cleanupGetFailures;
     this.adversarialAfterDelete = adversarialAfterDelete;
+    this.providerResponseEnv = providerResponseEnv;
     this.present = false;
     this.record = null;
     this.calls = [];
@@ -135,6 +147,11 @@ class FakeRunPod {
     if (args[0] === "pod" && args[1] === "create") {
       this.createCount += 1;
       this.record = createRecord(args, this.returnedId, this.returnedName);
+      if (this.providerResponseEnv) {
+        this.record.env = { redacted: true, schema: "env-map-v2" };
+        this.record.responseEnvRedacted = true;
+        this.record.responseControlSecretScrubbed = true;
+      }
       this.present = true;
       if (this.transportError) throw new Error("transport failed after request dispatch");
       return {
@@ -227,6 +244,57 @@ test("transport canary prepares ownership before one REST POST, proves SSH, and 
   const post = fake.calls.findIndex(({ args }) => args[0] === "pod" && args[1] === "create");
   assert.ok(firstList >= 0 && firstList < post, "reaper snapshot must precede POST");
   assert.equal(fake.calls.some(({ args }) => args.includes(STORM_ID) && args.includes("delete")), false);
+});
+
+test("transport canary accepts provider-returned redacted env metadata with no requested env", async (t) => {
+  const expectedName = PROVIDER_ENV_LIVE_SHAPE.name;
+  assert.equal(PROVIDER_ENV_LIVE_SHAPE.fixture_label, "reconstructed_sanitized");
+  assert.equal(
+    canonicalRequestInputSha256(PROVIDER_ENV_LIVE_SHAPE.requestInput),
+    PROVIDER_ENV_LIVE_SHAPE.requestInputSha256,
+  );
+  const attestation = validateCreateRequestAttestation(PROVIDER_ENV_LIVE_SHAPE, {
+    manifest: manifest("/private/tmp/live-shape-only"),
+    expectedName,
+    controlSecret: null,
+  });
+  assert.equal(attestation.response_env_redacted, true);
+  assert.equal(attestation.response_control_secret_scrubbed, true);
+  const redactedButNotScrubbed = structuredClone(PROVIDER_ENV_LIVE_SHAPE);
+  redactedButNotScrubbed.responseControlSecretScrubbed = false;
+  assert.throws(
+    () => validateCreateRequestAttestation(redactedButNotScrubbed, {
+      manifest: manifest("/private/tmp/live-shape-only"),
+      expectedName,
+      controlSecret: null,
+    }),
+    /response-wide scrub and identity contract/,
+  );
+  const absentButReportedScrubbed = structuredClone(PROVIDER_ENV_LIVE_SHAPE);
+  delete absentButReportedScrubbed.env;
+  absentButReportedScrubbed.responseEnvRedacted = false;
+  assert.throws(
+    () => validateCreateRequestAttestation(absentButReportedScrubbed, {
+      manifest: manifest("/private/tmp/live-shape-only"),
+      expectedName,
+      controlSecret: null,
+    }),
+    /response-wide scrub and identity contract/,
+  );
+
+  const fake = new FakeRunPod({ providerResponseEnv: true });
+  const receipt = await execute(t, fake);
+  assert.equal(receipt.status, "passed");
+  assert.equal(receipt.schema_version, 3);
+  assert.equal(receipt.requested_contract.requested_env, false);
+  assert.equal(receipt.requested_contract.control_secret_supplied, false);
+  assert.equal(receipt.create_request_attestation.response_env_redacted, true);
+  assert.equal(receipt.create_request_attestation.response_control_secret_scrubbed, true);
+  const create = fake.calls.find(({ args }) => args[0] === "pod" && args[1] === "create");
+  assert.equal(create.args.includes("--env"), false);
+  assert.equal(create.args.includes("--env-stdin"), false);
+  assert.deepEqual(receipt.deleted_exact_pod_ids, [NEW_ID]);
+  assert.equal(receipt.cleanup.final_absence_confirmed, true);
 });
 
 test("transport canary runs the final revalidation after durable ownership and immediately before POST", async (t) => {

@@ -1,0 +1,52 @@
+{
+  "fixture_label": "reconstructed_sanitized",
+  "id": "mickey-live-shape-001",
+  "name": "proxywar-mickey-cpu-fanout-live-shape-fixture",
+  "desiredStatus": "RUNNING",
+  "costPerHr": 0.08,
+  "gpuCount": 0,
+  "vcpuCount": 2,
+  "memoryInGb": 4,
+  "containerDiskInGb": 20,
+  "volumeInGb": 0,
+  "networkVolumeId": null,
+  "env": {
+    "redacted": true,
+    "schema": "env-map-v2"
+  },
+  "transport": "rest-v1",
+  "clientMaxCostPerHour": 0.1,
+  "validationPassed": true,
+  "cleanupAttempted": false,
+  "cleanupSucceeded": false,
+  "requestInput": {
+    "cloudType": "COMMUNITY",
+    "computeType": "CPU",
+    "containerDiskInGb": 20,
+    "cpuFlavorIds": [
+      "cpu5c",
+      "cpu3c"
+    ],
+    "cpuFlavorPriority": "custom",
+    "imageName": "runpod/pytorch:test",
+    "name": "proxywar-mickey-cpu-fanout-live-shape-fixture",
+    "ports": [
+      "22/tcp"
+    ],
+    "supportPublicIp": true,
+    "vcpuCount": 2,
+    "volumeInGb": 0,
+    "volumeMountPath": "/workspace"
+  },
+  "requestInputSha256": "3a3d7773cf30d8875c1a1baa63cd6cb5bf6e7518d3ed7c9a0c7990a25093e736",
+  "requestInputHashAlgorithm": "sorted-json-sha256-v1",
+  "requestInputHashScope": "raw-request-before-redaction",
+  "requestInputRedacted": false,
+  "requestInputRedactionSchema": "env-map-v2",
+  "responseEnvRedacted": true,
+  "responseEnvRedactionSchema": "env-map-v2",
+  "redactedEnvValueMarker": "[REDACTED]",
+  "responseControlSecretScrubbed": true,
+  "providerIdentityContaminated": false,
+  "reconciliationRequired": false
+}

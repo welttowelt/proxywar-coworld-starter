@@ -215,11 +215,15 @@ async function main(argv) {
   const installationDirectory = `${DURABLE_INSTALLATIONS_ROOT}/${installationId}`;
   const durableReaper = `${installationDirectory}/runpod-exact-id-reaper.mjs`;
   const durableRunpodctl = `${installationDirectory}/runpodctl-darwin-arm64`;
+  const allowedServiceReceipts = new Set([
+    `${DURABLE_REAPER_ROOT}/service-receipt.json`,
+    `${DURABLE_REAPER_ROOT}/service-receipt-${options.runId}.json`,
+  ]);
   if (
     options.reaperLedger !== `${DURABLE_REAPER_ROOT}/ledger.json` ||
-    options.reaperServiceReceipt !== `${DURABLE_REAPER_ROOT}/service-receipt.json`
+    !allowedServiceReceipts.has(options.reaperServiceReceipt)
   ) {
-    fail("reaper ledger and service receipt must use the exact durable Mickey reaper root");
+    fail("reaper ledger and service receipt must use exact run-bound durable Mickey paths");
   }
   const manifest = {
     schema_version: 3,
