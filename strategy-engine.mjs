@@ -1030,6 +1030,23 @@ export function chooseAction(actions, state, plan = null, history = []) {
   return { ...chosen, policyMarker: "mm1c" };
 }
 
+// Hosted games can withdraw diplomacy actions between an external policy's
+// offer and submission. Mickey hit that race with both degraded and healthy
+// planner state. Until the incumbent K1Z policies recognize Mickey, keep
+// one-way protection but spend the turn on the best non-alliance action from
+// the same offered menu. A real non-alliance intent keeps its MM1 marker.
+export function chooseMickeyRuntimeAction(actions, state, plan = null, history = []) {
+  const chosen = chooseAction(actions, state, plan, history);
+  if (chosen.kind !== "alliance_request") return chosen;
+
+  const stableActions = actions.filter((action) => action.kind !== "alliance_request");
+  if (stableActions.length === 0) return chosen;
+  const replacement = chooseAction(stableActions, state, plan, history);
+  return replacement.policyMarker
+    ? replacement
+    : { ...replacement, policyMarker: "ms1" };
+}
+
 export function recordDecision(history, action, state) {
   const rival = rivalForAction(action, state);
   const metadataTargetID = clean(

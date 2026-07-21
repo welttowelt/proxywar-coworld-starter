@@ -530,11 +530,12 @@ test("a wrapped planner reply fails closed in the deployed player", async () => 
 
   assert.deepEqual(
     responses.map((response) => response.selectedLegalActionId),
-    ["alliance:katanasan", "expand:terra-nullius:10"],
+    ["expand:terra-nullius:10", "expand:terra-nullius:10"],
   );
+  assert.equal(responses[0].reason, "rul:atk:ms1");
   assert.equal(responses[1].fallbackUsed, true);
   assert.equal(responses[1].llmPlannerDegraded, true);
-  assert.match(responses[1].reason, /^dgd:/);
+  assert.equal(responses[1].reason, "dgd:err:atk:ms1");
   assert.doesNotMatch(responses[1].reason, /mm1[gc]/);
 });
 
