@@ -115,7 +115,30 @@ const RUNPODCTL_SERIALIZED_OUTPUT_GUARD =
   "constant-value-free-failure-and-no-receipt";
 const SSH_HOST_KEY_ATTESTATION_DOMAIN = "mickey-ssh-host-key-v1";
 const EXACT_ID_DELETE_RETRY_DELAYS_MS = Object.freeze([0, 1_000, 2_000, 4_000, 8_000]);
-const FULL_FANOUT_LIVE_APPROVED = false;
+const R8_ACTIVATION_RUN_ID = "mickey-screen-g000-r8-20260721t031448z";
+const R8_ACTIVATION_MANIFEST_PATH = path.join(
+  REPO_ROOT,
+  "experiments",
+  "manifest-mickey-cpu-screen-g000-r8-20260721.json",
+);
+const R8_ACTIVATION_OUTPUT_PATH =
+  "/private/tmp/mickey-cpu-screen-g000-r8-20260721t031448z";
+const R8_ACTIVATION_MANIFEST_DIGEST =
+  "5b53c76ef088cd3d929efc0ea72f73dfa103754804231dd6ef76a43bddcb96f2";
+const R7_ACTIVATION_BASE_COMMIT = "a9977d67d33630643a46117963cf1c08a503d21b";
+const R7_CANARY_RUN_ID = "mickey-screen-g000-r7-20260721t025105z";
+const R7_CANARY_MANIFEST_SHA256 =
+  "fc30713c71b6b75f71c01b6f9f4f3dab572e3126ea21ddbd238a9255ba84f30f";
+const R7_CANARY_SCRIPT_SHA256 =
+  "924e16de8894120df929143266645c4b13382b18408d5795a69fd883d88a2f05";
+const R7_CANARY_RECEIPT_PATH =
+  "/private/tmp/mickey-cpu-transport-canary-r7-20260721t025105z/evidence/transport-canary-receipt.json";
+const R7_CANARY_RECEIPT_SHA256 =
+  "893a769892e0faa0fa29db357708f87c392672b3a7c7dbb2ed230244f8a028f7";
+const R7_CANARY_KNOWN_HOSTS_PATH =
+  "/private/tmp/mickey-cpu-transport-canary-r7-20260721t025105z/evidence/transport-canary-known-hosts";
+const R7_CANARY_KNOWN_HOSTS_SHA256 =
+  "403c4b6a8a9e959f06dad54b059bce73a43c73e47434d377a6ce5032796dbf7c";
 
 function durableInstallationId(document) {
   return createHash("sha256").update([
@@ -165,9 +188,9 @@ Real execution must be the child of:
   scripts/proxywar-runner-lease.sh run mickey RUN_ID --output NEW_DIR -- <command>
 
 Safety status:
-  Full fanout live execution remains fail-closed pending a separate end-to-end
-  execution RCI. Source-level transport approval does not enable it. Only the
-  separate one-pod no-env transport canary is approved for a live mutation.
+  Full fanout live execution is enabled only for the exact hash-pinned r8 G000
+  activation manifest, output, r7 canary receipt, and current durable reaper.
+  Every other manifest and any resume attempt remains blocked before mutation.
 `;
 }
 
@@ -467,8 +490,469 @@ function validatePair(pair, arm, randomization, index) {
   }
 }
 
+export function activationManifestDigest(document) {
+  const normalized = structuredClone(document);
+  if (!isObject(normalized.control_plane?.fanout_runner)) {
+    throw new Error("activation manifest lacks a fanout runner binding");
+  }
+  normalized.control_plane.fanout_runner.sha256 = "0".repeat(64);
+  return createHash("sha256")
+    .update("mickey-r8-g000-live-activation-manifest-v1\n", "utf8")
+    .update(JSON.stringify(sortedJsonValue(normalized)), "utf8")
+    .digest("hex");
+}
+
+function validateActivationContract(document) {
+  const activation = document.activation;
+  exactKeys(
+    activation,
+    [
+      "kind",
+      "r7_base_commit",
+      "canary_receipt",
+      "canary_known_hosts",
+      "canary_run_id",
+      "canary_manifest_sha256",
+      "canary_script_sha256",
+      "screen_pair_count",
+      "max_concurrency",
+      "one_pod_per_pair",
+      "nonce_input_channel",
+      "exact_id_cleanup_required",
+      "persistent_reaper_service_required",
+      "preexisting_pod_deletion_allowed",
+      "storm_pod_deletion_allowed",
+      "resume_allowed",
+      "output_path",
+    ],
+    "manifest.activation",
+  );
+  validateHashedFileReference(activation.canary_receipt, "manifest.activation.canary_receipt");
+  validateHashedFileReference(
+    activation.canary_known_hosts,
+    "manifest.activation.canary_known_hosts",
+  );
+  if (
+    document.run_id !== R8_ACTIVATION_RUN_ID ||
+    activation.kind !== "r7_transport_canary_bound_g000_v1" ||
+    activation.r7_base_commit !== R7_ACTIVATION_BASE_COMMIT ||
+    activation.canary_receipt.path !== R7_CANARY_RECEIPT_PATH ||
+    activation.canary_receipt.sha256 !== R7_CANARY_RECEIPT_SHA256 ||
+    activation.canary_known_hosts.path !== R7_CANARY_KNOWN_HOSTS_PATH ||
+    activation.canary_known_hosts.sha256 !== R7_CANARY_KNOWN_HOSTS_SHA256 ||
+    activation.canary_run_id !== R7_CANARY_RUN_ID ||
+    activation.canary_manifest_sha256 !== R7_CANARY_MANIFEST_SHA256 ||
+    activation.canary_script_sha256 !== R7_CANARY_SCRIPT_SHA256 ||
+    activation.screen_pair_count !== 16 ||
+    activation.max_concurrency !== 4 ||
+    activation.one_pod_per_pair !== true ||
+    activation.nonce_input_channel !== "stdin" ||
+    activation.exact_id_cleanup_required !== true ||
+    activation.persistent_reaper_service_required !== true ||
+    activation.preexisting_pod_deletion_allowed !== false ||
+    activation.storm_pod_deletion_allowed !== false ||
+    activation.resume_allowed !== false ||
+    activation.output_path !== R8_ACTIVATION_OUTPUT_PATH
+  ) {
+    throw new Error("manifest activation does not match the exact r8 G000 boundary");
+  }
+}
+
+export function validateTransportCanaryActivationReceipt(receipt, activation) {
+  exactKeys(
+    receipt,
+    [
+      "schema_version",
+      "kind",
+      "run_id",
+      "manifest_sha256",
+      "canary_script_sha256",
+      "evidence_scope",
+      "evidence_eligible",
+      "promotion_possible_from_this_run",
+      "game_processes_started",
+      "create_attempts",
+      "secret_in_argv",
+      "requested_contract",
+      "reaper_record_id",
+      "pod_name",
+      "observed_new_pod_ids",
+      "deleted_exact_pod_ids",
+      "already_absent_exact_pod_ids",
+      "external_deadline_cleanup_required",
+      "create_request_attestation",
+      "network_volume_attestation",
+      "ssh_readiness_observations",
+      "ssh_transport_attempts",
+      "started_at",
+      "completed_at",
+      "status",
+      "failure_reason",
+      "preexisting_pod_count",
+      "attested_pod",
+      "ssh_transport",
+      "cleanup",
+    ],
+    "r7 transport canary receipt",
+  );
+  if (
+    receipt.schema_version !== 5 ||
+    receipt.kind !== "mickey_cpu_transport_canary_receipt" ||
+    receipt.run_id !== activation.canary_run_id ||
+    receipt.manifest_sha256 !== activation.canary_manifest_sha256 ||
+    receipt.canary_script_sha256 !== activation.canary_script_sha256 ||
+    receipt.evidence_scope !== "transport_only" ||
+    receipt.evidence_eligible !== false ||
+    receipt.promotion_possible_from_this_run !== false ||
+    receipt.game_processes_started !== 0 ||
+    receipt.create_attempts !== 1 ||
+    receipt.secret_in_argv !== false ||
+    receipt.external_deadline_cleanup_required !== false ||
+    receipt.status !== "passed" ||
+    receipt.failure_reason !== null ||
+    !Number.isInteger(receipt.preexisting_pod_count) ||
+    receipt.preexisting_pod_count < 0
+  ) {
+    throw new Error("r7 transport canary did not pass the non-promotional one-create boundary");
+  }
+  exactKeys(
+    receipt.requested_contract,
+    [
+      "transport",
+      "compute_type",
+      "cloud_type",
+      "cpu_flavor_ids",
+      "vcpu_count",
+      "max_cost_per_hour",
+      "container_disk_gb",
+      "volume_gb",
+      "network_volume_id",
+      "public_ip",
+      "ports",
+      "requested_env",
+      "control_secret_supplied",
+      "provider_ttl",
+      "client_cleanup_deadline_seconds",
+    ],
+    "r7 transport canary requested contract",
+  );
+  const expectedRequest = {
+    transport: "rest-v1",
+    compute_type: "CPU",
+    cloud_type: "COMMUNITY",
+    cpu_flavor_ids: ["cpu5c", "cpu3c"],
+    vcpu_count: 2,
+    max_cost_per_hour: 0.1,
+    container_disk_gb: 20,
+    volume_gb: 0,
+    network_volume_id: null,
+    public_ip: true,
+    ports: ["22/tcp"],
+    requested_env: false,
+    control_secret_supplied: false,
+    provider_ttl: null,
+    client_cleanup_deadline_seconds: 7200,
+  };
+  if (!equalJson(receipt.requested_contract, expectedRequest)) {
+    throw new Error("r7 transport canary requested contract is not the exact bounded CPU shape");
+  }
+
+  exactKeys(
+    receipt.create_request_attestation,
+    [
+      "request_input_sha256",
+      "request_input_hash_scope",
+      "request_input_redaction_schema",
+      "response_env_redacted",
+      "response_control_secret_scrubbed",
+      "provider_identity_contaminated",
+      "reconciliation_required",
+      "transport",
+      "client_max_cost_per_hour",
+      "provider_ttl",
+      "requested_volume_gb",
+      "network_volume_id_supplied",
+      "network_volume_request",
+    ],
+    "r7 create request attestation",
+  );
+  const create = receipt.create_request_attestation;
+  if (
+    !SHA256.test(create.request_input_sha256 ?? "") ||
+    create.request_input_hash_scope !== RUNPODCTL_REQUEST_HASH_SCOPE ||
+    create.request_input_redaction_schema !== RUNPODCTL_ENV_REDACTION_SCHEMA ||
+    create.response_env_redacted !== true ||
+    create.response_control_secret_scrubbed !== true ||
+    create.provider_identity_contaminated !== false ||
+    create.reconciliation_required !== false ||
+    create.transport !== "rest-v1" ||
+    create.client_max_cost_per_hour !== 0.1 ||
+    create.provider_ttl !== null ||
+    create.requested_volume_gb !== 0 ||
+    create.network_volume_id_supplied !== false ||
+    create.network_volume_request !== "none"
+  ) {
+    throw new Error("r7 create request attestation does not prove zero-volume no-ID REST input");
+  }
+
+  exactKeys(
+    receipt.network_volume_attestation,
+    [
+      "status",
+      "include_network_volume_requested",
+      "network_volume_id_present",
+      "network_volume_present",
+      "network_volume_attached",
+      "request_input_sha256",
+      "requested_volume_gb",
+      "network_volume_id_supplied",
+    ],
+    "r7 network volume attestation",
+  );
+  const volume = receipt.network_volume_attestation;
+  if (
+    volume.status !== "omitted_when_none" ||
+    volume.include_network_volume_requested !== true ||
+    volume.network_volume_id_present !== false ||
+    volume.network_volume_present !== false ||
+    volume.network_volume_attached !== false ||
+    volume.request_input_sha256 !== create.request_input_sha256 ||
+    volume.requested_volume_gb !== 0 ||
+    volume.network_volume_id_supplied !== false
+  ) {
+    throw new Error("r7 network-volume omission is not bound to the zero-volume request");
+  }
+
+  const observed = receipt.observed_new_pod_ids;
+  const deleted = receipt.deleted_exact_pod_ids;
+  if (
+    !Array.isArray(observed) ||
+    observed.length !== 1 ||
+    !Array.isArray(deleted) ||
+    deleted.length !== 1 ||
+    deleted[0] !== observed[0] ||
+    !Array.isArray(receipt.already_absent_exact_pod_ids) ||
+    receipt.already_absent_exact_pod_ids.length !== 0
+  ) {
+    throw new Error("r7 canary did not delete exactly its sole observed new pod ID");
+  }
+  const podId = observed[0];
+  assertString(podId, "r7 canary pod ID", SAFE_ID);
+  assertString(receipt.pod_name, "r7 canary pod name", SAFE_ID);
+  if (
+    !receipt.pod_name.startsWith("proxywar-mickey-cpu-fanout-") ||
+    receipt.pod_name.startsWith("storm-")
+  ) {
+    throw new Error("r7 canary pod name is outside the exact non-storm namespace");
+  }
+
+  exactKeys(
+    receipt.attested_pod,
+    [
+      "id",
+      "name",
+      "cost_per_hour",
+      "vcpu_count",
+      "memory_gb",
+      "gpu_count",
+      "container_disk_gb",
+      "volume_gb",
+      "network_volume_attached",
+    ],
+    "r7 attested pod",
+  );
+  const pod = receipt.attested_pod;
+  if (
+    pod.id !== podId ||
+    pod.name !== receipt.pod_name ||
+    !Number.isFinite(pod.cost_per_hour) ||
+    pod.cost_per_hour < 0 ||
+    pod.cost_per_hour > 0.1 ||
+    pod.vcpu_count !== 2 ||
+    pod.memory_gb !== 4 ||
+    pod.gpu_count !== 0 ||
+    pod.container_disk_gb !== 20 ||
+    pod.volume_gb !== 0 ||
+    pod.network_volume_attached !== false
+  ) {
+    throw new Error("r7 attested pod does not match the exact bounded CPU contract");
+  }
+
+  if (
+    !Array.isArray(receipt.ssh_readiness_observations) ||
+    receipt.ssh_readiness_observations.length < 1 ||
+    receipt.ssh_readiness_observations.length > 60
+  ) {
+    throw new Error("r7 SSH readiness evidence is missing or unbounded");
+  }
+  for (const [index, observation] of receipt.ssh_readiness_observations.entries()) {
+    exactKeys(observation, ["attempt", "status", "category"], `r7 SSH readiness observation ${index + 1}`);
+    const final = index === receipt.ssh_readiness_observations.length - 1;
+    if (
+      observation.attempt !== index + 1 ||
+      (final
+        ? observation.status !== "accepted" || observation.category !== "complete_exact_identity"
+        : observation.status !== "rejected")
+    ) {
+      throw new Error("r7 SSH readiness observations do not end in one exact identity acceptance");
+    }
+  }
+  if (
+    !Array.isArray(receipt.ssh_transport_attempts) ||
+    receipt.ssh_transport_attempts.length !== 1
+  ) {
+    throw new Error("r7 SSH transport did not succeed on exactly one attempt");
+  }
+  exactKeys(
+    receipt.ssh_transport_attempts[0],
+    ["attempt", "status", "category"],
+    "r7 SSH transport attempt",
+  );
+  if (
+    receipt.ssh_transport_attempts[0].attempt !== 1 ||
+    receipt.ssh_transport_attempts[0].status !== "accepted" ||
+    receipt.ssh_transport_attempts[0].category !== "challenge_exact_one_line"
+  ) {
+    throw new Error("r7 SSH transport attempt was not the exact first-attempt challenge acceptance");
+  }
+
+  exactKeys(
+    receipt.ssh_transport,
+    [
+      "status",
+      "pod_id",
+      "pod_name",
+      "public_endpoint",
+      "account_ssh_key_fingerprint",
+      "negotiated_host_key_fingerprint",
+      "trust_scope",
+      "command",
+      "challenge",
+      "transport_attempt_count",
+    ],
+    "r7 SSH transport",
+  );
+  exactKeys(receipt.ssh_transport.public_endpoint, ["ip", "port"], "r7 SSH public endpoint");
+  const ssh = receipt.ssh_transport;
+  const fingerprint = /^SHA256:[A-Za-z0-9+/]{43}$/;
+  if (
+    ssh.status !== "ready" ||
+    ssh.pod_id !== podId ||
+    ssh.pod_name !== receipt.pod_name ||
+    typeof ssh.public_endpoint.ip !== "string" ||
+    !/^[a-zA-Z0-9.:-]+$/.test(ssh.public_endpoint.ip) ||
+    !Number.isInteger(ssh.public_endpoint.port) ||
+    ssh.public_endpoint.port < 1 ||
+    ssh.public_endpoint.port > 65535 ||
+    !fingerprint.test(ssh.account_ssh_key_fingerprint ?? "") ||
+    !fingerprint.test(ssh.negotiated_host_key_fingerprint ?? "") ||
+    ssh.trust_scope !== "transport_canary_tofu_after_exact_control_plane_identity" ||
+    ssh.command !== "random_one_line_readiness_challenge_only" ||
+    ssh.challenge !== "random_128_bit_hex_suffix" ||
+    ssh.transport_attempt_count !== 1
+  ) {
+    throw new Error("r7 SSH transport is not one exact ready ED25519-pinned challenge");
+  }
+
+  exactKeys(
+    receipt.cleanup,
+    ["status", "reaper_state", "exact_id_get_before_each_delete", "final_absence_confirmed"],
+    "r7 cleanup",
+  );
+  if (
+    receipt.cleanup.status !== "normal_cleanup_confirmed_absent" ||
+    receipt.cleanup.reaper_state !== "retired" ||
+    receipt.cleanup.exact_id_get_before_each_delete !== true ||
+    receipt.cleanup.final_absence_confirmed !== true
+  ) {
+    throw new Error("r7 cleanup did not retire exact ownership after confirmed absence");
+  }
+  assertString(receipt.reaper_record_id, "r7 reaper record ID", /^mickey-reaper:[a-f0-9-]{36}$/);
+  const started = Date.parse(receipt.started_at);
+  const completed = Date.parse(receipt.completed_at);
+  if (!Number.isFinite(started) || !Number.isFinite(completed) || completed < started) {
+    throw new Error("r7 canary timestamps are invalid");
+  }
+  return { receipt, pod_id: podId, request_input_sha256: create.request_input_sha256 };
+}
+
+export function validateTransportCanaryKnownHosts(body, receipt) {
+  const text = Buffer.isBuffer(body) ? body.toString("utf8") : body;
+  if (typeof text !== "string") throw new Error("r7 known_hosts evidence must be text");
+  const match = text.match(/^(\S+) ssh-ed25519 ([A-Za-z0-9+/]+={0,2})\n$/);
+  if (!match) throw new Error("r7 known_hosts must contain exactly one ED25519 key");
+  const expectedHost = `[${receipt.ssh_transport.public_endpoint.ip}]:${receipt.ssh_transport.public_endpoint.port}`;
+  if (match[1] !== expectedHost) {
+    throw new Error("r7 known_hosts endpoint differs from the accepted SSH endpoint");
+  }
+  const key = Buffer.from(match[2], "base64");
+  if (key.length < 32 || key.toString("base64") !== match[2]) {
+    throw new Error("r7 known_hosts ED25519 key encoding is invalid");
+  }
+  const fingerprint = `SHA256:${createHash("sha256")
+    .update(key)
+    .digest("base64")
+    .replace(/=+$/, "")}`;
+  if (fingerprint !== receipt.ssh_transport.negotiated_host_key_fingerprint) {
+    throw new Error("r7 known_hosts ED25519 fingerprint differs from the canary receipt");
+  }
+  return { algorithm: "ssh-ed25519", fingerprint, endpoint: expectedHost };
+}
+
+async function verifyR7ActivationEvidence(document) {
+  await verifyHashedLocalFile(
+    document.activation.canary_receipt,
+    "pinned r7 transport canary receipt",
+  );
+  await verifyHashedLocalFile(
+    document.activation.canary_known_hosts,
+    "pinned r7 transport known_hosts",
+  );
+  const receipt = JSON.parse(await readFile(document.activation.canary_receipt.path, "utf8"));
+  const validated = validateTransportCanaryActivationReceipt(receipt, document.activation);
+  const knownHosts = validateTransportCanaryKnownHosts(
+    await readFile(document.activation.canary_known_hosts.path),
+    receipt,
+  );
+  const ledger = await readReaperLedger(document.cleanup_watchdog.ledger_path);
+  const record = ledger.records.find((candidate) => candidate.record_id === receipt.reaper_record_id);
+  if (
+    !record ||
+    record.state !== "retired" ||
+    record.run_id !== `${receipt.run_id}:transport-canary` ||
+    record.manifest_sha256 !== receipt.manifest_sha256 ||
+    record.ownership_kind !== "generated-exact-name-v1" ||
+    record.name_prefix !== document.pod.name_prefix ||
+    record.expected_name !== receipt.pod_name ||
+    record.pod_id !== validated.pod_id ||
+    record.terminal_reason !== "normal_cleanup_confirmed_absent" ||
+    record.last_error !== null ||
+    !Array.isArray(record.preexisting_ids) ||
+    record.preexisting_ids.length !== receipt.preexisting_pod_count ||
+    record.preexisting_ids.includes(validated.pod_id) ||
+    !Array.isArray(record.events) ||
+    !record.events.some((event) => (
+      event.type === "normal_cleanup_absence_confirmed" && event.pod_id === validated.pod_id
+    ))
+  ) {
+    throw new Error("r7 exact-ID reaper ledger record is not retired with sole new-pod ownership");
+  }
+  return {
+    receipt_sha256: document.activation.canary_receipt.sha256,
+    known_hosts_sha256: document.activation.canary_known_hosts.sha256,
+    canary_run_id: receipt.run_id,
+    pod_id: validated.pod_id,
+    request_input_sha256: validated.request_input_sha256,
+    host_key: knownHosts,
+    ledger_record_id: record.record_id,
+    ledger_state: record.state,
+    terminal_reason: record.terminal_reason,
+  };
+}
+
 export function validateManifest(document) {
   assertNoSecretKeys(document);
+  const activationSchema = document?.schema_version === 4;
   exactKeys(
     document,
     [
@@ -486,12 +970,14 @@ export function validateManifest(document) {
       "source_reach_receipt",
       "arms",
       "promotion_gates",
+      ...(activationSchema ? ["activation"] : []),
     ],
     "manifest",
   );
-  if (document.schema_version !== 3 || document.kind !== "mickey_cpu_fanout") {
-    throw new Error("manifest schema_version/kind must be 3/mickey_cpu_fanout");
+  if (![3, 4].includes(document.schema_version) || document.kind !== "mickey_cpu_fanout") {
+    throw new Error("manifest schema_version/kind must be 3 or 4/mickey_cpu_fanout");
   }
+  if (activationSchema) validateActivationContract(document);
   assertString(document.run_id, "manifest.run_id", SAFE_ID);
   const preregistered = Date.parse(document.preregistered_at);
   if (!Number.isFinite(preregistered)) throw new Error("manifest.preregistered_at must be ISO-8601");
@@ -833,6 +1319,21 @@ export function validateManifest(document) {
   if (worstCaseCost > document.pod.max_total_cost_usd + Number.EPSILON) {
     throw new Error(`manifest worst-case pod cost ${worstCaseCost.toFixed(2)} exceeds total cap`);
   }
+  if (activationSchema) {
+    if (
+      document.arms.length !== 4 ||
+      !document.arms.every((arm) => arm.pairs.length === 4) ||
+      flattenedPairs.length !== document.activation.screen_pair_count ||
+      document.pod.max_concurrency !== document.activation.max_concurrency ||
+      document.runpodctl.nonce_input_channel !== document.activation.nonce_input_channel
+    ) {
+      throw new Error("r8 activation must remain the exact four-arm, 16-pair, concurrency-four G000 screen");
+    }
+    const digest = activationManifestDigest(document);
+    if (digest !== R8_ACTIVATION_MANIFEST_DIGEST) {
+      throw new Error(`r8 activation manifest semantic digest mismatch: ${digest}`);
+    }
+  }
   return { document, pairs: flattenedPairs };
 }
 
@@ -1082,6 +1583,9 @@ export async function preflightManifest(
   }
   const verifierSha256 = document.control_plane.remote_verifier.sha256;
   const sourceReceipt = await verifySourceReachReceipt(document);
+  const activationEvidence = document.schema_version === 4
+    ? await verifyR7ActivationEvidence(document)
+    : null;
   return {
     ...validated,
     manifestPath,
@@ -1089,6 +1593,7 @@ export async function preflightManifest(
     verifierPath: REMOTE_VERIFIER,
     verifierSha256,
     sourceReceipt,
+    activationEvidence,
   };
 }
 
@@ -1098,6 +1603,134 @@ function safeTimestamp() {
 
 function dryRunPodName(manifest) {
   return `${manifest.pod.name_prefix}-${"0".repeat(32)}`;
+}
+
+export function isFullFanoutLiveApproved(preflight) {
+  return Boolean(
+    preflight?.manifestPath === R8_ACTIVATION_MANIFEST_PATH &&
+    preflight.document?.schema_version === 4 &&
+    preflight.document.run_id === R8_ACTIVATION_RUN_ID &&
+    preflight.document.activation?.output_path === R8_ACTIVATION_OUTPUT_PATH &&
+    activationManifestDigest(preflight.document) === R8_ACTIVATION_MANIFEST_DIGEST &&
+    preflight.activationEvidence?.receipt_sha256 === R7_CANARY_RECEIPT_SHA256 &&
+    preflight.activationEvidence?.known_hosts_sha256 === R7_CANARY_KNOWN_HOSTS_SHA256 &&
+    preflight.activationEvidence?.ledger_state === "retired" &&
+    preflight.activationEvidence?.terminal_reason === "normal_cleanup_confirmed_absent"
+  );
+}
+
+export function validateR8LedgerQuiescence(ledger) {
+  if (!isObject(ledger) || !Array.isArray(ledger.records)) {
+    throw new Error("r8 durable reaper ledger is malformed");
+  }
+  const nonterminal = ledger.records.filter((record) => record.state !== "retired");
+  if (nonterminal.length !== 0) {
+    throw new Error("r8 activation requires a zero-nonterminal durable reaper ledger");
+  }
+  return { revision: ledger.revision, nonterminal_count: 0 };
+}
+
+export function validateR8MutationLedgerBoundary({
+  ledger,
+  manifest,
+  manifestSha256,
+  pairId,
+  pendingOwnership,
+  registeredRecords,
+}) {
+  if (
+    !isObject(ledger) ||
+    !Array.isArray(ledger.records) ||
+    !isObject(manifest) ||
+    manifest.schema_version !== 4 ||
+    manifest.run_id !== R8_ACTIVATION_RUN_ID ||
+    !SHA256.test(manifestSha256 ?? "") ||
+    !(registeredRecords instanceof Map)
+  ) {
+    throw new Error("r8 per-create ledger boundary received an invalid activation context");
+  }
+  const allowedPairIds = new Set(
+    manifest.arms.flatMap((arm) => arm.pairs.map((pair) => pair.id)),
+  );
+  if (!allowedPairIds.has(pairId)) {
+    throw new Error("r8 per-create ledger boundary received an unknown pair");
+  }
+  if (!isObject(pendingOwnership)) {
+    throw new Error("r8 per-create ledger boundary lacks the durable pending record");
+  }
+  const registration = registeredRecords.get(pendingOwnership.record_id);
+  if (!registration || registration.pairId !== pairId) {
+    throw new Error("r8 pending record is not registered to this process and pair");
+  }
+  const matching = ledger.records.filter(
+    (record) => record.record_id === pendingOwnership.record_id,
+  );
+  if (matching.length !== 1) {
+    throw new Error("r8 durable ledger lost or duplicated the exact pending record");
+  }
+  const pending = matching[0];
+  if (
+    pending.state !== "pending" ||
+    pending.run_id !== `${manifest.run_id}:${pairId}` ||
+    pending.manifest_sha256 !== manifestSha256 ||
+    pending.ownership_kind !== "generated-exact-name-v1" ||
+    pending.name_prefix !== manifest.pod.name_prefix ||
+    pending.expected_name !== pendingOwnership.expected_name ||
+    pending.expected_name !== `${pending.name_prefix}-${pending.name_nonce}` ||
+    !pending.expected_name.startsWith(`${manifest.pod.name_prefix}-`) ||
+    pending.expected_name.toLowerCase().startsWith("storm-") ||
+    pending.pod_id !== null ||
+    pending.active_binding_sha256 !== null ||
+    pending.last_error !== null ||
+    pending.terminal_reason !== null ||
+    pending.deadline !== pendingOwnership.deadline ||
+    pending.name_nonce !== pendingOwnership.name_nonce ||
+    pending.preexisting_snapshot_sha256 !== pendingOwnership.preexisting_snapshot_sha256 ||
+    !equalJson(pending.preexisting_ids, pendingOwnership.preexisting_ids)
+  ) {
+    throw new Error("r8 exact pending record drifted before the provider create POST");
+  }
+
+  const nonterminal = ledger.records.filter((record) => record.state !== "retired");
+  if (nonterminal.length > manifest.pod.max_concurrency) {
+    throw new Error("r8 durable ledger exceeds the preregistered nonterminal concurrency cap");
+  }
+  for (const record of nonterminal) {
+    if (record.state === "blocked") {
+      throw new Error("r8 durable ledger contains a blocked ownership record");
+    }
+    if (record.state !== "pending" && record.state !== "active") {
+      throw new Error("r8 durable ledger contains an unknown nonterminal state");
+    }
+    const owner = registeredRecords.get(record.record_id);
+    if (!owner || !allowedPairIds.has(owner.pairId)) {
+      throw new Error("r8 durable ledger contains an unrelated nonterminal record");
+    }
+    if (
+      record.run_id !== `${manifest.run_id}:${owner.pairId}` ||
+      record.manifest_sha256 !== manifestSha256 ||
+      record.ownership_kind !== "generated-exact-name-v1" ||
+      record.name_prefix !== manifest.pod.name_prefix ||
+      !record.expected_name.startsWith(`${manifest.pod.name_prefix}-`) ||
+      record.expected_name.toLowerCase().startsWith("storm-") ||
+      (record.pod_id !== null && record.preexisting_ids.includes(record.pod_id))
+    ) {
+      throw new Error("r8 durable ledger contains ownership outside this exact activation");
+    }
+  }
+  return {
+    revision: ledger.revision,
+    pending_record_id: pending.record_id,
+    nonterminal_count: nonterminal.length,
+  };
+}
+
+export async function executeAfterExactR8MutationBoundary(verifyBoundary, mutation) {
+  if (typeof verifyBoundary !== "function" || typeof mutation !== "function") {
+    throw new Error("exact r8 mutation boundary requires verifier and mutation functions");
+  }
+  await verifyBoundary();
+  return mutation();
 }
 
 export function buildPodCreateArgs(manifest, expectedName, controlSecret = null) {
@@ -1776,11 +2409,14 @@ export async function verifyLiveReaperService({
     !info?.isFile() ||
     info.isSymbolicLink() ||
     (info.mode & 0o777) !== 0o600 ||
-    await realpath(receiptPath) !== receiptPath
+    await realpath(receiptPath) !== receiptPath ||
+    (typeof process.getuid === "function" && info.uid !== process.getuid())
   ) {
     throw new Error("independent reaper service receipt is missing or unsafe");
   }
-  const receipt = JSON.parse(await readFile(receiptPath, "utf8"));
+  const receiptBody = await readFile(receiptPath);
+  const receiptSha256 = createHash("sha256").update(receiptBody).digest("hex");
+  const receipt = JSON.parse(receiptBody.toString("utf8"));
   exactKeys(
     receipt,
     [
@@ -1890,29 +2526,115 @@ export async function verifyLiveReaperService({
     status: "active",
     label: receipt.launchd_label,
     domain: receipt.launchd_domain,
+    pid: servicePid,
     ledger_path: receipt.ledger_path,
     receipt_path: receiptPath,
+    receipt_sha256: receiptSha256,
     provider_probe: { status: heartbeat.status, pod_count: heartbeat.pod_count, age_ms: heartbeatAgeMs },
   };
 }
 
-async function assertClaimedMickeyOutput(output, runId, runnerLease, stateRoot, executor) {
-  await validateClaimedOutputShape(output, runId, stateRoot);
-  const statusResult = await executor.run(runnerLease, ["status", "--json"], { label: "runner-status" });
-  const status = parseJsonOutput(statusResult, "runner status");
+export function validateMickeyRunnerStatus(status, output, runId, expectedChildPid = process.pid) {
   if (
+    !isObject(status) ||
+    status.schema_version !== 2 ||
     status.state !== "active" ||
     status.owner !== RUNNER_OPERATOR_LANE ||
     status.run_id !== runId ||
+    status.child_pid !== expectedChildPid ||
     status.supervisor_alive !== true ||
     status.child_alive !== true ||
     status.reap_in_progress !== false ||
     !Array.isArray(status.outputs) ||
-    !status.outputs.includes(output)
+    status.outputs.length !== 1 ||
+    status.outputs[0] !== output
   ) {
-    throw new Error("exact Mickey foreground runner lease is not active for this output");
+    throw new Error("exact Mickey foreground runner child is not active for its sole output");
   }
   return status;
+}
+
+export async function assertClaimedMickeyOutput(output, runId, runnerLease, stateRoot, executor) {
+  await validateClaimedOutputShape(output, runId, stateRoot);
+  const statusResult = await executor.run(runnerLease, ["status", "--json"], { label: "runner-status" });
+  const status = parseJsonOutput(statusResult, "runner status");
+  return validateMickeyRunnerStatus(status, output, runId);
+}
+
+export async function verifyR8LedgerQuiescent(manifest) {
+  const ledger = await readReaperLedger(manifest.cleanup_watchdog.ledger_path);
+  return validateR8LedgerQuiescence(ledger);
+}
+
+export async function verifyExactR8MutationBoundary({
+  manifestPath,
+  manifestSha256,
+  output,
+  pairId,
+  pendingOwnership,
+  registeredRecords,
+  executor,
+  expectedReaperPid,
+  expectedReaperReceiptSha256,
+}) {
+  if (
+    manifestPath !== R8_ACTIVATION_MANIFEST_PATH ||
+    output !== R8_ACTIVATION_OUTPUT_PATH ||
+    !Number.isSafeInteger(expectedReaperPid) ||
+    expectedReaperPid < 1 ||
+    !SHA256.test(expectedReaperReceiptSha256 ?? "")
+  ) {
+    throw new Error("per-create gate is not bound to the exact r8 activation process");
+  }
+  const current = await preflightManifest(
+    manifestPath,
+    manifestSha256,
+    { requirePersistentServiceArtifacts: true },
+  );
+  if (
+    !isFullFanoutLiveApproved(current) ||
+    current.document.activation.resume_allowed !== false ||
+    current.document.activation.output_path !== output ||
+    current.pairs.filter(({ pair }) => pair.id === pairId).length !== 1
+  ) {
+    throw new Error("exact r8 activation drifted at the immediate provider mutation boundary");
+  }
+  const runner = await assertClaimedMickeyOutput(
+    output,
+    current.document.run_id,
+    current.document.runner_lease.path,
+    current.document.runner_lease.state_root,
+    executor,
+  );
+  const reaper = await verifyLiveReaperService({
+    manifest: current.document,
+    manifestSha256: current.manifestSha256,
+    executor,
+  });
+  if (
+    reaper.pid !== expectedReaperPid ||
+    reaper.receipt_sha256 !== expectedReaperReceiptSha256
+  ) {
+    throw new Error("independent reaper PID or service receipt changed before provider mutation");
+  }
+  const ledger = await readReaperLedger(current.document.cleanup_watchdog.ledger_path);
+  const ledgerBoundary = validateR8MutationLedgerBoundary({
+    ledger,
+    manifest: current.document,
+    manifestSha256: current.manifestSha256,
+    pairId,
+    pendingOwnership,
+    registeredRecords,
+  });
+  return {
+    manifest_sha256: current.manifestSha256,
+    runner_child_pid: runner.child_pid,
+    reaper_pid: reaper.pid,
+    reaper_receipt_sha256: reaper.receipt_sha256,
+    ledger_revision: ledgerBoundary.revision,
+    ledger_nonterminal_count: ledgerBoundary.nonterminal_count,
+    pending_record_id: ledgerBoundary.pending_record_id,
+  };
 }
 
 function pairContract(preflight, arm, pair) {
@@ -2450,6 +3172,7 @@ async function runOnePair({
   createdIds,
   podRecords,
   reaperRecords,
+  beforeCreate,
   stopState,
   state,
 }) {
@@ -2504,17 +3227,20 @@ async function runOnePair({
       "utf8",
     );
     try {
-      createResult = await executor.run(
-        tools.runpodctl,
-        buildPodCreateArgs(preflight.document, name, controlSecret),
-        {
-          label: `${pair.id}-pod-create`,
-          allowFailure: true,
-          redactions: [controlSecret],
-          outputLogMode: "metadata-only",
-          stdinBytes: controlStdin,
-          sensitiveOutputToken: controlSecret,
-        },
+      createResult = await executeAfterExactR8MutationBoundary(
+        () => beforeCreate(pendingOwnership),
+        () => executor.run(
+          tools.runpodctl,
+          buildPodCreateArgs(preflight.document, name, controlSecret),
+          {
+            label: `${pair.id}-pod-create`,
+            allowFailure: true,
+            redactions: [controlSecret],
+            outputLogMode: "metadata-only",
+            stdinBytes: controlStdin,
+            sensitiveOutputToken: controlSecret,
+          },
+        ),
       );
     } catch (error) {
       await runReaperOnce({
@@ -2886,11 +3612,12 @@ export async function runCli(argv) {
     process.stdout.write(usage());
     return 0;
   }
-  const preflight = await preflightManifest(
+  let preflight = await preflightManifest(
     options.manifest,
     options.manifestSha256,
-    { requirePersistentServiceArtifacts: !options.dryRun && FULL_FANOUT_LIVE_APPROVED },
+    { requirePersistentServiceArtifacts: false },
   );
+  let fullFanoutLiveApproved = isFullFanoutLiveApproved(preflight);
   if (options.dryRun) {
     const plan = {
       ok: true,
@@ -2908,10 +3635,12 @@ export async function runCli(argv) {
           preflight.document.cleanup_watchdog.client_cleanup_deadline_seconds,
         exact_generated_name_registered_before_post: true,
       },
-      full_fanout_live_approved: FULL_FANOUT_LIVE_APPROVED,
+      full_fanout_live_approved: fullFanoutLiveApproved,
       transport_canary_live_approved: true,
-      full_fanout_blocking_reason:
-        "full fanout end-to-end execution awaits separate RCI approval",
+      activation_evidence: preflight.activationEvidence,
+      full_fanout_blocking_reason: fullFanoutLiveApproved
+        ? null
+        : "manifest is not the exact r7-canary-bound r8 G000 activation",
       pairs: preflight.pairs.map(({ arm, pair }) => ({
         arm_id: arm.id,
         pair_id: pair.id,
@@ -2942,10 +3671,25 @@ export async function runCli(argv) {
     return 0;
   }
 
-  if (!FULL_FANOUT_LIVE_APPROVED) {
+  if (!fullFanoutLiveApproved) {
     throw new Error(
-      "full fanout live execution is blocked before mutation: end-to-end execution awaits separate RCI approval; only the no-env one-pod transport canary is approved",
+      "full fanout live execution is blocked before mutation: manifest is not the exact r7-canary-bound r8 G000 activation",
     );
+  }
+  if (options.resumeFrom !== null) {
+    throw new Error("r8 G000 activation is fresh-only; --resume-from is blocked before mutation");
+  }
+  if (options.output !== R8_ACTIVATION_OUTPUT_PATH) {
+    throw new Error("r8 G000 activation requires the exact preregistered output path");
+  }
+  preflight = await preflightManifest(
+    options.manifest,
+    options.manifestSha256,
+    { requirePersistentServiceArtifacts: true },
+  );
+  fullFanoutLiveApproved = isFullFanoutLiveApproved(preflight);
+  if (!fullFanoutLiveApproved) {
+    throw new Error("r8 G000 activation drifted during persistent-service preflight");
   }
 
   const output = options.output;
@@ -2995,6 +3739,7 @@ export async function runCli(argv) {
     manifestSha256: preflight.manifestSha256,
     executor,
   });
+  const initialLedgerBoundary = await verifyR8LedgerQuiescent(preflight.document);
   await cp(options.manifest, path.join(output, "evidence", "manifest.json"), { errorOnExist: true, force: false });
   await writeFile(
     path.join(output, "evidence", "manifest.sha256"),
@@ -3005,6 +3750,24 @@ export async function runCli(argv) {
     preflight.document.source_reach_receipt.path,
     path.join(output, "evidence", "source-reach-receipt.json"),
     { errorOnExist: true, force: false },
+  );
+  const activationReceiptCopy = path.join(output, "evidence", "r7-transport-canary-receipt.json");
+  const activationKnownHostsCopy = path.join(output, "evidence", "r7-transport-canary-known-hosts");
+  await cp(preflight.document.activation.canary_receipt.path, activationReceiptCopy, {
+    errorOnExist: true,
+    force: false,
+  });
+  await cp(preflight.document.activation.canary_known_hosts.path, activationKnownHostsCopy, {
+    errorOnExist: true,
+    force: false,
+  });
+  await verifyHashedLocalFile(
+    { path: activationReceiptCopy, sha256: preflight.document.activation.canary_receipt.sha256 },
+    "copied r7 transport canary receipt",
+  );
+  await verifyHashedLocalFile(
+    { path: activationKnownHostsCopy, sha256: preflight.document.activation.canary_known_hosts.sha256 },
+    "copied r7 transport known_hosts",
   );
   const state = {
     schema_version: 1,
@@ -3018,7 +3781,15 @@ export async function runCli(argv) {
   };
   await writeJsonAtomic(path.join(output, "state.json"), state);
   await writeJsonAtomic(path.join(output, "control", "reaper-service.json"), reaperService);
-  await appendEvent(output, "preflight_passed", { pair_count: preflight.pairs.length });
+  await writeJsonAtomic(
+    path.join(output, "control", "initial-reaper-ledger-boundary.json"),
+    initialLedgerBoundary,
+  );
+  await writeJsonAtomic(path.join(output, "control", "activation-evidence.json"), preflight.activationEvidence);
+  await appendEvent(output, "preflight_passed", {
+    pair_count: preflight.pairs.length,
+    activation_receipt_sha256: preflight.activationEvidence.receipt_sha256,
+  });
 
   const stopState = { requested: false, signal: null };
   for (const signal of ["SIGINT", "SIGTERM", "SIGHUP"]) {
@@ -3061,6 +3832,17 @@ export async function runCli(argv) {
         createdIds,
         podRecords,
         reaperRecords,
+        beforeCreate: (pendingOwnership) => verifyExactR8MutationBoundary({
+          manifestPath: preflight.manifestPath,
+          manifestSha256: preflight.manifestSha256,
+          output,
+          pairId: pair.id,
+          pendingOwnership,
+          registeredRecords: reaperRecords,
+          executor,
+          expectedReaperPid: reaperService.pid,
+          expectedReaperReceiptSha256: reaperService.receipt_sha256,
+        }),
         stopState,
         state,
       }),
@@ -3100,6 +3882,8 @@ export async function runCli(argv) {
       evidence_eligible: true,
       local_fanout_can_promote: false,
       upload_allowed: false,
+      activation_receipt_sha256: preflight.activationEvidence.receipt_sha256,
+      activation_ledger_state: preflight.activationEvidence.ledger_state,
     });
     await appendEvent(output, "fanout_completed", { completed_pairs: completed.length });
   } catch (error) {

@@ -23,15 +23,18 @@ import test from "node:test";
 import { fileURLToPath } from "node:url";
 
 import {
+  activationManifestDigest,
   appendEvent,
   CommandExecutor,
   canonicalRequestInputSha256,
   deleteExactPod,
   derivePairOrder,
   discoverNewExactNamePods,
+  executeAfterExactR8MutationBoundary,
   parseSshKeygenFingerprint,
   prepareKnownHostsFile,
   preflightManifest,
+  isFullFanoutLiveApproved,
   registerCreatedPod,
   sanitizePodInventory,
   validateCreateRequestAttestation,
@@ -39,6 +42,11 @@ import {
   validateSshHostKeyAttestation,
   validateSshInfo,
   validateManifest,
+  validateMickeyRunnerStatus,
+  validateR8LedgerQuiescence,
+  validateR8MutationLedgerBoundary,
+  validateTransportCanaryActivationReceipt,
+  validateTransportCanaryKnownHosts,
   verifyLiveReaperService,
   verifyFetchedArtifacts,
 } from "../scripts/run-mickey-cpu-fanout.mjs";
@@ -64,6 +72,21 @@ const durableReaperRoot = "/Users/olifreuler/.stormforge/proxywar-operators/mick
 const durableBinRoot = `${durableReaperRoot}/bin`;
 const durableInstallationsRoot = `${durableBinRoot}/installations`;
 const durablePlist = "/Users/olifreuler/Library/LaunchAgents/com.welttowelt.proxywar.mickey.runpod-reaper.plist";
+const r8ManifestPath = path.join(
+  root,
+  "experiments",
+  "manifest-mickey-cpu-screen-g000-r8-20260721.json",
+);
+const r8Manifest = JSON.parse(readFileSync(r8ManifestPath, "utf8"));
+const acceptedCanaryFixture = JSON.parse(readFileSync(
+  path.join(
+    root,
+    "test-support",
+    "fixtures",
+    "runpod-transport-canary-r7-accepted-reconstructed_sanitized.json",
+  ),
+  "utf8",
+));
 const HEX = {
   source: "1".repeat(40),
   m0Entry: "1".repeat(64),
@@ -359,6 +382,263 @@ test("manifest pins a fair M0, exact identities, fixture, randomized order, and 
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
+});
+
+test("r8 activation is bound to one exact semantic 16-pair manifest and local output", () => {
+  const validated = validateManifest(r8Manifest);
+  assert.equal(validated.pairs.length, 16);
+  assert.equal(r8Manifest.pod.max_concurrency, 4);
+  assert.equal(r8Manifest.activation.screen_pair_count, 16);
+  assert.equal(r8Manifest.activation.one_pod_per_pair, true);
+  assert.equal(r8Manifest.activation.nonce_input_channel, "stdin");
+  assert.equal(r8Manifest.activation.preexisting_pod_deletion_allowed, false);
+  assert.equal(r8Manifest.activation.storm_pod_deletion_allowed, false);
+  assert.equal(r8Manifest.activation.resume_allowed, false);
+  assert.equal(
+    activationManifestDigest(r8Manifest),
+    "5b53c76ef088cd3d929efc0ea72f73dfa103754804231dd6ef76a43bddcb96f2",
+  );
+  const activationEvidence = {
+    receipt_sha256: r8Manifest.activation.canary_receipt.sha256,
+    known_hosts_sha256: r8Manifest.activation.canary_known_hosts.sha256,
+    ledger_state: "retired",
+    terminal_reason: "normal_cleanup_confirmed_absent",
+  };
+  assert.equal(isFullFanoutLiveApproved({
+    manifestPath: r8ManifestPath,
+    document: r8Manifest,
+    activationEvidence,
+  }), true);
+  assert.equal(isFullFanoutLiveApproved({
+    manifestPath: `${r8ManifestPath}.drift`,
+    document: r8Manifest,
+    activationEvidence,
+  }), false);
+  const drifted = structuredClone(r8Manifest);
+  drifted.preregistered_at = "2026-07-21T03:14:49.000Z";
+  assert.throws(() => validateManifest(drifted), /semantic digest mismatch/);
+});
+
+test("r8 foreground runner status binds schema two to this exact child and sole output", () => {
+  const output = r8Manifest.activation.output_path;
+  const status = {
+    schema_version: 2,
+    state: "active",
+    owner: "mickey",
+    run_id: r8Manifest.run_id,
+    child_pid: process.pid,
+    supervisor_alive: true,
+    child_alive: true,
+    reap_in_progress: false,
+    outputs: [output],
+  };
+  assert.equal(
+    validateMickeyRunnerStatus(status, output, r8Manifest.run_id),
+    status,
+  );
+  for (const mutate of [
+    (value) => { value.schema_version = 1; },
+    (value) => { value.child_pid = process.pid + 1; },
+    (value) => { value.outputs.push("/private/tmp/unrelated-output"); },
+    (value) => { value.outputs = ["/private/tmp/unrelated-output"]; },
+  ]) {
+    const drifted = structuredClone(status);
+    mutate(drifted);
+    assert.throws(
+      () => validateMickeyRunnerStatus(drifted, output, r8Manifest.run_id),
+      /exact Mickey foreground runner child/,
+    );
+  }
+});
+
+test("r8 ledger starts quiescent and each create admits only this process's at-most-four records", () => {
+  const manifestSha256 = sha256File(r8ManifestPath);
+  const pairIds = r8Manifest.arms.flatMap((arm) => arm.pairs.map((pair) => pair.id));
+  const makePending = (pairId, sequence) => {
+    const nameNonce = String(sequence).repeat(32);
+    return {
+      record_id: `mickey-reaper:00000000-0000-4000-8000-${String(sequence).padStart(12, "0")}`,
+      state: "pending",
+      run_id: `${r8Manifest.run_id}:${pairId}`,
+      manifest_sha256: manifestSha256,
+      ownership_kind: "generated-exact-name-v1",
+      name_prefix: r8Manifest.pod.name_prefix,
+      name_nonce: nameNonce,
+      expected_name: `${r8Manifest.pod.name_prefix}-${nameNonce}`,
+      preexisting_ids: ["preexisting-sanitized-pod"],
+      preexisting_snapshot_sha256: String(sequence).repeat(64),
+      pod_id: null,
+      active_binding_sha256: null,
+      deadline: "2026-07-21T05:14:48.000Z",
+      terminal_reason: null,
+      last_error: null,
+    };
+  };
+  assert.deepEqual(
+    validateR8LedgerQuiescence({ revision: 7, records: [{ state: "retired" }] }),
+    { revision: 7, nonterminal_count: 0 },
+  );
+  assert.throws(
+    () => validateR8LedgerQuiescence({ revision: 8, records: [{ state: "blocked" }] }),
+    /zero-nonterminal/,
+  );
+
+  const pending = makePending(pairIds[0], 1);
+  const registeredRecords = new Map([[pending.record_id, { pairId: pairIds[0] }]]);
+  const ledger = { revision: 9, records: [{ state: "retired" }, pending] };
+  assert.deepEqual(
+    validateR8MutationLedgerBoundary({
+      ledger,
+      manifest: r8Manifest,
+      manifestSha256,
+      pairId: pairIds[0],
+      pendingOwnership: structuredClone(pending),
+      registeredRecords,
+    }),
+    {
+      revision: 9,
+      pending_record_id: pending.record_id,
+      nonterminal_count: 1,
+    },
+  );
+
+  const changedSnapshot = structuredClone(ledger);
+  changedSnapshot.records[1].preexisting_ids.push("late-unregistered-pod");
+  assert.throws(
+    () => validateR8MutationLedgerBoundary({
+      ledger: changedSnapshot,
+      manifest: r8Manifest,
+      manifestSha256,
+      pairId: pairIds[0],
+      pendingOwnership: pending,
+      registeredRecords,
+    }),
+    /pending record drifted/,
+  );
+
+  const blocked = structuredClone(ledger);
+  blocked.records.push({ ...makePending(pairIds[1], 2), state: "blocked" });
+  const blockedRecords = new Map(registeredRecords);
+  blockedRecords.set(blocked.records[2].record_id, { pairId: pairIds[1] });
+  assert.throws(
+    () => validateR8MutationLedgerBoundary({
+      ledger: blocked,
+      manifest: r8Manifest,
+      manifestSha256,
+      pairId: pairIds[0],
+      pendingOwnership: pending,
+      registeredRecords: blockedRecords,
+    }),
+    /blocked ownership record/,
+  );
+
+  const overConcurrency = { revision: 10, records: [pending] };
+  const overConcurrencyRecords = new Map(registeredRecords);
+  for (let index = 1; index < 5; index += 1) {
+    const record = makePending(pairIds[index], index + 1);
+    overConcurrency.records.push(record);
+    overConcurrencyRecords.set(record.record_id, { pairId: pairIds[index] });
+  }
+  assert.throws(
+    () => validateR8MutationLedgerBoundary({
+      ledger: overConcurrency,
+      manifest: r8Manifest,
+      manifestSha256,
+      pairId: pairIds[0],
+      pendingOwnership: pending,
+      registeredRecords: overConcurrencyRecords,
+    }),
+    /concurrency cap/,
+  );
+});
+
+test("late hash runner or reaper drift causes zero provider create calls", async () => {
+  for (const kind of ["hash", "runner", "reaper"]) {
+    let createCalls = 0;
+    const state = { hash: "exact", runner: "exact", reaper: "exact" };
+    const initialPreflight = structuredClone(state);
+    state[kind] = "drifted-after-initial-preflight";
+    await assert.rejects(
+      executeAfterExactR8MutationBoundary(
+        async () => {
+          if (
+            state.hash !== initialPreflight.hash ||
+            state.runner !== initialPreflight.runner ||
+            state.reaper !== initialPreflight.reaper
+          ) {
+            throw new Error(`${kind} drift at immediate provider mutation boundary`);
+          }
+        },
+        async () => {
+          createCalls += 1;
+          return { code: 0 };
+        },
+      ),
+      new RegExp(`${kind} drift`),
+    );
+    assert.equal(createCalls, 0);
+  }
+});
+
+test("r7 activation receipt requires every one-create SSH volume and cleanup acceptance field", () => {
+  assert.equal(acceptedCanaryFixture.fixture_label, "reconstructed_sanitized");
+  const receipt = acceptedCanaryFixture.receipt;
+  const accepted = validateTransportCanaryActivationReceipt(receipt, r8Manifest.activation);
+  assert.equal(accepted.pod_id, "mickey-sanitized-pod-001");
+  const cases = [
+    [(value) => { value.create_attempts = 2; }, /one-create boundary/],
+    [(value) => { value.game_processes_started = 1; }, /one-create boundary/],
+    [(value) => { value.evidence_eligible = true; }, /one-create boundary/],
+    [(value) => { value.requested_contract.requested_env = true; }, /exact bounded CPU shape/],
+    [(value) => { value.create_request_attestation.requested_volume_gb = 1; }, /zero-volume/],
+    [(value) => { value.network_volume_attestation.status = "explicit_none"; }, /omission/],
+    [(value) => { value.ssh_transport_attempts.push(value.ssh_transport_attempts[0]); }, /exactly one attempt/],
+    [(value) => { value.ssh_transport.negotiated_host_key_fingerprint = "SHA256:bad"; }, /ED25519/],
+    [(value) => { value.deleted_exact_pod_ids = ["storm-existing-001"]; }, /sole observed new pod ID/],
+    [(value) => { value.cleanup.reaper_state = "active"; }, /retire exact ownership/],
+  ];
+  for (const [mutate, message] of cases) {
+    const adversarial = structuredClone(receipt);
+    mutate(adversarial);
+    assert.throws(
+      () => validateTransportCanaryActivationReceipt(adversarial, r8Manifest.activation),
+      message,
+    );
+  }
+});
+
+test("r7 activation known_hosts requires one endpoint-bound ED25519 key and matching fingerprint", () => {
+  const receipt = structuredClone(acceptedCanaryFixture.receipt);
+  const key = Buffer.from("sanitized fixture ED25519 public key blob with more than thirty-two bytes", "utf8");
+  const encoded = key.toString("base64");
+  receipt.ssh_transport.negotiated_host_key_fingerprint = `SHA256:${createHash("sha256")
+    .update(key)
+    .digest("base64")
+    .replace(/=+$/, "")}`;
+  const endpoint = "[192.0.2.10]:22022";
+  assert.deepEqual(
+    validateTransportCanaryKnownHosts(`${endpoint} ssh-ed25519 ${encoded}\n`, receipt),
+    {
+      algorithm: "ssh-ed25519",
+      fingerprint: receipt.ssh_transport.negotiated_host_key_fingerprint,
+      endpoint,
+    },
+  );
+  assert.throws(
+    () => validateTransportCanaryKnownHosts(`${endpoint} ssh-rsa ${encoded}\n`, receipt),
+    /exactly one ED25519/,
+  );
+  assert.throws(
+    () => validateTransportCanaryKnownHosts(`[192.0.2.11]:22022 ssh-ed25519 ${encoded}\n`, receipt),
+    /endpoint differs/,
+  );
+  assert.throws(
+    () => validateTransportCanaryKnownHosts(
+      `${endpoint} ssh-ed25519 ${encoded}\n${endpoint} ssh-ed25519 ${encoded}\n`,
+      receipt,
+    ),
+    /exactly one ED25519/,
+  );
 });
 
 test("manifest permits only the legacy or exact run-bound durable service receipt", () => {
@@ -1026,7 +1306,7 @@ test("dry-run performs zero network calls even when every external command is a 
     assert.equal(plan.cleanup_watchdog.provider_ttl_available, false);
     assert.equal(plan.full_fanout_live_approved, false);
     assert.equal(plan.transport_canary_live_approved, true);
-    assert.match(plan.full_fanout_blocking_reason, /end-to-end execution.*separate RCI/);
+    assert.match(plan.full_fanout_blocking_reason, /not the exact.*r8 G000 activation/);
     assert.deepEqual(plan.pairs[0].order, manifestOrder(manifestPath));
   } finally {
     rmSync(directory, { recursive: true, force: true });
@@ -1048,7 +1328,7 @@ test("full fanout live mode fails closed before output or provider mutation", ()
       { cwd: root, encoding: "utf8" },
     );
     assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /blocked before mutation.*end-to-end execution.*separate RCI/);
+    assert.match(result.stderr, /blocked before mutation.*not the exact.*r8 G000 activation/);
     assert.equal(existsSync(output), false);
   } finally {
     rmSync(directory, { recursive: true, force: true });
