@@ -36,6 +36,8 @@ const requireString = (value, label) => {
 };
 const emptyArray = (value) => Array.isArray(value) && value.length === 0;
 const nonNegativeInteger = (value) => Number.isInteger(value) && value >= 0;
+const experienceRequestID = (value) =>
+  typeof value === "string" && value.startsWith("xreq_");
 const safeRepositoryPath = (value) =>
   typeof value === "string" &&
   value.length > 0 &&
@@ -44,6 +46,33 @@ const safeRepositoryPath = (value) =>
   !value.split("/").includes("..");
 const safeExperimentArtifact = (value) =>
   safeRepositoryPath(value) && value.startsWith("experiments/");
+
+function regressionRequestIDs(value, label) {
+  if (value?.request_ids !== undefined) {
+    if (value.request_id !== undefined) {
+      errors.push(`${label} must use request_id or request_ids, not both`);
+      return [];
+    }
+    const ids = value.request_ids;
+    if (
+      !Array.isArray(ids) ||
+      ids.length !== 2 ||
+      new Set(ids).size !== 2 ||
+      ids.some((id) => !experienceRequestID(id))
+    ) {
+      errors.push(
+        `${label}.request_ids must contain exactly two distinct experience-request IDs`,
+      );
+      return [];
+    }
+    return ids;
+  }
+  if (!experienceRequestID(value?.request_id)) {
+    errors.push(`${label} request ID mismatched or absent`);
+    return [];
+  }
+  return [value.request_id];
+}
 
 function committedArtifact(commit, artifactPath, label) {
   if (!COMMIT.test(commit ?? "") || !safeRepositoryPath(artifactPath)) {
@@ -526,12 +555,42 @@ function validateRegressionReceipt(receipt, candidate, preflightValue) {
   receiptIdentityMatches(receipt, "regression audit", candidate, {
     requirePolicyVersion: true,
   });
+  const expectedRequestIDs = regressionRequestIDs(
+    preflightValue.promotion,
+    "promotion regression",
+  );
+  const actualRequestIDs = regressionRequestIDs(receipt, "regression audit");
   if (
-    typeof receipt.request_id !== "string" ||
-    !receipt.request_id.startsWith("xreq_") ||
-    receipt.request_id !== preflightValue.promotion?.request_id
+    expectedRequestIDs.length > 0 &&
+    actualRequestIDs.length > 0 &&
+    (
+      expectedRequestIDs.length !== actualRequestIDs.length ||
+      expectedRequestIDs.some((id) => !actualRequestIDs.includes(id))
+    )
   ) {
-    errors.push("regression request ID mismatched or absent");
+    errors.push("regression request IDs mismatched");
+  }
+  if (actualRequestIDs.length === 2) {
+    const declared = new Set(actualRequestIDs);
+    const represented = new Set();
+    let unboundEpisode = false;
+    for (const episode of receipt.episodes ?? []) {
+      if (!declared.has(episode.experience_request_id)) {
+        unboundEpisode = true;
+      } else {
+        represented.add(episode.experience_request_id);
+      }
+    }
+    if (unboundEpisode) {
+      errors.push(
+        "regression audit episodes must bind to a declared experience-request ID",
+      );
+    }
+    if (represented.size !== 2) {
+      errors.push(
+        "regression audit must include episodes from both declared regression requests",
+      );
+    }
   }
   validateEpisodeSet(receipt.episodes, {
     label: "regression audit",
@@ -559,10 +618,13 @@ function validateDisjointEpisodeSets(hostedReceipt, regressionReceipt) {
       errors.push("hosted and regression replay hashes are not disjoint");
     }
   }
-  if (
-    regressionReceipt.request_id === hostedReceipt.request_id ||
-    regressionReceipt.request_id === hostedReceipt.baseline_request_id
-  ) {
+  const regressionRequestIDs = Array.isArray(regressionReceipt.request_ids)
+    ? regressionReceipt.request_ids
+    : [regressionReceipt.request_id];
+  if (regressionRequestIDs.some((requestID) =>
+    requestID === hostedReceipt.request_id ||
+    requestID === hostedReceipt.baseline_request_id
+  )) {
     errors.push("regression request must be separate from hosted requests");
   }
 }
