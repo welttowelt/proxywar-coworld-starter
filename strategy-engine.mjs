@@ -954,7 +954,9 @@ function pendingReciprocalHandshake(actions, state) {
       action.kind === "alliance_request" &&
       matchesKingmakerPartner(action, partner, state)
     );
-    if (request) return { ...request, policyMarker: "kp2" };
+    if (request) {
+      return { ...request, policyMarker: "kp2", allianceDirection: "inbound" };
+    }
   }
   return null;
 }
@@ -1030,6 +1032,70 @@ export function chooseAction(actions, state, plan = null, history = []) {
   return { ...chosen, policyMarker: "mm1c" };
 }
 
+const MICKEY_OPENING_DECISIONS = 20;
+const MICKEY_RECIPROCAL_RETRY_COOLDOWN = 24;
+
+function reciprocalRequestPartner(action, state) {
+  if (action?.kind !== "alliance_request") return null;
+  const visible = rivalForAction(action, state);
+  if (visible && isReciprocalRival(visible)) return visible;
+
+  const id = clean(
+    action?.metadata?.recipientID ?? action?.metadata?.targetID ?? "",
+  ).toLowerCase();
+  const name = clean(
+    action?.metadata?.recipientName ?? action?.metadata?.targetName ?? "",
+  );
+  if (!RECIPROCAL_RIVAL_IDS.has(id) && !RECIPROCAL_RIVALS.has(normalizedRivalName(name))) {
+    return null;
+  }
+  return { id: id || name, name: name || id };
+}
+
+function recordedReciprocalRequest(entry) {
+  const entryID = clean(entry?.targetID).toLowerCase();
+  const entryName = normalizedRivalName(entry?.targetName);
+  return entry?.kind === "alliance_request" && entry?.allianceDirection !== "inbound" &&
+    (RECIPROCAL_RIVAL_IDS.has(entryID) || RECIPROCAL_RIVALS.has(entryName));
+}
+
+// MR2 escapes the opening alliance loop visible in Mickey's weak live Pangaea
+// games. After one optional K1Z request, later opening requests yield to the
+// unchanged neutral-growth selector. A real reverse handshake stays immediate.
+export function chooseMickeyRuntimeAction(actions, state, plan = null, history = []) {
+  const baseline = chooseAction(actions, state, plan, history);
+  if (state.mapFingerprint !== "Pangaea" ||
+      activeDecisionCount(history) >= MICKEY_OPENING_DECISIONS) {
+    return baseline;
+  }
+
+  const reverseHandshake = pendingReciprocalHandshake(actions, state);
+  if (hasCurrentPressure(state) || territoryCollapsing(state, history)) {
+    return reverseHandshake?.id === baseline.id ? reverseHandshake : baseline;
+  }
+  if (reverseHandshake) return reverseHandshake;
+  if (baseline.kind !== "alliance_request" || baseline.policyMarker !== "kp2") return baseline;
+
+  const partner = reciprocalRequestPartner(baseline, state);
+  if (!partner) return baseline;
+
+  const retryAge = decisionsSince(history, recordedReciprocalRequest);
+  if (retryAge >= MICKEY_RECIPROCAL_RETRY_COOLDOWN) return baseline;
+
+  const neutralGrowthOffered = actions.some((action) =>
+    isNeutralExpansion(action) && action.risk?.level !== "high"
+  );
+  if (!neutralGrowthOffered) return baseline;
+
+  const withoutAllianceRequests = actions.filter((action) => action.kind !== "alliance_request");
+  if (withoutAllianceRequests.length === 0) return baseline;
+  const replacement = chooseAction(withoutAllianceRequests, state, plan, history);
+  if (!replacement || replacement.id === baseline.id || !isNeutralExpansion(replacement)) {
+    return baseline;
+  }
+  return { ...replacement, policyMarker: "mr2" };
+}
+
 export function recordDecision(history, action, state) {
   const rival = rivalForAction(action, state);
   const metadataTargetID = clean(
@@ -1054,6 +1120,7 @@ export function recordDecision(history, action, state) {
     incomingAttackerNames,
     mapFingerprint: state.mapFingerprint,
     policyMarker: action.policyMarker ?? null,
+    allianceDirection: action.allianceDirection ?? null,
   });
   if (history.length > 320) history.shift();
 }

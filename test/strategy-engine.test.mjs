@@ -5,6 +5,7 @@ import {
   boatConversionStalled,
   buildState,
   chooseAction,
+  chooseMickeyRuntimeAction,
   recordDecision,
 } from "../strategy-engine.mjs";
 
@@ -1393,6 +1394,379 @@ test("katanasan alliance retries respect the cooldown", () => {
   const rested = choose([ally, probe], obs, null, restedHistory);
   assert.equal(rested.id, ally.id);
   assert.equal(rested.policyMarker, "kp2");
+});
+
+test("Mickey suppresses a repeated outgoing K1Z request on Pangaea", () => {
+  const hrafn = {
+    id: "hrafn-live-id",
+    name: "K1Z Hrafn",
+    tileShare: 0.12,
+    relativeTroopRatio: 1.1,
+  };
+  const ally = {
+    ...action("alliance:hrafn-live-id", "alliance_request", "Request alliance with K1Z Hrafn"),
+    metadata: {
+      recipientID: hrafn.id,
+      recipientName: hrafn.name,
+      relation: 0,
+    },
+  };
+  const neutral = {
+    ...action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%"),
+    metadata: { targetID: null, targetName: "Terra Nullius", troopPercent: 10, expansion: true },
+  };
+  const history = [
+    {
+      actionID: ally.id,
+      kind: "alliance_request",
+      targetID: hrafn.id,
+      targetName: hrafn.name,
+      tileShare: 0.1,
+    },
+    ...Array.from({ length: 6 }, (_, index) => ({
+      actionID: `build:City:${index}`,
+      kind: "build",
+      tileShare: 0.1,
+    })),
+  ];
+  const state = buildState(observation({
+    tileShare: 0.1,
+    troopRatio: 0.9,
+    spawnTile: 659528,
+    rivals: [hrafn],
+  }), [ally, neutral], history);
+
+  assert.equal(chooseAction([ally, neutral], state, null, history).id, ally.id);
+  const selected = chooseMickeyRuntimeAction([ally, neutral], state, null, history);
+  assert.equal(selected.id, neutral.id);
+  assert.equal(selected.policyMarker, "mr2");
+});
+
+test("Mickey always accepts a real reverse K1Z handshake during cooldown", () => {
+  const hrafn = {
+    id: "hrafn-live-id",
+    name: "K1Z Hrafn",
+    tileShare: 0.12,
+    relativeTroopRatio: 1.1,
+  };
+  const ally = {
+    ...action("alliance:hrafn-live-id", "alliance_request", "Accept K1Z Hrafn alliance"),
+    metadata: { recipientID: hrafn.id, recipientName: hrafn.name, relation: 2 },
+  };
+  const reject = {
+    ...action("alliance_reject:hrafn-live-id", "alliance_reject", "Reject K1Z Hrafn alliance"),
+    metadata: { recipientID: hrafn.id, recipientName: hrafn.name },
+  };
+  const neutral = action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%");
+  neutral.metadata = { targetID: null, targetName: "Terra Nullius", troopPercent: 10, expansion: true };
+  const history = [{
+    actionID: ally.id,
+    kind: "alliance_request",
+    targetID: hrafn.id,
+    targetName: hrafn.name,
+    tileShare: 0.1,
+  }];
+  const state = buildState(observation({
+    tileShare: 0.1,
+    troopRatio: 0.9,
+    spawnTile: 659528,
+    rivals: [hrafn],
+  }), [ally, reject, neutral], history);
+
+  const selected = chooseMickeyRuntimeAction([ally, reject, neutral], state, null, history);
+  assert.equal(selected.id, ally.id);
+  assert.equal(selected.policyMarker, "kp2");
+  assert.equal(selected.allianceDirection, "inbound");
+});
+
+test("Mickey does not count an accepted handshake as optional outbound outreach", () => {
+  const hrafn = {
+    id: "hrafn-live-id",
+    name: "K1Z Hrafn",
+    tileShare: 0.12,
+    relativeTroopRatio: 1.1,
+  };
+  const gravity = {
+    id: "gravity-live-id",
+    name: "K1Z Gravity",
+    tileShare: 0.11,
+    relativeTroopRatio: 1.1,
+  };
+  const acceptHrafn = {
+    ...action("alliance:hrafn-live-id", "alliance_request", "Accept K1Z Hrafn alliance"),
+    metadata: { recipientID: hrafn.id, recipientName: hrafn.name, relation: 2 },
+  };
+  const rejectHrafn = {
+    ...action("alliance_reject:hrafn-live-id", "alliance_reject", "Reject K1Z Hrafn alliance"),
+    metadata: { recipientID: hrafn.id, recipientName: hrafn.name },
+  };
+  const firstState = buildState(observation({
+    tileShare: 0.1,
+    troopRatio: 0.9,
+    spawnTile: 659528,
+    rivals: [hrafn, gravity],
+  }), [acceptHrafn, rejectHrafn], []);
+  const accepted = chooseMickeyRuntimeAction(
+    [acceptHrafn, rejectHrafn],
+    firstState,
+    null,
+    [],
+  );
+  const history = [];
+  recordDecision(history, accepted, firstState);
+
+  const requestGravity = {
+    ...action("alliance:gravity-live-id", "alliance_request", "Request K1Z Gravity"),
+    metadata: { recipientID: gravity.id, recipientName: gravity.name, relation: 0 },
+  };
+  const neutral = {
+    ...action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%"),
+    metadata: { targetID: null, targetName: "Terra Nullius", troopPercent: 10, expansion: true },
+  };
+  const secondState = buildState(observation({
+    tileShare: 0.1,
+    troopRatio: 0.9,
+    spawnTile: 659528,
+    rivals: [hrafn, gravity],
+  }), [requestGravity, neutral], history);
+  const selected = chooseMickeyRuntimeAction(
+    [requestGravity, neutral],
+    secondState,
+    null,
+    history,
+  );
+
+  assert.equal(history[0].allianceDirection, "inbound");
+  assert.equal(selected.id, requestGravity.id);
+  assert.equal(selected.policyMarker, "kp2");
+  assert.equal(selected.allianceDirection, undefined);
+});
+
+test("Mickey records an accepted handshake as inbound even under pressure", () => {
+  const hrafn = {
+    id: "hrafn-live-id",
+    name: "K1Z Hrafn",
+    tileShare: 0.12,
+    relativeTroopRatio: 1.1,
+  };
+  const gravity = {
+    id: "gravity-live-id",
+    name: "K1Z Gravity",
+    tileShare: 0.11,
+    relativeTroopRatio: 1.1,
+  };
+  const acceptHrafn = {
+    ...action("alliance:hrafn-live-id", "alliance_request", "Accept K1Z Hrafn alliance"),
+    metadata: { recipientID: hrafn.id, recipientName: hrafn.name, relation: 2 },
+  };
+  const rejectHrafn = {
+    ...action("alliance_reject:hrafn-live-id", "alliance_reject", "Reject K1Z Hrafn alliance"),
+    metadata: { recipientID: hrafn.id, recipientName: hrafn.name },
+  };
+  const pressuredState = buildState(observation({
+    tileShare: 0.1,
+    troopRatio: 0.9,
+    incomingAttacks: [{ attackerID: "outsider" }],
+    incomingAttackPlayerIDs: ["outsider"],
+    spawnTile: 659528,
+    rivals: [
+      hrafn,
+      gravity,
+      { id: "outsider", name: "Outsider", tileShare: 0.1, relativeTroopRatio: 0.9 },
+    ],
+  }), [acceptHrafn, rejectHrafn], []);
+  const accepted = chooseMickeyRuntimeAction(
+    [acceptHrafn, rejectHrafn],
+    pressuredState,
+    null,
+    [],
+  );
+  const history = [];
+  recordDecision(history, accepted, pressuredState);
+
+  const requestGravity = {
+    ...action("alliance:gravity-live-id", "alliance_request", "Request K1Z Gravity"),
+    metadata: { recipientID: gravity.id, recipientName: gravity.name, relation: 0 },
+  };
+  const neutral = {
+    ...action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%"),
+    metadata: { targetID: null, targetName: "Terra Nullius", troopPercent: 10, expansion: true },
+  };
+  const calmState = buildState(observation({
+    tileShare: 0.1,
+    troopRatio: 0.9,
+    spawnTile: 659528,
+    rivals: [hrafn, gravity],
+  }), [requestGravity, neutral], history);
+  const selected = chooseMickeyRuntimeAction(
+    [requestGravity, neutral],
+    calmState,
+    null,
+    history,
+  );
+
+  assert.equal(accepted.id, acceptHrafn.id);
+  assert.equal(history[0].allianceDirection, "inbound");
+  assert.equal(selected.id, requestGravity.id);
+});
+
+test("Mickey leaves rested K1Z requests and non-Pangaea retries unchanged", () => {
+  const hrafn = {
+    id: "hrafn-live-id",
+    name: "K1Z Hrafn",
+    tileShare: 0.12,
+    relativeTroopRatio: 1.1,
+  };
+  const ally = {
+    ...action("alliance:hrafn-live-id", "alliance_request", "Request alliance with K1Z Hrafn"),
+    metadata: { recipientID: hrafn.id, recipientName: hrafn.name, relation: 0 },
+  };
+  const neutral = {
+    ...action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%"),
+    metadata: { targetID: null, targetName: "Terra Nullius", troopPercent: 10, expansion: true },
+  };
+  const coolingHistory = [{
+    actionID: ally.id,
+    kind: "alliance_request",
+    targetID: hrafn.id,
+    targetName: hrafn.name,
+    tileShare: 0.1,
+  }, ...Array.from({ length: 6 }, (_, index) => ({
+    actionID: `build:City:${index}`,
+    kind: "build",
+    tileShare: 0.1,
+  }))];
+  const restedHistory = [coolingHistory[0], ...Array.from({ length: 24 }, (_, index) => ({
+    actionID: `build:Factory:${index}`,
+    kind: "build",
+    tileShare: 0.1,
+  }))];
+
+  for (const [spawnTile, history] of [[659528, restedHistory], [1088580, coolingHistory]]) {
+    const state = buildState(observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      spawnTile,
+      rivals: [hrafn],
+    }), [ally, neutral], history);
+    const selected = chooseMickeyRuntimeAction([ally, neutral], state, null, history);
+    assert.equal(selected.id, ally.id);
+    assert.equal(selected.policyMarker, "kp2");
+  }
+});
+
+test("Mickey keeps a repeated request when no productive replacement is offered", () => {
+  const ally = {
+    ...action("alliance:hidden-hrafn", "alliance_request", "Request alliance"),
+    metadata: { recipientID: "hidden-hrafn", recipientName: "K1Z Hrafn", relation: 0 },
+  };
+  const hold = action("hold", "hold", "Hold");
+  const history = [{
+    actionID: ally.id,
+    kind: "alliance_request",
+    targetID: "hidden-hrafn",
+    targetName: "K1Z Hrafn",
+    tileShare: 0.1,
+  }, ...Array.from({ length: 6 }, (_, index) => ({
+    actionID: `build:City:${index}`,
+    kind: "build",
+    tileShare: 0.1,
+  }))];
+  const state = buildState(observation({
+    tileShare: 0.1,
+    troopRatio: 0.9,
+    spawnTile: 659528,
+    rivals: [],
+  }), [ally, hold], history);
+
+  const selected = chooseMickeyRuntimeAction([ally, hold], state, null, history);
+  assert.equal(selected.id, ally.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("Mickey tracks invisible partners by alliance metadata", () => {
+  const ally = {
+    ...action("alliance:hidden-hrafn", "alliance_request", "Request alliance"),
+    metadata: { recipientID: "hidden-hrafn", recipientName: "K1Z Hrafn", relation: 0 },
+  };
+  const neutral = {
+    ...action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%"),
+    metadata: { targetID: null, targetName: "Terra Nullius", troopPercent: 10, expansion: true },
+  };
+  const history = [{
+    actionID: ally.id,
+    kind: "alliance_request",
+    targetID: "hidden-hrafn",
+    targetName: "K1Z Hrafn",
+    tileShare: 0.1,
+  }, ...Array.from({ length: 6 }, (_, index) => ({
+    actionID: `build:City:${index}`,
+    kind: "build",
+    tileShare: 0.1,
+  }))];
+  const state = buildState(observation({
+    tileShare: 0.1,
+    troopRatio: 0.9,
+    spawnTile: 659528,
+    rivals: [],
+  }), [ally, neutral], history);
+
+  const selected = chooseMickeyRuntimeAction([ally, neutral], state, null, history);
+  assert.equal(selected.id, neutral.id);
+  assert.equal(selected.policyMarker, "mr2");
+});
+
+test("Mickey allows the first optional opening K1Z request", () => {
+  const gravity = {
+    ...action("alliance:gravity", "alliance_request", "Request K1Z Gravity"),
+    metadata: { recipientID: "gravity", recipientName: "K1Z Gravity", relation: 0 },
+  };
+  const neutral = {
+    ...action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%"),
+    metadata: { targetID: null, targetName: "Terra Nullius", troopPercent: 10, expansion: true },
+  };
+  const state = buildState(observation({
+    tileShare: 0.1,
+    troopRatio: 0.9,
+    spawnTile: 659528,
+    rivals: [{ id: "gravity", name: "K1Z Gravity", tileShare: 0.1, relativeTroopRatio: 1.1 }],
+  }), [gravity, neutral], []);
+
+  const selected = chooseMickeyRuntimeAction([gravity, neutral], state, null, []);
+  assert.equal(selected.id, gravity.id);
+  assert.equal(selected.policyMarker, "kp2");
+});
+
+test("Mickey opening cooldown is global across reciprocal partners", () => {
+  const hrafn = {
+    ...action("alliance:hrafn", "alliance_request", "Request K1Z Hrafn"),
+    metadata: { recipientID: "hrafn", recipientName: "K1Z Hrafn", relation: 0 },
+  };
+  const gravity = {
+    ...action("alliance:gravity", "alliance_request", "Request K1Z Gravity"),
+    metadata: { recipientID: "gravity", recipientName: "K1Z Gravity", relation: 0 },
+  };
+  const neutral = {
+    ...action("expand:terra-nullius:10", "attack", "Expand into Terra Nullius 10%"),
+    metadata: { targetID: null, targetName: "Terra Nullius", troopPercent: 10, expansion: true },
+  };
+  const history = [{
+    actionID: hrafn.id,
+    kind: "alliance_request",
+    targetID: "hrafn",
+    targetName: "K1Z Hrafn",
+    tileShare: 0.1,
+  }];
+  const state = buildState(observation({
+    tileShare: 0.1,
+    troopRatio: 0.9,
+    spawnTile: 659528,
+    rivals: [{ id: "gravity", name: "K1Z Gravity", tileShare: 0.1, relativeTroopRatio: 1.1 }],
+  }), [gravity, neutral], history);
+
+  const selected = chooseMickeyRuntimeAction([gravity, neutral], state, null, history);
+  assert.equal(selected.id, neutral.id);
+  assert.equal(selected.policyMarker, "mr2");
 });
 
 test("no harmful action of any kind is ever taken against katanasan", () => {
