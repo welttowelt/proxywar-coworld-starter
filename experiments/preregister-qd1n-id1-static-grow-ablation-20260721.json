@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "record_type": "qd1n_id1_static_grow_ablation_preregistration",
+  "created_at": "2026-07-21T08:10:00Z",
+  "objective": "Determine whether the ID1 adapter itself caused the prior opening lift, holding the static grow intent, selector inputs, source tree, dependency image, seed, seat, and roster constant.",
+  "parent": {
+    "live_policy": "qd1n:v89",
+    "exact_selector_commit": "f1347251834a6283182b631e1336595eb2e08342",
+    "live_image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478"
+  },
+  "ablation_source": {
+    "commit": "1c62664a43c0657e086845dc3b5c1a17e4910a54",
+    "branch": "rci/id1-static-grow-ablation",
+    "full_test_result": "154/154 pass",
+    "red_first": "The control integration row fails on the pre-ablation wiring because it degrades into planner fallback; it passes with the explicit static-parent route.",
+    "llm_player_sha256": "dc3cd306d1c2a405f468e70cb7d2ae1c61babd090a5a2d6325b49c0799e9142a",
+    "strategy_engine_sha256": "d5f7a61c3395d1dbe68430544ba9596d0f77a17752f3f28418ad6601446e0f47"
+  },
+  "arms": {
+    "candidate": {
+      "engine": "id1",
+      "image_id": "sha256:79f9e9cfe3a6aafa8d488e9ffab900dd41b881d3e3dcf2b1f541dafb03f0e3d5",
+      "job": "experiments/job-qd1n-id1-static-adapter-pangaea-20260721.json",
+      "job_sha256": "ea6fc78d0730e006b9c4d0c17fe7ebd114490f806e81ecd186d137ffaef13596"
+    },
+    "control": {
+      "engine": "id1-static-parent",
+      "image_id": "sha256:21f60c67925d6568f9eb53046eedf1a7b53c768e95008e008cc42ee5cb4acb47",
+      "job": "experiments/job-qd1n-id1-static-parent-pangaea-20260721.json",
+      "job_sha256": "2fb4b8790301c437b0d98d92bdb980b92cc3a287a6830681e2692fa4e33972de"
+    }
+  },
+  "matched_cell": {
+    "manifest": "/tmp/odin-odc1-seeded-gate-20260720/coworld_manifest.json",
+    "manifest_sha256": "f64cd51b21883a434d7c5e3eef924a6312e6ca74f1cb6b9d998dc0724dca65cf",
+    "map": "Pangaea",
+    "map_size": "Normal",
+    "seed": 20260720,
+    "odin_slot_zero_based": 7,
+    "max_decision_steps": 24,
+    "turns_per_decision_step": 100,
+    "roster_size": 8,
+    "run_order": ["control", "candidate"]
+  },
+  "pass_gate": {
+    "candidate_id1_reach_min": 1,
+    "both_arms_accepted_all_decisions": true,
+    "both_arms_fallbacks": 0,
+    "both_arms_planner_degradations": 0,
+    "both_arms_holds": 0,
+    "both_arms_rejects": 0,
+    "both_arms_harmful_k1z_actions": 0,
+    "candidate_opening_auc20_strictly_greater_than_control": true,
+    "candidate_decision_20_tiles_strictly_greater_than_control": true
+  },
+  "stop_rule": "Any reliability failure, zero ID1 reach, tie, or loss on either opening metric closes this artifact immediately. Do not run a matrix.",
+  "pass_transition": "Run one seat-mirrored pair only. No hosted or league action from this cell.",
+  "promotion_gates_unchanged": {
+    "hosted_4_of_4_required": true,
+    "regression_20_of_20_required": true,
+    "automatic_promotion_only_after_all_repository_gates": true
+  },
+  "league_mutation": false
+}
+

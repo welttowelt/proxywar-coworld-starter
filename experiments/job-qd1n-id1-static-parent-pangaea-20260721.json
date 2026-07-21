@@ -1,0 +1,36 @@
+{
+  "game_config": {
+    "difficulty": "Easy",
+    "episode_timeout_seconds": 900,
+    "map": "Pangaea",
+    "map_size": "Normal",
+    "max_decision_ms": 15000,
+    "max_decision_steps": 24,
+    "num_agents": 8,
+    "player_connect_timeout_seconds": 120,
+    "players": [
+      {"name": "K1Z Hrafn"},
+      {"name": "daveey"},
+      {"name": "Richard Higgins"},
+      {"name": "Auri"},
+      {"name": "Ron"},
+      {"name": "K1Z juryoku-koku"},
+      {"name": "K1Z katanasan"},
+      {"name": "K1Z odin free"}
+    ],
+    "replay_tail_turns": 0,
+    "seed": 20260720,
+    "turns_per_decision_step": 100
+  },
+  "players": [
+    {"type": "player", "image": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478", "run": ["node", "/app/llm-player.mjs"]},
+    {"type": "player", "image": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478", "run": ["node", "/app/llm-player.mjs"]},
+    {"type": "player", "image": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478", "run": ["node", "/app/llm-player.mjs"]},
+    {"type": "player", "image": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478", "run": ["node", "/app/llm-player.mjs"]},
+    {"type": "player", "image": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478", "run": ["node", "/app/llm-player.mjs"]},
+    {"type": "player", "image": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478", "run": ["node", "/app/llm-player.mjs"]},
+    {"type": "player", "image": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478", "run": ["node", "/app/llm-player.mjs"]},
+    {"type": "player", "image": "sha256:21f60c67925d6568f9eb53046eedf1a7b53c768e95008e008cc42ee5cb4acb47", "run": ["node", "/app/llm-player.mjs"]}
+  ]
+}
+
