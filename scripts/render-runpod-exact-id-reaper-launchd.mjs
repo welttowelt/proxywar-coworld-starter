@@ -9,9 +9,11 @@ import {
   lstat,
   mkdir,
   open,
+  readdir,
   readFile,
   realpath,
-  rm,
+  rename,
+  rmdir,
   stat,
   unlink,
 } from "node:fs/promises";
@@ -27,6 +29,7 @@ const SHA256 = /^[a-f0-9]{64}$/;
 const SELF_PATH = fileURLToPath(import.meta.url);
 const EXPECTED_HOME = "/Users/olifreuler";
 const STAGING_PREFIX = ".staging-";
+const INSTALL_LOCK_NAME = ".install.lock";
 
 function parseArgs(argv) {
   const [command, ...rest] = argv;
@@ -226,6 +229,13 @@ async function render(options) {
       ledger_and_receipt_mode: "0600",
       overwrite_allowed: false,
       symlinks_allowed: false,
+      exclusive_install_lock_path: path.join(
+        preflight.document.cleanup_watchdog.installations_root,
+        INSTALL_LOCK_NAME,
+      ),
+      exclusive_install_lock_mode: "0700",
+      promotion: "exclusive-lock-rename-with-directory-inode-attestation-v1",
+      installation_entry_count: 2,
       provider_calls_during_render_or_install: 0,
       launchctl_calls_during_render_or_install: 0,
     },
@@ -300,6 +310,150 @@ async function secureSource(filePath, sha256) {
   return info;
 }
 
+function sameInode(left, right) {
+  return left.dev === right.dev && left.ino === right.ino;
+}
+
+function inodeClaim(info) {
+  return { dev: info.dev, ino: info.ino };
+}
+
+async function assertClaimedDirectory(directory, claim, label) {
+  const info = await lstat(directory);
+  if (
+    !info.isDirectory() ||
+    info.isSymbolicLink() ||
+    !sameInode(info, claim) ||
+    await realpath(directory) !== directory ||
+    info.uid !== currentUid() ||
+    (info.mode & 0o777) !== 0o700
+  ) {
+    throw new Error(`${label} inode or security boundary changed: ${directory}`);
+  }
+  return info;
+}
+
+async function acquireInstallationLock(installationsRoot) {
+  const lockPath = path.join(installationsRoot, INSTALL_LOCK_NAME);
+  try {
+    await mkdir(lockPath, { mode: 0o700 });
+  } catch (error) {
+    if (error?.code === "EEXIST") {
+      throw new Error(`exclusive installation lock already exists; refusing concurrent, stale, or foreign lock: ${lockPath}`);
+    }
+    throw error;
+  }
+  const info = await lstat(lockPath);
+  const claim = { path: lockPath, ...inodeClaim(info) };
+  await assertClaimedDirectory(lockPath, claim, "exclusive installation lock");
+  await fsyncDirectory(installationsRoot);
+  return claim;
+}
+
+async function releaseInstallationLock(lock) {
+  await assertClaimedDirectory(lock.path, lock, "exclusive installation lock");
+  if ((await readdir(lock.path)).length !== 0) {
+    throw new Error(`exclusive installation lock is no longer empty; refusing cleanup: ${lock.path}`);
+  }
+  await rmdir(lock.path);
+  await fsyncDirectory(path.dirname(lock.path));
+}
+
+function installationPayloads(manifest, directory = manifest.cleanup_watchdog.installation_directory) {
+  const payloads = [
+    {
+      name: path.basename(manifest.cleanup_watchdog.script.path),
+      destination: path.join(directory, path.basename(manifest.cleanup_watchdog.script.path)),
+      source: manifest.cleanup_watchdog.script.install_source_path,
+      sha256: manifest.cleanup_watchdog.script.sha256,
+      mode: 0o600,
+      executable: false,
+    },
+    {
+      name: path.basename(manifest.runpodctl.path),
+      destination: path.join(directory, path.basename(manifest.runpodctl.path)),
+      source: manifest.runpodctl.install_source_path,
+      sha256: manifest.runpodctl.sha256,
+      mode: 0o700,
+      executable: true,
+    },
+  ];
+  if (new Set(payloads.map(({ name }) => name)).size !== payloads.length) {
+    throw new Error("durable installation payload names must be distinct");
+  }
+  return payloads;
+}
+
+async function assertExactInstallationDirectory(manifest, expectedInode = null) {
+  const directory = manifest.cleanup_watchdog.installation_directory;
+  const info = await secureDirectory(directory, { create: false });
+  if (expectedInode && !sameInode(info, expectedInode)) {
+    throw new Error(`promoted installation inode differs from staged inode: ${directory}`);
+  }
+  const payloads = installationPayloads(manifest);
+  const expectedNames = payloads.map(({ name }) => name).sort();
+  const actualNames = (await readdir(directory)).sort();
+  if (
+    actualNames.length !== expectedNames.length ||
+    actualNames.some((name, index) => name !== expectedNames[index])
+  ) {
+    throw new Error(`durable installation must contain exactly two pinned payloads: ${directory}`);
+  }
+  for (const payload of payloads) {
+    await secureFile(payload.destination, {
+      sha256: payload.sha256,
+      mode: payload.mode,
+      executable: payload.executable,
+    });
+  }
+  return info;
+}
+
+async function cleanupExactOwnedStaging(staging, stagingClaim, payloadClaims) {
+  const info = await lstat(staging).catch((error) => {
+    if (error?.code === "ENOENT") return null;
+    throw error;
+  });
+  if (!info) return false;
+  try {
+    await assertClaimedDirectory(staging, stagingClaim, "owned staging directory");
+  } catch {
+    return false;
+  }
+  const actualNames = (await readdir(staging)).sort();
+  const claimedNames = [...payloadClaims.keys()].sort();
+  if (
+    actualNames.length !== claimedNames.length ||
+    actualNames.some((name, index) => name !== claimedNames[index])
+  ) {
+    return false;
+  }
+  for (const name of claimedNames) {
+    const filePath = path.join(staging, name);
+    const expected = payloadClaims.get(name);
+    const fileInfo = await lstat(filePath).catch(() => null);
+    if (
+      !fileInfo ||
+      !fileInfo.isFile() ||
+      fileInfo.isSymbolicLink() ||
+      !sameInode(fileInfo, expected) ||
+      fileInfo.uid !== currentUid() ||
+      (fileInfo.mode & 0o777) !== expected.mode ||
+      await realpath(filePath) !== filePath
+    ) {
+      return false;
+    }
+  }
+  for (const name of claimedNames) {
+    await unlink(path.join(staging, name));
+  }
+  await assertClaimedDirectory(staging, stagingClaim, "owned staging directory");
+  if ((await readdir(staging)).length !== 0) return false;
+  await rmdir(staging);
+  await fsyncDirectory(path.dirname(staging));
+  return true;
+}
+
 async function writeStagedFile(filePath, body, mode) {
   const handle = await open(
     filePath,
@@ -336,7 +490,7 @@ async function assertOptionalSecureStateFile(filePath) {
   if (info) await secureFile(filePath, { mode: 0o600 });
 }
 
-async function installVersionedArtifacts(manifest) {
+async function installVersionedArtifacts(manifest, { testHooks = null } = {}) {
   const watchdog = manifest.cleanup_watchdog;
   await secureSource(watchdog.script.install_source_path, watchdog.script.sha256);
   const runpodctlSourceInfo = await secureSource(
@@ -350,51 +504,98 @@ async function installVersionedArtifacts(manifest) {
   await secureDirectory(watchdog.state_root);
   await secureDirectory(watchdog.bin_root);
   await secureDirectory(watchdog.installations_root);
-  const installed = await lstat(watchdog.installation_directory).catch((error) => {
-    if (error?.code === "ENOENT") return null;
-    throw error;
-  });
-  if (!installed) {
+  const lock = await acquireInstallationLock(watchdog.installations_root);
+  let operationError = null;
+  try {
+    await testHooks?.afterLockAcquired?.({
+      lockPath: lock.path,
+      destination: watchdog.installation_directory,
+    });
+    const installed = await lstat(watchdog.installation_directory).catch((error) => {
+      if (error?.code === "ENOENT") return null;
+      throw error;
+    });
+    if (installed) {
+      await assertExactInstallationDirectory(manifest);
+      return;
+    }
+
     const staging = path.join(watchdog.installations_root, `${STAGING_PREFIX}${randomUUID()}`);
-    await secureDirectory(staging);
+    await mkdir(staging, { mode: 0o700 });
+    const stagingInfo = await lstat(staging);
+    const stagingClaim = { path: staging, ...inodeClaim(stagingInfo) };
+    await assertClaimedDirectory(staging, stagingClaim, "owned staging directory");
+    const payloadClaims = new Map();
     try {
-      await writeStagedFile(
-        path.join(staging, path.basename(watchdog.script.path)),
-        await readFile(watchdog.script.install_source_path),
-        0o600,
-      );
-      await writeStagedFile(
-        path.join(staging, path.basename(manifest.runpodctl.path)),
-        await readFile(manifest.runpodctl.install_source_path),
-        0o700,
-      );
-      await secureFile(path.join(staging, path.basename(watchdog.script.path)), {
-        sha256: watchdog.script.sha256,
-        mode: 0o600,
-      });
-      await secureFile(path.join(staging, path.basename(manifest.runpodctl.path)), {
-        sha256: manifest.runpodctl.sha256,
-        mode: 0o700,
-        executable: true,
-      });
+      for (const payload of installationPayloads(manifest, staging)) {
+        await writeStagedFile(
+          payload.destination,
+          await readFile(payload.source),
+          payload.mode,
+        );
+        const info = await secureFile(payload.destination, {
+          sha256: payload.sha256,
+          mode: payload.mode,
+          executable: payload.executable,
+        });
+        payloadClaims.set(payload.name, { ...inodeClaim(info), mode: payload.mode });
+      }
       await fsyncDirectory(staging);
-      await execFileAsync("/bin/mv", ["-n", staging, watchdog.installation_directory]);
-      if (await lstat(staging).catch(() => null)) {
+      await testHooks?.beforePromotion?.({
+        lockPath: lock.path,
+        staging,
+        destination: watchdog.installation_directory,
+        payloadPaths: Object.fromEntries(
+          installationPayloads(manifest, staging).map(({ name, destination }) => [name, destination]),
+        ),
+      });
+
+      const concurrentDestination = await lstat(watchdog.installation_directory).catch((error) => {
+        if (error?.code === "ENOENT") return null;
+        throw error;
+      });
+      if (concurrentDestination) {
         throw new Error("durable installation destination appeared concurrently; refusing overwrite");
       }
+      await assertClaimedDirectory(staging, stagingClaim, "owned staging directory");
+      const stagingNames = (await readdir(staging)).sort();
+      const expectedNames = [...payloadClaims.keys()].sort();
+      if (
+        stagingNames.length !== expectedNames.length ||
+        stagingNames.some((name, index) => name !== expectedNames[index])
+      ) {
+        throw new Error("owned staging directory no longer contains the exact two pinned payloads");
+      }
+      for (const { name, destination, sha256, mode, executable } of installationPayloads(manifest, staging)) {
+        const info = await secureFile(destination, { sha256, mode, executable });
+        if (!sameInode(info, payloadClaims.get(name))) {
+          throw new Error(`staged payload inode changed before promotion: ${destination}`);
+        }
+      }
+
+      await rename(staging, watchdog.installation_directory);
+      await assertExactInstallationDirectory(manifest, stagingClaim);
+      await fsyncDirectory(watchdog.installation_directory);
       await fsyncDirectory(watchdog.installations_root);
     } catch (error) {
-      await rm(staging, { recursive: true, force: true }).catch(() => {});
+      const cleaned = await cleanupExactOwnedStaging(staging, stagingClaim, payloadClaims)
+        .catch(() => false);
+      if (!cleaned && await lstat(staging).catch(() => null)) {
+        error.message = `${error.message}; unsafe or changed staging was preserved`;
+      }
       throw error;
     }
+  } catch (error) {
+    operationError = error;
+    throw error;
+  } finally {
+    try {
+      await releaseInstallationLock(lock);
+    } catch (lockError) {
+      if (!operationError) throw lockError;
+      operationError.message = `${operationError.message}; installation lock cleanup refused: ${lockError.message}`;
+    }
   }
-  await secureDirectory(watchdog.installation_directory, { create: false });
-  await secureFile(watchdog.script.path, { sha256: watchdog.script.sha256, mode: 0o600 });
-  await secureFile(manifest.runpodctl.path, {
-    sha256: manifest.runpodctl.sha256,
-    mode: 0o700,
-    executable: true,
-  });
 }
 
 export function renderReaperPlistForTest(manifest) {
@@ -409,6 +610,7 @@ export async function stageDurableReaperInstallation({
   manifestSha256,
   plistSourcePath,
   allowTemporaryPathsForTest = false,
+  testHooks = null,
 }) {
   if (!SHA256.test(manifestSha256)) throw new Error("installation manifest SHA-256 is invalid");
   absolute(plistSourcePath, "plist source");
@@ -420,6 +622,9 @@ export async function stageDurableReaperInstallation({
     )
   ) {
     throw new Error("temporary durable staging is restricted to the unit fixture under /private/tmp");
+  }
+  if (testHooks && !allowTemporaryPathsForTest) {
+    throw new Error("durable installation hooks are restricted to the temporary unit fixture");
   }
   const expectedPlist = plistBody(manifest, { allowTemporaryPathsForTest });
   await secureSource(plistSourcePath, createHash("sha256").update(expectedPlist).digest("hex"));
@@ -433,7 +638,7 @@ export async function stageDurableReaperInstallation({
     throw new Error("durable install refuses an unresolved pending or active cleanup record");
   }
   await secureFile(manifest.cleanup_watchdog.ledger_path, { mode: 0o600 });
-  await installVersionedArtifacts(manifest);
+  await installVersionedArtifacts(manifest, { testHooks });
 
   const launchAgents = path.dirname(manifest.cleanup_watchdog.plist_path);
   await secureDirectory(launchAgents, { create: true, exactMode: false });

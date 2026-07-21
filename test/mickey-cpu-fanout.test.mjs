@@ -4,14 +4,17 @@ import { createHash, createHmac } from "node:crypto";
 import {
   chmodSync,
   existsSync,
+  lstatSync,
   mkdirSync,
   mkdtempSync,
   readdirSync,
   readFileSync,
   realpathSync,
+  renameSync,
   rmSync,
   statSync,
   symlinkSync,
+  unlinkSync,
   writeFileSync,
 } from "node:fs";
 import { tmpdir } from "node:os";
@@ -1063,6 +1066,30 @@ function stageManifestAtTemporaryDurableRoot(sourceManifest, stateRoot) {
   return manifest;
 }
 
+function durableStageFixture(prefix) {
+  const source = fixture();
+  const stateRoot = realpathSync(mkdtempSync(`/private/tmp/${prefix}`));
+  const manifest = stageManifestAtTemporaryDurableRoot(source.manifest, stateRoot);
+  const plistSourcePath = path.join(stateRoot, "rendered-reaper.plist");
+  writeFileSync(plistSourcePath, renderReaperPlistForTest(manifest), { mode: 0o600 });
+  return { source, stateRoot, manifest, plistSourcePath };
+}
+
+function stageTemporaryDurableFixture(fixtureValue, testHooks = null) {
+  return stageDurableReaperInstallation({
+    manifest: fixtureValue.manifest,
+    manifestSha256: "d".repeat(64),
+    plistSourcePath: fixtureValue.plistSourcePath,
+    allowTemporaryPathsForTest: true,
+    testHooks,
+  });
+}
+
+function cleanupDurableStageFixture(fixtureValue) {
+  rmSync(fixtureValue.stateRoot, { recursive: true, force: true });
+  rmSync(fixtureValue.source.directory, { recursive: true, force: true });
+}
+
 test("durable reaper installation is staged atomically with exact modes and refuses drift", async () => {
   const source = fixture();
   const stateRoot = realpathSync(mkdtempSync("/private/tmp/mickey-durable-install-test-"));
@@ -1106,6 +1133,14 @@ test("durable reaper installation is staged atomically with exact modes and refu
     assert.equal(readFileSync(manifest.cleanup_watchdog.plist_path, "utf8"), plist);
     assert.doesNotMatch(plist, /MICKEY_CONTROL_PLANE_NONCE|--env(?:-stdin)?/i);
 
+    const immutableBefore = Object.fromEntries([
+      manifest.cleanup_watchdog.installation_directory,
+      manifest.cleanup_watchdog.script.path,
+      manifest.runpodctl.path,
+    ].map((filePath) => {
+      const info = statSync(filePath);
+      return [filePath, { dev: info.dev, ino: info.ino, mode: info.mode, mtimeMs: info.mtimeMs }];
+    }));
     const repeated = await stageDurableReaperInstallation({
       manifest,
       manifestSha256,
@@ -1113,6 +1148,32 @@ test("durable reaper installation is staged atomically with exact modes and refu
       allowTemporaryPathsForTest: true,
     });
     assert.equal(repeated.runpodctl_sha256, receipt.runpodctl_sha256);
+    assert.deepEqual(readdirSync(manifest.cleanup_watchdog.installation_directory).sort(), [
+      "runpod-exact-id-reaper.mjs",
+      "runpodctl-darwin-arm64",
+    ]);
+    for (const [filePath, before] of Object.entries(immutableBefore)) {
+      const info = statSync(filePath);
+      assert.deepEqual(
+        { dev: info.dev, ino: info.ino, mode: info.mode, mtimeMs: info.mtimeMs },
+        before,
+        `idempotent install wrote to ${filePath}`,
+      );
+    }
+
+    const unexpected = path.join(manifest.cleanup_watchdog.installation_directory, "unexpected");
+    writeFileSync(unexpected, "preserve me\n", { mode: 0o600 });
+    await assert.rejects(
+      stageDurableReaperInstallation({
+        manifest,
+        manifestSha256,
+        plistSourcePath,
+        allowTemporaryPathsForTest: true,
+      }),
+      /exactly two pinned payloads/,
+    );
+    assert.equal(readFileSync(unexpected, "utf8"), "preserve me\n");
+    unlinkSync(unexpected);
 
     writeFileSync(manifest.cleanup_watchdog.script.path, "tampered\n", { mode: 0o600 });
     await assert.rejects(
@@ -1167,6 +1228,228 @@ test("durable reaper installation rejects symlinked sources and never replaces a
   } finally {
     rmSync(stateRoot, { recursive: true, force: true });
     rmSync(source.directory, { recursive: true, force: true });
+  }
+});
+
+test("durable promotion refuses a concurrently-created destination and cleans only its owned staging inode", async () => {
+  const value = durableStageFixture("mickey-durable-destination-race-test-");
+  try {
+    if (process.platform === "darwin") {
+      const legacyRoot = path.join(value.stateRoot, "legacy-bsd-mv-reproduction");
+      const legacyStaging = path.join(legacyRoot, "legacy-staging");
+      const legacyDestination = path.join(legacyRoot, "existing-destination");
+      mkdirSync(legacyRoot, { mode: 0o700 });
+      mkdirSync(legacyStaging, { mode: 0o700 });
+      mkdirSync(legacyDestination, { mode: 0o700 });
+      writeFileSync(path.join(legacyStaging, "payload"), "legacy payload\n", { mode: 0o600 });
+      const legacyMove = spawnSync("/bin/mv", ["-n", legacyStaging, legacyDestination], {
+        encoding: "utf8",
+      });
+      assert.equal(legacyMove.status, 0, legacyMove.stderr);
+      assert.equal(existsSync(legacyStaging), false, "BSD mv consumed the staging source");
+      assert.equal(
+        readFileSync(path.join(legacyDestination, "legacy-staging", "payload"), "utf8"),
+        "legacy payload\n",
+        "BSD mv nested staging inside the existing destination",
+      );
+    }
+
+    let stagingBasename;
+    const sentinel = path.join(value.manifest.cleanup_watchdog.installation_directory, "foreign-sentinel");
+    await assert.rejects(
+      stageTemporaryDurableFixture(value, {
+        beforePromotion: async ({ staging, destination }) => {
+          stagingBasename = path.basename(staging);
+          mkdirSync(destination, { mode: 0o700 });
+          writeFileSync(sentinel, "foreign destination\n", { mode: 0o600 });
+        },
+      }),
+      /destination appeared concurrently/,
+    );
+    assert.equal(readFileSync(sentinel, "utf8"), "foreign destination\n");
+    assert.deepEqual(
+      readdirSync(value.manifest.cleanup_watchdog.installation_directory),
+      ["foreign-sentinel"],
+      "the concurrent destination must receive no staged child or payload",
+    );
+    assert.equal(
+      existsSync(path.join(value.manifest.cleanup_watchdog.installation_directory, stagingBasename)),
+      false,
+    );
+    assert.deepEqual(
+      readdirSync(value.manifest.cleanup_watchdog.installations_root),
+      [value.manifest.cleanup_watchdog.installation_id],
+      "only the injected destination remains after exact-owned staging and lock cleanup",
+    );
+  } finally {
+    cleanupDurableStageFixture(value);
+  }
+});
+
+test("exclusive durable installer lock rejects simultaneous and stale or foreign lock holders", async () => {
+  const simultaneous = durableStageFixture("mickey-durable-simultaneous-test-");
+  let releaseFirst;
+  const firstMayContinue = new Promise((resolve) => { releaseFirst = resolve; });
+  let reportFirstLock;
+  const firstHasLock = new Promise((resolve) => { reportFirstLock = resolve; });
+  try {
+    const first = stageTemporaryDurableFixture(simultaneous, {
+      afterLockAcquired: async () => {
+        reportFirstLock();
+        await firstMayContinue;
+      },
+    });
+    await firstHasLock;
+    try {
+      await assert.rejects(
+        stageTemporaryDurableFixture(simultaneous),
+        /exclusive installation lock already exists/,
+      );
+      assert.equal(existsSync(simultaneous.manifest.cleanup_watchdog.installation_directory), false);
+    } finally {
+      releaseFirst();
+    }
+    await first;
+    assert.deepEqual(
+      readdirSync(simultaneous.manifest.cleanup_watchdog.installation_directory).sort(),
+      ["runpod-exact-id-reaper.mjs", "runpodctl-darwin-arm64"],
+    );
+    assert.equal(
+      existsSync(path.join(simultaneous.manifest.cleanup_watchdog.installations_root, ".install.lock")),
+      false,
+    );
+  } finally {
+    releaseFirst?.();
+    cleanupDurableStageFixture(simultaneous);
+  }
+
+  for (const kind of ["stale-directory", "foreign-symlink"]) {
+    const value = durableStageFixture(`mickey-durable-${kind}-lock-test-`);
+    const external = realpathSync(mkdtempSync(`/private/tmp/mickey-durable-${kind}-target-`));
+    try {
+      mkdirSync(value.manifest.cleanup_watchdog.bin_root, { mode: 0o700 });
+      mkdirSync(value.manifest.cleanup_watchdog.installations_root, { mode: 0o700 });
+      const lockPath = path.join(value.manifest.cleanup_watchdog.installations_root, ".install.lock");
+      if (kind === "stale-directory") {
+        mkdirSync(lockPath, { mode: 0o700 });
+        writeFileSync(path.join(lockPath, "owner-unknown"), "preserve\n", { mode: 0o600 });
+      } else {
+        writeFileSync(path.join(external, "foreign"), "preserve\n", { mode: 0o600 });
+        symlinkSync(external, lockPath, "dir");
+      }
+      await assert.rejects(
+        stageTemporaryDurableFixture(value),
+        /exclusive installation lock already exists/,
+      );
+      if (kind === "stale-directory") {
+        assert.equal(readFileSync(path.join(lockPath, "owner-unknown"), "utf8"), "preserve\n");
+      } else {
+        assert.equal(lstatSync(lockPath).isSymbolicLink(), true);
+        assert.equal(readFileSync(path.join(external, "foreign"), "utf8"), "preserve\n");
+      }
+      assert.equal(existsSync(value.manifest.cleanup_watchdog.installation_directory), false);
+    } finally {
+      cleanupDurableStageFixture(value);
+      rmSync(external, { recursive: true, force: true });
+    }
+  }
+});
+
+test("durable installer refuses symlinks at destination, installed payload, staging, and staged payload boundaries", async () => {
+  const destinationLink = durableStageFixture("mickey-durable-destination-link-test-");
+  const destinationTarget = realpathSync(mkdtempSync("/private/tmp/mickey-durable-destination-target-"));
+  try {
+    mkdirSync(destinationLink.manifest.cleanup_watchdog.bin_root, { mode: 0o700 });
+    mkdirSync(destinationLink.manifest.cleanup_watchdog.installations_root, { mode: 0o700 });
+    writeFileSync(path.join(destinationTarget, "foreign"), "preserve\n", { mode: 0o600 });
+    symlinkSync(
+      destinationTarget,
+      destinationLink.manifest.cleanup_watchdog.installation_directory,
+      "dir",
+    );
+    await assert.rejects(
+      stageTemporaryDurableFixture(destinationLink),
+      /durable directory is unsafe/,
+    );
+    assert.equal(lstatSync(destinationLink.manifest.cleanup_watchdog.installation_directory).isSymbolicLink(), true);
+    assert.equal(readFileSync(path.join(destinationTarget, "foreign"), "utf8"), "preserve\n");
+  } finally {
+    cleanupDurableStageFixture(destinationLink);
+    rmSync(destinationTarget, { recursive: true, force: true });
+  }
+
+  const installedPayloadLink = durableStageFixture("mickey-durable-installed-payload-link-test-");
+  try {
+    mkdirSync(installedPayloadLink.manifest.cleanup_watchdog.bin_root, { mode: 0o700 });
+    mkdirSync(installedPayloadLink.manifest.cleanup_watchdog.installations_root, { mode: 0o700 });
+    mkdirSync(installedPayloadLink.manifest.cleanup_watchdog.installation_directory, { mode: 0o700 });
+    symlinkSync(
+      installedPayloadLink.manifest.cleanup_watchdog.script.install_source_path,
+      installedPayloadLink.manifest.cleanup_watchdog.script.path,
+    );
+    writeFileSync(
+      installedPayloadLink.manifest.runpodctl.path,
+      readFileSync(installedPayloadLink.manifest.runpodctl.install_source_path),
+      { mode: 0o700 },
+    );
+    await assert.rejects(
+      stageTemporaryDurableFixture(installedPayloadLink),
+      /durable file is unsafe/,
+    );
+    assert.equal(lstatSync(installedPayloadLink.manifest.cleanup_watchdog.script.path).isSymbolicLink(), true);
+  } finally {
+    cleanupDurableStageFixture(installedPayloadLink);
+  }
+
+  const stagingLink = durableStageFixture("mickey-durable-staging-link-test-");
+  let stagingPath;
+  let relocatedStaging;
+  try {
+    await assert.rejects(
+      stageTemporaryDurableFixture(stagingLink, {
+        beforePromotion: async ({ staging }) => {
+          stagingPath = staging;
+          relocatedStaging = `${staging}.foreign-relocation`;
+          renameSync(staging, relocatedStaging);
+          symlinkSync(relocatedStaging, staging, "dir");
+        },
+      }),
+      /staging directory inode or security boundary changed.*preserved/,
+    );
+    assert.equal(lstatSync(stagingPath).isSymbolicLink(), true, "changed staging path was not unlinked");
+    assert.equal(lstatSync(relocatedStaging).isDirectory(), true, "recorded staging inode was not recursively deleted");
+    assert.equal(existsSync(stagingLink.manifest.cleanup_watchdog.installation_directory), false);
+    assert.equal(existsSync(path.join(stagingLink.manifest.cleanup_watchdog.installations_root, ".install.lock")), false);
+  } finally {
+    cleanupDurableStageFixture(stagingLink);
+  }
+
+  const stagedPayloadLink = durableStageFixture("mickey-durable-staged-payload-link-test-");
+  let stagedDirectory;
+  let replacedPayload;
+  const sourceBefore = readFileSync(stagedPayloadLink.manifest.cleanup_watchdog.script.install_source_path);
+  try {
+    await assert.rejects(
+      stageTemporaryDurableFixture(stagedPayloadLink, {
+        beforePromotion: async ({ staging, payloadPaths }) => {
+          stagedDirectory = staging;
+          replacedPayload = payloadPaths["runpod-exact-id-reaper.mjs"];
+          unlinkSync(replacedPayload);
+          symlinkSync(stagedPayloadLink.manifest.cleanup_watchdog.script.install_source_path, replacedPayload);
+        },
+      }),
+      /durable file is unsafe.*preserved/,
+    );
+    assert.equal(lstatSync(replacedPayload).isSymbolicLink(), true, "changed payload was not unlinked");
+    assert.equal(lstatSync(stagedDirectory).isDirectory(), true, "staging with a changed payload was preserved");
+    assert.deepEqual(
+      readFileSync(stagedPayloadLink.manifest.cleanup_watchdog.script.install_source_path),
+      sourceBefore,
+    );
+    assert.equal(existsSync(stagedPayloadLink.manifest.cleanup_watchdog.installation_directory), false);
+    assert.equal(existsSync(path.join(stagedPayloadLink.manifest.cleanup_watchdog.installations_root, ".install.lock")), false);
+  } finally {
+    cleanupDurableStageFixture(stagedPayloadLink);
   }
 });
 
