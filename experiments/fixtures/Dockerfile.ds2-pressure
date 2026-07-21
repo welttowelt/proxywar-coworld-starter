@@ -1,0 +1,2 @@
+FROM proxywar-pressure-fixture:ds1-v2-amd64
+COPY ds2-pressure-engine-player.mjs /app/pressure-engine-player.mjs
