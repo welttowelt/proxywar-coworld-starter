@@ -27,14 +27,24 @@ import {
   appendEvent,
   CommandExecutor,
   canonicalRequestInputSha256,
+  createFanoutLedgerMutationCoordinator,
   deleteExactPod,
   derivePairOrder,
   discoverNewExactNamePods,
   executeAfterExactR8MutationBoundary,
+  executeAfterExactR9PrePostBoundary,
+  executeAfterExactR9WorkerStartBoundary,
   parseSshKeygenFingerprint,
   prepareKnownHostsFile,
   preflightManifest,
+  REMOTE_POST_RUN_ATTESTATION_STATUS,
   isFullFanoutLiveApproved,
+  isExactR9ActivationCandidate,
+  isExactR8PrePostRecoveryRecord,
+  r9ActivationManifestDigest,
+  runR9SerializedCreateTransaction,
+  normalizeForegroundReaperForR8Persistence,
+  reconcileAndCleanupReaperRecord,
   registerCreatedPod,
   sanitizePodInventory,
   validateCreateRequestAttestation,
@@ -45,17 +55,30 @@ import {
   validateMickeyRunnerStatus,
   validateR8LedgerQuiescence,
   validateR8MutationLedgerBoundary,
+  validateR9LedgerReady,
+  validateR9RecoveryHistory,
+  validateR9SafePreProviderBlockedRecord,
+  validateR9WorkerStartLedgerBoundary,
+  validateR8PersistentReaperCompatibility,
+  validateFinalReaperServiceIdentity,
   validateTransportCanaryActivationReceipt,
   validateTransportCanaryKnownHosts,
   verifyLiveReaperService,
   verifyFetchedArtifacts,
 } from "../scripts/run-mickey-cpu-fanout.mjs";
 import {
+  ReaperLedgerLockedError,
+  blockPendingBeforeProviderPost,
+  preparePendingCreate,
+  readReaperLedger,
+} from "../scripts/runpod-exact-id-reaper.mjs";
+import {
   auditMickeyCpuFanout,
   mirroredSeatsPass,
 } from "../scripts/audit-mickey-cpu-fanout.mjs";
 import { parseFileManifest } from "../scripts/verify-mickey-cpu-fanout-bundle.mjs";
 import {
+  inspectRunningReaperService,
   renderReaperPlistForTest,
   stageDurableReaperInstallation,
 } from "../scripts/render-runpod-exact-id-reaper-launchd.mjs";
@@ -78,6 +101,12 @@ const r8ManifestPath = path.join(
   "manifest-mickey-cpu-screen-g000-r8-20260721.json",
 );
 const r8Manifest = JSON.parse(readFileSync(r8ManifestPath, "utf8"));
+const r9ManifestPath = path.join(
+  root,
+  "experiments",
+  "manifest-mickey-cpu-screen-g000-r9-20260721.json",
+);
+const r9Manifest = JSON.parse(readFileSync(r9ManifestPath, "utf8"));
 const acceptedCanaryFixture = JSON.parse(readFileSync(
   path.join(
     root,
@@ -384,7 +413,7 @@ test("manifest pins a fair M0, exact identities, fixture, randomized order, and 
   }
 });
 
-test("r8 activation is bound to one exact semantic 16-pair manifest and local output", () => {
+test("r8 activation remains semantically reproducible but is no longer live-approved", () => {
   const validated = validateManifest(r8Manifest);
   assert.equal(validated.pairs.length, 16);
   assert.equal(r8Manifest.pod.max_concurrency, 4);
@@ -408,7 +437,7 @@ test("r8 activation is bound to one exact semantic 16-pair manifest and local ou
     manifestPath: r8ManifestPath,
     document: r8Manifest,
     activationEvidence,
-  }), true);
+  }), false);
   assert.equal(isFullFanoutLiveApproved({
     manifestPath: `${r8ManifestPath}.drift`,
     document: r8Manifest,
@@ -417,6 +446,101 @@ test("r8 activation is bound to one exact semantic 16-pair manifest and local ou
   const drifted = structuredClone(r8Manifest);
   drifted.preregistered_at = "2026-07-21T03:14:49.000Z";
   assert.throws(() => validateManifest(drifted), /semantic digest mismatch/);
+});
+
+test("r9 activation is the sole recovery-bound live candidate", () => {
+  const validated = validateManifest(r9Manifest);
+  assert.equal(validated.pairs.length, 16);
+  assert.equal(
+    r9ActivationManifestDigest(r9Manifest),
+    "1f671075f28da27ce350ae2f443325f3c895f9a2ce8fe0efcd7815893c2460e4",
+  );
+  const activationEvidence = {
+    receipt_sha256: r9Manifest.activation.canary_receipt.sha256,
+    known_hosts_sha256: r9Manifest.activation.canary_known_hosts.sha256,
+    failure_evidence_sha256: r9Manifest.activation.r8_failure_evidence.sha256,
+    recovery_receipt_sha256: r9Manifest.activation.r8_recovery_receipt.sha256,
+    recovery_status: "passed",
+    recovery_record_state: "blocked",
+    recovery_terminal_reason: "pre_post_create_not_invoked",
+  };
+  const preflight = { manifestPath: r9ManifestPath, document: r9Manifest, activationEvidence };
+  assert.equal(isExactR9ActivationCandidate(preflight), true);
+  assert.equal(isFullFanoutLiveApproved(preflight), true);
+  const drifted = structuredClone(r9Manifest);
+  drifted.activation.resume_allowed = true;
+  assert.throws(() => validateManifest(drifted), /exact r9 recovery-bound/);
+});
+
+test("r9 adopts the exact r8 cleanup daemon while foreground-only additions normalize byte-for-byte", () => {
+  const persistentSource = readFileSync(r9Manifest.cleanup_watchdog.script.path, "utf8");
+  const foregroundSource = readFileSync(reaperScript, "utf8");
+  const proof = validateR8PersistentReaperCompatibility(persistentSource, foregroundSource);
+  assert.deepEqual(proof, r9Manifest.activation.persistent_reaper.compatibility);
+  assert.equal(normalizeForegroundReaperForR8Persistence(foregroundSource), persistentSource);
+  assert.notEqual(
+    r9Manifest.cleanup_watchdog.script.sha256,
+    r9Manifest.control_plane.exact_id_reaper.sha256,
+  );
+  assert.equal(
+    r9Manifest.cleanup_watchdog.installation_id,
+    r9Manifest.activation.persistent_reaper.installation_id,
+  );
+  assert.throws(
+    () => validateR8PersistentReaperCompatibility(
+      persistentSource.replace("pollReaper", "pollReaperDrift"),
+      foregroundSource,
+    ),
+    /persistent r8 reaper behavior surface/,
+  );
+  assert.throws(
+    () => normalizeForegroundReaperForR8Persistence(
+      foregroundSource.replace("ReaperLedgerLockedError(owner.pid)", "ReaperValidationError('drift')"),
+    ),
+    /typed live-owner throw/,
+  );
+  const swapped = structuredClone(r9Manifest);
+  swapped.cleanup_watchdog.script.sha256 = swapped.control_plane.exact_id_reaper.sha256;
+  assert.throws(() => validateManifest(swapped), /durable versioned installation paths/);
+});
+
+test("remote episode gate uses the canonical stable post-run attestation status", () => {
+  assert.equal(REMOTE_POST_RUN_ATTESTATION_STATUS, "stable");
+  const source = readFileSync(fanoutScript, "utf8");
+  assert.match(source, /post_run_attestation\?\.status!==\$\{JSON\.stringify\(REMOTE_POST_RUN_ATTESTATION_STATUS\)\}/);
+  assert.doesNotMatch(source, /post_run_attestation\?\.status!=='passed'/);
+});
+
+test("final reaper identity is checked before evidence eligibility and rejects PID or receipt drift", () => {
+  const initial = {
+    status: "active",
+    label: "com.welttowelt.proxywar.mickey.runpod-reaper",
+    domain: "gui/501",
+    pid: 12345,
+    ledger_path: "/private/tmp/ledger.json",
+    receipt_path: "/private/tmp/service-receipt.json",
+    receipt_sha256: "a".repeat(64),
+  };
+  assert.equal(
+    validateFinalReaperServiceIdentity(initial, structuredClone(initial)).pid,
+    initial.pid,
+  );
+  for (const mutate of [
+    (value) => { value.pid += 1; },
+    (value) => { value.receipt_sha256 = "b".repeat(64); },
+    (value) => { value.ledger_path = "/private/tmp/other-ledger.json"; },
+  ]) {
+    const drifted = structuredClone(initial);
+    mutate(drifted);
+    assert.throws(
+      () => validateFinalReaperServiceIdentity(initial, drifted),
+      /drifted before final evidence gate/,
+    );
+  }
+  const source = readFileSync(fanoutScript, "utf8");
+  const finalCheck = source.lastIndexOf("const finalReaperService = await verifyLiveReaperService");
+  const evidenceEligible = source.lastIndexOf("state.evidence_eligible = true");
+  assert.equal(finalCheck > 0 && evidenceEligible > finalCheck, true);
 });
 
 test("r8 foreground runner status binds schema two to this exact child and sole output", () => {
@@ -451,6 +575,89 @@ test("r8 foreground runner status binds schema two to this exact child and sole 
   }
 });
 
+function exactR8RecoveryRecord() {
+  const recoveredAt = "2026-07-21T04:30:00.000Z";
+  return {
+    record_id: "mickey-reaper:f6707829-6e5f-46e0-9071-5f3e91f91f35",
+    state: "blocked",
+    run_id: "mickey-screen-g000-r8-20260721t031448z:grow-opening-asia-s0-c",
+    manifest_sha256: "6d50207e6498e98fa36c88950188bf227b66011b977253f73aa6786c91e7bd6f",
+    deadline: "2026-07-21T05:42:20.144Z",
+    ownership_kind: "generated-exact-name-v1",
+    name_prefix: "proxywar-mickey-cpu-fanout",
+    name_nonce: "ba7e0411a40d16bb617a743c7a86966f",
+    expected_name: "proxywar-mickey-cpu-fanout-ba7e0411a40d16bb617a743c7a86966f",
+    preexisting_ids: [
+      "0l7p9ke95cu6ms", "2g5whxhph9bwbz", "3649lnxlyhlf3n", "67yzvbbp54aizm",
+      "76stn0v7q81d47", "825a2frvggm1k4", "877itccar33zdp", "a7dmwmcmh45a4b",
+      "ctnggpz7t6nj6c", "l1evg0fagjmbgn", "lb4zz7jzgq9tr2", "lshjhv5avqjsaj",
+      "ne262xferohtdi", "og13wgkfcmblx9", "rkm013fsjsf87c", "rwvsgeancauyug",
+      "sxrtmdyd62n3ia", "szlrnk3ucex44f", "vbo7a33nlvsrtf", "zadju8y8p6d5r9",
+    ],
+    preexisting_snapshot_sha256: "5609cad100d6b5477590bf42b531da42d11f29fd3aa7d62b2fb8edda26e61e56",
+    pod_id: null,
+    active_binding_sha256: null,
+    bound_at: null,
+    retired_at: null,
+    terminal_reason: "pre_post_create_not_invoked",
+    last_error: null,
+    created_at: "2026-07-21T03:42:20.155Z",
+    updated_at: recoveredAt,
+    events: [
+      { at: "2026-07-21T03:42:20.155Z", type: "pending_create_registered" },
+      { at: "2026-07-21T03:43:20.000Z", type: "pending_name_absent" },
+      {
+        at: recoveredAt,
+        type: "pre_post_create_not_invoked",
+        recovery_evidence_sha256: "799e4c547fb786e74680365b42fdf55d845e7a1ab7cf7df51e2f058a40d2d280",
+        provider_snapshot_sha256: "5609cad100d6b5477590bf42b531da42d11f29fd3aa7d62b2fb8edda26e61e56",
+      },
+    ],
+  };
+}
+
+test("r9 ledger admits only the exact blocked r8 recovery and zero initial pending or active", () => {
+  const recovery = exactR8RecoveryRecord();
+  assert.equal(isExactR8PrePostRecoveryRecord(recovery), true);
+  assert.deepEqual(validateR9LedgerReady({ revision: 21, records: [
+    { state: "retired" }, recovery,
+  ] }), {
+    revision: 21,
+    pending_count: 0,
+    active_count: 0,
+    blocked_count: 1,
+    r8_recovery_record_id: recovery.record_id,
+  });
+  assert.deepEqual(validateR9RecoveryHistory({ revision: 22, records: [
+    recovery, { state: "pending" }, { state: "active" },
+  ] }), {
+    revision: 22,
+    pending_count: 1,
+    active_count: 1,
+    r8_recovery_record_id: recovery.record_id,
+  });
+  for (const mutate of [
+    (value) => { value.preexisting_ids[0] = "substituted-id"; },
+    (value) => { value.terminal_reason = "identity_refusal"; },
+    (value) => { value.events.at(-1).recovery_evidence_sha256 = "0".repeat(64); },
+  ]) {
+    const drifted = structuredClone(recovery);
+    mutate(drifted);
+    assert.throws(
+      () => validateR9LedgerReady({ revision: 22, records: [drifted] }),
+      /only the exact terminal blocked r8/,
+    );
+  }
+  assert.throws(
+    () => validateR9LedgerReady({ revision: 22, records: [recovery, { ...recovery, record_id: "other" }] }),
+    /only the exact terminal blocked r8/,
+  );
+  assert.throws(
+    () => validateR9LedgerReady({ revision: 22, records: [recovery, { state: "pending" }] }),
+    /zero pending and zero active/,
+  );
+});
+
 test("r8 ledger starts quiescent and each create admits only this process's at-most-four records", () => {
   const manifestSha256 = sha256File(r8ManifestPath);
   const pairIds = r8Manifest.arms.flatMap((arm) => arm.pairs.map((pair) => pair.id));
@@ -469,9 +676,14 @@ test("r8 ledger starts quiescent and each create admits only this process's at-m
       preexisting_snapshot_sha256: String(sequence).repeat(64),
       pod_id: null,
       active_binding_sha256: null,
+      bound_at: null,
+      retired_at: null,
       deadline: "2026-07-21T05:14:48.000Z",
       terminal_reason: null,
       last_error: null,
+      created_at: "2026-07-21T03:14:48.000Z",
+      updated_at: "2026-07-21T03:14:48.000Z",
+      events: [{ at: "2026-07-21T03:14:48.000Z", type: "pending_create_registered" }],
     };
   };
   assert.deepEqual(
@@ -550,6 +762,38 @@ test("r8 ledger starts quiescent and each create admits only this process's at-m
     }),
     /concurrency cap/,
   );
+
+  const r9ManifestSha256 = sha256File(r9ManifestPath);
+  const r9PairId = r9Manifest.arms[0].pairs[0].id;
+  const r9Pending = makePending(r9PairId, 7);
+  r9Pending.run_id = `${r9Manifest.run_id}:${r9PairId}`;
+  r9Pending.manifest_sha256 = r9ManifestSha256;
+  const r9Registered = new Map([[r9Pending.record_id, { pairId: r9PairId }]]);
+  assert.deepEqual(validateR8MutationLedgerBoundary({
+    ledger: { revision: 23, records: [exactR8RecoveryRecord(), r9Pending] },
+    manifest: r9Manifest,
+    manifestSha256: r9ManifestSha256,
+    pairId: r9PairId,
+    pendingOwnership: structuredClone(r9Pending),
+    registeredRecords: r9Registered,
+  }), {
+    revision: 23,
+    pending_record_id: r9Pending.record_id,
+    nonterminal_count: 1,
+  });
+  const wrongHistory = exactR8RecoveryRecord();
+  wrongHistory.terminal_reason = "identity_refusal";
+  assert.throws(
+    () => validateR8MutationLedgerBoundary({
+      ledger: { revision: 24, records: [wrongHistory, r9Pending] },
+      manifest: r9Manifest,
+      manifestSha256: r9ManifestSha256,
+      pairId: r9PairId,
+      pendingOwnership: r9Pending,
+      registeredRecords: r9Registered,
+    }),
+    /only the exact blocked r8/,
+  );
 });
 
 test("late hash runner or reaper drift causes zero provider create calls", async () => {
@@ -578,6 +822,109 @@ test("late hash runner or reaper drift causes zero provider create calls", async
     );
     assert.equal(createCalls, 0);
   }
+});
+
+test("four fanout workers serialize registration through binding and the queue survives rejection", async () => {
+  const coordinator = createFanoutLedgerMutationCoordinator({
+    expectedReaperPid: process.pid + 10_000,
+    retryDelaysMs: [0],
+  });
+  let active = 0;
+  let maximumActive = 0;
+  const order = [];
+  const workers = Array.from({ length: 4 }, (_, index) => coordinator.runExclusive(async () => {
+    active += 1;
+    maximumActive = Math.max(maximumActive, active);
+    order.push(`prepare-${index}`);
+    await new Promise((resolve) => setImmediate(resolve));
+    order.push(`register-${index}`);
+    await new Promise((resolve) => setImmediate(resolve));
+    order.push(`post-${index}`);
+    await new Promise((resolve) => setImmediate(resolve));
+    order.push(`bind-${index}`);
+    active -= 1;
+    if (index === 1) throw new Error("injected post-bind failure");
+    return index;
+  }));
+  const settled = await Promise.allSettled(workers);
+  assert.equal(maximumActive, 1);
+  assert.equal(settled.filter(({ status }) => status === "fulfilled").length, 3);
+  assert.equal(settled.filter(({ status }) => status === "rejected").length, 1);
+  assert.deepEqual(order, Array.from({ length: 4 }, (_, index) => [
+    `prepare-${index}`, `register-${index}`, `post-${index}`, `bind-${index}`,
+  ]).flat());
+});
+
+test("r9 create failure latches stop before the queued worker can register or POST", async () => {
+  const coordinator = createFanoutLedgerMutationCoordinator({
+    expectedReaperPid: process.pid + 15_000,
+    retryDelaysMs: [0],
+  });
+  const stopState = { requested: false, signal: null };
+  let stopCalls = 0;
+  let registrations = 0;
+  let providerPosts = 0;
+  const executor = { stop: () => { stopCalls += 1; } };
+  const first = runR9SerializedCreateTransaction({
+    ledgerMutationCoordinator: coordinator,
+    stopState,
+    executor,
+    operation: async () => {
+      registrations += 1;
+      throw new Error("manual pending registration failure");
+    },
+  });
+  const second = runR9SerializedCreateTransaction({
+    ledgerMutationCoordinator: coordinator,
+    stopState,
+    executor,
+    operation: async () => {
+      if (stopState.requested) throw new Error("stopped before queued registration");
+      registrations += 1;
+      providerPosts += 1;
+    },
+  });
+  const settled = await Promise.allSettled([first, second]);
+  assert.equal(settled.every(({ status }) => status === "rejected"), true);
+  assert.equal(stopState.requested, true);
+  assert.equal(registrations, 1);
+  assert.equal(providerPosts, 0);
+  assert.equal(stopCalls >= 1, true);
+});
+
+test("ledger lock retry accepts only the exact attested service PID and is bounded", async () => {
+  const servicePid = process.pid + 20_000;
+  const sleeps = [];
+  const coordinator = createFanoutLedgerMutationCoordinator({
+    expectedReaperPid: servicePid,
+    retryDelaysMs: [0, 100, 250, 500],
+    sleep: async (milliseconds) => { sleeps.push(milliseconds); },
+  });
+  let attempts = 0;
+  assert.equal(await coordinator.retryExactServiceLock(async () => {
+    attempts += 1;
+    if (attempts < 4) throw new ReaperLedgerLockedError(servicePid);
+    return "acquired";
+  }), "acquired");
+  assert.deepEqual(sleeps, [100, 250, 500]);
+
+  await assert.rejects(
+    coordinator.retryExactServiceLock(async () => { throw new ReaperLedgerLockedError(process.pid); }),
+    (error) => error instanceof ReaperLedgerLockedError && error.ownerPid === process.pid,
+  );
+  await assert.rejects(
+    coordinator.retryExactServiceLock(async () => { throw new Error("untyped collision"); }),
+    /untyped collision/,
+  );
+  let exhausted = 0;
+  await assert.rejects(
+    coordinator.retryExactServiceLock(async () => {
+      exhausted += 1;
+      throw new ReaperLedgerLockedError(servicePid);
+    }),
+    (error) => error instanceof ReaperLedgerLockedError && error.ownerPid === servicePid,
+  );
+  assert.equal(exhausted, 4);
 });
 
 test("r7 activation receipt requires every one-create SSH volume and cleanup acceptance field", () => {
@@ -1306,7 +1653,7 @@ test("dry-run performs zero network calls even when every external command is a 
     assert.equal(plan.cleanup_watchdog.provider_ttl_available, false);
     assert.equal(plan.full_fanout_live_approved, false);
     assert.equal(plan.transport_canary_live_approved, true);
-    assert.match(plan.full_fanout_blocking_reason, /not the exact.*r8 G000 activation/);
+    assert.match(plan.full_fanout_blocking_reason, /not the exact.*r9 G000 activation/);
     assert.deepEqual(plan.pairs[0].order, manifestOrder(manifestPath));
   } finally {
     rmSync(directory, { recursive: true, force: true });
@@ -1328,7 +1675,7 @@ test("full fanout live mode fails closed before output or provider mutation", ()
       { cwd: root, encoding: "utf8" },
     );
     assert.notEqual(result.status, 0);
-    assert.match(result.stderr, /blocked before mutation.*not the exact.*r8 G000 activation/);
+    assert.match(result.stderr, /blocked before mutation.*not the exact.*r9 G000 activation/);
     assert.equal(existsSync(output), false);
   } finally {
     rmSync(directory, { recursive: true, force: true });
@@ -1402,6 +1749,75 @@ test("dedicated reaper LaunchAgent renderer is inert and pins poll heartbeat wit
     assert.equal(plan.exact_commands[1][1], "bootstrap");
     assert.equal(plan.plist_path, durablePlist);
     assert.equal(plan.durable_reaper_path.startsWith(`${durableBinRoot}/installations/`), true);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test("r9 reaper plan adopts the exact running r8 service and forbids every service transition command", () => {
+  const directory = realpathSync(mkdtempSync("/private/tmp/mickey-r9-adoption-plan-test-"));
+  try {
+    const plist = path.join(directory, "reaper.plist");
+    const planPath = path.join(directory, "reaper-plan.json");
+    const result = spawnSync(process.execPath, [
+      reaperRendererScript,
+      "render",
+      "--manifest", r9ManifestPath,
+      "--manifest-sha256", sha256File(r9ManifestPath),
+      "--plist", plist,
+      "--plan", planPath,
+    ], { cwd: root, encoding: "utf8" });
+    assert.equal(result.status, 0, result.stderr);
+    const plan = JSON.parse(readFileSync(planPath, "utf8"));
+    assert.equal(plan.kind, "mickey_runpod_reaper_existing_service_attestation_plan");
+    assert.equal(plan.provider_heartbeat_lists_may_continue_in_preexisting_service, true);
+    assert.equal(plan.provider_create_or_delete_calls, 0);
+    assert.equal(sha256File(plist), r9Manifest.activation.persistent_reaper.plist_sha256);
+    assert.deepEqual(plan.exact_commands.map((command) => command[2]), ["attest", "wait-heartbeat"]);
+    assert.deepEqual(
+      plan.install_contract.forbidden_commands,
+      ["install", "replace", "bootout", "bootstrap", "kickstart"],
+    );
+    const serializedCommands = JSON.stringify(plan.exact_commands);
+    assert.doesNotMatch(serializedCommands, /\b(?:install|replace|bootout|bootstrap|kickstart)\b/);
+    assert.deepEqual(
+      plan.install_contract.persistent_reaper_compatibility,
+      r9Manifest.activation.persistent_reaper.compatibility,
+    );
+    assert.equal(
+      plan.install_contract.historical_service_receipt_pid,
+      r9Manifest.activation.persistent_reaper.historical_receipt_pid,
+    );
+    assert.equal(
+      plan.install_contract.current_pid_bound_at_attest,
+      true,
+    );
+    const currentPid = 92990;
+    const programArguments = [
+      r9Manifest.cleanup_watchdog.node_runtime.path,
+      r9Manifest.cleanup_watchdog.script.path,
+      "poll",
+      "--ledger",
+      r9Manifest.cleanup_watchdog.ledger_path,
+      "--runpodctl",
+      r9Manifest.runpodctl.path,
+      "--interval-seconds",
+      String(r9Manifest.cleanup_watchdog.poll_interval_seconds),
+      "--heartbeat",
+      r9Manifest.cleanup_watchdog.heartbeat_path,
+    ];
+    const servicePrint = [
+      `path = ${r9Manifest.cleanup_watchdog.plist_path}`,
+      "state = running",
+      `program = ${r9Manifest.cleanup_watchdog.node_runtime.path}`,
+      "arguments = {",
+      ...programArguments.map((argument) => `  ${argument}`),
+      "}",
+      `pid = ${currentPid}`,
+      "",
+    ].join("\n");
+    assert.notEqual(currentPid, r9Manifest.activation.persistent_reaper.historical_receipt_pid);
+    assert.equal(inspectRunningReaperService(r9Manifest, servicePrint), currentPid);
   } finally {
     rmSync(directory, { recursive: true, force: true });
   }
@@ -1825,6 +2241,7 @@ test("durable installer refuses symlinks at destination, installed payload, stag
 test("live reaper preflight requires a fresh service-context provider heartbeat from the launchd PID", async () => {
   const { directory, manifest, manifestSha256 } = fixture();
   try {
+    let liveServicePid = 4321;
     const stateRoot = path.join(directory, "live-reaper-state");
     manifest.cleanup_watchdog.state_root = stateRoot;
     manifest.cleanup_watchdog.ledger_path = path.join(stateRoot, "ledger.json");
@@ -1872,11 +2289,57 @@ test("live reaper preflight requires a fresh service-context provider heartbeat 
           "print",
           `gui/${process.getuid()}/${manifest.cleanup_watchdog.launchd_label}`,
         ]);
-        return { code: 0, stdout: "state = running\npid = 4321\n", stderr: "" };
+        const programArguments = [
+          manifest.cleanup_watchdog.node_runtime.path,
+          manifest.cleanup_watchdog.script.path,
+          "poll",
+          "--ledger",
+          manifest.cleanup_watchdog.ledger_path,
+          "--runpodctl",
+          manifest.runpodctl.path,
+          "--interval-seconds",
+          String(manifest.cleanup_watchdog.poll_interval_seconds),
+          "--heartbeat",
+          manifest.cleanup_watchdog.heartbeat_path,
+        ];
+        return {
+          code: 0,
+          stdout: [
+            `path = ${manifest.cleanup_watchdog.plist_path}`,
+            "state = running",
+            `program = ${manifest.cleanup_watchdog.node_runtime.path}`,
+            "arguments = {",
+            ...programArguments.map((argument) => `  ${argument}`),
+            "}",
+            `pid = ${liveServicePid}`,
+            "",
+          ].join("\n"),
+          stderr: "",
+        };
       },
     };
     const result = await verifyLiveReaperService({ manifest, manifestSha256, executor });
     assert.equal(result.provider_probe.pod_count, 20);
+
+    manifest.schema_version = 5;
+    manifest.activation = {
+      persistent_reaper: {
+        historical_receipt_pid: 9999,
+        plist_sha256: sha256File(plist),
+      },
+    };
+    const adopted = await verifyLiveReaperService({ manifest, manifestSha256, executor });
+    assert.equal(adopted.pid, 4321);
+    assert.notEqual(adopted.pid, manifest.activation.persistent_reaper.historical_receipt_pid);
+
+    liveServicePid = 4322;
+    await assert.rejects(
+      verifyLiveReaperService({ manifest, manifestSha256, executor }),
+      /service PID differs from the attested receipt/,
+    );
+    liveServicePid = 4321;
+    manifest.schema_version = 3;
+    delete manifest.activation;
 
     const heartbeat = JSON.parse(readFileSync(manifest.cleanup_watchdog.heartbeat_path, "utf8"));
     heartbeat.probed_at = new Date(Date.now() - 121_000).toISOString();

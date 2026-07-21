@@ -1,5 +1,5 @@
 import assert from "node:assert/strict";
-import { mkdtemp, readFile, stat } from "node:fs/promises";
+import { lstat, mkdtemp, readFile, stat } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 import test from "node:test";
@@ -8,17 +8,41 @@ import {
   ReaperIdentityRefusalError,
   ReaperProviderError,
   blockExactPendingPrePostCreate,
+  blockPendingBeforeProviderPost,
   bindActivePod,
+  bindActivePodR9,
   confirmOwnedPodAbsent,
+  confirmOwnedPodAbsentR9,
   ensureReaperLedger,
   isStructuredProviderNotFound,
   preparePendingCreate,
+  preparePendingCreateR9,
   readReaperLedger,
+  reaperLedgerDigest,
+  reconcilePendingCreateR9,
   runReaperOnce,
+  verifyPendingNameAbsentR9,
   writeProviderHeartbeat,
 } from "../scripts/runpod-exact-id-reaper.mjs";
 
 const MANIFEST_SHA = "a".repeat(64);
+
+function deferred() {
+  let resolve;
+  let reject;
+  const promise = new Promise((resolvePromise, rejectPromise) => {
+    resolve = resolvePromise;
+    reject = rejectPromise;
+  });
+  return { promise, resolve, reject };
+}
+
+async function assertLedgerUnlocked(ledgerPath) {
+  await assert.rejects(
+    lstat(`${ledgerPath}.lock`),
+    (error) => error?.code === "ENOENT",
+  );
+}
 
 test("structured not-found classifier uses the final HTTP marker and rejects nested 404 text in a 502", () => {
   const notFound = JSON.stringify({
@@ -172,6 +196,54 @@ test("pre-POST recovery rejects inventory drift, exact-name presence, and a seco
   }
 });
 
+test("r9 local pre-provider block terminalizes only the exact pending record with zero provider calls", async (t) => {
+  const baseline = [{ id: "existing-a", name: "unrelated-existing" }];
+  const fx = await fixture(t, { pods: baseline });
+  const historical = await prepare(fx, {
+    runId: "historical-run",
+    randomBytesFn: () => Buffer.from("44".repeat(16), "hex"),
+    randomUUIDFn: () => "00000000-0000-4000-8000-000000000044",
+  });
+  fx.client.add({ id: "historical-owned", name: historical.expected_name });
+  await bind(fx, historical, "historical-owned");
+  fx.client.pods.delete("historical-owned");
+  await confirmOwnedPodAbsent({
+    ledgerPath: fx.ledgerPath,
+    client: fx.client,
+    recordId: historical.record_id,
+    clock: fx.clock,
+    retryOptions: fx.retryOptions,
+  });
+  const pending = await prepare(fx, {
+    runId: "mickey-screen-g000-r9-20260721t040132z:grow-opening-asia-s0-c",
+    randomUUIDFn: () => "00000000-0000-4000-8000-000000000009",
+  });
+  const before = await readReaperLedger(fx.ledgerPath);
+  const unrelatedBefore = JSON.stringify(
+    before.records.find(({ record_id }) => record_id === historical.record_id),
+  );
+  const providerCallsBefore = fx.client.calls.length;
+  fx.state.now += 1_000;
+  const blocked = await blockPendingBeforeProviderPost({
+    ledgerPath: fx.ledgerPath,
+    expected: pending,
+    clock: fx.clock,
+  });
+  assert.equal(blocked.provider_calls, 0);
+  assert.equal(blocked.other_records_unchanged, true);
+  assert.equal(blocked.record.state, "blocked");
+  assert.equal(blocked.record.terminal_reason, "pre_post_create_not_invoked");
+  assert.equal(blocked.record.pod_id, null);
+  assert.equal(blocked.record.active_binding_sha256, null);
+  assert.equal(blocked.record.events.at(-1).type, "pre_post_create_not_invoked");
+  assert.equal(fx.client.calls.length, providerCallsBefore);
+  const after = await readReaperLedger(fx.ledgerPath);
+  assert.equal(
+    JSON.stringify(after.records.find(({ record_id }) => record_id === historical.record_id)),
+    unrelatedBefore,
+  );
+});
+
 class FakeRunPodClient {
   constructor(pods = []) {
     this.pods = new Map(pods.map((pod) => [pod.id, { ...pod }]));
@@ -273,6 +345,271 @@ async function bind(fx, record, podId) {
     retryOptions: fx.retryOptions,
   });
 }
+
+async function prepareR9(fx, overrides = {}) {
+  const ledger = await readReaperLedger(fx.ledgerPath);
+  return preparePendingCreateR9({
+    ledgerPath: fx.ledgerPath,
+    client: overrides.client || fx.client,
+    runId: overrides.runId ||
+      "mickey-screen-g000-r9-20260721t040132z:grow-opening-asia-s0-c",
+    manifestSha256: MANIFEST_SHA,
+    deadline: new Date(fx.state.now + 60_000).toISOString(),
+    expectedLedgerRevision: ledger.revision,
+    expectedLedgerDigest: reaperLedgerDigest(ledger),
+    namePrefix: "proxywar-mickey-test",
+    clock: fx.clock,
+    randomBytesFn: overrides.randomBytesFn || (() => Buffer.from("77".repeat(16), "hex")),
+    randomUUIDFn: overrides.randomUUIDFn ||
+      (() => "00000000-0000-4000-8000-000000000077"),
+    retryOptions: fx.retryOptions,
+  });
+}
+
+test("r9 prepare and immediate name check keep provider LIST outside the lock and fail closed on drift", async (t) => {
+  const fx = await fixture(t);
+  await ensureReaperLedger({ ledgerPath: fx.ledgerPath, clock: fx.clock });
+  const boundary = await readReaperLedger(fx.ledgerPath);
+  const listEntered = deferred();
+  const listRelease = deferred();
+  const r9Client = new FakeRunPodClient();
+  const originalList = r9Client.listAll.bind(r9Client);
+  r9Client.listAll = async () => {
+    listEntered.resolve();
+    await listRelease.promise;
+    return originalList();
+  };
+  const registering = preparePendingCreateR9({
+    ledgerPath: fx.ledgerPath,
+    client: r9Client,
+    runId: "mickey-screen-g000-r9-20260721t040132z:grow-opening-asia-s0-c",
+    manifestSha256: MANIFEST_SHA,
+    deadline: new Date(fx.state.now + 60_000).toISOString(),
+    expectedLedgerRevision: boundary.revision,
+    expectedLedgerDigest: reaperLedgerDigest(boundary),
+    namePrefix: "proxywar-mickey-test",
+    clock: fx.clock,
+    randomBytesFn: () => Buffer.from("71".repeat(16), "hex"),
+    randomUUIDFn: () => "00000000-0000-4000-8000-000000000071",
+    retryOptions: fx.retryOptions,
+  });
+  await listEntered.promise;
+  await assertLedgerUnlocked(fx.ledgerPath);
+  await prepare(fx, {
+    runId: "concurrent-ledger-mutation",
+    randomBytesFn: () => Buffer.from("72".repeat(16), "hex"),
+    randomUUIDFn: () => "00000000-0000-4000-8000-000000000072",
+  });
+  await assertLedgerUnlocked(fx.ledgerPath);
+  listRelease.resolve();
+  await assert.rejects(registering, /ledger changed during provider discovery/);
+  let ledger = await readReaperLedger(fx.ledgerPath);
+  assert.equal(ledger.records.some((record) => record.run_id.startsWith(
+    "mickey-screen-g000-r9-20260721t040132z:",
+  )), false);
+
+  const exact = await fixture(t);
+  await ensureReaperLedger({ ledgerPath: exact.ledgerPath, clock: exact.clock });
+  const pending = await prepareR9(exact);
+  const stillPending = await reconcilePendingCreateR9({
+    ledgerPath: exact.ledgerPath,
+    client: exact.client,
+    expected: pending,
+    clock: exact.clock,
+    retryOptions: exact.retryOptions,
+  });
+  assert.equal(stillPending.state, "pending");
+  const checkEntered = deferred();
+  const checkRelease = deferred();
+  const exactOriginalList = exact.client.listAll.bind(exact.client);
+  exact.client.listAll = async () => {
+    checkEntered.resolve();
+    await checkRelease.promise;
+    return exactOriginalList();
+  };
+  const checking = verifyPendingNameAbsentR9({
+    client: exact.client,
+    expected: pending,
+    retryOptions: exact.retryOptions,
+  });
+  await checkEntered.promise;
+  await assertLedgerUnlocked(exact.ledgerPath);
+  exact.client.add({ id: "late-exact-name", name: pending.expected_name });
+  checkRelease.resolve();
+  await assert.rejects(checking, /already present before provider POST/);
+  const blocked = await blockPendingBeforeProviderPost({
+    ledgerPath: exact.ledgerPath,
+    expected: pending,
+    clock: exact.clock,
+  });
+  assert.equal(blocked.record.state, "blocked");
+  assert.equal(exact.client.calls.some(({ method }) => method === "delete"), false);
+  ledger = await readReaperLedger(exact.ledgerPath);
+  assert.equal(ledger.records[0].pod_id, null);
+});
+
+test("r9 bind and absence confirmation keep LIST and GET unlocked across daemon races", async (t) => {
+  const fx = await fixture(t);
+  await ensureReaperLedger({ ledgerPath: fx.ledgerPath, clock: fx.clock });
+  const pending = await prepareR9(fx, {
+    runId: "mickey-screen-g000-r9-20260721t040132z:convert-weakest-asia-s0-c",
+    randomUUIDFn: () => "00000000-0000-4000-8000-000000000078",
+  });
+  const daemonClient = new FakeRunPodClient();
+  const listEntered = deferred();
+  const listRelease = deferred();
+  const getEntered = deferred();
+  const getRelease = deferred();
+  const originalList = fx.client.listAll.bind(fx.client);
+  const originalGet = fx.client.get.bind(fx.client);
+  fx.client.listAll = async () => {
+    listEntered.resolve();
+    await listRelease.promise;
+    return originalList();
+  };
+  fx.client.get = async (id) => {
+    getEntered.resolve();
+    await getRelease.promise;
+    return originalGet(id);
+  };
+  const binding = bindActivePodR9({
+    ledgerPath: fx.ledgerPath,
+    client: fx.client,
+    expected: pending,
+    podId: "r9-owned-pod",
+    clock: fx.clock,
+    retryOptions: fx.retryOptions,
+  });
+  await listEntered.promise;
+  await assertLedgerUnlocked(fx.ledgerPath);
+  await runReaperOnce({
+    ledgerPath: fx.ledgerPath,
+    client: daemonClient,
+    clock: fx.clock,
+    retryOptions: fx.retryOptions,
+  });
+  fx.client.add({ id: "r9-owned-pod", name: pending.expected_name });
+  daemonClient.add({ id: "r9-owned-pod", name: pending.expected_name });
+  listRelease.resolve();
+  await getEntered.promise;
+  await assertLedgerUnlocked(fx.ledgerPath);
+  await runReaperOnce({
+    ledgerPath: fx.ledgerPath,
+    client: daemonClient,
+    clock: fx.clock,
+    retryOptions: fx.retryOptions,
+  });
+  getRelease.resolve();
+  const active = await binding;
+  assert.equal(active.state, "active");
+  assert.equal(active.pod_id, "r9-owned-pod");
+  assert.deepEqual(
+    active.events.map(({ type }) => type),
+    ["pending_create_registered", "pending_name_absent", "pod_id_bound"],
+  );
+
+  fx.client.listAll = originalList;
+  fx.client.get = originalGet;
+  const beforePresent = JSON.stringify(await readReaperLedger(fx.ledgerPath));
+  await assert.rejects(
+    confirmOwnedPodAbsentR9({
+      ledgerPath: fx.ledgerPath,
+      client: fx.client,
+      expected: active,
+      clock: fx.clock,
+      retryOptions: fx.retryOptions,
+    }),
+    ReaperProviderError,
+  );
+  assert.equal(JSON.stringify(await readReaperLedger(fx.ledgerPath)), beforePresent);
+
+  fx.client.pods.delete("r9-owned-pod");
+  daemonClient.pods.delete("r9-owned-pod");
+  const confirmEntered = deferred();
+  const confirmRelease = deferred();
+  fx.client.get = async (id) => {
+    confirmEntered.resolve();
+    await confirmRelease.promise;
+    return originalGet(id);
+  };
+  const confirming = confirmOwnedPodAbsentR9({
+    ledgerPath: fx.ledgerPath,
+    client: fx.client,
+    expected: active,
+    clock: fx.clock,
+    retryOptions: fx.retryOptions,
+  });
+  await confirmEntered.promise;
+  await assertLedgerUnlocked(fx.ledgerPath);
+  const daemonRetired = await confirmOwnedPodAbsent({
+    ledgerPath: fx.ledgerPath,
+    client: daemonClient,
+    recordId: active.record_id,
+    clock: fx.clock,
+    retryOptions: fx.retryOptions,
+  });
+  assert.equal(daemonRetired.state, "retired");
+  confirmRelease.resolve();
+  const retired = await confirming;
+  assert.equal(retired.state, "retired");
+  assert.equal(retired.pod_id, active.pod_id);
+});
+
+test("r9 reconcile keeps provider I/O unlocked and refuses a different-ID daemon bind", async (t) => {
+  const fx = await fixture(t);
+  await ensureReaperLedger({ ledgerPath: fx.ledgerPath, clock: fx.clock });
+  const pending = await prepareR9(fx, {
+    runId: "mickey-screen-g000-r9-20260721t040132z:convert-largest-asia-s0-c",
+    randomUUIDFn: () => "00000000-0000-4000-8000-000000000079",
+  });
+  fx.client.add({ id: "foreground-candidate", name: pending.expected_name });
+  const daemonClient = new FakeRunPodClient([
+    { id: "daemon-candidate", name: pending.expected_name },
+  ]);
+  const getEntered = deferred();
+  const getRelease = deferred();
+  const originalGet = fx.client.get.bind(fx.client);
+  fx.client.get = async (id) => {
+    getEntered.resolve();
+    await getRelease.promise;
+    return originalGet(id);
+  };
+  const reconciling = reconcilePendingCreateR9({
+    ledgerPath: fx.ledgerPath,
+    client: fx.client,
+    expected: pending,
+    clock: fx.clock,
+    retryOptions: fx.retryOptions,
+  });
+  await getEntered.promise;
+  await assertLedgerUnlocked(fx.ledgerPath);
+  await runReaperOnce({
+    ledgerPath: fx.ledgerPath,
+    client: daemonClient,
+    clock: fx.clock,
+    retryOptions: fx.retryOptions,
+  });
+  getRelease.resolve();
+  await assert.rejects(reconciling, /different active pod ID/);
+  const active = (await readReaperLedger(fx.ledgerPath)).records[0];
+  assert.equal(active.state, "active");
+  assert.equal(active.pod_id, "daemon-candidate");
+
+  const failingClient = new FakeRunPodClient();
+  failingClient.fail("get", 7);
+  const beforeFailure = JSON.stringify(await readReaperLedger(fx.ledgerPath));
+  await assert.rejects(
+    confirmOwnedPodAbsentR9({
+      ledgerPath: fx.ledgerPath,
+      client: failingClient,
+      expected: active,
+      clock: fx.clock,
+      retryOptions: fx.retryOptions,
+    }),
+    ReaperProviderError,
+  );
+  assert.equal(JSON.stringify(await readReaperLedger(fx.ledgerPath)), beforeFailure);
+});
 
 test("pending crash recovery claims one exact new name and reaps it after expiration", async (t) => {
   const fx = await fixture(t, {

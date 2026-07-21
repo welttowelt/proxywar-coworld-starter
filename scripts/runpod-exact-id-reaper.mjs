@@ -390,6 +390,330 @@ function equalSnapshot(left, right) {
   return JSON.stringify(canonical(left)) === JSON.stringify(canonical(right));
 }
 
+const R9_RUN_PREFIX = "mickey-screen-g000-r9-20260721t040132z:";
+
+function sortedCanonicalValue(value) {
+  if (Array.isArray(value)) return value.map(sortedCanonicalValue);
+  if (!value || typeof value !== "object") return value;
+  return Object.fromEntries(
+    Object.keys(value).sort().map((key) => [key, sortedCanonicalValue(value[key])]),
+  );
+}
+
+export function reaperLedgerDigest(ledger) {
+  validateLedger(ledger);
+  return createHash("sha256")
+    .update(JSON.stringify(sortedCanonicalValue(ledger)), "utf8")
+    .digest("hex");
+}
+
+function assertR9RunId(runId) {
+  const value = assertString(runId, "r9 run ID", /^[A-Za-z0-9._:-]+$/, 256);
+  if (!value.startsWith(R9_RUN_PREFIX) || value.length <= R9_RUN_PREFIX.length) {
+    throw new ReaperIdentityRefusalError("ownership record is outside the exact r9 activation");
+  }
+  return value;
+}
+
+function assertSameOwnershipCore(record, expected, label) {
+  if (
+    !record || typeof record !== "object" || Array.isArray(record) ||
+    !expected || typeof expected !== "object" || Array.isArray(expected)
+  ) {
+    throw new ReaperIdentityRefusalError(`${label} lacks an exact ownership proof`);
+  }
+  const exactFields = [
+    "record_id", "run_id", "manifest_sha256", "deadline", "ownership_kind",
+    "name_prefix", "name_nonce", "expected_name", "preexisting_snapshot_sha256",
+    "created_at",
+  ];
+  for (const field of exactFields) {
+    if (record[field] !== expected[field]) {
+      throw new ReaperIdentityRefusalError(`${label} ${field} differs from the saved proof`);
+    }
+  }
+  if (JSON.stringify(record.preexisting_ids) !== JSON.stringify(expected.preexisting_ids)) {
+    throw new ReaperIdentityRefusalError(`${label} preexisting IDs differ from the saved proof`);
+  }
+  assertR9RunId(record.run_id);
+  assertRecordOwnership(record);
+  assertRecordOwnership(expected);
+  return record;
+}
+
+function assertPendingWithOnlyAbsenceEvents(record, expected, label) {
+  assertSameOwnershipCore(record, expected, label);
+  if (
+    record.state !== "pending" ||
+    expected.state !== "pending" ||
+    record.pod_id !== null ||
+    expected.pod_id !== null ||
+    record.active_binding_sha256 !== null ||
+    expected.active_binding_sha256 !== null ||
+    record.bound_at !== null ||
+    expected.bound_at !== null ||
+    record.retired_at !== null ||
+    expected.retired_at !== null ||
+    record.terminal_reason !== null ||
+    expected.terminal_reason !== null ||
+    record.last_error !== null ||
+    expected.last_error !== null ||
+    !Array.isArray(record.events) ||
+    !Array.isArray(expected.events) ||
+    record.events.length < expected.events.length ||
+    JSON.stringify(record.events.slice(0, expected.events.length)) !== JSON.stringify(expected.events) ||
+    record.events.slice(expected.events.length).some((event) => (
+      !event ||
+      Object.keys(event).sort().join(",") !== "at,type" ||
+      event.type !== "pending_name_absent" ||
+      !Number.isFinite(Date.parse(event.at))
+    ))
+  ) {
+    throw new ReaperIdentityRefusalError(`${label} is not the exact r9 pending proof`);
+  }
+  return record;
+}
+
+function assertSameActiveBinding(record, expected, label) {
+  assertSameOwnershipCore(record, expected, label);
+  if (
+    !["active", "retired"].includes(record.state) ||
+    !["active", "retired"].includes(expected.state) ||
+    record.pod_id === null ||
+    record.pod_id !== expected.pod_id ||
+    record.active_binding_sha256 !== expected.active_binding_sha256 ||
+    record.active_binding_sha256 !== activeBindingDigest(record) ||
+    record.bound_at !== expected.bound_at
+  ) {
+    throw new ReaperIdentityRefusalError(`${label} differs from the exact active binding`);
+  }
+  return record;
+}
+
+/**
+ * r9 registration performs provider discovery without the ledger lock, then
+ * persists only if the worker-start revision and canonical digest are still
+ * exact. This prevents the adopted cleanup daemon from colliding with a long
+ * provider request.
+ */
+export async function preparePendingCreateR9({
+  ledgerPath,
+  client,
+  runId,
+  manifestSha256,
+  deadline,
+  expectedLedgerRevision,
+  expectedLedgerDigest,
+  namePrefix = "proxywar-mickey-reaper",
+  clock = Date.now,
+  randomBytesFn = randomBytes,
+  randomUUIDFn = randomUUID,
+  retryOptions,
+}) {
+  if (!client || typeof client.listAll !== "function") {
+    throw new ReaperValidationError("provider client must implement listAll");
+  }
+  assertR9RunId(runId);
+  if (!Number.isSafeInteger(expectedLedgerRevision) || expectedLedgerRevision < 0) {
+    throw new ReaperValidationError("expected r9 ledger revision is invalid");
+  }
+  assertString(expectedLedgerDigest, "expected r9 ledger digest", /^[a-f0-9]{64}$/, 64);
+  const prefix = validateNamePrefix(namePrefix);
+  const normalized = normalizeSnapshot(await retry(() => client.listAll(), retryOptions));
+  let nameNonce;
+  let expectedName;
+  for (let attempt = 0; attempt < 4; attempt += 1) {
+    nameNonce = randomBytesFn(16).toString("hex");
+    if (!/^[a-f0-9]{32}$/.test(nameNonce)) {
+      throw new ReaperValidationError("random name nonce generator returned invalid bytes");
+    }
+    expectedName = expectedNameFor(prefix, nameNonce);
+    if (!normalized.some((pod) => pod.name === expectedName)) break;
+    expectedName = null;
+  }
+  if (!expectedName) {
+    throw new ReaperIdentityRefusalError("could not allocate an exact name absent from the pre-create snapshot");
+  }
+  const recordId = `mickey-reaper:${randomUUIDFn()}`;
+  return withLedgerLock(ledgerPath, async () => {
+    const now = normalizeNow(clock);
+    const ledger = await readReaperLedger(ledgerPath);
+    if (
+      ledger.revision !== expectedLedgerRevision ||
+      reaperLedgerDigest(ledger) !== expectedLedgerDigest
+    ) {
+      throw new ReaperIdentityRefusalError("r9 worker-start ledger changed during provider discovery");
+    }
+    if (
+      ledger.records.some((record) => record.record_id === recordId) ||
+      ledger.records.some((record) => record.run_id === runId)
+    ) {
+      throw new ReaperValidationError("generated r9 ownership identity already exists");
+    }
+    const record = makeRecord({
+      runId,
+      manifestSha256,
+      deadline,
+      namePrefix: prefix,
+      nameNonce,
+      snapshot: normalized,
+      recordId,
+      now,
+    });
+    ledger.records.push(record);
+    await persist(ledgerPath, ledger, now);
+    return structuredClone(record);
+  });
+}
+
+/** Provider-only immediate name check. No ledger lock is acquired here. */
+export async function verifyPendingNameAbsentR9({ client, expected, retryOptions }) {
+  if (!client || typeof client.listAll !== "function") {
+    throw new ReaperValidationError("provider client must implement listAll");
+  }
+  assertPendingWithOnlyAbsenceEvents(expected, expected, "r9 pre-POST name check");
+  const listed = normalizeSnapshot(await retry(() => client.listAll(), retryOptions));
+  if (listed.some((pod) => pod.name === expected.expected_name)) {
+    throw new ReaperIdentityRefusalError("exact r9 pending name is already present before provider POST");
+  }
+  return {
+    expected_name: expected.expected_name,
+    provider_snapshot_sha256: snapshotDigest(listed),
+    provider_pod_count: listed.length,
+  };
+}
+
+async function bindObservedPodR9({ ledgerPath, expected, observed, clock }) {
+  return withLedgerLock(ledgerPath, async () => {
+    const now = normalizeNow(clock);
+    const ledger = await readReaperLedger(ledgerPath);
+    const record = findRecord(ledger, expected.record_id);
+    assertSameOwnershipCore(record, expected, "r9 bind CAS");
+    if (record.state === "active") {
+      if (
+        record.pod_id !== observed.id ||
+        record.active_binding_sha256 !== activeBindingDigest(record)
+      ) {
+        throw new ReaperIdentityRefusalError("r9 bind raced a different active pod ID");
+      }
+      attestExactPod(record, observed);
+      return structuredClone(record);
+    }
+    assertPendingWithOnlyAbsenceEvents(record, expected, "r9 bind CAS");
+    bindRecord(record, observed, now, "explicit_bind_r9");
+    await persist(ledgerPath, ledger, now);
+    return structuredClone(record);
+  });
+}
+
+export async function bindActivePodR9({
+  ledgerPath,
+  client,
+  expected,
+  podId,
+  clock = Date.now,
+  retryOptions,
+}) {
+  if (!client || typeof client.listAll !== "function" || typeof client.get !== "function") {
+    throw new ReaperValidationError("provider client must implement listAll and get");
+  }
+  assertString(podId, "pod ID", /^[A-Za-z0-9_-]+$/, 256);
+  assertPendingWithOnlyAbsenceEvents(expected, expected, "r9 bind proof");
+  const listed = normalizeSnapshot(await retry(() => client.listAll(), retryOptions));
+  const candidates = exactNewCandidates(expected, listed);
+  if (candidates.length !== 1 || candidates[0].id !== podId) {
+    throw new ReaperIdentityRefusalError("exact r9 owned name does not resolve to the requested new pod ID");
+  }
+  const got = await retry(() => client.get(podId), retryOptions);
+  if (!got) throw new ReaperIdentityRefusalError("requested r9 pod ID is absent during bind");
+  const provisional = {
+    ...expected,
+    pod_id: podId,
+    active_binding_sha256: activeBindingDigest({ ...expected, pod_id: podId }),
+  };
+  attestExactPod(provisional, got);
+  return bindObservedPodR9({ ledgerPath, expected, observed: got, clock });
+}
+
+export async function reconcilePendingCreateR9({
+  ledgerPath,
+  client,
+  expected,
+  clock = Date.now,
+  retryOptions,
+}) {
+  if (!client || typeof client.listAll !== "function" || typeof client.get !== "function") {
+    throw new ReaperValidationError("provider client must implement listAll and get");
+  }
+  assertPendingWithOnlyAbsenceEvents(expected, expected, "r9 pending reconcile proof");
+  const listed = normalizeSnapshot(await retry(() => client.listAll(), retryOptions));
+  const candidates = exactNewCandidates(expected, listed);
+  if (candidates.length > 1) {
+    throw new ReaperIdentityRefusalError("exact r9 owned name resolves to multiple new pod IDs");
+  }
+  if (candidates.length === 0) {
+    return withLedgerLock(ledgerPath, async () => {
+      const ledger = await readReaperLedger(ledgerPath);
+      const record = findRecord(ledger, expected.record_id);
+      if (["active", "retired"].includes(record.state)) {
+        assertSameOwnershipCore(record, expected, "r9 pending reconcile race");
+        return structuredClone(record);
+      }
+      assertPendingWithOnlyAbsenceEvents(record, expected, "r9 pending reconcile CAS");
+      return structuredClone(record);
+    });
+  }
+  const got = await retry(() => client.get(candidates[0].id), retryOptions);
+  if (got === null) {
+    return withLedgerLock(ledgerPath, async () => {
+      const ledger = await readReaperLedger(ledgerPath);
+      const record = findRecord(ledger, expected.record_id);
+      if (["active", "retired"].includes(record.state)) {
+        assertSameOwnershipCore(record, expected, "r9 disappeared-candidate race");
+        return structuredClone(record);
+      }
+      assertPendingWithOnlyAbsenceEvents(record, expected, "r9 disappeared-candidate CAS");
+      return structuredClone(record);
+    });
+  }
+  return bindObservedPodR9({ ledgerPath, expected, observed: got, clock });
+}
+
+export async function confirmOwnedPodAbsentR9({
+  ledgerPath,
+  client,
+  expected,
+  clock = Date.now,
+  retryOptions,
+}) {
+  if (!client || typeof client.get !== "function") {
+    throw new ReaperValidationError("provider client must implement get");
+  }
+  assertSameActiveBinding(expected, expected, "r9 absence proof");
+  const current = await retry(() => client.get(expected.pod_id), retryOptions);
+  if (current !== null) {
+    attestExactPod(expected, current);
+    throw new ReaperProviderError("exact r9 owned pod remains present after cleanup");
+  }
+  return withLedgerLock(ledgerPath, async () => {
+    const now = normalizeNow(clock);
+    const ledger = await readReaperLedger(ledgerPath);
+    const record = findRecord(ledger, expected.record_id);
+    assertSameActiveBinding(record, expected, "r9 absence CAS");
+    if (record.state === "retired") return structuredClone(record);
+    if (record.state !== "active") {
+      throw new ReaperIdentityRefusalError("r9 absence CAS requires an active or same retired binding");
+    }
+    record.state = "retired";
+    record.retired_at ??= new Date(now).toISOString();
+    record.terminal_reason = "normal_cleanup_confirmed_absent";
+    record.last_error = null;
+    appendEvent(record, "normal_cleanup_absence_confirmed", now, { pod_id: record.pod_id });
+    await persist(ledgerPath, ledger, now);
+    return structuredClone(record);
+  });
+}
+
 /**
  * One deliberately narrow incident-recovery transition.  This is not a
  * general way to retire pending creates: callers must independently prove
@@ -513,6 +837,95 @@ export async function blockExactPendingPrePostCreate({
       provider_pod_count: current.length,
       other_records_unchanged: true,
       already_recovered: false,
+    };
+  });
+}
+
+/**
+ * Terminalize one r9 ownership record only when the local caller proves that
+ * the provider-create callback has not been entered. This transition performs
+ * no provider operation; an acquisition collision leaves the record pending
+ * for explicit operator handling.
+ */
+export async function blockPendingBeforeProviderPost({
+  ledgerPath,
+  expected,
+  clock = Date.now,
+}) {
+  if (!expected || typeof expected !== "object" || Array.isArray(expected)) {
+    throw new ReaperValidationError("r9 pre-provider block expectation is invalid");
+  }
+  const exactRunPrefix = "mickey-screen-g000-r9-20260721t040132z:";
+  return withLedgerLock(ledgerPath, async () => {
+    const now = normalizeNow(clock);
+    const ledger = await readReaperLedger(ledgerPath);
+    const matches = ledger.records.filter((record) => record.record_id === expected.record_id);
+    if (matches.length !== 1) {
+      throw new ReaperIdentityRefusalError("r9 pre-provider block requires one exact pending record");
+    }
+    const record = matches[0];
+    const exactFields = [
+      "record_id", "run_id", "manifest_sha256", "deadline", "ownership_kind",
+      "name_prefix", "name_nonce", "expected_name", "preexisting_snapshot_sha256",
+      "created_at",
+    ];
+    for (const field of exactFields) {
+      if (record[field] !== expected[field]) {
+        throw new ReaperIdentityRefusalError(`r9 pre-provider block ${field} differs from pending proof`);
+      }
+    }
+    if (
+      !record.run_id.startsWith(exactRunPrefix) ||
+      record.run_id.length <= exactRunPrefix.length ||
+      record.state !== "pending" ||
+      expected.state !== "pending" ||
+      record.pod_id !== null ||
+      expected.pod_id !== null ||
+      record.active_binding_sha256 !== null ||
+      expected.active_binding_sha256 !== null ||
+      record.bound_at !== null ||
+      expected.bound_at !== null ||
+      record.retired_at !== null ||
+      expected.retired_at !== null ||
+      record.terminal_reason !== null ||
+      expected.terminal_reason !== null ||
+      record.last_error !== null ||
+      expected.last_error !== null ||
+      !Array.isArray(record.preexisting_ids) ||
+      JSON.stringify(record.preexisting_ids) !== JSON.stringify(expected.preexisting_ids) ||
+      !Array.isArray(record.events) ||
+      !Array.isArray(expected.events) ||
+      record.events.length < 1 ||
+      JSON.stringify(record.events[0]) !== JSON.stringify(expected.events[0]) ||
+      record.events.slice(1).some((event) => (
+        !event ||
+        Object.keys(event).sort().join(",") !== "at,type" ||
+        event.type !== "pending_name_absent" ||
+        !Number.isFinite(Date.parse(event.at))
+      ))
+    ) {
+      throw new ReaperIdentityRefusalError("record is not the exact unbound r9 pre-provider pending proof");
+    }
+    assertRecordOwnership(record);
+    const otherBefore = ledger.records
+      .filter((candidate) => candidate.record_id !== record.record_id)
+      .map((candidate) => JSON.stringify(candidate));
+    record.state = "blocked";
+    record.terminal_reason = "pre_post_create_not_invoked";
+    record.last_error = null;
+    appendEvent(record, "pre_post_create_not_invoked", now);
+    const otherAfter = ledger.records
+      .filter((candidate) => candidate.record_id !== record.record_id)
+      .map((candidate) => JSON.stringify(candidate));
+    if (JSON.stringify(otherAfter) !== JSON.stringify(otherBefore)) {
+      throw new ReaperIdentityRefusalError("r9 pre-provider block changed a non-target record");
+    }
+    await persist(ledgerPath, ledger, now);
+    return {
+      record: structuredClone(record),
+      ledger_revision: ledger.revision,
+      provider_calls: 0,
+      other_records_unchanged: true,
     };
   });
 }

@@ -22,12 +22,16 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { auditMickeyCpuFanout } from "./audit-mickey-cpu-fanout.mjs";
 import {
   ReaperIdentityRefusalError,
-  bindActivePod,
-  confirmOwnedPodAbsent,
+  ReaperLedgerLockedError,
+  bindActivePodR9,
+  blockPendingBeforeProviderPost,
+  confirmOwnedPodAbsentR9,
   isStructuredProviderNotFound,
-  preparePendingCreate,
+  preparePendingCreateR9,
   readReaperLedger,
-  runReaperOnce,
+  reaperLedgerDigest,
+  reconcilePendingCreateR9,
+  verifyPendingNameAbsentR9,
 } from "./runpod-exact-id-reaper.mjs";
 
 const SCRIPT_PATH = fileURLToPath(import.meta.url);
@@ -43,6 +47,11 @@ const REAPER_LAUNCHD_RENDERER = path.join(
   REPO_ROOT,
   "scripts",
   "render-runpod-exact-id-reaper-launchd.mjs",
+);
+const PRE_POST_RECOVERY_SCRIPT = path.join(
+  REPO_ROOT,
+  "scripts",
+  "recover-mickey-r8-pre-post-create.mjs",
 );
 // The user transferred the Mac's former Hrafn operator slot to this
 // incubator. Mickey is now both the policy identity and the machine-level
@@ -114,6 +123,7 @@ const RUNPODCTL_IDENTITY_CONTAMINATION_CONTRACT =
 const RUNPODCTL_SERIALIZED_OUTPUT_GUARD =
   "constant-value-free-failure-and-no-receipt";
 const SSH_HOST_KEY_ATTESTATION_DOMAIN = "mickey-ssh-host-key-v1";
+export const REMOTE_POST_RUN_ATTESTATION_STATUS = "stable";
 const EXACT_ID_DELETE_RETRY_DELAYS_MS = Object.freeze([0, 1_000, 2_000, 4_000, 8_000]);
 const R8_ACTIVATION_RUN_ID = "mickey-screen-g000-r8-20260721t031448z";
 const R8_ACTIVATION_MANIFEST_PATH = path.join(
@@ -125,6 +135,55 @@ const R8_ACTIVATION_OUTPUT_PATH =
   "/private/tmp/mickey-cpu-screen-g000-r8-20260721t031448z";
 const R8_ACTIVATION_MANIFEST_DIGEST =
   "5b53c76ef088cd3d929efc0ea72f73dfa103754804231dd6ef76a43bddcb96f2";
+const R8_SOURCE_COMMIT = "0459f0f25b559dfa1869c90e89d3a6c5d14b4bee";
+const R8_MANIFEST_SHA256 = "6d50207e6498e98fa36c88950188bf227b66011b977253f73aa6786c91e7bd6f";
+const R8_FANOUT_SHA256 = "38d40cc44baf0a18fd87ae21bae278bdf23cd858efac86b9ce7ab9efd4667145";
+const R8_PERSISTENT_REAPER_SHA256 =
+  "6c63ec3dfe3356b0a6d9de6dc3edf013cbe84defd7a9a3d54b6d3808e3266408";
+const R8_PERSISTENT_REAPER_INSTALLATION_ID =
+  "784c8c7722130647142f91704c89d29387d3fc3f161ef4b1600b25020ba86a4f";
+const R8_PERSISTENT_REAPER_SERVICE_RECEIPT_PATH =
+  "/Users/olifreuler/.stormforge/proxywar-operators/mickey-runpod-reaper/service-receipt-mickey-screen-g000-r8-20260721t031448z.json";
+const R8_PERSISTENT_REAPER_SERVICE_RECEIPT_SHA256 =
+  "4f67420755f5695b25e36c62ce34763b9362f5093958f9f185f69540545a44d1";
+const R8_PERSISTENT_REAPER_PLIST_SHA256 =
+  "00b5e7e1e37263b0346f5757854d222fc650f79e0d94c5b2b8ac9afecb202240";
+const R8_PERSISTENT_REAPER_HISTORICAL_RECEIPT_PID = 85289;
+const R8_FAILURE_EVIDENCE_PATH = path.join(
+  REPO_ROOT,
+  "experiments",
+  "receipt-mickey-r8-pre-post-failure-20260721.json",
+);
+const R8_FAILURE_EVIDENCE_SHA256 = "799e4c547fb786e74680365b42fdf55d845e7a1ab7cf7df51e2f058a40d2d280";
+const R8_RECOVERY_RECEIPT_TEMPLATE_PATH = path.join(
+  REPO_ROOT,
+  "experiments",
+  "expected-mickey-r8-pre-post-recovery-receipt-20260721.json",
+);
+const R8_RECOVERY_RECEIPT_PATH =
+  "/Users/olifreuler/.stormforge/proxywar-operators/mickey-runpod-reaper/recovery-receipt-mickey-screen-g000-r8-20260721t031448z.json";
+const R8_RECOVERY_RECEIPT_SHA256 = "67d4f2b5d04c2ae10b128eeae60eca6e1eeac0631206fca1271519a4d61515b8";
+const R8_RECOVERY_RECORD_ID = "mickey-reaper:f6707829-6e5f-46e0-9071-5f3e91f91f35";
+const R8_RECOVERY_RECORD_RUN_ID = `${R8_ACTIVATION_RUN_ID}:grow-opening-asia-s0-c`;
+const R8_RECOVERY_EXPECTED_NAME =
+  "proxywar-mickey-cpu-fanout-ba7e0411a40d16bb617a743c7a86966f";
+const R8_RECOVERY_SNAPSHOT_SHA256 = "5609cad100d6b5477590bf42b531da42d11f29fd3aa7d62b2fb8edda26e61e56";
+const R8_RECOVERY_PREEXISTING_IDS = Object.freeze([
+  "0l7p9ke95cu6ms", "2g5whxhph9bwbz", "3649lnxlyhlf3n", "67yzvbbp54aizm",
+  "76stn0v7q81d47", "825a2frvggm1k4", "877itccar33zdp", "a7dmwmcmh45a4b",
+  "ctnggpz7t6nj6c", "l1evg0fagjmbgn", "lb4zz7jzgq9tr2", "lshjhv5avqjsaj",
+  "ne262xferohtdi", "og13wgkfcmblx9", "rkm013fsjsf87c", "rwvsgeancauyug",
+  "sxrtmdyd62n3ia", "szlrnk3ucex44f", "vbo7a33nlvsrtf", "zadju8y8p6d5r9",
+]);
+const R9_ACTIVATION_RUN_ID = "mickey-screen-g000-r9-20260721t040132z";
+const R9_ACTIVATION_MANIFEST_PATH = path.join(
+  REPO_ROOT,
+  "experiments",
+  "manifest-mickey-cpu-screen-g000-r9-20260721.json",
+);
+const R9_ACTIVATION_OUTPUT_PATH =
+  "/private/tmp/mickey-cpu-screen-g000-r9-20260721t040132z";
+const R9_ACTIVATION_MANIFEST_DIGEST = "1f671075f28da27ce350ae2f443325f3c895f9a2ce8fe0efcd7815893c2460e4";
 const R7_ACTIVATION_BASE_COMMIT = "a9977d67d33630643a46117963cf1c08a503d21b";
 const R7_CANARY_RUN_ID = "mickey-screen-g000-r7-20260721t025105z";
 const R7_CANARY_MANIFEST_SHA256 =
@@ -145,9 +204,71 @@ function durableInstallationId(document) {
     document.runpodctl.source_commit,
     document.runpodctl.source_tree,
     document.runpodctl.sha256,
-    document.control_plane.exact_id_reaper.sha256,
+    document.cleanup_watchdog.script.sha256,
     document.cleanup_watchdog.node_runtime.sha256,
   ].join("\n"), "utf8").digest("hex");
+}
+
+function replaceExactlyOnce(source, before, after, label) {
+  const first = source.indexOf(before);
+  if (first < 0 || source.indexOf(before, first + before.length) >= 0) {
+    throw new Error(`foreground reaper compatibility delta ${label} is not exact`);
+  }
+  return `${source.slice(0, first)}${after}${source.slice(first + before.length)}`;
+}
+
+export function normalizeForegroundReaperForR8Persistence(source) {
+  let normalized = replaceExactlyOnce(
+    source,
+    `export class ReaperLedgerLockedError extends ReaperValidationError {
+  constructor(ownerPid) {
+    super(\`reaper ledger is locked by live PID \${ownerPid}\`);
+    this.name = "ReaperLedgerLockedError";
+    this.ownerPid = ownerPid;
+  }
+}
+`,
+    "",
+    "typed lock class",
+  );
+  normalized = replaceExactlyOnce(
+    normalized,
+    "        throw new ReaperLedgerLockedError(owner.pid);",
+    "        throw new ReaperValidationError(`reaper ledger is locked by live PID ${owner.pid}`);",
+    "typed live-owner throw",
+  );
+  const recoveryStart = normalized.indexOf("function equalSnapshot(left, right) {");
+  const persistentResume = normalized.indexOf("async function withLedgerLock(ledgerPath, operation) {");
+  if (
+    recoveryStart < 0 ||
+    persistentResume <= recoveryStart ||
+    normalized.indexOf("function equalSnapshot(left, right) {", recoveryStart + 1) >= 0
+  ) {
+    throw new Error("foreground reaper exact recovery-only delta is not uniquely removable");
+  }
+  normalized = `${normalized.slice(0, recoveryStart)}${normalized.slice(persistentResume)}`;
+  return normalized;
+}
+
+export function validateR8PersistentReaperCompatibility(persistentSource, foregroundSource) {
+  const normalized = normalizeForegroundReaperForR8Persistence(foregroundSource);
+  const persistentSha256 = createHash("sha256").update(persistentSource).digest("hex");
+  const foregroundSha256 = createHash("sha256").update(foregroundSource).digest("hex");
+  const normalizedForegroundSha256 = createHash("sha256").update(normalized).digest("hex");
+  if (
+    persistentSha256 !== R8_PERSISTENT_REAPER_SHA256 ||
+    normalizedForegroundSha256 !== persistentSha256 ||
+    foregroundSha256 === persistentSha256
+  ) {
+    throw new Error("r9 foreground additions changed the persistent r8 reaper behavior surface");
+  }
+  return {
+    kind: "r8_cleanup_daemon_r9_foreground_additions_only_v1",
+    persistent_sha256: persistentSha256,
+    foreground_sha256: foregroundSha256,
+    normalized_foreground_sha256: normalizedForegroundSha256,
+    allowed_delta: "typed-live-lock-error-plus-foreground-r8-recovery-and-r9-short-lock-cas-only",
+  };
 }
 
 function durableInstallationPaths(installationId) {
@@ -188,8 +309,8 @@ Real execution must be the child of:
   scripts/proxywar-runner-lease.sh run mickey RUN_ID --output NEW_DIR -- <command>
 
 Safety status:
-  Full fanout live execution is enabled only for the exact hash-pinned r8 G000
-  activation manifest, output, r7 canary receipt, and current durable reaper.
+  Full fanout live execution is enabled only for the exact hash-pinned r9 G000
+  activation, r7 canary, r8 recovery receipt, and current durable reaper.
   Every other manifest and any resume attempt remains blocked before mutation.
 `;
 }
@@ -502,7 +623,23 @@ export function activationManifestDigest(document) {
     .digest("hex");
 }
 
+export function r9ActivationManifestDigest(document) {
+  const normalized = structuredClone(document);
+  if (!isObject(normalized.control_plane?.fanout_runner)) {
+    throw new Error("r9 activation manifest lacks a fanout runner binding");
+  }
+  normalized.control_plane.fanout_runner.sha256 = "0".repeat(64);
+  return createHash("sha256")
+    .update("mickey-r9-g000-live-activation-manifest-v1\n", "utf8")
+    .update(JSON.stringify(sortedJsonValue(normalized)), "utf8")
+    .digest("hex");
+}
+
 function validateActivationContract(document) {
+  if (document.schema_version === 5) {
+    validateR9ActivationContract(document);
+    return;
+  }
   const activation = document.activation;
   exactKeys(
     activation,
@@ -555,6 +692,109 @@ function validateActivationContract(document) {
     activation.output_path !== R8_ACTIVATION_OUTPUT_PATH
   ) {
     throw new Error("manifest activation does not match the exact r8 G000 boundary");
+  }
+}
+
+function validateR9ActivationContract(document) {
+  const activation = document.activation;
+  exactKeys(
+    activation,
+    [
+      "kind", "r8_source_commit", "r8_manifest_sha256", "r8_fanout_sha256",
+      "r8_failure_evidence", "r8_recovery_tool", "r8_recovery_receipt_template",
+      "r8_recovery_receipt", "r8_record_id", "r8_record_state", "r8_terminal_reason",
+      "persistent_reaper",
+      "r7_base_commit", "canary_receipt", "canary_known_hosts", "canary_run_id",
+      "canary_manifest_sha256", "canary_script_sha256", "screen_pair_count",
+      "max_concurrency", "one_pod_per_pair", "nonce_input_channel",
+      "ledger_mutations_serialized", "exact_id_cleanup_required",
+      "persistent_reaper_service_required", "preexisting_pod_deletion_allowed",
+      "storm_pod_deletion_allowed", "resume_allowed", "output_path",
+    ],
+    "manifest.activation",
+  );
+  for (const [label, reference] of [
+    ["r8_failure_evidence", activation.r8_failure_evidence],
+    ["r8_recovery_tool", activation.r8_recovery_tool],
+    ["r8_recovery_receipt_template", activation.r8_recovery_receipt_template],
+    ["r8_recovery_receipt", activation.r8_recovery_receipt],
+    ["canary_receipt", activation.canary_receipt],
+    ["canary_known_hosts", activation.canary_known_hosts],
+  ]) validateHashedFileReference(reference, `manifest.activation.${label}`);
+  exactKeys(
+    activation.persistent_reaper,
+    [
+      "kind", "manifest", "service_receipt", "installation_id", "script_sha256",
+      "plist_sha256", "historical_receipt_pid", "compatibility",
+    ],
+    "manifest.activation.persistent_reaper",
+  );
+  validateHashedFileReference(
+    activation.persistent_reaper.manifest,
+    "manifest.activation.persistent_reaper.manifest",
+  );
+  validateHashedFileReference(
+    activation.persistent_reaper.service_receipt,
+    "manifest.activation.persistent_reaper.service_receipt",
+  );
+  exactKeys(
+    activation.persistent_reaper.compatibility,
+    [
+      "kind", "persistent_sha256", "foreground_sha256",
+      "normalized_foreground_sha256", "allowed_delta",
+    ],
+    "manifest.activation.persistent_reaper.compatibility",
+  );
+  const persistent = activation.persistent_reaper;
+  const compatibility = persistent.compatibility;
+  if (
+    document.run_id !== R9_ACTIVATION_RUN_ID ||
+    activation.kind !== "r7_canary_r8_pre_post_recovery_bound_g000_v1" ||
+    activation.r8_source_commit !== R8_SOURCE_COMMIT ||
+    activation.r8_manifest_sha256 !== R8_MANIFEST_SHA256 ||
+    activation.r8_fanout_sha256 !== R8_FANOUT_SHA256 ||
+    activation.r8_failure_evidence.path !== R8_FAILURE_EVIDENCE_PATH ||
+    activation.r8_failure_evidence.sha256 !== R8_FAILURE_EVIDENCE_SHA256 ||
+    activation.r8_recovery_tool.path !== PRE_POST_RECOVERY_SCRIPT ||
+    activation.r8_recovery_receipt_template.path !== R8_RECOVERY_RECEIPT_TEMPLATE_PATH ||
+    activation.r8_recovery_receipt_template.sha256 !== R8_RECOVERY_RECEIPT_SHA256 ||
+    activation.r8_recovery_receipt.path !== R8_RECOVERY_RECEIPT_PATH ||
+    activation.r8_recovery_receipt.sha256 !== R8_RECOVERY_RECEIPT_SHA256 ||
+    activation.r8_record_id !== R8_RECOVERY_RECORD_ID ||
+    activation.r8_record_state !== "blocked" ||
+    activation.r8_terminal_reason !== "pre_post_create_not_invoked" ||
+    persistent.kind !== "adopt_existing_r8_immutable_cleanup_daemon_v1" ||
+    persistent.manifest.path !== R8_ACTIVATION_MANIFEST_PATH ||
+    persistent.manifest.sha256 !== R8_MANIFEST_SHA256 ||
+    persistent.service_receipt.path !== R8_PERSISTENT_REAPER_SERVICE_RECEIPT_PATH ||
+    persistent.service_receipt.sha256 !== R8_PERSISTENT_REAPER_SERVICE_RECEIPT_SHA256 ||
+    persistent.installation_id !== R8_PERSISTENT_REAPER_INSTALLATION_ID ||
+    persistent.script_sha256 !== R8_PERSISTENT_REAPER_SHA256 ||
+    persistent.plist_sha256 !== R8_PERSISTENT_REAPER_PLIST_SHA256 ||
+    persistent.historical_receipt_pid !== R8_PERSISTENT_REAPER_HISTORICAL_RECEIPT_PID ||
+    compatibility.kind !== "r8_cleanup_daemon_r9_foreground_additions_only_v1" ||
+    compatibility.persistent_sha256 !== R8_PERSISTENT_REAPER_SHA256 ||
+    compatibility.foreground_sha256 !== document.control_plane.exact_id_reaper.sha256 ||
+    compatibility.normalized_foreground_sha256 !== R8_PERSISTENT_REAPER_SHA256 ||
+    compatibility.allowed_delta !==
+      "typed-live-lock-error-plus-foreground-r8-recovery-and-r9-short-lock-cas-only" ||
+    activation.r7_base_commit !== R7_ACTIVATION_BASE_COMMIT ||
+    activation.canary_receipt.path !== R7_CANARY_RECEIPT_PATH ||
+    activation.canary_receipt.sha256 !== R7_CANARY_RECEIPT_SHA256 ||
+    activation.canary_known_hosts.path !== R7_CANARY_KNOWN_HOSTS_PATH ||
+    activation.canary_known_hosts.sha256 !== R7_CANARY_KNOWN_HOSTS_SHA256 ||
+    activation.canary_run_id !== R7_CANARY_RUN_ID ||
+    activation.canary_manifest_sha256 !== R7_CANARY_MANIFEST_SHA256 ||
+    activation.canary_script_sha256 !== R7_CANARY_SCRIPT_SHA256 ||
+    activation.screen_pair_count !== 16 || activation.max_concurrency !== 4 ||
+    activation.one_pod_per_pair !== true || activation.nonce_input_channel !== "stdin" ||
+    activation.ledger_mutations_serialized !== true || activation.exact_id_cleanup_required !== true ||
+    activation.persistent_reaper_service_required !== true ||
+    activation.preexisting_pod_deletion_allowed !== false ||
+    activation.storm_pod_deletion_allowed !== false || activation.resume_allowed !== false ||
+    activation.output_path !== R9_ACTIVATION_OUTPUT_PATH
+  ) {
+    throw new Error("manifest activation does not match the exact r9 recovery-bound G000 boundary");
   }
 }
 
@@ -950,9 +1190,74 @@ async function verifyR7ActivationEvidence(document) {
   };
 }
 
+async function verifyR9ActivationEvidence(document, { requireRecoveryReceipt = false } = {}) {
+  for (const [label, reference] of [
+    ["r8 failure evidence", document.activation.r8_failure_evidence],
+    ["r8 recovery tool", document.activation.r8_recovery_tool],
+    ["r8 recovery receipt template", document.activation.r8_recovery_receipt_template],
+  ]) await verifyHashedLocalFile(reference, label);
+  if (
+    document.control_plane.pre_post_recovery.path !== document.activation.r8_recovery_tool.path ||
+    document.control_plane.pre_post_recovery.sha256 !== document.activation.r8_recovery_tool.sha256
+  ) {
+    throw new Error("r9 control plane is not bound to the exact r8 recovery tool");
+  }
+  const failure = JSON.parse(await readFile(document.activation.r8_failure_evidence.path, "utf8"));
+  const template = JSON.parse(await readFile(document.activation.r8_recovery_receipt_template.path, "utf8"));
+  if (
+    failure.schema_version !== 1 || failure.kind !== "mickey_r8_pre_post_create_failure_evidence" ||
+    failure.status !== "verified_failure_only" || failure.evidence_eligible !== false ||
+    failure.activation?.run_id !== R8_ACTIVATION_RUN_ID ||
+    failure.record?.record_id !== R8_RECOVERY_RECORD_ID ||
+    failure.record?.terminal_reason !== "pre_post_create_not_invoked" ||
+    failure.command_audit?.provider_create_count !== 0 ||
+    failure.command_audit?.provider_delete_count !== 0 ||
+    failure.quarantine?.content_inventory_sha256 !==
+      "6bc3b013638153ca312823cfaa867ebfd11f5c0c459c4e6891ca0ad2ef042e1f" ||
+    template.schema_version !== 1 || template.kind !== "mickey_r8_pre_post_create_recovery_receipt" ||
+    template.status !== "passed" || template.failure_evidence_sha256 !== R8_FAILURE_EVIDENCE_SHA256 ||
+    template.record_id !== R8_RECOVERY_RECORD_ID || template.state_after !== "blocked" ||
+    template.terminal_reason !== "pre_post_create_not_invoked" ||
+    template.create_calls !== 0 || template.delete_calls !== 0 ||
+    template.evidence_eligible !== false || template.promotion_eligible !== false ||
+    template.resume_allowed !== false || template.rerun_r8_allowed !== false
+  ) {
+    throw new Error("r9 r8-failure or recovery-receipt evidence is invalid");
+  }
+  const canary = await verifyR7ActivationEvidence(document);
+  if (!requireRecoveryReceipt) {
+    return {
+      ...canary,
+      failure_evidence_sha256: R8_FAILURE_EVIDENCE_SHA256,
+      recovery_receipt_sha256: R8_RECOVERY_RECEIPT_SHA256,
+      recovery_status: "expected_not_live_verified",
+      recovery_record_state: "unverified",
+    };
+  }
+  await verifyHashedLocalFile(document.activation.r8_recovery_receipt, "live r8 recovery receipt");
+  const liveReceipt = JSON.parse(await readFile(document.activation.r8_recovery_receipt.path, "utf8"));
+  if (!equalJson(liveReceipt, template)) {
+    throw new Error("live r8 recovery receipt differs from the exact pinned template");
+  }
+  const ledger = await readReaperLedger(document.cleanup_watchdog.ledger_path);
+  const boundary = validateR9RecoveryHistory(ledger);
+  return {
+    ...canary,
+    failure_evidence_sha256: R8_FAILURE_EVIDENCE_SHA256,
+    recovery_receipt_sha256: R8_RECOVERY_RECEIPT_SHA256,
+    recovery_status: "passed",
+    recovery_record_state: "blocked",
+    recovery_terminal_reason: "pre_post_create_not_invoked",
+    recovery_record_id: boundary.r8_recovery_record_id,
+    ledger_revision: boundary.revision,
+    pending_count: boundary.pending_count,
+    active_count: boundary.active_count,
+  };
+}
+
 export function validateManifest(document) {
   assertNoSecretKeys(document);
-  const activationSchema = document?.schema_version === 4;
+  const activationSchema = [4, 5].includes(document?.schema_version);
   exactKeys(
     document,
     [
@@ -974,8 +1279,8 @@ export function validateManifest(document) {
     ],
     "manifest",
   );
-  if (![3, 4].includes(document.schema_version) || document.kind !== "mickey_cpu_fanout") {
-    throw new Error("manifest schema_version/kind must be 3 or 4/mickey_cpu_fanout");
+  if (![3, 4, 5].includes(document.schema_version) || document.kind !== "mickey_cpu_fanout") {
+    throw new Error("manifest schema_version/kind must be 3, 4, or 5/mickey_cpu_fanout");
   }
   if (activationSchema) validateActivationContract(document);
   assertString(document.run_id, "manifest.run_id", SAFE_ID);
@@ -996,7 +1301,7 @@ export function validateManifest(document) {
     document.control_plane,
     [
       "fanout_runner", "policy_auditor", "remote_verifier", "exact_id_reaper",
-      "reaper_launchd_renderer",
+      "reaper_launchd_renderer", ...(document.schema_version === 5 ? ["pre_post_recovery"] : []),
     ],
     "manifest.control_plane",
   );
@@ -1006,6 +1311,7 @@ export function validateManifest(document) {
     remote_verifier: REMOTE_VERIFIER,
     exact_id_reaper: REAPER_SCRIPT,
     reaper_launchd_renderer: REAPER_LAUNCHD_RENDERER,
+    ...(document.schema_version === 5 ? { pre_post_recovery: PRE_POST_RECOVERY_SCRIPT } : {}),
   };
   for (const [key, expectedPath] of Object.entries(controlPlanePaths)) {
     validateHashedFileReference(document.control_plane[key], `manifest.control_plane.${key}`);
@@ -1172,6 +1478,10 @@ export function validateManifest(document) {
   );
   const installationId = durableInstallationId(document);
   const durable = durableInstallationPaths(installationId);
+  const adoptedR8PersistentReaper =
+    document.schema_version === 5 &&
+    document.activation.persistent_reaper.kind ===
+      "adopt_existing_r8_immutable_cleanup_daemon_v1";
   if (
     document.cleanup_watchdog.installation_id !== installationId ||
     document.cleanup_watchdog.state_root !== durable.root ||
@@ -1179,8 +1489,12 @@ export function validateManifest(document) {
     document.cleanup_watchdog.installations_root !== durable.installationsRoot ||
     document.cleanup_watchdog.installation_directory !== durable.installationDirectory ||
     document.cleanup_watchdog.script.path !== durable.reaper ||
-    document.cleanup_watchdog.script.install_source_path !== REAPER_SCRIPT ||
-    document.cleanup_watchdog.script.sha256 !== document.control_plane.exact_id_reaper.sha256 ||
+    document.cleanup_watchdog.script.install_source_path !==
+      (adoptedR8PersistentReaper ? durable.reaper : REAPER_SCRIPT) ||
+    document.cleanup_watchdog.script.sha256 !==
+      (adoptedR8PersistentReaper
+        ? document.activation.persistent_reaper.script_sha256
+        : document.control_plane.exact_id_reaper.sha256) ||
     document.runpodctl.path !== durable.runpodctl ||
     document.cleanup_watchdog.plist_path !== durable.plist
   ) {
@@ -1327,11 +1641,16 @@ export function validateManifest(document) {
       document.pod.max_concurrency !== document.activation.max_concurrency ||
       document.runpodctl.nonce_input_channel !== document.activation.nonce_input_channel
     ) {
-      throw new Error("r8 activation must remain the exact four-arm, 16-pair, concurrency-four G000 screen");
+      throw new Error("activation must remain the exact four-arm, 16-pair, concurrency-four G000 screen");
     }
-    const digest = activationManifestDigest(document);
-    if (digest !== R8_ACTIVATION_MANIFEST_DIGEST) {
-      throw new Error(`r8 activation manifest semantic digest mismatch: ${digest}`);
+    const digest = document.schema_version === 5
+      ? r9ActivationManifestDigest(document)
+      : activationManifestDigest(document);
+    const expectedDigest = document.schema_version === 5
+      ? R9_ACTIVATION_MANIFEST_DIGEST
+      : R8_ACTIVATION_MANIFEST_DIGEST;
+    if (digest !== expectedDigest) {
+      throw new Error(`r${document.schema_version === 5 ? 9 : 8} activation manifest semantic digest mismatch: ${digest}`);
     }
   }
   return { document, pairs: flattenedPairs };
@@ -1519,6 +1838,7 @@ export async function preflightManifest(
     if (error?.code === "ENOENT") return null;
     throw error;
   });
+  let persistentReaperCompatibility = null;
   if (installedRunpodctl || installedReaper || requirePersistentServiceArtifacts) {
     for (const [directory, label] of [
       [document.cleanup_watchdog.state_root, "durable reaper state root"],
@@ -1549,6 +1869,70 @@ export async function preflightManifest(
       0o600,
       "durable reaper script",
     );
+  }
+  if (document.schema_version === 5) {
+    const persistent = document.activation.persistent_reaper;
+    await verifyHashedLocalFile(persistent.manifest, "pinned r8 persistent reaper manifest");
+    await verifyHashedLocalFile(
+      persistent.service_receipt,
+      "pinned r8 persistent reaper service receipt",
+    );
+    await verifyOwnedDurableFile(
+      persistent.service_receipt.path,
+      0o600,
+      "pinned r8 persistent reaper service receipt",
+    );
+    await verifyHashedLocalFile(
+      { path: document.cleanup_watchdog.plist_path, sha256: persistent.plist_sha256 },
+      "pinned r8 persistent reaper plist",
+    );
+    await verifyOwnedDurableFile(
+      document.cleanup_watchdog.plist_path,
+      0o600,
+      "pinned r8 persistent reaper plist",
+    );
+    const installedEntries = (await readdir(document.cleanup_watchdog.installation_directory)).sort();
+    if (
+      !equalJson(installedEntries, ["runpod-exact-id-reaper.mjs", "runpodctl-darwin-arm64"])
+    ) {
+      throw new Error("adopted r8 persistent reaper installation is not the exact two-file image");
+    }
+    const priorReceipt = JSON.parse(await readFile(persistent.service_receipt.path, "utf8"));
+    exactKeys(
+      priorReceipt,
+      [
+        "schema_version", "kind", "status", "manifest_sha256", "launchd_label",
+        "launchd_domain", "plist_path", "plist_sha256", "ledger_path", "heartbeat_path",
+        "runpodctl_sha256", "reaper_sha256", "node_path", "node_sha256", "pid",
+        "attested_at",
+      ],
+      "pinned r8 persistent reaper service receipt",
+    );
+    if (
+      priorReceipt.schema_version !== 1 ||
+      priorReceipt.kind !== "mickey_runpod_exact_id_reaper_service" ||
+      priorReceipt.status !== "active" ||
+      priorReceipt.manifest_sha256 !== persistent.manifest.sha256 ||
+      priorReceipt.launchd_label !== document.cleanup_watchdog.launchd_label ||
+      priorReceipt.plist_path !== document.cleanup_watchdog.plist_path ||
+      priorReceipt.plist_sha256 !== persistent.plist_sha256 ||
+      priorReceipt.ledger_path !== document.cleanup_watchdog.ledger_path ||
+      priorReceipt.heartbeat_path !== document.cleanup_watchdog.heartbeat_path ||
+      priorReceipt.runpodctl_sha256 !== document.runpodctl.sha256 ||
+      priorReceipt.reaper_sha256 !== document.cleanup_watchdog.script.sha256 ||
+      priorReceipt.node_path !== document.cleanup_watchdog.node_runtime.path ||
+      priorReceipt.node_sha256 !== document.cleanup_watchdog.node_runtime.sha256 ||
+      priorReceipt.pid !== persistent.historical_receipt_pid
+    ) {
+      throw new Error("pinned r8 service receipt does not bind the adopted cleanup daemon");
+    }
+    persistentReaperCompatibility = validateR8PersistentReaperCompatibility(
+      await readFile(document.cleanup_watchdog.script.path, "utf8"),
+      await readFile(document.control_plane.exact_id_reaper.path, "utf8"),
+    );
+    if (!equalJson(persistentReaperCompatibility, persistent.compatibility)) {
+      throw new Error("manifest persistent-reaper compatibility claim differs from live proof");
+    }
   }
   await verifyHashedLocalFile(
     { path: document.runpodctl.patch_path, sha256: document.runpodctl.patch_sha256 },
@@ -1585,7 +1969,11 @@ export async function preflightManifest(
   const sourceReceipt = await verifySourceReachReceipt(document);
   const activationEvidence = document.schema_version === 4
     ? await verifyR7ActivationEvidence(document)
-    : null;
+    : document.schema_version === 5
+      ? await verifyR9ActivationEvidence(document, {
+        requireRecoveryReceipt: requirePersistentServiceArtifacts,
+      })
+      : null;
   return {
     ...validated,
     manifestPath,
@@ -1594,6 +1982,7 @@ export async function preflightManifest(
     verifierSha256,
     sourceReceipt,
     activationEvidence,
+    persistentReaperCompatibility,
   };
 }
 
@@ -1607,15 +1996,28 @@ function dryRunPodName(manifest) {
 
 export function isFullFanoutLiveApproved(preflight) {
   return Boolean(
-    preflight?.manifestPath === R8_ACTIVATION_MANIFEST_PATH &&
-    preflight.document?.schema_version === 4 &&
-    preflight.document.run_id === R8_ACTIVATION_RUN_ID &&
-    preflight.document.activation?.output_path === R8_ACTIVATION_OUTPUT_PATH &&
-    activationManifestDigest(preflight.document) === R8_ACTIVATION_MANIFEST_DIGEST &&
+    isExactR9ActivationCandidate(preflight) &&
     preflight.activationEvidence?.receipt_sha256 === R7_CANARY_RECEIPT_SHA256 &&
     preflight.activationEvidence?.known_hosts_sha256 === R7_CANARY_KNOWN_HOSTS_SHA256 &&
-    preflight.activationEvidence?.ledger_state === "retired" &&
-    preflight.activationEvidence?.terminal_reason === "normal_cleanup_confirmed_absent"
+    preflight.activationEvidence?.failure_evidence_sha256 === R8_FAILURE_EVIDENCE_SHA256 &&
+    preflight.activationEvidence?.recovery_receipt_sha256 === R8_RECOVERY_RECEIPT_SHA256 &&
+    preflight.activationEvidence?.recovery_status === "passed" &&
+    preflight.activationEvidence?.recovery_record_state === "blocked" &&
+    preflight.activationEvidence?.recovery_terminal_reason === "pre_post_create_not_invoked"
+  );
+}
+
+export function isExactR9ActivationCandidate(preflight) {
+  return Boolean(
+    preflight?.manifestPath === R9_ACTIVATION_MANIFEST_PATH &&
+    preflight.document?.schema_version === 5 &&
+    preflight.document.run_id === R9_ACTIVATION_RUN_ID &&
+    preflight.document.activation?.output_path === R9_ACTIVATION_OUTPUT_PATH &&
+    r9ActivationManifestDigest(preflight.document) === R9_ACTIVATION_MANIFEST_DIGEST &&
+    preflight.activationEvidence?.receipt_sha256 === R7_CANARY_RECEIPT_SHA256 &&
+    preflight.activationEvidence?.known_hosts_sha256 === R7_CANARY_KNOWN_HOSTS_SHA256 &&
+    preflight.activationEvidence?.failure_evidence_sha256 === R8_FAILURE_EVIDENCE_SHA256 &&
+    preflight.activationEvidence?.recovery_receipt_sha256 === R8_RECOVERY_RECEIPT_SHA256
   );
 }
 
@@ -1630,6 +2032,84 @@ export function validateR8LedgerQuiescence(ledger) {
   return { revision: ledger.revision, nonterminal_count: 0 };
 }
 
+export function isExactR8PrePostRecoveryRecord(record) {
+  if (!isObject(record)) return false;
+  const events = record.events;
+  if (!Array.isArray(events) || events.length < 3) return false;
+  const first = events[0];
+  const last = events.at(-1);
+  const middle = events.slice(1, -1);
+  return Boolean(
+    record.record_id === R8_RECOVERY_RECORD_ID &&
+    record.state === "blocked" &&
+    record.run_id === R8_RECOVERY_RECORD_RUN_ID &&
+    record.manifest_sha256 === R8_MANIFEST_SHA256 &&
+    record.deadline === "2026-07-21T05:42:20.144Z" &&
+    record.ownership_kind === "generated-exact-name-v1" &&
+    record.name_prefix === "proxywar-mickey-cpu-fanout" &&
+    record.name_nonce === "ba7e0411a40d16bb617a743c7a86966f" &&
+    record.expected_name === R8_RECOVERY_EXPECTED_NAME &&
+    equalJson(record.preexisting_ids, R8_RECOVERY_PREEXISTING_IDS) &&
+    record.preexisting_snapshot_sha256 === R8_RECOVERY_SNAPSHOT_SHA256 &&
+    record.pod_id === null && record.active_binding_sha256 === null &&
+    record.bound_at === null && record.retired_at === null &&
+    record.terminal_reason === "pre_post_create_not_invoked" && record.last_error === null &&
+    record.created_at === "2026-07-21T03:42:20.155Z" &&
+    isObject(first) && equalJson(Object.keys(first).sort(), ["at", "type"]) &&
+    first.at === record.created_at && first.type === "pending_create_registered" &&
+    middle.length >= 1 && middle.every((event) => (
+      isObject(event) && equalJson(Object.keys(event).sort(), ["at", "type"]) &&
+      event.type === "pending_name_absent" && Number.isFinite(Date.parse(event.at))
+    )) &&
+    isObject(last) && equalJson(Object.keys(last).sort(), [
+      "at", "provider_snapshot_sha256", "recovery_evidence_sha256", "type",
+    ]) &&
+    last.type === "pre_post_create_not_invoked" &&
+    last.recovery_evidence_sha256 === R8_FAILURE_EVIDENCE_SHA256 &&
+    last.provider_snapshot_sha256 === R8_RECOVERY_SNAPSHOT_SHA256 &&
+    Number.isFinite(Date.parse(last.at)) && record.updated_at === last.at
+  );
+}
+
+export function validateR9LedgerReady(ledger) {
+  if (!isObject(ledger) || !Array.isArray(ledger.records)) {
+    throw new Error("r9 durable reaper ledger is malformed");
+  }
+  const pending = ledger.records.filter((record) => record.state === "pending");
+  const active = ledger.records.filter((record) => record.state === "active");
+  const blocked = ledger.records.filter((record) => record.state === "blocked");
+  const unknown = ledger.records.filter((record) => !["pending", "active", "retired", "blocked"].includes(record.state));
+  if (pending.length !== 0 || active.length !== 0 || unknown.length !== 0) {
+    throw new Error("r9 activation requires zero pending and zero active reaper records");
+  }
+  if (blocked.length !== 1 || !isExactR8PrePostRecoveryRecord(blocked[0])) {
+    throw new Error("r9 activation permits only the exact terminal blocked r8 pre-POST sentinel");
+  }
+  return {
+    revision: ledger.revision,
+    pending_count: 0,
+    active_count: 0,
+    blocked_count: 1,
+    r8_recovery_record_id: blocked[0].record_id,
+  };
+}
+
+export function validateR9RecoveryHistory(ledger) {
+  if (!isObject(ledger) || !Array.isArray(ledger.records)) {
+    throw new Error("r9 durable reaper ledger is malformed");
+  }
+  const blocked = ledger.records.filter((record) => record.state === "blocked");
+  if (blocked.length !== 1 || !isExactR8PrePostRecoveryRecord(blocked[0])) {
+    throw new Error("r9 permits only the exact terminal blocked r8 pre-POST sentinel");
+  }
+  return {
+    revision: ledger.revision,
+    pending_count: ledger.records.filter((record) => record.state === "pending").length,
+    active_count: ledger.records.filter((record) => record.state === "active").length,
+    r8_recovery_record_id: blocked[0].record_id,
+  };
+}
+
 export function validateR8MutationLedgerBoundary({
   ledger,
   manifest,
@@ -1638,12 +2118,13 @@ export function validateR8MutationLedgerBoundary({
   pendingOwnership,
   registeredRecords,
 }) {
+  const r8Context = manifest?.schema_version === 4 && manifest.run_id === R8_ACTIVATION_RUN_ID;
+  const r9Context = manifest?.schema_version === 5 && manifest.run_id === R9_ACTIVATION_RUN_ID;
   if (
     !isObject(ledger) ||
     !Array.isArray(ledger.records) ||
     !isObject(manifest) ||
-    manifest.schema_version !== 4 ||
-    manifest.run_id !== R8_ACTIVATION_RUN_ID ||
+    (!r8Context && !r9Context) ||
     !SHA256.test(manifestSha256 ?? "") ||
     !(registeredRecords instanceof Map)
   ) {
@@ -1669,6 +2150,21 @@ export function validateR8MutationLedgerBoundary({
     throw new Error("r8 durable ledger lost or duplicated the exact pending record");
   }
   const pending = matching[0];
+  const r9PendingEventsExact = !r9Context || (
+    Array.isArray(pending.events) &&
+    Array.isArray(pendingOwnership.events) &&
+    pending.events.length >= pendingOwnership.events.length &&
+    equalJson(
+      pending.events.slice(0, pendingOwnership.events.length),
+      pendingOwnership.events,
+    ) &&
+    pending.events.slice(pendingOwnership.events.length).every((event) => (
+      isObject(event) &&
+      equalJson(Object.keys(event).sort(), ["at", "type"]) &&
+      event.type === "pending_name_absent" &&
+      Number.isFinite(Date.parse(event.at))
+    ))
+  );
   if (
     pending.state !== "pending" ||
     pending.run_id !== `${manifest.run_id}:${pairId}` ||
@@ -1681,24 +2177,34 @@ export function validateR8MutationLedgerBoundary({
     pending.expected_name.toLowerCase().startsWith("storm-") ||
     pending.pod_id !== null ||
     pending.active_binding_sha256 !== null ||
+    (r9Context && pending.bound_at !== null) ||
+    (r9Context && pending.retired_at !== null) ||
     pending.last_error !== null ||
     pending.terminal_reason !== null ||
     pending.deadline !== pendingOwnership.deadline ||
     pending.name_nonce !== pendingOwnership.name_nonce ||
+    (r9Context && pending.created_at !== pendingOwnership.created_at) ||
     pending.preexisting_snapshot_sha256 !== pendingOwnership.preexisting_snapshot_sha256 ||
-    !equalJson(pending.preexisting_ids, pendingOwnership.preexisting_ids)
+    !equalJson(pending.preexisting_ids, pendingOwnership.preexisting_ids) ||
+    (r9Context && pending.updated_at !== pending.events.at(-1)?.at) ||
+    !r9PendingEventsExact
   ) {
     throw new Error("r8 exact pending record drifted before the provider create POST");
   }
 
-  const nonterminal = ledger.records.filter((record) => record.state !== "retired");
+  const blockedHistory = ledger.records.filter((record) => record.state === "blocked");
+  if (r9Context) {
+    if (blockedHistory.length !== 1 || !isExactR8PrePostRecoveryRecord(blockedHistory[0])) {
+      throw new Error("r9 per-create boundary permits only the exact blocked r8 pre-POST sentinel");
+    }
+  } else if (blockedHistory.length !== 0) {
+    throw new Error("r8 durable ledger contains a blocked ownership record");
+  }
+  const nonterminal = ledger.records.filter((record) => record.state === "pending" || record.state === "active");
   if (nonterminal.length > manifest.pod.max_concurrency) {
     throw new Error("r8 durable ledger exceeds the preregistered nonterminal concurrency cap");
   }
   for (const record of nonterminal) {
-    if (record.state === "blocked") {
-      throw new Error("r8 durable ledger contains a blocked ownership record");
-    }
     if (record.state !== "pending" && record.state !== "active") {
       throw new Error("r8 durable ledger contains an unknown nonterminal state");
     }
@@ -1731,6 +2237,149 @@ export async function executeAfterExactR8MutationBoundary(verifyBoundary, mutati
   }
   await verifyBoundary();
   return mutation();
+}
+
+export async function executeAfterExactR9WorkerStartBoundary(
+  verifyBoundary,
+  stopRequested,
+  registerPending,
+) {
+  if (
+    typeof verifyBoundary !== "function" ||
+    typeof stopRequested !== "function" ||
+    typeof registerPending !== "function"
+  ) {
+    throw new Error("r9 worker-start boundary requires verifier, stop check, and pending registrar");
+  }
+  if (stopRequested()) throw new Error("fanout stopping before the r9 worker-start guard");
+  const boundary = await verifyBoundary();
+  if (stopRequested()) throw new Error("fanout stopping after the r9 worker-start guard");
+  return registerPending(boundary);
+}
+
+export class R9PreProviderPostBoundaryError extends Error {
+  constructor(boundaryError, blockResult, blockError) {
+    const disposition = blockResult
+      ? "pending record terminalized without provider call"
+      : `pending record left for manual handling: ${blockError?.message || "block unavailable"}`;
+    super(`r9 pre-provider boundary failed: ${boundaryError.message}; ${disposition}`, {
+      cause: boundaryError,
+    });
+    this.name = "R9PreProviderPostBoundaryError";
+    this.providerPostInvoked = false;
+    this.pendingTerminalized = Boolean(blockResult);
+    this.pendingManual = !blockResult;
+    this.blockResult = blockResult;
+    this.blockError = blockError ?? null;
+  }
+}
+
+export async function executeAfterExactR9PrePostBoundary({
+  verifyBoundary,
+  stopRequested,
+  blockPending,
+  providerPost,
+}) {
+  if (
+    typeof verifyBoundary !== "function" ||
+    typeof stopRequested !== "function" ||
+    typeof blockPending !== "function" ||
+    typeof providerPost !== "function"
+  ) {
+    throw new Error("r9 pre-provider boundary requires verifier, stop check, blocker, and provider callback");
+  }
+  let boundaryError = null;
+  try {
+    await verifyBoundary();
+    if (stopRequested()) throw new Error("fanout stopping at the exact pre-provider boundary");
+  } catch (error) {
+    boundaryError = error;
+  }
+  if (boundaryError) {
+    let blockResult = null;
+    let blockError = null;
+    try {
+      blockResult = await blockPending();
+    } catch (error) {
+      blockError = error;
+    }
+    throw new R9PreProviderPostBoundaryError(boundaryError, blockResult, blockError);
+  }
+  return providerPost();
+}
+
+export function createFanoutLedgerMutationCoordinator({
+  expectedReaperPid,
+  retryDelaysMs = [0, 100, 250, 500, 1_000, 2_000, 4_000],
+  sleep = (milliseconds) => new Promise((resolve) => setTimeout(resolve, milliseconds)),
+} = {}) {
+  if (
+    !Number.isSafeInteger(expectedReaperPid) ||
+    expectedReaperPid < 1 ||
+    expectedReaperPid === process.pid ||
+    !Array.isArray(retryDelaysMs) ||
+    retryDelaysMs.length < 1 ||
+    retryDelaysMs.some((delay) => !Number.isSafeInteger(delay) || delay < 0)
+  ) {
+    throw new Error("ledger mutation coordinator requires a distinct exact reaper PID and bounded delays");
+  }
+  let tail = Promise.resolve();
+  const runExclusive = async (operation) => {
+    if (typeof operation !== "function") throw new Error("ledger mutation operation must be a function");
+    const previous = tail;
+    let release;
+    tail = new Promise((resolve) => { release = resolve; });
+    await previous.catch(() => {});
+    try {
+      return await operation();
+    } finally {
+      release();
+    }
+  };
+  const retryExactServiceLock = async (operation) => {
+    if (typeof operation !== "function") throw new Error("ledger retry operation must be a function");
+    let lastError;
+    for (let attempt = 0; attempt < retryDelaysMs.length; attempt += 1) {
+      if (attempt > 0) await sleep(retryDelaysMs[attempt]);
+      try {
+        return await operation(attempt + 1);
+      } catch (error) {
+        if (!(error instanceof ReaperLedgerLockedError) || error.ownerPid !== expectedReaperPid) {
+          throw error;
+        }
+        lastError = error;
+      }
+    }
+    throw lastError;
+  };
+  return Object.freeze({ runExclusive, retryExactServiceLock, expectedReaperPid });
+}
+
+export async function runR9SerializedCreateTransaction({
+  ledgerMutationCoordinator,
+  stopState,
+  executor,
+  operation,
+}) {
+  if (
+    !ledgerMutationCoordinator ||
+    typeof ledgerMutationCoordinator.runExclusive !== "function" ||
+    !isObject(stopState) ||
+    !executor ||
+    typeof executor.stop !== "function" ||
+    typeof operation !== "function"
+  ) {
+    throw new Error("r9 serialized create transaction requires coordinator, stop latch, executor, and operation");
+  }
+  return ledgerMutationCoordinator.runExclusive(async () => {
+    try {
+      return await operation();
+    } catch (error) {
+      stopState.requested = true;
+      executor.stop();
+      throw error;
+    }
+  });
 }
 
 export function buildPodCreateArgs(manifest, expectedName, controlSecret = null) {
@@ -2442,6 +3091,10 @@ export async function verifyLiveReaperService({
     receipt.node_sha256 !== manifest.cleanup_watchdog.node_runtime.sha256 ||
     !Number.isSafeInteger(receipt.pid) ||
     receipt.pid < 1 ||
+    (
+      manifest.schema_version === 5 &&
+      receipt.plist_sha256 !== manifest.activation.persistent_reaper.plist_sha256
+    ) ||
     !SHA256.test(receipt.plist_sha256 ?? "") ||
     receipt.plist_path !== manifest.cleanup_watchdog.plist_path ||
     !Number.isFinite(Date.parse(receipt.attested_at))
@@ -2466,7 +3119,34 @@ export async function verifyLiveReaperService({
     throw new Error("independent reaper LaunchAgent is not running");
   }
   const servicePid = Number(pidMatch[1]);
-  if (servicePid !== receipt.pid) {
+  const servicePath = service.stdout.match(/(?:^|\n)\s*path\s*=\s*([^\n]+)\s*(?:\n|$)/)?.[1]?.trim();
+  const serviceProgram = service.stdout.match(/(?:^|\n)\s*program\s*=\s*([^\n]+)\s*(?:\n|$)/)?.[1]?.trim();
+  const argumentBlock = service.stdout.match(
+    /(?:^|\n)\s*arguments\s*=\s*\{\n([\s\S]*?)\n\s*\}\s*(?:\n|$)/,
+  )?.[1];
+  const serviceArguments = argumentBlock
+    ?.split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
+  const expectedArguments = [
+    manifest.cleanup_watchdog.node_runtime.path,
+    manifest.cleanup_watchdog.script.path,
+    "poll",
+    "--ledger",
+    manifest.cleanup_watchdog.ledger_path,
+    "--runpodctl",
+    manifest.runpodctl.path,
+    "--interval-seconds",
+    String(manifest.cleanup_watchdog.poll_interval_seconds),
+    "--heartbeat",
+    manifest.cleanup_watchdog.heartbeat_path,
+  ];
+  if (
+    servicePid !== receipt.pid ||
+    servicePath !== manifest.cleanup_watchdog.plist_path ||
+    serviceProgram !== manifest.cleanup_watchdog.node_runtime.path ||
+    !equalJson(serviceArguments, expectedArguments)
+  ) {
     throw new Error("independent reaper service PID differs from the attested receipt");
   }
   const watchdogRoot = path.dirname(manifest.cleanup_watchdog.ledger_path);
@@ -2534,6 +3214,27 @@ export async function verifyLiveReaperService({
   };
 }
 
+export function validateFinalReaperServiceIdentity(initial, current) {
+  if (
+    !isObject(initial) ||
+    !isObject(current) ||
+    initial.status !== "active" ||
+    current.status !== "active" ||
+    !Number.isSafeInteger(initial.pid) ||
+    initial.pid < 1 ||
+    current.pid !== initial.pid ||
+    !SHA256.test(initial.receipt_sha256 ?? "") ||
+    current.receipt_sha256 !== initial.receipt_sha256 ||
+    current.label !== initial.label ||
+    current.domain !== initial.domain ||
+    current.ledger_path !== initial.ledger_path ||
+    current.receipt_path !== initial.receipt_path
+  ) {
+    throw new Error("independent reaper service identity drifted before final evidence gate");
+  }
+  return current;
+}
+
 export function validateMickeyRunnerStatus(status, output, runId, expectedChildPid = process.pid) {
   if (
     !isObject(status) ||
@@ -2563,28 +3264,102 @@ export async function assertClaimedMickeyOutput(output, runId, runnerLease, stat
 
 export async function verifyR8LedgerQuiescent(manifest) {
   const ledger = await readReaperLedger(manifest.cleanup_watchdog.ledger_path);
-  return validateR8LedgerQuiescence(ledger);
+  return manifest.schema_version === 5
+    ? validateR9LedgerReady(ledger)
+    : validateR8LedgerQuiescence(ledger);
 }
 
-export async function verifyExactR8MutationBoundary({
+export function validateR9WorkerStartLedgerBoundary({
+  ledger,
+  manifest,
+  manifestSha256,
+  pairId,
+  registeredRecords,
+}) {
+  if (
+    !isObject(ledger) ||
+    !Array.isArray(ledger.records) ||
+    manifest?.schema_version !== 5 ||
+    manifest.run_id !== R9_ACTIVATION_RUN_ID ||
+    !SHA256.test(manifestSha256 ?? "") ||
+    !(registeredRecords instanceof Map)
+  ) {
+    throw new Error("r9 worker-start ledger boundary received an invalid activation context");
+  }
+  const allowedPairIds = new Set(
+    manifest.arms.flatMap((arm) => arm.pairs.map((pair) => pair.id)),
+  );
+  if (!allowedPairIds.has(pairId)) {
+    throw new Error("r9 worker-start ledger boundary received an unknown pair");
+  }
+  const recordIds = new Set();
+  for (const record of ledger.records) {
+    if (!isObject(record) || typeof record.record_id !== "string" || recordIds.has(record.record_id)) {
+      throw new Error("r9 worker-start ledger contains a malformed or duplicate record");
+    }
+    recordIds.add(record.record_id);
+  }
+  const history = validateR9RecoveryHistory(ledger);
+  const unknown = ledger.records.filter(
+    (record) => !["pending", "active", "retired", "blocked"].includes(record.state),
+  );
+  if (unknown.length !== 0) {
+    throw new Error("r9 worker-start ledger contains an unknown record state");
+  }
+  const nonterminal = ledger.records.filter(
+    (record) => record.state === "pending" || record.state === "active",
+  );
+  if (nonterminal.length >= manifest.pod.max_concurrency) {
+    throw new Error("r9 worker-start ledger has no capacity for another pending record");
+  }
+  const ownedPairs = new Set();
+  for (const record of nonterminal) {
+    const owner = registeredRecords.get(record.record_id);
+    if (
+      !owner ||
+      !allowedPairIds.has(owner.pairId) ||
+      ownedPairs.has(owner.pairId) ||
+      owner.pairId === pairId ||
+      record.run_id !== `${manifest.run_id}:${owner.pairId}` ||
+      record.manifest_sha256 !== manifestSha256 ||
+      record.ownership_kind !== "generated-exact-name-v1" ||
+      record.name_prefix !== manifest.pod.name_prefix ||
+      record.expected_name !== `${record.name_prefix}-${record.name_nonce}` ||
+      !record.expected_name.startsWith(`${manifest.pod.name_prefix}-`) ||
+      record.expected_name.toLowerCase().startsWith("storm-") ||
+      (record.pod_id !== null && record.preexisting_ids.includes(record.pod_id))
+    ) {
+      throw new Error("r9 worker-start ledger contains ownership outside this exact process");
+    }
+    ownedPairs.add(owner.pairId);
+  }
+  return {
+    revision: history.revision,
+    next_pair_id: pairId,
+    pending_count: history.pending_count,
+    active_count: history.active_count,
+    nonterminal_count: nonterminal.length,
+    r8_recovery_record_id: history.r8_recovery_record_id,
+  };
+}
+
+async function verifyExactR9ProcessBoundary({
   manifestPath,
   manifestSha256,
   output,
   pairId,
-  pendingOwnership,
-  registeredRecords,
   executor,
   expectedReaperPid,
   expectedReaperReceiptSha256,
 }) {
   if (
-    manifestPath !== R8_ACTIVATION_MANIFEST_PATH ||
-    output !== R8_ACTIVATION_OUTPUT_PATH ||
+    manifestPath !== R9_ACTIVATION_MANIFEST_PATH ||
+    output !== R9_ACTIVATION_OUTPUT_PATH ||
     !Number.isSafeInteger(expectedReaperPid) ||
     expectedReaperPid < 1 ||
     !SHA256.test(expectedReaperReceiptSha256 ?? "")
   ) {
-    throw new Error("per-create gate is not bound to the exact r8 activation process");
+    throw new Error("r9 process boundary is not bound to the exact activation process");
   }
   const current = await preflightManifest(
     manifestPath,
@@ -2597,7 +3372,7 @@ export async function verifyExactR8MutationBoundary({
     current.document.activation.output_path !== output ||
     current.pairs.filter(({ pair }) => pair.id === pairId).length !== 1
   ) {
-    throw new Error("exact r8 activation drifted at the immediate provider mutation boundary");
+    throw new Error("exact r9 activation drifted at a provider mutation boundary");
   }
   const runner = await assertClaimedMickeyOutput(
     output,
@@ -2617,6 +3392,68 @@ export async function verifyExactR8MutationBoundary({
   ) {
     throw new Error("independent reaper PID or service receipt changed before provider mutation");
   }
+  return { current, runner, reaper };
+}
+
+export async function verifyExactR9WorkerStartBoundary({
+  manifestPath,
+  manifestSha256,
+  output,
+  pairId,
+  registeredRecords,
+  executor,
+  expectedReaperPid,
+  expectedReaperReceiptSha256,
+}) {
+  const { current, runner, reaper } = await verifyExactR9ProcessBoundary({
+    manifestPath,
+    manifestSha256,
+    output,
+    pairId,
+    executor,
+    expectedReaperPid,
+    expectedReaperReceiptSha256,
+  });
+  const ledger = await readReaperLedger(current.document.cleanup_watchdog.ledger_path);
+  const ledgerBoundary = validateR9WorkerStartLedgerBoundary({
+    ledger,
+    manifest: current.document,
+    manifestSha256: current.manifestSha256,
+    pairId,
+    registeredRecords,
+  });
+  return {
+    manifest_sha256: current.manifestSha256,
+    runner_child_pid: runner.child_pid,
+    reaper_pid: reaper.pid,
+    reaper_receipt_sha256: reaper.receipt_sha256,
+    ledger_revision: ledgerBoundary.revision,
+    ledger_digest_sha256: reaperLedgerDigest(ledger),
+    ledger_nonterminal_count: ledgerBoundary.nonterminal_count,
+    next_pair_id: ledgerBoundary.next_pair_id,
+  };
+}
+
+export async function verifyExactR8MutationBoundary({
+  manifestPath,
+  manifestSha256,
+  output,
+  pairId,
+  pendingOwnership,
+  registeredRecords,
+  executor,
+  expectedReaperPid,
+  expectedReaperReceiptSha256,
+}) {
+  const { current, runner, reaper } = await verifyExactR9ProcessBoundary({
+    manifestPath,
+    manifestSha256,
+    output,
+    pairId,
+    executor,
+    expectedReaperPid,
+    expectedReaperReceiptSha256,
+  });
   const ledger = await readReaperLedger(current.document.cleanup_watchdog.ledger_path);
   const ledgerBoundary = validateR8MutationLedgerBoundary({
     ledger,
@@ -2972,6 +3809,61 @@ async function reaperRecord(ledgerPath, recordId) {
   return record;
 }
 
+export function validateR9SafePreProviderBlockedRecord(record, expectedPending) {
+  if (!isObject(record) || !isObject(expectedPending)) {
+    throw new ReaperIdentityRefusalError("safe r9 pre-provider terminal requires current and saved proofs");
+  }
+  const exactFields = [
+    "record_id", "run_id", "manifest_sha256", "deadline", "ownership_kind",
+    "name_prefix", "name_nonce", "expected_name", "preexisting_snapshot_sha256",
+    "created_at",
+  ];
+  for (const field of exactFields) {
+    if (record[field] !== expectedPending[field]) {
+      throw new ReaperIdentityRefusalError(`safe r9 pre-provider terminal ${field} differs from saved proof`);
+    }
+  }
+  const events = record.events;
+  const terminal = Array.isArray(events) ? events.at(-1) : null;
+  if (
+    expectedPending.state !== "pending" ||
+    record.state !== "blocked" ||
+    !record.run_id.startsWith(`${R9_ACTIVATION_RUN_ID}:`) ||
+    record.pod_id !== null ||
+    expectedPending.pod_id !== null ||
+    record.active_binding_sha256 !== null ||
+    expectedPending.active_binding_sha256 !== null ||
+    record.bound_at !== null ||
+    expectedPending.bound_at !== null ||
+    record.retired_at !== null ||
+    expectedPending.retired_at !== null ||
+    record.terminal_reason !== "pre_post_create_not_invoked" ||
+    expectedPending.terminal_reason !== null ||
+    record.last_error !== null ||
+    expectedPending.last_error !== null ||
+    !Array.isArray(record.preexisting_ids) ||
+    !equalJson(record.preexisting_ids, expectedPending.preexisting_ids) ||
+    !Array.isArray(events) ||
+    !Array.isArray(expectedPending.events) ||
+    events.length < 2 ||
+    !equalJson(events[0], expectedPending.events[0]) ||
+    events.slice(1, -1).some((event) => (
+      !isObject(event) ||
+      !equalJson(Object.keys(event).sort(), ["at", "type"]) ||
+      event.type !== "pending_name_absent" ||
+      !Number.isFinite(Date.parse(event.at))
+    )) ||
+    !isObject(terminal) ||
+    !equalJson(Object.keys(terminal).sort(), ["at", "type"]) ||
+    terminal.type !== "pre_post_create_not_invoked" ||
+    !Number.isFinite(Date.parse(terminal.at)) ||
+    record.updated_at !== terminal.at
+  ) {
+    throw new ReaperIdentityRefusalError("record is not the exact safe r9 pre-provider terminal");
+  }
+  return record;
+}
+
 export async function reconcileAndCleanupReaperRecord({
   ledgerPath,
   recordId,
@@ -2981,10 +3873,39 @@ export async function reconcileAndCleanupReaperRecord({
   label,
   createdIds = new Set(),
   podRecords = new Map(),
+  expectedPreProviderPending = null,
+  expectedPendingOwnership = null,
   settle,
+  retryLedgerMutation = (operation) => operation(),
 }) {
-  await runReaperOnce({ ledgerPath, client: reaperClient });
+  if (expectedPreProviderPending !== null) {
+    const terminal = validateR9SafePreProviderBlockedRecord(
+      await reaperRecord(ledgerPath, recordId),
+      expectedPreProviderPending,
+    );
+    return {
+      record_id: recordId,
+      pod_id: null,
+      state: terminal.state,
+      outcome: terminal.terminal_reason,
+      safe_terminal: true,
+      provider_calls: 0,
+      external_deadline_cleanup_required: false,
+    };
+  }
   let record = await reaperRecord(ledgerPath, recordId);
+  if (record.state === "pending") {
+    if (!isObject(expectedPendingOwnership)) {
+      throw new ReaperIdentityRefusalError(
+        `r9 pending record ${recordId} lacks its immutable registration proof`,
+      );
+    }
+    record = await retryLedgerMutation(() => reconcilePendingCreateR9({
+      ledgerPath,
+      client: reaperClient,
+      expected: expectedPendingOwnership,
+    }));
+  }
   if (record.state === "pending") {
     return {
       record_id: recordId,
@@ -2997,11 +3918,11 @@ export async function reconcileAndCleanupReaperRecord({
     throw new ReaperIdentityRefusalError(`reaper record ${recordId} is blocked`);
   }
   if (record.state === "retired") {
-    record = await confirmOwnedPodAbsent({
+    record = await retryLedgerMutation(() => confirmOwnedPodAbsentR9({
       ledgerPath,
       client: reaperClient,
-      recordId,
-    });
+      expected: record,
+    }));
     return {
       record_id: recordId,
       pod_id: record.pod_id,
@@ -3026,11 +3947,11 @@ export async function reconcileAndCleanupReaperRecord({
     label,
     settle,
   });
-  record = await confirmOwnedPodAbsent({
+  record = await retryLedgerMutation(() => confirmOwnedPodAbsentR9({
     ledgerPath,
     client: reaperClient,
-    recordId,
-  });
+    expected: record,
+  }));
   createdIds.delete(record.pod_id);
   podRecords.delete(record.pod_id);
   return {
@@ -3172,7 +4093,9 @@ async function runOnePair({
   createdIds,
   podRecords,
   reaperRecords,
+  beforeRegister,
   beforeCreate,
+  ledgerMutationCoordinator,
   stopState,
   state,
 }) {
@@ -3194,81 +4117,124 @@ async function runOnePair({
 
   let podId = null;
   let deadlineTimer = null;
+  const createNow = Date.now();
+  const controlSecret = randomBytes(32).toString("hex");
+  const watchdogDeadline = new Date(
+    createNow + preflight.document.cleanup_watchdog.client_cleanup_deadline_seconds * 1000,
+  ).toISOString();
+  let pendingOwnership;
+  let pairPreexistingIds;
+  let createResult;
+  let createRecord;
+  let preProviderBoundaryFailed = false;
   try {
-    const createNow = Date.now();
-    const controlSecret = randomBytes(32).toString("hex");
-    const watchdogDeadline = new Date(
-      createNow + preflight.document.cleanup_watchdog.client_cleanup_deadline_seconds * 1000,
-    ).toISOString();
-    const pendingOwnership = await preparePendingCreate({
-      ledgerPath: preflight.document.cleanup_watchdog.ledger_path,
-      client: tools.reaperClient,
-      runId: `${preflight.document.run_id}:${pair.id}`,
-      manifestSha256: preflight.manifestSha256,
-      deadline: watchdogDeadline,
-      namePrefix: preflight.document.pod.name_prefix,
-    });
-    cleanupRecordId = pendingOwnership.record_id;
-    reaperRecords.set(cleanupRecordId, { pairId: pair.id });
-    name = pendingOwnership.expected_name;
-    const pairPreexistingIds = new Set(pendingOwnership.preexisting_ids);
-    await writeJsonAtomic(path.join(activeRoot, "reaper-pending-create.json"), pendingOwnership);
-    state.pairs[pair.id] = {
-      ...state.pairs[pair.id],
-      phase: "create",
-      pod_name: name,
-      reaper_record_id: cleanupRecordId,
-      client_cleanup_deadline: watchdogDeadline,
-    };
-    await writeJsonAtomic(path.join(output, "state.json"), state);
-    let createResult;
-    const controlStdin = Buffer.from(
-      JSON.stringify({ MICKEY_CONTROL_PLANE_NONCE: controlSecret }),
-      "utf8",
-    );
-    try {
-      createResult = await executeAfterExactR8MutationBoundary(
-        () => beforeCreate(pendingOwnership),
-        () => executor.run(
-          tools.runpodctl,
-          buildPodCreateArgs(preflight.document, name, controlSecret),
-          {
-            label: `${pair.id}-pod-create`,
-            allowFailure: true,
-            redactions: [controlSecret],
-            outputLogMode: "metadata-only",
-            stdinBytes: controlStdin,
-            sensitiveOutputToken: controlSecret,
-          },
-        ),
+    await runR9SerializedCreateTransaction({
+      ledgerMutationCoordinator,
+      stopState,
+      executor,
+      operation: async () => {
+      if (stopState.requested) throw new Error(`fanout stopping before ${pair.id} ownership registration`);
+      pendingOwnership = await executeAfterExactR9WorkerStartBoundary(
+        beforeRegister,
+        () => stopState.requested,
+        (workerBoundary) => ledgerMutationCoordinator.retryExactServiceLock(() => preparePendingCreateR9({
+          ledgerPath: preflight.document.cleanup_watchdog.ledger_path,
+          client: tools.reaperClient,
+          runId: `${preflight.document.run_id}:${pair.id}`,
+          manifestSha256: preflight.manifestSha256,
+          deadline: watchdogDeadline,
+          namePrefix: preflight.document.pod.name_prefix,
+          expectedLedgerRevision: workerBoundary.ledger_revision,
+          expectedLedgerDigest: workerBoundary.ledger_digest_sha256,
+        })),
       );
-    } catch (error) {
-      await runReaperOnce({
-        ledgerPath: preflight.document.cleanup_watchdog.ledger_path,
-        client: tools.reaperClient,
-      }).catch(() => null);
-      throw new Error(`RunPod create transport failed before a trustworthy response: ${error.message}`);
-    } finally {
-      controlStdin.fill(0);
-    }
-    let createRecord;
-    try {
-      createRecord = parseJsonOutput(createResult, "RunPod create");
-      podId = registerCreatedPod(createRecord, name, pairPreexistingIds, createdIds);
-      const activeOwnership = await bindActivePod({
-        ledgerPath: preflight.document.cleanup_watchdog.ledger_path,
-        client: tools.reaperClient,
-        recordId: cleanupRecordId,
-        podId,
+      cleanupRecordId = pendingOwnership.record_id;
+      reaperRecords.set(cleanupRecordId, {
+        pairId: pair.id,
+        pendingOwnership,
       });
-      await writeJsonAtomic(path.join(activeRoot, "reaper-active-binding.json"), activeOwnership);
-    } catch (error) {
-      await runReaperOnce({
-        ledgerPath: preflight.document.cleanup_watchdog.ledger_path,
-        client: tools.reaperClient,
-      }).catch(() => null);
-      throw new Error(`RunPod create response was not cleanup-safe: ${error.message}`);
-    }
+      name = pendingOwnership.expected_name;
+      pairPreexistingIds = new Set(pendingOwnership.preexisting_ids);
+      await writeJsonAtomic(path.join(activeRoot, "reaper-pending-create.json"), pendingOwnership);
+      state.pairs[pair.id] = {
+        ...state.pairs[pair.id],
+        phase: "create",
+        pod_name: name,
+        reaper_record_id: cleanupRecordId,
+        client_cleanup_deadline: watchdogDeadline,
+      };
+      await writeJsonAtomic(path.join(output, "state.json"), state);
+      const controlStdin = Buffer.from(
+        JSON.stringify({ MICKEY_CONTROL_PLANE_NONCE: controlSecret }),
+        "utf8",
+      );
+      try {
+        createResult = await executeAfterExactR9PrePostBoundary({
+          verifyBoundary: async () => {
+            await verifyPendingNameAbsentR9({
+              client: tools.reaperClient,
+              expected: pendingOwnership,
+            });
+            return beforeCreate(pendingOwnership);
+          },
+          stopRequested: () => stopState.requested,
+          blockPending: () => ledgerMutationCoordinator.retryExactServiceLock(
+            () => blockPendingBeforeProviderPost({
+              ledgerPath: preflight.document.cleanup_watchdog.ledger_path,
+              expected: pendingOwnership,
+            }),
+          ),
+          providerPost: () => executor.run(
+              tools.runpodctl,
+              buildPodCreateArgs(preflight.document, name, controlSecret),
+              {
+                label: `${pair.id}-pod-create`,
+                allowFailure: true,
+                redactions: [controlSecret],
+                outputLogMode: "metadata-only",
+                stdinBytes: controlStdin,
+                sensitiveOutputToken: controlSecret,
+              },
+            ),
+        });
+      } catch (error) {
+        if (error instanceof R9PreProviderPostBoundaryError) {
+          preProviderBoundaryFailed = true;
+          const registration = reaperRecords.get(cleanupRecordId);
+          reaperRecords.set(cleanupRecordId, {
+            ...registration,
+            preProviderDisposition: error.pendingTerminalized
+              ? "blocked_pre_post_create_not_invoked"
+              : "pending_manual_block_unavailable",
+            preProviderPending: pendingOwnership,
+          });
+          if (error.blockResult) {
+            await writeJsonAtomic(
+              path.join(activeRoot, "reaper-pre-provider-block.json"),
+              error.blockResult,
+            );
+          }
+          throw error;
+        }
+        throw new Error(`RunPod create transport failed before a trustworthy response: ${error.message}`);
+      } finally {
+        controlStdin.fill(0);
+      }
+        try {
+          createRecord = parseJsonOutput(createResult, "RunPod create");
+          podId = registerCreatedPod(createRecord, name, pairPreexistingIds, createdIds);
+          const activeOwnership = await ledgerMutationCoordinator.retryExactServiceLock(() => bindActivePodR9({
+            ledgerPath: preflight.document.cleanup_watchdog.ledger_path,
+            client: tools.reaperClient,
+            expected: pendingOwnership,
+            podId,
+          }));
+          await writeJsonAtomic(path.join(activeRoot, "reaper-active-binding.json"), activeOwnership);
+        } catch (error) {
+          throw new Error(`RunPod create response was not cleanup-safe: ${error.message}`);
+        }
+      },
+    });
     podRecords.set(podId, { pairId: pair.id, name, recordId: cleanupRecordId, preexistingIds: pairPreexistingIds });
     const loweredControlSecret = controlSecret.toLowerCase();
     if (
@@ -3456,6 +4422,9 @@ async function runOnePair({
     );
 
     const runner = `${bundleRoot}/bin/runpod-proxywar-episode`;
+    const remoteReceiptGate =
+      `const fs=require('fs');const r=JSON.parse(fs.readFileSync(process.argv[1],'utf8'));` +
+      `if(r.status!=='passed'||r.post_run_attestation?.status!==${JSON.stringify(REMOTE_POST_RUN_ATTESTATION_STATUS)})process.exit(1)`;
     for (const role of pair.order) {
       if (stopState.requested) throw new Error(`fanout interrupted before ${pair.id}/${role}`);
       const spec = role === "candidate" ? pair.candidate_spec : pair.m0_spec;
@@ -3468,7 +4437,7 @@ async function runOnePair({
         [
           ...ssh,
           remote,
-          `set -euo pipefail; ${remoteQuote(runner)} --spec ${remoteQuote(`${bundleRoot}/${spec.archive_path}`)} --validate-only > ${remoteQuote(`${remoteRoot}/evidence/${role}-validation.txt.part`)}; mv -- ${remoteQuote(`${remoteRoot}/evidence/${role}-validation.txt.part`)} ${remoteQuote(`${remoteRoot}/evidence/${role}-validation.txt`)}; ${remoteQuote(runner)} --spec ${remoteQuote(`${bundleRoot}/${spec.archive_path}`)} --output-dir ${remoteQuote(outputDir)} --run-id ${remoteQuote(episodeRunId)} | tee ${remoteQuote(`${remoteRoot}/runs/${role}.stdout.log.part`)}; mv -- ${remoteQuote(`${remoteRoot}/runs/${role}.stdout.log.part`)} ${remoteQuote(`${remoteRoot}/runs/${role}.stdout.log`)}; cp ${remoteQuote(`${bundleRoot}/${spec.archive_path}`)} ${remoteQuote(`${outputDir}/config.json`)}; ${remoteQuote(`${bundleRoot}/runtime/node/bin/node`)} -e ${remoteQuote("const fs=require('fs');const r=JSON.parse(fs.readFileSync(process.argv[1],'utf8'));if(r.status!=='passed'||r.post_run_attestation?.status!=='passed')process.exit(1)")} ${remoteQuote(`${outputDir}/receipt.json`)}`,
+          `set -euo pipefail; ${remoteQuote(runner)} --spec ${remoteQuote(`${bundleRoot}/${spec.archive_path}`)} --validate-only > ${remoteQuote(`${remoteRoot}/evidence/${role}-validation.txt.part`)}; mv -- ${remoteQuote(`${remoteRoot}/evidence/${role}-validation.txt.part`)} ${remoteQuote(`${remoteRoot}/evidence/${role}-validation.txt`)}; ${remoteQuote(runner)} --spec ${remoteQuote(`${bundleRoot}/${spec.archive_path}`)} --output-dir ${remoteQuote(outputDir)} --run-id ${remoteQuote(episodeRunId)} | tee ${remoteQuote(`${remoteRoot}/runs/${role}.stdout.log.part`)}; mv -- ${remoteQuote(`${remoteRoot}/runs/${role}.stdout.log.part`)} ${remoteQuote(`${remoteRoot}/runs/${role}.stdout.log`)}; cp ${remoteQuote(`${bundleRoot}/${spec.archive_path}`)} ${remoteQuote(`${outputDir}/config.json`)}; ${remoteQuote(`${bundleRoot}/runtime/node/bin/node`)} -e ${remoteQuote(remoteReceiptGate)} ${remoteQuote(`${outputDir}/receipt.json`)}`,
         ],
         { label: `${pair.id}-run-${role}` },
       );
@@ -3498,7 +4467,7 @@ async function runOnePair({
     await writeJsonAtomic(path.join(activeRoot, "fetch-verification.json"), fetchVerification);
     await rename(fetchPart, path.join(activeRoot, "fetched"));
 
-    const deletion = await reconcileAndCleanupReaperRecord({
+    const deletion = await ledgerMutationCoordinator.runExclusive(() => reconcileAndCleanupReaperRecord({
       ledgerPath: preflight.document.cleanup_watchdog.ledger_path,
       recordId: cleanupRecordId,
       runpodctl: tools.runpodctl,
@@ -3507,7 +4476,9 @@ async function runOnePair({
       label: `${pair.id}-pod-delete`,
       createdIds,
       podRecords,
-    });
+      retryLedgerMutation: ledgerMutationCoordinator.retryExactServiceLock,
+      expectedPendingOwnership: pendingOwnership,
+    }));
     if (deletion.state !== "retired" || deletion.external_deadline_cleanup_required) {
       throw new Error("normal pair cleanup did not reach reaper-confirmed exact-ID absence");
     }
@@ -3533,10 +4504,12 @@ async function runOnePair({
     if (deadlineTimer) clearTimeout(deadlineTimer);
   } catch (error) {
     if (deadlineTimer) clearTimeout(deadlineTimer);
+    stopState.requested = true;
+    executor.stop();
     let terminalError = error;
-    if (cleanupRecordId) {
+    if (cleanupRecordId && !preProviderBoundaryFailed) {
       try {
-        const cleanup = await reconcileAndCleanupReaperRecord({
+        const cleanup = await ledgerMutationCoordinator.runExclusive(() => reconcileAndCleanupReaperRecord({
           ledgerPath: preflight.document.cleanup_watchdog.ledger_path,
           recordId: cleanupRecordId,
           runpodctl: tools.runpodctl,
@@ -3545,7 +4518,9 @@ async function runOnePair({
           label: `${pair.id}-failure-cleanup`,
           createdIds,
           podRecords,
-        });
+          retryLedgerMutation: ledgerMutationCoordinator.retryExactServiceLock,
+          expectedPendingOwnership: pendingOwnership,
+        }));
         await writeJsonAtomic(path.join(activeRoot, "failure-cleanup.json"), cleanup);
       } catch (cleanupError) {
         terminalError = new Error(`${error.message}; exact-ID cleanup: ${cleanupError.message}`);
@@ -3618,6 +4593,7 @@ export async function runCli(argv) {
     { requirePersistentServiceArtifacts: false },
   );
   let fullFanoutLiveApproved = isFullFanoutLiveApproved(preflight);
+  const exactR9ActivationCandidate = isExactR9ActivationCandidate(preflight);
   if (options.dryRun) {
     const plan = {
       ok: true,
@@ -3640,7 +4616,9 @@ export async function runCli(argv) {
       activation_evidence: preflight.activationEvidence,
       full_fanout_blocking_reason: fullFanoutLiveApproved
         ? null
-        : "manifest is not the exact r7-canary-bound r8 G000 activation",
+        : exactR9ActivationCandidate
+          ? "exact r9 activation requires live recovery receipt and ledger verification"
+          : "manifest is not the exact recovery-bound r9 G000 activation",
       pairs: preflight.pairs.map(({ arm, pair }) => ({
         arm_id: arm.id,
         pair_id: pair.id,
@@ -3671,16 +4649,16 @@ export async function runCli(argv) {
     return 0;
   }
 
-  if (!fullFanoutLiveApproved) {
+  if (!exactR9ActivationCandidate) {
     throw new Error(
-      "full fanout live execution is blocked before mutation: manifest is not the exact r7-canary-bound r8 G000 activation",
+      "full fanout live execution is blocked before mutation: manifest is not the exact recovery-bound r9 G000 activation",
     );
   }
   if (options.resumeFrom !== null) {
-    throw new Error("r8 G000 activation is fresh-only; --resume-from is blocked before mutation");
+    throw new Error("r9 G000 activation is fresh-only; --resume-from is blocked before mutation");
   }
-  if (options.output !== R8_ACTIVATION_OUTPUT_PATH) {
-    throw new Error("r8 G000 activation requires the exact preregistered output path");
+  if (options.output !== R9_ACTIVATION_OUTPUT_PATH) {
+    throw new Error("r9 G000 activation requires the exact preregistered output path");
   }
   preflight = await preflightManifest(
     options.manifest,
@@ -3689,7 +4667,7 @@ export async function runCli(argv) {
   );
   fullFanoutLiveApproved = isFullFanoutLiveApproved(preflight);
   if (!fullFanoutLiveApproved) {
-    throw new Error("r8 G000 activation drifted during persistent-service preflight");
+    throw new Error("r9 G000 activation or exact recovery drifted during persistent-service preflight");
   }
 
   const output = options.output;
@@ -3739,6 +4717,9 @@ export async function runCli(argv) {
     manifestSha256: preflight.manifestSha256,
     executor,
   });
+  const ledgerMutationCoordinator = createFanoutLedgerMutationCoordinator({
+    expectedReaperPid: reaperService.pid,
+  });
   const initialLedgerBoundary = await verifyR8LedgerQuiescent(preflight.document);
   await cp(options.manifest, path.join(output, "evidence", "manifest.json"), { errorOnExist: true, force: false });
   await writeFile(
@@ -3769,6 +4750,24 @@ export async function runCli(argv) {
     { path: activationKnownHostsCopy, sha256: preflight.document.activation.canary_known_hosts.sha256 },
     "copied r7 transport known_hosts",
   );
+  const failureEvidenceCopy = path.join(output, "evidence", "r8-pre-post-failure-evidence.json");
+  const recoveryReceiptCopy = path.join(output, "evidence", "r8-pre-post-recovery-receipt.json");
+  await cp(preflight.document.activation.r8_failure_evidence.path, failureEvidenceCopy, {
+    errorOnExist: true,
+    force: false,
+  });
+  await cp(preflight.document.activation.r8_recovery_receipt.path, recoveryReceiptCopy, {
+    errorOnExist: true,
+    force: false,
+  });
+  await verifyHashedLocalFile(
+    { path: failureEvidenceCopy, sha256: preflight.document.activation.r8_failure_evidence.sha256 },
+    "copied r8 pre-POST failure evidence",
+  );
+  await verifyHashedLocalFile(
+    { path: recoveryReceiptCopy, sha256: preflight.document.activation.r8_recovery_receipt.sha256 },
+    "copied r8 pre-POST recovery receipt",
+  );
   const state = {
     schema_version: 1,
     run_id: preflight.document.run_id,
@@ -3789,6 +4788,8 @@ export async function runCli(argv) {
   await appendEvent(output, "preflight_passed", {
     pair_count: preflight.pairs.length,
     activation_receipt_sha256: preflight.activationEvidence.receipt_sha256,
+    r8_recovery_receipt_sha256: preflight.activationEvidence.recovery_receipt_sha256,
+    r8_recovery_record_id: preflight.activationEvidence.recovery_record_id,
   });
 
   const stopState = { requested: false, signal: null };
@@ -3832,6 +4833,16 @@ export async function runCli(argv) {
         createdIds,
         podRecords,
         reaperRecords,
+        beforeRegister: () => verifyExactR9WorkerStartBoundary({
+          manifestPath: preflight.manifestPath,
+          manifestSha256: preflight.manifestSha256,
+          output,
+          pairId: pair.id,
+          registeredRecords: reaperRecords,
+          executor,
+          expectedReaperPid: reaperService.pid,
+          expectedReaperReceiptSha256: reaperService.receipt_sha256,
+        }),
         beforeCreate: (pendingOwnership) => verifyExactR8MutationBoundary({
           manifestPath: preflight.manifestPath,
           manifestSha256: preflight.manifestSha256,
@@ -3843,6 +4854,7 @@ export async function runCli(argv) {
           expectedReaperPid: reaperService.pid,
           expectedReaperReceiptSha256: reaperService.receipt_sha256,
         }),
+        ledgerMutationCoordinator,
         stopState,
         state,
       }),
@@ -3861,6 +4873,16 @@ export async function runCli(argv) {
       manifest: preflight.document,
       manifestSha256: preflight.manifestSha256,
     });
+    const finalReaperService = await verifyLiveReaperService({
+      manifest: preflight.document,
+      manifestSha256: preflight.manifestSha256,
+      executor,
+    });
+    validateFinalReaperServiceIdentity(reaperService, finalReaperService);
+    await writeJsonAtomic(
+      path.join(output, "control", "final-reaper-service.json"),
+      finalReaperService,
+    );
     await writeJsonAtomic(path.join(output, "evidence", "leaderboard.json"), leaderboard);
     state.status = "completed";
     state.evidence_eligible = true;
@@ -3884,6 +4906,8 @@ export async function runCli(argv) {
       upload_allowed: false,
       activation_receipt_sha256: preflight.activationEvidence.receipt_sha256,
       activation_ledger_state: preflight.activationEvidence.ledger_state,
+      r8_recovery_receipt_sha256: preflight.activationEvidence.recovery_receipt_sha256,
+      r8_recovery_record_state: preflight.activationEvidence.recovery_record_state,
     });
     await appendEvent(output, "fanout_completed", { completed_pairs: completed.length });
   } catch (error) {
@@ -3892,9 +4916,17 @@ export async function runCli(argv) {
     executor.stop();
   } finally {
     const cleanupErrors = [];
-    for (const recordId of reaperRecords.keys()) {
+    for (const [recordId, registration] of reaperRecords) {
+      if (registration.preProviderDisposition === "pending_manual_block_unavailable") {
+        await appendEvent(output, "pre_provider_record_cleanup_skipped", {
+          record_id: recordId,
+          disposition: registration.preProviderDisposition,
+          provider_calls: 0,
+        }).catch((error) => cleanupErrors.push(error.message));
+        continue;
+      }
       try {
-        const cleanup = await reconcileAndCleanupReaperRecord({
+        const cleanup = await ledgerMutationCoordinator.runExclusive(() => reconcileAndCleanupReaperRecord({
           ledgerPath: preflight.document.cleanup_watchdog.ledger_path,
           recordId,
           runpodctl: tools.runpodctl,
@@ -3903,7 +4935,13 @@ export async function runCli(argv) {
           label: `final-cleanup-${recordId}`,
           createdIds,
           podRecords,
-        });
+          expectedPreProviderPending:
+            registration.preProviderDisposition === "blocked_pre_post_create_not_invoked"
+              ? registration.preProviderPending
+              : null,
+          retryLedgerMutation: ledgerMutationCoordinator.retryExactServiceLock,
+          expectedPendingOwnership: registration.pendingOwnership,
+        }));
         if (cleanup.external_deadline_cleanup_required) {
           await appendEvent(output, "cleanup_pending_external_reaper", {
             record_id: recordId,

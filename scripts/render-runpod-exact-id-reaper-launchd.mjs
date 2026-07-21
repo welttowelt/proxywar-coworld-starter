@@ -70,10 +70,9 @@ function xml(value) {
     .replaceAll("'", "&apos;");
 }
 
-function plistBody(manifest, { allowTemporaryPathsForTest = false } = {}) {
+function reaperProgramArguments(manifest) {
   const watchdog = manifest.cleanup_watchdog;
-  const logRoot = path.dirname(watchdog.ledger_path);
-  const args = [
+  return [
     watchdog.node_runtime.path,
     watchdog.script.path,
     "poll",
@@ -86,6 +85,12 @@ function plistBody(manifest, { allowTemporaryPathsForTest = false } = {}) {
     "--heartbeat",
     watchdog.heartbeat_path,
   ];
+}
+
+function plistBody(manifest, { allowTemporaryPathsForTest = false } = {}) {
+  const watchdog = manifest.cleanup_watchdog;
+  const logRoot = path.dirname(watchdog.ledger_path);
+  const args = reaperProgramArguments(manifest);
   const array = args.map((arg) => `      <string>${xml(arg)}</string>`).join("\n");
   const pathValue = [
     path.dirname(manifest.runpodctl.path),
@@ -136,6 +141,77 @@ ${array}
 </dict>
 </plist>
 `;
+}
+
+function launchctlProgramArguments(stdout) {
+  const match = stdout.match(/(?:^|\n)\s*arguments\s*=\s*\{\n([\s\S]*?)\n\s*\}\s*(?:\n|$)/);
+  if (!match) throw new Error("reaper LaunchAgent ProgramArguments are not inspectable");
+  return match[1].split("\n").map((line) => line.trim()).filter(Boolean);
+}
+
+export function inspectRunningReaperService(manifest, stdout) {
+  if (
+    !/(?:^|\n)\s*state\s*=\s*running\s*(?:\n|$)/.test(stdout) ||
+    !/(?:^|\n)\s*pid\s*=\s*[1-9][0-9]*\s*(?:\n|$)/.test(stdout)
+  ) {
+    throw new Error("reaper LaunchAgent is not running");
+  }
+  const servicePid = Number(
+    stdout.match(/(?:^|\n)\s*pid\s*=\s*([1-9][0-9]*)\s*(?:\n|$)/)[1],
+  );
+  const servicePath = stdout.match(/(?:^|\n)\s*path\s*=\s*([^\n]+)\s*(?:\n|$)/)?.[1]?.trim();
+  const serviceProgram = stdout.match(/(?:^|\n)\s*program\s*=\s*([^\n]+)\s*(?:\n|$)/)?.[1]?.trim();
+  if (
+    servicePath !== manifest.cleanup_watchdog.plist_path ||
+    serviceProgram !== manifest.cleanup_watchdog.node_runtime.path ||
+    JSON.stringify(launchctlProgramArguments(stdout)) !==
+      JSON.stringify(reaperProgramArguments(manifest))
+  ) {
+    throw new Error("reaper LaunchAgent differs from the exact adopted service identity");
+  }
+  return servicePid;
+}
+
+function validateServiceReceiptForManifest(receipt, preflight) {
+  const watchdog = preflight.document.cleanup_watchdog;
+  const uid = typeof process.getuid === "function" ? process.getuid() : null;
+  const expectedKeys = [
+    "schema_version", "kind", "status", "manifest_sha256", "launchd_label",
+    "launchd_domain", "plist_path", "plist_sha256", "ledger_path", "heartbeat_path",
+    "runpodctl_sha256", "reaper_sha256", "node_path", "node_sha256", "pid", "attested_at",
+  ].sort();
+  if (
+    !Number.isSafeInteger(uid) ||
+    uid < 0 ||
+    !receipt ||
+    typeof receipt !== "object" ||
+    Array.isArray(receipt) ||
+    JSON.stringify(Object.keys(receipt).sort()) !== JSON.stringify(expectedKeys) ||
+    receipt.schema_version !== 1 ||
+    receipt.kind !== "mickey_runpod_exact_id_reaper_service" ||
+    receipt.status !== "active" ||
+    receipt.manifest_sha256 !== preflight.manifestSha256 ||
+    receipt.launchd_label !== watchdog.launchd_label ||
+    receipt.launchd_domain !== `gui/${uid}` ||
+    receipt.plist_path !== watchdog.plist_path ||
+    receipt.ledger_path !== watchdog.ledger_path ||
+    receipt.heartbeat_path !== watchdog.heartbeat_path ||
+    receipt.runpodctl_sha256 !== preflight.document.runpodctl.sha256 ||
+    receipt.reaper_sha256 !== watchdog.script.sha256 ||
+    receipt.node_path !== watchdog.node_runtime.path ||
+    receipt.node_sha256 !== watchdog.node_runtime.sha256 ||
+    !SHA256.test(receipt.plist_sha256 ?? "") ||
+    (
+      preflight.document.schema_version === 5 &&
+      receipt.plist_sha256 !== preflight.document.activation.persistent_reaper.plist_sha256
+    ) ||
+    !Number.isSafeInteger(receipt.pid) ||
+    receipt.pid < 1 ||
+    !Number.isFinite(Date.parse(receipt.attested_at))
+  ) {
+    throw new Error("reaper service receipt does not bind the durable heartbeat wait");
+  }
+  return receipt;
 }
 
 async function writeExclusive(filePath, body) {
@@ -196,11 +272,19 @@ async function render(options) {
     "--manifest", preflight.manifestPath,
     "--manifest-sha256", preflight.manifestSha256,
   ];
+  const adoptsExistingR8Service =
+    preflight.document.schema_version === 5 &&
+    preflight.document.activation?.persistent_reaper?.kind ===
+      "adopt_existing_r8_immutable_cleanup_daemon_v1";
   const plan = {
-    schema_version: 1,
-    kind: "mickey_runpod_reaper_launchd_install_plan",
+    schema_version: adoptsExistingR8Service ? 2 : 1,
+    kind: adoptsExistingR8Service
+      ? "mickey_runpod_reaper_existing_service_attestation_plan"
+      : "mickey_runpod_reaper_launchd_install_plan",
     installed: false,
     invokes_runpod_api: false,
+    provider_heartbeat_lists_may_continue_in_preexisting_service: adoptsExistingR8Service,
+    provider_create_or_delete_calls: 0,
     manifest_sha256: preflight.manifestSha256,
     plist_source_path: plistSourcePath,
     plist_path: preflight.document.cleanup_watchdog.plist_path,
@@ -214,13 +298,15 @@ async function render(options) {
     heartbeat_path: preflight.document.cleanup_watchdog.heartbeat_path,
     launchd_label: preflight.document.cleanup_watchdog.launchd_label,
     launchd_domain: domain,
-    exact_commands: [
-      installArgv,
-      ["/bin/launchctl", "bootstrap", domain, preflight.document.cleanup_watchdog.plist_path],
-      ["/bin/launchctl", "kickstart", "-k", target],
-      attestationArgv,
-      heartbeatArgv,
-    ],
+    exact_commands: adoptsExistingR8Service
+      ? [attestationArgv, heartbeatArgv]
+      : [
+        installArgv,
+        ["/bin/launchctl", "bootstrap", domain, preflight.document.cleanup_watchdog.plist_path],
+        ["/bin/launchctl", "kickstart", "-k", target],
+        attestationArgv,
+        heartbeatArgv,
+      ],
     install_contract: {
       directory_mode: "0700",
       script_mode: "0600",
@@ -238,8 +324,19 @@ async function render(options) {
       installation_entry_count: 2,
       provider_calls_during_render_or_install: 0,
       launchctl_calls_during_render_or_install: 0,
+      ...(adoptsExistingR8Service ? {
+        service_transition: "none-existing-r8-service-remains-loaded",
+        forbidden_commands: ["install", "replace", "bootout", "bootstrap", "kickstart"],
+        historical_service_receipt_pid:
+          preflight.document.activation.persistent_reaper.historical_receipt_pid,
+        current_pid_bound_at_attest: true,
+        persistent_reaper_compatibility:
+          preflight.persistentReaperCompatibility,
+      } : {}),
     },
-    warning: "render only; no artifacts were installed and no service was started",
+    warning: adoptsExistingR8Service
+      ? "render only; the immutable r8 service is neither stopped nor changed; exact r9 attestation only"
+      : "render only; no artifacts were installed and no service was started",
   };
   await writeExclusive(planPath, `${JSON.stringify(plan, null, 2)}\n`);
   return plan;
@@ -681,6 +778,9 @@ export async function stageDurableReaperInstallation({
 
 async function install(options) {
   const preflight = await load(options);
+  if (preflight.document.schema_version === 5) {
+    throw new Error("r9 adopts the existing immutable r8 service; install is forbidden");
+  }
   const plistSourcePath = absolute(required(options, "--plist-source"), "--plist-source");
   return stageDurableReaperInstallation({
     manifest: preflight.document,
@@ -720,14 +820,7 @@ async function attest(options) {
   } catch (error) {
     throw new Error(`reaper LaunchAgent is not inspectable: ${error.message}`);
   }
-  if (
-    !/(?:^|\n)\s*state\s*=\s*running\s*(?:\n|$)/.test(service.stdout) ||
-    !/(?:^|\n)\s*pid\s*=\s*[1-9][0-9]*\s*(?:\n|$)/.test(service.stdout)
-  ) {
-    throw new Error("reaper LaunchAgent is not running");
-  }
-  const pidMatch = service.stdout.match(/(?:^|\n)\s*pid\s*=\s*([1-9][0-9]*)\s*(?:\n|$)/);
-  const servicePid = Number(pidMatch[1]);
+  const servicePid = inspectRunningReaperService(preflight.document, service.stdout);
   const nodeInfo = await stat(preflight.document.cleanup_watchdog.node_runtime.path);
   if ((nodeInfo.mode & 0o111) === 0) throw new Error("reaper Node runtime is not executable");
   const receipt = {
@@ -755,16 +848,10 @@ async function attest(options) {
 async function waitHeartbeat(options) {
   const preflight = await load(options, { requirePersistentServiceArtifacts: true });
   const watchdog = preflight.document.cleanup_watchdog;
-  const receipt = JSON.parse(await readFile(watchdog.service_receipt_path, "utf8"));
-  if (
-    receipt.manifest_sha256 !== preflight.manifestSha256 ||
-    receipt.pid < 1 ||
-    receipt.plist_path !== watchdog.plist_path ||
-    receipt.ledger_path !== watchdog.ledger_path ||
-    receipt.heartbeat_path !== watchdog.heartbeat_path
-  ) {
-    throw new Error("reaper service receipt does not bind the durable heartbeat wait");
-  }
+  const receipt = validateServiceReceiptForManifest(
+    JSON.parse(await readFile(watchdog.service_receipt_path, "utf8")),
+    preflight,
+  );
   const target = `${receipt.launchd_domain}/${receipt.launchd_label}`;
   const deadline = Date.now() + (watchdog.heartbeat_max_age_seconds + 30) * 1_000;
   while (Date.now() < deadline) {
@@ -772,8 +859,8 @@ async function waitHeartbeat(options) {
       encoding: "utf8",
       maxBuffer: 4 * 1024 * 1024,
     });
-    const pidMatch = service.stdout.match(/(?:^|\n)\s*pid\s*=\s*([1-9][0-9]*)\s*(?:\n|$)/);
-    if (pidMatch && Number(pidMatch[1]) === receipt.pid) {
+    const servicePid = inspectRunningReaperService(preflight.document, service.stdout);
+    if (servicePid === receipt.pid) {
       const heartbeat = await readFile(watchdog.heartbeat_path, "utf8")
         .then((body) => JSON.parse(body))
         .catch(() => null);
