@@ -176,7 +176,7 @@ async function main(argv) {
     runner_lease: {
       path: options.runnerLease,
       sha256: options.runnerLeaseSha256,
-      operator_lane: "hrafn",
+      operator_lane: "mickey",
       state_root: "/Users/olifreuler/.stormforge/proxywar-operators",
     },
     runpodctl: {

@@ -29,10 +29,10 @@ const REMOTE_VERIFIER = path.join(
   "verify-mickey-cpu-fanout-bundle.mjs",
 );
 const AUDIT_SCRIPT = path.join(REPO_ROOT, "scripts", "audit-mickey-cpu-fanout.mjs");
-// The user transferred the Mac's existing Hrafn operator slot to this
-// incubator.  Mickey is the policy identity; Hrafn remains the machine-level
+// The user transferred the Mac's former Hrafn operator slot to this
+// incubator. Mickey is now both the policy identity and the machine-level
 // foreground lease understood by the shared runner guard.
-const RUNNER_OPERATOR_LANE = "hrafn";
+const RUNNER_OPERATOR_LANE = "mickey";
 const RUNNER_STATE_ROOT = "/Users/olifreuler/.stormforge/proxywar-operators";
 
 const SHA256 = /^[a-f0-9]{64}$/;
@@ -103,7 +103,7 @@ Options:
   --help          Print this help.
 
 Real execution must be the child of:
-  scripts/proxywar-runner-lease.sh run hrafn RUN_ID --output NEW_DIR -- <command>
+  scripts/proxywar-runner-lease.sh run mickey RUN_ID --output NEW_DIR -- <command>
 `;
 }
 
@@ -800,10 +800,10 @@ export async function preflightManifest(manifestPath, expectedSha256) {
   }
   await verifyHashedLocalFile(
     { path: document.runner_lease.path, sha256: document.runner_lease.sha256 },
-    "pinned Hrafn runner lease",
+    "pinned Mickey runner lease",
   );
   const runnerInfo = await stat(document.runner_lease.path);
-  if ((runnerInfo.mode & 0o111) === 0) throw new Error("pinned Hrafn runner lease must be executable");
+  if ((runnerInfo.mode & 0o111) === 0) throw new Error("pinned Mickey runner lease must be executable");
   const localArtifacts = new Map();
   for (const { arm } of validated.pairs) {
     for (const [label, reference] of [["bundle", arm.bundle], ["extractor", arm.extractor]]) {

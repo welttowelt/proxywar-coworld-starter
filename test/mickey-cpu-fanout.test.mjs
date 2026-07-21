@@ -172,7 +172,7 @@ function fixture() {
     runner_lease: {
       path: runnerLease,
       sha256: sha256File(runnerLease),
-      operator_lane: "hrafn",
+      operator_lane: "mickey",
       state_root: "/Users/olifreuler/.stormforge/proxywar-operators",
     },
     runpodctl: {
@@ -744,7 +744,7 @@ function manifestOrder(manifestPath) {
   return JSON.parse(readFileSync(manifestPath, "utf8")).arms[0].pairs[0].order;
 }
 
-test("launchd renderer is inert and preserves the transferred Hrafn lease command", () => {
+test("launchd renderer is inert and preserves the transferred Mickey lease command", () => {
   const { directory, manifest, manifestPath, manifestSha256 } = fixture();
   const outputParent = realpathSync(mkdtempSync("/private/tmp/mickey-launchd-test-"));
   try {
@@ -770,7 +770,7 @@ test("launchd renderer is inert and preserves the transferred Hrafn lease comman
     assert.equal(plan.executed, false);
     assert.equal(plan.command, "/bin/launchctl");
     const joined = plan.argv.join(" ");
-    assert.match(joined, /run hrafn mickey-fanout-unit --output/);
+    assert.match(joined, /run mickey mickey-fanout-unit --output/);
     assert.match(joined, /run-mickey-cpu-fanout\.mjs/);
   } finally {
     rmSync(directory, { recursive: true, force: true });

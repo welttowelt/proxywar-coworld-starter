@@ -4,7 +4,7 @@
  * Inert renderer only. It never calls launchctl and never creates a job, pod,
  * output directory, plist, daemon, cron entry, or background process.
  *
- * The rendered launchctl-submit argv keeps the transferred foreground Hrafn
+ * The rendered launchctl-submit argv keeps the transferred foreground Mickey
  * runner lease as the supervisor for the Mickey policy. An operator may execute it only after a
  * separate explicit approval for launchd use.
  */
@@ -117,7 +117,7 @@ export async function render(argv) {
     `PROXYWAR_RUNNER_LEASE_SCRIPT=${runner}`,
     runner,
     "run",
-    "hrafn",
+    "mickey",
     preflight.document.run_id,
     "--output",
     options.output,
@@ -139,7 +139,7 @@ export async function render(argv) {
     stderr_path: stderrPath,
     command: "/bin/launchctl",
     argv: launchctlArgs,
-    warning: "Do not execute without explicit approval; normal execution uses the transferred foreground Hrafn runner lease for the Mickey policy.",
+    warning: "Do not execute without explicit approval; normal execution uses the foreground Mickey runner lease.",
   };
 }
 
