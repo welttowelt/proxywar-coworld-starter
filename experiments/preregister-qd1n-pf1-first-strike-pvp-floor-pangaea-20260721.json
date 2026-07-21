@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-21T02:03:36Z",
+  "cycle_id": "odin-pf1-preregister-20260721",
+  "arm": "pf1",
+  "name": "first_strike_pvp_floor",
+  "status": "PREREGISTERED_PRE_SOURCE",
+  "objective": "On Odin's globally first hostile land contact, replace an inefficient 10-percent probe with the smallest safe same-target legal commitment that reaches the attack-size-dependent PvP loss floor.",
+  "parent": {
+    "commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "live_policy": "qd1n:v89",
+    "normalization": "The parent carries the mandatory K1Z Gravity identity repair while preserving the live v89 selector outside that safety fix."
+  },
+  "source_evidence": {
+    "game_image": "sha256:88d166c6c33609ec5b0dc1f70799001a1f1f34e1cd852ddbfc17a2eb43969ea1",
+    "game_version": "proxywar-0.1.8-0",
+    "default_config_sha256": "3e66eba94e3de376650c88611381f624e965507426045061332df90e143f80a9",
+    "attack_execution_sha256": "a07057436a8785f383b555cd6008ba509b38dfe6fec8ef10e1cb65fed491ec31",
+    "formula": "DefaultConfig.attackLogic blends a 60-percent current-loss term with a 40-percent alternate term. Only the current-loss term depends on attack size; its defenderTroops / attackTroops factor clamps at 0.6, so that term reaches its minimum at attackTroops >= defenderTroops / 0.6, exactly 5/3. The alternate term is attack-size independent, and speed reaches its separate floor earlier at attackTroops >= defenderTroops."
+  },
+  "replay": {
+    "round": 589,
+    "episode_request_id": "ereq_fdaf9154-fe26-4231-a0f1-88dac62e0bb1",
+    "episode_id": "50ccf8da-2199-4130-aba4-e21d08c9ed73",
+    "path": "/private/tmp/r589-fdaf9154.replay",
+    "sha256": "ec8a82e49ca6fbf77cafcea4ff5f7b7dffbbf3e87ce18793dc58fdc97b5a7923",
+    "decisions_sha256": "553b193024c4cef4d5e1f9e9b39bf2769060b2fdb9a88aa9b0ab1d20549acd6c",
+    "turn_record_sha256": "3631d8cb65976b90373deb79e856c67ae88bac165a781c11d8c777e8f2320313",
+    "ordered_legal_ids_sha256": "5814463d9c82e49a2362c0bb890ef08cdcbfd4f04f8223e3be54b3b8fdb0cb0d"
+  },
+  "observed_cell": {
+    "map": "Pangaea",
+    "turn": 4900,
+    "odin_seat_zero_based": 9,
+    "selected_action": "attack:idjkf73n:10",
+    "selected_action_accepted": true,
+    "target_id": "idjkf73n",
+    "target_name": "Ron SWGY",
+    "target_tile_share": 0.01,
+    "target_troops": 377067,
+    "own_troops": 2883001,
+    "own_troop_ratio": 0.98,
+    "relative_troop_ratio": 7.65,
+    "home_danger": "low",
+    "incoming_threat_ratio": 0,
+    "parent_commitment_troops": 288300,
+    "parent_attack_multiple": 0.764,
+    "legal_actions": [
+      "attack:idjkf73n:10",
+      "attack:idjkf73n:25",
+      "attack:idjkf73n:40"
+    ],
+    "smallest_floor_clearing_action": "attack:idjkf73n:25",
+    "floor_clearing_commitment_troops": 720750,
+    "floor_clearing_attack_multiple": 1.912
+  },
+  "isolated_change": {
+    "guard": [
+      "The exact parent has selected an unmarked 10-percent rival land attack on a resolved, unprotected, non-K1Z target.",
+      "No prior non-neutral rival land attack exists anywhere in the episode history.",
+      "At most 100 active decisions have occurred, preventing the capped 320-entry history from ever rearming the one-shot guard.",
+      "The target tile share is at most 0.12.",
+      "Own troop ratio is at least 0.90.",
+      "There is no current incoming pressure through either incomingAttacks or allProtocolAttackerIDs.",
+      "The parent action is below the 5/3 attack-troop floor.",
+      "A non-high-risk, unavoided 25- or 40-percent legal action against the same target clears the floor using exact action troops and targetTroops metadata."
+    ],
+    "action": "Replace only the parent's percentage with the smallest same-target safe legal 25- or 40-percent commitment whose exact metadata troops is at least 5/3 of targetTroops.",
+    "marker": "pf1",
+    "preserved": [
+      "target selection",
+      "K1Z protection",
+      "alliance behavior",
+      "neutral commitment",
+      "every later hostile contact and all continued-target 25/40 escalation",
+      "all behavior below 0.90 own troop ratio or under incoming pressure",
+      "all behavior when no legal percentage clears the floor"
+    ]
+  },
+  "exact_parent_reproduction": {
+    "result": "PASS",
+    "selected_action": "attack:idjkf73n:10",
+    "observed_fields_only": true,
+    "planner_variants_checked": [
+      "null",
+      "attack",
+      "build",
+      "target Ron SWGY",
+      "target Richard Higgins",
+      "avoid a different rival"
+    ],
+    "fixture_status": "TRANSIENT_REPRODUCTION_VERIFIED; COMMITTED_CANONICAL_FIXTURE_REQUIRED_BEFORE SOURCE EDIT"
+  },
+  "deduplication": {
+    "gr1_ef2_pg2": "Changed neutral-opening commitment, not hostile first-contact efficiency.",
+    "retired_rf1": "RF1 was a rejected 1.10 reserve-floor arm. PF1 does not suppress attacks or reuse that codename; it changes at most one globally first hostile commitment after the parent has already chosen the target.",
+    "v23_v24_v25": "Tested reserve caps on hostile commitments. PF1 raises at most one globally first weak-target commitment while reserve is at least 0.90 and leaves continuation escalation unchanged.",
+    "tpl1": "Bundled the L2 floor inside a full replacement chassis, so its matched loss did not isolate this variable.",
+    "fc1": "Covered continued-target finish continuity after an established attack streak, not first contact."
+  },
+  "gates": {
+    "red_fixture": "A committed canonical fixture built from the hash-bound R589 turn-4900 evidence must make exact parent select unmarked attack:idjkf73n:10; PF1 must select attack:idjkf73n:25 with marker pf1.",
+    "lock_ins": [
+      "A low-reserve version of the same state remains 10 percent.",
+      "Incoming pressure preserves the parent action.",
+      "A protected K1Z target is never selected.",
+      "Any prior hostile land contact, including against a different rival, permanently disables PF1 inside its bounded decision window.",
+      "A continued target preserves the parent's 25/40 escalation.",
+      "A first contact after 100 active decisions preserves the parent action.",
+      "A first contact with missing exact metadata or no floor-clearing safe legal percentage preserves the parent action.",
+      "When both 25 and 40 percent clear the floor, PF1 selects 25; when only 40 clears, PF1 selects 40."
+    ],
+    "mechanism": "The exact linux/amd64 candidate must reach pf1 with accepted decisions, zero unexplained holds or rejects, no second PF1 reroute in an episode, and zero K1Z harm.",
+    "matched": "A pinned candidate-parent seat swap must show strictly better aggregate placement points; tiles and time-to-remove the marked weak targets are secondary. A tie or loss rejects PF1.",
+    "hosted": "Current-roster diagnostic must finish 4/4 with actual Odin wins before regression.",
+    "regression": "A separate 20/20 map-and-seat gate and final fail-closed RCI are required before automatic league submission."
+  },
+  "failure_conditions": [
+    "The exact red fixture cannot be materialized without invented state.",
+    "PF1 changes target identity, stacks over a parent marker, or fires outside the preregistered boundary.",
+    "PF1 fires more than once in an episode, chooses 25 when it does not clear the floor, or chooses 40 when 25 clears.",
+    "Any K1Z harm, unexplained hold, rejection, or source/image mismatch occurs.",
+    "The matched pair does not improve aggregate placement points."
+  ],
+  "current_truth": {
+    "source_edited": false,
+    "runner_started": false,
+    "image_built": false,
+    "diagnostic_uploaded": false,
+    "league_mutated": false,
+    "prior_champion_preserved": true
+  }
+}

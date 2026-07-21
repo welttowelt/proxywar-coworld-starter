@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T01:30:57Z",
-  "cycle_id": "odin-fc1-fixture-stop-20260721",
+  "updated_at": "2026-07-21T02:03:36Z",
+  "cycle_id": "odin-pf1-preregister-20260721",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "fc1_closed_fixture_integrity_no_submit",
+  "state": "pf1_preregistered_pre_source",
   "arm": {
-    "id": "fc1",
-    "name": "deterministic_finish_continuity",
-    "branch": "rci/fc1-deterministic-finish-continuity",
+    "id": "pf1",
+    "name": "first_strike_pvp_floor",
+    "branch": "rci/pf1-first-strike-pvp-floor",
     "parent_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
     "candidate_commit": null,
-    "preregistration": "experiments/preregister-qd1n-fc1-deterministic-finish-continuity-world-20260721.json",
-    "closed": true,
-    "verdict": "STOP_PRE_SOURCE_FIXTURE_INTEGRITY"
+    "preregistration": "experiments/preregister-qd1n-pf1-first-strike-pvp-floor-pangaea-20260721.json",
+    "closed": false,
+    "verdict": null
   },
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
@@ -49,19 +49,24 @@
     "kimi": "external Kimi K3 Max adviser only"
   },
   "bounded_evidence": {
-    "round": 588,
-    "map": "World",
-    "turn": 11100,
-    "target": "RelhAlpha",
-    "consecutive_target_attacks": 5,
-    "relative_troop_ratio": 1.44,
-    "selected_action": "build:Port",
-    "recommended_legal_action": "attack:idjkf73n:25",
-    "later_finish_tile_delta": 46112,
-    "packet_sha256": "94ea9d160f1846a030178733c4fc6cf6f431ec38fcb96c543d080b3d194f4ddf",
-    "replay_hash": "d97f11715f04eb70cfaf47d9864547bdccdafa2c93adc68101123940189232be",
-    "fixture_integrity": "FAILED_RAW_FIELDS_INSUFFICIENT",
-    "terminal_audit": "experiments/audit-qd1n-fc1-fixture-integrity-stop-20260721.json"
+    "round": 589,
+    "map": "Pangaea",
+    "turn": 4900,
+    "target": "Ron SWGY",
+    "target_id": "idjkf73n",
+    "target_tile_share": 0.01,
+    "target_troops": 377067,
+    "own_troops": 2883001,
+    "own_troop_ratio": 0.98,
+    "relative_troop_ratio": 7.65,
+    "selected_action": "attack:idjkf73n:10",
+    "preregistered_action": "attack:idjkf73n:25",
+    "parent_attack_multiple": 0.764,
+    "candidate_attack_multiple": 1.912,
+    "replay_hash": "ec8a82e49ca6fbf77cafcea4ff5f7b7dffbbf3e87ce18793dc58fdc97b5a7923",
+    "turn_record_hash": "3631d8cb65976b90373deb79e856c67ae88bac165a781c11d8c777e8f2320313",
+    "fixture_integrity": "OBSERVED_FIELDS_PARENT_REPRODUCED",
+    "preregistration": "experiments/preregister-qd1n-pf1-first-strike-pvp-floor-pangaea-20260721.json"
   },
   "gates": {
     "source_ready": false,
@@ -81,8 +86,8 @@
   "transport_truth": {
     "mode": "DETERMINISTIC_NO_BEDROCK",
     "clean_local_bedrock_available": false,
-    "rule": "FC1 must not depend on planner output or weaken the zero-degradation gate."
+    "rule": "PF1 is a post-selector deterministic reroute and must not depend on planner output or weaken the zero-degradation gate."
   },
-  "next_automatic_transition": "Preserve qd1n:v89. Audit one bounded R589 loss cell for a replay-visible action defect that the exact parent reproduces using observed fields only. Do not reopen FC1, invent omitted planner state, or mutate league state.",
+  "next_automatic_transition": "Materialize the hash-bound R589 turn-4900 canonical red fixture on exact parent 1ccaff73. The parent must select unmarked attack:idjkf73n:10 from observed fields only. Implement only PF1's globally first-contact, same-target 5/3 floor reroute after the red test fails; run the full suite and stop on any boundary drift. Do not start Coworld, upload, or mutate league state before source and RCI gates pass.",
   "prior_verified_champion_preserved": true
 }
