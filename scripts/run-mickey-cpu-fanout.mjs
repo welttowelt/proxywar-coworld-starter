@@ -189,15 +189,15 @@ const R8_RECOVERY_PREEXISTING_IDS = Object.freeze([
   "ne262xferohtdi", "og13wgkfcmblx9", "rkm013fsjsf87c", "rwvsgeancauyug",
   "sxrtmdyd62n3ia", "szlrnk3ucex44f", "vbo7a33nlvsrtf", "zadju8y8p6d5r9",
 ]);
-const R9_ACTIVATION_RUN_ID = "mickey-screen-g000-r9c-20260721t075155z";
+const R9_ACTIVATION_RUN_ID = "mickey-screen-g000-r9d-20260721t080619z";
 const R9_ACTIVATION_MANIFEST_PATH = path.join(
   REPO_ROOT,
   "experiments",
-  "manifest-mickey-cpu-screen-g000-r9c-20260721.json",
+  "manifest-mickey-cpu-screen-g000-r9d-20260721.json",
 );
 const R9_ACTIVATION_OUTPUT_PATH =
-  "/private/tmp/mickey-screen-g000-r9c-20260721t075155z";
-const R9_ACTIVATION_MANIFEST_DIGEST = "e6bceca345988bac6ea61264a4bd7db598d4e38e2fcf334c45a6767e6e036630";
+  "/private/tmp/mickey-screen-g000-r9d-20260721t080619z";
+const R9_ACTIVATION_MANIFEST_DIGEST = "ff4f80c7bea4b09de19adc5a921b98e2ee3305b4969a16d5baf290e01d841582";
 const R9_RELOCATED_BUNDLE_CANARY_PATH =
   "/private/tmp/mickey-r9-reloc-canary-b4nH5N/episode/receipt.json";
 const R9_RELOCATED_BUNDLE_CANARY_SHA256 =
@@ -775,7 +775,7 @@ function validateR9ActivationContract(document) {
   const compatibility = persistent.compatibility;
   if (
     document.run_id !== R9_ACTIVATION_RUN_ID ||
-    activation.kind !== "r7_canary_r8_pre_post_recovery_r9c_bundle_and_transport_fix_bound_g000_v1" ||
+    activation.kind !== "r7_canary_r8_pre_post_recovery_r9d_reaper_activation_fix_bound_g000_v1" ||
     activation.r8_source_commit !== R8_SOURCE_COMMIT ||
     activation.r8_manifest_sha256 !== R8_MANIFEST_SHA256 ||
     activation.r8_fanout_sha256 !== R8_FANOUT_SHA256 ||

@@ -321,7 +321,7 @@ async function main(argv) {
     if (
       template.schema_version !== 5 ||
       template.kind !== "mickey_cpu_fanout" ||
-      template.activation?.kind !== "r7_canary_r8_pre_post_recovery_r9_bundle_fix_bound_g000_v1" ||
+      template.activation?.kind !== "r7_canary_r8_pre_post_recovery_r9c_bundle_and_transport_fix_bound_g000_v1" ||
       template.activation?.persistent_reaper?.kind !== "adopt_existing_r8_immutable_cleanup_daemon_v1" ||
       template.control_plane?.pre_post_recovery == null
     ) {
@@ -338,9 +338,11 @@ async function main(argv) {
     manifest.runpodctl.path = template.runpodctl.path;
     manifest.activation = {
       ...structuredClone(template.activation),
-      kind: "r7_canary_r8_pre_post_recovery_r9c_bundle_and_transport_fix_bound_g000_v1",
+      kind: "r7_canary_r8_pre_post_recovery_r9d_reaper_activation_fix_bound_g000_v1",
       output_path: `/private/tmp/${options.runId}`,
     };
+    manifest.activation.persistent_reaper.compatibility.foreground_sha256 =
+      controlPlane.exact_id_reaper.sha256;
   }
   await writeFile(options.output, `${JSON.stringify(manifest, null, 2)}\n`, { flag: "wx", mode: 0o600 });
   process.stdout.write(`${JSON.stringify({ output: options.output, run_id: options.runId, nonce: options.nonce, pair_count: 16 })}\n`);

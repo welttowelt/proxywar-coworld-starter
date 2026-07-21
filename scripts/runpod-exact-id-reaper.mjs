@@ -390,7 +390,7 @@ function equalSnapshot(left, right) {
   return JSON.stringify(canonical(left)) === JSON.stringify(canonical(right));
 }
 
-const R9_RUN_PREFIX = "mickey-screen-g000-r9b-20260721t063347z:";
+const R9_ACTIVATION_RUN_ID = "mickey-screen-g000-r9d-20260721t080619z";
 
 function sortedCanonicalValue(value) {
   if (Array.isArray(value)) return value.map(sortedCanonicalValue);
@@ -409,7 +409,8 @@ export function reaperLedgerDigest(ledger) {
 
 function assertR9RunId(runId) {
   const value = assertString(runId, "r9 run ID", /^[A-Za-z0-9._:-]+$/, 256);
-  if (!value.startsWith(R9_RUN_PREFIX) || value.length <= R9_RUN_PREFIX.length) {
+  const exactPrefix = `${R9_ACTIVATION_RUN_ID}:`;
+  if (!value.startsWith(exactPrefix) || value.length <= exactPrefix.length) {
     throw new ReaperIdentityRefusalError("ownership record is outside the exact r9 activation");
   }
   return value;
@@ -855,7 +856,6 @@ export async function blockPendingBeforeProviderPost({
   if (!expected || typeof expected !== "object" || Array.isArray(expected)) {
     throw new ReaperValidationError("r9 pre-provider block expectation is invalid");
   }
-  const exactRunPrefix = "mickey-screen-g000-r9b-20260721t063347z:";
   return withLedgerLock(ledgerPath, async () => {
     const now = normalizeNow(clock);
     const ledger = await readReaperLedger(ledgerPath);
@@ -874,9 +874,8 @@ export async function blockPendingBeforeProviderPost({
         throw new ReaperIdentityRefusalError(`r9 pre-provider block ${field} differs from pending proof`);
       }
     }
+    assertR9RunId(record.run_id);
     if (
-      !record.run_id.startsWith(exactRunPrefix) ||
-      record.run_id.length <= exactRunPrefix.length ||
       record.state !== "pending" ||
       expected.state !== "pending" ||
       record.pod_id !== null ||

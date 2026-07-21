@@ -1,5 +1,22 @@
 # Hosted policy experiments
 
+## Mickey r9c activation RCI and r9d repair, 2026-07-21
+
+r9c failed closed before provider discovery or pod creation. The runner passed
+the new r9c run ID into cleanup registration, but the foreground exact-ID
+reaper retained two r9b-only prefix checks. The archived run contains one
+provider inventory read, no create command, no r9c ledger record, and no ledger
+revision change (`83` before and after). It therefore produced neither a
+policy verdict nor a run-owned provider resource.
+
+r9d uses a fresh run identity and one exact reaper activation constant; the
+pre-provider block path now calls that shared assertion. Regressions load the
+actual current manifest, exercise registration and zero-provider-call
+blocking, and prove an unknown activation is rejected before provider I/O with
+an unchanged ledger. The complete suite passes `303/303`; the zero-network
+dry-run binds all 16 pairs at concurrency four. Machine-readable record:
+`experiments/diagnosis-mickey-r9c-reaper-activation-rci-20260721.json`.
+
 ## Mickey r9b transport RCI and r9c repair, 2026-07-21
 
 The r9b CPU screen produced no policy verdict. All eight candidate/control
