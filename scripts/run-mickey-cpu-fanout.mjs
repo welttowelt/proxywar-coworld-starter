@@ -82,9 +82,9 @@ const REQUIRED_SHARED_FILES = Object.freeze([
 const FORBIDDEN_KEY = /(api.?key|secret|password|credential|access.?token|private.?key)/i;
 const RUNPODCTL_SOURCE_REPOSITORY = "https://github.com/runpod/runpodctl";
 const RUNPODCTL_UPSTREAM_BASE_COMMIT = "3928df943d67c89e66b4945bd5c8b38ffd512767";
-const RUNPODCTL_PATCHED_SOURCE_COMMIT = "d4296baa6edf37f098d58e9d92f7b496ee4bfaab";
-const RUNPODCTL_PATCH_ID = "mickey-cpu-terminate-after-v1";
-const RUNPODCTL_CREATE_INTERFACE = "legacy-graphql-json-v1";
+const RUNPODCTL_PATCHED_SOURCE_COMMIT = "729623f7093b6854a9d641c7924dc2a418eaeddc";
+const RUNPODCTL_PATCH_ID = "mickey-cpu-terminate-after-compute-type-v2";
+const RUNPODCTL_CREATE_INTERFACE = "legacy-graphql-json-v2";
 const RUNPODCTL_REQUEST_HASH_ALGORITHM = "sorted-json-sha256-v1";
 const SSH_HOST_KEY_ATTESTATION_DOMAIN = "mickey-ssh-host-key-v1";
 
@@ -961,14 +961,14 @@ export function validateCreateRequestAttestation(
     record.requestInput,
     [
       "cloudType",
+      "computeType",
       "containerDiskInGb",
       "deployCost",
       "dockerArgs",
       "dataCenterId",
       "env",
-      "gpuCount",
-      "gpuTypeId",
       "imageName",
+      "instanceIds",
       "minMemoryInGb",
       "minVcpuCount",
       "name",
@@ -985,6 +985,7 @@ export function validateCreateRequestAttestation(
   );
   const expected = {
     cloudType: manifest.pod.cloud_type,
+    computeType: manifest.pod.compute_type,
     containerDiskInGb: manifest.pod.container_disk_gb,
     deployCost: manifest.pod.max_cost_per_hour,
     dockerArgs: "",
@@ -993,9 +994,11 @@ export function validateCreateRequestAttestation(
       key: "MICKEY_CONTROL_PLANE_NONCE",
       value: controlSecret,
     }],
-    gpuCount: manifest.pod.gpu_count,
-    gpuTypeId: "",
     imageName: manifest.pod.image,
+    instanceIds: [
+      `cpu5c-${manifest.pod.vcpu_count}-${manifest.pod.memory_gb}`,
+      `cpu3c-${manifest.pod.vcpu_count}-${manifest.pod.memory_gb}`,
+    ],
     minMemoryInGb: manifest.pod.memory_gb,
     minVcpuCount: manifest.pod.vcpu_count,
     name: expectedName,

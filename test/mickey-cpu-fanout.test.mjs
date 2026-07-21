@@ -146,7 +146,7 @@ function fixture() {
   const receiptPath = path.join(directory, "source-reach.json");
   writeFileSync(bundle, "immutable-bundle\n");
   writeFileSync(extractor, "#!/usr/bin/env python3\n");
-  writeFileSync(runpodctl, "vcs.revision=d4296baa6edf37f098d58e9d92f7b496ee4bfaab\n");
+  writeFileSync(runpodctl, "vcs.revision=729623f7093b6854a9d641c7924dc2a418eaeddc\n");
   writeFileSync(runpodctlPatch, "fixture patch\n");
   writeFileSync(runnerLease, "#!/bin/sh\nexit 99\n");
   chmodSync(runpodctl, 0o755);
@@ -180,11 +180,11 @@ function fixture() {
       sha256: sha256File(runpodctl),
       source_repository: "https://github.com/runpod/runpodctl",
       upstream_base_commit: "3928df943d67c89e66b4945bd5c8b38ffd512767",
-      source_commit: "d4296baa6edf37f098d58e9d92f7b496ee4bfaab",
+      source_commit: "729623f7093b6854a9d641c7924dc2a418eaeddc",
       patch_path: runpodctlPatch,
       patch_sha256: sha256File(runpodctlPatch),
-      patch_id: "mickey-cpu-terminate-after-v1",
-      create_interface: "legacy-graphql-json-v1",
+      patch_id: "mickey-cpu-terminate-after-compute-type-v2",
+      create_interface: "legacy-graphql-json-v2",
     },
     pod: {
       name_prefix: "proxywar-mickey-cpu-fanout",
@@ -493,6 +493,7 @@ test("create request attestation binds CPU, cost, and typed server termination i
     const controlSecret = "c".repeat(64);
     const requestInput = {
       cloudType: "COMMUNITY",
+      computeType: "CPU",
       containerDiskInGb: 20,
       deployCost: 0.1,
       dockerArgs: "",
@@ -501,9 +502,8 @@ test("create request attestation binds CPU, cost, and typed server termination i
         key: "MICKEY_CONTROL_PLANE_NONCE",
         value: controlSecret,
       }],
-      gpuCount: 0,
-      gpuTypeId: "",
       imageName: manifest.pod.image,
+      instanceIds: ["cpu5c-2-4", "cpu3c-2-4"],
       minMemoryInGb: 4,
       minVcpuCount: 2,
       name: expectedName,

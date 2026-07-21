@@ -9,10 +9,10 @@ import { fileURLToPath } from "node:url";
 import { derivePairOrder } from "./run-mickey-cpu-fanout.mjs";
 
 const SOURCE_RECEIPT_SHA256 = "127d60ee51f4e4b2d50c7b6908d1e571ce8f9e40f1939f61c25e3cdb4abaa129";
-const RUNPODCTL_SHA256 = "b588c113a85856e13af9e02bd107f6c330ecd3b5b56fa1bc94cc673f6cb1f388";
+const RUNPODCTL_SHA256 = "9e376b334c8d16666fa58dee7d7053b88e0ff580db3c714811e13c8640cd7838";
 const RUNPODCTL_UPSTREAM_BASE_COMMIT = "3928df943d67c89e66b4945bd5c8b38ffd512767";
-const RUNPODCTL_SOURCE_COMMIT = "d4296baa6edf37f098d58e9d92f7b496ee4bfaab";
-const RUNPODCTL_PATCH_SHA256 = "9aca93b4e0dc8f48b0b36df448dafdb52dd12a6ec4d80b70ad7a171a09106a18";
+const RUNPODCTL_SOURCE_COMMIT = "729623f7093b6854a9d641c7924dc2a418eaeddc";
+const RUNPODCTL_PATCH_SHA256 = "020e4c6198c79dcdd596b582222aacb027970c282540186378fc7f480baa91c2";
 const RETAINED = new Map([
   ["grow-opening", ["grow", "all-k1z-grow", "mm1g"]],
   ["grow-low-share", ["grow", "all-k1z-grow", "mm1g"]],
@@ -187,8 +187,8 @@ async function main(argv) {
       source_commit: RUNPODCTL_SOURCE_COMMIT,
       patch_path: options.runpodctlPatch,
       patch_sha256: RUNPODCTL_PATCH_SHA256,
-      patch_id: "mickey-cpu-terminate-after-v1",
-      create_interface: "legacy-graphql-json-v1",
+      patch_id: "mickey-cpu-terminate-after-compute-type-v2",
+      create_interface: "legacy-graphql-json-v2",
     },
     pod: {
       name_prefix: "proxywar-mickey-cpu-fanout",
