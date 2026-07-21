@@ -18,7 +18,7 @@ import { WebSocket } from "ws";
 import { AnthropicBedrock } from "@anthropic-ai/bedrock-sdk";
 import {
   buildState,
-  chooseAction as chooseSelectorAction,
+  chooseMickeyRuntimeAction as chooseSelectorAction,
   clean,
   recordDecision,
 } from "./strategy-engine.mjs";

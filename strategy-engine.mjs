@@ -1030,6 +1030,44 @@ export function chooseAction(actions, state, plan = null, history = []) {
   return { ...chosen, policyMarker: "mm1c" };
 }
 
+// Mickey-specific runtime boundary. On Pangaea, keep an already-selected land
+// attack on the single current aggressor when doing so is safe. This changes
+// only the target: it never creates an attack or raises troop commitment.
+export function chooseMickeyRuntimeAction(actions, state, plan = null, history = []) {
+  const baseline = chooseAction(actions, state, plan, history);
+  if (state.mapFingerprint !== "Pangaea" || baseline.kind !== "attack" ||
+      isNeutralExpansion(baseline)) {
+    return baseline;
+  }
+
+  const attackerIDs = [...new Set(
+    (state.self.allProtocolAttackerIDs || []).map((id) => clean(id).toLowerCase()),
+  )].filter(Boolean);
+  if (attackerIDs.length !== 1) return baseline;
+
+  const attackerID = attackerIDs[0];
+  const attacker = state.rivals.find((rival) => clean(rival.id).toLowerCase() === attackerID);
+  if (!attacker || rivalIsProtected(state, history, attacker) ||
+      !Number.isFinite(attacker.relativeTroopRatio) || attacker.relativeTroopRatio < 1.0) {
+    return baseline;
+  }
+
+  const baselineTargetID = clean(baseline?.metadata?.targetID ?? "").toLowerCase();
+  if (baselineTargetID === attackerID) return baseline;
+  const baselinePercent = actionPercent(baseline);
+  if (!Number.isFinite(baselinePercent)) return baseline;
+
+  const attackerActions = actions.filter((action) => {
+    const percent = actionPercent(action);
+    return action.kind === "attack" && !isNeutralExpansion(action) &&
+      action.risk?.level !== "high" && Number.isFinite(percent) && percent <= baselinePercent &&
+      clean(action?.metadata?.targetID ?? "").toLowerCase() === attackerID;
+  });
+  const redirected = pickPercent(attackerActions, baselinePercent, new Set());
+  if (!redirected || redirected.id === baseline.id) return baseline;
+  return { ...redirected, policyMarker: "mr1" };
+}
+
 export function recordDecision(history, action, state) {
   const rival = rivalForAction(action, state);
   const metadataTargetID = clean(

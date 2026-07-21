@@ -5,6 +5,7 @@ import {
   boatConversionStalled,
   buildState,
   chooseAction,
+  chooseMickeyRuntimeAction,
   recordDecision,
 } from "../strategy-engine.mjs";
 
@@ -449,6 +450,118 @@ test("Pangaea route ignores current-protocol attribution and stays exact v77", (
     null,
     [],
   );
+  assert.equal(selected.id, bystanderAttack.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("Mickey runtime retargets the reachable round-607 Pangaea counter", () => {
+  const aggressorAttack = {
+    ...action("attack:1wy62oh4:10", "attack", "Attack daveey 10%"),
+    metadata: { targetID: "1wy62oh4", targetName: "daveey", troopPercent: 10 },
+  };
+  const bystanderAttack = {
+    ...action("attack:r5o3pta1:10", "attack", "Attack Auri 10%"),
+    metadata: { targetID: "r5o3pta1", targetName: "Auri", troopPercent: 10 },
+  };
+  const actions = [aggressorAttack, bystanderAttack];
+  const state = buildState(observation({
+    tileShare: 0.2,
+    troopRatio: 0.8,
+    incomingAttacks: 1,
+    incomingAttackPlayerIDs: ["1wy62oh4"],
+    spawnTile: 659528,
+    rivals: [
+      {
+        id: "1wy62oh4",
+        name: "daveey",
+        tileShare: 0.12,
+        relativeTroopRatio: 1.014,
+        incomingAttack: true,
+      },
+      { id: "r5o3pta1", name: "Auri", tileShare: 0.01, relativeTroopRatio: 8.39 },
+    ],
+  }), actions, []);
+
+  assert.equal(chooseAction(actions, state, null, []).id, bystanderAttack.id);
+  const selected = chooseMickeyRuntimeAction(actions, state, null, []);
+  assert.equal(selected.id, aggressorAttack.id);
+  assert.equal(selected.policyMarker, "mr1");
+});
+
+test("Mickey runtime does not create a Pangaea counterattack below the safety ratio", () => {
+  const aggressorAttack = {
+    ...action("attack:aggressor:10", "attack", "Attack Aggressor 10%"),
+    metadata: { targetID: "aggressor", troopPercent: 10 },
+  };
+  const bystanderAttack = {
+    ...action("attack:bystander:10", "attack", "Attack Bystander 10%"),
+    metadata: { targetID: "bystander", troopPercent: 10 },
+  };
+  const actions = [aggressorAttack, bystanderAttack];
+  const state = buildState(observation({
+    tileShare: 0.2,
+    incomingAttacks: 1,
+    incomingAttackPlayerIDs: ["aggressor"],
+    spawnTile: 659528,
+    rivals: [
+      { id: "aggressor", name: "Aggressor", tileShare: 0.12, relativeTroopRatio: 0.99 },
+      { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
+    ],
+  }), actions, []);
+
+  const selected = chooseMickeyRuntimeAction(actions, state, null, []);
+  assert.equal(selected.id, bystanderAttack.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("Mickey runtime never raises commitment to reach the current attacker", () => {
+  const aggressorAttack = {
+    ...action("attack:aggressor:25", "attack", "Attack Aggressor 25%"),
+    metadata: { targetID: "aggressor", troopPercent: 25 },
+  };
+  const bystanderAttack = {
+    ...action("attack:bystander:10", "attack", "Attack Bystander 10%"),
+    metadata: { targetID: "bystander", troopPercent: 10 },
+  };
+  const actions = [aggressorAttack, bystanderAttack];
+  const state = buildState(observation({
+    tileShare: 0.2,
+    incomingAttacks: 1,
+    incomingAttackPlayerIDs: ["aggressor"],
+    spawnTile: 659528,
+    rivals: [
+      { id: "aggressor", name: "Aggressor", tileShare: 0.12, relativeTroopRatio: 1.2 },
+      { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
+    ],
+  }), actions, []);
+
+  const selected = chooseMickeyRuntimeAction(actions, state, null, []);
+  assert.equal(selected.id, bystanderAttack.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("Mickey runtime leaves the same attacker menu unchanged outside Pangaea", () => {
+  const aggressorAttack = {
+    ...action("attack:aggressor:10", "attack", "Attack Aggressor 10%"),
+    metadata: { targetID: "aggressor", troopPercent: 10 },
+  };
+  const bystanderAttack = {
+    ...action("attack:bystander:10", "attack", "Attack Bystander 10%"),
+    metadata: { targetID: "bystander", troopPercent: 10 },
+  };
+  const actions = [aggressorAttack, bystanderAttack];
+  const state = buildState(observation({
+    tileShare: 0.2,
+    incomingAttacks: 1,
+    incomingAttackPlayerIDs: ["aggressor"],
+    spawnTile: 1088580,
+    rivals: [
+      { id: "aggressor", name: "Aggressor", tileShare: 0.12, relativeTroopRatio: 1.1 },
+      { id: "bystander", name: "Bystander", tileShare: 0.12, relativeTroopRatio: 1.25 },
+    ],
+  }), actions, []);
+
+  const selected = chooseMickeyRuntimeAction(actions, state, null, []);
   assert.equal(selected.id, bystanderAttack.id);
   assert.equal(selected.policyMarker, undefined);
 });
