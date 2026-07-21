@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T03:39:31Z",
-  "cycle_id": "odin-cb1-zero-capture-stop-20260721",
+  "updated_at": "2026-07-21T05:43:34Z",
+  "cycle_id": "odin-20260721T053835Z-53531",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "no_active_arm_cb1_stopped_zero_capture",
+  "state": "no_active_arm_round596_replay_cell_blocked",
   "arm": {
     "id": "cb1",
     "name": "pangaea_cap_bank_conversion",
@@ -32,10 +32,18 @@
     "odin_rank": 3,
     "odin_score": 16.2973203239,
     "gap_to_leader": 22.4486322703,
-    "latest_completed_round": 591,
-    "latest_odin_rank": 3,
-    "latest_odin_score": 0.25,
-    "running_round": 592
+    "latest_round_checked_at": "2026-07-21T05:43:34Z",
+    "latest_completed_round": 596,
+    "latest_completed_round_id": "round_db58d6e7-8eb9-4314-8829-e2b5da6723fe",
+    "latest_completed_at": "2026-07-21T05:36:04.283733Z",
+    "latest_odin_rank": 11,
+    "latest_odin_score": 0.0,
+    "latest_odin_completed_episodes": 4,
+    "latest_round_leader": "Auri",
+    "latest_round_leader_policy": "proxywar-keystone:v42",
+    "latest_round_leader_score": 0.5,
+    "running_round": null,
+    "running_round_truth": "not_checked_this_cycle"
   },
   "locks": {
     "runner": "free",
@@ -136,6 +144,15 @@
     "verdict": "REJECTED_ZERO_REACH",
     "audit": "experiments/audit-qd1n-pf1-zero-reach-stop-20260721.json"
   },
-  "next_automatic_transition": "CB1 is terminally stopped and must not be widened or rerun. Refresh the latest completed official round, audit one bounded loss cell, and open only a different replay-visible mechanism whose selector inputs are already faithful. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
+  "bounded_live_checkpoint": {
+    "audit": "experiments/audit-qd1n-round596-replay-cell-blocked-20260721.json",
+    "official_round": 596,
+    "round_id": "round_db58d6e7-8eb9-4314-8829-e2b5da6723fe",
+    "result": "qd1n:v89 rank 11, score 0 across 4 completed episodes",
+    "loss_cell_audit": "BLOCKED_NO_EPISODE_PAYLOAD",
+    "policy_action_delta": false,
+    "league_mutation": false
+  },
+  "next_automatic_transition": "Retry only the round 596 qd1n:v89 episode listing and bind one replay-backed loss cell before opening a different mechanism. Do not infer a mechanism from aggregate rank. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
   "prior_verified_champion_preserved": true
 }
