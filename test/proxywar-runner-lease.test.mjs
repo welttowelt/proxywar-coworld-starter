@@ -1088,8 +1088,8 @@ test("Odin launcher fails closed on invalid status and rejects the separate Hraf
   assert.equal(readFileSync(hrafnCursor, "utf8"), "cursor\n");
 
   const shim = invoke(legacyPrompt.state, ["acquire", "hrafn"]);
-  assert.equal(shim.status, 78);
-  assert.match(shim.stderr, /transition-required:hrafn/);
+  assert.equal(shim.status, 64);
+  assert.match(shim.stderr, /run odin\|mickey/);
   assert.equal(existsSync(path.join(legacyPrompt.state, "runner.lock")), false);
 });
 
