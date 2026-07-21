@@ -601,3 +601,75 @@ test("strict promotion verifies final RCI, K1Z safety, and distinct replay evide
   assert.equal(duplicated.status, 1);
   assert.match(duplicated.report.errors.join(" "), /replay hashes.*duplicated/);
 });
+
+test("strict promotion binds two regression requests to one 20-episode coverage set", () => {
+  const context = strictDiagnosticFixture();
+  addStrictPromotionEvidence(context);
+  const requestIDs = ["xreq_regression_world", "xreq_regression_pangaea"];
+  delete context.value.promotion.request_id;
+  context.value.promotion.request_ids = requestIDs;
+
+  const regressionBinding = context.value.promotion.regression_audit_receipt;
+  const regression = JSON.parse(readFileSync(regressionBinding.path, "utf8"));
+  delete regression.request_id;
+  regression.request_ids = requestIDs;
+  regression.episodes.forEach((episode, index) => {
+    episode.experience_request_id = requestIDs[index % requestIDs.length];
+  });
+  writeFileSync(regressionBinding.path, JSON.stringify(regression));
+  regressionBinding.sha256 = sha256(regressionBinding.path);
+
+  const passed = validate(context.value, "--require-promotion");
+  assert.equal(passed.status, 0, passed.stderr);
+  assert.equal(passed.report.promotion_eligible, true);
+});
+
+test("strict promotion rejects invalid two-request regression bindings", () => {
+  const context = strictDiagnosticFixture();
+  addStrictPromotionEvidence(context);
+  const requestIDs = ["xreq_regression_world", "xreq_regression_pangaea"];
+  delete context.value.promotion.request_id;
+  context.value.promotion.request_ids = requestIDs;
+
+  const regressionBinding = context.value.promotion.regression_audit_receipt;
+  const regression = JSON.parse(readFileSync(regressionBinding.path, "utf8"));
+  delete regression.request_id;
+  regression.request_ids = requestIDs;
+  regression.episodes.forEach((episode) => {
+    episode.experience_request_id = requestIDs[0];
+  });
+  writeFileSync(regressionBinding.path, JSON.stringify(regression));
+  regressionBinding.sha256 = sha256(regressionBinding.path);
+
+  const missingRequest = validate(context.value, "--require-promotion");
+  assert.equal(missingRequest.status, 1);
+  assert.match(
+    missingRequest.report.errors.join(" "),
+    /both declared regression requests/,
+  );
+
+  regression.episodes.forEach((episode, index) => {
+    episode.experience_request_id = requestIDs[index % requestIDs.length];
+    episode.map = "Pangaea";
+    episode.seat = 0;
+  });
+  writeFileSync(regressionBinding.path, JSON.stringify(regression));
+  regressionBinding.sha256 = sha256(regressionBinding.path);
+  const missingCoverage = validate(context.value, "--require-promotion");
+  assert.equal(missingCoverage.status, 1);
+  assert.match(
+    missingCoverage.report.errors.join(" "),
+    /map-and-seat coverage is insufficient/,
+  );
+
+  regression.request_ids = [requestIDs[0], requestIDs[0]];
+  context.value.promotion.request_ids = [requestIDs[0], requestIDs[0]];
+  writeFileSync(regressionBinding.path, JSON.stringify(regression));
+  regressionBinding.sha256 = sha256(regressionBinding.path);
+  const duplicatedRequest = validate(context.value, "--require-promotion");
+  assert.equal(duplicatedRequest.status, 1);
+  assert.match(
+    duplicatedRequest.report.errors.join(" "),
+    /exactly two distinct experience-request IDs/,
+  );
+});
