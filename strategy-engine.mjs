@@ -416,6 +416,33 @@ function targetName(entry) {
   return String(entry?.targetName ?? "").toLowerCase();
 }
 
+function priorRivalLandAttack(entry) {
+  if (entry?.kind !== "attack" || entry?.neutral === true) return false;
+  return Boolean(
+    entry?.targetID || targetName(entry) ||
+    String(entry?.actionID ?? "").toLowerCase().startsWith("attack:"),
+  );
+}
+
+function exactAttackCommitment(action) {
+  const troops = Number(action?.metadata?.troops);
+  const targetTroops = Number(action?.metadata?.targetTroops);
+  const percent = actionPercent(action);
+  if (
+    !Number.isFinite(troops) || troops <= 0 ||
+    !Number.isFinite(targetTroops) || targetTroops <= 0 ||
+    !Number.isFinite(percent)
+  ) {
+    return null;
+  }
+  return { troops, targetTroops, percent };
+}
+
+function exactAttackTargetID(action) {
+  const match = String(action?.id ?? "").toLowerCase().match(/^attack:([^:]+):/);
+  return match ? clean(match[1]).toLowerCase() : "";
+}
+
 function attackThreshold(rival, state) {
   const isTopRival = rival.tileShare >= state.topRivalTileShare - 0.005;
   const leaderGap = rival.tileShare - state.self.tileShare;
@@ -486,8 +513,43 @@ function chooseRivalAttack(actions, state, plan, history, avoid, threatCount = 0
   if (!pressureCounter && streak >= 2 && best.rival.relativeTroopRatio >= 1.5) {
     desiredPercent = 40;
   }
-  const action = pickPercent(best.actions, desiredPercent, avoid);
-  const marker = pressureCounter ? "pc1" : peaceRedirect ? "kp1" : null;
+  let action = pickPercent(best.actions, desiredPercent, avoid);
+  let marker = pressureCounter ? "pc1" : peaceRedirect ? "kp1" : null;
+  const parentCommitment = exactAttackCommitment(action);
+  const rivalID = clean(best.rival.id).toLowerCase();
+  const parentActionTargetID = exactAttackTargetID(action);
+  const parentMetadataTargetID = clean(action?.metadata?.targetID).toLowerCase();
+  const activeDecisions = history.filter((entry) => entry.kind !== "spawn").length;
+  const conversionWillMark = !territoryCollapsing(state, history) &&
+    decisionsSince(history, (entry) => entry.policyMarker === "cv1") >= 6 &&
+    boatConversionStalled(state, history);
+  const firstStrikeFloor = marker === null && !action?.policyMarker &&
+    desiredPercent === 10 && actionPercent(action) === 10 &&
+    activeDecisions <= 100 && !history.some(priorRivalLandAttack) &&
+    rivalID && parentActionTargetID === rivalID && parentMetadataTargetID === rivalID &&
+    !isReciprocalRival(best.rival) && best.rival.sharesBorder === true &&
+    best.rival.canAttack === true && best.rival.tileShare <= 0.12 &&
+    state.self.troopRatio >= 0.9 && threatCount === 0 &&
+    (state.self.allProtocolAttackerIDs || []).length === 0 &&
+    !conversionWillMark &&
+    action?.metadata?.outgoingAttack !== true && parentCommitment &&
+    parentCommitment.troops * 3 < parentCommitment.targetTroops * 5
+      ? best.actions
+        .filter((candidate) => {
+          const commitment = exactAttackCommitment(candidate);
+          const candidateTargetID = clean(candidate?.metadata?.targetID).toLowerCase();
+          return commitment && [25, 40].includes(commitment.percent) &&
+            candidate?.risk?.level !== "high" && !avoid.has(candidate.id) &&
+            exactAttackTargetID(candidate) === rivalID && candidateTargetID === rivalID &&
+            commitment.targetTroops === parentCommitment.targetTroops &&
+            commitment.troops * 3 >= commitment.targetTroops * 5;
+        })
+        .sort((left, right) => actionPercent(left) - actionPercent(right))[0]
+      : null;
+  if (firstStrikeFloor) {
+    action = firstStrikeFloor;
+    marker = "pf1";
+  }
   return {
     action: marker ? { ...action, policyMarker: marker } : action,
     rival: best.rival,
