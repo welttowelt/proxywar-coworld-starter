@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T06:06:30Z",
+  "updated_at": "2026-07-21T06:10:35Z",
   "cycle_id": "odin-pax1-rci-close-20260721",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "no_active_odin_arm_pax1_rejected_mickey_screen_running",
+  "state": "no_active_odin_arm_pax1_rejected_parallel_diagnostics_running",
   "arm": {
     "id": "pax1",
     "name": "pact_before_doomed_probe",
@@ -48,9 +48,10 @@
   },
   "locks": {
     "runner": "owned:mickey:mickey-screen-g000-r9-20260721t040132z",
+    "studio_runner": "owned:hrafn:hi1-pangaea-control-65b83f97-r2",
     "qd1n_mutation": "free",
     "active_player": "K1Z odin free",
-    "mailbox_commit": "75fe87d86cacb5606ac2c85b19ac8f1f7db34047"
+    "mailbox_commit": "880fec2840dbb4f06ffa73a12ab8ef651d17c9a9"
   },
   "operator_topology": {
     "odin": "sole writable qd1n operator and live authority",
@@ -161,6 +162,6 @@
     "policy_action_delta": false,
     "league_mutation": false
   },
-  "next_automatic_transition": "Let the diagnostic-only Mickey G000 r9 CPU screen finish and release the shared runner. Do not repair PAX1 in place. Open another Odin arm only from a new replay-backed mechanism and exact preregistration. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
+  "next_automatic_transition": "Let the diagnostic-only Mickey G000 r9 CPU screen finish locally and the fresh HI1 r2 diagnostic finish on Studio. Do not repair PAX1 in place. Open another Odin arm only from a new replay-backed mechanism and exact preregistration. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
   "prior_verified_champion_preserved": true
 }
