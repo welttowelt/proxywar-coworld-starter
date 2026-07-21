@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "experiment_id": "qd1n-id1-static-fastpack-20260721",
+  "created_at": "2026-07-21T08:43:07Z",
+  "objective": "Test the single ID1 adapter delta against its static-grow parent in both seat orientations before any wider or hosted work.",
+  "base": {
+    "branch": "rci/kiz1-gravity-alias",
+    "commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc"
+  },
+  "source": {
+    "branch": "rci/id1-static-fastpack",
+    "commit": "18c7fdebbafcb94f936c0e8182f6ba6e48a478f6",
+    "ported_from": "1c62664a43c0657e086845dc3b5c1a17e4910a54",
+    "tests": "source suite 158/158 pass; targeted adapter and wiring tests 15/15 pass; fastpack auditor contract adds one test for branch total 159/159",
+    "sha256": {
+      "Dockerfile": "5179e2e9819dfe9a6aa442e65a3dda31219a612c5f04ec51e5cc75ad0d4dae0d",
+      "llm-player.mjs": "083893b2e0a513c45e8857d0a1e2727e1f93bfae682242d69fbc1d57ee5b3168",
+      "strategy-engine.mjs": "17c24a9b96fe6a04aa5c441993d98b6e9210f6dccc4f3d77340a28cd28c71913",
+      "strategy-chassis.mjs": "de45b447513ddcac5e9bf1be14417bfab0dd5e8e92156670539e8eda01478ca1",
+      "planner-backoff.mjs": "b286da97da20e388a8b33114520f15e2286ee2f0f63cc20f3e344d988280dbf3",
+      "starter-player.mjs": "3b9dd1906faec00fd61fe6738ab53233e13996ca82012b01223051f65cd086a5"
+    }
+  },
+  "runtime": {
+    "coworld_version": "0.1.30"
+  },
+  "coworld_manifest": {
+    "path": "/tmp/odin-odc1-seeded-gate-20260720/coworld_manifest.json",
+    "sha256": "f64cd51b21883a434d7c5e3eef924a6312e6ca74f1cb6b9d998dc0724dca65cf"
+  },
+  "runner": {
+    "lane": "odin",
+    "run_id": "odin-id1-static-fastpack-20260721"
+  },
+  "images": {
+    "candidate": {
+      "engine": "id1",
+      "tag": "proxywar-agent-llm:id1-static-fastpack-candidate-amd64",
+      "image_id": "sha256:d5660d978261137116dc1c617129ed0c16a1c6819adaff07874821b75f6812b0",
+      "architecture": "amd64"
+    },
+    "control": {
+      "engine": "id1-static-parent",
+      "tag": "proxywar-agent-llm:id1-static-fastpack-control-amd64",
+      "image_id": "sha256:ce69881dc51118d6f6537db7fdd17f9a535b4e26922b8f36f49be40ee29fbc8b",
+      "architecture": "amd64"
+    },
+    "shared_rootfs": true,
+    "source_bytes_match_both_images": true
+  },
+  "build_cache": {
+    "change": "POLICY_ENGINE ARG/ENV moved below npm ci",
+    "candidate_build_seconds": 11.64,
+    "control_build_seconds": 1.18,
+    "control_npm_ci_layer": "CACHED"
+  },
+  "coalition": {
+    "protected_names": [
+      "K1Z katanasan",
+      "katanasan",
+      "K1Z Gravity",
+      "Gravity",
+      "juryoku-koku",
+      "K1Z Hrafn",
+      "Hrafn"
+    ],
+    "exact_player_ids": [
+      "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+      "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863"
+    ],
+    "gravity": {
+      "display_name": "K1Z Gravity",
+      "exact_player_id": "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335"
+    }
+  },
+  "cell": {
+    "map": "Pangaea",
+    "map_size": "Normal",
+    "seed": 20260720,
+    "max_decision_steps": 24,
+    "turns_per_decision_step": 100,
+    "roster_size": 8,
+    "orientation_a": [
+      "K1Z Hrafn",
+      "daveey",
+      "Richard Higgins",
+      "Auri",
+      "Ron",
+      "K1Z Gravity",
+      "K1Z katanasan",
+      "K1Z odin free"
+    ],
+    "orientation_b": [
+      "K1Z odin free",
+      "daveey",
+      "Richard Higgins",
+      "Auri",
+      "Ron",
+      "K1Z Gravity",
+      "K1Z katanasan",
+      "K1Z Hrafn"
+    ]
+  },
+  "jobs": [
+    {
+      "id": "a-control",
+      "orientation": "a",
+      "arm": "control",
+      "job_path": "experiments/job-qd1n-id1-fastpack-a-control-20260721.json",
+      "job_sha256": "405786de42f524961ae3119a85958e1d75762d0a133bf9ffa4ea469b5d40a16c",
+      "output_dir": "/private/tmp/proxywar-id1-static-fastpack-a-control-20260721"
+    },
+    {
+      "id": "a-candidate",
+      "orientation": "a",
+      "arm": "candidate",
+      "job_path": "experiments/job-qd1n-id1-fastpack-a-candidate-20260721.json",
+      "job_sha256": "e97e3b8153ff00705050737d6c7dd7f1b175d49115684ce454e5779bcb12fa48",
+      "output_dir": "/private/tmp/proxywar-id1-static-fastpack-a-candidate-20260721"
+    },
+    {
+      "id": "b-candidate",
+      "orientation": "b",
+      "arm": "candidate",
+      "job_path": "experiments/job-qd1n-id1-fastpack-b-candidate-20260721.json",
+      "job_sha256": "91ddb6c79b3a36aaf649702cc19f3095dff52dfca843b2cd1326a093b482ffd3",
+      "output_dir": "/private/tmp/proxywar-id1-static-fastpack-b-candidate-20260721"
+    },
+    {
+      "id": "b-control",
+      "orientation": "b",
+      "arm": "control",
+      "job_path": "experiments/job-qd1n-id1-fastpack-b-control-20260721.json",
+      "job_sha256": "9fed7347087e3cbd1dabd00f551db06c084279a575002be7a5febd86dedc5847",
+      "output_dir": "/private/tmp/proxywar-id1-static-fastpack-b-control-20260721"
+    }
+  ],
+  "auditor": {
+    "path": "scripts/audit-id1-static-fastpack.mjs",
+    "sha256": "c45d102a288221aa71958f19c147b682219ee6f18e5ebc0988d9927dc34cb964",
+    "invocation": "node scripts/audit-id1-static-fastpack.mjs --manifest experiments/preregister-qd1n-id1-static-fastpack-20260721.json"
+  },
+  "receipts": {
+    "local_audit_path": "/private/tmp/proxywar-id1-static-fastpack-audit-20260721.json",
+    "next_preflight_path": "/private/tmp/proxywar-id1-static-fastpack-next-preflight-20260721.json"
+  },
+  "pass_gate": {
+    "candidate_id1_reach_min_per_orientation": 1,
+    "all_odin_decisions_accepted": true,
+    "fallbacks_per_job": 0,
+    "planner_degradations_per_job": 0,
+    "holds_per_job": 0,
+    "rejects_per_job": 0,
+    "harmful_k1z_actions_per_job": 0,
+    "candidate_auc20_strictly_greater_than_control_in_both_orientations": true,
+    "candidate_decision_20_tiles_strictly_greater_than_control_in_both_orientations": true
+  },
+  "stop_rule": "Any reliability failure, missing ID1 reach, tie, or loss on either opening metric in either orientation closes ID1. No matrix, hosted request, upload, or league action follows a failure.",
+  "next_stage": {
+    "on_pass": "emit a bound hosted-preflight handoff only; parent orchestration owns any later gate",
+    "preflight_output": "/private/tmp/proxywar-id1-static-fastpack-next-preflight-20260721.json",
+    "league_mutation": false
+  },
+  "league_mutation": false
+}
