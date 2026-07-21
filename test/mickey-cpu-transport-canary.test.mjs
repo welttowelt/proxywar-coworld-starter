@@ -109,8 +109,8 @@ class FakeRunPod {
     this.calls = [];
   }
 
-  async run(command, args) {
-    this.calls.push({ command, args: [...args] });
+  async run(command, args, options = {}) {
+    this.calls.push({ command, args: [...args], options: { ...options } });
     if (args[0] === "pod" && args[1] === "list" && !args.includes("--name")) {
       return {
         code: 0,
@@ -167,15 +167,36 @@ class DelayedRunPod extends FakeRunPod {
     this.exactNameLists = 0;
   }
 
-  async run(command, args) {
+  async run(command, args, options = {}) {
     if (args[0] === "pod" && args[1] === "list" && args.includes("--name")) {
       this.exactNameLists += 1;
       if (this.exactNameLists < this.visibleAfter) {
-        this.calls.push({ command, args: [...args] });
+        this.calls.push({ command, args: [...args], options: { ...options } });
         return { code: 0, stdout: "[]\n", stderr: "" };
       }
     }
-    return super.run(command, args);
+    return super.run(command, args, options);
+  }
+}
+
+class TransientCleanupGetRunPod extends FakeRunPod {
+  constructor({ cleanupGetFailures }) {
+    super();
+    this.cleanupGetFailures = cleanupGetFailures;
+  }
+
+  async run(command, args, options = {}) {
+    if (
+      args[0] === "pod" &&
+      args[1] === "get" &&
+      options.label?.endsWith("-identity-check") &&
+      this.cleanupGetFailures > 0
+    ) {
+      this.cleanupGetFailures -= 1;
+      this.calls.push({ command, args: [...args], options: { ...options } });
+      return { code: 503, stdout: "", stderr: "transient provider error" };
+    }
+    return super.run(command, args, options);
   }
 }
 
@@ -227,6 +248,36 @@ test("transport exception reconciles and deletes the exact ID", async () => {
   assert.equal(receipt.status, "failed");
   assert.deepEqual(receipt.deleted_exact_pod_ids, [NEW_ID]);
   assert.match(receipt.failure_reason, /transport failed/);
+});
+
+test("cleanup retries two transient pre-delete GET failures before exact-ID delete and absence", async () => {
+  const fake = new TransientCleanupGetRunPod({ cleanupGetFailures: 2 });
+  const receipt = await execute(fake);
+  assert.equal(receipt.status, "passed");
+  assert.equal(fake.present, false);
+  assert.deepEqual(receipt.deleted_exact_pod_ids, [NEW_ID]);
+
+  const cleanupGets = fake.calls.filter(({ args, options }) => (
+    args[0] === "pod" && args[1] === "get" && options.label?.endsWith("-identity-check")
+  ));
+  assert.equal(cleanupGets.length, 3);
+  const deleteIndex = fake.calls.findIndex(({ args }) => args[0] === "pod" && args[1] === "delete");
+  const absenceIndex = fake.calls.findIndex(({ options }) => options.label === "canary-final-absence-check");
+  assert.notEqual(deleteIndex, -1);
+  assert.ok(absenceIndex > deleteIndex, "final absence verification must follow exact-ID deletion");
+});
+
+test("final absence verification still runs after late exact-ID cleanup exhausts retries", async () => {
+  const fake = new TransientCleanupGetRunPod({ cleanupGetFailures: 20 });
+  const receipt = await execute(fake);
+  assert.equal(receipt.status, "failed");
+  assert.equal(fake.present, true);
+  assert.deepEqual(receipt.deleted_exact_pod_ids, []);
+  assert.match(receipt.failure_reason, /cleanup retries exhausted/);
+  assert.equal(
+    fake.calls.some(({ options }) => options.label === "canary-final-absence-check"),
+    true,
+  );
 });
 
 test("an indeterminate create that appears late in the 30-second window is deleted", async () => {

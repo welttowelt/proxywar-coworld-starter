@@ -19,6 +19,9 @@ import {
 const SHA256 = /^[a-f0-9]{64}$/;
 const SELF_PATH = fileURLToPath(import.meta.url);
 const MAX_CAPTURE_BYTES = 8 * 1024 * 1024;
+const CLEANUP_RETRY_DELAYS_MS = Object.freeze([0, 1_000, 2_000, 4_000, 8_000]);
+
+class CleanupIdentityRefusalError extends Error {}
 
 function usage() {
   return `Usage:
@@ -259,6 +262,8 @@ async function executeTransportCanary({
     cleanup_reconciliation: {
       indeterminate_window_seconds: 30,
       provider_terminate_after: expectedTerminateAfter,
+      exact_id_delete_attempts: CLEANUP_RETRY_DELAYS_MS.length,
+      exact_id_delete_backoff_ms: CLEANUP_RETRY_DELAYS_MS.slice(1),
     },
     started_at: new Date(now).toISOString(),
     completed_at: null,
@@ -320,11 +325,29 @@ async function executeTransportCanary({
     }
     const current = parseJson(inspection, "pre-delete exact-ID identity check");
     if (current.id !== id || current.name !== expectedName || current.name.startsWith("storm-")) {
-      throw new Error(`pre-delete identity check refused pod ${id}`);
+      throw new CleanupIdentityRefusalError(`pre-delete identity check refused pod ${id}`);
     }
-    await deleteExactPod(runpodctl, id, executor, label);
+    const deletion = await deleteExactPod(runpodctl, id, executor, label);
     createdIds.delete(id);
-    deletedIds.add(id);
+    if (deletion.status === "already_absent") alreadyAbsentIds.add(id);
+    else deletedIds.add(id);
+  };
+
+  const deleteCleanupOwnedIdWithRetry = async (id, label) => {
+    let lastError = null;
+    for (let attempt = 0; attempt < CLEANUP_RETRY_DELAYS_MS.length; attempt += 1) {
+      if (attempt > 0) await settle(CLEANUP_RETRY_DELAYS_MS[attempt]);
+      try {
+        await deleteCleanupOwnedId(id, `${label}-attempt-${attempt + 1}`);
+        return;
+      } catch (error) {
+        if (error instanceof CleanupIdentityRefusalError) throw error;
+        lastError = error;
+      }
+    }
+    throw new Error(
+      `exact pod cleanup retries exhausted for ${id}: ${redactError(lastError)}`,
+    );
   };
 
   try {
@@ -427,12 +450,13 @@ async function executeTransportCanary({
         });
         for (const id of [...createdIds]) {
           try {
-            await deleteCleanupOwnedId(id, `canary-exact-delete-${id}`);
+            await deleteCleanupOwnedIdWithRetry(id, `canary-exact-delete-${id}`);
           } catch (error) {
             fatal ??= error;
           }
         }
       }
+
       try {
         const lateResult = await executor.run(
           runpodctl,
@@ -450,9 +474,19 @@ async function executeTransportCanary({
             observedIds.add(id);
           }
         }
-        for (const id of [...createdIds]) {
-          await deleteCleanupOwnedId(id, `canary-late-exact-delete-${id}`);
+      } catch (error) {
+        fatal ??= error;
+      }
+
+      for (const id of [...createdIds]) {
+        try {
+          await deleteCleanupOwnedIdWithRetry(id, `canary-late-exact-delete-${id}`);
+        } catch (error) {
+          fatal ??= error;
         }
+      }
+
+      try {
         const finalResult = await executor.run(
           runpodctl,
           ["pod", "list", "--name", expectedName, "-a", "-o", "json"],
