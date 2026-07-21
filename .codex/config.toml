@@ -1,4 +1,4 @@
-# Hrafn's repository default. The automatic launcher also passes these values
-# explicitly because project-local configuration discovery is not the proof.
+# Hrafn's repository default. The exact Studio ttys000 resume command also
+# passes these values explicitly because project-local discovery is not proof.
 model = "gpt-5.6-sol"
 model_reasoning_effort = "xhigh"

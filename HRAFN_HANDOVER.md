@@ -12,6 +12,32 @@ Hrafn may change only Hrafn policy code and Hrafn league state. Odin may change
 only Qd1n policy code and Qd1n league state. Cross-audits are read-only and use
 the mailbox at `$HOME/.stormforge/team-mailbox`.
 
+## Current Studio operation
+
+Studio is the sole execution host. The active Hrafn checkout is
+`/Users/odin/proxywar-k1z-hrafn` on `feature/k1z-hrafn-fylking`; the local
+`/Users/olifreuler/proxywar-k1z-hrafn` checkout is recovery-only and must not
+run Coworld concurrently. Hrafn uses `/Users/odin/.hrafn-coworld-home` only for
+the Coworld identity subprocess. Do not change Studio's shared `.softmax`
+profile.
+
+HI1 r1 is closed and rejected; its exact evidence is
+`experiments/hrafn-intent-i1-pangaea-98288c8b-r2-rejection-20260720.json`.
+Current revision `hrafn-intent-i1-r2` has no runtime result yet. Its fresh cells
+are Pangaea seed `240723`, slot 1, control then candidate, followed only when
+permitted by Asia seed `240724`, slot 2, candidate then control. Formal Odin
+approvals consumed remain zero. See `STUDIO_HANDOFF.md` and the live image
+receipt for current source, image, job, and advisory hashes.
+
+The persistent Studio operator is the exact stopped Hrafn Codex session
+`019f81bb-194d-7ff3-b963-f1247f98dec4` in the reserved `ttys000` slot. Resume
+it only after the pushed branch and Studio checkout match exactly. Never use
+`--last`; Katanasan's completed session and worktree remain preserved, and the
+Gravity/Juryoku session on `ttys001` stays untouched.
+
+The dated deployment and field checkpoint below are historical context. Reopen
+the live API before any league claim or mutation.
+
 ## Live deployment truth
 
 Verified against the Coworld/Softmax API at `2026-07-19T15:19:15Z`:
@@ -233,11 +259,12 @@ must be recorded before further mutation.
 
 ## Reasoning and routing
 
-The automatic launcher starts Hrafn with `gpt-5.6-sol` and explicit xhigh
-reasoning. Hrafn performs deep source, replay, and promotion audits for Odin and
-owns Hrafn implementation. Odin runs high reasoning and returns the final
-cross-audit on Hrafn promotion packets. Kimi K3 Max remains external at his own
-max setting.
+The Studio `ttys000` control plane resumes Hrafn's exact stopped Codex session
+with `gpt-5.6-sol` and explicit xhigh reasoning, using the command pinned in
+`STUDIO_HANDOFF.md`. Hrafn performs deep source, replay, and promotion audits
+for Odin and owns Hrafn implementation. Odin runs high reasoning and returns
+the final cross-audit on Hrafn promotion packets. Kimi K3 Max remains external
+at his own max setting.
 
 ## Runner and mailbox
 

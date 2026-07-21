@@ -20,6 +20,7 @@ import {
   HRAFN_INTENT_CELLS,
   HRAFN_INTENT_MANIFEST_SHA256,
   parsePinnedHrafnIntentManifest,
+  verifyHrafnIntentR2Preregistration,
 } from "./build-hrafn-intent-job.mjs";
 import {
   canonicalJSON,
@@ -35,6 +36,10 @@ import {
   HRAFN_OLLAMA_INTENT_SCHEMA,
   normalizeHrafnIntent,
 } from "../hrafn-intent.mjs";
+import {
+  HRAFN_COWORLD_GAME_IMAGE_ID,
+  HRAFN_COWORLD_GAME_IMAGE_REFERENCE,
+} from "./materialize-hrafn-coworld-manifest.mjs";
 import {
   DEFAULT_HRAFN_LEASE_DIRECTORY,
   currentProcessStart,
@@ -184,7 +189,7 @@ export async function probeHrafnIntentOllama({
     stream: false,
     format: HRAFN_OLLAMA_INTENT_SCHEMA,
     prompt: "Return one intent JSON object. Choose grow with targetID null and horizon 8.",
-    options: { temperature: 0, seed: 240721 },
+    options: { temperature: 0, seed: 240723 },
   };
   const probe = await jsonResponse(
     await post("/api/generate", probeBody),
@@ -227,7 +232,7 @@ export async function probeHrafnIntentOllamaFromContainer({
     stream: false,
     format: HRAFN_OLLAMA_INTENT_SCHEMA,
     prompt: "Return one intent JSON object. Choose grow with targetID null and horizon 8.",
-    options: { temperature: 0, seed: 240721 },
+    options: { temperature: 0, seed: 240723 },
   };
   const probeSource = [
     `const endpoint=${JSON.stringify(HRAFN_INTENT_CONTAINER_OLLAMA_ENDPOINT)};`,
@@ -273,17 +278,21 @@ export async function probeHrafnIntentOllamaFromContainer({
   };
 }
 
-async function inspectImage(imageID, runtime) {
-  if (!IMAGE_ID.test(imageID ?? "")) throw new Error("image ID is invalid");
-  const result = await runtime.run("docker", ["image", "inspect", imageID]);
+async function inspectImage(imageReference, expectedID, runtime) {
+  if (typeof imageReference !== "string" || imageReference.length === 0 ||
+    !IMAGE_ID.test(expectedID ?? "")
+  ) {
+    throw new Error("image reference or expected ID is invalid");
+  }
+  const result = await runtime.run("docker", ["image", "inspect", imageReference]);
   const parsed = parseJSON(result.stdout, "Docker inspect");
   if (!Array.isArray(parsed) || parsed.length !== 1 ||
-    parsed[0]?.Id !== imageID || parsed[0]?.Os !== "linux" ||
+    parsed[0]?.Id !== expectedID || parsed[0]?.Os !== "linux" ||
     parsed[0]?.Architecture !== "amd64"
   ) {
     throw new Error("live Docker image is not the exact linux/amd64 ID");
   }
-  return { id: imageID, os: "linux", architecture: "amd64" };
+  return { id: expectedID, os: "linux", architecture: "amd64" };
 }
 
 async function verifyMailboxFilesCommitted(paths, mailboxDirectory, runtime) {
@@ -431,6 +440,7 @@ function exactArtifactBindings({
     scope: "hrafn-only",
     source_commit: subjectReceipt.source.commit,
     subject_image_id: subjectReceipt.image.id,
+    game_image_id: subjectReceipt.game.id,
     image_receipt: {
       file_sha256: sha256(receiptBytes),
       content_sha256: subjectReceipt.integrity.content_sha256,
@@ -481,7 +491,7 @@ function assertContinuationReport(report, expectedOperationalHashes) {
     report?.checks?.opening_metrics_complete === true;
   if (report?.record_type !== "hrafn_intent_i1_pair_audit" ||
     report?.campaign_id !== HRAFN_INTENT_CAMPAIGN_ID ||
-    report?.map !== "Pangaea" || report?.seed !== 240721 ||
+    report?.map !== "Pangaea" || report?.seed !== 240723 ||
     report?.subject_slot !== 1 ||
     !["PAIR_PASS", "REJECT_NO_LIFT"].includes(report?.verdict) ||
     !cleanAndReached ||
@@ -658,7 +668,8 @@ export async function verifyHrafnIntentRunPreflight(
       verifyHrafnIntentImageReceiptEnvironment(receipt, {
         repoPath: spec.repo_path,
       }),
-    inspectImage: (imageID) => inspectImage(imageID, runtime),
+    inspectImage: (imageReference, expectedID = imageReference) =>
+      inspectImage(imageReference, expectedID, runtime),
     probeOllama: () => probeHrafnIntentOllama(),
     probeContainerOllama: (imageID) =>
       probeHrafnIntentOllamaFromContainer({ imageID, runtime }),
@@ -684,6 +695,9 @@ export async function verifyHrafnIntentRunPreflight(
   const manifest = expectedManifestSHA256 === HRAFN_INTENT_MANIFEST_SHA256
     ? parsePinnedHrafnIntentManifest(manifestBytes)
     : parseJSON(manifestBytes, "test manifest");
+  if (manifest?.game?.runnable?.image !== HRAFN_COWORLD_GAME_IMAGE_REFERENCE) {
+    throw new Error("manifest does not select the pinned Coworld game image tag");
+  }
 
   const receiptBytes = await readPlainFile(spec.image_receipt_path);
   const subjectReceipt = parseJSON(receiptBytes, "image receipt");
@@ -693,18 +707,23 @@ export async function verifyHrafnIntentRunPreflight(
   const liveImageEnvironment = await runtime.verifyImageEnvironment(subjectReceipt);
   if (liveImageEnvironment?.valid !== true ||
     liveImageEnvironment.source_commit !== subjectReceipt.source.commit ||
-    liveImageEnvironment.subject_image !== subjectReceipt.image.id
+    liveImageEnvironment.subject_image !== subjectReceipt.image.id ||
+    liveImageEnvironment.game_image !== subjectReceipt.game.id
   ) {
     throw new Error("live source/image environment does not match image receipt");
   }
 
   const preregistrationBytes = await readPlainFile(spec.preregistration_path);
   const preregistration = parseJSON(preregistrationBytes, "preregistration");
-  if (preregistration?.campaign_id !== HRAFN_INTENT_CAMPAIGN_ID ||
-    preregistration?.record_type !== "hrafn_intent_i1_preregistration" ||
-    preregistration?.status !== "PREREGISTERED_AMENDED_NO_RUNTIME_AUTHORITY"
-  ) {
-    throw new Error("preregistration is not the frozen no-runtime HI1 record");
+  const preregistrationReport = verifyHrafnIntentR2Preregistration(
+    preregistration,
+  );
+  if (!preregistrationReport.valid) {
+    throw new Error(
+      `preregistration is not the exact r2 post-result preregistration: ${
+        preregistrationReport.errors.join("; ")
+      }`,
+    );
   }
   const preregistrationSourceEntries = subjectReceipt.files.filter((entry) =>
     entry?.path === "experiments/hrafn-intent-i1-preregistration-20260720.json"
@@ -787,9 +806,18 @@ export async function verifyHrafnIntentRunPreflight(
 
   const subjectImage = await runtime.inspectImage(subjectReceipt.image.id);
   const opponentImage = await runtime.inspectImage(HRAFN_V5_OPPONENT_IMAGE_ID);
+  const inspectedGame = await runtime.inspectImage(
+    HRAFN_COWORLD_GAME_IMAGE_REFERENCE,
+    HRAFN_COWORLD_GAME_IMAGE_ID,
+  );
+  const gameImage = {
+    reference: HRAFN_COWORLD_GAME_IMAGE_REFERENCE,
+    ...inspectedGame,
+  };
   for (const [label, image] of Object.entries({
     subject: subjectImage,
     opponent: opponentImage,
+    game: gameImage,
   })) {
     if (!IMAGE_ID.test(image?.id ?? "") || image?.os !== "linux" ||
       image?.architecture !== "amd64"
@@ -798,9 +826,10 @@ export async function verifyHrafnIntentRunPreflight(
     }
   }
   if (subjectImage.id !== subjectReceipt.image.id ||
-    opponentImage.id !== HRAFN_V5_OPPONENT_IMAGE_ID
+    opponentImage.id !== HRAFN_V5_OPPONENT_IMAGE_ID ||
+    !equalJSON(gameImage, subjectReceipt.game)
   ) {
-    throw new Error("live subject or opponent image ID drifted");
+    throw new Error("live subject, opponent, or game image ID drifted");
   }
   const hostPlanner = await runtime.probeOllama();
   if (hostPlanner?.version !== HRAFN_INTENT_OLLAMA_VERSION ||
@@ -845,16 +874,6 @@ export async function verifyHrafnIntentRunPreflight(
   if (formalApprovals.length !== 0) {
     throw new Error("HI1 diagnostic preflight must consume zero formal approvals");
   }
-  if (identityWindows.length !== 1 ||
-    await realpath(identityWindows[0].target) !==
-      await realpath(spec.identity_window_path)
-  ) {
-    throw new Error("HI1 requires exactly one Odin advisory identity-window receipt");
-  }
-  const identityWindow = identityWindows[0];
-  const identityWindowReport = verifyK1ZPacketBytes(identityWindow.bytes, {}, {
-    requireDeclaredContract: true,
-  });
   const exactWindowPayload = {
     state: "HI1_IDENTITY_WINDOW_READY",
     active_identity: {
@@ -865,6 +884,31 @@ export async function verifyHrafnIntentRunPreflight(
     ordered_diagnostic_scope: HRAFN_INTENT_CELLS.map((cell) => cell.id),
     bindings: expectedBindings,
   };
+  const currentIdentityWindows = identityWindows.filter((entry) => {
+    const report = verifyK1ZPacketBytes(entry.bytes, {}, {
+      requireDeclaredContract: true,
+    });
+    return report.valid && !report.identity_action_eligible &&
+      entry.packet?.from === "odin" &&
+      entry.packet?.to === "hrafn" &&
+      entry.packet?.kind === "coordination" &&
+      entry.packet?.authority?.advisory === true &&
+      entry.packet?.authority?.formal_approval === false &&
+      entry.packet?.authority?.mutation_scope === "none" &&
+      equalJSON(entry.packet?.payload, exactWindowPayload);
+  });
+  if (currentIdentityWindows.length !== 1 ||
+    await realpath(currentIdentityWindows[0].target) !==
+      await realpath(spec.identity_window_path)
+  ) {
+    throw new Error(
+      "HI1 requires exactly one current artifact-bound Odin advisory identity-window receipt",
+    );
+  }
+  const identityWindow = currentIdentityWindows[0];
+  const identityWindowReport = verifyK1ZPacketBytes(identityWindow.bytes, {}, {
+    requireDeclaredContract: true,
+  });
   if (!identityWindowReport.valid || identityWindowReport.identity_action_eligible ||
     identityWindow.packet?.from !== "odin" ||
     identityWindow.packet?.to !== "hrafn" ||
@@ -911,7 +955,7 @@ export async function verifyHrafnIntentRunPreflight(
         content_sha256: sha256(canonicalJSON(preregistration)),
       },
       manifest: { path: spec.manifest_path, sha256: manifestSHA },
-      images: { subject: subjectImage, opponent: opponentImage },
+      images: { game: gameImage, subject: subjectImage, opponent: opponentImage },
       planner,
       identity_window: identityWindowBinding,
     },
@@ -952,7 +996,7 @@ export async function verifyHrafnIntentRunPreflight(
       content_sha256: sha256(canonicalJSON(preregistration)),
     },
     manifest: { path: spec.manifest_path, sha256: manifestSHA },
-    images: { subject: subjectImage, opponent: opponentImage },
+    images: { game: gameImage, subject: subjectImage, opponent: opponentImage },
     planner,
     identity_window: identityWindowBinding,
     lifecycle,

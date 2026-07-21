@@ -1,0 +1,11 @@
+ARG HRAFN_V5_PARENT_IMAGE=hrafn-fylking-v5:0c151570
+ARG HRAFN_V5_PARENT_IMAGE_ID=sha256:fb695574f4958beb29a036ed216c0882ee4da84ffa2f63c535f6c658f997522d
+FROM ${HRAFN_V5_PARENT_IMAGE}
+WORKDIR /app
+
+ARG HRAFN_V5_PARENT_IMAGE_ID
+LABEL proxywar.hrafn.neutral.parent-image-id=${HRAFN_V5_PARENT_IMAGE_ID}
+
+COPY hrafn-neutral-opponent.mjs hrafn-neutral-opponent-player.mjs ./
+
+CMD ["node", "/app/hrafn-neutral-opponent-player.mjs"]

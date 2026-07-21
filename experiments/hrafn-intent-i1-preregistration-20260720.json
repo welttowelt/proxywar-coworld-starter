@@ -14,9 +14,23 @@
   "identity_context_revision_at": "2026-07-20T22:43:17Z",
   "identity_context_revision_from": "0255a13512a7978846df9577d74cb39762094192",
   "identity_context_revision_boundary": "No HI1 Coworld episode or runtime result used the superseded 0255a135 image or advisory request. Hrafn's Coworld identity probe now fails closed unless HRAFN_SOFTMAX_HOME names a dedicated absolute canonical directory distinct from Studio's normal HOME. The isolated override applies only to that subprocess; Studio's shared active identity is never switched.",
+  "post_result_revision_at": "2026-07-21T00:01:44Z",
+  "post_result_revision_id": "hrafn-intent-i1-r2",
+  "post_result_revision_from": "98288c8b9211513cfb71ceb88707de1721f351e3",
+  "post_result_revision_boundary": "Revision r1 ran one Pangaea pair and is terminally closed. Its candidate produced seven action deltas, lost 12.94 percent opening territory, and exposed opponent-attribution, marker-role, and comparator defects. No Coworld episode has used the r2 policy, fresh seeds 240723 and 240724, neutral opponent derivative, strict marker grammar, or revised independent comparator. R2 is frozen before its first runtime result.",
+  "post_result_evidence": {
+    "path": "experiments/hrafn-intent-i1-pangaea-98288c8b-r2-rejection-20260720.json",
+    "evidence_commit": "d9f7c81a5b88a79c5c41383ac76e992f0b550d66",
+    "tested_source_commit": "98288c8b9211513cfb71ceb88707de1721f351e3",
+    "pair_report_sha256": "9f837c114811a79f8f6f110096f078328c4460329e8154c94a538c9d9b537bdd",
+    "verdict": "REJECT_SAFETY_OR_RELIABILITY",
+    "prior_attempt_rejected": true
+  },
   "campaign_id": "hrafn-intent-i1",
+  "campaign_revision_id": "hrafn-intent-i1-r2",
   "scope": "Hrafn only",
   "status": "PREREGISTERED_AMENDED_NO_RUNTIME_AUTHORITY",
+  "revision_status": "POST_RESULT_REVISION_PREREGISTERED_NO_RUNTIME_AUTHORITY",
   "parent": {
     "label": "hrafn-fylking:v5",
     "source_commit": "0c151570f7e650a32a5705ff71692aa930012097",
@@ -24,12 +38,12 @@
     "player_sha256": "16922c320ecab33705d9e723b8b4d398adea46cd02473a014b49a2abaac1fd52",
     "local_rebuild_image": "hrafn-fylking-v5:0c151570",
     "local_rebuild_digest": "sha256:fb695574f4958beb29a036ed216c0882ee4da84ffa2f63c535f6c658f997522d",
-    "control_contract": "Both arms run the same safety and public-text wrapper around the literal exact-v5 selector. The wrapper removes unsafe actions, quick_chat, emoji, and untrusted internal marker fields. The sole arm difference is HRAFN_INTENT_ENABLED=0 versus 1, which controls whether a validated intent may restrict the executor's affordance set."
+    "control_contract": "Both arms run the same safety and public-text wrapper around the literal exact-v5 selector. The wrapper removes unsafe actions, quick_chat, emoji, and untrusted internal marker fields. Three opponents run a separately identified neutral derivative that preserves exact-v5 policy and history while changing only its public namespace from K1Z to 0UT. The sole arm difference is HRAFN_INTENT_ENABLED=0 versus 1."
   },
   "hypothesis": {
     "claim": "A small strategic intent with bounded lifetime can improve Hrafn's opening conversion while the exact-v5 executor retains action-ID choice, timing, commitment, retry behavior, and K1Z safety.",
-    "mechanism": "The planner chooses only grow or convert, an exact visible outsider ID when converting, and a horizon. It never receives or returns legal action IDs, action kinds, percentages, weights, labels, or free-form instructions. The common wrapper applies safety and public-text filtering. The executor then filters to intent-compatible affordances and runs the literal exact-v5 selector unchanged on that subset.",
-    "expected_causal_trace": "An accepted intent is causal only when the chosen exact action ID differs from the same-input wrapped exact-v5 baseline. Such decisions expose the hi1 sidecar marker and a structured log row containing both IDs."
+    "mechanism": "The planner chooses only grow or convert, an exact visible outsider ID when converting, and a horizon. It never receives or returns legal action IDs, action kinds, percentages, weights, labels, or free-form instructions. The r2 prompt directs the planner to normally choose convert when a safe target exists, reserve grow for own tile share below 0.06 or no convert target, rank convert targets by relative troop ratio then target tile share then exact target ID, and prefer horizon 2 for convert or 3 for grow. Those directions guide autonomous intent inside the declared schema; they are not another hard-coded action selector. Grow uses the literal exact-v5 selector on the safe growth subset and cannot interrupt vr1, rv1, rv2, rv3, or wr1. Convert selects one direct safe attack affordance for the named outsider only when there is no incoming pressure, relative troop ratio is at least 1.10, and commitment is between 10 and 25 percent, choosing the highest commitment then exact ID order. One intent epoch may change at most one action; unavailable or stalled intent retires without degradation.",
+    "expected_causal_trace": "An accepted intent is causal only when the chosen exact action ID differs from the same-input wrapped exact-v5 baseline. Such decisions expose exactly one hi1 sidecar marker, record both full independently replayable actions, and spend the epoch's sole delta."
   },
   "intent_contract": {
     "schema": {
@@ -43,7 +57,7 @@
       "model_digest": "365c0bd3c000a25d28ddbf732fe1c6add414de7275464c4e4d1c3b5fcb5d8ad1",
       "ollama_version": "0.32.1",
       "temperature": 0,
-      "seed": 240721,
+      "seed": 240723,
       "endpoint": "http://host.docker.internal:11434/api/generate",
       "response_schema_enforced": true,
       "nonblocking": true,
@@ -54,8 +68,11 @@
     "validation": [
       "Reject unknown or extra fields, unknown objectives, noninteger or out-of-range horizons, and nonexact target IDs.",
       "grow requires targetID null and at least one current neutral growth affordance.",
-      "convert requires an alive, visible, nonallied, non-K1Z target with a current exact-v5 conversion affordance.",
-      "Reject stale, unavailable, protected, ambiguous, or unresolved targets and fall back to the same-input exact-v5 action.",
+      "convert requires an alive, visible, nonallied, non-K1Z target, zero incoming pressure, relative troop ratio at least 1.10, and a directly offered 10 through 25 percent attack.",
+      "Each intent epoch may cause at most one action delta; later decisions in that epoch use the same-input exact-v5 action.",
+      "The planner prompt directs convert when at least one safe convert target exists, ranks targets by relative troop ratio then tile share then exact ID, and requests convert horizon 2; it reserves grow for own tile share below 0.06 or no convert target and requests grow horizon 3. Any returned intent must still fit the declared 2 through 12 horizon schema and bind an affordance in its exact source snapshot.",
+      "grow cannot override exact-v5 vr1, rv1, rv2, rv3, or wr1 decisions; convert retains one bounded target-choice delta when every convert guard passes.",
+      "Retire stale, unavailable, protected, ambiguous, unresolved, or stalled intents before selection without treating normal retirement as planner degradation.",
       "Spawn, K1Z alliance, Odin support, and severe-defense decisions remain outside intent authority.",
       "Both arms remove quick_chat and emoji before selection and strip policyMarker, intentMarker, requestMarker, and campaignStartDecision from every wire action.",
       "Every committed fresh request keeps an unbounded match-lifetime semantic cache over the projected legalActions and observation; changed projected semantics under a reused request ID fail closed, while unrelated root metadata is accepted and discarded."
@@ -75,13 +92,15 @@
       "The request cache retains at least 520 decisions and rejects changed action semantics under a duplicate request ID.",
       "A plain-object decision envelope with unrelated root metadata is accepted, while selector and auditor telemetry contains a structured clone of only legalActions and observation; missing or malformed required fields fail closed.",
       "The Coworld identity probe rejects an unset, blank, relative, noncanonical, or normal-HOME-equivalent HRAFN_SOFTMAX_HOME before invoking Coworld.",
-      "Untrusted legal-action fields cannot forge policy, hi1, or request markers."
+      "Untrusted legal-action fields cannot forge policy, hi1, or request markers.",
+      "The intent-v5 reason grammar accepts only q, known-policy.q, hi1.q, or known-policy.hi1.q with exactly one final request marker and independently recomputes every generated marker role.",
+      "Pretreatment comparison preserves malformed historical reasons, binds the full prefix through the prior row's post-action audit, binds the first treatment's full observation and legal menu, and compares the candidate's independently recomputed baseline action with the control action."
     ],
     "required": [
       "Focused HI1 tests and the complete repository test suite pass.",
       "Exact-v5 compatibility is compared against the frozen 0c151570 implementation over the full strategy fixture corpus.",
       "A linux/amd64 image is built from an exact committed source tree and its digest is recorded.",
-      "A machine-readable image receipt binds the subject digest, full source commit, linux/amd64 platform, executable and dependency smoke checks, container-to-Ollama schema probe, passing test gate, pinned model digest, exact preregistration bytes, and exact-v5 opponent digest.",
+      "A machine-readable image receipt binds the subject digest, full source commit, linux/amd64 platform, executable and dependency smoke checks, container-to-Ollama schema probe, passing test gate, pinned model digest, exact preregistration bytes, exact-v5 opponent and parent digests, and the manifest game tag resolving to sha256:98cf744311d0da1cc6a1b5fee6ef588db984c66c0a0bd077a4a9a9c475f32cb4 on linux/amd64.",
       "No qd1n or Odin source, image, process, identity, submission, or champion state is modified or run."
     ]
   },
@@ -90,25 +109,25 @@
     "cells": [
       {
         "map": "Compact Pangaea",
-        "seed": 240721,
+        "seed": 240723,
         "subject_slot_zero_based": 1,
         "order": ["control", "candidate"]
       },
       {
         "map": "Compact Asia",
-        "seed": 240722,
+        "seed": 240724,
         "subject_slot_zero_based": 2,
         "order": ["candidate", "control"]
       }
     ],
-    "opponents": "Three fixed outsider names running the exact v5 rebuild. No Odin or qd1n image is permitted.",
+    "opponents": "Three fixed outsider names running the audited neutral exact-v5 derivative. Its selector and history bytes match the frozen v5 parent; only the public reason namespace changes from [K1Z] r4vn to [0UT] v5 so subject attribution remains exclusive. No Odin or qd1n image is permitted.",
     "coworld_client": "0.1.28",
     "manifest_sha256": "8feb5100ee63d5ccca66794c40e535f2715376e2a2cf8a3f8ed892880dfe65f3",
     "foreground_runner_lease_required": true,
-    "identity_window_required": "Before any Coworld episode, the Hrafn process must provide HRAFN_SOFTMAX_HOME as a dedicated absolute canonical directory distinct from Studio's normal HOME. Odin then commits one valid advisory identity-window receipt binding the exact source commit, image digest, image receipt, four job hashes, preregistration file/content hashes, model digest, ordered diagnostic scope, Hrafn-only lane, and the exact K1Z Hrafn identity returned through that isolated credential context. The advisory has formal_approval=false and mutation_scope=none; it records coordination, never authorizes or requires a switch of Studio's shared active identity, and does not consume or impersonate the campaign's one formal approval. Preflight independently invokes the identity probe through the same isolated context and fails closed on any context or identity drift.",
+    "identity_window_required": "Before any Coworld episode, the Hrafn process must provide HRAFN_SOFTMAX_HOME as a dedicated absolute canonical directory distinct from Studio's normal HOME. Odin then commits one valid advisory identity-window receipt binding the exact source commit, subject image digest, exact Coworld game-image digest, image receipt, four job hashes, preregistration file/content hashes, model digest, ordered diagnostic scope, Hrafn-only lane, and the exact K1Z Hrafn identity returned through that isolated credential context. The advisory has formal_approval=false and mutation_scope=none; it records coordination, never authorizes or requires a switch of Studio's shared active identity, and does not consume or impersonate the campaign's one formal approval. Preflight independently invokes the identity probe through the same isolated context and fails closed on any context, identity, or game-tag resolution drift.",
     "job_provenance": "Each job is generated by scripts/build-hrafn-intent-job.mjs from the pinned manifest and a matching subject image receipt. The subject image differs from the exact-v5 outsider image. Pair comparison must prove the jobs differ only at players[subject_slot].env.HRAFN_INTENT_ENABLED from 0 to 1.",
-    "execution": "Each episode runs through scripts/proxywar-runner-lease.sh with a foreground scripts/run-hrafn-supervised.mjs process and a direct uvx coworld==0.1.28 run-episode command. Preflight must enforce the exact order Pangaea control, Pangaea candidate, clean Pangaea pair audit, Asia candidate, Asia control by hash-binding every predecessor operational receipt and the Pangaea continuation verdict. A preflight receipt records the full argv, job SHA-256, image digests, source commit, container-side model probe, active identity, lease state, output directory, and predecessor evidence before dispatch.",
-    "evidence_join": "scripts/audit-hrafn-intent-pair.mjs must join every fresh nonspawn Hrafn policy row one-to-one with its replay row through the q10 request marker, independently replay the wrapped exact-v5 baseline from the recorded structured clone containing only legalActions and observation, prove both selected and baseline IDs were legal, bind the live preregistration bytes to the committed image-receipt file hash, and fail on missing, duplicate, ambiguous, degraded, fallback, rejected, held, disconnected, or K1Z-harm rows.",
+    "execution": "Each episode runs through scripts/proxywar-runner-lease.sh with a foreground scripts/run-hrafn-supervised.mjs process and a direct uvx coworld==0.1.28 run-episode command. Preflight must enforce the exact order Pangaea control, Pangaea candidate, clean Pangaea pair audit, Asia candidate, Asia control by hash-binding every predecessor operational receipt and the Pangaea continuation verdict. A preflight receipt records the full argv, job SHA-256, exact subject, neutral-opponent, and game-image digests, source commit, container-side model probe, active identity, lease state, output directory, and predecessor evidence before dispatch; its exact live image-receipt binding carries the separately inspected parent digest.",
+    "evidence_join": "scripts/audit-hrafn-intent-pair.mjs must join every fresh nonspawn Hrafn policy row one-to-one with its replay row through the sole final q10 request marker; independently replay the complete intent decision, exact-v5 baseline, marker roles, epoch-delta state, and public reason from the recorded structured clone containing only legalActions and observation; compare full normalized legal-action objects rather than isolated opaque IDs; bind the full pretreatment prefix plus the first treatment request state and menu; bind the live preregistration bytes to the committed image-receipt file hash; and fail on missing, duplicate, ambiguous, degraded, fallback, rejected, held, disconnected, or K1Z-harm rows.",
     "primary_metric": {
       "name": "opening_auc20",
       "definition": "Arithmetic mean of auditAfter.tilesOwned over the subject's first 20 fresh, accepted, external, nonspawn decisions after strict policy-log to replay joining. Fewer than 20 observations fail closed unless the replay, final state, and results all verify elimination; only then are the missing suffix observations padded with zero.",
@@ -136,7 +155,7 @@
       "response_max_ms_maximum": 250,
       "replay_decision_p95_ms_maximum": 50,
       "replay_decision_max_ms_maximum": 250,
-      "pretreatment_equivalence": "Before the candidate's first hi1 delta, control and candidate must have identical turn, selected action, selected metadata, legal-menu shape, and normalized pre-action state at every decision."
+      "pretreatment_equivalence": "Through the decision before the first hi1 delta, both arms must have identical normalized decisions including the replay audit that becomes the next request state. At the first delta, the full request turn, observation, and legal menu must match, and the candidate's independently recomputed baseline full legal-action object must equal the control's independently recomputed action. The first-delta row's replay audit is excluded because Coworld 0.1.28 records it after the selected action has taken effect."
     },
     "sequential_stop": "Audit the Pangaea pair before Asia. Stop on a safety or reliability failure, intent coverage below 80 percent, or fewer than eight action deltas in a surviving candidate. Do not stop for performance alone if the pair is operationally clean.",
     "verdicts": {
@@ -156,7 +175,9 @@
   "promotion_state": {
     "SOURCE_READY": false,
     "LOCAL_QUALIFIED": false,
-    "DIAGNOSTIC_RUN": false,
+    "DIAGNOSTIC_RUN": true,
+    "CURRENT_REVISION_DIAGNOSTIC_RUN": false,
+    "PRIOR_REVISION_REJECTED": true,
     "PROMISING_DIAGNOSTIC_ONLY": false,
     "ADVISORY_IDENTITY_WINDOW_RECEIVED": false,
     "FORMAL_ODIN_APPROVAL_REQUESTED": false,

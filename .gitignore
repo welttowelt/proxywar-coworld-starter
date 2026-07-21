@@ -4,7 +4,10 @@ output/
 .DS_Store
 data/cache/
 data/staging/
-coworld/
+coworld/*
+!coworld/cow_236e7c2e-acdb-404a-b1b9-41852e5ac658/
+coworld/cow_236e7c2e-acdb-404a-b1b9-41852e5ac658/*
+!coworld/cow_236e7c2e-acdb-404a-b1b9-41852e5ac658/coworld_manifest.json
 .netlify/
 .playwright-cli/
 state/autonomous-research/

@@ -18,8 +18,11 @@ Hrafn owns policy hypotheses, implementation, red-first tests, image builds,
 local and hosted experiments, ledger updates, and authorized league operations
 for Hrafn policy versions. This project pins Hrafn to the strongest current
 local model at xhigh reasoning. Start or resume Hrafn from this repository root.
-The automatic launcher also passes the model and xhigh reasoning explicitly;
-do not rely on project-local configuration discovery.
+Studio currently has no Hrafn LaunchAgent. Resume only the exact Hrafn Codex
+session recorded in `STUDIO_HANDOFF.md` from the reserved terminal slot; never
+use `--last`, and never run a TUI operator and background launcher together.
+The resume command passes the model and xhigh reasoning explicitly; do not rely
+on project-local configuration discovery.
 
 Codex Odin is a separate writable operator for `qd1n`. Hrafn must not edit,
 run, upload, submit, retire, change membership, or change champion for

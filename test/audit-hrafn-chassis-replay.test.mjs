@@ -179,6 +179,180 @@ test("reason parser separates the primary marker from sidecar evidence", () => {
   );
 });
 
+test("intent wrapper markers require the narrow audit profile", () => {
+  const replay = replayWith([
+    decision({
+      turn: 100,
+      id: "expand:terra-nullius:35",
+      kind: "attack",
+      metadata: { expansion: true, troopPercent: 35 },
+      reason: "[K1Z] r4vn:atk:hi1.q0123456789",
+    }),
+  ]);
+  const strict = auditHrafnChassisReplay(
+    replay,
+    Buffer.from(JSON.stringify(replay)),
+  );
+  assert.equal(strict.checks.marker_semantics_valid, false);
+
+  const wrapper = auditHrafnChassisReplay(
+    replay,
+    Buffer.from(JSON.stringify(replay)),
+    { markerProfile: "intent-v5" },
+  );
+  assert.equal(wrapper.checks.marker_semantics_valid, true);
+  assert.equal(wrapper.marker_profile, "intent-v5");
+});
+
+test("intent-v5 accepts only the four bound public marker forms", () => {
+  const requestMarker = "q0123456789";
+  const knownPolicies = [
+    "k1z",
+    "dn1",
+    "vr1",
+    "rv1",
+    "rv2",
+    "rv3",
+    "wr1",
+    "sk1",
+  ];
+  const validMarkerSequences = [
+    requestMarker,
+    `hi1.${requestMarker}`,
+    ...knownPolicies.flatMap((policyMarker) => [
+      `${policyMarker}.${requestMarker}`,
+      `${policyMarker}.hi1.${requestMarker}`,
+    ]),
+  ];
+
+  for (const [index, markers] of validMarkerSequences.entries()) {
+    const replay = replayWith([
+      decision({
+        turn: 200 + index,
+        id: "expand:terra-nullius:35",
+        kind: "attack",
+        metadata: { expansion: true, troopPercent: 35 },
+        reason: `[K1Z] r4vn:atk:${markers}`,
+      }),
+    ]);
+    const report = auditHrafnChassisReplay(
+      replay,
+      Buffer.from(JSON.stringify(replay)),
+      { markerProfile: "intent-v5" },
+    );
+    assert.equal(
+      report.checks.public_text_valid,
+      true,
+      `expected public reason to pass: ${markers}`,
+    );
+    assert.equal(
+      report.checks.marker_semantics_valid,
+      true,
+      `expected marker grammar to pass: ${markers}`,
+    );
+  }
+});
+
+test("intent-v5 rejects unknown, missing, duplicate, and reordered markers", () => {
+  const requestMarker = "q0123456789";
+  const invalidMarkerSequences = [
+    "hc40.q0123456789",
+    "rv3.hi1",
+    "q0123456789.hi1",
+    "rv3.q0123456789.hi1",
+    "q0123456789.q0123456789",
+    "hi1.q0123456789.q0123456789",
+    "rv3.rv3.q0123456789",
+    "hi1.hi1.q0123456789",
+    "hi1.rv3.q0123456789",
+    `rv3.${requestMarker}.rv2`,
+  ];
+
+  for (const [index, markers] of invalidMarkerSequences.entries()) {
+    const replay = replayWith([
+      decision({
+        turn: 300 + index,
+        id: "expand:terra-nullius:35",
+        kind: "attack",
+        metadata: { expansion: true, troopPercent: 35 },
+        reason: `[K1Z] r4vn:atk:${markers}`,
+      }),
+    ]);
+    const report = auditHrafnChassisReplay(
+      replay,
+      Buffer.from(JSON.stringify(replay)),
+      { markerProfile: "intent-v5" },
+    );
+    assert.equal(
+      report.checks.public_text_valid,
+      false,
+      `expected public reason to fail: ${markers}`,
+    );
+    assert.equal(
+      report.checks.marker_semantics_valid,
+      false,
+      `expected marker grammar to fail: ${markers}`,
+    );
+  }
+});
+
+test("intent-v5 rejects non-printable and overlong public reasons", () => {
+  const invalidReasons = [
+    "[K1Z] r4vn:atk:rv3.hi1.q0123456789\u0007",
+    `[K1Z] r4vn:atk:${"rv3.".repeat(9)}q0123456789`,
+  ];
+
+  for (const [index, reason] of invalidReasons.entries()) {
+    const replay = replayWith([
+      decision({
+        turn: 400 + index,
+        id: "expand:terra-nullius:35",
+        kind: "attack",
+        metadata: { expansion: true, troopPercent: 35 },
+        reason,
+      }),
+    ]);
+    const report = auditHrafnChassisReplay(
+      replay,
+      Buffer.from(JSON.stringify(replay)),
+      { markerProfile: "intent-v5" },
+    );
+    assert.equal(report.checks.public_text_valid, false);
+    assert.equal(report.checks.marker_semantics_valid, false);
+  }
+});
+
+test("clean-chassis keeps its existing marker grammar", () => {
+  const replay = replayWith([
+    decision({
+      turn: 500,
+      id: "attack:runtime-outsider:40",
+      kind: "attack",
+      metadata: {
+        targetID: "runtime-outsider",
+        targetName: "Outsider",
+        troopPercent: 40,
+      },
+      reason: "[K1Z] r4vn:atk:hc40.hint",
+    }),
+  ]);
+  const clean = auditHrafnChassisReplay(
+    replay,
+    Buffer.from(JSON.stringify(replay)),
+  );
+  assert.equal(clean.marker_profile, "clean-chassis");
+  assert.equal(clean.checks.public_text_valid, true);
+  assert.equal(clean.checks.marker_semantics_valid, true);
+
+  const intentV5 = auditHrafnChassisReplay(
+    replay,
+    Buffer.from(JSON.stringify(replay)),
+    { markerProfile: "intent-v5" },
+  );
+  assert.equal(intentV5.checks.public_text_valid, false);
+  assert.equal(intentV5.checks.marker_semantics_valid, false);
+});
+
 test("clean candidate replay passes freshness, safety, marker, and hold checks", () => {
   const replay = replayWith([
     decision({

@@ -1,27 +1,46 @@
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import test from "node:test";
 
 import {
   buildHrafnIntentJob,
   compareHrafnIntentJobs,
+  HRAFN_INTENT_CELLS,
   HRAFN_INTENT_MANIFEST_SHA256,
+  HRAFN_NEUTRAL_OPPONENT_IMAGE_DIGEST,
+  HRAFN_V5_PARENT_IMAGE_DIGEST,
   HRAFN_V5_OPPONENT_IMAGE_DIGEST,
   parsePinnedHrafnIntentManifest,
+  verifyHrafnIntentR2Preregistration,
 } from "../scripts/build-hrafn-intent-job.mjs";
 import {
   HRAFN_INTENT_CONTAINER_FILES,
   HRAFN_INTENT_IMAGE_FILES,
   HRAFN_INTENT_RUNTIME_IMPORTS,
   HRAFN_INTENT_RUNTIME_SYNTAX_FILES,
+  HRAFN_EXACT_V5_PLAYER_RUN,
+  HRAFN_NEUTRAL_OPPONENT_POLICY_FILES,
+  HRAFN_NEUTRAL_OPPONENT_RUN,
+  HRAFN_NEUTRAL_OPPONENT_SOURCE_FILES,
   hrafnIntentReceiptContentSHA256,
 } from "../scripts/create-hrafn-intent-image-receipt.mjs";
+import {
+  coworldGameReceiptFixture,
+} from "./helpers/hrafn-intent-receipt-fixture.mjs";
 
-const EXACT_V5_OPPONENT_IMAGE =
+const EXACT_V5_PARENT_IMAGE =
   "sha256:fb695574f4958beb29a036ed216c0882ee4da84ffa2f63c535f6c658f997522d";
+const NEUTRAL_OPPONENT_IMAGE = HRAFN_NEUTRAL_OPPONENT_IMAGE_DIGEST;
 const SUBJECT_IMAGE =
   "sha256:aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
 const SUBJECT_SOURCE_COMMIT =
   "1234567890abcdef1234567890abcdef12345678";
+const preregistration = JSON.parse(readFileSync(
+  new URL(
+    "../experiments/hrafn-intent-i1-preregistration-20260720.json",
+    import.meta.url,
+  ),
+));
 
 const manifest = {
   id: "cow-test",
@@ -97,7 +116,49 @@ const subjectReceipt = {
       "365c0bd3c000a25d28ddbf732fe1c6add414de7275464c4e4d1c3b5fcb5d8ad1",
     ollama_version: "0.32.1",
   },
-  opponent: { image_id: EXACT_V5_OPPONENT_IMAGE },
+  game: coworldGameReceiptFixture(),
+  opponent: null,
+};
+const parentLayers = [`sha256:${"1".repeat(64)}`];
+const policyHashes = new Map(
+  [...HRAFN_NEUTRAL_OPPONENT_POLICY_FILES].sort().map((file, index) => [
+    file,
+    String(index + 101).padStart(64, "0"),
+  ]),
+);
+const committedHashes = new Map(
+  subjectReceipt.files.map((entry) => [entry.path, entry.sha256]),
+);
+subjectReceipt.opponent = {
+  image_id: NEUTRAL_OPPONENT_IMAGE,
+  parent_image_id: EXACT_V5_PARENT_IMAGE,
+  os: "linux",
+  architecture: "amd64",
+  working_dir: "/app",
+  entrypoint: ["docker-entrypoint.sh"],
+  cmd: [...HRAFN_NEUTRAL_OPPONENT_RUN],
+  coworld_player_run: [...HRAFN_NEUTRAL_OPPONENT_RUN],
+  parent_coworld_player_run: [...HRAFN_EXACT_V5_PLAYER_RUN],
+  rootfs_layers: [...parentLayers, `sha256:${"2".repeat(64)}`],
+  parent_rootfs_layers: parentLayers,
+  container_files: [
+    ...HRAFN_NEUTRAL_OPPONENT_POLICY_FILES,
+    ...HRAFN_NEUTRAL_OPPONENT_SOURCE_FILES,
+  ].sort().map((file) => ({
+    path: `/app/${file}`,
+    sha256: policyHashes.get(file) ?? committedHashes.get(file),
+  })),
+  parent_policy_files: [...HRAFN_NEUTRAL_OPPONENT_POLICY_FILES]
+    .sort()
+    .map((file) => ({ path: `/app/${file}`, sha256: policyHashes.get(file) })),
+  runtime_smoke: {
+    node_version: "v24.4.1",
+    syntax_files: [...HRAFN_NEUTRAL_OPPONENT_SOURCE_FILES]
+      .sort()
+      .map((file) => `/app/${file}`),
+    module_imports: ["ws", "file:///app/hrafn-neutral-opponent.mjs"],
+    sample_reason: "[0UT] v5:h0d",
+  },
 };
 subjectReceipt.integrity = {
   algorithm: "sha256",
@@ -109,10 +170,10 @@ const options = {
   manifestSHA256: HRAFN_INTENT_MANIFEST_SHA256,
   variantID: "tournament-4p-pangaea",
   subjectImage: SUBJECT_IMAGE,
-  opponentImage: EXACT_V5_OPPONENT_IMAGE,
+  opponentImage: NEUTRAL_OPPONENT_IMAGE,
   subjectReceipt,
   subjectSlot: 1,
-  seed: 240721,
+  seed: 240723,
 };
 
 function comparisonOptions() {
@@ -124,8 +185,77 @@ function comparisonOptions() {
   };
 }
 
-test("HI1 pins the opponent image to the audited exact-v5 rebuild", () => {
-  assert.equal(HRAFN_V5_OPPONENT_IMAGE_DIGEST, EXACT_V5_OPPONENT_IMAGE);
+test("HI1 pins a neutral derivative and rejects the K1Z-tagging v5 parent", () => {
+  assert.equal(HRAFN_V5_OPPONENT_IMAGE_DIGEST, NEUTRAL_OPPONENT_IMAGE);
+  assert.equal(HRAFN_NEUTRAL_OPPONENT_IMAGE_DIGEST, NEUTRAL_OPPONENT_IMAGE);
+  assert.equal(HRAFN_V5_PARENT_IMAGE_DIGEST, EXACT_V5_PARENT_IMAGE);
+  assert.notEqual(NEUTRAL_OPPONENT_IMAGE, EXACT_V5_PARENT_IMAGE);
+});
+
+test("HI1 r2 cells bind the transparent post-result revision", () => {
+  assert.equal(preregistration.campaign_revision_id, "hrafn-intent-i1-r2");
+  assert.equal(
+    preregistration.revision_status,
+    "POST_RESULT_REVISION_PREREGISTERED_NO_RUNTIME_AUTHORITY",
+  );
+  assert.equal(preregistration.post_result_evidence.prior_attempt_rejected, true);
+  assert.equal(
+    preregistration.post_result_evidence.tested_source_commit,
+    "98288c8b9211513cfb71ceb88707de1721f351e3",
+  );
+  assert.deepEqual(
+    preregistration.pilot.cells.map((cell) => ({
+      map: cell.map.replace("Compact ", ""),
+      seed: cell.seed,
+      subject_slot: cell.subject_slot_zero_based,
+      order: cell.order,
+    })),
+    [
+      {
+        map: "Pangaea",
+        seed: 240723,
+        subject_slot: 1,
+        order: ["control", "candidate"],
+      },
+      {
+        map: "Asia",
+        seed: 240724,
+        subject_slot: 2,
+        order: ["candidate", "control"],
+      },
+    ],
+  );
+  assert.deepEqual(
+    HRAFN_INTENT_CELLS.map((cell) => ({
+      map: cell.map,
+      seed: cell.seed,
+      subject_slot: cell.subject_slot,
+      role: cell.role,
+    })),
+    [
+      { map: "Pangaea", seed: 240723, subject_slot: 1, role: "control" },
+      { map: "Pangaea", seed: 240723, subject_slot: 1, role: "candidate" },
+      { map: "Asia", seed: 240724, subject_slot: 2, role: "candidate" },
+      { map: "Asia", seed: 240724, subject_slot: 2, role: "control" },
+    ],
+  );
+});
+
+test("HI1 r2 preregistration fails closed on revision or prior-result drift", () => {
+  assert.equal(verifyHrafnIntentR2Preregistration(preregistration).valid, true);
+  for (const mutate of [
+    (value) => { value.campaign_revision_id = "hrafn-intent-i1-r1"; },
+    (value) => { value.revision_status = "PREREGISTERED"; },
+    (value) => { value.post_result_evidence.prior_attempt_rejected = false; },
+    (value) => { value.promotion_state.CURRENT_REVISION_DIAGNOSTIC_RUN = true; },
+    (value) => { value.promotion_state.PRIOR_REVISION_REJECTED = false; },
+    (value) => { value.intent_contract.planner.seed = 240721; },
+    (value) => { value.pilot.cells[0].seed = 240721; },
+  ]) {
+    const changed = structuredClone(preregistration);
+    mutate(changed);
+    assert.equal(verifyHrafnIntentR2Preregistration(changed).valid, false);
+  }
 });
 
 test("HI1 paired jobs differ only by the subject intent flag", () => {
@@ -150,7 +280,7 @@ test("HI1 paired jobs differ only by the subject intent flag", () => {
     candidate: "1",
   }]);
   assert.equal(control.game_config.players[1].name, "K1Z Hrafn");
-  assert.equal(control.game_config.seed, 240721);
+  assert.equal(control.game_config.seed, 240723);
   assert.equal(control.game_config.tokens, null);
   assert.equal(control.players[1].image, options.subjectImage);
   assert.deepEqual(
@@ -164,7 +294,7 @@ test("HI1 paired jobs differ only by the subject intent flag", () => {
     })),
     Array.from({ length: 3 }, () => ({
       image: options.opponentImage,
-      run: ["node", "/app/hrafn-player.mjs"],
+      run: ["node", "/app/hrafn-neutral-opponent-player.mjs"],
     })),
   );
   assert.doesNotMatch(JSON.stringify(control), /qd1n|odin/i);
@@ -179,7 +309,7 @@ test("HI1 job builder supports the preregistered Asia seat", () => {
     ...options,
     variantID: "tournament-4p-asia",
     subjectSlot: 2,
-    seed: 240722,
+    seed: 240724,
     intentEnabled: true,
   });
   assert.equal(job.game_config.map, "Asia");
@@ -195,7 +325,7 @@ test("HI1 job builder pins raw manifest SHA and exact four cells", () => {
   for (const mutation of [
     { manifestSHA256: "f".repeat(64) },
     { subjectSlot: 2 },
-    { seed: 240722 },
+    { seed: 240724 },
     { variantID: "tournament-4p-asia" },
   ]) {
     assert.throws(() => buildHrafnIntentJob(manifest, {
@@ -210,6 +340,7 @@ test("HI1 job builder rejects unsafe rosters and malformed cells", () => {
   for (const mutation of [
     { subjectSlot: 4 },
     { seed: -1 },
+    { opponentImage: EXACT_V5_PARENT_IMAGE },
     {
       opponentImage:
         "sha256:bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb",

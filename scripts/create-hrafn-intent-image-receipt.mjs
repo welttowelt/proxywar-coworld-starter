@@ -6,6 +6,11 @@ import path from "node:path";
 import { pathToFileURL } from "node:url";
 import { promisify } from "node:util";
 
+import {
+  HRAFN_COWORLD_GAME_IMAGE_ID,
+  HRAFN_COWORLD_GAME_IMAGE_REFERENCE,
+} from "./materialize-hrafn-coworld-manifest.mjs";
+
 const execFileAsync = promisify(execFile);
 
 export const HRAFN_INTENT_CAMPAIGN_ID = "hrafn-intent-i1";
@@ -21,13 +26,37 @@ export const HRAFN_INTENT_MODEL = "llama3:latest";
 export const HRAFN_INTENT_MODEL_DIGEST =
   "365c0bd3c000a25d28ddbf732fe1c6add414de7275464c4e4d1c3b5fcb5d8ad1";
 export const HRAFN_INTENT_OLLAMA_VERSION = "0.32.1";
-export const HRAFN_V5_OPPONENT_IMAGE_ID =
+export const HRAFN_V5_PARENT_IMAGE_ID =
   "sha256:fb695574f4958beb29a036ed216c0882ee4da84ffa2f63c535f6c658f997522d";
+export const HRAFN_NEUTRAL_OPPONENT_IMAGE_ID =
+  "sha256:0e0014ae54354ca2af327f9785c8c22d6a9e4c60390d02776a6fe3235b972b87";
+export const HRAFN_V5_OPPONENT_IMAGE_ID = HRAFN_NEUTRAL_OPPONENT_IMAGE_ID;
+export const HRAFN_EXACT_V5_PLAYER_RUN = Object.freeze([
+  "node",
+  "/app/hrafn-player.mjs",
+]);
+export const HRAFN_NEUTRAL_OPPONENT_RUN = Object.freeze([
+  "node",
+  "/app/hrafn-neutral-opponent-player.mjs",
+]);
+export const HRAFN_NEUTRAL_OPPONENT_SOURCE_FILES = Object.freeze([
+  "hrafn-neutral-opponent-player.mjs",
+  "hrafn-neutral-opponent.mjs",
+]);
+export const HRAFN_NEUTRAL_OPPONENT_POLICY_FILES = Object.freeze([
+  "hrafn-player.mjs",
+  "hrafn-strategy.mjs",
+  "package-lock.json",
+  "package.json",
+]);
 export const HRAFN_INTENT_IMAGE_FILES = Object.freeze([
+  "coworld/cow_236e7c2e-acdb-404a-b1b9-41852e5ac658/coworld_manifest.json",
+  "Dockerfile.hrafn-neutral-opponent",
   "Dockerfile.hrafn-intent",
   "experiments/hrafn-intent-i1-preregistration-20260720.json",
   "hrafn-intent-player.mjs",
   "hrafn-intent.mjs",
+  ...HRAFN_NEUTRAL_OPPONENT_SOURCE_FILES,
   "hrafn-operational-context.mjs",
   "hrafn-safety.mjs",
   "hrafn-state.mjs",
@@ -35,7 +64,9 @@ export const HRAFN_INTENT_IMAGE_FILES = Object.freeze([
   "package-lock.json",
   "package.json",
   "scripts/build-hrafn-intent-job.mjs",
+  "scripts/build-hrafn-intent-preflight-spec.mjs",
   "scripts/create-hrafn-intent-image-receipt.mjs",
+  "scripts/materialize-hrafn-coworld-manifest.mjs",
   "scripts/preflight-hrafn-intent-run.mjs",
   "scripts/run-hrafn-supervised.mjs",
 ]);
@@ -64,6 +95,7 @@ const SHA256 = /^[a-f0-9]{64}$/;
 const COMMIT = /^[a-f0-9]{40}$/;
 const FORBIDDEN_IDENTITY = /(?:^|[^a-z0-9])(?:qd1n|odin)(?:$|[^a-z0-9])/i;
 const CANONICALIZATION = "sorted-json-v1-excluding-integrity";
+const NEUTRAL_PARENT_LABEL = "proxywar.hrafn.neutral.parent-image-id";
 
 function sha256(value) {
   return createHash("sha256").update(value).digest("hex");
@@ -139,8 +171,10 @@ function verifyDockerInspect(raw, requestedReference) {
   if (image.Os !== "linux" || image.Architecture !== "amd64") {
     throw new Error("HI1 subject image must be linux/amd64");
   }
-  if (image.Id === HRAFN_V5_OPPONENT_IMAGE_ID) {
-    throw new Error("HI1 subject image cannot equal the frozen v5 opponent");
+  if (image.Id === HRAFN_V5_OPPONENT_IMAGE_ID ||
+    image.Id === HRAFN_V5_PARENT_IMAGE_ID
+  ) {
+    throw new Error("HI1 subject image cannot equal an opponent image");
   }
   if (!plainObject(image.Config) || image.Config.WorkingDir !== "/app" ||
     canonicalJSON(image.Config.Entrypoint) !==
@@ -158,6 +192,85 @@ function verifyDockerInspect(raw, requestedReference) {
     entrypoint: image.Config.Entrypoint,
     cmd: [...image.Config.Cmd],
   };
+}
+
+function parseDockerImageInspect(raw, label) {
+  let parsed;
+  try {
+    parsed = JSON.parse(stringResult(raw));
+  } catch {
+    throw new Error(`${label} Docker inspect did not return JSON`);
+  }
+  if (!Array.isArray(parsed) || parsed.length !== 1 || !plainObject(parsed[0])) {
+    throw new Error(`${label} Docker inspect must resolve exactly one local image`);
+  }
+  const image = parsed[0];
+  const layers = image?.RootFS?.Layers;
+  if (!IMAGE_ID.test(image.Id ?? "") || image.Os !== "linux" ||
+    image.Architecture !== "amd64" || !Array.isArray(layers) ||
+    layers.length === 0 || layers.some((layer) => !IMAGE_ID.test(layer ?? ""))
+  ) {
+    throw new Error(`${label} image observation is not exact linux/amd64 evidence`);
+  }
+  return image;
+}
+
+async function observeCoworldGameImage(runtime) {
+  const result = await runtime.run("docker", [
+    "image",
+    "inspect",
+    HRAFN_COWORLD_GAME_IMAGE_REFERENCE,
+  ]);
+  let parsed;
+  try {
+    parsed = JSON.parse(stringResult(result.stdout));
+  } catch {
+    throw new Error("Coworld game Docker inspect did not return JSON");
+  }
+  if (!Array.isArray(parsed) || parsed.length !== 1 || !plainObject(parsed[0])) {
+    throw new Error("Coworld game Docker inspect must resolve exactly one image");
+  }
+  const image = parsed[0];
+  if (image.Id !== HRAFN_COWORLD_GAME_IMAGE_ID || image.Os !== "linux" ||
+    image.Architecture !== "amd64"
+  ) {
+    throw new Error("Coworld game tag is not the exact pinned linux/amd64 image");
+  }
+  return {
+    reference: HRAFN_COWORLD_GAME_IMAGE_REFERENCE,
+    id: image.Id,
+    os: image.Os,
+    architecture: image.Architecture,
+  };
+}
+
+async function observeHashes(runtime, imageID, files, label) {
+  const sorted = [...files].sort();
+  const result = await runtime.run("docker", [
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--entrypoint",
+    "/usr/bin/sha256sum",
+    imageID,
+    ...sorted.map((file) => `/app/${file}`),
+  ]);
+  const observed = new Map();
+  for (const line of stringResult(result.stdout).trim().split("\n")) {
+    const match = line.match(/^([a-f0-9]{64})\s+\/app\/(.+)$/);
+    if (!match || observed.has(match[2]) || !sorted.includes(match[2])) {
+      throw new Error(`${label} file-hash probe returned invalid output`);
+    }
+    observed.set(match[2], match[1]);
+  }
+  if (observed.size !== sorted.length) {
+    throw new Error(`${label} file-hash probe is incomplete`);
+  }
+  return sorted.map((file) => ({
+    path: `/app/${file}`,
+    sha256: observed.get(file),
+  }));
 }
 
 async function observeContainerFiles(runtime, imageID, committedFiles) {
@@ -248,6 +361,149 @@ async function observeImageRuntime(runtime, imageID) {
   };
 }
 
+async function observeNeutralOpponent(runtime, committedFiles) {
+  const neutralInspect = await runtime.run("docker", [
+    "image",
+    "inspect",
+    HRAFN_NEUTRAL_OPPONENT_IMAGE_ID,
+  ]);
+  const parentInspect = await runtime.run("docker", [
+    "image",
+    "inspect",
+    HRAFN_V5_PARENT_IMAGE_ID,
+  ]);
+  const neutral = parseDockerImageInspect(neutralInspect.stdout, "neutral opponent");
+  const parent = parseDockerImageInspect(parentInspect.stdout, "exact-v5 parent");
+  const neutralLayers = neutral.RootFS.Layers;
+  const parentLayers = parent.RootFS.Layers;
+  if (neutral.Id !== HRAFN_NEUTRAL_OPPONENT_IMAGE_ID ||
+    parent.Id !== HRAFN_V5_PARENT_IMAGE_ID || neutral.Id === parent.Id
+  ) {
+    throw new Error("neutral opponent or exact-v5 parent image ID drifted");
+  }
+  if (neutral.Config?.WorkingDir !== "/app" ||
+    canonicalJSON(neutral.Config?.Entrypoint) !==
+      canonicalJSON(HRAFN_INTENT_IMAGE_ENTRYPOINT) ||
+    canonicalJSON(neutral.Config?.Cmd) !==
+      canonicalJSON(HRAFN_NEUTRAL_OPPONENT_RUN) ||
+    neutral.Config?.Labels?.[NEUTRAL_PARENT_LABEL] !== HRAFN_V5_PARENT_IMAGE_ID
+  ) {
+    throw new Error("neutral opponent runtime metadata is invalid");
+  }
+  if (neutralLayers.length <= parentLayers.length ||
+    canonicalJSON(neutralLayers.slice(0, parentLayers.length)) !==
+      canonicalJSON(parentLayers)
+  ) {
+    throw new Error("neutral opponent is not derived from the exact-v5 rootfs");
+  }
+
+  const neutralFiles = await observeHashes(
+    runtime,
+    neutral.Id,
+    [
+      ...HRAFN_NEUTRAL_OPPONENT_POLICY_FILES,
+      ...HRAFN_NEUTRAL_OPPONENT_SOURCE_FILES,
+    ],
+    "neutral opponent",
+  );
+  const parentPolicyFiles = await observeHashes(
+    runtime,
+    parent.Id,
+    HRAFN_NEUTRAL_OPPONENT_POLICY_FILES,
+    "exact-v5 parent",
+  );
+  const neutralByPath = new Map(
+    neutralFiles.map((entry) => [entry.path, entry.sha256]),
+  );
+  for (const entry of parentPolicyFiles) {
+    if (neutralByPath.get(entry.path) !== entry.sha256) {
+      throw new Error(`neutral opponent changed exact-v5 policy bytes: ${entry.path}`);
+    }
+  }
+  const committed = new Map(
+    committedFiles.map((entry) => [entry.path, entry.sha256]),
+  );
+  for (const file of HRAFN_NEUTRAL_OPPONENT_SOURCE_FILES) {
+    if (neutralByPath.get(`/app/${file}`) !== committed.get(file)) {
+      throw new Error(`neutral opponent runner differs from committed bytes: ${file}`);
+    }
+  }
+
+  const syntaxFiles = [...HRAFN_NEUTRAL_OPPONENT_SOURCE_FILES]
+    .sort()
+    .map((file) => `/app/${file}`);
+  for (const target of syntaxFiles) {
+    await runtime.run("docker", [
+      "run",
+      "--rm",
+      "--network",
+      "none",
+      "--entrypoint",
+      "node",
+      neutral.Id,
+      "--check",
+      target,
+    ]);
+  }
+  const moduleImports = ["ws", "file:///app/hrafn-neutral-opponent.mjs"];
+  const smokeSource = [
+    'const ws = await import("ws");',
+    'if (typeof ws.WebSocket !== "function") throw new Error("ws import is invalid");',
+    'const neutral = await import("file:///app/hrafn-neutral-opponent.mjs");',
+    'if (typeof neutral.chooseNeutralOpponentAction !== "function") throw new Error("neutral chooser is invalid");',
+    'const sampleReason = neutral.publicNeutralOpponentReason({kind:"hold"});',
+    `process.stdout.write(JSON.stringify({node_version:process.version,module_imports:${JSON.stringify(moduleImports)},sample_reason:sampleReason})+"\\n");`,
+  ].join("");
+  const smoke = await runtime.run("docker", [
+    "run",
+    "--rm",
+    "--network",
+    "none",
+    "--entrypoint",
+    "node",
+    neutral.Id,
+    "--input-type=module",
+    "--eval",
+    smokeSource,
+  ]);
+  let observation;
+  try {
+    observation = JSON.parse(stringResult(smoke.stdout));
+  } catch {
+    throw new Error("neutral opponent Node/import smoke did not return JSON");
+  }
+  if (!exactKeys(observation, ["node_version", "module_imports", "sample_reason"]) ||
+    !/^v24\.\d+\.\d+$/.test(observation.node_version ?? "") ||
+    canonicalJSON(observation.module_imports) !== canonicalJSON(moduleImports) ||
+    !/^\[0UT\] v5:[a-z0-9]{3}(?::[a-z0-9.]+)?$/.test(observation.sample_reason ?? "") ||
+    String(observation.sample_reason).includes("[K1Z]")
+  ) {
+    throw new Error("neutral opponent Node/import smoke is invalid");
+  }
+
+  return {
+    image_id: neutral.Id,
+    parent_image_id: parent.Id,
+    os: neutral.Os,
+    architecture: neutral.Architecture,
+    working_dir: neutral.Config.WorkingDir,
+    entrypoint: neutral.Config.Entrypoint,
+    cmd: [...neutral.Config.Cmd],
+    coworld_player_run: [...HRAFN_NEUTRAL_OPPONENT_RUN],
+    parent_coworld_player_run: [...HRAFN_EXACT_V5_PLAYER_RUN],
+    rootfs_layers: [...neutralLayers],
+    parent_rootfs_layers: [...parentLayers],
+    container_files: neutralFiles,
+    parent_policy_files: parentPolicyFiles,
+    runtime_smoke: {
+      node_version: observation.node_version,
+      syntax_files: syntaxFiles,
+      module_imports: moduleImports,
+      sample_reason: observation.sample_reason,
+    },
+  };
+}
+
 export function verifyHrafnIntentImageReceipt(receipt) {
   const errors = [];
   if (!exactKeys(receipt, [
@@ -261,6 +517,7 @@ export function verifyHrafnIntentImageReceipt(receipt) {
     "files",
     "tests",
     "planner",
+    "game",
     "opponent",
     "integrity",
   ])) {
@@ -335,7 +592,8 @@ export function verifyHrafnIntentImageReceipt(receipt) {
     canonicalJSON(receipt.image.entrypoint) !==
       canonicalJSON(HRAFN_INTENT_IMAGE_ENTRYPOINT) ||
     canonicalJSON(receipt.image.cmd) !== canonicalJSON(HRAFN_INTENT_PLAYER_RUN) ||
-    receipt.image.id === HRAFN_V5_OPPONENT_IMAGE_ID
+    receipt.image.id === HRAFN_V5_OPPONENT_IMAGE_ID ||
+    receipt.image.id === HRAFN_V5_PARENT_IMAGE_ID
   ) {
     errors.push("image observation is invalid");
   }
@@ -426,10 +684,120 @@ export function verifyHrafnIntentImageReceipt(receipt) {
   ) {
     errors.push("planner binding is invalid");
   }
-  if (!exactKeys(receipt?.opponent, ["image_id"]) ||
-    receipt?.opponent?.image_id !== HRAFN_V5_OPPONENT_IMAGE_ID
+  if (!exactKeys(receipt?.game, [
+    "reference",
+    "id",
+    "os",
+    "architecture",
+  ]) ||
+    receipt?.game?.reference !== HRAFN_COWORLD_GAME_IMAGE_REFERENCE ||
+    receipt?.game?.id !== HRAFN_COWORLD_GAME_IMAGE_ID ||
+    receipt?.game?.os !== "linux" || receipt?.game?.architecture !== "amd64"
   ) {
-    errors.push("exact-v5 opponent binding is invalid");
+    errors.push("Coworld game image binding is invalid");
+  }
+  const opponent = receipt?.opponent;
+  const opponentKeys = [
+    "image_id",
+    "parent_image_id",
+    "os",
+    "architecture",
+    "working_dir",
+    "entrypoint",
+    "cmd",
+    "coworld_player_run",
+    "parent_coworld_player_run",
+    "rootfs_layers",
+    "parent_rootfs_layers",
+    "container_files",
+    "parent_policy_files",
+    "runtime_smoke",
+  ];
+  if (!exactKeys(opponent, opponentKeys) ||
+    opponent?.image_id !== HRAFN_NEUTRAL_OPPONENT_IMAGE_ID ||
+    opponent?.parent_image_id !== HRAFN_V5_PARENT_IMAGE_ID ||
+    opponent?.image_id === opponent?.parent_image_id ||
+    opponent?.os !== "linux" || opponent?.architecture !== "amd64" ||
+    opponent?.working_dir !== "/app" ||
+    canonicalJSON(opponent?.entrypoint) !==
+      canonicalJSON(HRAFN_INTENT_IMAGE_ENTRYPOINT) ||
+    canonicalJSON(opponent?.cmd) !==
+      canonicalJSON(HRAFN_NEUTRAL_OPPONENT_RUN) ||
+    canonicalJSON(opponent?.coworld_player_run) !==
+      canonicalJSON(HRAFN_NEUTRAL_OPPONENT_RUN) ||
+    canonicalJSON(opponent?.parent_coworld_player_run) !==
+      canonicalJSON(HRAFN_EXACT_V5_PLAYER_RUN)
+  ) {
+    errors.push("neutral exact-v5 opponent binding is invalid");
+  }
+  const validLayers = (layers) => Array.isArray(layers) && layers.length > 0 &&
+    layers.every((layer) => IMAGE_ID.test(layer ?? ""));
+  if (!validLayers(opponent?.rootfs_layers) ||
+    !validLayers(opponent?.parent_rootfs_layers) ||
+    opponent.rootfs_layers.length <= opponent.parent_rootfs_layers.length ||
+    canonicalJSON(opponent.rootfs_layers.slice(0, opponent.parent_rootfs_layers.length)) !==
+      canonicalJSON(opponent.parent_rootfs_layers)
+  ) {
+    errors.push("neutral opponent rootfs parent evidence is invalid");
+  }
+  const neutralFileNames = [
+    ...HRAFN_NEUTRAL_OPPONENT_POLICY_FILES,
+    ...HRAFN_NEUTRAL_OPPONENT_SOURCE_FILES,
+  ].sort();
+  const expectedNeutralPaths = neutralFileNames.map((file) => `/app/${file}`);
+  const expectedParentPaths = [...HRAFN_NEUTRAL_OPPONENT_POLICY_FILES]
+    .sort()
+    .map((file) => `/app/${file}`);
+  const validFileArray = (entries, expectedPaths) =>
+    Array.isArray(entries) &&
+    canonicalJSON(entries.map((entry) => entry?.path)) === canonicalJSON(expectedPaths) &&
+    entries.every((entry) =>
+      exactKeys(entry, ["path", "sha256"]) && SHA256.test(entry.sha256 ?? "")
+    );
+  if (!validFileArray(opponent?.container_files, expectedNeutralPaths) ||
+    !validFileArray(opponent?.parent_policy_files, expectedParentPaths)
+  ) {
+    errors.push("neutral opponent file evidence is invalid");
+  } else {
+    const neutralHashes = new Map(
+      opponent.container_files.map((entry) => [entry.path, entry.sha256]),
+    );
+    const committedHashes = new Map(
+      Array.isArray(receipt?.files)
+        ? receipt.files.map((entry) => [entry?.path, entry?.sha256])
+        : [],
+    );
+    for (const entry of opponent.parent_policy_files) {
+      if (neutralHashes.get(entry.path) !== entry.sha256) {
+        errors.push("neutral opponent changed exact-v5 policy bytes");
+      }
+    }
+    for (const file of HRAFN_NEUTRAL_OPPONENT_SOURCE_FILES) {
+      if (neutralHashes.get(`/app/${file}`) !== committedHashes.get(file)) {
+        errors.push("neutral opponent runner differs from committed source");
+      }
+    }
+  }
+  const expectedNeutralSyntax = [...HRAFN_NEUTRAL_OPPONENT_SOURCE_FILES]
+    .sort()
+    .map((file) => `/app/${file}`);
+  const expectedNeutralImports = ["ws", "file:///app/hrafn-neutral-opponent.mjs"];
+  if (!exactKeys(opponent?.runtime_smoke, [
+    "node_version",
+    "syntax_files",
+    "module_imports",
+    "sample_reason",
+  ]) ||
+    !/^v24\.\d+\.\d+$/.test(opponent?.runtime_smoke?.node_version ?? "") ||
+    canonicalJSON(opponent?.runtime_smoke?.syntax_files) !==
+      canonicalJSON(expectedNeutralSyntax) ||
+    canonicalJSON(opponent?.runtime_smoke?.module_imports) !==
+      canonicalJSON(expectedNeutralImports) ||
+    !/^\[0UT\] v5:[a-z0-9]{3}(?::[a-z0-9.]+)?$/.test(
+      opponent?.runtime_smoke?.sample_reason ?? "",
+    ) || String(opponent?.runtime_smoke?.sample_reason ?? "").includes("[K1Z]")
+  ) {
+    errors.push("neutral opponent runtime evidence is invalid");
   }
   if (!exactKeys(receipt?.integrity, [
     "algorithm",
@@ -553,6 +921,8 @@ export async function createHrafnIntentImageReceipt({
     files,
   );
   image.runtime_smoke = await observeImageRuntime(runtime, image.id);
+  const game = await observeCoworldGameImage(runtime);
+  const opponent = await observeNeutralOpponent(runtime, files);
 
   const testResult = await runtime.run("npm", ["test"], { cwd: repoPath });
   const testStdout = Buffer.from(testResult.stdout ?? "");
@@ -587,7 +957,8 @@ export async function createHrafnIntentImageReceipt({
       model_digest: HRAFN_INTENT_MODEL_DIGEST,
       ollama_version: HRAFN_INTENT_OLLAMA_VERSION,
     },
-    opponent: { image_id: HRAFN_V5_OPPONENT_IMAGE_ID },
+    game,
+    opponent,
   };
   receipt.integrity = {
     algorithm: "sha256",
@@ -672,10 +1043,21 @@ export async function verifyHrafnIntentImageReceiptEnvironment(
   if (canonicalJSON(runtimeSmoke) !== canonicalJSON(receipt.image.runtime_smoke)) {
     throw new Error("live subject image runtime smoke no longer matches the receipt");
   }
+  const game = await observeCoworldGameImage(runtime);
+  if (canonicalJSON(game) !== canonicalJSON(receipt.game)) {
+    throw new Error("live Coworld game image no longer matches the receipt");
+  }
+  const opponent = await observeNeutralOpponent(runtime, receipt.files);
+  if (canonicalJSON(opponent) !== canonicalJSON(receipt.opponent)) {
+    throw new Error("live neutral opponent evidence no longer matches the receipt");
+  }
   return {
     valid: true,
     source_commit: commit,
     subject_image: image.id,
+    game_image: game.id,
+    opponent_image: opponent.image_id,
+    opponent_parent_image: opponent.parent_image_id,
   };
 }
 

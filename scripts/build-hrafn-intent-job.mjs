@@ -10,6 +10,9 @@ import {
   HRAFN_INTENT_MODEL_DIGEST,
   HRAFN_INTENT_OLLAMA_VERSION,
   HRAFN_INTENT_PLAYER_RUN,
+  HRAFN_NEUTRAL_OPPONENT_IMAGE_ID,
+  HRAFN_NEUTRAL_OPPONENT_RUN,
+  HRAFN_V5_PARENT_IMAGE_ID,
   HRAFN_V5_OPPONENT_IMAGE_ID,
   verifyHrafnIntentImageReceipt,
 } from "./create-hrafn-intent-image-receipt.mjs";
@@ -17,7 +20,6 @@ import {
 const IMAGE_DIGEST = /^sha256:[a-f0-9]{64}$/;
 const FORBIDDEN_IDENTITY = /(?:^|[^a-z0-9])(?:qd1n|odin)(?:$|[^a-z0-9])/i;
 const SUBJECT_NAME = "K1Z Hrafn";
-const OPPONENT_RUN = Object.freeze(["node", "/app/hrafn-player.mjs"]);
 const OUTSIDER_NAMES = Object.freeze([
   "Frozen v5 Alpha",
   "Frozen v5 Beta",
@@ -26,7 +28,17 @@ const OUTSIDER_NAMES = Object.freeze([
 
 export const HRAFN_INTENT_MANIFEST_SHA256 =
   "8feb5100ee63d5ccca66794c40e535f2715376e2a2cf8a3f8ed892880dfe65f3";
+export const HRAFN_INTENT_CAMPAIGN_REVISION_ID = "hrafn-intent-i1-r2";
+export const HRAFN_INTENT_PREREGISTRATION_STATUS =
+  "PREREGISTERED_AMENDED_NO_RUNTIME_AUTHORITY";
+export const HRAFN_INTENT_REVISION_STATUS =
+  "POST_RESULT_REVISION_PREREGISTERED_NO_RUNTIME_AUTHORITY";
+export const HRAFN_INTENT_REJECTED_SOURCE_COMMIT =
+  "98288c8b9211513cfb71ceb88707de1721f351e3";
 export const HRAFN_V5_OPPONENT_IMAGE_DIGEST = HRAFN_V5_OPPONENT_IMAGE_ID;
+export const HRAFN_NEUTRAL_OPPONENT_IMAGE_DIGEST =
+  HRAFN_NEUTRAL_OPPONENT_IMAGE_ID;
+export const HRAFN_V5_PARENT_IMAGE_DIGEST = HRAFN_V5_PARENT_IMAGE_ID;
 export const HRAFN_INTENT_CELLS = Object.freeze([
   Object.freeze({
     id: "pangaea-control",
@@ -34,7 +46,7 @@ export const HRAFN_INTENT_CELLS = Object.freeze([
     role: "control",
     variant_id: "tournament-4p-pangaea",
     map: "Pangaea",
-    seed: 240721,
+    seed: 240723,
     subject_slot: 1,
   }),
   Object.freeze({
@@ -43,7 +55,7 @@ export const HRAFN_INTENT_CELLS = Object.freeze([
     role: "candidate",
     variant_id: "tournament-4p-pangaea",
     map: "Pangaea",
-    seed: 240721,
+    seed: 240723,
     subject_slot: 1,
   }),
   Object.freeze({
@@ -52,7 +64,7 @@ export const HRAFN_INTENT_CELLS = Object.freeze([
     role: "candidate",
     variant_id: "tournament-4p-asia",
     map: "Asia",
-    seed: 240722,
+    seed: 240724,
     subject_slot: 2,
   }),
   Object.freeze({
@@ -61,10 +73,69 @@ export const HRAFN_INTENT_CELLS = Object.freeze([
     role: "control",
     variant_id: "tournament-4p-asia",
     map: "Asia",
-    seed: 240722,
+    seed: 240724,
     subject_slot: 2,
   }),
 ]);
+
+export function verifyHrafnIntentR2Preregistration(value) {
+  const errors = [];
+  const expectedCells = [
+    {
+      map: "Compact Pangaea",
+      seed: 240723,
+      subject_slot_zero_based: 1,
+      order: ["control", "candidate"],
+    },
+    {
+      map: "Compact Asia",
+      seed: 240724,
+      subject_slot_zero_based: 2,
+      order: ["candidate", "control"],
+    },
+  ];
+  if (
+    value?.schema_version !== 2 ||
+    value?.record_type !== "hrafn_intent_i1_preregistration" ||
+    value?.campaign_id !== HRAFN_INTENT_CAMPAIGN_ID ||
+    value?.campaign_revision_id !== HRAFN_INTENT_CAMPAIGN_REVISION_ID ||
+    value?.post_result_revision_id !== HRAFN_INTENT_CAMPAIGN_REVISION_ID ||
+    value?.post_result_revision_from !== HRAFN_INTENT_REJECTED_SOURCE_COMMIT ||
+    value?.status !== HRAFN_INTENT_PREREGISTRATION_STATUS ||
+    value?.revision_status !== HRAFN_INTENT_REVISION_STATUS
+  ) {
+    errors.push("r2 campaign identity or revision boundary is invalid");
+  }
+  if (
+    value?.post_result_evidence?.tested_source_commit !==
+      HRAFN_INTENT_REJECTED_SOURCE_COMMIT ||
+    value?.post_result_evidence?.prior_attempt_rejected !== true ||
+    value?.post_result_evidence?.verdict !== "REJECT_SAFETY_OR_RELIABILITY"
+  ) {
+    errors.push("r1 rejection evidence is not bound");
+  }
+  if (
+    value?.promotion_state?.DIAGNOSTIC_RUN !== true ||
+    value?.promotion_state?.CURRENT_REVISION_DIAGNOSTIC_RUN !== false ||
+    value?.promotion_state?.PRIOR_REVISION_REJECTED !== true ||
+    value?.promotion_state?.UPLOADED !== false ||
+    value?.promotion_state?.SUBMITTED !== false ||
+    value?.promotion_state?.CHAMPION_CHANGED !== false
+  ) {
+    errors.push("r2 pre-runtime promotion state is invalid");
+  }
+  if (
+    value?.intent_contract?.planner?.model !== HRAFN_INTENT_MODEL ||
+    value?.intent_contract?.planner?.model_digest !== HRAFN_INTENT_MODEL_DIGEST ||
+    value?.intent_contract?.planner?.seed !== 240723 ||
+    value?.pilot?.coworld_client !== "0.1.28" ||
+    value?.pilot?.manifest_sha256 !== HRAFN_INTENT_MANIFEST_SHA256 ||
+    JSON.stringify(value?.pilot?.cells) !== JSON.stringify(expectedCells)
+  ) {
+    errors.push("r2 planner or fresh-cell contract is invalid");
+  }
+  return { valid: errors.length === 0, errors };
+}
 
 function sha256(value) {
   return createHash("sha256").update(value).digest("hex");
@@ -156,7 +227,7 @@ function exactJobForCell(manifest, {
     return {
       type: "player",
       image: opponentImage,
-      run: [...OPPONENT_RUN],
+      run: [...HRAFN_NEUTRAL_OPPONENT_RUN],
       env: { HRAFN_RV1: "1" },
     };
   });
@@ -233,11 +304,14 @@ export function auditHrafnIntentJob(job, {
     assertNoForbiddenIdentityMaterial(job, "HI1 job");
     assertImage(subjectImage, "subject image");
     assertImage(opponentImage, "opponent image");
-    if (opponentImage !== HRAFN_V5_OPPONENT_IMAGE_ID) {
-      throw new Error("opponent image must be the audited exact-v5 rebuild");
+    if (opponentImage === HRAFN_V5_PARENT_IMAGE_ID) {
+      throw new Error("original K1Z-tagging v5 image cannot be used as an outsider");
+    }
+    if (opponentImage !== HRAFN_NEUTRAL_OPPONENT_IMAGE_ID) {
+      throw new Error("opponent image must be the audited neutral exact-v5 derivative");
     }
     if (subjectImage === opponentImage) {
-      throw new Error("subject image must differ from frozen v5");
+      throw new Error("subject image must differ from the neutral opponent");
     }
     assertSubjectReceipt(subjectReceipt, { subjectImage, opponentImage });
     if (!Array.isArray(job?.players) || job.players.length !== 4 ||
@@ -311,7 +385,7 @@ export function auditHrafnIntentJob(job, {
       if (job.game_config.players[slot]?.name !== OUTSIDER_NAMES[outsiderIndex] ||
         player?.type !== "player" ||
         player?.image !== opponentImage ||
-        JSON.stringify(player?.run) !== JSON.stringify(OPPONENT_RUN) ||
+        JSON.stringify(player?.run) !== JSON.stringify(HRAFN_NEUTRAL_OPPONENT_RUN) ||
         JSON.stringify(player?.env) !== JSON.stringify({ HRAFN_RV1: "1" })
       ) {
         throw new Error("HI1 outsider runtime contract is invalid");
@@ -341,11 +415,14 @@ export function buildHrafnIntentJob(manifest, {
   const cell = cellFor({ variantID, subjectSlot, seed, intentEnabled });
   assertImage(subjectImage, "subject image");
   assertImage(opponentImage, "opponent image");
-  if (opponentImage !== HRAFN_V5_OPPONENT_IMAGE_ID) {
-    throw new Error("opponent image must be the audited exact-v5 rebuild");
+  if (opponentImage === HRAFN_V5_PARENT_IMAGE_ID) {
+    throw new Error("original K1Z-tagging v5 image cannot be used as an outsider");
+  }
+  if (opponentImage !== HRAFN_NEUTRAL_OPPONENT_IMAGE_ID) {
+    throw new Error("opponent image must be the audited neutral exact-v5 derivative");
   }
   if (subjectImage === opponentImage) {
-    throw new Error("subject image must differ from the frozen v5 opponent");
+    throw new Error("subject image must differ from the neutral opponent");
   }
   assertSubjectReceipt(subjectReceipt, { subjectImage, opponentImage });
   const job = exactJobForCell(manifest, {

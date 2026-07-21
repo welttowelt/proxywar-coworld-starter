@@ -22,6 +22,7 @@ import {
   HRAFN_INTENT_IMAGE_FILES,
   HRAFN_INTENT_RUNTIME_IMPORTS,
   HRAFN_INTENT_RUNTIME_SYNTAX_FILES,
+  HRAFN_NEUTRAL_OPPONENT_IMAGE_ID,
   hrafnIntentReceiptContentSHA256,
   serializeHrafnIntentImageReceipt,
 } from "../scripts/create-hrafn-intent-image-receipt.mjs";
@@ -36,10 +37,17 @@ import {
   serializeK1ZPacket,
 } from "../k1z-direct-line.mjs";
 import { HRAFN_PLAYER_ID } from "../hrafn-state.mjs";
+import {
+  coworldGameReceiptFixture,
+  neutralOpponentReceiptFixture,
+} from "./helpers/hrafn-intent-receipt-fixture.mjs";
+import {
+  HRAFN_COWORLD_GAME_IMAGE_ID,
+  HRAFN_COWORLD_GAME_IMAGE_REFERENCE,
+} from "../scripts/materialize-hrafn-coworld-manifest.mjs";
 
 const SUBJECT_IMAGE = `sha256:${"a".repeat(64)}`;
-const OPPONENT_IMAGE =
-  "sha256:fb695574f4958beb29a036ed216c0882ee4da84ffa2f63c535f6c658f997522d";
+const OPPONENT_IMAGE = HRAFN_NEUTRAL_OPPONENT_IMAGE_ID;
 const SOURCE_COMMIT = "1".repeat(40);
 const MODEL_DIGEST =
   "365c0bd3c000a25d28ddbf732fe1c6add414de7275464c4e4d1c3b5fcb5d8ad1";
@@ -114,8 +122,10 @@ function fixtureReceipt(preregistrationSHA256) {
       model_digest: MODEL_DIGEST,
       ollama_version: "0.32.1",
     },
-    opponent: { image_id: OPPONENT_IMAGE },
+    game: coworldGameReceiptFixture(),
+    opponent: null,
   };
+  receipt.opponent = neutralOpponentReceiptFixture(receipt.files);
   receipt.integrity = {
     algorithm: "sha256",
     canonicalization: "sorted-json-v1-excluding-integrity",
@@ -154,6 +164,9 @@ function packetBase(overrides = {}) {
 function manifestFixture() {
   return {
     id: "cow-test",
+    game: {
+      runnable: { image: HRAFN_COWORLD_GAME_IMAGE_REFERENCE },
+    },
     variants: [
       {
         id: "tournament-4p-pangaea",
@@ -201,7 +214,51 @@ function setupFixture() {
     schema_version: 2,
     record_type: "hrafn_intent_i1_preregistration",
     campaign_id: "hrafn-intent-i1",
+    campaign_revision_id: "hrafn-intent-i1-r2",
+    post_result_revision_id: "hrafn-intent-i1-r2",
+    post_result_revision_from:
+      "98288c8b9211513cfb71ceb88707de1721f351e3",
     status: "PREREGISTERED_AMENDED_NO_RUNTIME_AUTHORITY",
+    revision_status: "POST_RESULT_REVISION_PREREGISTERED_NO_RUNTIME_AUTHORITY",
+    post_result_evidence: {
+      tested_source_commit: "98288c8b9211513cfb71ceb88707de1721f351e3",
+      prior_attempt_rejected: true,
+      verdict: "REJECT_SAFETY_OR_RELIABILITY",
+    },
+    intent_contract: {
+      planner: {
+        model: "llama3:latest",
+        model_digest:
+          "365c0bd3c000a25d28ddbf732fe1c6add414de7275464c4e4d1c3b5fcb5d8ad1",
+        seed: 240723,
+      },
+    },
+    pilot: {
+      coworld_client: "0.1.28",
+      manifest_sha256: HRAFN_INTENT_MANIFEST_SHA256,
+      cells: [
+        {
+          map: "Compact Pangaea",
+          seed: 240723,
+          subject_slot_zero_based: 1,
+          order: ["control", "candidate"],
+        },
+        {
+          map: "Compact Asia",
+          seed: 240724,
+          subject_slot_zero_based: 2,
+          order: ["candidate", "control"],
+        },
+      ],
+    },
+    promotion_state: {
+      DIAGNOSTIC_RUN: true,
+      CURRENT_REVISION_DIAGNOSTIC_RUN: false,
+      PRIOR_REVISION_REJECTED: true,
+      UPLOADED: false,
+      SUBMITTED: false,
+      CHAMPION_CHANGED: false,
+    },
   };
   const preregistrationPath = path.join(directory, "prereg.json");
   const preregistrationBytes = Buffer.from(`${JSON.stringify(preregistration, null, 2)}\n`);
@@ -241,6 +298,7 @@ function setupFixture() {
     scope: "hrafn-only",
     source_commit: SOURCE_COMMIT,
     subject_image_id: SUBJECT_IMAGE,
+    game_image_id: HRAFN_COWORLD_GAME_IMAGE_ID,
     image_receipt: {
       file_sha256: sha256(receiptBytes),
       content_sha256: receipt.integrity.content_sha256,
@@ -305,10 +363,11 @@ function setupFixture() {
         valid: true,
         source_commit: SOURCE_COMMIT,
         subject_image: SUBJECT_IMAGE,
+        game_image: HRAFN_COWORLD_GAME_IMAGE_ID,
       };
     },
-    async inspectImage(imageID) {
-      return { id: imageID, os: "linux", architecture: "amd64" };
+    async inspectImage(imageReference, expectedID = imageReference) {
+      return { id: expectedID, os: "linux", architecture: "amd64" };
     },
     async probeOllama() {
       return {
@@ -469,7 +528,7 @@ async function prepareActiveOrder(fixture, targetOrder, pairVerdict = "PAIR_PASS
         record_type: "hrafn_intent_i1_pair_audit",
         campaign_id: "hrafn-intent-i1",
         map: "Pangaea",
-        seed: 240721,
+        seed: 240723,
         subject_slot: 1,
         control: {
           provenance: { operational_sha256: predecessors[0].sha256 },
@@ -519,6 +578,7 @@ test("preflight binds exact jobs, Odin advisory window, identity, lease, argv, a
     assert.equal(receipt.source.commit, SOURCE_COMMIT);
     assert.equal(receipt.images.subject.id, SUBJECT_IMAGE);
     assert.equal(receipt.images.opponent.id, OPPONENT_IMAGE);
+    assert.deepEqual(receipt.images.game, coworldGameReceiptFixture());
     assert.equal(receipt.planner.model_digest, MODEL_DIGEST);
     assert.equal(receipt.planner.container_probe.image_id, SUBJECT_IMAGE);
     assert.equal(
@@ -568,6 +628,14 @@ test("preflight fails closed on cell, job, manifest, image, model, identity, lea
     (fixture) => { writeFileSync(fixture.spec.job_path, "{}\n"); },
     (fixture) => { writeFileSync(fixture.spec.manifest_path, "{}\n"); },
     (fixture) => { fixture.runtime.inspectImage = async () => ({ id: SUBJECT_IMAGE, os: "linux", architecture: "arm64" }); },
+    (fixture) => {
+      fixture.runtime.verifyImageEnvironment = async () => ({
+        valid: true,
+        source_commit: SOURCE_COMMIT,
+        subject_image: SUBJECT_IMAGE,
+        game_image: `sha256:${"0".repeat(64)}`,
+      });
+    },
     (fixture) => { fixture.runtime.probeOllama = async () => ({ version: "0.0.0" }); },
     (fixture) => { fixture.runtime.probeContainerOllama = async () => ({ model: "other" }); },
     (fixture) => { fixture.runtime.readIdentity = () => ({ playerID: "other", playerName: "K1Z Hrafn" }); },
@@ -602,7 +670,11 @@ test("exactly one advisory identity window is required and formal approvals rema
     (fixture) => {
       const duplicate = JSON.parse(readFileSync(fixture.identityWindowPath, "utf8"));
       duplicate.message_id = "odin-hi1-window-duplicate";
-      writeFileSync(path.join(fixture.mailbox, "duplicate.json"), `${JSON.stringify(duplicate, null, 2)}\n`);
+      const sealed = sealK1ZPacket(duplicate);
+      writeFileSync(
+        path.join(fixture.mailbox, "duplicate.json"),
+        serializeK1ZPacket(sealed),
+      );
     },
     (fixture) => {
       const window = JSON.parse(readFileSync(fixture.identityWindowPath, "utf8"));
@@ -613,6 +685,14 @@ test("exactly one advisory identity window is required and formal approvals rema
       const window = JSON.parse(readFileSync(fixture.identityWindowPath, "utf8"));
       window.payload.bindings.jobs[0].sha256 = "0".repeat(64);
       writeFileSync(fixture.identityWindowPath, `${JSON.stringify(window, null, 2)}\n`);
+    },
+    (fixture) => {
+      const window = JSON.parse(readFileSync(fixture.identityWindowPath, "utf8"));
+      window.payload.bindings.game_image_id = `sha256:${"0".repeat(64)}`;
+      writeFileSync(
+        fixture.identityWindowPath,
+        serializeK1ZPacket(sealK1ZPacket(window)),
+      );
     },
     (fixture) => {
       const formal = sealK1ZPacket(packetBase({
@@ -654,6 +734,32 @@ test("exactly one advisory identity window is required and formal approvals rema
     } finally {
       rmSync(fixture.directory, { recursive: true, force: true });
     }
+  }
+});
+
+test("historical artifact-bound identity windows do not block the current window", async () => {
+  const fixture = setupFixture();
+  try {
+    const historical = JSON.parse(readFileSync(
+      fixture.identityWindowPath,
+      "utf8",
+    ));
+    historical.message_id = "odin-hi1-window-historical";
+    historical.sequence -= 1;
+    historical.payload.bindings.source_commit = "9".repeat(40);
+    writeFileSync(
+      path.join(fixture.mailbox, "historical.json"),
+      serializeK1ZPacket(sealK1ZPacket(historical)),
+    );
+
+    const receipt = await verifyHrafnIntentRunPreflight(
+      fixture.spec,
+      verificationOptions(fixture),
+      fixture.runtime,
+    );
+    assert.equal(receipt.checks.one_odin_advisory_identity_window, true);
+  } finally {
+    rmSync(fixture.directory, { recursive: true, force: true });
   }
 });
 

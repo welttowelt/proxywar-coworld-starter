@@ -230,7 +230,7 @@ test("exact-v5 compatibility restores its original social fallback", () => {
   );
 });
 
-test("grow intent can redirect an exact-v5 conversion into legal expansion", () => {
+test("grow intent cannot interrupt an exact-v5 rv3 conversion", () => {
   const auri = rival({ id: "auri", name: "Auri", tileShare: 0.25 });
   const actions = [attack(auri), expand(), action("hold", "hold", "Hold")];
   const obs = observation({ rivals: [auri] });
@@ -242,12 +242,61 @@ test("grow intent can redirect an exact-v5 conversion into legal expansion", () 
   });
 
   assert.equal(result.baseline.id, "attack:auri:25");
-  assert.equal(result.action.id, "expand:terra-nullius:35");
+  assert.equal(result.action.id, result.baseline.id);
   assert.equal(result.intentValid, true);
-  assert.equal(result.intentApplied, true);
-  assert.equal(result.actionDelta, true);
-  assert.equal(result.action.intentMarker, "hi1");
-  assert.equal(publicHrafnReason(result.action), "[K1Z] r4vn:atk:hi1");
+  assert.equal(result.intentApplied, false);
+  assert.equal(result.actionDelta, false);
+  assert.equal(result.reason, "intent_hard_guard");
+  assert.equal(result.action.intentMarker, undefined);
+  assert.equal(publicHrafnReason(result.action), "[K1Z] r4vn:atk:rv3");
+});
+
+test("grow cannot interrupt an exact-v5 campaign while convert retains target autonomy", () => {
+  const leader = rival({ id: "leader", name: "Leader", tileShare: 0.3 });
+  const side = rival({ id: "side", name: "Side", tileShare: 0.18 });
+  const actions = [
+    attack(leader),
+    attack(side),
+    expand(),
+    action("hold", "hold", "Hold"),
+  ];
+  const history = [{
+    actionID: "attack:leader:25",
+    kind: "attack",
+    targetID: leader.id,
+    targetName: "leader",
+    tileShare: 0.12,
+    incomingAttackerIDs: [],
+    policyMarker: "rv1",
+    campaignStartDecision: 0,
+  }];
+  const obs = observation({ rivals: [leader, side] });
+  const baseline = chooseHrafnAction(actions, obs, history, {
+    exactV5: true,
+    rv1Enabled: true,
+  });
+  assert.equal(baseline.policyMarker, "rv1");
+
+  const grow = chooseHrafnIntentDecision({
+    actions,
+    observation: obs,
+    history,
+    intent: { objective: "grow", targetID: null, horizon: 3 },
+  });
+  assert.equal(grow.action.id, baseline.id);
+  assert.equal(grow.action.policyMarker, "rv1");
+  assert.equal(grow.actionDelta, false);
+  assert.equal(grow.reason, "intent_hard_guard");
+
+  const convert = chooseHrafnIntentDecision({
+    actions,
+    observation: obs,
+    history,
+    intent: { objective: "convert", targetID: side.id, horizon: 2 },
+  });
+  assert.equal(convert.baseline.id, baseline.id);
+  assert.equal(convert.action.id, "attack:side:25");
+  assert.equal(convert.actionDelta, true);
 });
 
 test("convert intent binds exact-v5 autonomy to one exact outsider", () => {
@@ -270,6 +319,117 @@ test("convert intent binds exact-v5 autonomy to one exact outsider", () => {
   assert.equal(result.action.id, "attack:side:25");
   assert.equal(result.intentApplied, true);
   assert.equal(result.action.intentMarker, "hi1");
+});
+
+test("convert affordances use direct safe attacks and deterministic bounded commitment", () => {
+  const viable = rival({
+    id: "viable",
+    name: "Viable",
+    relativeTroopRatio: 1.1,
+  });
+  const weak = rival({
+    id: "weak",
+    name: "Weak",
+    relativeTroopRatio: 1.09,
+  });
+  const underCommitted = rival({
+    id: "under-committed",
+    name: "Under Committed",
+    relativeTroopRatio: 4,
+  });
+  const overCommitted = rival({
+    id: "over-committed",
+    name: "Over Committed",
+    relativeTroopRatio: 4,
+  });
+  const ally = rival({
+    id: "ally",
+    name: "Ally",
+    relativeTroopRatio: 4,
+    isAllied: true,
+  });
+  const odin = rival({
+    id: K1Z_MEMBERS[0].id,
+    name: "K1Z odin free",
+    relativeTroopRatio: 4,
+  });
+  const actions = [
+    attack(viable, 10),
+    attack(viable, 16),
+    attack(viable, 25),
+    attack(viable, 26),
+    attack(weak, 25),
+    attack(underCommitted, 9),
+    attack(overCommitted, 26),
+    attack(ally, 25),
+    attack(odin, 25),
+    expand(),
+    action("hold", "hold", "Hold"),
+  ];
+  const obs = observation({
+    tileShare: 0.05,
+    rivals: [viable, weak, underCommitted, overCommitted, ally, odin],
+  });
+  const snapshot = buildHrafnIntentSnapshot({ actions, observation: obs });
+  const result = chooseHrafnIntentDecision({
+    actions,
+    observation: obs,
+    intent: { objective: "convert", targetID: viable.id, horizon: 6 },
+  });
+
+  assert.deepEqual(
+    snapshot.convertTargets.map((target) => target.targetID),
+    [viable.id],
+  );
+  assert.equal(result.baseline.id, "expand:terra-nullius:35");
+  assert.equal(result.action.id, "attack:viable:25");
+  assert.equal(result.actionDelta, true);
+  assert.equal(result.intentApplied, true);
+});
+
+test("convert affordances close under any incoming pressure", () => {
+  const foe = rival({ id: "foe", name: "Foe", relativeTroopRatio: 4 });
+  const actions = [attack(foe, 25), expand(), action("hold", "hold", "Hold")];
+  const obs = observation({
+    incomingAttacks: 1,
+    incomingAttackPlayerIDs: ["other-attacker"],
+    rivals: [foe],
+  });
+  const snapshot = buildHrafnIntentSnapshot({ actions, observation: obs });
+  const result = chooseHrafnIntentDecision({
+    actions,
+    observation: obs,
+    intent: { objective: "convert", targetID: foe.id, horizon: 6 },
+  });
+
+  assert.deepEqual(snapshot.convertTargets, []);
+  assert.equal(result.action.id, result.baseline.id);
+  assert.equal(result.intentValid, false);
+  assert.equal(result.intentApplied, false);
+});
+
+test("one intent epoch can cause at most one action delta", () => {
+  const leader = rival({ id: "leader", name: "Leader", tileShare: 0.3 });
+  const side = rival({ id: "side", name: "Side", tileShare: 0.18 });
+  const actions = [
+    attack(leader),
+    attack(side),
+    expand(),
+    action("hold", "hold", "Hold"),
+  ];
+  const result = chooseHrafnIntentDecision({
+    actions,
+    observation: observation({ rivals: [leader, side] }),
+    intent: { objective: "convert", targetID: side.id, horizon: 6 },
+    intentDeltaSpent: true,
+  });
+
+  assert.equal(result.action.id, result.baseline.id);
+  assert.equal(result.intentValid, true);
+  assert.equal(result.intentApplied, false);
+  assert.equal(result.actionDelta, false);
+  assert.equal(result.reason, "intent_epoch_delta_spent");
+  assert.equal(result.action.intentMarker, undefined);
 });
 
 test("target-player-only conversion falls back without HI1 reach", () => {
@@ -388,8 +548,10 @@ test("grow cannot treat K1Z-targeted metadata or nuclear builds as growth", () =
       observation: observation({ rivals: [odin, outsider] }),
       intent: { objective: "grow", targetID: null, horizon: 6 },
     });
-    assert.equal(result.intentValid, false);
+    assert.equal(result.intentApplied, false);
+    assert.equal(result.actionDelta, false);
     assert.equal(result.action.id, result.baseline.id);
+    assert.notEqual(result.action.id, falseGrowth.id);
     assert.equal(result.action.intentMarker, undefined);
   }
 });
@@ -534,7 +696,7 @@ test("planner snapshot exposes affordances and target IDs but no legal-action te
   const actions = [attack(foe), expand(), action("hold-secret", "hold", "Secret Hold")];
   const snapshot = buildHrafnIntentSnapshot({
     actions,
-    observation: observation({ rivals: [foe] }),
+    observation: observation({ tileShare: 0.05, rivals: [foe] }),
     history: [],
   });
   const bytes = JSON.stringify(snapshot);
@@ -582,12 +744,15 @@ test("Ollama planner enforces root JSON and returns truthful failures", async ()
     horizon: 6,
   });
   assert.equal(capturedBody.stream, false);
+  assert.equal(capturedBody.options.seed, 240723);
   assert.equal(capturedBody.format.additionalProperties, false);
   assert.deepEqual(capturedBody.format.required, [
     "objective",
     "targetID",
     "horizon",
   ]);
+  assert.match(capturedBody.prompt, /normally choose convert/i);
+  assert.match(capturedBody.prompt, /horizon 2 for convert/i);
 
   const malformed = createOllamaHrafnIntentPlanner({
     fetchImpl: async () => ({

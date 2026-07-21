@@ -15,6 +15,7 @@ import {
   publicHrafnReason,
   recordHrafnDecision,
 } from "./hrafn-strategy.mjs";
+import { isNeutralAction } from "./hrafn-state.mjs";
 
 const url = process.env.COWORLD_PLAYER_WS_URL;
 if (!url) throw new Error("COWORLD_PLAYER_WS_URL is required");
@@ -41,7 +42,7 @@ const planner = createOllamaHrafnIntentPlanner({
     100,
     Number(process.env.HRAFN_INTENT_TIMEOUT_MS) || 4000,
   ),
-  seed: 240721,
+  seed: 240723,
 });
 
 const history = [];
@@ -51,7 +52,10 @@ let activeIntent = null;
 let activeIntentSourceDecision = null;
 let intentRemaining = 0;
 let intentEpoch = 0;
+let intentDeltaSpent = false;
+let activeGrowCheckpointTiles = null;
 let intentInvalidations = 0;
+let intentRetirements = 0;
 let plannerPending = false;
 let plannerDegraded = false;
 let plannerAttempts = 0;
@@ -128,9 +132,7 @@ function logPlan({
 }
 
 function failPlan({ attempt, result, sourceDecision, age, error }) {
-  activeIntent = null;
-  activeIntentSourceDecision = null;
-  intentRemaining = 0;
+  clearActiveIntent();
   plannerFailures += 1;
   consecutivePlannerFailures += 1;
   plannerDegraded = true;
@@ -209,6 +211,8 @@ function startIntentPlan(snapshot) {
     activeIntent = result.intent;
     activeIntentSourceDecision = sourceDecision;
     intentRemaining = remainingHorizon;
+    intentDeltaSpent = false;
+    activeGrowCheckpointTiles = null;
     intentEpoch += 1;
     consecutivePlannerFailures = 0;
     plannerDegraded = false;
@@ -269,6 +273,42 @@ function clearActiveIntent() {
   activeIntent = null;
   activeIntentSourceDecision = null;
   intentRemaining = 0;
+  intentDeltaSpent = false;
+  activeGrowCheckpointTiles = null;
+}
+
+function observedTilesOwned(observation) {
+  const raw = observation?.ownState?.tilesOwned ??
+    observation?.ownState?.tiles;
+  if (raw === null || raw === undefined) return null;
+  const value = Number(raw);
+  return Number.isFinite(value) && value >= 0 ? value : null;
+}
+
+function retireObsoleteIntent(snapshot, observation) {
+  if (!activeIntent) return null;
+  let reason = null;
+  if (activeIntent.objective === "grow") {
+    const currentTiles = observedTilesOwned(observation);
+    if (
+      activeGrowCheckpointTiles !== null &&
+      currentTiles !== null &&
+      currentTiles <= activeGrowCheckpointTiles
+    ) {
+      reason = "grow_stalled";
+    } else if (snapshot.growPossible !== true) {
+      reason = "grow_unavailable";
+    }
+  } else if (!snapshot.convertTargets.some((target) =>
+    target.targetID === activeIntent.targetID
+  )) {
+    reason = "convert_target_unavailable";
+  }
+  if (reason === null) return null;
+
+  clearActiveIntent();
+  intentRetirements += 1;
+  return reason;
 }
 
 function commitIntentOutcome(commit) {
@@ -291,6 +331,10 @@ function commitIntentOutcome(commit) {
   }
   if (!commit.intent) return;
   if (activeIntentSourceDecision !== commit.intentSourceDecision) return;
+  if (commit.actionDelta) intentDeltaSpent = true;
+  if (commit.intent.objective === "grow" && isNeutralAction(commit.action)) {
+    activeGrowCheckpointTiles = observedTilesOwned(commit.observation);
+  }
   intentRemaining = Math.max(0, intentRemaining - 1);
   if (intentRemaining === 0) clearActiveIntent();
 }
@@ -339,6 +383,9 @@ function emitDecisionTelemetry(entry, {
     intentFailure: summary.intentFailure,
     intentFallback: summary.intentFailure !== null,
     intentInvalidations,
+    intentRetirements,
+    intentRetirementReason: summary.intentRetirementReason,
+    intentDeltaSpent: summary.intentDeltaSpentBeforeCommit,
     plannerPending,
     plannerDegraded: summary.responseDegraded,
     plannerAttempts,
@@ -481,12 +528,14 @@ function handleDecision(activeSocket, message, arrival) {
     }),
     decisionCount: committedDecisionCount,
   };
+  const intentRetirementReason = retireObsoleteIntent(snapshot, observation);
   const intentContext = intentContextForDecision();
   let decision = chooseHrafnIntentDecision({
     actions,
     observation,
     history,
     intent: intentContext.intent,
+    intentDeltaSpent,
     rv1Enabled,
   });
   let intentFailure = intentContext.failure;
@@ -539,10 +588,12 @@ function handleDecision(activeSocket, message, arrival) {
       intentSourceDecision: intentContext.sourceDecision,
       intentAge: intentContext.age,
       intentRemainingBeforeCommit: intentRemaining,
+      intentDeltaSpentBeforeCommit: intentDeltaSpent,
       intentValid: decision.intentValid === true,
       intentApplied: decision.intentApplied === true,
       intentReason: decision.reason,
       intentFailure,
+      intentRetirementReason,
       responseDegraded,
       responsePlannerError: intentFailure ?? lastPlannerError,
       safetyRejectedCount: decision.safetyRejectedCount,
@@ -556,6 +607,7 @@ function handleDecision(activeSocket, message, arrival) {
       intent: intentContext.intent,
       intentSourceDecision: intentContext.sourceDecision,
       intentFailure,
+      actionDelta: decision.actionDelta === true,
       snapshot,
     },
   };

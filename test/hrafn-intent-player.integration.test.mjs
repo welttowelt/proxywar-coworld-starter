@@ -62,6 +62,17 @@ function request(requestID) {
           risk: lowRisk,
         },
         {
+          id: "attack:daveey:25",
+          kind: "attack",
+          label: "Attack Daveey 25%",
+          metadata: {
+            targetID: "daveey",
+            targetName: "Daveey",
+            troopPercent: 25,
+          },
+          risk: lowRisk,
+        },
+        {
           id: "expand:terra-nullius:35",
           kind: "attack",
           label: "Expand Terra Nullius 35%",
@@ -88,16 +99,29 @@ function request(requestID) {
           sharesBorder: true,
           canAttack: true,
           isAlive: true,
+        }, {
+          id: "daveey",
+          name: "Daveey",
+          tileShare: 0.2,
+          relativeTroopRatio: 1.4,
+          sharesBorder: true,
+          canAttack: true,
+          isAlive: true,
         }],
       },
       decisionSupport: {
         actionIDsByKind: {
-          attack: ["attack:auri:25", "expand:terra-nullius:35"],
+          attack: [
+            "attack:auri:25",
+            "attack:daveey:25",
+            "expand:terra-nullius:35",
+          ],
           hold: ["hold"],
         },
         recommendedActionKinds: [],
         usefulNonHoldActionIDs: [
           "attack:auri:25",
+          "attack:daveey:25",
           "expand:terra-nullius:35",
         ],
         avoidActionIDs: [],
@@ -112,6 +136,15 @@ function request(requestID) {
       },
     },
   };
+}
+
+function growthRequest(requestID, tilesOwned = 12000) {
+  const message = request(requestID);
+  message.request.observation.ownState.tileShare = 0.05;
+  message.request.observation.ownState.tilesOwned = tilesOwned;
+  message.request.observation.visiblePlayers[0].tileShare = 0.04;
+  message.request.observation.visiblePlayers[1].tileShare = 0.03;
+  return message;
 }
 
 async function listen(server) {
@@ -184,9 +217,9 @@ test("HI1 accepts and discards extra root metadata while planning remains nonblo
         response.end(JSON.stringify({
           model: "llama3:latest",
           response: JSON.stringify({
-            objective: "grow",
-            targetID: null,
-            horizon: 6,
+            objective: "convert",
+            targetID: "daveey",
+            horizon: 2,
           }),
         }));
       }, 200);
@@ -224,6 +257,9 @@ test("HI1 accepts and discards extra root metadata while planning remains nonblo
         } else if (responses.length === 2) {
           sentAt = Date.now();
           socket.send(JSON.stringify(request("fresh")));
+        } else if (responses.length === 3) {
+          sentAt = Date.now();
+          socket.send(JSON.stringify(request("fresh-after-delta")));
         } else {
           socket.send(JSON.stringify({ type: "final" }));
         }
@@ -249,7 +285,8 @@ test("HI1 accepts and discards extra root metadata while planning remains nonblo
     [
       "attack:auri:25",
       "attack:auri:25",
-      "expand:terra-nullius:35",
+      "attack:daveey:25",
+      "attack:auri:25",
     ],
   );
   assert.doesNotMatch(responses[0].reason, /hi1/);
@@ -257,7 +294,7 @@ test("HI1 accepts and discards extra root metadata while planning remains nonblo
   assert.match(responses[2].reason, /:hi1(?:$|\.)/);
   assert.match(responses[0].reason, /\.q[0-9a-f]{10}$/);
   assert.ok(responseTimes[0] < 150, `first response took ${responseTimes[0]}ms`);
-  assert.equal(plannerCalls, 1);
+  assert.equal(plannerCalls, 2);
   assert.doesNotMatch(plannerBody.prompt, /attack:auri:25/);
   assert.doesNotMatch(plannerBody.prompt, /Attack Auri/);
   assert.equal(responses.every((entry) => entry.fallbackUsed === false), true);
@@ -275,7 +312,7 @@ test("HI1 accepts and discards extra root metadata while planning remains nonblo
   );
   assert.deepEqual(
     decisions.map((entry) => entry.duplicateRequest),
-    [false, false],
+    [false, false, false],
   );
   const retries = telemetry.filter((entry) =>
     entry.event === "hrafn_intent_retry"
@@ -284,7 +321,12 @@ test("HI1 accepts and discards extra root metadata while planning remains nonblo
   assert.equal(retries[0].requestID, "first");
   assert.equal(decisions[1].baselineActionID, "attack:auri:25");
   assert.equal(decisions[1].actionDelta, true);
-  assert.equal(decisions[1].intentObjective, "grow");
+  assert.equal(decisions[1].intentObjective, "convert");
+  assert.equal(decisions[2].intentEpoch, 0);
+  assert.equal(decisions[2].actionDelta, false);
+  assert.equal(decisions[2].intentApplied, false);
+  assert.equal(decisions[2].intentReason, "intent_missing_or_invalid");
+  assert.equal(decisions[2].actionID, decisions[2].baselineActionID);
   assert.match(decisions[1].requestMarker, /^q[0-9a-f]{10}$/);
   assert.deepEqual(decisions[0].decisionInput, {
     legalActions: request("first").request.legalActions,
@@ -308,7 +350,7 @@ test("HI1 accepts and discards extra root metadata while planning remains nonblo
   );
   assert.equal(Object.hasOwn(decisions[0], "modelDigest"), false);
   assert.equal(decisions[1].intentAge, 1);
-  assert.equal(decisions[1].intentRemainingBeforeCommit, 5);
+  assert.equal(decisions[1].intentRemainingBeforeCommit, 1);
   assert.equal(
     telemetry.some((entry) =>
       entry.event === "hrafn_intent_plan" && entry.ok === true
@@ -446,7 +488,7 @@ test("malformed planner output degrades truthfully while exact-v5 keeps respondi
   );
 });
 
-test("an intent that becomes unreachable falls back and degrades truthfully", async () => {
+test("an intent that becomes obsolete retires cleanly to exact-v5", async () => {
   const plannerServer = createServer((_incoming, response) => {
     response.writeHead(200, { "content-type": "application/json" });
     response.end(JSON.stringify({
@@ -466,7 +508,7 @@ test("an intent that becomes unreachable falls back and degrades truthfully", as
       reject(new Error(`HI1 unreachable test timed out: ${player.stderr()}`));
     }, 8000);
     wsServer.once("connection", (socket) => {
-      socket.send(JSON.stringify(request("reachable-source")));
+      socket.send(JSON.stringify(growthRequest("reachable-source")));
       socket.on("message", (data) => {
         responses.push(JSON.parse(String(data)));
         if (responses.length === 1) {
@@ -476,11 +518,9 @@ test("an intent that becomes unreachable falls back and degrades truthfully", as
               const entry = JSON.parse(line);
               return entry.event === "hrafn_intent_plan" && entry.ok === true;
             }), 4000).then(() => {
-            const noGrowth = request("growth-vanished");
-            noGrowth.request.legalActions = [
-              noGrowth.request.legalActions[0],
-              noGrowth.request.legalActions[2],
-            ];
+            const noGrowth = growthRequest("growth-vanished");
+            noGrowth.request.legalActions = noGrowth.request.legalActions
+              .filter((action) => action.id !== "expand:terra-nullius:35");
             socket.send(JSON.stringify(noGrowth));
           }).catch((error) => {
             player.child.kill("SIGKILL");
@@ -506,8 +546,8 @@ test("an intent that becomes unreachable falls back and degrades truthfully", as
   }
 
   assert.equal(responses[1].selectedLegalActionId, "attack:auri:25");
-  assert.equal(responses[1].fallbackUsed, true);
-  assert.equal(responses[1].llmPlannerDegraded, true);
+  assert.equal(responses[1].fallbackUsed, false);
+  assert.equal(responses[1].llmPlannerDegraded, false);
   const telemetry = player.stdout()
     .split(/\r?\n/)
     .filter((line) => line.startsWith("{"))
@@ -515,8 +555,86 @@ test("an intent that becomes unreachable falls back and degrades truthfully", as
   const lastDecision = telemetry.filter((entry) =>
     entry.event === "hrafn_intent_decision"
   ).at(-1);
-  assert.equal(lastDecision.intentReason, "intent_unreachable");
+  assert.equal(lastDecision.intentReason, "intent_missing_or_invalid");
   assert.equal(lastDecision.intentValid, false);
+  assert.equal(lastDecision.intentRetirementReason, "grow_unavailable");
+  assert.equal(lastDecision.intentFallback, false);
+});
+
+test("stalled neutral growth retires before selection without degradation", async () => {
+  const plannerServer = createServer((_incoming, response) => {
+    response.writeHead(200, { "content-type": "application/json" });
+    response.end(JSON.stringify({
+      model: "llama3:latest",
+      response: JSON.stringify({ objective: "grow", targetID: null, horizon: 6 }),
+    }));
+  });
+  const plannerPort = await listen(plannerServer);
+  const wsServer = new WebSocketServer({ host: "127.0.0.1", port: 0 });
+  await new Promise((resolve) => wsServer.once("listening", resolve));
+  const player = spawnPlayer(wsServer.address().port, plannerPort);
+  const responses = [];
+
+  const withTiles = (id, tilesOwned) => growthRequest(id, tilesOwned);
+  const completed = new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      player.child.kill("SIGKILL");
+      reject(new Error(`HI1 stalled-grow test timed out: ${player.stderr()}`));
+    }, 8000);
+    wsServer.once("connection", (socket) => {
+      socket.send(JSON.stringify(withTiles("grow-source", 12000)));
+      socket.on("message", (data) => {
+        responses.push(JSON.parse(String(data)));
+        if (responses.length === 1) {
+          void waitForPlayerOutput(player, (output) =>
+            output.split(/\r?\n/).some((line) => {
+              if (!line.startsWith("{")) return false;
+              const entry = JSON.parse(line);
+              return entry.event === "hrafn_intent_plan" && entry.ok === true;
+            }), 4000).then(() => {
+            socket.send(JSON.stringify(withTiles("grow-applied", 12000)));
+          }).catch(reject);
+        } else if (responses.length === 2) {
+          socket.send(JSON.stringify(withTiles("grow-stalled", 12000)));
+        } else {
+          socket.send(JSON.stringify({ type: "final" }));
+        }
+      });
+    });
+    player.child.once("error", reject);
+    player.child.once("exit", (code) => {
+      clearTimeout(timeout);
+      if (code === 0) resolve();
+      else reject(new Error(`HI1 stalled-grow player exited ${code}: ${player.stderr()}`));
+    });
+  });
+  try {
+    await completed;
+  } finally {
+    await close(wsServer);
+    await close(plannerServer);
+  }
+
+  assert.deepEqual(
+    responses.map((entry) => entry.selectedLegalActionId),
+    [
+      "expand:terra-nullius:35",
+      "expand:terra-nullius:35",
+      "expand:terra-nullius:35",
+    ],
+  );
+  assert.equal(responses[2].fallbackUsed, false);
+  assert.equal(responses[2].llmPlannerDegraded, false);
+  const decisions = player.stdout()
+    .split(/\r?\n/)
+    .filter((line) => line.startsWith("{"))
+    .map((line) => JSON.parse(line))
+    .filter((entry) => entry.event === "hrafn_intent_decision");
+  assert.equal(decisions[1].actionDelta, false);
+  assert.equal(decisions[2].actionID, decisions[2].baselineActionID);
+  assert.equal(decisions[2].intentRetirementReason, "grow_stalled");
+  assert.equal(decisions[2].intentFallback, false);
+  assert.equal(decisions[2].plannerDegraded, false);
 });
 
 test("a plan older than twelve committed decisions is rejected", async () => {
@@ -525,7 +643,11 @@ test("a plan older than twelve committed decisions is rejected", async () => {
       response.writeHead(200, { "content-type": "application/json" });
       response.end(JSON.stringify({
         model: "llama3:latest",
-        response: JSON.stringify({ objective: "grow", targetID: null, horizon: 6 }),
+        response: JSON.stringify({
+          objective: "convert",
+          targetID: "daveey",
+          horizon: 6,
+        }),
       }));
     }, 250);
   });
@@ -594,8 +716,8 @@ test("a delayed plan spends elapsed lifetime and later decisions return to epoch
     response.end(JSON.stringify({
       model: "llama3:latest",
       response: JSON.stringify({
-        objective: "grow",
-        targetID: null,
+        objective: "convert",
+        targetID: "daveey",
         horizon: 4,
       }),
     }));
@@ -662,7 +784,7 @@ test("a delayed plan spends elapsed lifetime and later decisions return to epoch
       "attack:auri:25",
       "attack:auri:25",
       "attack:auri:25",
-      "expand:terra-nullius:35",
+      "attack:daveey:25",
       "attack:auri:25",
     ],
   );
@@ -699,8 +821,8 @@ test("a delayed plan expires when its horizon has no remaining decisions", async
     response.end(JSON.stringify({
       model: "llama3:latest",
       response: JSON.stringify({
-        objective: "grow",
-        targetID: null,
+        objective: "convert",
+        targetID: "daveey",
         horizon: 2,
       }),
     }));

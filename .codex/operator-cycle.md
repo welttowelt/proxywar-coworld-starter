@@ -8,14 +8,14 @@ decision.
 
 Operate only `hrafn-fylking`. Do not edit or mutate Qd1n policy state. Review
 Odin from committed branches and mailbox packets only. Use the mailbox at
-`/Users/olifreuler/.stormforge/team-mailbox`. Before a mailbox write, acquire
-`/Users/olifreuler/.stormforge/proxywar-operators/mailbox-write.lock` with an
+`$HOME/.stormforge/team-mailbox`. Before a mailbox write, acquire
+`$HOME/.stormforge/proxywar-operators/mailbox-write.lock` with an
 atomic `mkdir`, pull fast-forward only, commit and push, then release it.
 
 Run every Coworld episode or batch through the foreground supervisor:
 
 ```bash
-/Users/olifreuler/proxywar-coworld-starter/scripts/proxywar-runner-lease.sh run hrafn HRAFN_RUN_ID \
+"$HOME/proxywar-k1z-hrafn/scripts/proxywar-runner-lease.sh" run hrafn HRAFN_RUN_ID \
   --output /private/tmp/hrafn-new-output-a \
   --output /private/tmp/hrafn-new-output-b \
   -- /absolute/path/to/hrafn-batch-script.sh
@@ -31,8 +31,9 @@ Take one bounded operator cycle:
 
 1. Reconcile Hrafn source, replay, scoreboard, upload, submission, membership,
    and champion truth.
-2. Answer addressed Odin audit packets first with one verdict: `APPROVE`,
-   `REVISE`, `REJECT`, or `INSUFFICIENT`.
+2. Pull mailbox `main` with an explicit refspec, then answer addressed Odin
+   audit packets first with one verdict: `APPROVE`, `REVISE`, `REJECT`, or
+   `INSUFFICIENT`.
 3. Continue one replay-backed Hrafn arm only when the runner and evidence gates
    permit it. Treat `active`, `stale`, `legacy`, `initializing`, `reaping`, and
    `corrupt` runner states as closed; only `free` permits a new supervised run.

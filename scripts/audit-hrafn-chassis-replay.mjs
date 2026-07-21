@@ -53,6 +53,18 @@ const SUBMITTED_TYPES = new Map([
   ["alliance_reject", "allianceReject"],
 ]);
 
+const INTENT_V5_POLICY_MARKERS = new Set([
+  "k1z",
+  "dn1",
+  "vr1",
+  "rv1",
+  "rv2",
+  "rv3",
+  "wr1",
+  "sk1",
+]);
+const INTENT_V5_REQUEST_MARKER = /^q[0-9a-f]{10}$/;
+
 function targetIdentity(decision) {
   const metadata = decision?.selectedActionMetadata ?? {};
   const action = {
@@ -89,6 +101,75 @@ export function parseHrafnChassisReason(reason) {
     kindCode: match[1],
     primaryMarker: markers[0] ?? null,
     evidenceMarkers: markers.slice(1),
+  };
+}
+
+function validateIntentV5PublicReason(reason, parsed) {
+  const raw = String(reason ?? "");
+  const failures = [];
+  if (!/^[\x20-\x7e]+$/.test(raw)) {
+    failures.push("intent-v5 public reason must contain only printable ASCII");
+  }
+  if (raw.length > 48) {
+    failures.push("intent-v5 public reason exceeds 48 characters");
+  }
+  if (!parsed.valid) {
+    failures.push("malformed intent-v5 public reason");
+    return { valid: false, failures };
+  }
+
+  const markers = [
+    parsed.primaryMarker,
+    ...parsed.evidenceMarkers,
+  ].filter((marker) => marker !== null);
+  const requestMarkerIndexes = markers.flatMap((marker, index) =>
+    INTENT_V5_REQUEST_MARKER.test(marker) ? [index] : []
+  );
+  if (requestMarkerIndexes.length !== 1) {
+    failures.push("intent-v5 requires exactly one request marker");
+  } else if (requestMarkerIndexes[0] !== markers.length - 1) {
+    failures.push("intent-v5 request marker must be final");
+  }
+
+  const policyMarkers = markers.filter((marker) =>
+    INTENT_V5_POLICY_MARKERS.has(marker)
+  );
+  if (policyMarkers.length > 1) {
+    failures.push("intent-v5 allows at most one exact-v5 policy marker");
+  }
+  const intentMarkers = markers.filter((marker) => marker === "hi1");
+  if (intentMarkers.length > 1) {
+    failures.push("intent-v5 allows at most one hi1 marker");
+  }
+  const unknownMarkers = markers.filter((marker) =>
+    marker !== "hi1" &&
+    !INTENT_V5_POLICY_MARKERS.has(marker) &&
+    !INTENT_V5_REQUEST_MARKER.test(marker)
+  );
+  if (unknownMarkers.length > 0) {
+    failures.push(
+      `intent-v5 contains unknown marker: ${unknownMarkers.join(", ")}`,
+    );
+  }
+
+  const requestMarker = markers.at(-1);
+  const sequenceValid =
+    (markers.length === 1 &&
+      INTENT_V5_REQUEST_MARKER.test(markers[0])) ||
+    (markers.length === 2 &&
+      (markers[0] === "hi1" || INTENT_V5_POLICY_MARKERS.has(markers[0])) &&
+      INTENT_V5_REQUEST_MARKER.test(requestMarker)) ||
+    (markers.length === 3 &&
+      INTENT_V5_POLICY_MARKERS.has(markers[0]) &&
+      markers[1] === "hi1" &&
+      INTENT_V5_REQUEST_MARKER.test(requestMarker));
+  if (!sequenceValid) {
+    failures.push("intent-v5 marker order is invalid");
+  }
+
+  return {
+    valid: failures.length === 0,
+    failures: [...new Set(failures)],
   };
 }
 
@@ -733,6 +814,10 @@ export function auditHrafnChassisReplay(
   replayBytes = null,
   options = {},
 ) {
+  const markerProfile = options.markerProfile ?? "clean-chassis";
+  if (!["clean-chassis", "intent-v5"].includes(markerProfile)) {
+    throw new Error(`unknown Hrafn marker profile: ${markerProfile}`);
+  }
   const rawDecisions = replay?.inlineRunArtifacts?.["decisions.jsonl"];
   if (typeof rawDecisions !== "string") {
     throw new Error("replay does not contain inline decisions.jsonl");
@@ -811,9 +896,14 @@ export function auditHrafnChassisReplay(
   const decisionAnalyses = policyDecisions.map((decision, jsonlIndex) => {
     const parsed = parseHrafnChassisReason(decision.reason);
     const action = decisionAction(decision, parsed);
-    const semantic = validateHrafnMarkerSemantics(action, {
-      requirePrimary: decision.selectedActionKind !== "spawn",
-    });
+    const intentV5Reason = markerProfile === "intent-v5"
+      ? validateIntentV5PublicReason(decision.reason, parsed)
+      : null;
+    const semantic = markerProfile === "intent-v5"
+      ? intentV5Reason
+      : validateHrafnMarkerSemantics(action, {
+          requirePrimary: decision.selectedActionKind !== "spawn",
+        });
     const target = targetIdentity(decision);
     const effectFailures = submittedEffectFailures(
       decision,
@@ -832,6 +922,7 @@ export function auditHrafnChassisReplay(
       target,
       effectFailures,
       expectedKindCode,
+      intentV5Reason,
       publicKindMatches:
         parsed.valid && parsed.kindCode === expectedKindCode,
       fresh: legalActionWasFresh(decision),
@@ -1086,13 +1177,19 @@ export function auditHrafnChassisReplay(
       target,
       effectFailures,
       expectedKindCode,
+      intentV5Reason,
       publicKindMatches,
     } = analysis;
-    if (!parsed.valid || String(decision.reason).length > 48) {
+    const publicReasonValid = markerProfile === "intent-v5"
+      ? intentV5Reason.valid
+      : parsed.valid && String(decision.reason).length <= 48;
+    if (!publicReasonValid) {
       publicReasonFailures.push({
         turn: decision.turnNumber ?? null,
         reason: decision.reason ?? null,
-        failure: "malformed public reason",
+        failure: markerProfile === "intent-v5"
+          ? intentV5Reason.failures.join("; ")
+          : "malformed public reason",
       });
     } else {
       if (parsed.kindCode !== expectedKindCode) {
@@ -1296,6 +1393,7 @@ export function auditHrafnChassisReplay(
     replay_sha256: bytes
       ? createHash("sha256").update(bytes).digest("hex")
       : null,
+    marker_profile: markerProfile,
     game_id: replay?.gameID ?? replay?.results?.game_id ?? null,
     hrafn_identity_verified: identityVerified,
     runtime_identity_conflicts: runtimeIdentities.conflicts,

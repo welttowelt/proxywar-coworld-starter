@@ -17,11 +17,15 @@ import {
   runHrafnSupervised,
 } from "../scripts/run-hrafn-supervised.mjs";
 import { HRAFN_PLAYER_ID } from "../hrafn-state.mjs";
+import { HRAFN_NEUTRAL_OPPONENT_IMAGE_ID } from
+  "../scripts/create-hrafn-intent-image-receipt.mjs";
+import {
+  coworldGameReceiptFixture,
+} from "./helpers/hrafn-intent-receipt-fixture.mjs";
 
 const SOURCE_COMMIT = "1".repeat(40);
 const SUBJECT_IMAGE = `sha256:${"a".repeat(64)}`;
-const OPPONENT_IMAGE =
-  "sha256:fb695574f4958beb29a036ed216c0882ee4da84ffa2f63c535f6c658f997522d";
+const OPPONENT_IMAGE = HRAFN_NEUTRAL_OPPONENT_IMAGE_ID;
 
 function fixturePreflight({ output, jobPath, manifestPath }) {
   return {
@@ -35,7 +39,7 @@ function fixturePreflight({ output, jobPath, manifestPath }) {
       order: 0,
       role: "control",
       map: "Pangaea",
-      seed: 240721,
+      seed: 240723,
       subject_slot: 1,
       path: jobPath,
       sha256: "2".repeat(64),
@@ -54,6 +58,7 @@ function fixturePreflight({ output, jobPath, manifestPath }) {
     },
     manifest: { path: manifestPath, sha256: "7".repeat(64) },
     images: {
+      game: coworldGameReceiptFixture(),
       subject: { id: SUBJECT_IMAGE, os: "linux", architecture: "amd64" },
       opponent: { id: OPPONENT_IMAGE, os: "linux", architecture: "amd64" },
     },

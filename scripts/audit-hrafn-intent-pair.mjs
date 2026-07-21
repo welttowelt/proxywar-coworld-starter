@@ -5,9 +5,18 @@ import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
 
-import { chooseHrafnIntentDecision } from "../hrafn-intent.mjs";
-import { HRAFN_PLAYER_ID } from "../hrafn-state.mjs";
-import { recordHrafnDecision } from "../hrafn-strategy.mjs";
+import {
+  buildHrafnIntentSnapshot,
+  chooseHrafnIntentDecision,
+} from "../hrafn-intent.mjs";
+import {
+  HRAFN_PLAYER_ID,
+  isNeutralAction,
+} from "../hrafn-state.mjs";
+import {
+  publicHrafnReason,
+  recordHrafnDecision,
+} from "../hrafn-strategy.mjs";
 import { verifyK1ZPacketBytes } from "../k1z-direct-line.mjs";
 import { auditHrafnChassisReplay } from "./audit-hrafn-chassis-replay.mjs";
 import {
@@ -24,6 +33,7 @@ import {
 import {
   HRAFN_INTENT_CELLS,
   HRAFN_INTENT_MANIFEST_SHA256,
+  verifyHrafnIntentR2Preregistration,
 } from "./build-hrafn-intent-job.mjs";
 
 const CAMPAIGN_ID = "hrafn-intent-i1";
@@ -32,6 +42,36 @@ const REQUEST_MARKER = /^q[0-9a-f]{10}$/;
 const OLLAMA_MODEL_DIGEST =
   "365c0bd3c000a25d28ddbf732fe1c6add414de7275464c4e4d1c3b5fcb5d8ad1";
 const PUBLIC_REASON = /^\[K1Z\] r4vn:([a-z0-9]{3})(?::((?:(?:[a-z0-9]{1,6}|q[0-9a-f]{10})(?:\.(?:[a-z0-9]{1,6}|q[0-9a-f]{10}))*)))?$/;
+const EXACT_V5_POLICY_MARKERS = new Set([
+  "k1z",
+  "dn1",
+  "vr1",
+  "rv1",
+  "rv2",
+  "rv3",
+  "wr1",
+  "sk1",
+]);
+const INTENT_PUBLIC_KIND = Object.freeze({
+  spawn: "spn",
+  attack: "atk",
+  build: "bld",
+  upgrade_structure: "upg",
+  boat: "b0t",
+  boat_retreat: "rtr",
+  retreat: "rtr",
+  warship: "w4r",
+  move_warship: "mvw",
+  alliance_request: "4ly",
+  alliance_extend: "4ly",
+  target_player: "tgt",
+  donate_troops: "dnt",
+  donate_gold: "dnt",
+  quick_chat: "cht",
+  emoji: "emj",
+  embargo_stop: "emb",
+  hold: "h0d",
+});
 const ERROR_LOG_PATTERN = /(?:fail-closed decision error|decision response failed|match socket (?:closed|error)|reconnecting|uncaught|unhandled)/i;
 const REQUIRED_CHASSIS_CHECKS = Object.freeze([
   "hrafn_identity_verified",
@@ -47,7 +87,9 @@ const REQUIRED_CHASSIS_CHECKS = Object.freeze([
   "zero_k1z_harm",
   "harmful_targets_resolved",
   "submitted_effects_consistent",
+  "marker_semantics_valid",
   "selected_ids_were_legal",
+  "public_text_valid",
 ]);
 
 function sha256(value) {
@@ -190,6 +232,55 @@ function reasonMarkers(reason) {
         markers: match[2] ? match[2].split(".") : [],
       }
     : { valid: false, kind: null, markers: [] };
+}
+
+function strictIntentV5Reason(reason) {
+  const parsed = reasonMarkers(reason);
+  if (!parsed.valid || parsed.markers.length < 1) return null;
+  const requestMarker = parsed.markers.at(-1);
+  if (!REQUEST_MARKER.test(requestMarker)) return null;
+  if (parsed.markers.filter((marker) => REQUEST_MARKER.test(marker)).length !== 1) {
+    return null;
+  }
+  const prefix = parsed.markers.slice(0, -1);
+  const validPrefix =
+    prefix.length === 0 ||
+    (prefix.length === 1 &&
+      (prefix[0] === "hi1" || EXACT_V5_POLICY_MARKERS.has(prefix[0]))) ||
+    (prefix.length === 2 &&
+      EXACT_V5_POLICY_MARKERS.has(prefix[0]) && prefix[1] === "hi1");
+  if (!validPrefix) return null;
+  return {
+    ...parsed,
+    policyMarker: EXACT_V5_POLICY_MARKERS.has(prefix[0]) ? prefix[0] : null,
+    intentMarker: prefix.includes("hi1") ? "hi1" : null,
+    requestMarker,
+  };
+}
+
+function intentPublicReasonAudit(joined, recomputedDecisions) {
+  const failures = [];
+  for (const [index, entry] of joined.entries()) {
+    const expected = recomputedDecisions[index];
+    const strict = strictIntentV5Reason(entry?.replay?.reason);
+    const expectedKind = INTENT_PUBLIC_KIND[expected?.action?.kind] ?? "act";
+    if (
+      strict === null ||
+      strict.kind !== expectedKind ||
+      typeof expected?.public_reason !== "string" ||
+      entry?.replay?.reason !== expected.public_reason
+    ) {
+      failures.push({
+        decision: index + 1,
+        expected_kind: expectedKind,
+        observed_kind: strict?.kind ?? entry?.parsed?.kind ?? null,
+        expected_reason: expected?.public_reason ?? null,
+        observed_reason: entry?.replay?.reason ?? null,
+        failure: "public reason does not bind the independently replayed intent decision",
+      });
+    }
+  }
+  return { pass: failures.length === 0, failures };
 }
 
 function subjectResult(results, subjectSlot) {
@@ -535,6 +626,8 @@ function recomputeWrappedV5(joined) {
   const failures = [];
   const requestFailures = [];
   const selectedFailures = [];
+  const decisions = [];
+  const spentIntentEpochs = new Set();
   for (const [index, entry] of joined.entries()) {
     const row = entry.telemetry;
     const input = row.decisionInput;
@@ -543,6 +636,7 @@ function recomputeWrappedV5(joined) {
         decision: index + 1,
         failure: "decisionInput must contain exactly legalActions and observation",
       });
+      decisions.push(null);
       continue;
     }
     const expectedPayloadSHA256 = sha256(canonicalJSON(input));
@@ -550,6 +644,34 @@ function recomputeWrappedV5(joined) {
       requestFailures.push({
         decision: index + 1,
         failure: "requestPayloadSHA256 does not bind decisionInput",
+      });
+    }
+    const inputIDs = input.legalActions.map((action) => action?.id);
+    const inputKinds = input.legalActions.map((action) => action?.kind);
+    const uniqueInputIDs = new Set(inputIDs);
+    const inputIDsValid = inputIDs.every((id) =>
+      typeof id === "string" && id.length > 0 && id.trim() === id
+    ) && uniqueInputIDs.size === inputIDs.length;
+    const inputKindsValid = inputKinds.every((kind) =>
+      typeof kind === "string" && kind.length > 0 && kind.trim() === kind
+    );
+    const expectedIDsByKind = {};
+    if (inputIDsValid && inputKindsValid) {
+      for (const action of input.legalActions) {
+        (expectedIDsByKind[action.kind] ??= []).push(action.id);
+      }
+    }
+    if (
+      !inputIDsValid ||
+      !inputKindsValid ||
+      row.legalActionCount !== input.legalActions.length ||
+      canonicalJSON(inputIDs) !== canonicalJSON(entry.replay.legalActionIDs) ||
+      canonicalJSON(expectedIDsByKind) !==
+        canonicalJSON(entry.replay.legalActionIDsByKind)
+    ) {
+      requestFailures.push({
+        decision: index + 1,
+        failure: "decisionInput legal menu does not exactly bind replay IDs and kinds",
       });
     }
     const selected = row.selectedAction;
@@ -573,13 +695,45 @@ function recomputeWrappedV5(joined) {
       });
     }
     try {
+      const plannerSnapshot = buildHrafnIntentSnapshot({
+        actions: input.legalActions,
+        observation: input.observation,
+        history,
+        rv1Enabled: true,
+      });
+      const intent = row.intentEpoch > 0
+        ? {
+            objective: row.intentObjective,
+            targetID: row.intentTargetID,
+            horizon: row.intentHorizon,
+          }
+        : null;
+      const expectedDeltaSpent = intent !== null &&
+        spentIntentEpochs.has(row.intentEpoch);
+      if (
+        typeof row.intentDeltaSpent !== "boolean" ||
+        row.intentDeltaSpent !== expectedDeltaSpent
+      ) {
+        failures.push({
+          decision: index + 1,
+          reported: row.intentDeltaSpent ?? null,
+          recomputed: expectedDeltaSpent,
+          failure: "intentDeltaSpent does not bind prior verified deltas in the epoch",
+        });
+      }
       const recomputed = chooseHrafnIntentDecision({
         actions: input.legalActions,
         observation: input.observation,
         history,
-        intent: null,
+        intent,
+        intentDeltaSpent: expectedDeltaSpent,
         rv1Enabled: true,
       });
+      const expectedSelected = {
+        ...recomputed.action,
+        requestMarker: entry.marker,
+      };
+      const expectedPublicReason = publicHrafnReason(expectedSelected);
       if (recomputed.baseline?.id !== row.baselineActionID) {
         failures.push({
           decision: index + 1,
@@ -588,14 +742,61 @@ function recomputeWrappedV5(joined) {
           failure: "reported baseline differs from independently replayed wrapped v5",
         });
       }
+      const reportedSemantics = {
+        actionID: row.actionID,
+        actionDelta: row.actionDelta,
+        intentApplied: row.intentApplied,
+        intentReason: row.intentReason,
+        intentValid: row.intentValid,
+        safetyRejectedCount: row.safetyRejectedCount,
+        wrapperOmittedCount: row.wrapperOmittedCount,
+      };
+      const recomputedSemantics = {
+        actionID: recomputed.action?.id ?? null,
+        actionDelta: recomputed.actionDelta === true,
+        intentApplied: recomputed.intentApplied === true,
+        intentReason: recomputed.reason,
+        intentValid: recomputed.intentValid === true,
+        safetyRejectedCount: recomputed.safetyRejectedCount,
+        wrapperOmittedCount: recomputed.wrapperOmittedCount,
+      };
+      if (
+        canonicalJSON(reportedSemantics) !== canonicalJSON(recomputedSemantics)
+      ) {
+        failures.push({
+          decision: index + 1,
+          reported: reportedSemantics,
+          recomputed: recomputedSemantics,
+          failure: "reported intent semantics differ from independent replay",
+        });
+      }
+      if (canonicalJSON(selected) !== canonicalJSON(expectedSelected)) {
+        selectedFailures.push({
+          decision: index + 1,
+          failure: "selectedAction generated fields differ from independent replay",
+        });
+      }
+      decisions.push({
+        action: recomputed.action,
+        baseline: recomputed.baseline,
+        action_delta: recomputed.actionDelta === true,
+        intent_valid: recomputed.intentValid === true,
+        intent_applied: recomputed.intentApplied === true,
+        intent_reason: recomputed.reason,
+        intent_delta_spent: expectedDeltaSpent,
+        public_reason: expectedPublicReason,
+        planner_snapshot: plannerSnapshot,
+      });
+      if (recomputed.actionDelta === true && row.intentEpoch > 0) {
+        spentIntentEpochs.add(row.intentEpoch);
+      }
+      recordHrafnDecision(history, recomputed.action, input.observation);
     } catch (error) {
+      decisions.push(null);
       failures.push({
         decision: index + 1,
         failure: `baseline replay failed: ${error.message}`,
       });
-    }
-    if (plainObject(selected)) {
-      recordHrafnDecision(history, selected, input.observation);
     }
   }
   return {
@@ -604,6 +805,7 @@ function recomputeWrappedV5(joined) {
     failures,
     request_failures: requestFailures,
     selected_action_failures: selectedFailures,
+    decisions,
   };
 }
 
@@ -668,7 +870,7 @@ function openingAuc20(joined, result, finalPlayer) {
   };
 }
 
-function planBindingAudit(role, joined, planRows) {
+function planBindingAudit(role, joined, planRows, recomputedDecisions) {
   const failures = [];
   const plansByEpoch = new Map();
   let successfulEpoch = 0;
@@ -687,6 +889,7 @@ function planBindingAudit(role, joined, planRows) {
     }
     if (
       plan.model !== "llama3:latest" ||
+      plan.expectedModel !== "llama3:latest" ||
       plan.expectedModelDigest !== OLLAMA_MODEL_DIGEST ||
       plan.error !== null ||
       finiteNumber(plan.latencyMs) === null ||
@@ -710,19 +913,133 @@ function planBindingAudit(role, joined, planRows) {
       failures.push(`plan row ${index + 1} violates the pinned plan schema`);
       continue;
     }
+    const earlierDecisions = joined.filter((entry) =>
+      entry.telemetry._logLine < plan._logLine
+    ).length;
+    const expectedPlanAge = earlierDecisions - plan.intentSourceDecision;
+    const sourceSnapshot = recomputedDecisions[plan.intentSourceDecision]
+      ?.planner_snapshot;
+    const availableAtSource = plan.intentObjective === "grow"
+      ? sourceSnapshot?.growPossible === true
+      : sourceSnapshot?.convertTargets?.some((target) =>
+          target.targetID === plan.intentTargetID
+        ) === true;
+    if (
+      expectedPlanAge < 1 ||
+      expectedPlanAge > 12 ||
+      expectedPlanAge >= plan.intentHorizon ||
+      plan.intentAge !== expectedPlanAge ||
+      plan.nextPlanEligibleDecision !== earlierDecisions ||
+      !availableAtSource
+    ) {
+      failures.push(
+        `plan row ${index + 1} does not bind an earlier available source snapshot with residual lifetime`,
+      );
+      continue;
+    }
     plansByEpoch.set(plan.intentEpoch, plan);
   }
 
   const allowedNoIntentReasons = new Set(["intent_missing_or_invalid"]);
   const allowedIntentReasons = new Set([
     "intent_applied",
+    "intent_epoch_delta_spent",
     "intent_hard_guard",
     "intent_same_as_baseline",
     "intent_unreachable",
   ]);
+  const allowedRetirementReasons = new Set([
+    "grow_stalled",
+    "grow_unavailable",
+    "convert_target_unavailable",
+  ]);
+  const successfulPlans = [...plansByEpoch.values()]
+    .sort((left, right) => left._logLine - right._logLine);
+  const seenEpochs = new Set();
+  const activatedEpochs = new Set();
+  const usedEpochs = new Set();
+  const preUseRetiredEpochs = new Set();
+  let nextPlanIndex = 0;
+  let activeEpoch = null;
+  let activePlan = null;
+  let activeGrowCheckpointTiles = null;
+  let retirementCount = 0;
   for (const [index, entry] of joined.entries()) {
     const row = entry.telemetry;
     const decisionIndex = index + 1;
+    const independentlyReplayed = recomputedDecisions[index];
+    const snapshot = independentlyReplayed?.planner_snapshot;
+    while (
+      nextPlanIndex < successfulPlans.length &&
+      successfulPlans[nextPlanIndex]._logLine < row._logLine
+    ) {
+      const arrivingPlan = successfulPlans[nextPlanIndex];
+      nextPlanIndex += 1;
+      if (activePlan !== null) {
+        failures.push(
+          `plan epoch ${arrivingPlan.intentEpoch} arrived while epoch ${activeEpoch} was active`,
+        );
+      }
+      if (seenEpochs.has(arrivingPlan.intentEpoch)) {
+        failures.push(`plan epoch ${arrivingPlan.intentEpoch} was resurrected`);
+      }
+      activeEpoch = arrivingPlan.intentEpoch;
+      activePlan = arrivingPlan;
+      activeGrowCheckpointTiles = null;
+      seenEpochs.add(arrivingPlan.intentEpoch);
+      activatedEpochs.add(arrivingPlan.intentEpoch);
+    }
+    const retirementReason = row.intentRetirementReason;
+    const expectedRetirementReason = activePlan?.intentObjective === "grow"
+      ? (() => {
+          const currentTiles = finiteNumber(
+            entry.telemetry?.decisionInput?.observation?.ownState?.tilesOwned ??
+              entry.telemetry?.decisionInput?.observation?.ownState?.tiles,
+          );
+          if (
+            activeGrowCheckpointTiles !== null &&
+            currentTiles !== null &&
+            currentTiles <= activeGrowCheckpointTiles
+          ) return "grow_stalled";
+          return snapshot?.growPossible === true ? null : "grow_unavailable";
+        })()
+      : activePlan?.intentObjective === "convert" &&
+          snapshot?.convertTargets?.some((target) =>
+            target.targetID === activePlan.intentTargetID
+          ) !== true
+        ? "convert_target_unavailable"
+        : null;
+    const retirementIncrement = retirementReason === null ? 0 : 1;
+    if (
+      !Number.isSafeInteger(row.intentRetirements) ||
+      row.intentRetirements !== retirementCount + retirementIncrement ||
+      !Number.isSafeInteger(row.intentInvalidations) ||
+      row.intentInvalidations !== 0 ||
+      ![null, ...allowedRetirementReasons].includes(retirementReason)
+    ) {
+      failures.push(`decision ${decisionIndex} has invalid lifecycle counters`);
+    }
+    if (retirementReason !== null) {
+      if (
+        activeEpoch === null ||
+        retirementReason !== expectedRetirementReason ||
+        row.intentEpoch !== 0 ||
+        row.intentDeltaSpent !== false ||
+        row.intentFallback !== false ||
+        row.plannerDegraded !== false ||
+        row.plannerPending !== false
+      ) {
+        failures.push(`decision ${decisionIndex} has an impossible intent retirement`);
+      }
+      retirementCount += 1;
+      if (!usedEpochs.has(activeEpoch)) preUseRetiredEpochs.add(activeEpoch);
+      activeEpoch = null;
+      activePlan = null;
+      activeGrowCheckpointTiles = null;
+    } else if (activeEpoch !== null && expectedRetirementReason !== null) {
+      failures.push(`decision ${decisionIndex} missed required ${expectedRetirementReason}`);
+    }
+
     if (row.intentEpoch === 0) {
       if (
         row.intentObjective !== null ||
@@ -735,13 +1052,28 @@ function planBindingAudit(role, joined, planRows) {
       ) {
         failures.push(`decision ${decisionIndex} has unbound no-intent fields`);
       }
+      if (activeEpoch !== null) {
+        failures.push(`decision ${decisionIndex} dropped active epoch ${activeEpoch}`);
+        activeEpoch = null;
+        activePlan = null;
+        activeGrowCheckpointTiles = null;
+      }
       continue;
     }
-    const plan = plansByEpoch.get(row.intentEpoch);
+    const plan = activePlan;
     if (!plan || plan._logLine >= row._logLine) {
       failures.push(`decision ${decisionIndex} has no earlier matching plan row`);
       continue;
     }
+    if (row.intentEpoch !== activeEpoch) {
+      if (seenEpochs.has(row.intentEpoch)) {
+        failures.push(`decision ${decisionIndex} resurrected epoch ${row.intentEpoch}`);
+      }
+      failures.push(
+        `decision ${decisionIndex} replaced active epoch ${activeEpoch} with ${row.intentEpoch}`,
+      );
+    }
+    usedEpochs.add(row.intentEpoch);
     const expectedAge = decisionIndex - 1 - plan.intentSourceDecision;
     const expectedRemaining = plan.intentHorizon - expectedAge;
     if (
@@ -752,6 +1084,8 @@ function planBindingAudit(role, joined, planRows) {
       row.intentAge !== expectedAge ||
       row.planAgeDecisions !== (row.intentValid === true ? expectedAge : null) ||
       row.intentRemainingBeforeCommit !== expectedRemaining ||
+      row.intentRemaining !== row.intentRemainingBeforeCommit ||
+      row.plannerPending !== false ||
       expectedAge < 0 ||
       expectedAge > 12 ||
       expectedRemaining < 1 ||
@@ -764,7 +1098,11 @@ function planBindingAudit(role, joined, planRows) {
         row.intentValid === true &&
         row.intentApplied === true &&
         row.actionDelta === true) ||
-      (["intent_hard_guard", "intent_same_as_baseline"].includes(row.intentReason) &&
+      ([
+        "intent_epoch_delta_spent",
+        "intent_hard_guard",
+        "intent_same_as_baseline",
+      ].includes(row.intentReason) &&
         row.intentValid === true &&
         row.intentApplied === false &&
         row.actionDelta === false) ||
@@ -777,6 +1115,20 @@ function planBindingAudit(role, joined, planRows) {
     if (!semanticReasonValid) {
       failures.push(`decision ${decisionIndex} has inconsistent intent reason semantics`);
     }
+    if (
+      activePlan?.intentObjective === "grow" &&
+      isNeutralAction(independentlyReplayed?.action)
+    ) {
+      activeGrowCheckpointTiles = finiteNumber(
+        entry.telemetry?.decisionInput?.observation?.ownState?.tilesOwned ??
+          entry.telemetry?.decisionInput?.observation?.ownState?.tiles,
+      );
+    }
+    if (row.intentFailure !== null || row.intentRemainingBeforeCommit === 1) {
+      activeEpoch = null;
+      activePlan = null;
+      activeGrowCheckpointTiles = null;
+    }
   }
 
   if (role === "control" && (planRows.length > 0 || plansByEpoch.size > 0)) {
@@ -786,6 +1138,9 @@ function planBindingAudit(role, joined, planRows) {
     pass: failures.length === 0,
     failures,
     bound_epochs: [...plansByEpoch.keys()].sort((a, b) => a - b),
+    activated_epochs: [...activatedEpochs].sort((a, b) => a - b),
+    pre_use_retired_epochs: [...preUseRetiredEpochs].sort((a, b) => a - b),
+    verified_retirements: retirementCount,
   };
 }
 
@@ -848,7 +1203,9 @@ function intentAudit(role, joined, planRows) {
   );
   const intentFieldsValid = joined.every((entry) => {
     const row = entry.telemetry;
-    if (typeof row.intentFallback !== "boolean" || row.intentFallback) {
+    if (typeof row.intentFallback !== "boolean" || row.intentFallback ||
+      row.intentRemaining !== row.intentRemainingBeforeCommit
+    ) {
       return false;
     }
     if (row.intentValid !== true) {
@@ -875,18 +1232,35 @@ function intentAudit(role, joined, planRows) {
           row.intentTargetID.trim() === row.intentTargetID;
   });
   const attemptTrace = joined.map((entry) => entry.telemetry.plannerAttempts);
-  const plannerAttemptsValid = joined.length > 0 && joined.every((entry) =>
-    Number.isSafeInteger(entry.telemetry.plannerAttempts) &&
-    entry.telemetry.plannerAttempts >= 0 &&
-    entry.telemetry.plannerAttempts <= planRows.length &&
-    typeof entry.telemetry.plannerPending === "boolean"
-  ) && attemptTrace.every((value, index) =>
+  const plannerAttemptsValid = joined.length > 0 && joined.every((entry) => {
+    const row = entry.telemetry;
+    if (!Number.isSafeInteger(row.plannerAttempts) ||
+      row.plannerAttempts < 0 || row.plannerAttempts > planRows.length ||
+      typeof row.plannerPending !== "boolean"
+    ) return false;
+    const completedBefore = planRows.filter((plan) =>
+      plan._logLine < row._logLine
+    ).length;
+    const expectedAttempts = completedBefore + (row.plannerPending ? 1 : 0);
+    if (row.plannerAttempts !== expectedAttempts) return false;
+    if (row.plannerPending) {
+      if (row.intentEpoch > 0 || row.intentRetirementReason !== null) return false;
+      const futurePlan = planRows.find((plan) =>
+        plan.attempt === row.plannerAttempts && plan._logLine > row._logLine
+      );
+      if (!futurePlan ||
+        futurePlan.intentSourceDecision >= row.decisionIndex - 1
+      ) return false;
+    }
+    return true;
+  }) && attemptTrace.every((value, index) =>
     index === 0 || value >= attemptTrace[index - 1]
   ) && Math.max(...attemptTrace) === planRows.length;
   const decisionPlannerClean = joined.every((entry) =>
     entry.telemetry.plannerDegraded === false &&
     entry.telemetry.plannerFailures === 0 &&
     entry.telemetry.plannerError === null &&
+    entry.telemetry.intentFailure === null &&
     entry.telemetry.model === "llama3:latest" &&
     entry.telemetry.expectedModelDigest === OLLAMA_MODEL_DIGEST
   );
@@ -907,7 +1281,7 @@ function intentAudit(role, joined, planRows) {
     joined.every((entry) => entry.telemetry.intentEnabled === true) &&
     planRows.length >= 2 &&
     planRowsValid &&
-    canonicalJSON(epochs) === canonicalJSON(planEpochs);
+    epochs.every((epoch) => planEpochs.includes(epoch));
   const coverage = joined.length > 0 ? valid.length / joined.length : 0;
   const deltaRate = joined.length > 0 ? deltas.length / joined.length : 0;
   return {
@@ -974,27 +1348,102 @@ function identityAliases(entry) {
   );
 }
 
-function normalizeRuntimeValue(value, aliases, opaque = new Map(), key = "") {
+function normalizeRuntimeValue(
+  value,
+  aliases,
+  opaque = new Map(),
+  key = "",
+  preserveUnknownIDs = false,
+) {
   if (Array.isArray(value)) {
-    return value.map((entry) => normalizeRuntimeValue(entry, aliases, opaque, key));
+    return value.map((entry) => normalizeRuntimeValue(
+      entry,
+      aliases,
+      opaque,
+      key,
+      preserveUnknownIDs,
+    ));
   }
   if (plainObject(value)) {
     return Object.fromEntries(Object.keys(value).sort().map((childKey) => [
       childKey,
-      normalizeRuntimeValue(value[childKey], aliases, opaque, childKey),
+      normalizeRuntimeValue(
+        value[childKey],
+        aliases,
+        opaque,
+        childKey,
+        preserveUnknownIDs,
+      ),
     ]));
   }
   if (typeof value !== "string") return value;
   let normalized = value;
+  if (key === "reason") {
+    const reason = strictIntentV5Reason(value);
+    if (reason) {
+      normalized = `[K1Z] r4vn:${reason.kind}:` +
+        `${[...reason.markers.slice(0, -1), "$request"].join(".")}`;
+    }
+  }
   for (const [runtimeID, token] of aliases) {
     normalized = normalized.split(runtimeID).join(token);
   }
   const idField = /(?:^|_)(?:id|ids)$/i.test(key) || /(?:ID|IDs)$/.test(key);
-  if (idField && normalized === value && value.length > 0) {
+  if (
+    !preserveUnknownIDs &&
+    idField &&
+    normalized === value &&
+    value.length > 0
+  ) {
     if (!opaque.has(value)) opaque.set(value, `$opaque:${opaque.size + 1}`);
     normalized = opaque.get(value);
   }
   return normalized;
+}
+
+function normalizedTreatmentInput(entry) {
+  const aliases = identityAliases(entry);
+  const opaque = new Map();
+  const input = entry?.telemetry?.decisionInput;
+  const legalActions = Array.isArray(input?.legalActions)
+    ? input.legalActions.map((action) =>
+        normalizeRuntimeValue(action, aliases, opaque, "", true)
+      ).sort((left, right) =>
+        canonicalJSON(left).localeCompare(canonicalJSON(right))
+      )
+    : null;
+  return {
+    turnNumber: entry?.telemetry?.turnNumber ?? entry?.replay?.turnNumber,
+    legalActions,
+    observation: normalizeRuntimeValue(
+      input?.observation,
+      aliases,
+      opaque,
+      "",
+      true,
+    ),
+  };
+}
+
+function normalizedLegalAction(entry, action) {
+  if (!plainObject(action)) return null;
+  const aliases = identityAliases(entry);
+  const normalizeKnownIdentity = (value) => {
+    if (Array.isArray(value)) return value.map(normalizeKnownIdentity);
+    if (plainObject(value)) {
+      return Object.fromEntries(Object.keys(value).sort().map((key) => [
+        key,
+        normalizeKnownIdentity(value[key]),
+      ]));
+    }
+    if (typeof value !== "string") return value;
+    let normalized = value;
+    for (const [runtimeID, token] of aliases) {
+      normalized = normalized.split(runtimeID).join(token);
+    }
+    return normalized;
+  };
+  return normalizeKnownIdentity(inputActionShape(action));
 }
 
 function normalizedPretreatment(entry) {
@@ -1003,14 +1452,20 @@ function normalizedPretreatment(entry) {
   const input = entry?.telemetry?.decisionInput;
   const legalActions = Array.isArray(input?.legalActions)
     ? input.legalActions.map((action) =>
-        normalizeRuntimeValue(action, aliases, opaque)
+        normalizeRuntimeValue(action, aliases, opaque, "", true)
       ).sort((left, right) =>
         canonicalJSON(left).localeCompare(canonicalJSON(right))
       )
     : null;
   const legalActionIDs = Array.isArray(entry?.replay?.legalActionIDs)
     ? entry.replay.legalActionIDs
-      .map((id) => normalizeRuntimeValue(id, aliases, opaque, "actionID"))
+      .map((id) => normalizeRuntimeValue(
+        id,
+        aliases,
+        opaque,
+        "actionID",
+        true,
+      ))
       .sort()
     : null;
   return {
@@ -1020,12 +1475,15 @@ function normalizedPretreatment(entry) {
       aliases,
       opaque,
       "actionID",
+      true,
     ),
     selectedActionKind: entry?.replay?.selectedActionKind,
     selectedActionMetadata: normalizeRuntimeValue(
       entry?.replay?.selectedActionMetadata,
       aliases,
       opaque,
+      "",
+      true,
     ),
     legalActions,
     legalActionIDs,
@@ -1033,12 +1491,22 @@ function normalizedPretreatment(entry) {
       entry?.replay?.legalActionIDsByKind,
       aliases,
       opaque,
+      "",
+      true,
     ),
-    observation: normalizeRuntimeValue(input?.observation, aliases, opaque),
+    observation: normalizeRuntimeValue(
+      input?.observation,
+      aliases,
+      opaque,
+      "",
+      true,
+    ),
     auditBefore: normalizeRuntimeValue(
       entry?.replay?.auditBefore,
       aliases,
       opaque,
+      "",
+      true,
     ),
   };
 }
@@ -1047,11 +1515,23 @@ function pretreatmentSignature(entry) {
   return canonicalJSON(normalizedPretreatment(entry));
 }
 
+function treatmentInputSignature(entry) {
+  return canonicalJSON(normalizedTreatmentInput(entry));
+}
+
 function pretreatmentAudit(control, candidate) {
   const firstDeltaIndex = candidate.join.rows.findIndex((entry) =>
     entry.action_delta === true
   );
   const failures = [];
+  if (
+    control?.checks?.baseline_recomputed !== true ||
+    candidate?.checks?.baseline_recomputed !== true
+  ) {
+    failures.push(
+      "first-treatment comparison requires independently replayed clean decisions",
+    );
+  }
   if (firstDeltaIndex < 1) {
     failures.push("candidate lacks a nonempty pre-treatment decision prefix");
   } else if (control.join.rows.length < firstDeltaIndex) {
@@ -1065,10 +1545,33 @@ function pretreatmentAudit(control, candidate) {
         failures.push(`pre-treatment decision ${index + 1} differs`);
       }
     }
+    const controlTreatment = control.join.rows[firstDeltaIndex];
+    const candidateTreatment = candidate.join.rows[firstDeltaIndex];
+    if (!controlTreatment || !candidateTreatment) {
+      failures.push("first treatment decision is missing from one arm");
+    } else {
+      if (
+        controlTreatment.treatment_input_signature !==
+          candidateTreatment.treatment_input_signature
+      ) {
+        failures.push("first treatment decision input differs");
+      }
+      if (
+        controlTreatment.recomputed_action_signature === null ||
+        candidateTreatment.recomputed_baseline_signature === null ||
+        controlTreatment.recomputed_action_signature !==
+          candidateTreatment.recomputed_baseline_signature
+      ) {
+        failures.push(
+          "first treatment recomputed baseline differs from the control action",
+        );
+      }
+    }
   }
   return {
     pass: failures.length === 0,
     compared_decisions: Math.max(0, firstDeltaIndex),
+    first_delta_decision: firstDeltaIndex < 0 ? null : firstDeltaIndex + 1,
     failures,
   };
 }
@@ -1166,18 +1669,11 @@ function commonProvenanceAudit(provenance) {
   ) {
     failures.push("image receipt wire bytes are not canonical");
   }
-  if (
-    prereg.value?.schema_version !== 2 ||
-    prereg.value?.record_type !== "hrafn_intent_i1_preregistration" ||
-    prereg.value?.campaign_id !== CAMPAIGN_ID ||
-    prereg.value?.status !== "PREREGISTERED_AMENDED_NO_RUNTIME_AUTHORITY" ||
-    prereg.value?.pilot?.coworld_client !== "0.1.28" ||
-    prereg.value?.pilot?.manifest_sha256 !== HRAFN_INTENT_MANIFEST_SHA256 ||
-    prereg.value?.intent_contract?.planner?.model !== HRAFN_INTENT_MODEL ||
-    prereg.value?.intent_contract?.planner?.model_digest !==
-      HRAFN_INTENT_MODEL_DIGEST
-  ) {
-    failures.push("preregistration does not bind the amended HI1 campaign");
+  const preregistrationReport = verifyHrafnIntentR2Preregistration(prereg.value);
+  if (!preregistrationReport.valid) {
+    failures.push(
+      `preregistration does not bind r2: ${preregistrationReport.errors.join("; ")}`,
+    );
   }
   const preregistrationSource = image.value?.files?.filter((entry) =>
     entry?.path === "experiments/hrafn-intent-i1-preregistration-20260720.json"
@@ -1210,6 +1706,7 @@ function commonProvenanceAudit(provenance) {
     scope: "hrafn-only",
     source_commit: image.value?.source?.commit,
     subject_image_id: image.value?.image?.id,
+    game_image_id: image.value?.game?.id,
     image_receipt: {
       file_sha256: sha256(image.bytes),
       content_sha256: hrafnIntentReceiptContentSHA256(image.value),
@@ -1308,6 +1805,8 @@ function runProvenanceAudit(run, common, role) {
     pf?.image_receipt?.file_sha256 !== sha256(common?.imageReceipt?.bytes ?? Buffer.alloc(0)) ||
     pf?.preregistration?.file_sha256 !== sha256(common?.preregistration?.bytes ?? Buffer.alloc(0)) ||
     pf?.manifest?.sha256 !== HRAFN_INTENT_MANIFEST_SHA256 ||
+    canonicalJSON(pf?.images?.game) !==
+      canonicalJSON(common?.imageReceipt?.value?.game) ||
     pf?.images?.subject?.id !== common?.imageReceipt?.value?.image?.id ||
     pf?.images?.opponent?.id !== HRAFN_V5_OPPONENT_IMAGE_ID ||
     pf?.planner?.model !== HRAFN_INTENT_MODEL ||
@@ -1463,7 +1962,16 @@ export function auditHrafnIntentRun(run, provenanceCommon = null) {
   const join = strictJoin(decisionTelemetry, subjectReplayRows);
   const sequence = replaySequenceAudit(parsedReplay.decisions);
   const recomputed = recomputeWrappedV5(join.joined);
-  const planBinding = planBindingAudit(role, join.joined, planTelemetry);
+  const reasonProfile = intentPublicReasonAudit(
+    join.joined,
+    recomputed.decisions,
+  );
+  const planBinding = planBindingAudit(
+    role,
+    join.joined,
+    planTelemetry,
+    recomputed.decisions,
+  );
   const binding = subjectJobBinding(run?.job, subjectSlot, role);
   const artifact = artifactsMatch(run, subjectSlot);
   const common = provenanceCommon?.pass !== undefined
@@ -1475,6 +1983,7 @@ export function auditHrafnIntentRun(run, provenanceCommon = null) {
     chassis = auditHrafnChassisReplay(
       run?.replay,
       run?.replayBytes ?? Buffer.from(JSON.stringify(run?.replay ?? null)),
+      { markerProfile: "intent-v5" },
     );
   } catch (error) {
     chassis = {
@@ -1504,7 +2013,7 @@ export function auditHrafnIntentRun(run, provenanceCommon = null) {
     !String(row?.selectedLegalActionId ?? "").startsWith("hold:")
   );
   const publicReasonsValid = subjectReplayRows.every((row) =>
-    reasonMarkers(row.reason).valid
+    strictIntentV5Reason(row.reason) !== null
   );
   const strictJoinPass =
     parsedReplay.failures.length === 0 &&
@@ -1523,6 +2032,7 @@ export function auditHrafnIntentRun(run, provenanceCommon = null) {
     resultsReliable &&
     replayReliable &&
     publicReasonsValid &&
+    reasonProfile.pass &&
     strictJoinPass &&
     latency.pass &&
     intent.planner_clean &&
@@ -1543,6 +2053,7 @@ export function auditHrafnIntentRun(run, provenanceCommon = null) {
     baseline_recomputed: recomputed.pass,
     intent_plan_binding: planBinding.pass,
     public_reasons_valid: publicReasonsValid,
+    intent_public_reason_profile: reasonProfile.pass,
     replay_safety: chassisSafety,
     zero_foreign_tagged_decisions: foreignTagged.length === 0,
     zero_runtime_errors: log.errorLines.length === 0,
@@ -1561,20 +2072,38 @@ export function auditHrafnIntentRun(run, provenanceCommon = null) {
     candidate_opening_reach: intent.opening_reach_pass,
     reliability,
   };
-  const compactJoinRows = join.joined.map((entry) => ({
-    request_marker: entry.marker,
-    turn: entry.replay.turnNumber,
-    action_id: entry.replay.selectedLegalActionId,
-    baseline_action_id: entry.telemetry.baselineActionID,
-    action_delta: entry.telemetry.actionDelta,
-    intent_epoch: entry.telemetry.intentEpoch,
-    intent_valid: entry.telemetry.intentValid,
-    hi1: entry.parsed.markers.includes("hi1"),
-    tiles_after: finiteNumber(entry.replay?.auditAfter?.tilesOwned),
-    response_latency_ms: finiteNumber(entry.telemetry.responseLatencyMs),
-    replay_latency_ms: finiteNumber(entry.replay.decisionLatencyMs),
-    pretreatment_signature: pretreatmentSignature(entry),
-  }));
+  const compactJoinRows = join.joined.map((entry, index) => {
+    const independentlyReplayed = recomputed.decisions[index];
+    const recomputedAction = normalizedLegalAction(
+      entry,
+      independentlyReplayed?.action,
+    );
+    const recomputedBaseline = normalizedLegalAction(
+      entry,
+      independentlyReplayed?.baseline,
+    );
+    return {
+      request_marker: entry.marker,
+      turn: entry.replay.turnNumber,
+      action_id: entry.replay.selectedLegalActionId,
+      baseline_action_id: entry.telemetry.baselineActionID,
+      action_delta: entry.telemetry.actionDelta,
+      intent_epoch: entry.telemetry.intentEpoch,
+      intent_valid: entry.telemetry.intentValid,
+      hi1: entry.parsed.markers.includes("hi1"),
+      tiles_after: finiteNumber(entry.replay?.auditAfter?.tilesOwned),
+      response_latency_ms: finiteNumber(entry.telemetry.responseLatencyMs),
+      replay_latency_ms: finiteNumber(entry.replay.decisionLatencyMs),
+      pretreatment_signature: pretreatmentSignature(entry),
+      treatment_input_signature: treatmentInputSignature(entry),
+      recomputed_action_signature: recomputedAction === null
+        ? null
+        : canonicalJSON(recomputedAction),
+      recomputed_baseline_signature: recomputedBaseline === null
+        ? null
+        : canonicalJSON(recomputedBaseline),
+    };
+  });
   return {
     schema_version: 1,
     record_type: "hrafn_intent_i1_run_audit",
@@ -1621,6 +2150,7 @@ export function auditHrafnIntentRun(run, provenanceCommon = null) {
     provenance,
     recomputed_baseline: recomputed,
     intent_plan_binding: planBinding,
+    intent_public_reason_profile: reasonProfile,
     chassis_audit: chassis,
     checks,
     pass: Object.values(checks).every(Boolean),
@@ -1734,6 +2264,7 @@ export function auditHrafnIntentPair({ control, candidate, provenance } = {}) {
       control_final_tiles: controlAudit.final_tiles,
       candidate_final_tiles: candidateAudit.final_tiles,
       pretreatment_compared_decisions: pretreatment.compared_decisions,
+      first_delta_decision: pretreatment.first_delta_decision,
       pretreatment_failures: pretreatment.failures,
     },
     checks,
@@ -1769,8 +2300,8 @@ export function auditHrafnIntentCampaign(pairArtifacts) {
     subject_slot: pair?.subject_slot,
   })).sort((left, right) => String(left.map).localeCompare(String(right.map)));
   const expectedCells = canonicalJSON(cells) === canonicalJSON([
-    { map: "Asia", seed: 240722, subject_slot: 2 },
-    { map: "Pangaea", seed: 240721, subject_slot: 1 },
+    { map: "Asia", seed: 240724, subject_slot: 2 },
+    { map: "Pangaea", seed: 240723, subject_slot: 1 },
   ]);
   const relativeLifts = pairs.map((pair) =>
     finiteNumber(pair?.pair?.opening_auc20_relative_lift)
