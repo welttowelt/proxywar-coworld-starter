@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-07-21T10:43:07Z",
+  "directive": "Never harm K1Z Mickey Mouse until Oli explicitly changes the instruction.",
+  "player": {
+    "name": "K1Z Mickey Mouse",
+    "id": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+    "policy_label": "mickey-mouse-intent:v1",
+    "policy_version_id": "7329eda7-b041-4853-9ee6-e05cc1a98ac2",
+    "membership_id": "lpm_e9476600-52e0-44c4-9582-7b21c86129b1",
+    "status": "competing",
+    "substatus": "active",
+    "is_champion": true
+  },
+  "source_commit": "2407a356ead90bc568f6622e082e00e869e72edd",
+  "strategy_engine_sha256": "34d0ba47dd9479bd00ffabc6128518400d168c4f77aea2660b4d59958ca7aec5",
+  "strategy_test_sha256": "3c1706a46635847b7564128e8a6ce39d8ae852a88f8ea701e1430b66eade2a48",
+  "tests": {
+    "red_before_implementation": 3,
+    "strategy_tests_passed": 109,
+    "strategy_tests_failed": 0,
+    "full_suite_note": "238/239 passed; the sole failure is the pre-existing generated dashboard streak mismatch (565 versus 533), outside policy source."
+  },
+  "behavior": [
+    "protect canonical name and exact player ID",
+    "protection remains absolute after observed incoming pressure",
+    "prioritize Mickey alliance offers through kp2",
+    "retain outsider offense"
+  ],
+  "fleet_broadcast": {
+    "mailbox_commit": "4185c1e",
+    "file": "CODEX_ODIN_TO_K1Z_FLEET_MICKEY_NO_HARM_20260721.md"
+  },
+  "deployment": {
+    "diagnostic_uploaded": false,
+    "submitted": false,
+    "placed": false,
+    "champion_changed": false,
+    "live_qd1n_remains": "qd1n:v89"
+  }
+}

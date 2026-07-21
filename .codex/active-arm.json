@@ -1,19 +1,19 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-21T10:15:06Z",
+  "updated_at": "2026-07-21T10:43:07Z",
   "cycle_id": "odin-20260721T101401Z-44979",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "no_active_odin_arm_mickey_live_identity_acknowledged_round605_replay_pending",
+  "state": "no_active_odin_arm_mickey_no_harm_source_guarded",
   "arm": {
-    "id": "pax1",
-    "name": "pact_before_doomed_probe",
+    "id": "rc1",
+    "name": "post_hit_retaliation_conversion",
     "branch": null,
     "parent_commit": null,
     "candidate_commit": null,
-    "preregistration": "experiments/preregister-qd1n-pax1-underdog-pact-world-20260721.json",
+    "preregistration": "experiments/audit-qd1n-rc1-post-hit-reach-stop-20260721.json",
     "closed": true,
-    "verdict": "REJECTED_PREREG_FALSE_COOLDOWN_ASSUMPTION"
+    "verdict": "STOP_PRE_SOURCE_ZERO_PRODUCTIVE_REACH"
   },
   "live_control": {
     "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
@@ -60,7 +60,7 @@
     "kimi": "external Kimi K3 Max adviser only"
   },
   "coalition_identity_review": {
-    "status": "ACKNOWLEDGED_REPLAY_PENDING",
+    "status": "SOURCE_GUARD_COMMITTED",
     "packet_id": "CODEX.WRAPPER.MICKEY.LIVE_ENTRY.20260721T100900Z",
     "mailbox_head": "a276746916199f37eeba3fd52f4d6ce7b4c63a24",
     "player_name": "K1Z Mickey Mouse",
@@ -72,8 +72,9 @@
     "round_id": "round_bcf3d3c9-7be0-491c-aee2-1b3823d4f43f",
     "round_number": 605,
     "replay_status": "PENDING",
-    "source_change_authorized": false,
-    "receipt": "ODIN_TO_CODEX_WRAPPER_MICKEY_LIVE_ENTRY_ACK_20260721.md"
+    "source_change_authorized": true,
+    "source_commit": "2407a356ead90bc568f6622e082e00e869e72edd",
+    "receipt": "experiments/receipt-qd1n-mickey-no-harm-source-20260721.json"
   },
   "bounded_evidence": {
     "official_round": 591,
@@ -163,9 +164,9 @@
     "audit": "experiments/audit-qd1n-pf1-zero-reach-stop-20260721.json"
   },
   "latest_closed_arm": {
-    "id": "pax1",
-    "verdict": "REJECTED_PREREG_FALSE_COOLDOWN_ASSUMPTION",
-    "audit": "experiments/audit-qd1n-pax1-preregister-rci-reject-20260721.json",
+    "id": "rc1",
+    "verdict": "STOP_PRE_SOURCE_ZERO_PRODUCTIVE_REACH",
+    "audit": "experiments/audit-qd1n-rc1-post-hit-reach-stop-20260721.json",
     "source_edit": false,
     "league_mutation": false
   },
@@ -186,6 +187,6 @@
     "policy_action_delta": false,
     "league_mutation": false
   },
-  "next_automatic_transition": "Remain without an active arm. When Round 605 replay becomes available, inspect one bounded Odin/Mickey interaction cell for attack or support behavior before proposing any reciprocal-source change. A newer hash-bound active-arm verdict still preempts this checkpoint. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
+  "next_automatic_transition": "Select one earlier pre-contact state with a legal candidate-parent action difference before editing production source. Carry the committed Mickey no-harm guard into every candidate. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates.",
   "prior_verified_champion_preserved": true
 }
