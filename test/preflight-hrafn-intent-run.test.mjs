@@ -890,7 +890,10 @@ test("mailbox history verifies real ancestry and exact nested-path blob bytes", 
   const runtime = {
     async run(command, args, options = {}) {
       return {
-        stdout: execFileSync(command, args, { cwd: options.cwd }),
+        stdout: execFileSync(command, args, {
+          cwd: options.cwd,
+          stdio: ["ignore", "pipe", "pipe"],
+        }),
         stderr: Buffer.alloc(0),
       };
     },
