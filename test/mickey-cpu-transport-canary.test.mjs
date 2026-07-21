@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
+import { spawn } from "node:child_process";
 import { createHash } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { existsSync, mkdtempSync, readFileSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
 import path from "node:path";
 import test from "node:test";
 import { fileURLToPath } from "node:url";
@@ -9,15 +11,17 @@ import {
   canonicalRequestInputSha256,
 } from "../scripts/run-mickey-cpu-fanout.mjs";
 import {
-  executeTransportCanary,
+  acquireCanaryOnce,
   runCli,
+  simulateTransportCanaryForTest,
+  validateLiveRunnerStatus,
 } from "../scripts/run-mickey-cpu-transport-canary.mjs";
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const CANARY = path.join(ROOT, "scripts", "run-mickey-cpu-transport-canary.mjs");
 const MANIFEST = path.join(ROOT, "experiments", "manifest-mickey-cpu-screen-g000-r2-20260721.json");
+const SIGNAL_FIXTURE = path.join(ROOT, "test", "fixtures", "mickey-cpu-canary-signal-child.mjs");
 const MANIFEST_SHA256 = "7a950dadc34c018c10f2bf3c1f58ee253bb717e787c2a82210379cbd896d9dca";
-const SECRET = "9".repeat(64);
 const SELF = "8".repeat(64);
 const NEW_ID = "mickey-canary-new-001";
 const STORM_ID = "storm-existing-001";
@@ -54,7 +58,6 @@ function valueAfter(args, flag) {
 
 function createRecord(args, id = NEW_ID) {
   const name = valueAfter(args, "--name");
-  const secret = valueAfter(args, "--env").split("=").slice(1).join("=");
   const terminateAfter = valueAfter(args, "--terminateAfter");
   const requestInput = {
     cloudType: "COMMUNITY",
@@ -63,7 +66,7 @@ function createRecord(args, id = NEW_ID) {
     deployCost: 0.1,
     dockerArgs: "",
     dataCenterId: "",
-    env: [{ key: "MICKEY_CONTROL_PLANE_NONCE", value: secret }],
+    env: [],
     imageName: "runpod/pytorch:test",
     instanceIds: ["cpu5c-2-4", "cpu3c-2-4"],
     minMemoryInGb: 4,
@@ -96,10 +99,11 @@ function createRecord(args, id = NEW_ID) {
 }
 
 class FakeRunPod {
-  constructor({ malformed = false, transportError = false, returnedId = NEW_ID } = {}) {
+  constructor({ malformed = false, transportError = false, returnedId = NEW_ID, returnedName = null } = {}) {
     this.malformed = malformed;
     this.transportError = transportError;
     this.returnedId = returnedId;
+    this.returnedName = returnedName;
     this.present = false;
     this.record = null;
     this.calls = [];
@@ -116,8 +120,9 @@ class FakeRunPod {
     }
     if (args[0] === "create") {
       this.record = createRecord(args, this.returnedId);
+      if (this.returnedName !== null) this.record.name = this.returnedName;
       this.present = true;
-      if (this.transportError) throw new Error(`transport echoed ${valueAfter(args, "--env")}`);
+      if (this.transportError) throw new Error("transport failed after request dispatch");
       return {
         code: 0,
         stdout: this.malformed ? "{" : `${JSON.stringify(this.record)}\n`,
@@ -155,15 +160,33 @@ class FakeRunPod {
   }
 }
 
+class DelayedRunPod extends FakeRunPod {
+  constructor({ visibleAfter }) {
+    super({ transportError: true });
+    this.visibleAfter = visibleAfter;
+    this.exactNameLists = 0;
+  }
+
+  async run(command, args) {
+    if (args[0] === "pod" && args[1] === "list" && args.includes("--name")) {
+      this.exactNameLists += 1;
+      if (this.exactNameLists < this.visibleAfter) {
+        this.calls.push({ command, args: [...args] });
+        return { code: 0, stdout: "[]\n", stderr: "" };
+      }
+    }
+    return super.run(command, args);
+  }
+}
+
 async function execute(fake) {
-  return executeTransportCanary({
+  return simulateTransportCanaryForTest({
     manifest: manifest(),
     manifestSha256: MANIFEST_SHA256,
     selfSha256: SELF,
     output: "/unused",
     executor: fake,
     now: Date.parse("2026-07-21T01:00:00.000Z"),
-    controlSecret: SECRET,
     pairId: "transport-test",
     settle: async () => {},
   });
@@ -178,9 +201,12 @@ test("transport canary attests one CPU pod and deletes only its exact new ID", a
   assert.equal(receipt.game_processes_started, 0);
   assert.equal(receipt.evidence_eligible, false);
   assert.equal(receipt.promotion_possible_from_this_run, false);
-  assert.equal(receipt.control_secret_persisted, false);
-  assert.equal(JSON.stringify(receipt).includes(SECRET), false);
+  assert.equal(receipt.secret_in_argv, false);
+  assert.equal(JSON.stringify(receipt).includes("MICKEY_CONTROL_PLANE_NONCE"), false);
   assert.equal(JSON.stringify(receipt).includes(STORM_ID), false);
+  const creates = fake.calls.filter(({ args }) => args[0] === "create");
+  assert.equal(creates.length, 1);
+  assert.equal(creates[0].args.includes("--env"), false);
   const deletes = fake.calls.filter(({ args }) => args[0] === "pod" && args[1] === "delete");
   assert.deepEqual(deletes.map(({ args }) => args[2]), [NEW_ID]);
   assert.equal(deletes.some(({ args }) => args.includes("--name")), false);
@@ -195,13 +221,21 @@ test("malformed create output reconciles and deletes the exact new ID", async ()
   assert.equal(fake.present, false);
 });
 
-test("transport exception reconciles, redacts the secret, and deletes the exact ID", async () => {
+test("transport exception reconciles and deletes the exact ID", async () => {
   const fake = new FakeRunPod({ transportError: true });
   const receipt = await execute(fake);
   assert.equal(receipt.status, "failed");
   assert.deepEqual(receipt.deleted_exact_pod_ids, [NEW_ID]);
-  assert.equal(receipt.failure_reason.includes(SECRET), false);
-  assert.match(receipt.failure_reason, /\[REDACTED\]/);
+  assert.match(receipt.failure_reason, /transport failed/);
+});
+
+test("an indeterminate create that appears late in the 30-second window is deleted", async () => {
+  const fake = new DelayedRunPod({ visibleAfter: 7 });
+  const receipt = await execute(fake);
+  assert.equal(receipt.status, "failed");
+  assert.deepEqual(receipt.observed_new_pod_ids, [NEW_ID]);
+  assert.deepEqual(receipt.deleted_exact_pod_ids, [NEW_ID]);
+  assert.equal(fake.present, false);
 });
 
 test("a preexisting returned ID is never cleanup-owned or deleted", async () => {
@@ -211,6 +245,115 @@ test("a preexisting returned ID is never cleanup-owned or deleted", async () => 
   assert.deepEqual(receipt.observed_new_pod_ids, []);
   assert.deepEqual(receipt.deleted_exact_pod_ids, []);
   assert.equal(fake.calls.some(({ args }) => args[0] === "pod" && args[1] === "delete"), false);
+});
+
+test("a newly returned storm name is never cleanup-owned or deleted", async () => {
+  const fake = new FakeRunPod({ returnedId: "storm-new-002", returnedName: "storm-new" });
+  const receipt = await execute(fake);
+  assert.equal(receipt.status, "failed");
+  assert.deepEqual(receipt.observed_new_pod_ids, []);
+  assert.deepEqual(receipt.deleted_exact_pod_ids, []);
+  assert.equal(fake.calls.some(({ args }) => args[0] === "pod" && args[1] === "delete"), false);
+});
+
+test("SIGTERM after creation is trapped until exact-ID cleanup completes", async () => {
+  const directory = mkdtempSync(path.join(tmpdir(), "mickey-canary-signal-"));
+  const ready = path.join(directory, "ready");
+  const receiptPath = path.join(directory, "receipt.json");
+  const child = spawn(process.execPath, [SIGNAL_FIXTURE, ready, receiptPath], {
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  try {
+    const deadline = Date.now() + 5_000;
+    while (!existsSync(ready) && Date.now() < deadline) {
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
+    assert.equal(existsSync(ready), true, "signal fixture never reached the post-create boundary");
+    assert.equal(child.kill("SIGTERM"), true);
+    const result = await new Promise((resolve, reject) => {
+      const stdout = [];
+      const stderr = [];
+      child.stdout.on("data", (chunk) => stdout.push(chunk));
+      child.stderr.on("data", (chunk) => stderr.push(chunk));
+      child.once("error", reject);
+      child.once("close", (code, signal) => resolve({
+        code,
+        signal,
+        stdout: Buffer.concat(stdout).toString("utf8"),
+        stderr: Buffer.concat(stderr).toString("utf8"),
+      }));
+    });
+    assert.equal(result.signal, null, result.stderr);
+    assert.equal(result.code, 17, result.stderr);
+    const receipt = JSON.parse(readFileSync(receiptPath, "utf8"));
+    assert.equal(receipt.status, "failed");
+    assert.equal(receipt.failure_reason, "received SIGTERM");
+    assert.deepEqual(receipt.observed_new_pod_ids, ["mickey-signal-canary-001"]);
+    assert.deepEqual(receipt.deleted_exact_pod_ids, ["mickey-signal-canary-001"]);
+  } finally {
+    if (child.exitCode === null && child.signalCode === null) child.kill("SIGKILL");
+    rmSync(directory, { recursive: true, force: true });
+  }
+});
+
+test("live status must bind the exact active runner child and sole output", () => {
+  const document = manifest();
+  const output = "/private/tmp/canary-output";
+  const status = {
+    state: "active",
+    schema_version: 2,
+    owner: "mickey",
+    run_id: document.run_id,
+    supervisor_alive: true,
+    child_alive: true,
+    child_pid: 1234,
+    outputs: [output],
+  };
+  assert.deepEqual(validateLiveRunnerStatus(status, {
+    manifest: document,
+    output,
+    childPid: 1234,
+  }), {
+    owner: "mickey",
+    run_id: document.run_id,
+    child_pid: 1234,
+    output,
+  });
+  assert.throws(
+    () => validateLiveRunnerStatus({ ...status, child_pid: 9999 }, {
+      manifest: document,
+      output,
+      childPid: 1234,
+    }),
+    /does not bind/,
+  );
+  assert.throws(
+    () => validateLiveRunnerStatus({ ...status, outputs: [output, "/tmp/other"] }, {
+      manifest: document,
+      output,
+      childPid: 1234,
+    }),
+    /does not bind/,
+  );
+  assert.throws(
+    () => validateLiveRunnerStatus({ ...status, supervisor_alive: false }, {
+      manifest: document,
+      output,
+      childPid: 1234,
+    }),
+    /does not bind/,
+  );
+});
+
+test("the output-local canary lock is atomic and one-shot", async () => {
+  const directory = mkdtempSync(path.join(tmpdir(), "mickey-canary-once-"));
+  try {
+    const lockPath = await acquireCanaryOnce(directory);
+    assert.equal(existsSync(lockPath), true);
+    await assert.rejects(() => acquireCanaryOnce(directory), /EEXIST/);
+  } finally {
+    rmSync(directory, { recursive: true, force: true });
+  }
 });
 
 test("dry-run validates pins without touching the injected network executor", async () => {
