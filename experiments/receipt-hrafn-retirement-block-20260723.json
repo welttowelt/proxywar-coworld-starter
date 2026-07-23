@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-23",
+  "requested_action": "Delete retired Softmax player K1Z Hrafn and reuse the released account capacity for Captain Underpants Maximum Aura.",
+  "account_state": {
+    "player_limit": 2,
+    "players": [
+      {
+        "id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+        "name": "K1Z odin free",
+        "disabled_at": null
+      },
+      {
+        "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+        "name": "K1Z Hrafn",
+        "disabled_at": null
+      }
+    ]
+  },
+  "verified_api_behavior": {
+    "create_captain_underpants": {
+      "status": 409,
+      "detail": "Users are limited to 2 active players",
+      "player_created": false
+    },
+    "delete_hrafn": {
+      "status": 405,
+      "allow": [
+        "PATCH"
+      ],
+      "player_deleted": false
+    },
+    "patch_schema": {
+      "name_required": true,
+      "disabled_at": "extra_forbidden"
+    },
+    "disable_retire_archive_routes": "not_found"
+  },
+  "verdict": "BLOCKED_NO_SELF_SERVICE_PLAYER_RETIREMENT",
+  "current_truth": {
+    "hrafn_deleted": false,
+    "captain_underpants_created": false,
+    "odin_active_player_unchanged": true,
+    "mickey_unchanged": true
+  },
+  "unblock_paths": [
+    "Softmax support disables or deletes ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863.",
+    "Authenticate an isolated Softmax user with fewer than two active players and create Captain Underpants Maximum Aura there."
+  ]
+}

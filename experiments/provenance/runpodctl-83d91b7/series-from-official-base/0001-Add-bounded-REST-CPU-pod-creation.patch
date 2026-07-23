@@ -1,0 +1,1152 @@
+From 7005e32d2ac68d62a6eec2197ef94105bd64afba Mon Sep 17 00:00:00 2001
+From: welttowelt <welttowelt@users.noreply.github.com>
+Date: Tue, 21 Jul 2026 02:59:38 +0200
+Subject: [PATCH 1/4] Add bounded REST CPU pod creation
+
+---
+ cmd/pod/create.go               | 237 ++++++++++++++++-
+ cmd/pod/create_rest_cpu_test.go | 441 ++++++++++++++++++++++++++++++++
+ cmd/pod/pod_test.go             |   9 +
+ internal/api/pods.go            | 120 +++++++--
+ internal/api/pods_test.go       | 171 +++++++++++++
+ 5 files changed, 953 insertions(+), 25 deletions(-)
+ create mode 100644 cmd/pod/create_rest_cpu_test.go
+
+diff --git a/cmd/pod/create.go b/cmd/pod/create.go
+index c222afb..7be9b6a 100644
+--- a/cmd/pod/create.go
++++ b/cmd/pod/create.go
+@@ -1,9 +1,13 @@
+ package pod
+ 
+ import (
++	"crypto/sha256"
++	"encoding/hex"
+ 	"encoding/json"
+ 	"fmt"
++	"math"
+ 	"os"
++	"reflect"
+ 	"strings"
+ 
+ 	"github.com/runpod/runpodctl/internal/api"
+@@ -27,7 +31,10 @@ examples:
+   runpodctl pod create --image runpod/pytorch:1.0.3-cu1281-torch291-ubuntu2404 --gpu-id "NVIDIA GeForce RTX 4090"
+ 
+   # create a cpu pod
+-  runpodctl pod create --compute-type cpu --image ubuntu:22.04
++  runpodctl pod create --compute-type CPU --image ubuntu:22.04 --name cpu-job \
++    --cpu-flavor-id cpu5c --cpu-flavor-id cpu3c --vcpu-count 2 \
++    --max-cost-per-hour 0.10 --container-disk-in-gb 20 --volume-in-gb 0 \
++    --cloud-type COMMUNITY
+ 
+   # find templates first
+   runpodctl template search pytorch
+@@ -43,6 +50,9 @@ var (
+ 	createComputeType       string
+ 	createGpuTypeID         string
+ 	createGpuCount          int
++	createCPUFlavorIDs      []string
++	createVCPUCount         int
++	createMaxCostPerHour    float64
+ 	createVolumeInGb        int
+ 	createContainerDiskInGb int
+ 	createVolumeMountPath   string
+@@ -70,6 +80,9 @@ func init() {
+ 	createCmd.Flags().StringVar(&createComputeType, "compute-type", "GPU", "compute type (GPU or CPU)")
+ 	createCmd.Flags().StringVar(&createGpuTypeID, "gpu-id", "", "gpu id (from 'runpodctl gpu list')")
+ 	createCmd.Flags().IntVar(&createGpuCount, "gpu-count", 1, "number of gpus")
++	createCmd.Flags().StringArrayVar(&createCPUFlavorIDs, "cpu-flavor-id", nil, "cpu flavor id (repeat for fallback order; CPU only)")
++	createCmd.Flags().IntVar(&createVCPUCount, "vcpu-count", 0, "number of vcpus (CPU only)")
++	createCmd.Flags().Float64Var(&createMaxCostPerHour, "max-cost-per-hour", 0, "client-side CPU hourly cost ceiling; an over-limit exact-name pod is immediately deleted")
+ 	createCmd.Flags().IntVar(&createVolumeInGb, "volume-in-gb", 0, "volume size in gb")
+ 	createCmd.Flags().IntVar(&createContainerDiskInGb, "container-disk-in-gb", 20, "container disk size in gb")
+ 	createCmd.Flags().StringVar(&createVolumeMountPath, "volume-mount-path", "/workspace", "volume mount path")
+@@ -79,7 +92,7 @@ func init() {
+ 	createCmd.Flags().StringVar(&createEnv, "env", "", "environment variables as json object")
+ 	createCmd.Flags().StringVar(&createCloudType, "cloud-type", "SECURE", "cloud type (SECURE or COMMUNITY)")
+ 	createCmd.Flags().StringVar(&createDataCenterIDs, "data-center-ids", "", "comma-separated list of data center ids")
+-	createCmd.Flags().BoolVar(&createSSH, "ssh", true, "enable ssh on the pod")
++	createCmd.Flags().BoolVar(&createSSH, "ssh", true, "enable ssh on GPU GraphQL pods; CPU REST images must run sshd and expose a port")
+ 	createCmd.Flags().StringVar(&createNetworkVolumeID, "network-volume-id", "", "network volume id to attach")
+ 	createCmd.Flags().StringVar(&createMinCudaVersion, "min-cuda-version", "", "minimum cuda version (e.g., 12.6)")
+ 	createCmd.Flags().StringVar(&createDockerArgs, "docker-args", "", "docker cmd arguments")
+@@ -119,6 +132,11 @@ func runCreate(cmd *cobra.Command, args []string) error {
+ 	if cloudType == "" {
+ 		cloudType = "SECURE"
+ 	}
++	if computeType == "CPU" {
++		if err := validateCPUCreateConfig(cloudType); err != nil {
++			return err
++		}
++	}
+ 	if createGlobalNetworking {
+ 		if computeType != "GPU" {
+ 			return fmt.Errorf("global networking requires compute type GPU")
+@@ -147,13 +165,25 @@ func runCreate(cmd *cobra.Command, args []string) error {
+ 	)
+ 
+ 	if computeType == "CPU" {
+-		// CPU pods use the REST API (GraphQL requires gpuTypeId)
++		// CPU pods use the REST API (GraphQL requires gpuTypeId). REST has no
++		// supported startSsh field; callers can request public IP and 22/tcp,
++		// but the selected image remains responsible for running sshd.
+ 		result, err = createPodREST(computeType, gpuTypeID, cloudType, supportPublicIP)
+ 	} else {
+ 		// GPU pods use GraphQL (supports startSsh)
+ 		result, err = createPodGraphQL(gpuTypeID, cloudType, supportPublicIP)
+ 	}
+ 	if err != nil {
++		// A CPU REST request may have created a pod before post-create validation
++		// failed. Emit the single structured receipt when one is available so an
++		// outer exact-ID reconciler can still recover the provider object.
++		if result != nil {
++			format := output.ParseFormat(cmd.Flag("output").Value.String())
++			if printErr := output.Print(result, &output.Config{Format: format}); printErr != nil {
++				output.Error(printErr)
++				return fmt.Errorf("failed to print failed create receipt: %w", printErr)
++			}
++		}
+ 		if createGlobalNetworking {
+ 			err = decorateGlobalNetworkingError(err, createDataCenterIDs)
+ 		}
+@@ -243,7 +273,7 @@ func createPodGraphQL(gpuTypeID, cloudType string, supportPublicIP bool) (map[st
+ 	return gqlClient.CreatePod(req)
+ }
+ 
+-func createPodREST(computeType, gpuTypeID, cloudType string, supportPublicIP bool) (*api.Pod, error) {
++func createPodREST(computeType, gpuTypeID, cloudType string, supportPublicIP bool) (interface{}, error) {
+ 	client, err := api.NewClient()
+ 	if err != nil {
+ 		return nil, err
+@@ -262,6 +292,10 @@ func createPodREST(computeType, gpuTypeID, cloudType string, supportPublicIP boo
+ 		VolumeMountPath:   createVolumeMountPath,
+ 		CloudType:         cloudType,
+ 	}
++	if computeType == "CPU" {
++		req.CPUFlavorIDs = append([]string(nil), createCPUFlavorIDs...)
++		req.VcpuCount = createVCPUCount
++	}
+ 
+ 	if gpuTypeID != "" {
+ 		req.GpuTypeIDs = []string{gpuTypeID}
+@@ -295,7 +329,200 @@ func createPodREST(computeType, gpuTypeID, cloudType string, supportPublicIP boo
+ 		req.Env = env
+ 	}
+ 
+-	return client.CreatePod(req)
++	pod, err := client.CreatePod(req)
++	if err != nil {
++		return nil, err
++	}
++	if computeType != "CPU" {
++		return pod, nil
++	}
++
++	validationErr := validateCPUCreateResponse(pod, req, createMaxCostPerHour)
++	cleanupAttempted := false
++	cleanupSucceeded := false
++	cleanupError := ""
++	if validationErr != nil && pod.ID != "" && pod.Name == req.Name && !strings.HasPrefix(pod.Name, "storm-") {
++		cleanupAttempted = true
++		if deleteErr := client.DeletePod(pod.ID); deleteErr != nil {
++			cleanupError = deleteErr.Error()
++		} else {
++			cleanupSucceeded = true
++		}
++	}
++
++	receipt, receiptErr := createCPUCreateReceipt(
++		pod,
++		req,
++		createMaxCostPerHour,
++		validationErr,
++		cleanupAttempted,
++		cleanupSucceeded,
++		cleanupError,
++	)
++	if receiptErr != nil {
++		return nil, receiptErr
++	}
++	if validationErr != nil {
++		if cleanupAttempted && !cleanupSucceeded {
++			return receipt, fmt.Errorf("cpu create response validation failed and exact pod cleanup failed: %v; cleanup: %s", validationErr, cleanupError)
++		}
++		return receipt, fmt.Errorf("cpu create response validation failed: %w", validationErr)
++	}
++	return receipt, nil
++}
++
++var requiredCPUFlavorIDs = []string{"cpu5c", "cpu3c"}
++
++const restRequestInputHashAlgorithm = "sorted-json-sha256-v1"
++
++func validateCPUCreateConfig(cloudType string) error {
++	flavors := make([]string, len(createCPUFlavorIDs))
++	for index, value := range createCPUFlavorIDs {
++		flavors[index] = strings.TrimSpace(value)
++	}
++	if !reflect.DeepEqual(flavors, requiredCPUFlavorIDs) {
++		return fmt.Errorf("CPU create requires --cpu-flavor-id cpu5c --cpu-flavor-id cpu3c in that fallback order")
++	}
++	if createVCPUCount != 2 {
++		return fmt.Errorf("CPU create requires --vcpu-count 2")
++	}
++	if !isFinitePositive(createMaxCostPerHour) || createMaxCostPerHour > 0.10 {
++		return fmt.Errorf("CPU create requires a finite --max-cost-per-hour greater than 0 and at most 0.10")
++	}
++	if createContainerDiskInGb != 20 {
++		return fmt.Errorf("CPU create requires --container-disk-in-gb 20")
++	}
++	if createVolumeInGb != 0 {
++		return fmt.Errorf("CPU create requires --volume-in-gb 0")
++	}
++	if strings.TrimSpace(createNetworkVolumeID) != "" {
++		return fmt.Errorf("CPU create does not permit --network-volume-id")
++	}
++	if cloudType != "COMMUNITY" {
++		return fmt.Errorf("CPU create requires --cloud-type COMMUNITY")
++	}
++	if strings.TrimSpace(createName) == "" {
++		return fmt.Errorf("CPU create requires --name for exact-ID reconciliation")
++	}
++	if strings.HasPrefix(createName, "storm-") {
++		return fmt.Errorf("CPU create refuses the protected storm- pod namespace")
++	}
++	if strings.TrimSpace(createImageName) == "" || strings.TrimSpace(createTemplateID) != "" {
++		return fmt.Errorf("CPU create requires --image and does not permit --template-id")
++	}
++	if strings.TrimSpace(createStopAfter) != "" || strings.TrimSpace(createTerminateAfter) != "" {
++		return fmt.Errorf("CPU REST create does not support --stop-after or --terminate-after; use an independent exact-ID cleanup watchdog")
++	}
++	return nil
++}
++
++func isFinitePositive(value float64) bool {
++	return value > 0 && !math.IsNaN(value) && !math.IsInf(value, 0)
++}
++
++func validateCPUCreateResponse(pod *api.Pod, req *api.PodCreateRequest, maxCostPerHour float64) error {
++	if pod == nil {
++		return fmt.Errorf("provider returned an empty pod")
++	}
++	if strings.TrimSpace(pod.ID) == "" {
++		return fmt.Errorf("provider response omitted pod id")
++	}
++	if pod.Name != req.Name {
++		return fmt.Errorf("provider returned pod name %q, want %q", pod.Name, req.Name)
++	}
++	if !isFinitePositive(pod.CostPerHr) {
++		return fmt.Errorf("provider response omitted a finite positive costPerHr")
++	}
++	if pod.CostPerHr > maxCostPerHour {
++		return fmt.Errorf("provider costPerHr %.6f exceeds client ceiling %.6f", pod.CostPerHr, maxCostPerHour)
++	}
++	if pod.ContainerDiskInGb != req.ContainerDiskInGb {
++		return fmt.Errorf("provider containerDiskInGb %d, want %d", pod.ContainerDiskInGb, req.ContainerDiskInGb)
++	}
++	if pod.VolumeInGb != req.VolumeInGb {
++		return fmt.Errorf("provider volumeInGb %d, want %d", pod.VolumeInGb, req.VolumeInGb)
++	}
++	if pod.GpuCount != 0 {
++		return fmt.Errorf("provider gpuCount %d, want 0", pod.GpuCount)
++	}
++	if pod.VcpuCount != 0 && pod.VcpuCount != req.VcpuCount {
++		return fmt.Errorf("provider vcpuCount %d, want %d", pod.VcpuCount, req.VcpuCount)
++	}
++	if pod.MemoryInGb != 0 && pod.MemoryInGb != 4 {
++		return fmt.Errorf("provider memoryInGb %d, want 4", pod.MemoryInGb)
++	}
++	if pod.ComputeType != "" && !strings.EqualFold(pod.ComputeType, req.ComputeType) {
++		return fmt.Errorf("provider computeType %q, want %q", pod.ComputeType, req.ComputeType)
++	}
++	if pod.CloudType != "" && !strings.EqualFold(pod.CloudType, req.CloudType) {
++		return fmt.Errorf("provider cloudType %q, want %q", pod.CloudType, req.CloudType)
++	}
++	if pod.CPUFlavorID != "" && pod.CPUFlavorID != requiredCPUFlavorIDs[0] && pod.CPUFlavorID != requiredCPUFlavorIDs[1] {
++		return fmt.Errorf("provider cpuFlavorId %q is outside the requested fallback set", pod.CPUFlavorID)
++	}
++	if pod.ImageName != "" && pod.ImageName != req.ImageName {
++		return fmt.Errorf("provider imageName %q, want %q", pod.ImageName, req.ImageName)
++	}
++	if pod.NetworkVolumeID != "" {
++		return fmt.Errorf("provider attached unexpected networkVolumeId %q", pod.NetworkVolumeID)
++	}
++	return nil
++}
++
++func createCPUCreateReceipt(
++	pod *api.Pod,
++	req *api.PodCreateRequest,
++	maxCostPerHour float64,
++	validationErr error,
++	cleanupAttempted bool,
++	cleanupSucceeded bool,
++	cleanupError string,
++) (map[string]interface{}, error) {
++	podJSON, err := json.Marshal(pod)
++	if err != nil {
++		return nil, fmt.Errorf("encode cpu create response: %w", err)
++	}
++	receipt := map[string]interface{}{}
++	if err := json.Unmarshal(podJSON, &receipt); err != nil {
++		return nil, fmt.Errorf("decode cpu create response: %w", err)
++	}
++
++	requestJSON, err := canonicalRESTRequestJSON(req)
++	if err != nil {
++		return nil, fmt.Errorf("canonicalize cpu REST request: %w", err)
++	}
++	var requestInput interface{}
++	if err := json.Unmarshal(requestJSON, &requestInput); err != nil {
++		return nil, fmt.Errorf("decode cpu REST request: %w", err)
++	}
++	digest := sha256.Sum256(requestJSON)
++	receipt["requestInput"] = requestInput
++	receipt["requestInputSha256"] = hex.EncodeToString(digest[:])
++	receipt["requestInputHashAlgorithm"] = restRequestInputHashAlgorithm
++	receipt["transport"] = "rest-v1"
++	receipt["clientMaxCostPerHour"] = maxCostPerHour
++	receipt["validationPassed"] = validationErr == nil
++	if validationErr != nil {
++		receipt["validationError"] = validationErr.Error()
++	}
++	receipt["cleanupAttempted"] = cleanupAttempted
++	receipt["cleanupSucceeded"] = cleanupSucceeded
++	if cleanupError != "" {
++		receipt["cleanupError"] = cleanupError
++	}
++	return receipt, nil
++}
++
++func canonicalRESTRequestJSON(value interface{}) ([]byte, error) {
++	encoded, err := json.Marshal(value)
++	if err != nil {
++		return nil, err
++	}
++	var decoded interface{}
++	if err := json.Unmarshal(encoded, &decoded); err != nil {
++		return nil, err
++	}
++	return json.Marshal(decoded)
+ }
+ 
+ func decorateGlobalNetworkingError(err error, dataCenterIDs string) error {
+diff --git a/cmd/pod/create_rest_cpu_test.go b/cmd/pod/create_rest_cpu_test.go
+new file mode 100644
+index 0000000..694cd0b
+--- /dev/null
++++ b/cmd/pod/create_rest_cpu_test.go
+@@ -0,0 +1,441 @@
++package pod
++
++import (
++	"crypto/sha256"
++	"encoding/hex"
++	"encoding/json"
++	"io"
++	"net/http"
++	"net/http/httptest"
++	"os"
++	"reflect"
++	"strings"
++	"testing"
++
++	"github.com/runpod/runpodctl/internal/api"
++	"github.com/spf13/cobra"
++	"github.com/spf13/viper"
++)
++
++type cpuCreateGlobals struct {
++	name              string
++	imageName         string
++	templateID        string
++	computeType       string
++	gpuTypeID         string
++	gpuCount          int
++	cpuFlavorIDs      []string
++	vcpuCount         int
++	maxCostPerHour    float64
++	volumeInGb        int
++	containerDiskInGb int
++	volumeMountPath   string
++	networkVolumeID   string
++	ports             string
++	env               string
++	dataCenterIDs     string
++	minCudaVersion    string
++	dockerArgs        string
++	stopAfter         string
++	terminateAfter    string
++	cloudType         string
++	globalNetworking  bool
++	publicIP          bool
++}
++
++func setExactCPUCreateGlobals(t *testing.T) {
++	t.Helper()
++	old := cpuCreateGlobals{
++		name:              createName,
++		imageName:         createImageName,
++		templateID:        createTemplateID,
++		computeType:       createComputeType,
++		gpuTypeID:         createGpuTypeID,
++		gpuCount:          createGpuCount,
++		cpuFlavorIDs:      append([]string(nil), createCPUFlavorIDs...),
++		vcpuCount:         createVCPUCount,
++		maxCostPerHour:    createMaxCostPerHour,
++		volumeInGb:        createVolumeInGb,
++		containerDiskInGb: createContainerDiskInGb,
++		volumeMountPath:   createVolumeMountPath,
++		networkVolumeID:   createNetworkVolumeID,
++		ports:             createPorts,
++		env:               createEnv,
++		dataCenterIDs:     createDataCenterIDs,
++		minCudaVersion:    createMinCudaVersion,
++		dockerArgs:        createDockerArgs,
++		stopAfter:         createStopAfter,
++		terminateAfter:    createTerminateAfter,
++		cloudType:         createCloudType,
++		globalNetworking:  createGlobalNetworking,
++		publicIP:          createPublicIP,
++	}
++	t.Cleanup(func() {
++		createName = old.name
++		createImageName = old.imageName
++		createTemplateID = old.templateID
++		createComputeType = old.computeType
++		createGpuTypeID = old.gpuTypeID
++		createGpuCount = old.gpuCount
++		createCPUFlavorIDs = old.cpuFlavorIDs
++		createVCPUCount = old.vcpuCount
++		createMaxCostPerHour = old.maxCostPerHour
++		createVolumeInGb = old.volumeInGb
++		createContainerDiskInGb = old.containerDiskInGb
++		createVolumeMountPath = old.volumeMountPath
++		createNetworkVolumeID = old.networkVolumeID
++		createPorts = old.ports
++		createEnv = old.env
++		createDataCenterIDs = old.dataCenterIDs
++		createMinCudaVersion = old.minCudaVersion
++		createDockerArgs = old.dockerArgs
++		createStopAfter = old.stopAfter
++		createTerminateAfter = old.terminateAfter
++		createCloudType = old.cloudType
++		createGlobalNetworking = old.globalNetworking
++		createPublicIP = old.publicIP
++	})
++
++	createName = "proxywar-mickey-cpu-canary"
++	createImageName = "example.invalid/mickey:cpu"
++	createTemplateID = ""
++	createComputeType = "CPU"
++	createGpuTypeID = ""
++	createGpuCount = 0
++	createCPUFlavorIDs = []string{"cpu5c", "cpu3c"}
++	createVCPUCount = 2
++	createMaxCostPerHour = 0.10
++	createVolumeInGb = 0
++	createContainerDiskInGb = 20
++	createVolumeMountPath = "/workspace"
++	createNetworkVolumeID = ""
++	createPorts = ""
++	createEnv = ""
++	createDataCenterIDs = ""
++	createMinCudaVersion = ""
++	createDockerArgs = ""
++	createStopAfter = ""
++	createTerminateAfter = ""
++	createCloudType = "COMMUNITY"
++	createGlobalNetworking = false
++	createPublicIP = false
++}
++
++func TestCPUCreateRESTUsesExactRequestAndReturnsAttestedReceipt(t *testing.T) {
++	viper.Reset()
++	t.Cleanup(viper.Reset)
++	setExactCPUCreateGlobals(t)
++
++	requestBody := make(chan map[string]interface{}, 1)
++	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		if r.Method != http.MethodPost || r.URL.Path != "/pods" {
++			t.Errorf("request = %s %s, want POST /pods", r.Method, r.URL.Path)
++		}
++		var body map[string]interface{}
++		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
++			t.Errorf("decode request: %v", err)
++			return
++		}
++		requestBody <- body
++		_ = json.NewEncoder(w).Encode(api.Pod{
++			ID:                "cpu-pod-123",
++			Name:              createName,
++			ComputeType:       "CPU",
++			CloudType:         "COMMUNITY",
++			DesiredStatus:     "RUNNING",
++			ImageName:         createImageName,
++			GpuCount:          0,
++			VolumeInGb:        0,
++			ContainerDiskInGb: 20,
++			MemoryInGb:        4,
++			VcpuCount:         2,
++			CPUFlavorID:       "cpu5c",
++			CostPerHr:         0.06,
++		})
++	}))
++	t.Cleanup(server.Close)
++	t.Setenv("RUNPOD_API_KEY", "test-key")
++	t.Setenv("RUNPOD_API_URL", server.URL)
++
++	if err := validateCPUCreateConfig("COMMUNITY"); err != nil {
++		t.Fatalf("validate config: %v", err)
++	}
++	result, err := createPodREST("CPU", "", "COMMUNITY", false)
++	if err != nil {
++		t.Fatalf("create pod: %v", err)
++	}
++	receipt, ok := result.(map[string]interface{})
++	if !ok {
++		t.Fatalf("receipt type = %T", result)
++	}
++	body := <-requestBody
++
++	wantFlavors := []interface{}{"cpu5c", "cpu3c"}
++	if got := body["computeType"]; got != "CPU" {
++		t.Fatalf("computeType = %#v, want CPU", got)
++	}
++	if got := body["cpuFlavorIds"]; !reflect.DeepEqual(got, wantFlavors) {
++		t.Fatalf("cpuFlavorIds = %#v, want %#v", got, wantFlavors)
++	}
++	assertRESTJSONNumber(t, body, "vcpuCount", 2)
++	assertRESTJSONNumber(t, body, "containerDiskInGb", 20)
++	assertRESTJSONNumber(t, body, "volumeInGb", 0)
++	if got := body["cloudType"]; got != "COMMUNITY" {
++		t.Fatalf("cloudType = %#v, want COMMUNITY", got)
++	}
++	for _, forbidden := range []string{
++		"gpuTypeIds", "gpuCount", "networkVolumeId", "terminateAfter", "stopAfter", "maxCostPerHour", "deployCost",
++	} {
++		if _, present := body[forbidden]; present {
++			t.Fatalf("REST request unexpectedly contains %s: %#v", forbidden, body)
++		}
++	}
++
++	if receipt["id"] != "cpu-pod-123" || receipt["name"] != createName || receipt["costPerHr"] != 0.06 {
++		t.Fatalf("receipt does not preserve id/name/cost: %#v", receipt)
++	}
++	if receipt["transport"] != "rest-v1" || receipt["validationPassed"] != true {
++		t.Fatalf("receipt transport/validation = %#v", receipt)
++	}
++	requestInput, ok := receipt["requestInput"].(map[string]interface{})
++	if !ok || !reflect.DeepEqual(requestInput, body) {
++		t.Fatalf("requestInput = %#v, want exact POST body %#v", receipt["requestInput"], body)
++	}
++	canonical, err := canonicalRESTRequestJSON(requestInput)
++	if err != nil {
++		t.Fatalf("canonical request: %v", err)
++	}
++	digest := sha256.Sum256(canonical)
++	if got := receipt["requestInputSha256"]; got != hex.EncodeToString(digest[:]) {
++		t.Fatalf("requestInputSha256 = %#v", got)
++	}
++	encoded, err := json.Marshal(receipt)
++	if err != nil {
++		t.Fatalf("receipt must remain parseable JSON: %v", err)
++	}
++	var decoded map[string]interface{}
++	if err := json.Unmarshal(encoded, &decoded); err != nil {
++		t.Fatalf("decode receipt JSON: %v", err)
++	}
++}
++
++func assertRESTJSONNumber(t *testing.T, object map[string]interface{}, key string, want float64) {
++	t.Helper()
++	got, ok := object[key].(float64)
++	if !ok || got != want {
++		t.Fatalf("%s = %#v, want %v", key, object[key], want)
++	}
++}
++
++func TestCPUCreateRESTDeletesExactNamePodAboveClientCostCeiling(t *testing.T) {
++	viper.Reset()
++	t.Cleanup(viper.Reset)
++	setExactCPUCreateGlobals(t)
++
++	deleted := make(chan string, 1)
++	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		switch {
++		case r.Method == http.MethodPost && r.URL.Path == "/pods":
++			_, _ = w.Write([]byte(`{
++				"id":"over-cost-pod",
++				"name":"proxywar-mickey-cpu-canary",
++				"computeType":"CPU",
++				"cloudType":"COMMUNITY",
++				"imageName":"example.invalid/mickey:cpu",
++				"containerDiskInGb":20,
++				"volumeInGb":0,
++				"memoryInGb":4,
++				"vcpuCount":2,
++				"costPerHr":"0.11"
++			}`))
++		case r.Method == http.MethodDelete && r.URL.Path == "/pods/over-cost-pod":
++			deleted <- r.URL.Path
++			w.WriteHeader(http.StatusNoContent)
++		default:
++			t.Errorf("unexpected request %s %s", r.Method, r.URL.Path)
++			w.WriteHeader(http.StatusNotFound)
++		}
++	}))
++	t.Cleanup(server.Close)
++	t.Setenv("RUNPOD_API_KEY", "test-key")
++	t.Setenv("RUNPOD_API_URL", server.URL)
++
++	result, err := createPodREST("CPU", "", "COMMUNITY", false)
++	if err == nil || !strings.Contains(err.Error(), "exceeds client ceiling") {
++		t.Fatalf("error = %v, want cost ceiling failure", err)
++	}
++	if got := <-deleted; got != "/pods/over-cost-pod" {
++		t.Fatalf("deleted path = %q", got)
++	}
++	receipt, ok := result.(map[string]interface{})
++	if !ok {
++		t.Fatalf("receipt type = %T", result)
++	}
++	if receipt["id"] != "over-cost-pod" || receipt["costPerHr"] != 0.11 {
++		t.Fatalf("failed receipt does not preserve provider identity/cost: %#v", receipt)
++	}
++	if receipt["validationPassed"] != false || receipt["cleanupAttempted"] != true || receipt["cleanupSucceeded"] != true {
++		t.Fatalf("failed receipt cleanup status = %#v", receipt)
++	}
++	if _, err := json.Marshal(receipt); err != nil {
++		t.Fatalf("failed receipt must remain parseable JSON: %v", err)
++	}
++}
++
++func TestCPUCreateRESTPreservesPublicIPAndSSHPortWithoutInventingStartSSH(t *testing.T) {
++	viper.Reset()
++	t.Cleanup(viper.Reset)
++	setExactCPUCreateGlobals(t)
++	createPorts = "22/tcp"
++
++	requestBody := make(chan map[string]interface{}, 1)
++	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		var body map[string]interface{}
++		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
++			t.Errorf("decode request: %v", err)
++			return
++		}
++		requestBody <- body
++		_ = json.NewEncoder(w).Encode(api.Pod{
++			ID:                "cpu-pod-with-ssh-port",
++			Name:              createName,
++			ComputeType:       "CPU",
++			CloudType:         "COMMUNITY",
++			ImageName:         createImageName,
++			ContainerDiskInGb: 20,
++			MemoryInGb:        4,
++			VcpuCount:         2,
++			CostPerHr:         0.06,
++		})
++	}))
++	t.Cleanup(server.Close)
++	t.Setenv("RUNPOD_API_KEY", "test-key")
++	t.Setenv("RUNPOD_API_URL", server.URL)
++
++	result, err := createPodREST("CPU", "", "COMMUNITY", true)
++	if err != nil {
++		t.Fatalf("create pod: %v", err)
++	}
++	body := <-requestBody
++	if got := body["supportPublicIp"]; got != true {
++		t.Fatalf("supportPublicIp = %#v, want true", got)
++	}
++	if got := body["ports"]; !reflect.DeepEqual(got, []interface{}{"22/tcp"}) {
++		t.Fatalf("ports = %#v, want [22/tcp]", got)
++	}
++	if _, present := body["startSsh"]; present {
++		t.Fatalf("REST request must not invent unsupported startSsh: %#v", body)
++	}
++	receipt, ok := result.(map[string]interface{})
++	if !ok {
++		t.Fatalf("receipt type = %T", result)
++	}
++	requestInput, ok := receipt["requestInput"].(map[string]interface{})
++	if !ok || !reflect.DeepEqual(requestInput, body) {
++		t.Fatalf("receipt requestInput = %#v, want exact POST body %#v", receipt["requestInput"], body)
++	}
++}
++
++func TestRunCreateKeepsStdoutParseableWhenPostCreateValidationFails(t *testing.T) {
++	viper.Reset()
++	t.Cleanup(viper.Reset)
++	setExactCPUCreateGlobals(t)
++
++	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		switch r.Method {
++		case http.MethodPost:
++			_, _ = w.Write([]byte(`{
++				"id":"over-cost-stdout-pod",
++				"name":"proxywar-mickey-cpu-canary",
++				"containerDiskInGb":20,
++				"volumeInGb":0,
++				"costPerHr":"0.11"
++			}`))
++		case http.MethodDelete:
++			w.WriteHeader(http.StatusNoContent)
++		default:
++			w.WriteHeader(http.StatusMethodNotAllowed)
++		}
++	}))
++	t.Cleanup(server.Close)
++	t.Setenv("RUNPOD_API_KEY", "test-key")
++	t.Setenv("RUNPOD_API_URL", server.URL)
++
++	command := &cobra.Command{}
++	command.Flags().String("output", "json", "")
++
++	readEnd, writeEnd, err := os.Pipe()
++	if err != nil {
++		t.Fatalf("pipe: %v", err)
++	}
++	oldStdout := os.Stdout
++	os.Stdout = writeEnd
++	t.Cleanup(func() {
++		os.Stdout = oldStdout
++		_ = readEnd.Close()
++		_ = writeEnd.Close()
++	})
++
++	runErr := runCreate(command, nil)
++	_ = writeEnd.Close()
++	os.Stdout = oldStdout
++	stdout, err := io.ReadAll(readEnd)
++	if err != nil {
++		t.Fatalf("read stdout: %v", err)
++	}
++	if runErr == nil || !strings.Contains(runErr.Error(), "exceeds client ceiling") {
++		t.Fatalf("error = %v, want cost ceiling failure", runErr)
++	}
++	var receipt map[string]interface{}
++	if err := json.Unmarshal(stdout, &receipt); err != nil {
++		t.Fatalf("stdout is not one parseable JSON object: %v: %q", err, stdout)
++	}
++	if receipt["id"] != "over-cost-stdout-pod" || receipt["name"] != createName || receipt["costPerHr"] != 0.11 {
++		t.Fatalf("stdout receipt lost exact provider identity/cost: %#v", receipt)
++	}
++	if receipt["validationPassed"] != false || receipt["cleanupSucceeded"] != true {
++		t.Fatalf("stdout receipt lost validation/cleanup state: %#v", receipt)
++	}
++}
++
++func TestCPUCreateConfigRejectsUnsupportedProviderTTL(t *testing.T) {
++	setExactCPUCreateGlobals(t)
++	createTerminateAfter = "2026-07-21T23:00:00Z"
++	if err := validateCPUCreateConfig("COMMUNITY"); err == nil || !strings.Contains(err.Error(), "does not support") {
++		t.Fatalf("error = %v, want unsupported REST TTL failure", err)
++	}
++}
++
++func TestCPUCreateConfigRejectsCostCeilingAboveTenCents(t *testing.T) {
++	setExactCPUCreateGlobals(t)
++	createMaxCostPerHour = 0.100001
++	if err := validateCPUCreateConfig("COMMUNITY"); err == nil || !strings.Contains(err.Error(), "at most 0.10") {
++		t.Fatalf("error = %v, want hard ten-cent ceiling failure", err)
++	}
++}
++
++func TestCPUCreateResponseValidatesOptionalExposedShape(t *testing.T) {
++	req := &api.PodCreateRequest{
++		Name:              "proxywar-mickey-cpu-canary",
++		ImageName:         "example.invalid/mickey:cpu",
++		ComputeType:       "CPU",
++		CPUFlavorIDs:      []string{"cpu5c", "cpu3c"},
++		VcpuCount:         2,
++		VolumeInGb:        0,
++		ContainerDiskInGb: 20,
++		CloudType:         "COMMUNITY",
++	}
++	pod := &api.Pod{
++		ID:                "cpu-pod-123",
++		Name:              req.Name,
++		ContainerDiskInGb: 20,
++		CostPerHr:         0.06,
++	}
++	if err := validateCPUCreateResponse(pod, req, 0.10); err != nil {
++		t.Fatalf("omitted optional response shape should be accepted: %v", err)
++	}
++	pod.VcpuCount = 4
++	if err := validateCPUCreateResponse(pod, req, 0.10); err == nil || !strings.Contains(err.Error(), "vcpuCount") {
++		t.Fatalf("error = %v, want exposed vcpu mismatch", err)
++	}
++}
+diff --git a/cmd/pod/pod_test.go b/cmd/pod/pod_test.go
+index 8e0e302..8782a60 100644
+--- a/cmd/pod/pod_test.go
++++ b/cmd/pod/pod_test.go
+@@ -85,6 +85,15 @@ func TestCreateCmd_Flags(t *testing.T) {
+ 	if flags.Lookup("gpu-count") == nil {
+ 		t.Error("expected --gpu-count flag")
+ 	}
++	if flags.Lookup("cpu-flavor-id") == nil {
++		t.Error("expected --cpu-flavor-id flag")
++	}
++	if flags.Lookup("vcpu-count") == nil {
++		t.Error("expected --vcpu-count flag")
++	}
++	if flags.Lookup("max-cost-per-hour") == nil {
++		t.Error("expected --max-cost-per-hour flag")
++	}
+ 	if flags.Lookup("volume-in-gb") == nil {
+ 		t.Error("expected --volume-in-gb flag")
+ 	}
+diff --git a/internal/api/pods.go b/internal/api/pods.go
+index 0105114..28b5eed 100644
+--- a/internal/api/pods.go
++++ b/internal/api/pods.go
+@@ -1,32 +1,89 @@
+ package api
+ 
+ import (
++	"bytes"
+ 	"encoding/json"
+ 	"fmt"
+ 	"net/url"
++	"strconv"
+ )
+ 
+ // Pod represents a runpod pod
+ type Pod struct {
+-	ID                string                 `json:"id"`
+-	Name              string                 `json:"name"`
+-	DesiredStatus     string                 `json:"desiredStatus"`
+-	CreatedAt         interface{}            `json:"createdAt,omitempty"`
+-	LastStatusChange  interface{}            `json:"lastStatusChange,omitempty"`
+-	UptimeSeconds     interface{}            `json:"uptimeSeconds,omitempty"`
+-	ImageName         string                 `json:"imageName"`
+-	GpuTypeID         string                 `json:"gpuTypeId,omitempty"`
+-	GpuCount          int                    `json:"gpuCount"`
+-	VolumeInGb        int                    `json:"volumeInGb"`
+-	ContainerDiskInGb int                    `json:"containerDiskInGb"`
+-	MemoryInGb        int                    `json:"memoryInGb,omitempty"`
+-	VcpuCount         int                    `json:"vcpuCount,omitempty"`
+-	VolumeMountPath   string                 `json:"volumeMountPath,omitempty"`
+-	Ports             []string               `json:"ports,omitempty"`
+-	CostPerHr         float64                `json:"costPerHr,omitempty"`
+-	Machine           map[string]interface{} `json:"machine,omitempty"`
+-	Runtime           map[string]interface{} `json:"runtime,omitempty"`
+-	Env               map[string]string      `json:"env,omitempty"`
++	ID                      string                      `json:"id"`
++	Name                    string                      `json:"name"`
++	ComputeType             string                      `json:"computeType,omitempty"`
++	CloudType               string                      `json:"cloudType,omitempty"`
++	DesiredStatus           string                      `json:"desiredStatus"`
++	CreatedAt               interface{}                 `json:"createdAt,omitempty"`
++	LastStatusChange        interface{}                 `json:"lastStatusChange,omitempty"`
++	UptimeSeconds           interface{}                 `json:"uptimeSeconds,omitempty"`
++	ImageName               string                      `json:"imageName"`
++	GpuTypeID               string                      `json:"gpuTypeId,omitempty"`
++	GpuCount                int                         `json:"gpuCount"`
++	VolumeInGb              int                         `json:"volumeInGb"`
++	ContainerDiskInGb       int                         `json:"containerDiskInGb"`
++	MemoryInGb              int                         `json:"memoryInGb,omitempty"`
++	VcpuCount               int                         `json:"vcpuCount,omitempty"`
++	CPUFlavorID             string                      `json:"cpuFlavorId,omitempty"`
++	VolumeMountPath         string                      `json:"volumeMountPath,omitempty"`
++	Ports                   []string                    `json:"ports,omitempty"`
++	CostPerHr               float64                     `json:"costPerHr,omitempty"`
++	Machine                 map[string]interface{}      `json:"machine,omitempty"`
++	Runtime                 map[string]interface{}      `json:"runtime,omitempty"`
++	Env                     map[string]string           `json:"env,omitempty"`
++	NetworkVolumeID         string                      `json:"networkVolumeId,omitempty"`
++	NetworkVolumeInspection *PodNetworkVolumeInspection `json:"networkVolumeInspection,omitempty"`
++}
++
++// UnmarshalJSON accepts costPerHr as either a JSON number or a numeric JSON
++// string, so an encoding difference cannot hide an already-created pod from
++// cleanup.
++func (p *Pod) UnmarshalJSON(data []byte) error {
++	type podAlias Pod
++	wire := struct {
++		*podAlias
++		CostPerHr json.RawMessage `json:"costPerHr"`
++	}{podAlias: (*podAlias)(p)}
++	if err := json.Unmarshal(data, &wire); err != nil {
++		return err
++	}
++
++	raw := bytes.TrimSpace(wire.CostPerHr)
++	if len(raw) == 0 || bytes.Equal(raw, []byte("null")) {
++		return nil
++	}
++	if raw[0] == '"' {
++		var encoded string
++		if err := json.Unmarshal(raw, &encoded); err != nil {
++			return fmt.Errorf("decode costPerHr string: %w", err)
++		}
++		value, err := strconv.ParseFloat(encoded, 64)
++		if err != nil {
++			return fmt.Errorf("decode costPerHr numeric string %q: %w", encoded, err)
++		}
++		p.CostPerHr = value
++		return nil
++	}
++	if err := json.Unmarshal(raw, &p.CostPerHr); err != nil {
++		return fmt.Errorf("decode costPerHr number: %w", err)
++	}
++	return nil
++}
++
++// PodNetworkVolumeInspection reports exactly what the REST response contained.
++// It is populated only by GetPod so other pod outputs keep their existing shape.
++type PodNetworkVolumeInspection struct {
++	IncludeNetworkVolumeRequested bool                   `json:"includeNetworkVolumeRequested"`
++	NetworkVolumeID               RawJSONFieldInspection `json:"networkVolumeId"`
++	NetworkVolume                 RawJSONFieldInspection `json:"networkVolume"`
++}
++
++// RawJSONFieldInspection distinguishes an omitted field from a present null or
++// empty value. Value is omitted only when Present is false.
++type RawJSONFieldInspection struct {
++	Present bool            `json:"present"`
++	Value   json.RawMessage `json:"value,omitempty"`
+ }
+ 
+ // PodListResponse is the response from listing pods
+@@ -44,7 +101,9 @@ type PodCreateRequest struct {
+ 	SupportPublicIp   bool              `json:"supportPublicIp,omitempty"`
+ 	GpuTypeIDs        []string          `json:"gpuTypeIds,omitempty"`
+ 	GpuCount          int               `json:"gpuCount,omitempty"`
+-	VolumeInGb        int               `json:"volumeInGb,omitempty"`
++	CPUFlavorIDs      []string          `json:"cpuFlavorIds,omitempty"`
++	VcpuCount         int               `json:"vcpuCount,omitempty"`
++	VolumeInGb        int               `json:"volumeInGb"`
+ 	ContainerDiskInGb int               `json:"containerDiskInGb,omitempty"`
+ 	VolumeMountPath   string            `json:"volumeMountPath,omitempty"`
+ 	Ports             []string          `json:"ports,omitempty"`
+@@ -126,9 +185,30 @@ func (c *Client) GetPod(podID string, includeMachine, includeNetworkVolume bool)
+ 		return nil, fmt.Errorf("failed to parse response: %w", err)
+ 	}
+ 
++	var rawFields map[string]json.RawMessage
++	if err := json.Unmarshal(data, &rawFields); err != nil {
++		return nil, fmt.Errorf("failed to inspect response: %w", err)
++	}
++	pod.NetworkVolumeInspection = &PodNetworkVolumeInspection{
++		IncludeNetworkVolumeRequested: includeNetworkVolume,
++		NetworkVolumeID:               inspectRawJSONField(rawFields, "networkVolumeId"),
++		NetworkVolume:                 inspectRawJSONField(rawFields, "networkVolume"),
++	}
++
+ 	return &pod, nil
+ }
+ 
++func inspectRawJSONField(fields map[string]json.RawMessage, name string) RawJSONFieldInspection {
++	value, present := fields[name]
++	if !present {
++		return RawJSONFieldInspection{Present: false}
++	}
++	return RawJSONFieldInspection{
++		Present: true,
++		Value:   append(json.RawMessage(nil), value...),
++	}
++}
++
+ // CreatePod creates a new pod
+ func (c *Client) CreatePod(req *PodCreateRequest) (*Pod, error) {
+ 	data, err := c.Post("/pods", req)
+diff --git a/internal/api/pods_test.go b/internal/api/pods_test.go
+index 311db37..e8ce5a1 100644
+--- a/internal/api/pods_test.go
++++ b/internal/api/pods_test.go
+@@ -1,6 +1,7 @@
+ package api
+ 
+ import (
++	"bytes"
+ 	"encoding/json"
+ 	"net/http"
+ 	"net/http/httptest"
+@@ -92,6 +93,128 @@ func TestGetPod(t *testing.T) {
+ 	if pod.Name != "my-pod" {
+ 		t.Errorf("expected my-pod, got %s", pod.Name)
+ 	}
++	if pod.NetworkVolumeInspection == nil {
++		t.Fatal("expected network volume inspection")
++	}
++	if pod.NetworkVolumeInspection.IncludeNetworkVolumeRequested {
++		t.Fatal("includeNetworkVolumeRequested should be false")
++	}
++	if pod.NetworkVolumeInspection.NetworkVolumeID.Present || pod.NetworkVolumeInspection.NetworkVolume.Present {
++		t.Fatal("omitted network volume fields must not appear present")
++	}
++}
++
++func TestGetPodNetworkVolumeInspection(t *testing.T) {
++	tests := []struct {
++		name                   string
++		response               string
++		wantIDPresent          bool
++		wantIDValue            string
++		wantVolumePresent      bool
++		wantVolumeValue        string
++		wantSerializedIDValue  bool
++		wantSerializedVolValue bool
++	}{
++		{
++			name:                   "present null and empty",
++			response:               `{"id":"pod-123","networkVolumeId":"","networkVolume":null}`,
++			wantIDPresent:          true,
++			wantIDValue:            `""`,
++			wantVolumePresent:      true,
++			wantVolumeValue:        `null`,
++			wantSerializedIDValue:  true,
++			wantSerializedVolValue: true,
++		},
++		{
++			name:                   "present attached",
++			response:               `{"id":"pod-123","networkVolumeId":"vol-123","networkVolume":{"id":"vol-123","size":20}}`,
++			wantIDPresent:          true,
++			wantIDValue:            `"vol-123"`,
++			wantVolumePresent:      true,
++			wantVolumeValue:        `{"id":"vol-123","size":20}`,
++			wantSerializedIDValue:  true,
++			wantSerializedVolValue: true,
++		},
++		{
++			name:                   "omitted",
++			response:               `{"id":"pod-123"}`,
++			wantIDPresent:          false,
++			wantVolumePresent:      false,
++			wantSerializedIDValue:  false,
++			wantSerializedVolValue: false,
++		},
++	}
++
++	for _, tt := range tests {
++		t.Run(tt.name, func(t *testing.T) {
++			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++				if got := r.URL.Query().Get("includeNetworkVolume"); got != "true" {
++					t.Errorf("includeNetworkVolume = %q, want true", got)
++				}
++				_, _ = w.Write([]byte(tt.response))
++			}))
++			t.Cleanup(server.Close)
++
++			t.Setenv("RUNPOD_API_KEY", "test-key")
++			client, err := NewClient()
++			if err != nil {
++				t.Fatalf("new client: %v", err)
++			}
++			client.baseURL = server.URL
++
++			pod, err := client.GetPod("pod-123", false, true)
++			if err != nil {
++				t.Fatalf("get pod: %v", err)
++			}
++			inspection := pod.NetworkVolumeInspection
++			if inspection == nil {
++				t.Fatal("expected network volume inspection")
++			}
++			if !inspection.IncludeNetworkVolumeRequested {
++				t.Fatal("includeNetworkVolumeRequested should be true")
++			}
++			assertRawJSONFieldInspection(t, "networkVolumeId", inspection.NetworkVolumeID, tt.wantIDPresent, tt.wantIDValue)
++			assertRawJSONFieldInspection(t, "networkVolume", inspection.NetworkVolume, tt.wantVolumePresent, tt.wantVolumeValue)
++
++			encoded, err := json.Marshal(pod)
++			if err != nil {
++				t.Fatalf("marshal pod: %v", err)
++			}
++			var output struct {
++				NetworkVolumeInspection struct {
++					NetworkVolumeID map[string]json.RawMessage `json:"networkVolumeId"`
++					NetworkVolume   map[string]json.RawMessage `json:"networkVolume"`
++				} `json:"networkVolumeInspection"`
++			}
++			if err := json.Unmarshal(encoded, &output); err != nil {
++				t.Fatalf("decode serialized pod: %v", err)
++			}
++			_, idHasValue := output.NetworkVolumeInspection.NetworkVolumeID["value"]
++			if idHasValue != tt.wantSerializedIDValue {
++				t.Fatalf("serialized networkVolumeId value presence = %v, want %v: %s", idHasValue, tt.wantSerializedIDValue, encoded)
++			}
++			_, volumeHasValue := output.NetworkVolumeInspection.NetworkVolume["value"]
++			if volumeHasValue != tt.wantSerializedVolValue {
++				t.Fatalf("serialized networkVolume value presence = %v, want %v: %s", volumeHasValue, tt.wantSerializedVolValue, encoded)
++			}
++		})
++	}
++}
++
++func assertRawJSONFieldInspection(t *testing.T, name string, got RawJSONFieldInspection, wantPresent bool, wantValue string) {
++	t.Helper()
++	if got.Present != wantPresent {
++		t.Fatalf("%s present = %v, want %v", name, got.Present, wantPresent)
++	}
++	if !wantPresent {
++		if got.Value != nil {
++			t.Fatalf("%s omitted value = %s, want nil", name, got.Value)
++		}
++		return
++	}
++	if !bytes.Equal(got.Value, []byte(wantValue)) {
++		t.Fatalf("%s value = %s, want %s", name, got.Value, wantValue)
++	}
+ }
+ 
+ func TestCreatePod(t *testing.T) {
+@@ -135,6 +258,54 @@ func TestCreatePod(t *testing.T) {
+ 	}
+ }
+ 
++func TestCreatePodAcceptsNumericStringCostPerHr(t *testing.T) {
++	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		_, _ = w.Write([]byte(`{
++			"id":"new-cpu-pod",
++			"name":"proxywar-mickey-cpu-canary",
++			"costPerHr":"0.060000",
++			"containerDiskInGb":20,
++			"volumeInGb":0
++		}`))
++	}))
++	defer server.Close()
++
++	t.Setenv("RUNPOD_API_KEY", "test-key")
++	client, err := NewClient()
++	if err != nil {
++		t.Fatalf("new client: %v", err)
++	}
++	client.baseURL = server.URL
++
++	pod, err := client.CreatePod(&PodCreateRequest{
++		Name:              "proxywar-mickey-cpu-canary",
++		ImageName:         "example.invalid/mickey:cpu",
++		ComputeType:       "CPU",
++		CPUFlavorIDs:      []string{"cpu5c", "cpu3c"},
++		VcpuCount:         2,
++		VolumeInGb:        0,
++		ContainerDiskInGb: 20,
++		CloudType:         "COMMUNITY",
++	})
++	if err != nil {
++		t.Fatalf("create pod: %v", err)
++	}
++	if pod.CostPerHr != 0.06 {
++		t.Fatalf("costPerHr = %v, want 0.06", pod.CostPerHr)
++	}
++	encoded, err := json.Marshal(pod)
++	if err != nil {
++		t.Fatalf("marshal pod: %v", err)
++	}
++	var output map[string]interface{}
++	if err := json.Unmarshal(encoded, &output); err != nil {
++		t.Fatalf("decode pod output: %v", err)
++	}
++	if got, ok := output["costPerHr"].(float64); !ok || got != 0.06 {
++		t.Fatalf("serialized costPerHr = %#v, want numeric 0.06", output["costPerHr"])
++	}
++}
++
+ func TestStartPod(t *testing.T) {
+ 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+ 		if r.Method != http.MethodPost {

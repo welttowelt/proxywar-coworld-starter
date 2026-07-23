@@ -1,0 +1,477 @@
+From 39906d06bfc0558e9b76d217fa6be6f3740a0423 Mon Sep 17 00:00:00 2001
+From: welttowelt <welttowelt@users.noreply.github.com>
+Date: Tue, 21 Jul 2026 03:35:48 +0200
+Subject: [PATCH 3/4] Read CPU control nonce from stdin
+
+---
+ cmd/pod/create.go               |  73 +++++++++--
+ cmd/pod/create_rest_cpu_test.go | 215 ++++++++++++++++++++++++++++++++
+ cmd/pod/pod_test.go             |   3 +
+ docs/runpodctl_pod_create.md    |   2 +-
+ 4 files changed, 283 insertions(+), 10 deletions(-)
+
+diff --git a/cmd/pod/create.go b/cmd/pod/create.go
+index 48115e4..9ba7566 100644
+--- a/cmd/pod/create.go
++++ b/cmd/pod/create.go
+@@ -5,6 +5,7 @@ import (
+ 	"encoding/hex"
+ 	"encoding/json"
+ 	"fmt"
++	"io"
+ 	"math"
+ 	"os"
+ 	"reflect"
+@@ -60,6 +61,7 @@ var (
+ 	createPublicIP          bool
+ 	createPorts             string
+ 	createEnv               string
++	createEnvStdin          bool
+ 	createCloudType         string
+ 	createDataCenterIDs     string
+ 	createSSH               bool
+@@ -90,6 +92,7 @@ func init() {
+ 	createCmd.Flags().BoolVar(&createPublicIP, "public-ip", false, "require public ip (community cloud only)")
+ 	createCmd.Flags().StringVar(&createPorts, "ports", "", "comma-separated list of ports (e.g., '8888/http,22/tcp')")
+ 	createCmd.Flags().StringVar(&createEnv, "env", "", "environment variables as json object")
++	createCmd.Flags().BoolVar(&createEnvStdin, "env-stdin", false, "read the cpu control-plane nonce json from stdin")
+ 	createCmd.Flags().StringVar(&createCloudType, "cloud-type", "SECURE", "cloud type (SECURE or COMMUNITY)")
+ 	createCmd.Flags().StringVar(&createDataCenterIDs, "data-center-ids", "", "comma-separated list of data center ids")
+ 	createCmd.Flags().BoolVar(&createSSH, "ssh", true, "enable ssh on GPU GraphQL pods; CPU REST images must run sshd and expose a port")
+@@ -132,10 +135,21 @@ func runCreate(cmd *cobra.Command, args []string) error {
+ 	if cloudType == "" {
+ 		cloudType = "SECURE"
+ 	}
++	resolvedCreateEnv := createEnv
+ 	if computeType == "CPU" {
++		if createEnvStdin && cmd != nil && cmd.Flags().Changed("env") {
++			return fmt.Errorf("cpu --env-stdin cannot be combined with --env")
++		}
+ 		if err := validateCPUCreateConfig(cloudType); err != nil {
+ 			return err
+ 		}
++		var err error
++		resolvedCreateEnv, err = resolveCPUCreateEnv(cmd)
++		if err != nil {
++			return err
++		}
++	} else if createEnvStdin {
++		return fmt.Errorf("--env-stdin is supported only for compute type cpu")
+ 	}
+ 	if createGlobalNetworking {
+ 		if computeType != "GPU" {
+@@ -168,7 +182,7 @@ func runCreate(cmd *cobra.Command, args []string) error {
+ 		// CPU pods use the REST API (GraphQL requires gpuTypeId). REST has no
+ 		// supported startSsh field; callers can request public IP and 22/tcp,
+ 		// but the selected image remains responsible for running sshd.
+-		result, err = createPodREST(computeType, gpuTypeID, cloudType, supportPublicIP)
++		result, err = createPodRESTWithEnv(computeType, gpuTypeID, cloudType, supportPublicIP, resolvedCreateEnv)
+ 	} else {
+ 		// GPU pods use GraphQL (supports startSsh)
+ 		result, err = createPodGraphQL(gpuTypeID, cloudType, supportPublicIP)
+@@ -274,6 +288,10 @@ func createPodGraphQL(gpuTypeID, cloudType string, supportPublicIP bool) (map[st
+ }
+ 
+ func createPodREST(computeType, gpuTypeID, cloudType string, supportPublicIP bool) (interface{}, error) {
++	return createPodRESTWithEnv(computeType, gpuTypeID, cloudType, supportPublicIP, createEnv)
++}
++
++func createPodRESTWithEnv(computeType, gpuTypeID, cloudType string, supportPublicIP bool, encodedEnv string) (interface{}, error) {
+ 	client, err := api.NewClient()
+ 	if err != nil {
+ 		return nil, err
+@@ -322,15 +340,15 @@ func createPodREST(computeType, gpuTypeID, cloudType string, supportPublicIP boo
+ 		req.DockerArgs = createDockerArgs
+ 	}
+ 
+-	if createEnv != "" {
++	if encodedEnv != "" {
+ 		var env map[string]string
+ 		if computeType == "CPU" {
+ 			var err error
+-			env, err = parseCPUCreateEnv(createEnv)
++			env, err = parseCPUCreateEnv(encodedEnv)
+ 			if err != nil {
+ 				return nil, err
+ 			}
+-		} else if err := json.Unmarshal([]byte(createEnv), &env); err != nil {
++		} else if err := json.Unmarshal([]byte(encodedEnv), &env); err != nil {
+ 			return nil, fmt.Errorf("invalid env json: %w", err)
+ 		}
+ 		req.Env = env
+@@ -368,6 +386,7 @@ var requiredCPUFlavorIDs = []string{"cpu5c", "cpu3c"}
+ const (
+ 	requiredCPUFlavorPriority     = "custom"
+ 	cpuControlPlaneNonceEnvKey    = "MICKEY_CONTROL_PLANE_NONCE"
++	cpuEnvStdinMaxBytes           = 1024
+ 	restRequestInputHashAlgorithm = "sorted-json-sha256-v1"
+ 	restRequestInputHashScope     = "raw-request-before-redaction"
+ 	cpuEnvRedactionSchema         = "env-values-v1"
+@@ -412,27 +431,63 @@ func validateCPUCreateConfig(cloudType string) error {
+ 	if strings.TrimSpace(createStopAfter) != "" || strings.TrimSpace(createTerminateAfter) != "" {
+ 		return fmt.Errorf("CPU REST create does not support --stop-after or --terminate-after; use an independent exact-ID cleanup watchdog")
+ 	}
+-	if _, err := parseCPUCreateEnv(createEnv); err != nil {
+-		return err
++	if createEnvStdin && strings.TrimSpace(createEnv) != "" {
++		return fmt.Errorf("cpu --env-stdin cannot be combined with --env")
++	}
++	if !createEnvStdin {
++		if _, err := parseCPUCreateEnv(createEnv); err != nil {
++			return err
++		}
+ 	}
+ 	return nil
+ }
+ 
++func resolveCPUCreateEnv(cmd *cobra.Command) (string, error) {
++	if !createEnvStdin {
++		return createEnv, nil
++	}
++	if strings.TrimSpace(createEnv) != "" {
++		return "", fmt.Errorf("cpu --env-stdin cannot be combined with --env")
++	}
++	if cmd == nil {
++		return "", fmt.Errorf("cpu --env-stdin input is unavailable")
++	}
++
++	encoded, err := io.ReadAll(io.LimitReader(cmd.InOrStdin(), cpuEnvStdinMaxBytes+1))
++	if err != nil {
++		return "", fmt.Errorf("failed to read cpu --env-stdin input")
++	}
++	if len(encoded) > cpuEnvStdinMaxBytes {
++		return "", fmt.Errorf("cpu --env-stdin input exceeds %d bytes", cpuEnvStdinMaxBytes)
++	}
++	if strings.TrimSpace(string(encoded)) == "" {
++		return "", fmt.Errorf("cpu --env-stdin requires a json object containing only a 64-hex %s value", cpuControlPlaneNonceEnvKey)
++	}
++	if _, err := parseCPUCreateEnvSource(string(encoded), "--env-stdin"); err != nil {
++		return "", err
++	}
++	return string(encoded), nil
++}
++
+ func parseCPUCreateEnv(encoded string) (map[string]string, error) {
++	return parseCPUCreateEnvSource(encoded, "--env")
++}
++
++func parseCPUCreateEnvSource(encoded, source string) (map[string]string, error) {
+ 	if strings.TrimSpace(encoded) == "" {
+ 		return nil, nil
+ 	}
+ 	var env map[string]string
+ 	if err := json.Unmarshal([]byte(encoded), &env); err != nil {
+-		return nil, fmt.Errorf("CPU --env must be a JSON object containing only a 64-hex %s value", cpuControlPlaneNonceEnvKey)
++		return nil, fmt.Errorf("cpu %s must be a json object containing only a 64-hex %s value", source, cpuControlPlaneNonceEnvKey)
+ 	}
+ 	nonce, ok := env[cpuControlPlaneNonceEnvKey]
+ 	if !ok || len(env) != 1 || len(nonce) != 64 {
+-		return nil, fmt.Errorf("CPU --env must contain only a 64-hex %s value", cpuControlPlaneNonceEnvKey)
++		return nil, fmt.Errorf("cpu %s must contain only a 64-hex %s value", source, cpuControlPlaneNonceEnvKey)
+ 	}
+ 	decoded, err := hex.DecodeString(nonce)
+ 	if err != nil || len(decoded) != 32 {
+-		return nil, fmt.Errorf("CPU --env must contain only a 64-hex %s value", cpuControlPlaneNonceEnvKey)
++		return nil, fmt.Errorf("cpu %s must contain only a 64-hex %s value", source, cpuControlPlaneNonceEnvKey)
+ 	}
+ 	return env, nil
+ }
+diff --git a/cmd/pod/create_rest_cpu_test.go b/cmd/pod/create_rest_cpu_test.go
+index 557df71..eb4fe8c 100644
+--- a/cmd/pod/create_rest_cpu_test.go
++++ b/cmd/pod/create_rest_cpu_test.go
+@@ -4,6 +4,7 @@ import (
+ 	"crypto/sha256"
+ 	"encoding/hex"
+ 	"encoding/json"
++	"errors"
+ 	"io"
+ 	"net/http"
+ 	"net/http/httptest"
+@@ -34,6 +35,7 @@ type cpuCreateGlobals struct {
+ 	networkVolumeID   string
+ 	ports             string
+ 	env               string
++	envStdin          bool
+ 	dataCenterIDs     string
+ 	minCudaVersion    string
+ 	dockerArgs        string
+@@ -62,6 +64,7 @@ func setExactCPUCreateGlobals(t *testing.T) {
+ 		networkVolumeID:   createNetworkVolumeID,
+ 		ports:             createPorts,
+ 		env:               createEnv,
++		envStdin:          createEnvStdin,
+ 		dataCenterIDs:     createDataCenterIDs,
+ 		minCudaVersion:    createMinCudaVersion,
+ 		dockerArgs:        createDockerArgs,
+@@ -87,6 +90,7 @@ func setExactCPUCreateGlobals(t *testing.T) {
+ 		createNetworkVolumeID = old.networkVolumeID
+ 		createPorts = old.ports
+ 		createEnv = old.env
++		createEnvStdin = old.envStdin
+ 		createDataCenterIDs = old.dataCenterIDs
+ 		createMinCudaVersion = old.minCudaVersion
+ 		createDockerArgs = old.dockerArgs
+@@ -112,6 +116,7 @@ func setExactCPUCreateGlobals(t *testing.T) {
+ 	createNetworkVolumeID = ""
+ 	createPorts = ""
+ 	createEnv = ""
++	createEnvStdin = false
+ 	createDataCenterIDs = ""
+ 	createMinCudaVersion = ""
+ 	createDockerArgs = ""
+@@ -122,6 +127,14 @@ func setExactCPUCreateGlobals(t *testing.T) {
+ 	createPublicIP = false
+ }
+ 
++type nonceEchoingErrorReader struct {
++	nonce string
++}
++
++func (reader nonceEchoingErrorReader) Read([]byte) (int, error) {
++	return 0, errors.New("reader echoed " + reader.nonce)
++}
++
+ func TestCPUCreateRESTUsesExactRequestAndReturnsAttestedReceipt(t *testing.T) {
+ 	viper.Reset()
+ 	t.Cleanup(viper.Reset)
+@@ -474,6 +487,208 @@ func TestCPUCreateRESTHashesRawNonceButRedactsAllReceiptEnvValues(t *testing.T)
+ 	}
+ }
+ 
++func TestCPUCreateEnvStdinHashesRawNonceWithoutArgvGlobalOrReceiptLeak(t *testing.T) {
++	viper.Reset()
++	t.Cleanup(viper.Reset)
++	setExactCPUCreateGlobals(t)
++	createEnvStdin = true
++	nonce := strings.Repeat("e1", 32)
++	encodedEnv := `{"MICKEY_CONTROL_PLANE_NONCE":"` + nonce + `"}`
++
++	requestBody := make(chan map[string]interface{}, 1)
++	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		if r.Method != http.MethodPost || r.URL.Path != "/pods" {
++			t.Errorf("request = %s %s, want POST /pods", r.Method, r.URL.Path)
++		}
++		var body map[string]interface{}
++		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
++			t.Errorf("decode request: %v", err)
++			return
++		}
++		requestBody <- body
++		_ = json.NewEncoder(w).Encode(api.Pod{
++			ID:                "cpu-pod-stdin-env",
++			Name:              createName,
++			ComputeType:       "CPU",
++			CloudType:         "COMMUNITY",
++			ImageName:         createImageName,
++			ContainerDiskInGb: 20,
++			MemoryInGb:        4,
++			VcpuCount:         2,
++			CostPerHr:         0.06,
++			Env: map[string]string{
++				cpuControlPlaneNonceEnvKey: nonce,
++			},
++		})
++	}))
++	t.Cleanup(server.Close)
++	t.Setenv("RUNPOD_API_KEY", "test-key")
++	t.Setenv("RUNPOD_API_URL", server.URL)
++
++	command := &cobra.Command{}
++	command.Flags().String("output", "json", "")
++	command.SetIn(strings.NewReader(encodedEnv))
++
++	oldArgs := os.Args
++	os.Args = []string{"runpodctl", "pod", "create", "--env-stdin"}
++	t.Cleanup(func() { os.Args = oldArgs })
++
++	readEnd, writeEnd, err := os.Pipe()
++	if err != nil {
++		t.Fatalf("pipe: %v", err)
++	}
++	oldStdout := os.Stdout
++	os.Stdout = writeEnd
++	t.Cleanup(func() {
++		os.Stdout = oldStdout
++		_ = readEnd.Close()
++		_ = writeEnd.Close()
++	})
++
++	if err := runCreate(command, nil); err != nil {
++		t.Fatalf("create pod: %v", err)
++	}
++	_ = writeEnd.Close()
++	os.Stdout = oldStdout
++	stdout, err := io.ReadAll(readEnd)
++	if err != nil {
++		t.Fatalf("read stdout: %v", err)
++	}
++	body := <-requestBody
++	rawEnv, ok := body["env"].(map[string]interface{})
++	if !ok || rawEnv[cpuControlPlaneNonceEnvKey] != nonce {
++		t.Fatalf("raw REST request env = %#v, want nonce", body["env"])
++	}
++	if createEnv != "" {
++		t.Fatalf("stdin nonce was copied into createEnv global")
++	}
++	if strings.Contains(strings.Join(os.Args, "\x00"), nonce) {
++		t.Fatalf("stdin nonce appeared in process argv")
++	}
++	if strings.Contains(string(stdout), nonce) {
++		t.Fatalf("stdout receipt leaked stdin nonce: %s", stdout)
++	}
++
++	var receipt map[string]interface{}
++	if err := json.Unmarshal(stdout, &receipt); err != nil {
++		t.Fatalf("stdout is not a parseable receipt: %v: %q", err, stdout)
++	}
++	rawCanonical, err := canonicalRESTRequestJSON(body)
++	if err != nil {
++		t.Fatalf("canonical raw request: %v", err)
++	}
++	rawDigest := sha256.Sum256(rawCanonical)
++	if receipt["requestInputSha256"] != hex.EncodeToString(rawDigest[:]) {
++		t.Fatalf("request hash was not computed over raw stdin nonce request: %#v", receipt)
++	}
++	requestInput, ok := receipt["requestInput"].(map[string]interface{})
++	if !ok {
++		t.Fatalf("requestInput = %#v", receipt["requestInput"])
++	}
++	redactedRequestEnv, ok := requestInput["env"].(map[string]interface{})
++	if !ok || redactedRequestEnv[cpuControlPlaneNonceEnvKey] != cpuEnvRedactedValueMarker {
++		t.Fatalf("redacted request env = %#v", requestInput["env"])
++	}
++}
++
++func TestCPUCreateEnvStdinRejectsConflictWithoutReadingOrLeaking(t *testing.T) {
++	setExactCPUCreateGlobals(t)
++	createEnvStdin = true
++	argvNonce := strings.Repeat("a2", 32)
++	stdinNonce := strings.Repeat("b3", 32)
++	createEnv = `{"MICKEY_CONTROL_PLANE_NONCE":"` + argvNonce + `"}`
++	stdin := strings.NewReader(`{"MICKEY_CONTROL_PLANE_NONCE":"` + stdinNonce + `"}`)
++	command := &cobra.Command{}
++	command.SetIn(stdin)
++
++	err := runCreate(command, nil)
++	if err == nil || !strings.Contains(err.Error(), "cannot be combined") {
++		t.Fatalf("error = %v, want --env/--env-stdin conflict", err)
++	}
++	if strings.Contains(err.Error(), argvNonce) || strings.Contains(err.Error(), stdinNonce) {
++		t.Fatalf("conflict error leaked nonce: %v", err)
++	}
++	if stdin.Len() == 0 {
++		t.Fatal("conflicting --env-stdin input was consumed")
++	}
++}
++
++func TestCPUCreateEnvStdinRejectsExplicitEmptyEnvFlag(t *testing.T) {
++	setExactCPUCreateGlobals(t)
++	createEnvStdin = true
++	nonce := strings.Repeat("b4", 32)
++	stdin := strings.NewReader(`{"MICKEY_CONTROL_PLANE_NONCE":"` + nonce + `"}`)
++	command := &cobra.Command{}
++	command.Flags().String("env", "", "")
++	if err := command.Flags().Set("env", ""); err != nil {
++		t.Fatalf("set env flag: %v", err)
++	}
++	command.SetIn(stdin)
++
++	err := runCreate(command, nil)
++	if err == nil || !strings.Contains(err.Error(), "cannot be combined") {
++		t.Fatalf("error = %v, want explicit empty --env conflict", err)
++	}
++	if strings.Contains(err.Error(), nonce) {
++		t.Fatalf("conflict error leaked nonce: %v", err)
++	}
++	if stdin.Len() == 0 {
++		t.Fatal("conflicting --env-stdin input was consumed")
++	}
++}
++
++func TestCPUCreateEnvStdinBoundsAndScrubsReadErrors(t *testing.T) {
++	t.Run("oversized", func(t *testing.T) {
++		setExactCPUCreateGlobals(t)
++		createEnvStdin = true
++		command := &cobra.Command{}
++		command.SetIn(strings.NewReader(strings.Repeat("x", cpuEnvStdinMaxBytes+1)))
++
++		_, err := resolveCPUCreateEnv(command)
++		if err == nil || !strings.Contains(err.Error(), "exceeds") {
++			t.Fatalf("error = %v, want bounded input failure", err)
++		}
++	})
++
++	t.Run("reader error", func(t *testing.T) {
++		setExactCPUCreateGlobals(t)
++		createEnvStdin = true
++		nonce := strings.Repeat("c4", 32)
++		command := &cobra.Command{}
++		command.SetIn(nonceEchoingErrorReader{nonce: nonce})
++
++		_, err := resolveCPUCreateEnv(command)
++		if err == nil || !strings.Contains(err.Error(), "failed to read") {
++			t.Fatalf("error = %v, want read failure", err)
++		}
++		if strings.Contains(err.Error(), nonce) {
++			t.Fatalf("read failure leaked underlying reader text: %v", err)
++		}
++	})
++}
++
++func TestCPUCreateEnvStdinRejectsGPUWithoutReading(t *testing.T) {
++	setExactCPUCreateGlobals(t)
++	createComputeType = "GPU"
++	createCloudType = "SECURE"
++	createEnvStdin = true
++	nonce := strings.Repeat("d5", 32)
++	stdin := strings.NewReader(`{"MICKEY_CONTROL_PLANE_NONCE":"` + nonce + `"}`)
++	command := &cobra.Command{}
++	command.SetIn(stdin)
++
++	err := runCreate(command, nil)
++	if err == nil || !strings.Contains(err.Error(), "only for compute type cpu") {
++		t.Fatalf("error = %v, want CPU-only rejection", err)
++	}
++	if strings.Contains(err.Error(), nonce) {
++		t.Fatalf("GPU rejection leaked nonce: %v", err)
++	}
++	if stdin.Len() == 0 {
++		t.Fatal("GPU --env-stdin input was consumed")
++	}
++}
++
+ func TestCPUCreateRESTScrubsNonceFromProviderError(t *testing.T) {
+ 	viper.Reset()
+ 	t.Cleanup(viper.Reset)
+diff --git a/cmd/pod/pod_test.go b/cmd/pod/pod_test.go
+index 8782a60..c4d77ee 100644
+--- a/cmd/pod/pod_test.go
++++ b/cmd/pod/pod_test.go
+@@ -94,6 +94,9 @@ func TestCreateCmd_Flags(t *testing.T) {
+ 	if flags.Lookup("max-cost-per-hour") == nil {
+ 		t.Error("expected --max-cost-per-hour flag")
+ 	}
++	if flags.Lookup("env-stdin") == nil {
++		t.Error("expected --env-stdin flag")
++	}
+ 	if flags.Lookup("volume-in-gb") == nil {
+ 		t.Error("expected --volume-in-gb flag")
+ 	}
+diff --git a/docs/runpodctl_pod_create.md b/docs/runpodctl_pod_create.md
+index 382dad8..1e037b6 100644
+--- a/docs/runpodctl_pod_create.md
++++ b/docs/runpodctl_pod_create.md
+@@ -37,6 +37,7 @@ runpodctl pod create [flags]
+       --data-center-ids string     comma-separated list of data center ids
+       --docker-args string         docker cmd arguments
+       --env string                 environment variables as json object
++      --env-stdin                  read the cpu control-plane nonce json from stdin
+       --global-networking          enable global networking (secure cloud only)
+       --gpu-count int              number of gpus (default 1)
+       --gpu-id string              gpu id (from 'runpodctl gpu list')
+@@ -65,4 +66,3 @@ runpodctl pod create [flags]
+ ### SEE ALSO
+ 
+ * [runpodctl pod](runpodctl_pod.md)	 - manage gpu pods
+-

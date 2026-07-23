@@ -119,8 +119,11 @@ test("deployed player wiring expands first and converts a weak rival next", asyn
   );
   for (const response of responses) {
     assert.match(response.reason, /^[a-z0-9:]+$/);
+    assert.match(response.reason, /^rul:/);
     assert.ok(response.reason.length <= 48);
     assert.equal(response.reason.toLowerCase().includes("weak"), false);
+    assert.equal(response.fallbackUsed, false);
+    assert.equal(response.llmPlannerDegraded, false);
   }
 });
 
@@ -342,13 +345,352 @@ test("deployed player exposes gc1 beside the retained tactical marker", async ()
   assert.match(responses[1].reason, /:gc1:ia1$/);
 });
 
-test("planner doctrine encodes the hosted winner profile", async () => {
+test("planner contract asks only for intent, target ID, and horizon", async () => {
   const { readFile } = await import("node:fs/promises");
   const source = await readFile(playerPath, "utf8");
-  assert.match(source, /do not attack any rival before that threshold unless they attacked you first/i);
-  assert.match(source, /only at relativeTroopRatio 1\.3 or better/i);
-  assert.match(source, /Commit 35% to neutral expansion/);
-  assert.doesNotMatch(source, /Probe with 10%, escalate to 25%/);
+  const doctrine = await readFile(
+    fileURLToPath(new URL("../captain-underpants-production-doctrine.mjs", import.meta.url)),
+    "utf8",
+  );
+  assert.match(doctrine, /INTENT:/);
+  assert.match(doctrine, /CONSTRAINTS:/);
+  assert.match(doctrine, /SUCCESS:/);
+  assert.match(doctrine, /FREEDOM:/);
+  assert.match(doctrine, /CAPTAIN_UNDERPANTS_PRODUCTION_DOCTRINE/);
+  assert.match(source, /process\.env\.PLAN_MODE === "on"/);
+  assert.match(source, /"intent":/);
+  assert.match(source, /"targetID":/);
+  assert.match(source, /"horizon":/);
+  assert.doesNotMatch(source, /"focus":/);
+  assert.doesNotMatch(source, /"preferKinds":/);
+  assert.doesNotMatch(source, /"avoidTargets":/);
+  assert.doesNotMatch(source, /relativeTroopRatio 1\.3/);
+  assert.doesNotMatch(source, /Commit 35% to neutral expansion/);
+});
+
+test("a normalized nondegraded intent reaches the deployed MM1 selector", async () => {
+  const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
+  await new Promise((resolve) => server.once("listening", resolve));
+  const { port } = server.address();
+  const lowRisk = { level: "low" };
+  const legalActions = [
+    {
+      id: "alliance:katanasan",
+      kind: "alliance_request",
+      label: "Alliance with K1Z katanasan",
+      risk: lowRisk,
+      metadata: {
+        recipientID: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+        recipientName: "K1Z katanasan",
+        relation: 2,
+      },
+    },
+    {
+      id: "expand:terra-nullius:10",
+      kind: "attack",
+      label: "Expand Terra Nullius 10%",
+      risk: lowRisk,
+      metadata: { expansion: true, troopPercent: 10 },
+    },
+  ];
+  const obs = {
+    phase: "active",
+    ownState: {
+      tileShare: 0.05,
+      troopRatio: 0.8,
+      troops: 500000,
+      gold: 250000,
+      borderTiles: 100,
+      incomingAttacks: [],
+    },
+    visiblePlayers: [{
+      id: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+      name: "K1Z katanasan",
+      isAlive: true,
+      tileShare: 0.08,
+      relativeTroopRatio: 1.2,
+      sharesBorder: true,
+      canAttack: true,
+      isAllied: false,
+    }],
+  };
+  const spawnActions = [
+    { id: "spawn:100", kind: "spawn", label: "Spawn 100", risk: lowRisk },
+    { id: "hold", kind: "hold", label: "Hold", risk: lowRisk },
+  ];
+  const spawnObservation = {
+    phase: "spawn",
+    ownState: { ...obs.ownState, tileShare: 0 },
+    visiblePlayers: [],
+  };
+
+  const responses = [];
+  let stderr = "";
+  const child = spawn(process.execPath, [playerPath], {
+    env: {
+      ...process.env,
+      NODE_ENV: "test",
+      PLAN_MODE: "on",
+      INTENT_TEST_DIRECTIVE: JSON.stringify({
+        intent: "grow",
+        targetID: null,
+        horizon: 4,
+      }),
+      COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
+      AWS_EC2_METADATA_DISABLED: "true",
+    },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  child.stderr.on("data", (chunk) => { stderr += String(chunk); });
+
+  const completed = new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      child.kill("SIGKILL");
+      reject(new Error(`intent wiring test timed out: ${stderr}`));
+    }, 8000);
+    server.once("connection", (socket) => {
+      // Planning is deliberately nonblocking. Spawn uses the exact parent while
+      // the fixture resolves; the first active decision then proves that the
+      // normalized directive reaches MM1 without a prior social cooldown.
+      socket.send(JSON.stringify(request("intent-1", spawnActions, spawnObservation)));
+      socket.on("message", (data) => {
+        responses.push(JSON.parse(String(data)));
+        if (responses.length === 1) {
+          setTimeout(() => {
+            socket.send(JSON.stringify(request("intent-2", legalActions, obs)));
+          }, 20);
+        } else {
+          socket.send(JSON.stringify({ type: "final" }));
+        }
+      });
+    });
+    child.once("error", reject);
+    child.once("exit", (code) => {
+      clearTimeout(timeout);
+      if (code === 0) resolve();
+      else reject(new Error(`player exited ${code}: ${stderr}`));
+    });
+  });
+
+  try {
+    await completed;
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+
+  assert.equal(responses[0].selectedLegalActionId, "spawn:100");
+  assert.equal(responses[0].fallbackUsed, true);
+  assert.equal(responses[1].selectedLegalActionId, "expand:terra-nullius:10");
+  assert.equal(responses[1].fallbackUsed, false);
+  assert.match(responses[1].reason, /mm1g/);
+});
+
+test("an exact visible convert intent reaches the deployed MM1 selector", async () => {
+  const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
+  await new Promise((resolve) => server.once("listening", resolve));
+  const { port } = server.address();
+  const lowRisk = { level: "low" };
+  const legalActions = [
+    {
+      id: "attack:weak:10",
+      kind: "attack",
+      label: "Attack Weak 10%",
+      risk: lowRisk,
+      metadata: { targetID: "weak", targetName: "Weak", troopPercent: 10 },
+    },
+    {
+      id: "attack:large:10",
+      kind: "attack",
+      label: "Attack Large 10%",
+      risk: lowRisk,
+      metadata: { targetID: "large", targetName: "Large", troopPercent: 10 },
+    },
+    { id: "hold", kind: "hold", label: "Hold", risk: lowRisk },
+  ];
+  const obs = {
+    phase: "active",
+    ownState: {
+      tileShare: 0.2,
+      troopRatio: 0.8,
+      troops: 500000,
+      gold: 250000,
+      borderTiles: 100,
+      incomingAttacks: [],
+    },
+    visiblePlayers: [
+      {
+        id: "weak", name: "Weak", isAlive: true, tileShare: 0.08,
+        relativeTroopRatio: 2.2, sharesBorder: true, canAttack: true, isAllied: false,
+      },
+      {
+        id: "large", name: "Large", isAlive: true, tileShare: 0.2,
+        relativeTroopRatio: 1.5, sharesBorder: true, canAttack: true, isAllied: false,
+      },
+    ],
+  };
+
+  const responses = [];
+  let stderr = "";
+  const child = spawn(process.execPath, [playerPath], {
+    env: {
+      ...process.env,
+      NODE_ENV: "test",
+      PLAN_MODE: "on",
+      INTENT_TEST_DIRECTIVE: JSON.stringify({
+        intent: "convert",
+        targetID: "large",
+        horizon: 4,
+      }),
+      COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
+      AWS_EC2_METADATA_DISABLED: "true",
+    },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  child.stderr.on("data", (chunk) => { stderr += String(chunk); });
+
+  const completed = new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      child.kill("SIGKILL");
+      reject(new Error(`convert intent wiring test timed out: ${stderr}`));
+    }, 8000);
+    server.once("connection", (socket) => {
+      socket.send(JSON.stringify(request("convert-1", legalActions, obs)));
+      socket.on("message", (data) => {
+        responses.push(JSON.parse(String(data)));
+        if (responses.length === 1) {
+          setTimeout(() => {
+            socket.send(JSON.stringify(request("convert-2", legalActions, obs)));
+          }, 20);
+        } else {
+          socket.send(JSON.stringify({ type: "final" }));
+        }
+      });
+    });
+    child.once("error", reject);
+    child.once("exit", (code) => {
+      clearTimeout(timeout);
+      if (code === 0) resolve();
+      else reject(new Error(`player exited ${code}: ${stderr}`));
+    });
+  });
+
+  try {
+    await completed;
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+
+  assert.equal(responses[0].selectedLegalActionId, "attack:weak:10");
+  assert.equal(responses[0].fallbackUsed, true);
+  assert.equal(responses[1].selectedLegalActionId, "attack:large:10");
+  assert.equal(responses[1].fallbackUsed, false);
+  assert.equal(responses[1].llmPlannerDegraded, false);
+  assert.match(responses[1].reason, /mm1c/);
+});
+
+test("a wrapped planner reply fails closed in the deployed player", async () => {
+  const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
+  await new Promise((resolve) => server.once("listening", resolve));
+  const { port } = server.address();
+  const lowRisk = { level: "low" };
+  const legalActions = [
+    {
+      id: "alliance:katanasan",
+      kind: "alliance_request",
+      label: "Alliance with K1Z katanasan",
+      risk: lowRisk,
+      metadata: {
+        recipientID: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+        recipientName: "K1Z katanasan",
+        relation: 2,
+      },
+    },
+    {
+      id: "expand:terra-nullius:10",
+      kind: "attack",
+      label: "Expand Terra Nullius 10%",
+      risk: lowRisk,
+      metadata: { expansion: true, troopPercent: 10 },
+    },
+  ];
+  const obs = {
+    phase: "active",
+    ownState: {
+      tileShare: 0.05,
+      troopRatio: 0.8,
+      troops: 500000,
+      gold: 250000,
+      borderTiles: 100,
+      incomingAttacks: [],
+    },
+    visiblePlayers: [{
+      id: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+      name: "K1Z katanasan",
+      isAlive: true,
+      tileShare: 0.08,
+      relativeTroopRatio: 1.2,
+      sharesBorder: true,
+      canAttack: true,
+      isAllied: false,
+    }],
+  };
+
+  const responses = [];
+  let stderr = "";
+  const child = spawn(process.execPath, [playerPath], {
+    env: {
+      ...process.env,
+      NODE_ENV: "test",
+      PLAN_MODE: "on",
+      INTENT_TEST_DIRECTIVE:
+        'plan: {"intent":"grow","targetID":null,"horizon":4}',
+      COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
+      AWS_EC2_METADATA_DISABLED: "true",
+    },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  child.stderr.on("data", (chunk) => { stderr += String(chunk); });
+
+  const completed = new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      child.kill("SIGKILL");
+      reject(new Error(`fail-closed planner test timed out: ${stderr}`));
+    }, 8000);
+    server.once("connection", (socket) => {
+      socket.send(JSON.stringify(request("invalid-1", legalActions, obs)));
+      socket.on("message", (data) => {
+        responses.push(JSON.parse(String(data)));
+        if (responses.length === 1) {
+          setTimeout(() => {
+            socket.send(JSON.stringify(request("invalid-2", legalActions, obs)));
+          }, 20);
+        } else {
+          socket.send(JSON.stringify({ type: "final" }));
+        }
+      });
+    });
+    child.once("error", reject);
+    child.once("exit", (code) => {
+      clearTimeout(timeout);
+      if (code === 0) resolve();
+      else reject(new Error(`player exited ${code}: ${stderr}`));
+    });
+  });
+
+  try {
+    await completed;
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+
+  assert.deepEqual(
+    responses.map((response) => response.selectedLegalActionId),
+    ["alliance:katanasan", "expand:terra-nullius:10"],
+  );
+  assert.equal(responses[1].fallbackUsed, true);
+  assert.equal(responses[1].llmPlannerDegraded, true);
+  assert.match(responses[1].reason, /^dgd:/);
+  assert.doesNotMatch(responses[1].reason, /mm1[gc]/);
 });
 
 test("qd2n engine wiring grinds the opening at 35 percent", async () => {

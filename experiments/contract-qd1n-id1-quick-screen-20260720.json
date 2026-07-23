@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "record_type": "qd1n_id1_exploratory_intent_screen",
+  "created_at": "2026-07-20T19:05:00Z",
+  "claim_limit": "Exploratory mechanism and early-payoff screen only. It cannot authorize upload, submission, placement, or champion change.",
+  "hypothesis": "A high-level grow intent can let the safe selector replace proactive opening social work with legal neutral conquest, without changing tactical, economic, pressure, collapse, stall, K1Z, or post-window behavior.",
+  "candidate": {
+    "arm": "ID1",
+    "source_commit": "83f0eb9f1b810603c3a9c40c7a507071a52f62fd",
+    "source_branch": "rci/id1-intent-delegation",
+    "image_id": "sha256:43bb0e611dda93d763437462fe8d377c28e5d31c91678156a208c85197b595b2",
+    "image_architecture": "amd64",
+    "policy_engine": "id1",
+    "marker": "id1"
+  },
+  "parent": {
+    "policy": "qd1n:v89",
+    "exact_executable_commit": "f1347251834a6283182b631e1336595eb2e08342",
+    "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+    "image_architecture": "amd64"
+  },
+  "runtime": {
+    "coworld_cli_version": "0.1.28",
+    "game": "proxywar 0.1.10",
+    "coworld_manifest_sha256": "8feb5100ee63d5ccca66794c40e535f2715376e2a2cf8a3f8ed892880dfe65f3",
+    "map": "Pangaea",
+    "map_size": "Normal",
+    "seed": 20260720,
+    "max_decision_steps": 24,
+    "turns_per_decision_step": 100,
+    "roster_size": 8,
+    "odin_slot_zero_based": 7
+  },
+  "jobs": {
+    "candidate": {
+      "path": "experiments/job-qd1n-id1-quick-screen-candidate-20260720.json",
+      "sha256": "1a250d31f47479ef26f7ffa2f42baa4ac262ade4b7208a55094da7ca63998261"
+    },
+    "parent": {
+      "path": "experiments/job-qd1n-id1-quick-screen-parent-20260720.json",
+      "sha256": "26c9e19af53297c027adda5d8e303ce9d3fabc09698a3ce65d8d79176eb59035"
+    },
+    "controlled_difference": "Only player slot 7 image changes from exact v89 to ID1."
+  },
+  "audit": {
+    "decision_window": "First 20 non-spawn K1Z odin free decisions.",
+    "mechanism_pass": [
+      "At least one accepted ID1-marked neutral attack.",
+      "Zero rejected decisions, unexplained holds, planner degradation, fallbacks, or K1Z harm.",
+      "At least 20 auditable non-spawn Odin decisions."
+    ],
+    "payoff_signal": [
+      "Candidate Odin tiles at decision 20 exceed parent Odin tiles at decision 20.",
+      "Candidate opening contains fewer proactive social decisions than parent."
+    ],
+    "stop_rule": "No ID1 marker or any safety failure closes ID1. A positive one-pair payoff is directional evidence only and requires a later mirrored gate before any production action."
+  }
+}

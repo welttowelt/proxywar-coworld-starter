@@ -856,7 +856,7 @@ export async function verifyBundleManifest(
   }
   const fileEntries = parseFileManifest(fileManifestBody);
   const linkEntries = parseLinkManifest(linkManifestBody);
-  const expectedSourceFiles = new Set([
+  const requiredSourceFiles = new Set([
     "scripts/prepare-runpod-proxywar-bundle.sh",
     "scripts/runpod-proxywar-episode.mjs",
     "scripts/extract_runpod_proxywar_bundle.py",
@@ -867,11 +867,16 @@ export async function verifyBundleManifest(
   if (
     !/^[a-f0-9]{40}$/.test(manifest.source?.commit ?? "") ||
     !/^[a-f0-9]{40}$/.test(manifest.source?.formal_specs_commit ?? "") ||
-    sourceFileEntries.length !== expectedSourceFiles.size ||
+    sourceFileEntries.length < requiredSourceFiles.size ||
     sourceFileEntries.some(
       ([sourcePath, digest]) =>
-        !expectedSourceFiles.has(sourcePath) ||
+        !/^[a-zA-Z0-9._/-]+$/.test(sourcePath) ||
+        path.posix.isAbsolute(sourcePath) ||
+        sourcePath.split("/").some((part) => part === "" || part === "." || part === "..") ||
         !/^[a-f0-9]{64}$/.test(digest),
+    ) ||
+    [...requiredSourceFiles].some(
+      (sourcePath) => !Object.hasOwn(manifest.source.files, sourcePath),
     ) ||
     manifest.source.files["scripts/runpod-proxywar-episode.mjs"] !==
       manifest.orchestrator_sha256 ||
@@ -888,30 +893,27 @@ export async function verifyBundleManifest(
   }
   if (
     !Array.isArray(manifest.experiment_specs) ||
-    manifest.experiment_specs.length !== 2
+    manifest.experiment_specs.length < 2 ||
+    manifest.experiment_specs.length > 128
   ) {
-    throw new Error("bundle must declare the formal matched experiment pair");
+    throw new Error("bundle must declare at least one matched experiment pair");
   }
-  const expectedSpecs = new Map([
-    [
-      "formal-matched-a",
-      { role: "candidate", path: "specs/formal-matched-a.json" },
-    ],
-    [
-      "formal-matched-b",
-      { role: "exact-parent", path: "specs/formal-matched-b.json" },
-    ],
-  ]);
   const seenSpecLabels = new Set();
+  const seenSpecPaths = new Set();
+  const seenSpecRoles = new Set();
   const formalHorizons = new Set();
   for (const spec of manifest.experiment_specs) {
-    const expected = expectedSpecs.get(spec?.label);
     if (
       !isPlainObject(spec) ||
-      !expected ||
+      typeof spec.label !== "string" ||
+      !/^[a-z0-9][a-z0-9._-]{0,79}$/.test(spec.label) ||
       seenSpecLabels.has(spec.label) ||
-      expected.role !== spec.role ||
-      expected.path !== spec.path ||
+      (spec.role !== "candidate" && spec.role !== "exact-parent") ||
+      typeof spec.path !== "string" ||
+      !/^specs\/[a-zA-Z0-9][a-zA-Z0-9._/-]*\.json$/.test(spec.path) ||
+      path.posix.isAbsolute(spec.path) ||
+      spec.path.split("/").some((part) => part === "" || part === "." || part === "..") ||
+      seenSpecPaths.has(spec.path) ||
       !/^[a-f0-9]{64}$/.test(spec.sha256) ||
       !Number.isInteger(spec.max_decision_steps) ||
       spec.max_decision_steps < 1 ||
@@ -935,10 +937,12 @@ export async function verifyBundleManifest(
       );
     }
     seenSpecLabels.add(spec.label);
+    seenSpecPaths.add(spec.path);
+    seenSpecRoles.add(spec.role);
     formalHorizons.add(spec.max_decision_steps);
   }
-  if (seenSpecLabels.size !== expectedSpecs.size) {
-    throw new Error("formal matched experiment pair is incomplete");
+  if (!seenSpecRoles.has("candidate") || !seenSpecRoles.has("exact-parent")) {
+    throw new Error("formal matched experiment roles are incomplete");
   }
   if (formalHorizons.size !== 1) {
     throw new Error("formal matched experiment horizons differ");
@@ -1117,12 +1121,8 @@ export async function bindRunSpec(
       `formal run spec does not match manifest.json: ${formal.label}`,
     );
   }
-  if (
-    relative?.startsWith("specs/formal-matched-") &&
-    relative?.endsWith(".json") &&
-    !formal
-  ) {
-    throw new Error("undeclared formal matched run spec");
+  if (relative?.startsWith("specs/") && relative?.endsWith(".json") && !formal && !canary) {
+    throw new Error("undeclared bundled run spec");
   }
   if (formal && transportCanary) {
     throw new Error(
