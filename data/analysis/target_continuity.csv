@@ -1,29 +1,29 @@
 player_name,policy_version,won,rival_attacks,target_switches,switch_rate_pct,mean_attack_ratio,mean_attack_percent
-richard,7,true,1503,300,20.24,4.76,28.3
-daveey,24,true,981,315,32.61,3.07,26.9
+richard,7,true,1336,240,18.24,4.85,27.5
+daveey,24,true,1048,308,29.82,2.84,27.6
 Calc,106,true,719,343,48.24,8.62,25.6
 K1Z Mickey Mouse,1,true,532,167,31.87,5.59,22.9
-Auri,42,true,347,118,34.5,4.15,31.3
+Auri,42,true,404,125,31.41,3.9,31.6
 djizus,14,true,244,64,26.67,2.15,39.4
 salomon-shdow,11,true,164,51,31.68,3.9,22.1
 djizus,12,true,151,50,33.56,4.03,37.2
 relh,3,true,146,30,20.83,3.21,32.8
 djizus,13,true,122,29,24.17,2.02,38.6
-relh,3,false,3587,457,13.02,1.74,28.0
-K1Z Mickey Mouse,1,false,2574,675,26.96,3.22,21.4
-richard,7,false,2514,462,18.66,2.41,29.1
-daveey,24,false,2017,558,28.57,2.22,22.6
-Sefirot,1,false,1950,248,13.22,1.05,39.9
-djizus,14,false,1551,293,19.25,1.16,38.9
-Auri,42,false,1194,342,30.54,2.44,29.3
-Calc,106,false,1088,389,37.48,3.12,25.1
+relh,3,false,3588,441,12.56,1.73,27.9
+richard,7,false,2583,470,18.47,2.55,29.2
+K1Z Mickey Mouse,1,false,2511,691,28.31,3.18,21.3
+daveey,24,false,2036,565,28.65,2.24,22.7
+Sefirot,1,false,1946,252,13.46,1.05,39.9
+djizus,14,false,1739,343,20.09,1.12,39.0
+Auri,42,false,1255,352,29.78,2.35,29.3
+Calc,106,false,1202,427,37.2,3.08,25.2
 djizus,13,false,867,190,22.38,1.13,38.5
 salomon-shdow,11,false,849,233,28.84,3.02,21.1
-docxology,1,false,832,39,5.18,0.65,10.0
-Ron @ SWGY,1,false,759,309,45.24,1.84,17.9
-James Boggs,1,false,678,210,33.93,1.08,10.9
-softmaxwell,1,false,657,154,25.75,2.52,31.4
-djizus,12,false,463,100,22.08,1.07,38.5
-salomon-shdow,12,false,460,135,30.34,3.51,25.1
-salomon-shdow,10,false,206,49,25.79,2.02,19.5
-Calc,90,false,191,69,39.88,2.03,24.8
+docxology,1,false,830,41,5.46,0.65,10.0
+Ron @ SWGY,1,false,758,304,44.57,1.81,17.8
+James Boggs,1,false,713,202,30.89,1.07,10.8
+softmaxwell,1,false,636,150,25.95,2.53,31.2
+salomon-shdow,12,false,543,172,32.82,3.91,24.9
+djizus,12,false,301,65,22.11,1.04,38.3
+Calc,90,false,171,65,41.4,2.07,24.8
+salomon-shdow,10,false,161,42,28.19,2.07,19.4
