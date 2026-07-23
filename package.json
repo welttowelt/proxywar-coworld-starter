@@ -7,7 +7,7 @@
   "scripts": {
     "test": "node --test",
     "data:collect": "node scripts/collect-proxywar-data.mjs --rounds 20",
-    "data:analyze": "duckdb < analytics/meta.sql",
+    "data:analyze": "duckdb < analytics/meta.sql && node scripts/normalize-empty-site-json.mjs",
     "data:refresh": "npm run data:collect && npm run data:analyze && npm run rci:report",
     "cache:prune": "node scripts/prune-replay-cache.mjs --apply",
     "gate:audit": "node scripts/audit-xp-gate.mjs",

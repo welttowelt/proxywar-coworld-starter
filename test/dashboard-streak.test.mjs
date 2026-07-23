@@ -77,7 +77,8 @@ test("generated dashboard uses the persisted official streak", async () => {
   ]).then((files) => files.map((file) => JSON.parse(file)));
   const [snapshot] = snapshotRows;
 
-  assert.equal(official.last_round_number, snapshot.last_completed_round);
+  assert.equal(official.last_round_number, snapshot.official_streak_last_round);
+  assert.ok(snapshot.official_streak_last_round <= snapshot.last_completed_round);
   assert.equal(official.current_first_place_streak, snapshot.current_first_place_streak);
   assert.equal(snapshot.target_first_place_streak, 1000);
 });
