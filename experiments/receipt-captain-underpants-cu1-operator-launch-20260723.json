@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-23T21:31:56Z",
+  "entrant": {
+    "player_id": "ply_02c1e39b-94af-4b38-8e12-645e6cd06ec1",
+    "player_name": "Captain Underpants Maximum Aura",
+    "policy_label": "captain-underpants-max-aura:v1",
+    "policy_version_id": "348b11ff-29b1-4743-b456-e735dbf1520d"
+  },
+  "authorization": {
+    "source": "direct_user_instruction",
+    "instruction": "make him fight",
+    "scope": "submit the uploaded Captain policy to the live Proxywar league and enable automatic champion promotion after the mandatory qualifier"
+  },
+  "league": {
+    "id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+    "name": "Proxywar",
+    "rounds_paused": false,
+    "schedule_interval_minutes": 30,
+    "qualifiers_division_id": "div_db67a8bc-0330-4c4f-8b79-e1e675e24128",
+    "competition_division_id": "div_b54268ee-6b2f-4156-9c2a-8542645e31bc"
+  },
+  "submission": {
+    "id": "sub_6d9f02af-c9ab-49fd-9f08-c25022ed9d63",
+    "status": "placed",
+    "auto_champion": "always",
+    "created_at": "2026-07-23T21:31:23.870438Z"
+  },
+  "membership": {
+    "id": "lpm_819658c0-6899-4bb7-9449-379da288ec5a",
+    "status": "qualifying",
+    "division": "Qualifiers",
+    "is_champion": false,
+    "start_time": "2026-07-23T21:31:33.851325Z"
+  },
+  "promotion_audit": {
+    "exact_linux_amd64_image": true,
+    "live_player_identity": true,
+    "live_policy_identity": true,
+    "local_matched_full_game_gate": false,
+    "hosted_4_of_4": false,
+    "regression_20_of_20": false,
+    "launch_class": "OPERATOR_DIRECTED_UNQUALIFIED_LAUNCH"
+  },
+  "verified_state": {
+    "uploaded": true,
+    "submitted": true,
+    "membership_created": true,
+    "qualifier_queued": true,
+    "qualifier_completed": false,
+    "competition_champion": false,
+    "first_competition_round_verified": false,
+    "verdict": "QUEUED_TO_FIGHT_IN_QUALIFIERS"
+  },
+  "next_verification": [
+    "qualifier round starts and completes",
+    "membership either promotes to Competition or records a terminal qualifier failure",
+    "first completed Competition round is verified separately"
+  ]
+}
