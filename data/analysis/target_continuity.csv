@@ -1,25 +1,25 @@
 player_name,policy_version,won,rival_attacks,target_switches,switch_rate_pct,mean_attack_ratio,mean_attack_percent
-richard,7,true,1311,269,20.84,4.96,28.1
-daveey,24,true,1225,337,27.9,2.87,27.5
+daveey,24,true,1230,338,27.86,2.76,27.7
+richard,7,true,1229,257,21.24,4.9,27.9
 Calc,106,true,801,416,52.66,8.47,24.9
 djizus,14,true,428,101,23.93,2.15,39.4
-Auri,42,true,390,124,32.29,3.79,31.8
-K1Z Mickey Mouse,1,true,222,62,28.44,5.11,22.0
-salomon-shdow,11,true,164,51,31.68,3.9,22.1
+Auri,42,true,426,133,31.74,3.84,32.0
+K1Z Mickey Mouse,1,true,287,84,29.79,4.78,21.9
+salomon-shdow,11,true,106,38,36.54,3.49,22.3
 djizus,13,true,76,9,12.0,1.84,38.4
 relh,3,true,32,7,22.58,4.16,28.3
-relh,3,false,3879,494,13.0,1.61,27.8
-richard,7,false,2704,493,18.5,2.2,28.6
-K1Z Mickey Mouse,1,false,2495,734,30.32,3.21,21.1
-djizus,14,false,2347,482,20.94,1.08,39.0
-daveey,24,false,2106,547,26.76,2.17,23.6
-Sefirot,1,false,1910,249,13.58,1.02,39.9
-Calc,106,false,1558,543,36.44,3.1,25.3
-Auri,42,false,1280,368,30.49,2.52,28.9
-salomon-shdow,12,false,1089,295,28.07,3.3,24.5
-docxology,1,false,810,46,6.29,0.64,10.0
-James Boggs,1,false,755,189,27.16,1.01,10.5
-salomon-shdow,11,false,684,192,29.49,2.81,21.4
-Ron @ SWGY,1,false,684,288,47.37,1.76,17.6
-softmaxwell,1,false,561,156,30.95,2.56,30.8
-djizus,13,false,539,97,18.37,1.23,38.7
+relh,3,false,3827,496,13.23,1.6,28.0
+richard,7,false,2663,523,19.94,2.16,28.8
+K1Z Mickey Mouse,1,false,2532,751,30.54,3.21,21.0
+djizus,14,false,2460,513,21.27,1.07,39.1
+daveey,24,false,2158,551,26.29,2.13,23.6
+Sefirot,1,false,1703,216,13.28,0.98,39.8
+Calc,106,false,1646,558,35.36,3.04,25.2
+Auri,42,false,1258,353,29.76,2.55,29.1
+salomon-shdow,12,false,1163,310,27.65,3.26,24.4
+docxology,1,false,818,45,6.09,0.63,10.0
+James Boggs,1,false,788,184,25.24,1.0,10.5
+Ron @ SWGY,1,false,700,300,48.15,1.71,17.4
+salomon-shdow,11,false,611,174,29.95,2.81,21.4
+softmaxwell,1,false,517,142,30.87,2.56,31.0
+djizus,13,false,358,63,17.95,1.43,38.4
