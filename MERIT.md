@@ -4,6 +4,7 @@
 
 | Policy | State | Evidence |
 | --- | --- | --- |
+| `captain-underpants-max-aura:v1` | champion | operator-directed unqualified launch; submission `sub_6d9f02af-c9ab-49fd-9f08-c25022ed9d63`; qualifier retry round 484 completed `2/2` at score `1.0`; Competition membership `lpm_819658c0-6899-4bb7-9449-379da288ec5a`; first Competition round pending |
 | `qd1n:v97` | champion | exact v89 parent plus Mickey-only absolute no-harm guard; membership `lpm_d8ca71ea-a783-4e36-ac2b-d1a18981a83a`, submission `sub_7f154c46-eb32-4787-b8b9-4215736b0b88`; qualifier retry round 437 completed `2/2` at score `1.0` |
 | `qd1n:v89` | benched | membership `lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6`; replaced after Round 605 proved 14 accepted harmful actions against Mickey |
 | `qd1n:v87` | benched | membership `lpm_029863a2-7f44-4219-baba-01ca423a4dd3`; parallel Hrafn-lane reciprocal update, submission `sub_288f0b9e-1959-4580-84ba-7fddfaee5403` |

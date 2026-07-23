@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-23T21:34:59Z",
+  "entrant": {
+    "player_id": "ply_02c1e39b-94af-4b38-8e12-645e6cd06ec1",
+    "player_name": "Captain Underpants Maximum Aura",
+    "policy_label": "captain-underpants-max-aura:v1",
+    "policy_version_id": "348b11ff-29b1-4743-b456-e735dbf1520d"
+  },
+  "league": {
+    "id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+    "name": "Proxywar",
+    "submission_id": "sub_6d9f02af-c9ab-49fd-9f08-c25022ed9d63",
+    "membership_id": "lpm_819658c0-6899-4bb7-9449-379da288ec5a"
+  },
+  "qualifier_attempts": [
+    {
+      "round_id": "round_3c4ae862-2c99-4953-9a63-971461da4002",
+      "round_number": 483,
+      "status": "failed",
+      "started_at": "2026-07-23T21:32:33.397337Z",
+      "completed_at": "2026-07-23T21:32:40.099016Z",
+      "error": "not enough primary entries to fill 2 seats",
+      "gameplay_started": false
+    },
+    {
+      "round_id": "round_5477e7f9-ba98-4f34-9213-96753a1a1735",
+      "round_number": 484,
+      "status": "completed",
+      "started_at": "2026-07-23T21:33:18.656097Z",
+      "completed_at": "2026-07-23T21:34:22.115556Z",
+      "completed_episode_count": 2,
+      "rank": 1,
+      "score": 1.0,
+      "gameplay_started": true
+    }
+  ],
+  "promotion": {
+    "membership_status": "competing",
+    "division": "Competition",
+    "is_champion": true,
+    "auto_champion": "always",
+    "verified_at": "2026-07-23T21:34:59Z"
+  },
+  "quality_boundary": {
+    "exact_linux_amd64_image": true,
+    "softmax_crash_check": "passed_2_of_2",
+    "local_matched_full_game_gate": false,
+    "hosted_4_of_4": false,
+    "regression_20_of_20": false,
+    "promotion_class": "OPERATOR_DIRECTED_UNQUALIFIED_PROMOTION"
+  },
+  "verified_state": {
+    "uploaded": true,
+    "submitted": true,
+    "qualifier_completed": true,
+    "competition_membership_active": true,
+    "competition_champion": true,
+    "first_competition_round_verified": false,
+    "verdict": "LIVE_IN_COMPETITION_AWAITING_FIRST_ROUND"
+  }
+}
