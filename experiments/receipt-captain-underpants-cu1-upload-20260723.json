@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-23T19:22:50Z",
+  "entrant": {
+    "player_id": "ply_02c1e39b-94af-4b38-8e12-645e6cd06ec1",
+    "player_name": "Captain Underpants Maximum Aura",
+    "policy_label": "captain-underpants-max-aura:v1",
+    "policy_version_id": "348b11ff-29b1-4743-b456-e735dbf1520d"
+  },
+  "source": {
+    "commit": "cfc5865acfd4ebf807a0abf823ac9705822905f5",
+    "isolated_worktree": "/private/tmp/proxywar-captain-upload-20260723-a",
+    "receipt": "experiments/receipt-captain-underpants-cu1-source-20260723.json"
+  },
+  "image": {
+    "reference": "proxywar-captain-underpants-cu1:cfc5865a",
+    "id": "sha256:02562271dae6503a89b90a74bf9fddc272cb5aebefe383859bc36bbb7ade086c",
+    "platform": "linux/amd64",
+    "user": "node",
+    "command": [
+      "node",
+      "/app/llm-player.mjs"
+    ],
+    "environment": {
+      "POLICY_CODENAME": "captain-underpants-max-aura",
+      "POLICY_ENGINE": "",
+      "PLAN_MODE": "unset_planner_off"
+    },
+    "embedded_sha256": {
+      "llm-player.mjs": "2e18b93b571a5f8f16a7045829b43da6737d0c2734f16bf9bb16df1cd9630906",
+      "strategy-engine.mjs": "008699680d06fe9c830ff3e55f952be9a2d71e4be3e68654c2f0576d5d8b9f49",
+      "captain-underpants-production-doctrine.mjs": "7f3725c87fcf045144e5d0750fa5c485c6ca2e11a4d5b553b195d9e246fff9d5"
+    }
+  },
+  "upload": {
+    "server": "https://softmax.com/api",
+    "coworld_package": "coworld==0.1.28",
+    "bedrock_capability_enabled": true,
+    "private_tags": {
+      "source_commit": "cfc5865acfd4ebf807a0abf823ac9705822905f5",
+      "image_id": "02562271dae6503a89b90a74bf9fddc272cb5aebefe383859bc36bbb7ade086c"
+    },
+    "result": "Upload complete: captain-underpants-max-aura:v1"
+  },
+  "post_upload_verification": {
+    "active_player_verified": true,
+    "policy_version_verified": true,
+    "submissions": 0,
+    "league_memberships": 0,
+    "mickey_policy_version_unchanged": true
+  },
+  "gate_state": {
+    "diagnostic_uploaded": true,
+    "local_matched_full_game_gate": false,
+    "hosted_4_of_4": false,
+    "regression_20_of_20": false,
+    "submitted": false,
+    "membership_created": false,
+    "arena_deployed": false,
+    "verdict": "DIAGNOSTIC_UPLOAD_ONLY"
+  }
+}
