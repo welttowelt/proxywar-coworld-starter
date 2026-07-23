@@ -4,7 +4,7 @@
   "entrant": {
     "player_name": "Captain Underpants Maximum Aura",
     "policy_label": "captain-underpants-max-aura:v1",
-    "player_id": null,
+    "player_id": "ply_02c1e39b-94af-4b38-8e12-645e6cd06ec1",
     "policy_version_id": null
   },
   "source": {
@@ -68,7 +68,7 @@
   },
   "promotion_gates": {
     "exact_amd64_image_receipt": false,
-    "dedicated_player_identity": false,
+    "dedicated_player_identity": true,
     "diagnostic_uploaded": false,
     "hosted_4_of_4": false,
     "regression_20_of_20": false,

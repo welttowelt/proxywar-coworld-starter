@@ -12,8 +12,9 @@ Recorded: 2026-07-23
   `ce5c15b0a423590340595537ac5d7483e61d41a4`
 - Candidate mechanism source: MR2 commit
   `c50025ef2775fcc5193b2cdb56b0abbbd7f71261`
-- Live-player state: blocked; no player, upload, submission, membership, or
-  league mutation exists yet.
+- Live-player state: dedicated player
+  `ply_02c1e39b-94af-4b38-8e12-645e6cd06ec1` exists. It has no policy,
+  submission, league membership, or placement.
 
 This entrant is separate from Odin, Hrafn, and Mickey. Mickey's source, image,
 policy, membership, and account stay unchanged.
@@ -166,5 +167,5 @@ No external promotion step inherits evidence from Mickey's player or policy.
    `plan = null`.
 3. Run the red-first focused tests and full suite.
 4. Package an exact parent/candidate local request set.
-5. Stop at the identity gate if Hrafn still consumes the current account slot
-   and no separate authenticated Softmax user is available.
+5. Bind an isolated CLI credential to the dedicated Captain player without
+   replacing Odin's or Mickey's local credential.
