@@ -1,141 +1,155 @@
 attacker,target_name,rival_attacks,mean_relative_troop_ratio,median_relative_troop_ratio,mean_troop_percent
-Auri,daveey,394,2.1,1.13,31.7
-Auri,RelhAlpha,299,2.65,1.53,30.8
-Auri,K1Z juryoku koku,270,3.31,1.27,29.1
-Auri,Richard Higgins,267,2.85,1.64,31.9
-Auri,Sefirot,194,2.84,1.5,30.3
-Auri,K1Z Hrafn,151,3.57,1.55,25.4
-Auri,K1Z katanasan,151,3.83,2.01,27.3
-Auri,Ron SWGY,148,4.54,2.72,26.7
-Auri,K1Z odin free,132,2.4,1.64,26.4
-Auri,James Boggs,92,4.07,2.27,31.7
-Auri,Calc,78,5.8,1.4,26.9
-Auri,docxology,65,3.77,3.02,23.8
-Calc,Auri,70,2.36,1.45,16.6
-Calc,Sefirot,66,3.59,1.67,19.3
-Calc,K1Z Hrafn,48,3.0,1.86,20.6
-Calc,daveey,25,1.8,1.24,19.0
-Calc,Richard Higgins,19,1.5,1.24,15.5
-Calc,K1Z odin free,16,2.65,2.12,11.9
-Calc,docxology,16,4.47,4.26,14.7
-Calc,Ron SWGY,11,3.28,2.56,11.4
-Calc,RelhAlpha,8,2.04,1.46,11.9
-Calc,K1Z katanasan,7,1.91,1.9,18.6
-Calc,K1Z juryoku koku,3,1.85,1.92,10.0
-Calc,James Boggs,1,1.09,1.09,10.0
-James Boggs,K1Z Hrafn,244,0.55,0.42,10.0
-James Boggs,Auri,226,0.84,0.67,10.0
-James Boggs,Richard Higgins,226,0.71,0.59,10.0
-James Boggs,RelhAlpha,171,1.23,1.13,10.2
-James Boggs,K1Z juryoku koku,107,0.8,0.72,10.0
-James Boggs,Sefirot,97,0.73,0.54,10.0
-James Boggs,docxology,88,2.43,2.01,10.9
-James Boggs,Ron SWGY,77,0.98,0.7,10.4
-James Boggs,K1Z odin free,53,0.4,0.36,10.0
-James Boggs,daveey,41,1.24,1.1,10.4
-James Boggs,K1Z katanasan,22,0.79,0.7,10.0
-K1Z Hrafn,James Boggs,168,3.57,2.59,10.0
-K1Z Hrafn,Ron SWGY,155,3.77,2.04,10.0
-K1Z Hrafn,RelhAlpha,146,3.07,2.23,17.9
-K1Z Hrafn,daveey,144,4.97,2.38,16.9
-K1Z Hrafn,Auri,142,3.14,1.94,15.1
-K1Z Hrafn,Sefirot,71,12.85,2.52,10.4
-K1Z Hrafn,Richard Higgins,34,2.04,1.67,13.1
-K1Z Hrafn,Calc,15,3.91,3.61,16.0
-K1Z Hrafn,K1Z juryoku koku,2,8.43,8.43,10.0
-K1Z juryoku-koku,Auri,153,1.41,1.25,33.4
-K1Z juryoku-koku,Richard Higgins,108,2.57,1.68,33.9
-K1Z juryoku-koku,RelhAlpha,99,4.3,2.17,36.4
-K1Z juryoku-koku,daveey,86,2.46,1.35,34.8
-K1Z juryoku-koku,Ron SWGY,56,3.77,2.82,36.8
-K1Z juryoku-koku,Sefirot,35,7.32,1.93,37.0
-K1Z juryoku-koku,James Boggs,34,2.69,1.98,36.9
-K1Z juryoku-koku,Calc,21,3.84,1.29,32.1
-K1Z katanasan,RelhAlpha,71,2.57,2.01,37.3
-K1Z katanasan,Richard Higgins,56,2.79,1.38,33.8
-K1Z katanasan,daveey,33,6.75,1.46,37.7
-K1Z katanasan,Ron SWGY,25,5.27,2.99,38.8
-K1Z katanasan,James Boggs,8,12.72,13.65,40.0
-K1Z katanasan,Sefirot,8,6.38,5.26,25.0
-K1Z katanasan,Auri,7,4.81,1.54,35.7
-K1Z katanasan,Calc,3,1.33,1.02,15.0
-RelhAlpha,Richard Higgins,845,1.38,0.88,28.9
-RelhAlpha,daveey,763,1.47,0.77,29.1
-RelhAlpha,Auri,606,1.72,0.87,28.8
-RelhAlpha,Sefirot,389,3.79,1.28,29.4
-RelhAlpha,K1Z juryoku koku,361,3.37,0.72,30.9
-RelhAlpha,Ron SWGY,349,2.35,1.19,30.8
-RelhAlpha,K1Z odin free,318,2.06,1.23,30.2
-RelhAlpha,K1Z katanasan,255,2.56,1.11,32.5
-RelhAlpha,K1Z Hrafn,204,1.46,0.7,27.4
-RelhAlpha,Calc,195,2.18,0.91,28.2
-RelhAlpha,James Boggs,55,4.62,2.63,30.5
-RelhAlpha,docxology,10,4.53,3.67,31.0
-Richard Higgins,RelhAlpha,867,1.66,1.12,29.2
-Richard Higgins,Auri,673,2.42,0.79,28.3
-Richard Higgins,daveey,598,2.24,1.05,30.9
-Richard Higgins,K1Z juryoku koku,460,2.19,1.1,30.4
-Richard Higgins,K1Z odin free,381,1.51,0.37,29.8
-Richard Higgins,K1Z katanasan,348,3.75,1.32,29.9
-Richard Higgins,Ron SWGY,317,3.47,1.44,31.1
-Richard Higgins,Sefirot,244,3.09,1.32,31.4
-Richard Higgins,Calc,171,1.81,1.05,26.6
-Richard Higgins,James Boggs,147,3.61,2.37,27.3
-Richard Higgins,K1Z Hrafn,58,2.8,0.98,27.8
-Richard Higgins,docxology,1,8.83,8.83,40.0
-Ron @ SWGY,Auri,218,2.14,1.49,19.2
-Ron @ SWGY,RelhAlpha,204,1.6,1.26,17.4
-Ron @ SWGY,K1Z odin free,194,2.41,1.81,19.4
-Ron @ SWGY,K1Z juryoku koku,154,2.34,1.04,18.1
-Ron @ SWGY,Richard Higgins,148,1.67,1.36,17.5
-Ron @ SWGY,docxology,145,3.05,2.58,24.1
-Ron @ SWGY,Sefirot,134,2.36,1.53,18.7
-Ron @ SWGY,James Boggs,132,2.13,1.49,20.3
-Ron @ SWGY,K1Z katanasan,90,2.64,1.31,18.5
-Ron @ SWGY,K1Z Hrafn,85,1.39,0.91,14.2
-Ron @ SWGY,Calc,84,2.2,1.81,20.4
-Ron @ SWGY,daveey,71,2.6,1.24,17.2
-Sefirot,RelhAlpha,314,1.83,1.22,23.7
-Sefirot,daveey,239,1.89,1.18,23.9
-Sefirot,Ron SWGY,216,2.21,1.45,30.1
-Sefirot,Auri,198,1.59,1.21,29.2
-Sefirot,K1Z odin free,184,1.84,1.3,23.6
-Sefirot,Richard Higgins,178,1.52,1.22,24.9
-Sefirot,Calc,166,1.71,1.29,18.1
-Sefirot,James Boggs,126,2.39,1.86,24.6
-Sefirot,K1Z katanasan,87,3.65,1.64,27.4
-Sefirot,K1Z Hrafn,71,2.5,1.28,24.6
-Sefirot,K1Z juryoku koku,66,2.0,1.47,28.9
-Sefirot,docxology,55,2.45,2.03,19.8
-daveey,Auri,665,2.48,1.34,27.1
-daveey,RelhAlpha,504,2.17,1.57,28.8
-daveey,Sefirot,352,3.51,1.4,25.5
-daveey,K1Z odin free,316,1.81,1.24,23.6
-daveey,K1Z juryoku koku,307,5.39,1.65,26.6
-daveey,Richard Higgins,297,2.25,1.4,26.2
-daveey,K1Z katanasan,233,14.35,2.8,31.3
-daveey,Ron SWGY,172,4.08,1.8,29.1
-daveey,Calc,162,3.31,1.61,26.9
-daveey,K1Z Hrafn,126,2.29,1.4,21.0
-daveey,James Boggs,63,3.2,1.7,29.3
-daveey,docxology,18,3.3,2.86,34.2
-docxology,Auri,236,0.58,0.6,10.0
-docxology,Ron SWGY,208,0.44,0.44,10.0
-docxology,James Boggs,185,0.82,0.64,10.0
-docxology,RelhAlpha,180,0.61,0.55,10.0
-docxology,Richard Higgins,179,0.64,0.55,10.0
-docxology,Calc,178,0.41,0.34,10.0
-docxology,daveey,58,0.66,0.63,10.0
-docxology,Sefirot,52,0.52,0.57,10.0
-docxology,K1Z juryoku koku,7,2.42,2.42,10.0
-docxology,K1Z odin free,5,0.14,0.13,10.0
-odin free,daveey,361,6.22,1.68,19.6
-odin free,Ron SWGY,198,5.02,3.07,15.8
-odin free,Auri,173,5.71,2.06,18.7
-odin free,RelhAlpha,150,4.46,2.6,20.4
-odin free,Sefirot,116,5.28,2.46,17.0
-odin free,Richard Higgins,100,3.26,2.72,18.3
-odin free,Calc,84,3.51,2.04,18.2
-odin free,James Boggs,68,3.44,2.44,17.5
-odin free,docxology,12,3.32,3.36,18.8
-odin free,K1Z Hrafn,1,1.65,1.65,10.0
+Auri,K1Z Mickey Mouse,231,2.05,1.51,27.3
+Auri,djizus,228,3.38,1.79,32.1
+Auri,daveey,207,2.53,1.41,29.9
+Auri,relh,187,2.04,1.46,31.5
+Auri,Calc,168,3.9,1.34,31.1
+Auri,Sefirot,110,3.56,2.23,34.0
+Auri,richard,107,3.17,1.6,30.5
+Auri,salomon shdow,102,2.42,1.38,27.1
+Auri,Ron SWGY,80,3.11,2.17,22.0
+Auri,softmaxwell,74,2.11,1.46,28.4
+Auri,James Boggs,24,2.55,2.26,21.9
+Auri,docxology,23,4.66,2.57,31.5
+Calc,daveey,330,11.55,1.69,25.6
+Calc,djizus,308,4.81,2.99,25.6
+Calc,Auri,248,3.13,1.61,24.9
+Calc,relh,232,4.07,1.84,25.4
+Calc,K1Z Mickey Mouse,215,2.5,1.41,25.8
+Calc,richard,141,2.2,1.4,26.2
+Calc,salomon shdow,132,3.72,2.1,24.9
+Calc,Ron SWGY,126,4.93,2.53,23.5
+Calc,softmaxwell,125,2.55,1.45,24.9
+Calc,Sefirot,82,5.31,2.38,24.8
+Calc,James Boggs,52,4.52,3.11,23.3
+Calc,docxology,7,3.03,2.58,27.1
+James Boggs,relh,158,0.81,0.7,10.2
+James Boggs,richard,125,1.01,1.1,10.5
+James Boggs,salomon shdow,90,1.38,1.07,10.8
+James Boggs,Ron SWGY,63,1.55,1.19,11.4
+James Boggs,Calc,55,0.89,0.71,10.3
+James Boggs,djizus,47,0.39,0.18,10.0
+James Boggs,softmaxwell,45,1.08,1.05,11.7
+James Boggs,K1Z Mickey Mouse,41,0.94,1.0,10.4
+James Boggs,Auri,24,1.66,1.13,13.8
+James Boggs,daveey,22,1.9,1.53,10.7
+James Boggs,docxology,7,3.16,2.36,27.1
+James Boggs,Sefirot,1,0.21,0.21,10.0
+K1Z Mickey Mouse,relh,423,3.88,1.58,23.0
+K1Z Mickey Mouse,Calc,393,3.5,1.93,19.2
+K1Z Mickey Mouse,daveey,358,2.94,1.48,20.9
+K1Z Mickey Mouse,richard,356,2.17,1.6,22.9
+K1Z Mickey Mouse,djizus,305,2.83,1.85,24.2
+K1Z Mickey Mouse,Auri,303,3.52,1.59,20.2
+K1Z Mickey Mouse,salomon shdow,273,4.69,1.5,22.2
+K1Z Mickey Mouse,Ron SWGY,248,4.03,2.04,20.0
+K1Z Mickey Mouse,softmaxwell,220,2.9,1.49,24.5
+K1Z Mickey Mouse,James Boggs,129,6.25,2.7,18.3
+K1Z Mickey Mouse,Sefirot,73,8.81,2.35,22.1
+K1Z Mickey Mouse,docxology,25,4.96,3.59,19.0
+Ron @ SWGY,djizus,107,1.68,1.38,18.3
+Ron @ SWGY,relh,86,1.08,1.01,13.5
+Ron @ SWGY,softmaxwell,80,1.58,1.23,17.5
+Ron @ SWGY,salomon shdow,74,1.88,1.45,19.9
+Ron @ SWGY,richard,62,1.16,1.21,15.1
+Ron @ SWGY,Calc,61,1.96,1.41,17.4
+Ron @ SWGY,K1Z Mickey Mouse,58,1.91,1.25,17.2
+Ron @ SWGY,Auri,53,3.2,1.34,17.1
+Ron @ SWGY,docxology,51,2.69,2.31,24.7
+Ron @ SWGY,James Boggs,48,2.31,1.78,20.3
+Ron @ SWGY,Sefirot,41,1.97,1.57,19.9
+Ron @ SWGY,daveey,38,1.49,1.22,16.7
+Sefirot,richard,435,0.47,0.38,39.9
+Sefirot,relh,389,0.64,0.53,39.7
+Sefirot,Auri,272,0.72,0.6,39.9
+Sefirot,salomon shdow,209,1.93,0.98,39.9
+Sefirot,softmaxwell,146,0.78,0.65,40.0
+Sefirot,Ron SWGY,123,1.88,1.23,39.8
+Sefirot,Calc,91,1.35,0.47,39.7
+Sefirot,djizus,89,1.36,0.87,40.0
+Sefirot,K1Z Mickey Mouse,65,3.14,0.95,40.0
+Sefirot,docxology,65,1.28,1.04,40.0
+Sefirot,daveey,62,1.19,0.44,40.0
+Sefirot,James Boggs,4,11.53,3.88,40.0
+daveey,relh,531,2.11,1.29,25.6
+daveey,K1Z Mickey Mouse,510,1.6,1.3,21.1
+daveey,djizus,403,2.5,1.51,25.4
+daveey,Calc,345,3.18,1.21,25.2
+daveey,Auri,329,2.36,1.2,20.2
+daveey,salomon shdow,264,1.48,1.13,22.3
+daveey,richard,232,2.4,1.42,23.0
+daveey,Ron SWGY,122,3.99,2.76,33.1
+daveey,Sefirot,97,6.98,2.97,30.7
+daveey,softmaxwell,79,1.77,1.27,18.9
+daveey,James Boggs,57,5.09,3.96,27.4
+daveey,docxology,29,4.59,3.36,28.6
+djizus,Calc,772,0.99,0.63,39.1
+djizus,Auri,475,0.86,0.61,37.3
+djizus,daveey,365,2.67,1.39,39.1
+djizus,richard,361,0.64,0.44,39.8
+djizus,relh,309,1.46,1.11,39.6
+djizus,Sefirot,290,0.62,0.31,38.4
+djizus,Ron SWGY,240,2.86,1.38,38.8
+djizus,K1Z Mickey Mouse,224,1.11,0.72,38.5
+djizus,salomon shdow,202,1.43,0.95,37.9
+djizus,James Boggs,69,4.05,2.15,38.5
+djizus,docxology,50,1.93,1.55,38.8
+djizus,softmaxwell,41,0.92,0.91,37.1
+docxology,relh,264,0.7,0.77,10.0
+docxology,softmaxwell,189,0.7,0.76,10.0
+docxology,Auri,171,0.65,0.64,10.0
+docxology,djizus,79,0.47,0.43,10.0
+docxology,Ron SWGY,64,0.47,0.47,10.0
+docxology,Sefirot,22,0.83,0.85,10.0
+docxology,James Boggs,12,0.54,0.55,10.0
+docxology,salomon shdow,12,0.57,0.52,10.0
+docxology,richard,10,0.38,0.41,10.0
+docxology,Calc,6,0.78,0.77,10.0
+docxology,K1Z Mickey Mouse,3,1.03,1.03,10.0
+relh,daveey,769,1.85,0.91,28.8
+relh,Calc,494,2.33,0.82,30.2
+relh,djizus,472,1.17,0.88,26.4
+relh,K1Z Mickey Mouse,452,1.33,0.76,29.6
+relh,richard,425,1.1,0.68,27.2
+relh,Auri,397,1.38,0.91,26.1
+relh,salomon shdow,242,1.68,0.93,27.1
+relh,Ron SWGY,148,2.63,1.74,31.4
+relh,Sefirot,146,4.1,0.61,28.3
+relh,softmaxwell,95,1.47,0.81,26.4
+relh,James Boggs,91,4.58,2.92,29.1
+relh,docxology,2,11.13,11.13,40.0
+richard,K1Z Mickey Mouse,610,1.5,0.84,26.5
+richard,djizus,559,2.84,1.88,28.1
+richard,daveey,514,3.63,1.19,30.9
+richard,Calc,450,3.49,1.09,28.4
+richard,Sefirot,417,4.75,2.66,30.7
+richard,relh,326,3.33,1.5,28.3
+richard,salomon shdow,321,2.01,1.2,28.0
+richard,Auri,283,3.11,1.3,26.7
+richard,Ron SWGY,283,5.6,3.78,34.5
+richard,softmaxwell,132,2.79,1.56,25.3
+richard,James Boggs,122,5.93,2.04,29.8
+salomon-shdow,Ron SWGY,269,3.5,1.79,20.8
+salomon-shdow,daveey,212,3.94,1.5,20.9
+salomon-shdow,relh,189,2.11,1.39,22.9
+salomon-shdow,Auri,178,2.68,1.38,21.2
+salomon-shdow,djizus,167,2.82,1.84,23.7
+salomon-shdow,Calc,159,4.03,1.98,21.1
+salomon-shdow,Sefirot,130,3.13,1.67,24.1
+salomon-shdow,softmaxwell,127,2.48,1.51,24.2
+salomon-shdow,richard,89,1.9,1.65,23.0
+salomon-shdow,James Boggs,77,5.05,2.84,18.8
+salomon-shdow,K1Z Mickey Mouse,62,2.23,1.48,24.3
+salomon-shdow,docxology,20,2.36,1.88,24.3
+softmaxwell,relh,89,2.55,1.62,32.9
+softmaxwell,docxology,87,3.18,2.37,25.0
+softmaxwell,Sefirot,84,2.18,1.65,34.1
+softmaxwell,Auri,77,2.12,1.45,31.8
+softmaxwell,daveey,69,2.41,1.66,32.2
+softmaxwell,salomon shdow,64,1.99,1.53,34.6
+softmaxwell,Calc,46,1.7,1.42,31.8
+softmaxwell,James Boggs,44,3.1,1.57,30.8
+softmaxwell,K1Z Mickey Mouse,35,1.7,1.36,32.7
+softmaxwell,Ron SWGY,30,3.08,2.61,27.5
+softmaxwell,richard,19,3.98,2.27,30.5
+softmaxwell,djizus,13,5.42,3.26,29.6
