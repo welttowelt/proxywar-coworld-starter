@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260723T032338Z-42718",
+  "recorded_at": "2026-07-23T03:24:16Z",
+  "transition": "terminal_precontact_source_identity_block_checkpoint",
+  "priority_packet": null,
+  "dispatch_mailbox_head": "4f9d7b9e1df5497e0ab9d20102775d4237b19df9",
+  "repository_input": {
+    "head": "287151b9c56209107b4d7180ea81b062315e24a8",
+    "origin_main": "287151b9c56209107b4d7180ea81b062315e24a8",
+    "active_arm_sha256": "0f800ebe4dfca1617a0e1a8521488973cd93b9e2172703df27849df04f2fafb1",
+    "source_identity_audit_sha256": "e64623b6386cb7f73a3c2c791fac0dca4e21ca5979e97a675c3c5662e663f47d",
+    "mickey_no_harm_receipt_sha256": "32b8c1d7eaa0714ff81ae97d7ffde86ccb18abda88bbe326b04f80777600e8c7"
+  },
+  "authority_check": {
+    "runner_lease": "free",
+    "dispatch_mailbox_head_changed": false,
+    "priority_packet_present": false,
+    "new_hash_bound_v89_parent_record_referenced": false,
+    "gate_effect": "NO_CLEARANCE"
+  },
+  "deadline_check": {
+    "soft_deadline_epoch": 1784777498,
+    "hard_deadline_epoch": 1784777918,
+    "checkpoint_epoch": 1784777056,
+    "soft_deadline_reached": false,
+    "action": "TERMINAL_BLOCK_CHECKPOINT_AND_EXIT"
+  },
+  "identity_gate": {
+    "source_episode_id": "f2b16473-b3b7-42ab-926b-dee8d0c2b357",
+    "source_episode_policy_label": "qd1n:v95",
+    "source_episode_policy_version_id": "ccf3a01d-f4bd-4eaa-a1c4-a1c900b78844",
+    "live_parent_policy_label": "qd1n:v89",
+    "live_parent_policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "identity_match": false,
+    "hash_bound_v89_precontact_parent_record": false,
+    "legal_candidate_parent_action_difference_proven": false
+  },
+  "verdict": "BLOCK_EVIDENCE_IDENTITY_MISMATCH_NO_STATE_SEAL",
+  "reason": "The dispatch contains no priority packet, mailbox-head change, or new hash-bound qd1n:v89 parent record. The only referenced pre-contact episode remains qd1n:v95, so its action cannot establish the live qd1n:v89 selector choice or a legal candidate-parent action difference.",
+  "decision": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "prior_verified_champion_preserved": true,
+    "unrelated_dirty_files_preserved": [
+      "data/processed/manifest.json",
+      "data/processed/official_streak.json"
+    ]
+  },
+  "next_automatic_transition": "Obtain one hash-bound qd1n:v89 parent decision record before hostile contact, or reproduce the exact v89 selector on a separately preregistered hash-bound fixture for the same state. Seal a state only after that parent record proves a legal candidate-parent action difference. Carry the committed Mickey no-harm guard. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates."
+}

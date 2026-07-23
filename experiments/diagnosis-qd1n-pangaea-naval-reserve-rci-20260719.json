@@ -1,0 +1,231 @@
+{
+  "experiment": "qd1n Pangaea naval reserve NR1 and NR2",
+  "date": "2026-07-19",
+  "status": "rejected",
+  "causal_basis": {
+    "official_round": 513,
+    "map": "Pangaea",
+    "live_policy": "qd1n:v89",
+    "official_rank": 3,
+    "official_score": 0.25,
+    "declared_episode_wins": 0,
+    "appearances": 4,
+    "mean_final_tiles": 77721,
+    "holds": 8,
+    "fallbacks": 654,
+    "weak_seat_observation": "All three losing Odin seats were attacked by turn 2100 and continued selecting neutral boats. The 300192-tile timeout seat was not attacked until turn 7600.",
+    "first_4000_turn_profile": [
+      {
+        "slot": 6,
+        "peak_tiles": 11687,
+        "neutral_boats": 16,
+        "retreats": 2,
+        "neutral_land_attacks": 11
+      },
+      {
+        "slot": 7,
+        "peak_tiles": 23342,
+        "neutral_boats": 9,
+        "retreats": 3,
+        "neutral_land_attacks": 14
+      },
+      {
+        "slot": 8,
+        "peak_tiles": 3597,
+        "neutral_boats": 13,
+        "retreats": 6,
+        "neutral_land_attacks": 6
+      },
+      {
+        "slot": 9,
+        "peak_tiles": 127930,
+        "neutral_boats": 8,
+        "retreats": 0,
+        "neutral_land_attacks": 22
+      }
+    ]
+  },
+  "parent": {
+    "live_policy": "qd1n:v89",
+    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "local_image": "proxywar-agent-llm:qd1n-v77-km4-amd64",
+    "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+    "platform": "linux/amd64"
+  },
+  "nr1": {
+    "hypothesis": "When a sub-12-percent seat has a recently attributed attacker, prefer a legal build or upgrade over a neutral boat to preserve a defensive reserve.",
+    "candidate": {
+      "branch": "rci/nr1",
+      "commit": "af321d2502d189876603e6640424cd6e066382e0",
+      "strategy_sha256": "6b9039a27517d5d2f6155b8cd06ad2b2dfcd83e3d7d0fcfe6dafc93bb4634d33",
+      "image": "proxywar-agent-llm:qd1n-v89-nr1-amd64",
+      "image_id": "sha256:b1ddd1bab49580d2a1705b7b420433f613ad7da8508da32b1bce73483d54b31e"
+    },
+    "tests": {
+      "focused": {
+        "passed": 6,
+        "failed": 0
+      },
+      "full": {
+        "passed": 152,
+        "failed": 0
+      }
+    },
+    "qualifier": {
+      "decisions": 34,
+      "accepted": 34,
+      "rejected": 0,
+      "holds": 0,
+      "replay_verified": true,
+      "replay_sha256": "5cbb719f1d47c413e6a18ff819ffbb7c27f4b917c24a12812e6d4cd85f5992b9"
+    },
+    "pangaea_reach_probe": {
+      "path": "/private/tmp/proxywar-nr1-reach-pangaea-a-v3-20260719",
+      "decisions": 644,
+      "accepted": 644,
+      "rejected": 0,
+      "holds": 0,
+      "marker_executions": 0,
+      "replay_verified": true,
+      "replay_sha256": "865418e36104f0f09e87df3004aa741f79d974dad4dd8687ddebe3ead0b776c0"
+    },
+    "promotion_gates": {
+      "mechanism_reach": "failed: attacker attribution was not exposed reliably at the candidate decision boundary on the Pangaea probe",
+      "accepted_actions": "passed: 644/644 probe decisions accepted with zero holds or rejections",
+      "matched_advantage": "not run after reach failure",
+      "hosted_4_of_4": "not run",
+      "regression_20_of_20": "not run",
+      "live_identity_submission_membership": "unchanged"
+    },
+    "verdict": "reject"
+  },
+  "nr2": {
+    "hypothesis": "Below a 12-percent land base, prefer a legal build or upgrade over a neutral boat while preserving neutral land expansion, credible rival counters, K1Z requests, high-share naval play, and the existing cv1 conversion branch.",
+    "candidate": {
+      "branch": "rci/nr2",
+      "commit": "800f9d1c3d2e09413df819fa4e18d22e05f46447",
+      "strategy_sha256": "9dda45ffee9d370c2569aef2822d5045f7f60d532129cfa87e7060423b9ae0a5",
+      "image": "proxywar-agent-llm:qd1n-v89-nr2-amd64",
+      "image_id": "sha256:8cb9ccff737a9e9261731ee24f35767fc2d17c790445fc73c588031f6143b1f5"
+    },
+    "tests": {
+      "focused_compatibility": {
+        "passed": 10,
+        "failed": 0
+      },
+      "full": {
+        "passed": 153,
+        "failed": 0
+      }
+    },
+    "qualifier": {
+      "decisions": 34,
+      "accepted": 34,
+      "rejected": 0,
+      "holds": 0,
+      "replay_verified": true,
+      "replay_sha256": "a13b4b181ffb816b28b7d5ca11cc4f3963a250adc0df885c016553a3126e39e0"
+    },
+    "bounded_matched_pangaea": {
+      "configuration": {
+        "map": "Pangaea",
+        "players": 8,
+        "max_decision_steps": 120,
+        "turns_per_decision_step": 100,
+        "seat_swap": "candidate even in A and odd in B"
+      },
+      "orientation_a": {
+        "path": "/private/tmp/proxywar-nr2-reach-pangaea-a-20260719",
+        "candidate_markers": 2,
+        "confirmed_markers": 2,
+        "marker_actions": [
+          {
+            "turn": 4800,
+            "seat": "Coworld Starter 1",
+            "action": "build City",
+            "tiles_before": 663
+          },
+          {
+            "turn": 4100,
+            "seat": "juryoku-koku",
+            "action": "build Port",
+            "tiles_before": 47011
+          }
+        ],
+        "replay_verified": true,
+        "replay_sha256": "b797aac9843dc3d182b7061b84dc3f8f8e8d5849e607b888609715660f7dd8bd"
+      },
+      "orientation_b": {
+        "path": "/private/tmp/proxywar-nr2-reach-pangaea-b-20260719",
+        "candidate_markers": 8,
+        "confirmed_markers": 8,
+        "marker_seats": {
+          "Coworld Starter 2": 3,
+          "Coworld Starter 6": 3,
+          "Coworld Starter 8": 2
+        },
+        "replay_verified": true,
+        "replay_sha256": "2880f92ae163769e29fecb55fd53c8af1b81722804052e55e3b24c8cd2c22675"
+      },
+      "aggregate": {
+        "candidate": {
+          "decisions": 683,
+          "accepted": 683,
+          "rejected": 0,
+          "holds": 0,
+          "fallbacks": 659,
+          "marker_executions": 10,
+          "score": 1,
+          "tiles": 420304,
+          "surviving_seats": 2
+        },
+        "parent": {
+          "decisions": 667,
+          "accepted": 667,
+          "rejected": 0,
+          "holds": 2,
+          "fallbacks": 643,
+          "score": 1,
+          "tiles": 420335,
+          "surviving_seats": 2
+        },
+        "candidate_tile_delta": -31,
+        "candidate_tile_delta_percent": -0.007375,
+        "candidate_score_delta": 0,
+        "survivor_seats_followed_orientation": "the same even seats survived in both orientations"
+      }
+    },
+    "promotion_gates": {
+      "mechanism_reach": "passed: 10 accepted and audit-confirmed economy replacements",
+      "accepted_actions": "passed: 683/683 candidate decisions accepted with zero holds or rejections",
+      "matched_advantage": "failed: score and survivors tied while candidate territory fell by 31 tiles",
+      "hosted_4_of_4": "not run after matched failure",
+      "regression_20_of_20": "not run after matched failure",
+      "live_identity_submission_membership": "unchanged"
+    },
+    "verdict": "reject"
+  },
+  "official_checkpoint_after": {
+    "round": 515,
+    "map": "Pangaea",
+    "live_policy": "qd1n:v89",
+    "official_rank": 1,
+    "official_score": 0.5,
+    "declared_episode_wins": 0,
+    "appearances": 4,
+    "mean_final_tiles": 131767.25,
+    "decisions": 1102,
+    "fallbacks": 765,
+    "holds": 0,
+    "rejected": 0,
+    "official_first_place_streak": "1/1000",
+    "interpretation": "The official rank came from bounded territorial scoring rather than a declared episode win. Territory accumulation through the timeout horizon is therefore a valid scoring route on this field, but one round does not establish a stable policy edge."
+  },
+  "verdict": {
+    "decision": "reject both candidates",
+    "reason": "NR1 could not observe its intended trigger at the decision boundary. NR2 reached the low-share economy branch cleanly but did not move score, survival, or territory. Fixed seat geometry dominated the bounded Pangaea result.",
+    "live_policy_after": "qd1n:v89",
+    "upload_submission_membership_champion_changes": 0
+  },
+  "next_hypothesis": "Measure why Round 515 accumulated more timeout territory than Round 513 and target a seat-robust scoring objective. Do not add another broad early boat or economy ordering rule."
+}

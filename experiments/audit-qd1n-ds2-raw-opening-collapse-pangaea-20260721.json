@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-21T00:58:55Z",
+  "arm": "ds2",
+  "name": "raw_opening_collapse_counter",
+  "verdict": "STOP_LOCAL_PLANNER_DEGRADATION_NO_SUBMIT",
+  "source": {
+    "parent_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "candidate_commit": "5d1b72ee79331250d156544eb4505bc1e3d5a1f3",
+    "branch": "rci/ds2-raw-opening-collapse",
+    "tests": "164/164",
+    "terminal_rci": "PASS",
+    "source_ready": true
+  },
+  "image": {
+    "ref": "proxywar-agent-llm:qd1n-v89-ds2-5d1b72ee-amd64",
+    "id": "sha256:8cdfa62bab5ce6ea370be01320111d0fa0c482f8ce0de571394d6c41709c027e",
+    "architecture": "amd64",
+    "source_check": "strategy-engine.mjs and llm-player.mjs byte-identical to candidate commit"
+  },
+  "qualifier": {
+    "decisions": 34,
+    "accepted": 34,
+    "holds": 0,
+    "rejections": 0,
+    "results_sha256": "d47d0eee35fdce9da3efb743d121d7f720c9dc91c21372c667d12cb31587b8dc",
+    "replay_sha256": "590cf478f864e654a27e1abdb6554a7dbbdbed79d22d0606feb9b9551296a572",
+    "decisions_sha256": "d9095a841b6685f2b2212bd1bb968a861749f6b8f50185b6dec59c8842dec88f"
+  },
+  "matched_pressure_pair": {
+    "pair_id": "ds2-pressure-seed-20260722",
+    "map": "Pangaea",
+    "seed": 20260722,
+    "subject_slot": 0,
+    "pressure_slot": 7,
+    "only_job_delta": "subject slot image: safety control to DS2 candidate",
+    "control": {
+      "job_sha256": "9671ba22638800d570d0cdbd18ddce00f23e36ddba40f68592a85e141cf8203b",
+      "decisions": 63,
+      "accepted": 63,
+      "holds": 0,
+      "rejections": 0,
+      "planner_fallbacks": 60,
+      "planner_degraded": 60,
+      "marker_count": 0,
+      "post_trigger_tile_sum": 90419,
+      "final_tiles": 396,
+      "score": 0.0009421,
+      "results_sha256": "37728a6d7fbf86236a62ab857f79e6adecaeeb202b8a8db13acc5ffcf9181047",
+      "replay_sha256": "e7e786bd89b1f91c3b07c60c41f96d05539f948cf8382bdcfa34ef656da7ff45",
+      "decisions_sha256": "a26b4ed3ca23d90718b94b73e2e2d39477423f3640ea0d5a0c98c81a09a5b68d"
+    },
+    "candidate": {
+      "job_sha256": "d91b46b220d747bd31d9e15d5c73898454b90d7740a154e5dd68a8fe2ef3e38e",
+      "pre_marker_selected_and_legal_trace_exact_rows": 18,
+      "decisions": 63,
+      "accepted": 63,
+      "holds": 0,
+      "rejections": 0,
+      "planner_fallbacks": 60,
+      "planner_degraded": 60,
+      "marker_count": 3,
+      "marker_turns": [1900, 2100, 2300],
+      "marked_action": "attack:aaljvkkc:40",
+      "post_trigger_tile_sum": 117689,
+      "final_tiles": 2006,
+      "score": 0.004772,
+      "results_sha256": "6493f9e456b5c4df1c84fe8198b0e6929b4c4274e387b8cc3745a7b9d0e0c771",
+      "replay_sha256": "7b981b5a79677174a240b4cf0785e9297fbd2a965aa9440cb14be7020021bf77",
+      "decisions_sha256": "588aa2fd324497bae516702205ac94059feb6cb684e3d77ca17970c67eb3a4fa"
+    },
+    "causal_result": {
+      "post_trigger_tile_sum_delta": 27270,
+      "post_trigger_tile_sum_lift_pct": 30.16,
+      "final_tile_delta": 1610,
+      "final_tile_multiple": 5.07,
+      "zero_k1z_harm": true,
+      "result": "PASS_CAUSAL_LOCAL"
+    }
+  },
+  "promotion_gate": {
+    "local_mechanism_verified": false,
+    "failed_condition": "All three marker actions and 60/63 candidate decisions used planner fallback and degradation after local Bedrock connection errors.",
+    "protocol": "AUTONOMOUS_PROMOTION.md requires marker reach with zero fallback and zero degradation.",
+    "clean_retry_available": false,
+    "clean_retry_evidence": "Coworld local Bedrock requires operator-owned AWS credentials. This Mac has no AWS CLI, profile, credentials, SSO cache, relevant environment, or local Bedrock sidecar.",
+    "diagnostic_upload_allowed": false,
+    "hosted_gate_allowed": false,
+    "regression_allowed": false,
+    "submission_allowed": false,
+    "champion_change_allowed": false
+  },
+  "deployment_truth": {
+    "live_policy": "qd1n:v89",
+    "candidate_uploaded": false,
+    "candidate_submitted": false,
+    "candidate_membership": false,
+    "live_champion_changed": false
+  },
+  "reuse_rule": "Retain DS2 as causal mechanism evidence only. Reopen it in a new preregistered cycle after a valid clean local planner transport exists; do not weaken the gate or retry the same contaminated fixture."
+}

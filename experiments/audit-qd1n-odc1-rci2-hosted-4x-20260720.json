@@ -1,0 +1,928 @@
+{
+  "schema_version": 1,
+  "arm": "odc1",
+  "gate": "hosted_4_of_4",
+  "verdict": "STOP_HOSTED",
+  "candidate_source_commit": "23ada8a8cfc1f41b1c798cfcb3b71f6fc2f21587",
+  "candidate_image_id": "sha256:3af909f391a179356876b54e810fd8c197d9cd88432ff4916a6c4e83c50a41a9",
+  "candidate_policy_version_id": "3d498947-09a1-490f-80d4-b893609c2f00",
+  "request_id": "xreq_78ea6880-1bba-4db6-88e1-9008e7f4966a",
+  "baseline_request_id": "xreq_21e492fa-fe11-46c2-9e06-0ed289a12d5e",
+  "roster_sha256": "82e5de55d4efcf67cfec321494ee3dea76f1b34204ccb8d707a4623ca2c1fde5",
+  "variant": "tournament-12p-pangaea",
+  "episodes": [
+    {
+      "episode_id": "ereq_f06bd434-75b9-4b1e-99d5-93b63164b841",
+      "runtime_episode_id": "131a87f0-52d5-479f-9ccf-37c076197281",
+      "replay_sha256": "0f97d98d867cf32376d0a59cad9ff94b569769a1eb33580f3deda67c52a15c18",
+      "winner_player_id": "ply_626f8a94-0bc0-4697-b76b-cc909a98b4e4",
+      "candidate_policy_version_id": "3d498947-09a1-490f-80d4-b893609c2f00",
+      "seat": 7,
+      "map": "Pangaea",
+      "score": 0.0,
+      "won": false,
+      "final_tiles": 2517,
+      "decision_count": 150,
+      "accepted_decisions": 150,
+      "marker_counts": {
+        "4ly": 2,
+        "deterministic built in style spawn exploration": 3,
+        "kp2": 5,
+        "odc10": 2,
+        "odc40": 3,
+        "odec1": 1,
+        "odecon": 4,
+        "odef": 3,
+        "odg10": 16,
+        "odg20": 12,
+        "odg35": 31,
+        "odn16": 19,
+        "odn25": 4,
+        "odn8": 15,
+        "odncap": 3,
+        "rtr": 21,
+        "tgt": 3,
+        "upg": 3
+      },
+      "marker_executions": 4,
+      "holds": 0,
+      "hold_details": [],
+      "unexplained_hold_details": [],
+      "rejections": 0,
+      "rejection_details": [],
+      "k1z_harm": 0,
+      "k1z_harm_details": [],
+      "unresolved_harmful_targets": [],
+      "execution_conflicts": [],
+      "submitted_k1z_harm": [],
+      "submitted_unresolved_harmful_targets": [],
+      "planner_degradation": 0,
+      "planner_degradation_passed": true
+    },
+    {
+      "episode_id": "ereq_6dc633de-2292-4540-bcae-265f249016d6",
+      "runtime_episode_id": "f1324f0f-351f-481a-b510-f97732932909",
+      "replay_sha256": "5a0fe5c4685e8b12a86ccc91f31346897f821f523cac8a8e57c369d1fd624e44",
+      "winner_player_id": "ply_44ae9048-3242-4654-881f-6d9d43347fa3",
+      "candidate_policy_version_id": "3d498947-09a1-490f-80d4-b893609c2f00",
+      "seat": 7,
+      "map": "Pangaea",
+      "score": 0.0,
+      "won": false,
+      "final_tiles": 5535,
+      "decision_count": 120,
+      "accepted_decisions": 120,
+      "marker_counts": {
+        "deterministic built in style spawn exploration": 3,
+        "kp2": 5,
+        "odc10": 3,
+        "odc40": 5,
+        "odec1": 1,
+        "odecon": 3,
+        "odef": 6,
+        "odg10": 17,
+        "odg20": 11,
+        "odg35": 28,
+        "odn16": 16,
+        "odn8": 12,
+        "odncap": 1,
+        "rtr": 9
+      },
+      "marker_executions": 6,
+      "holds": 0,
+      "hold_details": [],
+      "unexplained_hold_details": [],
+      "rejections": 0,
+      "rejection_details": [],
+      "k1z_harm": 0,
+      "k1z_harm_details": [],
+      "unresolved_harmful_targets": [],
+      "execution_conflicts": [],
+      "submitted_k1z_harm": [],
+      "submitted_unresolved_harmful_targets": [],
+      "planner_degradation": 0,
+      "planner_degradation_passed": true
+    },
+    {
+      "episode_id": "ereq_5abaa793-f5e3-4e64-8826-0afa47defd8e",
+      "runtime_episode_id": "d0c512ab-9cf8-4568-9655-1b5dd0231328",
+      "replay_sha256": "250c7dde74f38144dfc5946a5364fea1fce9100269c48422a53894ba6c7d3b87",
+      "winner_player_id": "ply_44ae9048-3242-4654-881f-6d9d43347fa3",
+      "candidate_policy_version_id": "3d498947-09a1-490f-80d4-b893609c2f00",
+      "seat": 7,
+      "map": "Pangaea",
+      "score": 0.0,
+      "won": false,
+      "final_tiles": 2717,
+      "decision_count": 126,
+      "accepted_decisions": 126,
+      "marker_counts": {
+        "deterministic built in style spawn exploration": 3,
+        "kp2": 4,
+        "odc10": 5,
+        "odc25": 5,
+        "odc40": 2,
+        "odec1": 1,
+        "odecon": 6,
+        "odef": 4,
+        "odg10": 19,
+        "odg20": 16,
+        "odg35": 38,
+        "odn16": 7,
+        "odn8": 11,
+        "rtr": 2,
+        "upg": 3
+      },
+      "marker_executions": 8,
+      "holds": 0,
+      "hold_details": [],
+      "unexplained_hold_details": [],
+      "rejections": 0,
+      "rejection_details": [],
+      "k1z_harm": 0,
+      "k1z_harm_details": [],
+      "unresolved_harmful_targets": [],
+      "execution_conflicts": [],
+      "submitted_k1z_harm": [],
+      "submitted_unresolved_harmful_targets": [],
+      "planner_degradation": 0,
+      "planner_degradation_passed": true
+    },
+    {
+      "episode_id": "ereq_798704da-cf40-492d-b8b6-9501e1dfd19e",
+      "runtime_episode_id": "d80770d5-2121-4ce3-a4ef-617846962c5e",
+      "replay_sha256": "da2771c1a03aa2fcf5c44bacc548b447eae03b762f1df0f782ec7e2064384d12",
+      "winner_player_id": null,
+      "candidate_policy_version_id": "3d498947-09a1-490f-80d4-b893609c2f00",
+      "seat": 7,
+      "map": "Pangaea",
+      "score": 0.0,
+      "won": false,
+      "final_tiles": 0,
+      "decision_count": 138,
+      "accepted_decisions": 138,
+      "marker_counts": {
+        "deterministic built in style spawn exploration": 3,
+        "h0d": 1,
+        "kp2": 3,
+        "odc10": 7,
+        "odc25": 1,
+        "odc40": 4,
+        "odec1": 1,
+        "odecon": 4,
+        "odef": 3,
+        "odg10": 14,
+        "odg20": 9,
+        "odg35": 20,
+        "odn16": 19,
+        "odn25": 1,
+        "odn8": 21,
+        "odncap": 3,
+        "rtr": 22,
+        "tgt": 2
+      },
+      "marker_executions": 6,
+      "holds": 1,
+      "hold_details": [
+        {
+          "turn": 8800,
+          "action_id": "hold",
+          "reason": "rul:h0d",
+          "markers": [
+            "h0d"
+          ]
+        }
+      ],
+      "unexplained_hold_details": [],
+      "rejections": 0,
+      "rejection_details": [],
+      "k1z_harm": 0,
+      "k1z_harm_details": [],
+      "unresolved_harmful_targets": [],
+      "execution_conflicts": [],
+      "submitted_k1z_harm": [],
+      "submitted_unresolved_harmful_targets": [],
+      "planner_degradation": 0,
+      "planner_degradation_passed": true
+    }
+  ],
+  "baseline_episodes": [
+    {
+      "episode_id": "ereq_beb8240b-a80c-4afa-ac5e-56d9f1b487e5",
+      "runtime_episode_id": "8129f433-ef93-409b-89cd-f399aeb3fcb3",
+      "replay_sha256": "71cc2dcbd97e5ea1bb08d8d09549d3f925590de3eb84442d7111484b5b3c35d4",
+      "winner_player_id": "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      "candidate_policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+      "seat": 7,
+      "map": "Pangaea",
+      "score": 0.0,
+      "won": false,
+      "final_tiles": 5322,
+      "decision_count": 137,
+      "accepted_decisions": 137,
+      "marker_counts": {
+        "atk": 44,
+        "b0t": 50,
+        "bld": 11,
+        "cv1": 4,
+        "deterministic built in style spawn exploration": 3,
+        "kp2": 7,
+        "rtr": 16,
+        "upg": 2
+      },
+      "marker_executions": 0,
+      "holds": 0,
+      "hold_details": [],
+      "unexplained_hold_details": [],
+      "rejections": 0,
+      "rejection_details": [],
+      "k1z_harm": 4,
+      "k1z_harm_details": [
+        {
+          "turn": 11100,
+          "kind": "attack",
+          "action_id": "attack:x262ww19:10",
+          "target_id": "x262ww19",
+          "target_name": "gravity",
+          "target_role": "gravity",
+          "reason": "endgame exception disabled"
+        },
+        {
+          "turn": 13400,
+          "kind": "attack",
+          "action_id": "attack:x262ww19:10",
+          "target_id": "x262ww19",
+          "target_name": "gravity",
+          "target_role": "gravity",
+          "reason": "endgame exception disabled"
+        }
+      ],
+      "unresolved_harmful_targets": [],
+      "execution_conflicts": [],
+      "submitted_k1z_harm": [
+        {
+          "turn": 11100,
+          "kind": "attack",
+          "target_id": "x262ww19",
+          "target_name": null,
+          "target_role": "gravity"
+        },
+        {
+          "turn": 13400,
+          "kind": "attack",
+          "target_id": "x262ww19",
+          "target_name": null,
+          "target_role": "gravity"
+        }
+      ],
+      "submitted_unresolved_harmful_targets": [],
+      "planner_degradation": 100
+    },
+    {
+      "episode_id": "ereq_4fd4950e-14ac-465a-a7b5-f9500aa00919",
+      "runtime_episode_id": "02d84015-b17d-4156-9519-d2ae64654416",
+      "replay_sha256": "1f182bb7ae8402845352e666ab2adde0ba962a7e398c357bf15b76d0aa25198c",
+      "winner_player_id": "ply_626f8a94-0bc0-4697-b76b-cc909a98b4e4",
+      "candidate_policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+      "seat": 7,
+      "map": "Pangaea",
+      "score": 0.0,
+      "won": false,
+      "final_tiles": 8732,
+      "decision_count": 117,
+      "accepted_decisions": 117,
+      "marker_counts": {
+        "atk": 34,
+        "b0t": 39,
+        "bld": 12,
+        "cv1": 4,
+        "deterministic built in style spawn exploration": 3,
+        "kp2": 6,
+        "mvw": 5,
+        "nuk": 1,
+        "rtr": 9,
+        "upg": 1,
+        "w4r": 3
+      },
+      "marker_executions": 0,
+      "holds": 0,
+      "hold_details": [],
+      "unexplained_hold_details": [],
+      "rejections": 0,
+      "rejection_details": [],
+      "k1z_harm": 13,
+      "k1z_harm_details": [
+        {
+          "turn": 9700,
+          "kind": "boat",
+          "action_id": "boat:146519:8",
+          "target_id": "x262ww19",
+          "target_name": "gravity",
+          "target_role": "gravity",
+          "reason": "endgame exception disabled"
+        }
+      ],
+      "unresolved_harmful_targets": [
+        {
+          "turn": 3300,
+          "kind": "warship",
+          "action_id": "build:Warship:400260"
+        },
+        {
+          "turn": 10100,
+          "kind": "warship",
+          "action_id": "build:Warship:143516"
+        },
+        {
+          "turn": 11300,
+          "kind": "warship",
+          "action_id": "build:Warship:403491"
+        }
+      ],
+      "execution_conflicts": [
+        {
+          "turn": 3300,
+          "action_id": "build:Warship:400260",
+          "reasons": [
+            "selected kind 'warship' != submitted kind None"
+          ]
+        },
+        {
+          "turn": 10100,
+          "action_id": "build:Warship:143516",
+          "reasons": [
+            "selected kind 'warship' != submitted kind None"
+          ]
+        },
+        {
+          "turn": 11300,
+          "action_id": "build:Warship:403491",
+          "reasons": [
+            "selected kind 'warship' != submitted kind None"
+          ]
+        }
+      ],
+      "submitted_k1z_harm": [
+        {
+          "turn": 9700,
+          "kind": "boat",
+          "target_id": "x262ww19",
+          "target_name": "K1Z Gravity",
+          "target_role": "gravity"
+        }
+      ],
+      "submitted_unresolved_harmful_targets": [
+        {
+          "turn": 3600,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 3800,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 10200,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 10300,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 11700,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        }
+      ],
+      "planner_degradation": 73
+    },
+    {
+      "episode_id": "ereq_a5213757-ad8e-4e56-85c3-e48ec8cb46ac",
+      "runtime_episode_id": "3f508a33-ff5c-4f41-8e49-dbc01ccf0af8",
+      "replay_sha256": "8c5c7d2b9df05303336f2a1532848bc8cc4e1e7c80dfd5224f586b733cd2a02b",
+      "winner_player_id": "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      "candidate_policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+      "seat": 7,
+      "map": "Pangaea",
+      "score": 0.0,
+      "won": false,
+      "final_tiles": 31386,
+      "decision_count": 134,
+      "accepted_decisions": 134,
+      "marker_counts": {
+        "atk": 31,
+        "b0t": 25,
+        "bld": 11,
+        "cv1": 2,
+        "deterministic built in style spawn exploration": 3,
+        "kp2": 5,
+        "mvw": 52,
+        "rtr": 3,
+        "upg": 1,
+        "w4r": 1
+      },
+      "marker_executions": 0,
+      "holds": 0,
+      "hold_details": [],
+      "unexplained_hold_details": [],
+      "rejections": 0,
+      "rejection_details": [],
+      "k1z_harm": 55,
+      "k1z_harm_details": [],
+      "unresolved_harmful_targets": [
+        {
+          "turn": 3300,
+          "kind": "warship",
+          "action_id": "build:Warship:400260"
+        }
+      ],
+      "execution_conflicts": [
+        {
+          "turn": 3300,
+          "action_id": "build:Warship:400260",
+          "reasons": [
+            "selected kind 'warship' != submitted kind None"
+          ]
+        }
+      ],
+      "submitted_k1z_harm": [],
+      "submitted_unresolved_harmful_targets": [
+        {
+          "turn": 3500,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 3800,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 4500,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 5800,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 6700,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 6800,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 6900,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 7400,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 7500,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 7600,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 7700,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 7800,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 7900,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 8000,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 8100,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 8200,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 8300,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 8400,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 8500,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 8600,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 8700,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 8800,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 8900,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 9000,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 9100,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 9200,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 9300,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 9400,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 9500,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 9600,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 9800,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 9900,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 10100,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 10200,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 10300,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 10400,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 10500,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 10600,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 10700,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 10800,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 10900,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 11000,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 11100,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 11200,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 11300,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 11400,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 11500,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 11600,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 11700,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 11800,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 11900,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 12100,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 12200,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        }
+      ],
+      "planner_degradation": 80
+    },
+    {
+      "episode_id": "ereq_b2cb1c16-18fb-4ab3-9dad-b6755ac4835f",
+      "runtime_episode_id": "8b50160c-c627-40b9-8f7e-d5ef3f937129",
+      "replay_sha256": "6671b90a0330ea52376bce1681c0a4e395f312562fafee4b93e778ccc7db352d",
+      "winner_player_id": "ply_44ae9048-3242-4654-881f-6d9d43347fa3",
+      "candidate_policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+      "seat": 7,
+      "map": "Pangaea",
+      "score": 0.0,
+      "won": false,
+      "final_tiles": 5355,
+      "decision_count": 115,
+      "accepted_decisions": 115,
+      "marker_counts": {
+        "atk": 19,
+        "b0t": 37,
+        "bld": 13,
+        "cv1": 4,
+        "deterministic built in style spawn exploration": 3,
+        "kp2": 5,
+        "mvw": 23,
+        "pd2": 3,
+        "rtr": 7,
+        "w4r": 1
+      },
+      "marker_executions": 0,
+      "holds": 0,
+      "hold_details": [],
+      "unexplained_hold_details": [],
+      "rejections": 0,
+      "rejection_details": [],
+      "k1z_harm": 29,
+      "k1z_harm_details": [],
+      "unresolved_harmful_targets": [
+        {
+          "turn": 4100,
+          "kind": "warship",
+          "action_id": "build:Warship:400260"
+        },
+        {
+          "turn": 4700,
+          "kind": "warship",
+          "action_id": "build:Warship:400260"
+        }
+      ],
+      "execution_conflicts": [
+        {
+          "turn": 4100,
+          "action_id": "build:Warship:400260",
+          "reasons": [
+            "selected kind 'warship' != submitted kind None"
+          ]
+        },
+        {
+          "turn": 4700,
+          "action_id": "build:Warship:400260",
+          "reasons": [
+            "selected kind 'warship' != submitted kind None"
+          ]
+        }
+      ],
+      "submitted_k1z_harm": [],
+      "submitted_unresolved_harmful_targets": [
+        {
+          "turn": 6600,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 8400,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 8500,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 8600,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 8700,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 9100,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 9400,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 9500,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 9600,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 9800,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 10000,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 10100,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 10200,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 10300,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 10400,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 10500,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 10600,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 10800,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 10900,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 11000,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 11100,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 11200,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 11300,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 11400,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        },
+        {
+          "turn": 11500,
+          "kind": "move_warship",
+          "reason": "accepted submitted harmful intent has no resolvable target"
+        }
+      ],
+      "planner_degradation": 54
+    }
+  ],
+  "summary": {
+    "candidate_wins": 0,
+    "parent_wins": 0,
+    "candidate_marker_executions": 24,
+    "candidate_holds": 1,
+    "candidate_rejections": 0,
+    "candidate_k1z_harm": 0,
+    "candidate_planner_degradation": 0,
+    "parent_planner_degradation": 307
+  },
+  "violations": [
+    "candidate ereq_798704da-cf40-492d-b8b6-9501e1dfd19e: selected hold actions",
+    "Odin did not win all four hosted candidate episodes"
+  ]
+}

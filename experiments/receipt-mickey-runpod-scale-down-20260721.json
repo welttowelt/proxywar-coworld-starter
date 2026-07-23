@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-21T05:52:35Z",
+  "operator": "mickey",
+  "action": "STOP_IDLE_HIGH_CPU_PODS",
+  "reason": "No active policy arm or owned RunPod job exists. High-CPU fanout begins only after mechanism reach.",
+  "before": {
+    "running_pods": 12,
+    "configured_vcpus": 144,
+    "listed_cost_per_hour_usd": 4.48
+  },
+  "stopped": [
+    {
+      "name": "storm-lazy-a",
+      "id": "lb4zz7jzgq9tr2",
+      "listed_cost_per_hour_usd": 1.0
+    },
+    {
+      "name": "storm-lazy-b",
+      "id": "2g5whxhph9bwbz",
+      "listed_cost_per_hour_usd": 1.0
+    },
+    {
+      "name": "storm-lazy-c",
+      "id": "877itccar33zdp",
+      "listed_cost_per_hour_usd": 1.0
+    },
+    {
+      "name": "storm-lazy-d",
+      "id": "76stn0v7q81d47",
+      "listed_cost_per_hour_usd": 1.0
+    }
+  ],
+  "after": {
+    "running_pods": 8,
+    "running_names": [
+      "storm-matrix-e",
+      "storm-matrix-f",
+      "storm-matrix-g",
+      "storm-matrix-h",
+      "storm-matrix-i",
+      "storm-matrix-j",
+      "storm-matrix-k",
+      "storm-matrix-l2"
+    ],
+    "listed_cost_per_hour_usd": 0.48,
+    "savings_per_hour_usd": 4.0,
+    "savings_per_day_usd": 96.0
+  },
+  "restart_gate": "Start high-CPU pods only after a hash-bound candidate shows accepted mechanism reach with zero K1Z harm, unexplained holds, or rejects.",
+  "league_mutation": false,
+  "policy_mutation": false
+}

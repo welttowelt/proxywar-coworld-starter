@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "arm": "nb1",
+  "gate": "local_two_pair_screen",
+  "verdict": "STOP",
+  "candidate": {
+    "source_commit": "df7e31594ee7d6e77d3659289ba69eec4d5c906c",
+    "gate_commit": "c2033f27",
+    "image": "proxywar-agent-llm:qd1n-v89-nb1-df7e3159-amd64",
+    "image_digest": "sha256:e7e09384d128ca69232cdb0676225afab2bdadfc2ead450c7439a2184a72ef50",
+    "strategy_sha256": "1ed339a0d6545fe8510902de4d25ee0358786883545b0b4d027016b13f902509",
+    "tests": "151/151",
+    "qualifier": "34/34 accepted; zero holds"
+  },
+  "control": {
+    "source_commit": "f1347251834a6283182b631e1336595eb2e08342",
+    "image": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+    "image_digest": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478"
+  },
+  "screen": {
+    "run_id": "nb1-screen-c2033f27",
+    "output_root": "/private/tmp/proxywar-nb1-screen-c2033f27",
+    "manifest_sha256": "d2807bd849b916ed3e4594076ce2fa9e2d9a044607b9061e6623762e7d17410f",
+    "raw_audit_sha256": "6acca6b7839dab1cde5993010561eb8ba7635ed17b270c034868650138ae1b1a",
+    "odin_decisions": 332,
+    "accepted": 332,
+    "unexplained_holds": 0,
+    "rejections": 0,
+    "k1z_harm": 0,
+    "candidate_final_tiles": 85691,
+    "parent_final_tiles": 85691,
+    "combined_score_delta": 0,
+    "combined_retreat_delta": 0
+  },
+  "runs": [
+    {
+      "map": "Pangaea",
+      "role": "candidate",
+      "seed": 20260722,
+      "markers": 0,
+      "score": 0.19937530540092555,
+      "final_tiles": 83236,
+      "replay_sha256": "a5bbb7c7360f7321f7ac7bb91101fc3d193d14eca5b276cbd7d8cee8cc068daf"
+    },
+    {
+      "map": "Pangaea",
+      "role": "parent",
+      "seed": 20260722,
+      "markers": 0,
+      "score": 0.19937530540092555,
+      "final_tiles": 83236,
+      "replay_sha256": "c3ea8c5f941884e65de4061e8d5ffd6e776ba6d949d8631beb102bd6db131aff"
+    },
+    {
+      "map": "World",
+      "role": "candidate",
+      "seed": 20260723,
+      "markers": 7,
+      "first_marker_gain_delta_after_10_decisions": 0,
+      "score": 0.0037781611512695697,
+      "final_tiles": 2455,
+      "replay_sha256": "b7fff56493b017487050ba820333260afd29bf3ab549c335ae0841efc31149e4"
+    },
+    {
+      "map": "World",
+      "role": "parent",
+      "seed": 20260723,
+      "markers": 0,
+      "score": 0.0037781611512695697,
+      "final_tiles": 2455,
+      "replay_sha256": "1a5e239de2696e4f6e1f5439720131046cdd9e38237ea973c5012cf066011c66"
+    }
+  ],
+  "violations": [
+    "Pangaea candidate mechanism reach was zero",
+    "World first-marker ten-decision tile-gain delta was zero",
+    "combined paired score delta was zero"
+  ],
+  "decision": "NB1 is closed without tuning. No upload, hosted request, regression, submission, membership, or champion change."
+}

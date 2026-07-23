@@ -197,6 +197,154 @@ test("deployed player reconnects after an unexpected match socket close", async 
   );
 });
 
+test("deployed player exposes gc1 beside the retained tactical marker", async () => {
+  const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
+  await new Promise((resolve) => server.once("listening", resolve));
+  const { port } = server.address();
+  const lowRisk = { level: "low" };
+  const juryokuID = "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335";
+  const katanasanID = "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba";
+  const baseOwnState = {
+    tileShare: 0.3,
+    troopRatio: 0.9,
+    troops: 500000,
+    gold: 250000,
+    borderTiles: 100,
+    incomingAttacks: [],
+    spawnTile: 1180588,
+  };
+  const requests = [
+    request("kata", [{
+      id: "alliance:kata:0",
+      kind: "alliance_request",
+      label: "Request alliance with K1Z katanasan",
+      risk: lowRisk,
+      metadata: {
+        recipientID: katanasanID,
+        recipientName: "K1Z katanasan",
+        relation: 2,
+      },
+    }], {
+      phase: "active",
+      ownState: baseOwnState,
+      combat: { incomingAttackPlayerIDs: [] },
+      visiblePlayers: [{
+        id: katanasanID,
+        name: "K1Z katanasan",
+        isAlive: true,
+        tileShare: 0.12,
+        relativeTroopRatio: 1.1,
+        sharesBorder: true,
+        canAttack: true,
+        isAllied: false,
+      }],
+    }),
+    request("gc1", [
+      {
+        id: "alliance:grav:1",
+        kind: "alliance_request",
+        label: "Request alliance with K1Z juryoku-koku",
+        risk: lowRisk,
+        metadata: {
+          recipientID: juryokuID,
+          recipientName: "K1Z juryoku-koku",
+          relation: 2,
+        },
+      },
+      {
+        id: "attack:raider:10",
+        kind: "attack",
+        label: "Attack Raider 10%",
+        risk: lowRisk,
+        metadata: {
+          targetID: "raider",
+          targetName: "Raider",
+          troopPercent: 10,
+          incomingAttack: true,
+        },
+      },
+    ], {
+      phase: "active",
+      ownState: baseOwnState,
+      combat: { incomingAttackPlayerIDs: ["raider"] },
+      visiblePlayers: [
+        {
+          id: juryokuID,
+          name: "K1Z juryoku-koku",
+          isAlive: true,
+          tileShare: 0.12,
+          relativeTroopRatio: 1.1,
+          sharesBorder: true,
+          canAttack: true,
+          isAllied: false,
+        },
+        {
+          id: "raider",
+          name: "Raider",
+          isAlive: true,
+          tileShare: 0.15,
+          relativeTroopRatio: 1.8,
+          sharesBorder: true,
+          canAttack: true,
+          incomingAttack: true,
+          isAllied: false,
+        },
+      ],
+    }),
+  ];
+
+  const responses = [];
+  let stderr = "";
+  const child = spawn(process.execPath, [playerPath], {
+    env: {
+      ...process.env,
+      COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
+      AWS_ACCESS_KEY_ID: "test",
+      AWS_SECRET_ACCESS_KEY: "test",
+      AWS_EC2_METADATA_DISABLED: "true",
+      BEDROCK_MODEL: "invalid-test-model",
+    },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  child.stderr.on("data", (chunk) => { stderr += String(chunk); });
+
+  const completed = new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      child.kill("SIGKILL");
+      reject(new Error(`gc1 marker integration test timed out: ${stderr}`));
+    }, 8000);
+    server.once("connection", (socket) => {
+      socket.send(JSON.stringify(requests[0]));
+      socket.on("message", (data) => {
+        responses.push(JSON.parse(String(data)));
+        if (responses.length < requests.length) {
+          socket.send(JSON.stringify(requests[responses.length]));
+        } else {
+          socket.send(JSON.stringify({ type: "final" }));
+        }
+      });
+    });
+    child.once("error", reject);
+    child.once("exit", (code) => {
+      clearTimeout(timeout);
+      if (code === 0) resolve();
+      else reject(new Error(`player exited ${code}: ${stderr}`));
+    });
+  });
+
+  try {
+    await completed;
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+
+  assert.deepEqual(
+    responses.map((response) => response.selectedLegalActionId),
+    ["alliance:kata:0", "attack:raider:10"],
+  );
+  assert.match(responses[1].reason, /:gc1:ia1$/);
+});
+
 test("planner contract asks only for intent, target ID, and horizon", async () => {
   const { readFile } = await import("node:fs/promises");
   const source = await readFile(playerPath, "utf8");

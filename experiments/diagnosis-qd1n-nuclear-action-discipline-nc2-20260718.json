@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-18",
+  "policy": "qd1n:v89",
+  "parent": {
+    "strategy_sha256": "f2ee66d570033508c4158bcb83d56d81dc198cdcebb91098d7e67eefdc8e6a7a",
+    "image": "proxywar-agent-llm:qd1n-v77-km4-amd64",
+    "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478"
+  },
+  "trigger": {
+    "round": 510,
+    "map": "World",
+    "official_result": {
+      "rank": 2,
+      "wins": 1,
+      "episodes": 4,
+      "nuke_tagged_atom_bomb_constructions": 122,
+      "repeats_within_eight_personal_decisions": 107
+    },
+    "lesson": "the repeated adapter action is real, but the guard must improve match outcome rather than merely replace a visible loop"
+  },
+  "candidate": {
+    "name": "nuclear action discipline NC2",
+    "marker": "nc2",
+    "source_commit": "3ff496d1a35d8480bd9f3b59aa1a2026b148f4fc",
+    "strategy_sha256": "86d88d2802f7fbf1f5b2352947c3da6bc3c55dd3dcda5ebbd7a4e5ca8e167069",
+    "image": "proxywar-agent-llm:qd1n-v89-nc2-amd64",
+    "image_id": "sha256:2e4018193dba5124cb700ded69bce8d5fa5ed4f0bd601e612e566484e2ec1370",
+    "isolated_delta": "after a selected action of kind nuke, suppress another nuke-tagged Atom Bomb construction for eight personal decisions when a nonnuclear utility action exists; preserve the first construction and never convert a sole legal nuke into hold"
+  },
+  "verification": {
+    "tests": {
+      "focused_passed": 4,
+      "full_passed": 150,
+      "failed": 0
+    },
+    "amd64_qualifier": {
+      "decisions": 34,
+      "accepted_decisions": 34,
+      "rejections": 0,
+      "holds": 0,
+      "fallbacks": 10,
+      "nc2_executions": 0,
+      "replay_sha256": "dd93f39389ff2b80bf62d4f9c20ed31ca4950428f198f8f48e79ba961316f0ea"
+    },
+    "bounded_world_reach_probe": {
+      "decisions": 984,
+      "accepted_decisions": 984,
+      "rejections": 0,
+      "holds": 0,
+      "fallbacks": 960,
+      "nc2_executions": 2,
+      "accepted_replacements": [
+        "turn 10600 juryoku koku upgrade City",
+        "turn 10700 juryoku koku upgrade Factory"
+      ],
+      "replay_sha256": "aabd10c5f7cd727107f0494d17de348daf4a653e69daee6504439442e2323a97"
+    },
+    "matched_world": {
+      "status": "completed_rejected",
+      "orientations": 2,
+      "candidate_seats": "even in A, odd in B",
+      "parent": "exact qd1n:v89 executable image",
+      "candidate_score_units": 1,
+      "parent_score_units": 1,
+      "candidate_tiles": 651528,
+      "parent_tiles": 651409,
+      "tile_delta": 119,
+      "tile_delta_percent": 0.0183,
+      "candidate_survivors": 2,
+      "parent_survivors": 2,
+      "candidate_decisions": 1868,
+      "candidate_accepted_decisions": 1868,
+      "candidate_rejections": 0,
+      "candidate_holds": 1,
+      "candidate_fallbacks": 1844,
+      "candidate_nc2_executions": 27,
+      "candidate_nuke_actions": 15,
+      "candidate_build_actions": 142,
+      "candidate_upgrade_actions": 551,
+      "candidate_attack_actions": 343,
+      "candidate_boat_actions": 391,
+      "parent_decisions": 1786,
+      "parent_accepted_decisions": 1786,
+      "parent_rejections": 0,
+      "parent_holds": 3,
+      "parent_fallbacks": 1762,
+      "parent_nuke_actions": 27,
+      "parent_build_actions": 131,
+      "parent_upgrade_actions": 490,
+      "parent_attack_actions": 344,
+      "parent_boat_actions": 396,
+      "orientation_a_replay_sha256": "6d3f6278819423fb765d4bd0fc4040a36f67b63d379a4d22ac6d8600cfd62dc7",
+      "orientation_b_replay_sha256": "8abb39fe7ecfb44fcadd1116d95d8ae6ce94996629c6062b2d5f7cef140f6e43",
+      "orientation_b_replay_loadable": true,
+      "verdict": "score and survivor tie after the seat swap; the 119-tile gain is 0.0183 percent and does not move a win boundary"
+    }
+  },
+  "critique": {
+    "causal_result": "NC2 reaches the intended adapter action and reduces repeat construction, but it only reaches developed even seats in the exact fixture; the losing odd seats never expose a nuke action",
+    "trajectory_result": "the replacements shift territory between the two surviving candidate identities rather than lifting the arm: juryoku gains while katanasan loses at matched checkpoints",
+    "strategic_lesson": "late nuclear repetition is a symptom of developed seats, not the cross-seat bottleneck; the next arm should target early rolling boat, retreat, and alliance churn before weak seats die"
+  },
+  "promotion_gate": {
+    "mechanism_reach": "passed",
+    "accepted_zero_unexplained_holds": "passed in reach probe",
+    "matched_mirrored_advantage": "failed",
+    "hosted_4_of_4": "not run",
+    "regression_20_of_20": "not run",
+    "live_identity_submission_membership": "unchanged qd1n:v89",
+    "current_verdict": "REJECTED at exact matched World gate; no upload, hosted request, submission, membership, or champion change"
+  },
+  "next_test": "instrument a rolling naval-churn recovery arm that includes boat retreats and repeated alliance attempts, proves reach on low-share losing seats, and prefers legal land conversion or economy without weakening K1Z no-harm guarantees"
+}

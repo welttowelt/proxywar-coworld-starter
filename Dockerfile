@@ -6,6 +6,8 @@ ENV POLICY_CODENAME=$POLICY_CODENAME
 ARG POLICY_ENGINE=
 ENV POLICY_ENGINE=$POLICY_ENGINE
 COPY package.json package-lock.json ./
+# The lockfile layer is independent from policy edits. BuildKit keeps the npm
+# download cache between image builds, while the image itself remains clean.
 RUN --mount=type=cache,id=proxywar-npm-cache,target=/root/.npm,sharing=locked \
     npm ci --omit=dev --ignore-scripts
 

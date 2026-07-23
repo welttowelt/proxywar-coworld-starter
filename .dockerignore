@@ -1,8 +1,13 @@
-node_modules
-.git
-launch.sh
-README.md
-ONBOARDING.md
-LICENSE
-.gitignore
-.dockerignore
+# The policy image contains only these files.  Keep the build context
+# allowlisted: replay history and prior episode output are several gigabytes
+# and otherwise have to be tarred and sent to BuildKit on every edit.
+**
+!Dockerfile
+!.dockerignore
+!package.json
+!package-lock.json
+!llm-player.mjs
+!strategy-engine.mjs
+!strategy-chassis.mjs
+!planner-backoff.mjs
+!starter-player.mjs

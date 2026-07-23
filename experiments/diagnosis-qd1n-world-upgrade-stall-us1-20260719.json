@@ -1,0 +1,197 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-19",
+  "experiment": "qd1n World upgrade-stall escape US1",
+  "status": "rejected",
+  "causal_basis": {
+    "official_round": 516,
+    "map": "World",
+    "live_policy": "qd1n:v89",
+    "official_rank": 10,
+    "official_score": 0,
+    "declared_episode_wins": 0,
+    "appearances": 3,
+    "mean_final_tiles": 37044,
+    "holds": 1,
+    "fallbacks": 194,
+    "upgrade_stall_episode": {
+      "episode_id": "0f26b60e-081d-4bd1-9775-ea7833555869",
+      "participant_position": 8,
+      "peak_tiles": 25634,
+      "final_tiles": 25519,
+      "flat_window": "approximately turns 8000-28200",
+      "upgrade_actions": 194,
+      "repeated_structure_ids": 9,
+      "repeats_per_structure_id": "21-22",
+      "audit_confirmed_upgrades": 0,
+      "legal_checkpoint_examples": [
+        {
+          "turn": 10000,
+          "tiles": 25519,
+          "naval_invasions": 18,
+          "warship_builds": 1,
+          "naval_control_recommended": true
+        },
+        {
+          "turn": 15000,
+          "tiles": 25519,
+          "naval_invasions": 12,
+          "warship_builds": 1,
+          "naval_control_recommended": true
+        },
+        {
+          "turn": 20000,
+          "tiles": 25519,
+          "naval_invasions": 12,
+          "warship_builds": 1,
+          "naval_control_recommended": true
+        },
+        {
+          "turn": 27000,
+          "tiles": 25519,
+          "naval_invasions": 9,
+          "warship_builds": 1,
+          "naval_control_recommended": true
+        }
+      ]
+    }
+  },
+  "parent": {
+    "live_policy": "qd1n:v89",
+    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "strategy_sha256": "f2ee66d570033508c4158bcb83d56d81dc198cdcebb91098d7e67eefdc8e6a7a",
+    "local_image": "proxywar-agent-llm:qd1n-v77-km4-amd64",
+    "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+    "platform": "linux/amd64"
+  },
+  "candidate": {
+    "name": "World upgrade-stall escape US1",
+    "marker": "us1",
+    "branch": "rci/us1",
+    "commits": [
+      "8263465a76721098fee0f8ebf45f47ca92c7f07e",
+      "6794e88d50bf04171305d1257e339e70a1d769b3"
+    ],
+    "strategy_sha256": "b6440cdc7b6045ed08e0c18daa7f4c5e2c5e0a87760b0327f9004500cbd4f0e2",
+    "image": "proxywar-agent-llm:qd1n-v89-us1-amd64",
+    "image_id": "sha256:21f1ef35368951b193c204e5afd9250c4f606da6e2b9f203ec525507f112764e",
+    "isolated_delta": "On exact World below eight-percent tile share, after four consecutive upgrades with flat territory and a sixteen-decision cooldown, no legal land attack, no safe build, and no neutral boat, prefer a credible non-K1Z naval invasion at ratio 1.0 or better or a safe warship action."
+  },
+  "verification": {
+    "tests": {
+      "focused_passed": 5,
+      "full_passed": 151,
+      "failed": 0
+    },
+    "amd64_qualifier": {
+      "path": "/private/tmp/proxywar-qd1n-us1-amd64-qualifier-v2-20260719",
+      "decisions": 34,
+      "accepted": 34,
+      "rejected": 0,
+      "holds": 0,
+      "fallbacks": 10,
+      "marker_executions": 0,
+      "replay_verified": true,
+      "replay_sha256": "c3e694feb2b9ec35b54e3d5308280fc45aca8cb521eeacd95d0b7d458404cd42"
+    },
+    "bounded_matched_world": {
+      "configuration": {
+        "map": "World",
+        "players": 8,
+        "max_decision_steps": 120,
+        "turns_per_decision_step": 100,
+        "seat_swap": "candidate even in A and odd in B"
+      },
+      "orientation_a": {
+        "path": "/private/tmp/proxywar-us1-reach-world-a-v2-20260719",
+        "candidate_markers": 0,
+        "replay_verified": true,
+        "replay_sha256": "129adf081007bc4acdceef6b4e4675a5cac63bd7d083627107378b42c324f5d0"
+      },
+      "orientation_b": {
+        "path": "/private/tmp/proxywar-us1-reach-world-b-20260719",
+        "candidate_markers": 1,
+        "replay_verified": true,
+        "replay_sha256": "cda57a5f66285998670543a283a55ee70a08f48eec4599cd27725fa3509b32d5",
+        "marker_action": {
+          "seat": "Coworld Starter 2",
+          "turn": 11400,
+          "action": "boat:871601:8",
+          "target": "Coworld Starter 4",
+          "relative_troop_ratio": 4.32,
+          "tiles_before": 20647,
+          "accepted": true,
+          "audit_status": "unknown",
+          "audit_reason": "boat was accepted, but transport launch was not visible yet"
+        }
+      },
+      "aggregate": {
+        "candidate": {
+          "decisions": 984,
+          "accepted": 984,
+          "rejected": 0,
+          "holds": 0,
+          "fallbacks": 960,
+          "marker_executions": 1,
+          "score": 1,
+          "tiles": 651609,
+          "surviving_seats": 8
+        },
+        "parent": {
+          "decisions": 984,
+          "accepted": 984,
+          "rejected": 0,
+          "holds": 0,
+          "fallbacks": 960,
+          "score": 1,
+          "tiles": 651609,
+          "surviving_seats": 8
+        },
+        "candidate_tile_delta": 0,
+        "candidate_score_delta": 0,
+        "candidate_survivor_delta": 0
+      }
+    }
+  },
+  "promotion_gates": {
+    "mechanism_reach": "passed: one accepted credible naval replacement at 4.32 relative troop ratio",
+    "accepted_actions": "passed: 984/984 candidate decisions accepted with zero holds or rejections",
+    "matched_advantage": "failed: score, territory, and survival tied exactly",
+    "hosted_4_of_4": "not run after matched failure",
+    "regression_20_of_20": "not run after matched failure",
+    "live_identity_submission_membership": "unchanged qd1n:v89"
+  },
+  "official_checkpoint_after": {
+    "round": 516,
+    "map": "World",
+    "official_rank": 10,
+    "official_score": 0,
+    "declared_episode_wins": 0,
+    "mean_final_tiles": 37044,
+    "official_first_place_streak": "0/1000",
+    "overall_leaderboard": [
+      {
+        "rank": 1,
+        "player": "daveey",
+        "score": 31.558892204348894
+      },
+      {
+        "rank": 2,
+        "player": "odin free",
+        "score": 22.79588965807439
+      },
+      {
+        "rank": 3,
+        "player": "Auri",
+        "score": 16.68723479465459
+      }
+    ]
+  },
+  "verdict": {
+    "decision": "reject US1",
+    "reason": "US1 reached the intended flat-upgrade boundary and selected a credible accepted invasion, but the exact seat swap produced no score, territory, or survival change.",
+    "live_policy_after": "qd1n:v89",
+    "upload_submission_membership_champion_changes": 0
+  },
+  "next_hypothesis": "The Round 516 upgrade loop is real, but one late naval launch is too weak. Diagnose why the 109,760-tile seat began losing territory after turn 8,000 and why the 67,571-tile seat collapsed before turn 5,000; prioritize an earlier pressure or frontier signal that can move a survival boundary."
+}

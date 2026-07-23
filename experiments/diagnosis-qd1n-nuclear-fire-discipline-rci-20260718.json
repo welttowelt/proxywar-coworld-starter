@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-18",
+  "policy": "qd1n:v89",
+  "parent": {
+    "source_commit": "d921b18b5da85eaecc89573a20e5fe70f9d72a31",
+    "strategy_sha256": "f2ee66d570033508c4158bcb83d56d81dc198cdcebb91098d7e67eefdc8e6a7a",
+    "image": "proxywar-agent-llm:qd1n-v77-km4-amd64",
+    "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478"
+  },
+  "trigger": {
+    "round": 508,
+    "map": "World",
+    "official_result": {
+      "rank": 2,
+      "wins": 1,
+      "episodes": 4,
+      "mean_final_tiles": 133723,
+      "holds": 0,
+      "rejections": 0,
+      "fallbacks": 530
+    },
+    "replay_signal": "Odin's winning episode selected five nuke actions across 194 decisions; the three losing episodes selected 228 nuke actions across 810 decisions, including 182 in one loss"
+  },
+  "critique": {
+    "failure": "the candidate looked for Atom Bomb construction under action kind build through chooseAtomBomb, but the game adapter exposes that same construction under selectedActionKind nuke",
+    "matched_evidence": "both orientations selected 27 nuke actions per arm while nc1 and nk1 executed zero times; every aggregate action count and outcome metric was identical after the seat swap",
+    "lesson": "a reachable symptom does not prove the proposed code branch reaches it; action-kind attribution must be verified before a long mirror"
+  },
+  "candidate": {
+    "name": "nuclear fire discipline NC1",
+    "marker": "nc1",
+    "source_commit": "6cdde9c9949d65c67d0589ef826e60d2a2dd480e",
+    "strategy_sha256": "fbbdfcb9de35179e81a3f0118d11bbdb2c5375aeab8a0768a14e2317bf5d3abc",
+    "image": "proxywar-agent-llm:qd1n-v89-nc1-amd64",
+    "image_id": "sha256:e370e01b8855254d7c7417250957dd6be92b9eb5706c80e22138f9b3d98295ea",
+    "isolated_delta": "after a tagged Atom Bomb construction, suppress another Atom Bomb construction for eight Odin decisions and mark the replacement nc1",
+    "preserved_paths": [
+      "adapter nuke-tagged construction selection",
+      "World pc1 near-parity counter",
+      "Asia ia1 attacker routing",
+      "pd2 multi-attacker reserve discipline",
+      "K1Z no-harm and alliance behavior"
+    ]
+  },
+  "verification": {
+    "tests": {
+      "passed": 148,
+      "failed": 0
+    },
+    "amd64_qualifier": {
+      "accepted_decisions": 34,
+      "decisions": 34,
+      "rejections": 0,
+      "replay_sha256": "10684a26d0430b8c8f8403e10985b808cabaa21af689daa9c3208f4ccdd18772"
+    },
+    "matched_world": {
+      "status": "completed_rejected",
+      "orientations": 2,
+      "candidate_seats": "even in A, odd in B",
+      "parent": "exact qd1n:v89 executable image",
+      "candidate_score_units": 1,
+      "parent_score_units": 1,
+      "candidate_tiles": 651409,
+      "parent_tiles": 651409,
+      "candidate_survivors": 2,
+      "parent_survivors": 2,
+      "candidate_decisions": 1845,
+      "candidate_accepted_decisions": 1845,
+      "candidate_rejections": 0,
+      "candidate_holds": 1,
+      "candidate_fallbacks": 1821,
+      "candidate_nuke_actions": 27,
+      "parent_nuke_actions": 27,
+      "candidate_build_actions": 144,
+      "parent_build_actions": 144,
+      "candidate_attack_actions": 344,
+      "parent_attack_actions": 344,
+      "candidate_boat_actions": 396,
+      "parent_boat_actions": 396,
+      "nc1_executions": 0,
+      "nk1_executions": 0,
+      "orientation_a_replay_sha256": "fe39acbe3b33830d447ed4aaecb7d5863e6f5268e493dbdaa2cf163fc3e642e5",
+      "orientation_b_replay_sha256": "4faf66464660e12fc56967bd3633fee6a3a6256aa85b221fab3ea109c1ff2079",
+      "verdict": "exact aggregate tie after the seat swap with zero mechanism reach; the candidate is behaviorally identical because it guarded the wrong action layer"
+    }
+  },
+  "promotion_gate": {
+    "local_mirrors_required": true,
+    "hosted_required": "4/4 with zero holds, zero rejections, and direct mechanism reach",
+    "regression_required": "20/20",
+    "current_verdict": "REJECTED at the first matched World gate; no Asia/Pangaea extension, hosted request, upload, submission, or champion change"
+  },
+  "next_test": "NC2 must throttle repeated selectedActionKind nuke construction directly, preserve the first strategic construction, mark replacement land or economy actions, and prove direct reach before a full mirror"
+}

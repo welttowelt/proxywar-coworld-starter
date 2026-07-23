@@ -1,0 +1,120 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-18",
+  "policy": "qd1n:v89",
+  "parent": {
+    "source_commit": "d921b18b5da85eaecc89573a20e5fe70f9d72a31",
+    "strategy_sha256": "f2ee66d570033508c4158bcb83d56d81dc198cdcebb91098d7e67eefdc8e6a7a",
+    "image": "proxywar-agent-llm:qd1n-v77-km4-amd64",
+    "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478"
+  },
+  "trigger": {
+    "round": 505,
+    "episodes": [
+      {
+        "id": "ereq_1e39564c-a5a8-46cd-8b73-1a555d543e2c",
+        "first_attackers": [
+          "daveey@1800",
+          "Sefirot@2400"
+        ],
+        "fresh_fronts_opened_by_odin": [
+          "Calc@3800 before Calc attacked at 4600",
+          "RelhAlpha@7600 before RelhAlpha attacked at 12100"
+        ]
+      },
+      {
+        "id": "ereq_2a6ce54c-b064-4712-9758-6d2e322cc10c",
+        "first_attackers": [
+          "daveey@1300",
+          "Sefirot@2900"
+        ],
+        "fresh_fronts_opened_by_odin": [
+          "James Boggs@3200 before James Boggs attacked at 4300",
+          "Auri@6900 before Auri attacked at 8400"
+        ]
+      },
+      {
+        "id": "ereq_8db03c5a-6a34-49d9-bd78-2b2b8508936d",
+        "first_attackers": [
+          "Auri@2100"
+        ],
+        "fresh_fronts_opened_by_odin": [
+          "Richard Higgins@2200 before Richard Higgins attacked at 3600"
+        ]
+      },
+      {
+        "id": "ereq_9293bea7-3356-43db-a963-f831125903a6",
+        "first_attackers": [
+          "Auri@5400",
+          "Ron @ SWGY@6600"
+        ],
+        "fresh_fronts_opened_by_odin": [
+          "Auri@5000 before Auri attacked at 5400",
+          "Ron @ SWGY@6300 before Ron @ SWGY attacked at 6600"
+        ]
+      }
+    ],
+    "outcome": "qd1n:v89 won zero of four episodes and was eliminated in three; the surviving episode ended on 1943 tiles and score 0.004665"
+  },
+  "critique": {
+    "failure": "retaliation preference is only a score bonus, so a softer fresh target can outrank the player already attacking Odin; pd2 activates only after at least two distinct attackers, after the extra-front damage has begun",
+    "rejected_alternative": "broad opening attack suppression was already tested as ef1 and finished hosted 0/4; nf1 therefore preserves leader emergencies, planned weak-target conversion, and credible 1.5-ratio finishes"
+  },
+  "candidate": {
+    "name": "no-new-front concentration",
+    "marker": "nf1",
+    "source_commit": "f8f1fff8f2ab04568809774e28730d0f47eb8e2f",
+    "strategy_sha256": "f2c08e93898d0ff06f7aeefa8893ae13422b630b4c9c105826be0197b19d1391",
+    "image": "proxywar-agent-llm:qd1n-v89-nf1-amd64",
+    "image_id": "sha256:ee4330c7343bb802190195f6dc8cb6f09ac2ef8545a1f0e0637d85c746277905",
+    "isolated_delta": "prefer current or recent attackers while a hostile front is active; allow an existing target only as a credible finish at 1.5 or better; when no front is active, require 1.3 for a fresh rival attack when a non-front tactical alternative exists",
+    "preserved_paths": [
+      "World pc1 near-parity counter",
+      "Asia ia1 attacker routing",
+      "pd2 multi-attacker reserve discipline",
+      "runaway-leader pressure",
+      "planned weak-target conversion",
+      "1.5-ratio target finish",
+      "K1Z no-harm and alliance behavior"
+    ]
+  },
+  "verification": {
+    "tests": {
+      "passed": 149,
+      "failed": 0
+    },
+    "amd64_qualifier": {
+      "accepted_decisions": 34,
+      "decisions": 34,
+      "rejections": 0,
+      "replay_sha256": "3e237bd9a23993d12a48a1888763f078d1fa36168349c1579561b0e69ddfb5e2"
+    },
+    "matched_world": {
+      "status": "completed_rejected",
+      "orientations": 2,
+      "candidate_seats": "even in A, odd in B",
+      "parent": "exact qd1n:v89 executable image",
+      "candidate_score_units": 1,
+      "parent_score_units": 1,
+      "candidate_tiles": 651609,
+      "parent_tiles": 651609,
+      "candidate_survivors": 2,
+      "parent_survivors": 2,
+      "candidate_decisions": 1681,
+      "candidate_accepted_decisions": 1681,
+      "candidate_rejections": 0,
+      "candidate_holds": 8,
+      "candidate_fallbacks": 1657,
+      "nf1_executions": 115,
+      "orientation_a_replay_sha256": "0b1054ba1d2a0b79d2381942d388566c3b0d2cafd7320ae5f45a39e3ad607200",
+      "orientation_b_replay_sha256": "c9d5f21d8bdd4376ba1a0eb57944611395e9dca7ea3a8a2b0ff7626c2b760da1",
+      "verdict": "exact aggregate tie after the seat swap; identity and seat explain the result and nf1 provides no causal advantage"
+    }
+  },
+  "promotion_gate": {
+    "local_mirrors_required": true,
+    "hosted_required": "4/4 with zero holds, zero rejections, and nf1 reach",
+    "regression_required": "20/20",
+    "current_verdict": "REJECTED at the matched World gate; no Asia/Pangaea extension, hosted request, upload, submission, or champion change"
+  }
+}

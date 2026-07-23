@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-21T06:06:30Z",
+  "arm": "pax1",
+  "verdict": "REJECTED_PREREG_FALSE_COOLDOWN_ASSUMPTION",
+  "preregistration": {
+    "path": "experiments/preregister-qd1n-pax1-underdog-pact-world-20260721.json",
+    "sha256": "1b1dd7c340cfa8950093c92f562ec0349a62682feec926f593ddb9459f6084e2"
+  },
+  "verified_provenance": {
+    "replay_sha256": "2ae3acbadc076e14287ac02b8b2aea315775116bf6e2cd4d5dce9d87d2245715",
+    "embedded_decisions_sha256": "2aedb79c6e1edd7a63c3174d57c8ac862270dfc051387c6f394e3130372f6e45",
+    "turn_10700_row_sha256_with_lf": "3d3644fede1e4856aac9b294c231c2f7ebbb43bdada81b4844a129aef3480cb5",
+    "ordered_legal_ids_sha256": "f28302bc45532deabb9f4a69abc3c18403244a2d02c22e888e68296fcba94194",
+    "compact_fixture_sha256": "c8cff0128cc2b671e2f4f09caeea4141485db39afb5f0a4717754361a51dca31",
+    "live_source_commit": "f1347251",
+    "live_strategy_sha256": "f2ee66d570033508c4158bcb83d56d81dc198cdcebb91098d7e67eefdc8e6a7a",
+    "live_image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478"
+  },
+  "rejecting_counterexample": {
+    "self_tile_share": 0.35,
+    "target_relative_troop_ratio": 0.4,
+    "target_relation": 0,
+    "incoming_attack": false,
+    "outgoing_attack": false,
+    "same_target_alliance_request_age_decisions": 1,
+    "parent_action": "emergency 10-percent attack",
+    "candidate_action": "same-target alliance request",
+    "repeated_state_result": "pax1 alliance request on 3 of 3 consecutive decisions",
+    "root_cause": "rivalIsProtected returns false at self.tileShare >= 0.35 before it scans recent alliance-request history, so it cannot supply the preregistered cooldown"
+  },
+  "scope_correction": "K1Z protection is guaranteed only for trust-intact partners; observed K1Z hostility intentionally revokes parent protection.",
+  "smallest_possible_repair": "A future, separately preregistered arm would need an explicit same-target request-age guard and this counterexample as a lock-in.",
+  "actions_taken": {
+    "source_edited": false,
+    "runner_started": false,
+    "image_built": false,
+    "diagnostic_uploaded": false,
+    "league_mutated": false
+  },
+  "live_control_preserved": "qd1n:v89"
+}

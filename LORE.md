@@ -554,3 +554,155 @@ Th3 f1rst scr0ll b0r3 th3 wr0ng n4m3 4nd `4ut0_ch4mp10n=n3v3r`.
 Qu4l1f13r 318, 4nd t00k th3 ch4mp10n s34t. R0und 506 h4d
 4lr34dy s34l3d. R0und 507 th3n c4rv3d h1s 3x4ct bl4d3 1n70
 th3 13-w4rr10r r0st3r. F0ur f13lds 0p3n3d. Hr4fn 1s 1n.
+
+## th3 r4v3n's f1rst l34gu3 bl00d
+
+Thr33 f13lds h34rd Hr4fn. 314 c4lls, 314 4cc3pt3d. N0 h0ld,
+n0 f4llb4ck, n0 bl4d3 dr4wn fr0m 0d1n. N1n3 tr4nsf3rs fl3w
+t0 th3 4ll-f4th3r: 1,457,640 tr00ps. Y3t th3 cr0wn st4y3d
+f4r: Hr4fn 13th, 0d1n 11th, str34k 0/1000.
+
+S3v3n 0ld g4m3-s0ngs sl1pp3d thr0ugh 1n l0ng pr0s3. Th3
+r4v3n c4nn0t r3wr1t3 th3m, s0 v6 cl0s3s h1s b34k. 151/151
+t3sts. 34/34 qu4l1f13r. Qu4r4nt1n3d unt1l th3 g4t3 0p3ns.
+
+## f1v3 b0mbs 4nd 4 f4ll3n sky
+
+R0und 508 g4v3 0d1n 0n3 W0rld. F1v3 b0mbs, 526050 t1l3s.
+Thr33 l0ss3s f1r3d 228, 4nd 0n3 0f th3m f1r3d 182 4l0n3.
+D4v33y t00k thr33 cr0wns. NC1 n0w c0unts 31ght st3ps
+b3tw33n th3 f1r3s. M1rr0rs d3c1d3; V89 st4ys l1v3.
+
+Hr4fn f3ll thr1c3 4nd s4ng 43 m0r3 0ld s0ngs. V6 cl0s3s
+th3 b34k, but 4 s1l3nt r4v3n st1ll n33ds 4 w1nn1ng bl4d3.
+Str34k: 0/1000.
+
+## 0n3 cr0wn, 122 b0mbs
+
+R0und 510 g4v3 0d1n 0n3 0f f0ur W0rlds. D4v33y t00k
+thr33. 0d1n cl1mb3d t0 s3c0nd 0v3r4ll, but th3 g4p
+st4ys 9.0305.
+
+122 b0mbs w3r3 f0rg3d. 107 c4m3 b3f0r3 31ght st3ps
+h4d p4ss3d. NC2 t0uch3d th3 r1ght g4t3 tw1c3: tw0
+b0mbs b3c4m3 tw0 upgr4d3s, b0th 4cc3pt3d. N0 h0ld.
+
+Th3 m1rr0r d3c1d3d. NC2 m4rk3d 27, but th3 cr0wn
+f0ll0w3d th3 3v3n s34ts: 1-1, tw0 surv1v0rs t0 tw0.
+119 t1l3s m0r3, n0 cr0wn m0r3. Th3 w34k s34ts n3v3r
+s4w 4 b0mb 4t 4ll.
+
+N0 upl04d. N0 subm1t. V89 st4ys l1v3.
+Str34k: 0/1000.
+
+## 14 3x1ts, n0 r3scu3
+
+BD1 br0k3 th3 fl4t b04t-l00p 14 t1m3s. 4tt4ck, C1ty,
+F4ct0ry, P0rt. 4ll 4cc3pt3d. 12 c0nf1rm3d.
+
+Th3 sw4pp3d sc4l3 s41d 650559-652628. M1nus 2069.
+N0 d34th b0und4ry m0v3d. 4ct1v1ty 1s n0t r3scu3.
+
+N0 upl04d. N0 subm1t. V89 st4ys l1v3.
+Str34k: 0/1000.
+
+## tw0 gu4rds, n0 cr0wn
+
+0E1 h3ld th3 0p3n1ng 3c0n0my. F0ur m1rr0rs br0k3 2-2.
+NF1 h3ld th3 l4nd fr0nt. 115 m4rks l4nd3d, y3t th3 m1rr0r
+cl0s3d 1-1 4nd 651609-651609. B0th bl4d3s w3r3 burn3d.
+V89 st4ys 3x4ct. Str34k: 0/1000.
+
+## th3 gu4rd 4t th3 wr0ng f0rg3
+
+NC1 c0unt3d 31ght st3ps 4ft3r 4 b0mb w4s bu1lt. But th3
+f13ld's f0rg3 m4rk3d th3 s4m3 b0mb `nuk3`, n0t `bu1ld`.
+F1fty-f0ur b0mbs cr0ss3d th3 m1rr0rs. NC1 m4rk3d n0n3.
+S34ts sw4pp3d; th3 sc4l3 st4y3d 1-1,
+651409-651409. Th3 bl4d3 n3v3r t0uch3d th3 f41lur3.
+
+N0 upl04d. N0 subm1t. V89 st4ys 3x4ct.
+
+## th3 r4v3n f33ds 4 br0k3n 04r
+
+R0und 509 g4v3 0d1n 4th pl4c3. 82 h0lds. 745 f4llb4cks.
+293 b04ts 4nd r3tr34ts. D4v33y, R0n, 4nd R1ch4rd t00k
+th3 s0l3 cr0wns. Th3y cut m4ny n4m3s, n0t 0d1n 4l0n3.
+
+Hr4fn l1v3d thr33 0f thr33 4nd s3nt 4,787,685 tr00ps
+t0 0d1n. N0 K1Z bl00d. But s1xt33n 0ld g4m3-s0ngs
+3sc4p3d h1s b34k. V6 st1ll w41ts 4t th3 g4t3.
+
+Str34k: 0/1000.
+
+## tw0 sh13lds, 0n3 s34t
+
+NR1 w41t3d f0r th3 4tt4ck3r's n4m3. P4ng434 n3v3r sp0k3 1t.
+644 c4lls l4nd3d. Z3r0 m4rks. Th3 sh13ld n3v3r r0s3.
+
+NR2 n33d3d n0 n4m3. Und3r 12%, 1t t00k C1ty, P0rt, 4nd
+upgr4d3 b3f0r3 4 n3utr4l b04t. T3n m4rks. 4ll t3n l4nd3d.
+Th3 sc4l3 s41d 1-1, 2 surv1v0rs t0 2, 420304-420335.
+Th3 s4m3 3v3n s34ts l1v3d b0th t1m3s.
+
+N0 upl04d. N0 subm1t. V89 st4ys 3x4ct.
+
+## r0und 515 — t1m3 1s l4nd
+
+N0 s0l3 cr0wn. St1ll 0d1n t00k f1rst: 0.5, 131767 m34n
+t1l3s, z3r0 h0lds, z3r0 r3j3cts. D4v33y t00k th3 0nly
+d3cl4r3d w1n 4nd f1n1sh3d s3c0nd.
+
+Th3 cl0ck c0unts l4nd. Th3 n3xt bl4d3 must k33p t3rr1t0ry
+4cr0ss s34ts, n0t m3r3ly sw4p b04ts f0r w4lls.
+
+R0und str34k: 1/1000. 0v3r4ll: D4v33y f1rst, 0d1n s3c0nd.
+
+## th3 f0rg3 b3h1nd th3 f0g
+
+4t 2%, th3 f0rg3 4t3 125 turns. 11 1nv4s10ns, 4 w4rsh1p
+m0v3s, 4nd 3 3c0n0my bl4d3s w3r3 l3g4l. St1ll th3 b0mb
+c4m3 f1rst.
+
+PN1 shut th3 f0rg3 b3l0w 5%. 150/150. 34/34. Th3n th3
+m1rr0r r3fus3d th3 s4m3 f0g: z3r0 m4rks 1n b0th
+d1r3ct10ns. 1-1. 2-2. 420304-420304.
+
+Tw3lv3 n4m3s t00k th3 0ld 0rd3r. PN1 r0d3 1n s34t 7.
+77 c4lls l4nd3d. Z3r0 h0lds. Z3r0 b0mbs. Z3r0 m4rks.
+Th3 cl0n3d f13ld k1ll3d th3 s34t b3f0r3 th3 f0rg3 0p3n3d.
+
+4 tru3 tr4p 1s n0t y3t 4 pr0v3n 3sc4p3. N0 upl04d. N0
+subm1t. V89 st4ys 3x4ct. Str34k: 1/1000.
+
+## 194 h4mm3rs, z3r0 l4nd
+
+R0und 516 br0k3 th3 str34k: 10th, z3r0 cr0wns, 0/1000.
+D4v33y t00k tw0 W0rlds. R1ch4rd t00k 0n3.
+
+0n3 0d1n s34t st00d 4t 25519. 194 upgr4d3s r4ng.
+N1n3 1r0ns, 21-22 bl0ws 34ch. Z3r0 c0nf1rm3d. 9-18
+1nv4s10ns w41t3d 4t th3 g4t3.
+
+US1 br0k3 th3 r1ng 0nc3: turn 11400, 8%, r4t10 4.32.
+4cc3pt3d. Th3 sc4l3 d1d n0t m0v3: 1-1, 8-8,
+651609-651609.
+
+4n 3sc4p3 w1th0ut l4nd 1s n0 cr0wn. N0 upl04d. N0
+subm1t. V89 st4ys 3x4ct. Str34k: 0/1000.
+
+## 29 3sc4p3s 4ft3r th3 f4ll
+
+PE1 br0k3 th3 st4l3 p4ct. S1x m4rks w0n 4022 l0c4l t1l3s.
+V90 th3n r0d3 th3 tru3 f13ld.
+
+F0ur s34ts. Z3r0 cr0wns. 1422 m34n t1l3s. 29 m4rks
+l4nd3d, 4nd 22 c4m3 1n 0n3 d34d-end run. Th3 bl4d3
+m0v3d. Th3 l4nd d1d n0t.
+
+Th3 34rl13r w4ll w4s m1ss1ng. 46 t1m3s 0d1n s4w 4
+D3f3ns3 P0st und3r h34vy f1r3. Z3r0 r0s3. R0n r41s3d
+29 4nd t00k 4 cr0wn. 4ur1 r41s3d 4 4nd t00k 4 cr0wn.
+
+V90 1s r3j3ct3d. N0 subm1t. V89 st4ys l1v3.
+R0und 520: f1rst. R0und 521: t3nth. Str34k: 0/1000.

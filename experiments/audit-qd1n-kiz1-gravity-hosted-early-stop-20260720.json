@@ -1,0 +1,68 @@
+{
+  "schema_version": 1,
+  "arm": "kiz1",
+  "gate": "hosted_4_of_4",
+  "verdict": "STOP_HOSTED",
+  "audited_at": "2026-07-20T20:44:05Z",
+  "failure_reason": "The first completed candidate episode lost, so a 4/4 candidate result is impossible.",
+  "candidate": {
+    "source_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "image_id": "sha256:de2a15be36a86cf8f74029539f6576b0559554c89ac5800ebf4814c6b863677e",
+    "policy_version_id": "e141216a-5a79-47a2-b885-7538b5d0003e",
+    "request_id": "xreq_41f198c5-8ecf-4c1b-82bb-7628d949b672",
+    "request_body_sha256": "24af8b9012ce95e5649d73feb74327ab276ba4ccba6a600473c1f468774c8d40",
+    "request_status_at_audit": "running"
+  },
+  "parent": {
+    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "request_id": "xreq_38a50cf3-0476-470e-b357-877cbf6285e7",
+    "request_body_sha256": "9db581f0d43c5452f094f1523022cdbcaa78df9efddded7477497fdb9b8a25a8",
+    "request_status_at_audit": "running"
+  },
+  "terminal_episode": {
+    "episode_request_id": "ereq_bdbaf1ce-aa44-41f7-9906-e10d57b98876",
+    "runtime_episode_id": "8e6f6f95-e172-4304-a64d-b0318c7471b3",
+    "replay_sha256": "19f2461529699a2dea30d6eca88cac999de9192b38d9c27d92343bc36125b301",
+    "map": "Pangaea",
+    "seat": 7,
+    "winner": {
+      "player_id": "ply_626f8a94-0bc0-4697-b76b-cc909a98b4e4",
+      "player_name": "Auri",
+      "policy_version_id": "9f233579-4837-4a27-b352-ed3135301135"
+    },
+    "odin": {
+      "score": 0.0,
+      "won": false,
+      "final_tiles": 4342,
+      "decision_count": 131,
+      "accepted_decisions": 131,
+      "fallback_used": 86,
+      "holds": 0,
+      "rejections": 0,
+      "k1z_harm": 0,
+      "kp2_requests": 9,
+      "gravity_kp2_requests": 5,
+      "gravity_kp2_turns": [500, 4700, 8400, 11500, 12200]
+    }
+  },
+  "gate_results": {
+    "gravity_identity_mechanism_reached": true,
+    "accepted_actions_clean": true,
+    "zero_holds": true,
+    "zero_rejections": true,
+    "zero_k1z_harm": true,
+    "candidate_hosted_wins_required": 4,
+    "candidate_hosted_wins_possible_after_terminal_episode": 3,
+    "hosted_4_of_4": false,
+    "regression_20_of_20_run": false
+  },
+  "disposition": {
+    "diagnostic_upload_retained": "qd1n:v94",
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false,
+    "preserved_champion": "qd1n:v89",
+    "remaining_server_episodes": "ignored_for_promotion_because_the_gate_is_already_terminal",
+    "next": "Carry the Gravity alias as a mandatory K1Z safety invariant in the next single-mechanism offensive candidate. Do not run a KIZ1 regression or promote KIZ1 alone."
+  }
+}

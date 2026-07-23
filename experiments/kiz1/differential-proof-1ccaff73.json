@@ -1,0 +1,34 @@
+{
+  "schema_version": 2,
+  "arm": "kiz1",
+  "same_fixture": true,
+  "verifier": {
+    "evaluator_commit": "b8b4b4fa5232ba49e015adb6de5b1abd5a2ba758",
+    "path": "experiments/kiz1/verify-differential.mjs",
+    "sha256": "63d08f917ee112f390db68e9f734947342b17e17e4e52a9ee7bd17159e4e4ac1"
+  },
+  "fixture": {
+    "id": "kiz1-current-gravity-production-nuke",
+    "path": "experiments/kiz1/differential-fixture.json",
+    "sha256": "4037c7150d2e49b38bb8389f1fa79bf257dcf15d85afd1eb44bfe69ee7d01b36",
+    "legal_action_ids_sha256": "8ceb5c46d05768787de8279fdebed7da7053aaa692ca56cc449d0e7d8b40644e"
+  },
+  "parent": {
+    "source_commit": "f1347251834a6283182b631e1336595eb2e08342",
+    "selected_action_id": "build:Atom Bomb:9"
+  },
+  "candidate": {
+    "source_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "selected_action_id": "hold:1"
+  },
+  "test_command": [
+    "node",
+    "experiments/kiz1/verify-differential.mjs",
+    ".",
+    "f1347251834a6283182b631e1336595eb2e08342",
+    "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "experiments/kiz1/differential-fixture.json",
+    "experiments/kiz1/differential-proof-1ccaff73.json"
+  ],
+  "test_exit_code": 0
+}

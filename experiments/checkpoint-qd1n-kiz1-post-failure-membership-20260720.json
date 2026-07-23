@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260720T205740Z-88030",
+  "checked_at": "2026-07-20T20:58:39Z",
+  "kind": "bounded_live_membership_checkpoint",
+  "source": {
+    "api": "official Coworld CLI",
+    "package": "coworld==0.1.28",
+    "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+    "query": "coworld memberships --league league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42 --mine --active-only --json",
+    "normalized_response_sha256": "18a827540da21cf903bfd4519dd8eafbfe361b8c28d3328dba34404099eec8e4"
+  },
+  "expected_preserved_control": {
+    "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "player_name": "K1Z odin free",
+    "membership_id": "lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6",
+    "policy_label": "qd1n:v89",
+    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f"
+  },
+  "observed": {
+    "status": "competing",
+    "substatus": "active",
+    "is_champion": true,
+    "champion_count": 1,
+    "candidate_policy_label": "qd1n:v94",
+    "candidate_membership_present": false
+  },
+  "verdict": "PRIOR_CHAMPION_PRESERVED",
+  "mutation_performed": false,
+  "runner_used": false,
+  "next_automatic_transition": "Await a newly authorized single-mechanism offensive arm; carry the Gravity alias as a mandatory K1Z-safety invariant."
+}

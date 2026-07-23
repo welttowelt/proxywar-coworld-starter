@@ -1,235 +1,261 @@
 round_number,rank,score,player_name,policy_name,policy_version,policy_version_id,completed_episode_count,seed_order
-488,1,0.5,odin free,qd1n,77,c0213724-8fb6-40d3-97da-fd1b080971f7,4,7
-488,2,0.25,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
-488,3,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
-488,4,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,1,0
-488,5,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,2,1
-488,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
-488,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-488,8,0.0,Sefirot,Eva-00,24,2b3261a9-f41d-449e-9532-f59c5737bec7,4,6
-488,9,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,3,8
-488,10,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,2,9
-488,11,0.0,K1Z katanasan,tsukuyomi-no-kage,35,e2b8c0e1-1122-44c2-8b3d-23d770e4a84b,1,10
-489,1,0.5,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,2,1
-489,2,0.5,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
-489,3,0.25,odin free,qd1n,77,c0213724-8fb6-40d3-97da-fd1b080971f7,4,7
-489,4,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,1,0
-489,5,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
-489,6,0.0,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
-489,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-489,8,0.0,Sefirot,Eva-00,24,2b3261a9-f41d-449e-9532-f59c5737bec7,4,6
-489,9,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,3,8
-489,10,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,2,9
-489,11,0.0,K1Z katanasan,tsukuyomi-no-kage,35,e2b8c0e1-1122-44c2-8b3d-23d770e4a84b,1,10
-490,1,0.5,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,2,1
-490,2,0.5,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
-490,3,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
-490,4,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,1,0
-490,5,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
-490,6,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-490,7,0.0,Sefirot,Eva-00,24,2b3261a9-f41d-449e-9532-f59c5737bec7,4,6
-490,8,0.0,odin free,qd1n,77,c0213724-8fb6-40d3-97da-fd1b080971f7,4,7
-490,9,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,3,8
-490,10,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,2,9
-490,11,0.0,K1Z katanasan,tsukuyomi-no-kage,35,e2b8c0e1-1122-44c2-8b3d-23d770e4a84b,1,10
-491,1,0.5,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
-491,2,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
-491,3,0.25,odin free,qd1n,77,c0213724-8fb6-40d3-97da-fd1b080971f7,4,7
-491,4,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,1,0
-491,5,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,2,1
-491,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
-491,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-491,8,0.0,Sefirot,Eva-00,24,2b3261a9-f41d-449e-9532-f59c5737bec7,4,6
-491,9,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,3,8
-491,10,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,2,9
-491,11,0.0,K1Z katanasan,tsukuyomi-no-kage,35,e2b8c0e1-1122-44c2-8b3d-23d770e4a84b,1,10
-492,1,1.0,K1Z katanasan,tsukuyomi-no-kage,35,e2b8c0e1-1122-44c2-8b3d-23d770e4a84b,1,10
-492,2,0.5,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
-492,3,0.25,odin free,qd1n,77,c0213724-8fb6-40d3-97da-fd1b080971f7,4,7
-492,4,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,1,0
-492,5,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,2,1
-492,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
-492,7,0.0,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
-492,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-492,9,0.0,Sefirot,Eva-00,24,2b3261a9-f41d-449e-9532-f59c5737bec7,4,6
-492,10,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,3,8
-492,11,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,2,9
-493,1,0.6666666666666666,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,3,8
-493,2,0.25,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
-493,3,0.25,Sefirot,Eva-00,24,2b3261a9-f41d-449e-9532-f59c5737bec7,4,6
-493,4,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,1,0
-493,5,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,2,1
-493,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
-493,7,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
-493,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-493,9,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,7
-493,10,0.0,K1Z katanasan,tsukuyomi-no-kage,35,e2b8c0e1-1122-44c2-8b3d-23d770e4a84b,2,9
-493,11,0.0,odin free,qd1n,83,09fce37f-6f9b-4163-a411-d0e0ecc679de,1,10
-494,1,1.0,odin free,qd1n,83,09fce37f-6f9b-4163-a411-d0e0ecc679de,1,10
-494,2,0.5,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,2,1
-494,3,0.3333333333333333,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,3,8
-494,4,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
-494,5,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,1,0
-494,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
-494,7,0.0,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
-494,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-494,9,0.0,Sefirot,Eva-00,24,2b3261a9-f41d-449e-9532-f59c5737bec7,4,6
-494,10,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,7
-494,11,0.0,K1Z katanasan,tsukuyomi-no-kage,35,e2b8c0e1-1122-44c2-8b3d-23d770e4a84b,2,9
-495,1,0.5,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,4,1
-495,2,0.25,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,8
-495,3,0.25,odin free,qd1n,83,09fce37f-6f9b-4163-a411-d0e0ecc679de,4,9
-495,4,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,4,0
-495,5,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,2
-495,6,0.0,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
-495,7,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
-495,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-495,9,0.0,Sefirot,Eva-00,24,2b3261a9-f41d-449e-9532-f59c5737bec7,4,6
-495,10,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,7
-495,11,0.0,K1Z juryoku-koku,santai-juryoku,1,aa68d2ef-76e1-4b3b-9514-b6d8c020394c,4,10
-495,12,0.0,K1Z katanasan,tsukuyomi-no-kage,36,87c684e6-0f6b-44e1-aad4-ccc372eadb42,4,11
-496,1,1.0,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
-496,2,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,4,0
-496,3,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,4,1
-496,4,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,2
-496,5,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
-496,6,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-496,7,0.0,Sefirot,Eva-00,24,2b3261a9-f41d-449e-9532-f59c5737bec7,4,6
-496,8,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,7
-496,9,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,8
-496,10,0.0,odin free,qd1n,83,09fce37f-6f9b-4163-a411-d0e0ecc679de,4,9
-496,11,0.0,K1Z juryoku-koku,santai-juryoku,1,aa68d2ef-76e1-4b3b-9514-b6d8c020394c,4,10
-496,12,0.0,K1Z katanasan,tsukuyomi-no-kage,37,41308906-4d75-46a1-8a0b-a629bc9f9ffc,4,11
-497,1,0.5,odin free,qd1n,83,09fce37f-6f9b-4163-a411-d0e0ecc679de,4,9
-497,2,0.25,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,4,1
-497,3,0.25,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,8
-497,4,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,4,0
-497,5,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,2
-497,6,0.0,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
-497,7,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
-497,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-497,9,0.0,Sefirot,Eva-00,24,2b3261a9-f41d-449e-9532-f59c5737bec7,4,6
-497,10,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,7
-497,11,0.0,K1Z juryoku-koku,santai-juryoku,2,aa90bda9-6f4e-4054-b412-9b47261d4f8d,4,10
-497,12,0.0,K1Z katanasan,tsukuyomi-no-kage,38,6f52d481-e4ec-4efc-8121-58dd1ca3e7ae,4,11
-498,1,0.6666666666666666,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,3,3
-498,2,0.3333333333333333,odin free,qd1n,83,09fce37f-6f9b-4163-a411-d0e0ecc679de,3,9
-498,3,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,3,0
-498,4,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,1
-498,5,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
-498,6,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,3,4
-498,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,3,5
-498,8,0.0,Sefirot,Eva-00,24,2b3261a9-f41d-449e-9532-f59c5737bec7,3,6
-498,9,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,3,7
-498,10,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,3,8
-498,11,0.0,K1Z juryoku-koku,santai-juryoku,2,aa90bda9-6f4e-4054-b412-9b47261d4f8d,3,10
-498,12,0.0,K1Z katanasan,tsukuyomi-no-kage,38,6f52d481-e4ec-4efc-8121-58dd1ca3e7ae,3,11
-499,1,0.25,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
-499,2,0.25,K1Z juryoku-koku,santai-juryoku,2,aa90bda9-6f4e-4054-b412-9b47261d4f8d,4,9
-499,3,0.25,K1Z katanasan,tsukuyomi-no-kage,38,6f52d481-e4ec-4efc-8121-58dd1ca3e7ae,4,10
-499,4,0.25,odin free,qd1n,85,8fd97edf-9bc8-432a-a532-26ea6348fd36,4,11
-499,5,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,4,0
-499,6,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,4,1
-499,7,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,2
-499,8,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
-499,9,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-499,10,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,6
-499,11,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,7
-499,12,0.0,Sefirot,Eva-00,25,e880011d-a5b6-42ef-b85d-440aa4f75d7a,4,8
-500,1,0.5,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
-500,2,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
-500,3,0.25,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,7
-500,4,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,4,0
-500,5,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,4,1
-500,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,2
-500,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-500,8,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,6
-500,9,0.0,Sefirot,Eva-00,25,e880011d-a5b6-42ef-b85d-440aa4f75d7a,4,8
-500,10,0.0,odin free,qd1n,87,892cff9a-0a89-42ba-9529-e421bfa42339,4,9
-500,11,0.0,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,10
-500,12,0.0,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,11
-501,1,0.25,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,4,1
-501,2,0.25,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,9
-501,3,0.25,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,10
-501,4,0.25,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,11
-501,5,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,4,0
-501,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,2
-501,7,0.0,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
-501,8,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
-501,9,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-501,10,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,6
-501,11,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,7
-501,12,0.0,Sefirot,Eva-00,25,e880011d-a5b6-42ef-b85d-440aa4f75d7a,4,8
-502,1,0.5,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
-502,2,0.5,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,8
-502,3,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,4,0
-502,4,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,4,1
-502,5,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,2
-502,6,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
-502,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-502,8,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,6
-502,9,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,7
-502,10,0.0,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,9
-502,11,0.0,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,10
-502,12,0.0,Sefirot,Eva-00,26,b0409b86-e262-4b17-8b3a-bded1258fa01,4,11
-503,1,0.5,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,4,1
-503,2,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
-503,3,0.25,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,10
-503,4,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,4,0
-503,5,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,2
-503,6,0.0,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
-503,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-503,8,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,6
-503,9,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,7
-503,10,0.0,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,8
-503,11,0.0,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,9
-503,12,0.0,Sefirot,Eva-00,26,b0409b86-e262-4b17-8b3a-bded1258fa01,4,11
-504,1,0.6666666666666666,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,3,3
-504,2,0.3333333333333333,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,3,10
-504,3,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,3,0
-504,4,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,1
-504,5,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
-504,6,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,3,4
-504,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,3,5
-504,8,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,3,6
-504,9,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,3,7
-504,10,0.0,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,3,8
-504,11,0.0,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,3,9
-504,12,0.0,Sefirot,Eva-00,26,b0409b86-e262-4b17-8b3a-bded1258fa01,3,11
-505,1,0.5,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,4,1
-505,2,0.5,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,10
-505,3,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,4,0
-505,4,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,2
-505,5,0.0,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
-505,6,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
-505,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-505,8,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,6
-505,9,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,7
-505,10,0.0,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,8
-505,11,0.0,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,9
-505,12,0.0,Sefirot,Eva-00,27,2130a735-6893-49ce-811c-f38ba75b0804,4,11
-506,1,0.25,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,4,1
-506,2,0.25,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
-506,3,0.25,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,9
-506,4,0.25,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,10
-506,5,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,4,0
-506,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,2
-506,7,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
-506,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-506,9,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,6
-506,10,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,7
-506,11,0.0,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,8
-506,12,0.0,Sefirot,Eva-00,27,2130a735-6893-49ce-811c-f38ba75b0804,4,11
-507,1,0.5,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
-507,2,0.25,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,9
-507,3,0.25,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,10
-507,4,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,3,0
-507,5,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,1
-507,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
-507,7,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
-507,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
-507,9,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,6
-507,10,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,7
-507,11,0.0,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,8
-507,12,0.0,Sefirot,Eva-00,27,2130a735-6893-49ce-811c-f38ba75b0804,4,11
-507,13,0.0,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,3,12
+510,1,0.75,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
+510,2,0.25,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,8
+510,3,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,3,0
+510,4,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,1
+510,5,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
+510,6,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
+510,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
+510,8,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,6
+510,9,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,7
+510,10,0.0,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,9
+510,11,0.0,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,10
+510,12,0.0,Sefirot,Eva-00,27,2130a735-6893-49ce-811c-f38ba75b0804,4,11
+510,13,0.0,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,3,12
+511,1,0.3333333333333333,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,1
+511,2,0.25,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
+511,3,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
+511,4,0.25,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,9
+511,5,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,3,0
+511,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
+511,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
+511,8,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,6
+511,9,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,7
+511,10,0.0,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,8
+511,11,0.0,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,10
+511,12,0.0,Sefirot,Eva-00,27,2130a735-6893-49ce-811c-f38ba75b0804,4,11
+511,13,0.0,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,3,12
+512,1,0.5,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
+512,2,0.5,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,10
+512,3,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,3,0
+512,4,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,1
+512,5,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
+512,6,0.0,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
+512,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
+512,8,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,6
+512,9,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,7
+512,10,0.0,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,8
+512,11,0.0,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,9
+512,12,0.0,Sefirot,Eva-00,27,2130a735-6893-49ce-811c-f38ba75b0804,4,11
+512,13,0.0,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,3,12
+513,1,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
+513,2,0.25,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,8
+513,3,0.25,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,9
+513,4,0.25,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,10
+513,5,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,3,0
+513,6,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,1
+513,7,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
+513,8,0.0,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,3
+513,9,0.0,Sefirot,Eva-00,28,2f0de1fd-d6bd-49ba-a357-2acce66cd09c,4,5
+513,10,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,6
+513,11,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,7
+513,12,0.0,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,11
+513,13,0.0,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,3,12
+514,1,0.25,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,4
+514,2,0.25,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,8
+514,3,0.25,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,9
+514,4,0.25,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,11
+514,5,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,3,0
+514,6,0.0,Sefirot,Eva-00,28,2f0de1fd-d6bd-49ba-a357-2acce66cd09c,3,1
+514,7,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,2
+514,8,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,3
+514,9,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,5
+514,10,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,6
+514,11,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,7
+514,12,0.0,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,10
+514,13,0.0,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,3,12
+515,1,0.5,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,9
+515,2,0.25,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,4
+515,3,0.25,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,10
+515,4,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,3,0
+515,5,0.0,Sefirot,Eva-00,28,2f0de1fd-d6bd-49ba-a357-2acce66cd09c,3,1
+515,6,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,2
+515,7,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,3
+515,8,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,5
+515,9,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,6
+515,10,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,7
+515,11,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,8
+515,12,0.0,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,11
+515,13,0.0,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,3,12
+516,1,0.6666666666666666,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,3,4
+516,2,0.3333333333333333,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,2
+516,3,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,2,0
+516,4,0.0,Sefirot,Eva-00,28,2f0de1fd-d6bd-49ba-a357-2acce66cd09c,2,1
+516,5,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,3
+516,6,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,3,5
+516,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,3,6
+516,8,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,3,7
+516,9,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,3,8
+516,10,0.0,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,3,9
+516,11,0.0,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,3,10
+516,12,0.0,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,3,11
+516,13,0.0,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,2,12
+517,1,0.3333333333333333,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,2
+517,2,0.25,daveey,daveey-proxywar,22,2387288b-3c92-44b5-832b-de28d92f8a9c,4,4
+517,3,0.25,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,9
+517,4,0.25,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,10
+517,5,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,3,0
+517,6,0.0,Sefirot,Eva-00,28,2f0de1fd-d6bd-49ba-a357-2acce66cd09c,3,1
+517,7,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,3
+517,8,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,5
+517,9,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,6
+517,10,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,7
+517,11,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,8
+517,12,0.0,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,11
+517,13,0.0,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,3,12
+518,1,1.0,daveey,daveey-proxywar,24,3ed5713d-7940-45f1-b347-76d596b90fe8,3,12
+518,2,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
+518,3,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,3,0
+518,4,0.0,Sefirot,Eva-00,28,2f0de1fd-d6bd-49ba-a357-2acce66cd09c,3,1
+518,5,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,2
+518,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,3
+518,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
+518,8,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,6
+518,9,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,7
+518,10,0.0,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,8
+518,11,0.0,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,9
+518,12,0.0,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,10
+518,13,0.0,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,4,11
+519,1,0.3333333333333333,Sefirot,Eva-00,28,2f0de1fd-d6bd-49ba-a357-2acce66cd09c,3,1
+519,2,0.3333333333333333,daveey,daveey-proxywar,24,3ed5713d-7940-45f1-b347-76d596b90fe8,3,12
+519,3,0.25,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,9
+519,4,0.25,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,10
+519,5,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,3,0
+519,6,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,2
+519,7,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,3
+519,8,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
+519,9,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
+519,10,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,6
+519,11,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,7
+519,12,0.0,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,8
+519,13,0.0,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,4,11
+520,1,0.5,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,8
+520,2,0.25,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,10
+520,3,0.25,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,4,11
+520,4,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,3,0
+520,5,0.0,Sefirot,Eva-00,28,2f0de1fd-d6bd-49ba-a357-2acce66cd09c,3,1
+520,6,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,2
+520,7,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,3
+520,8,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
+520,9,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
+520,10,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,6
+520,11,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,7
+520,12,0.0,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,9
+520,13,0.0,daveey,daveey-proxywar,24,3ed5713d-7940-45f1-b347-76d596b90fe8,3,12
+521,1,0.5,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,6
+521,2,0.3333333333333333,Sefirot,Eva-00,28,2f0de1fd-d6bd-49ba-a357-2acce66cd09c,3,1
+521,3,0.3333333333333333,daveey,daveey-proxywar,24,3ed5713d-7940-45f1-b347-76d596b90fe8,3,12
+521,4,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,3,0
+521,5,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,2
+521,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,3
+521,7,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
+521,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
+521,9,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,7
+521,10,0.0,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,8
+521,11,0.0,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,9
+521,12,0.0,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,10
+521,13,0.0,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,4,11
+522,1,0.3333333333333333,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,2
+522,2,0.3333333333333333,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,3,4
+522,3,0.3333333333333333,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,3,8
+522,4,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,2,0
+522,5,0.0,Sefirot,Eva-00,28,2f0de1fd-d6bd-49ba-a357-2acce66cd09c,2,1
+522,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,3
+522,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,3,5
+522,8,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,3,6
+522,9,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,3,7
+522,10,0.0,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,3,9
+522,11,0.0,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,3,10
+522,12,0.0,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,3,11
+522,13,0.0,daveey,daveey-proxywar,24,3ed5713d-7940-45f1-b347-76d596b90fe8,2,12
+523,1,0.5,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,2,2
+523,2,0.3333333333333333,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,3,4
+523,3,0.3333333333333333,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,3,10
+523,4,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,2,0
+523,5,0.0,Sefirot,Eva-00,28,2f0de1fd-d6bd-49ba-a357-2acce66cd09c,2,1
+523,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,3
+523,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,3,5
+523,8,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,3,6
+523,9,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,3,7
+523,10,0.0,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,3,8
+523,11,0.0,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,3,9
+523,12,0.0,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,3,11
+523,13,0.0,daveey,daveey-proxywar,24,3ed5713d-7940-45f1-b347-76d596b90fe8,3,12
+524,1,1.0,daveey,daveey-proxywar,24,3ed5713d-7940-45f1-b347-76d596b90fe8,1,12
+524,2,0.5,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,2,4
+524,3,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,1,0
+524,4,0.0,Sefirot,Eva-00,28,2f0de1fd-d6bd-49ba-a357-2acce66cd09c,2,1
+524,5,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,2,2
+524,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,2,3
+524,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,2,5
+524,8,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,2,6
+524,9,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,2,7
+524,10,0.0,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,2,8
+524,11,0.0,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,2,9
+524,12,0.0,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,2,10
+524,13,0.0,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,2,11
+527,1,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
+527,2,0.25,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,7
+527,3,0.25,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,9
+527,4,0.25,daveey,daveey-proxywar,24,3ed5713d-7940-45f1-b347-76d596b90fe8,4,11
+527,5,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,3,0
+527,6,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,1
+527,7,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
+527,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,4
+527,9,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,5
+527,10,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,6
+527,11,0.0,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,8
+527,12,0.0,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,4,10
+527,13,0.0,Sefirot,Eva-00,31,27dd8614-fc4d-4b9e-83d5-d88660d58578,3,12
+529,1,0.5,daveey,daveey-proxywar,24,3ed5713d-7940-45f1-b347-76d596b90fe8,4,11
+529,2,0.3333333333333333,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,1
+529,3,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
+529,4,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,3,0
+529,5,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
+529,6,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,4
+529,7,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,5
+529,8,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,6
+529,9,0.0,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,7
+529,10,0.0,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,8
+529,11,0.0,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,9
+529,12,0.0,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,4,10
+529,13,0.0,Sefirot,Eva-00,32,64004c26-7e2a-4b5e-9cd2-632c46e1070d,3,12
+531,1,0.3333333333333333,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,1
+531,2,0.3333333333333333,daveey,daveey-proxywar,24,3ed5713d-7940-45f1-b347-76d596b90fe8,3,12
+531,3,0.25,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,7
+531,4,0.25,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,9
+531,5,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,3,0
+531,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
+531,7,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
+531,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,4
+531,9,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,5
+531,10,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,6
+531,11,0.0,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,8
+531,12,0.0,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,4,10
+531,13,0.0,Sefirot,Eva-00,34,a758a508-d158-4687-8c69-c79d8b7f2c78,4,11
+532,1,0.5,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,8
+532,2,0.3333333333333333,daveey,daveey-proxywar,24,3ed5713d-7940-45f1-b347-76d596b90fe8,3,12
+532,3,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
+532,4,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,3,0
+532,5,0.0,Sefirot,Eva-00,35,89e9a1f5-a195-4f87-8cee-bbf260a5fe40,3,1
+532,6,0.0,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,2
+532,7,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,4,3
+532,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
+532,9,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,6
+532,10,0.0,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,7
+532,11,0.0,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,9
+532,12,0.0,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,10
+532,13,0.0,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,4,11
+533,1,0.3333333333333333,Richard Higgins,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,1
+533,2,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,4
+533,3,0.25,RelhAlpha,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,7
+533,4,0.25,K1Z katanasan,tsukuyomi-no-kage,39,2a3bdbba-40e4-4047-ae0f-ca5ec8670f3a,4,9
+533,5,0.0,Calc,my-proxywar-agent,27,2ac33c94-19e2-446e-bf25-2ee64a9ec133,3,0
+533,6,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,2
+533,7,0.0,Sefirot,Eva-00,36,6cc8ceb5-5a44-4391-8bfc-d9b79c1c620c,4,3
+533,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,5
+533,9,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,6
+533,10,0.0,odin free,qd1n,89,ca4a4e76-fd83-4c92-bf9f-f2440d1f867f,4,8
+533,11,0.0,K1Z juryoku-koku,santai-juryoku,3,2741a865-6821-4d36-9aaa-fa859c8921ce,4,10
+533,12,0.0,K1Z Hrafn,hrafn-fylking,5,10c32300-4593-408a-a17d-02e1d70e4a2e,4,11
+533,13,0.0,daveey,daveey-proxywar,24,3ed5713d-7940-45f1-b347-76d596b90fe8,3,12

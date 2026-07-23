@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-20T21:43:43Z",
+  "arm": "rs1",
+  "name": "raw_tile_stall_measurement",
+  "hypothesis": "The v89 neutral-stall detector mistakes productive land growth for a stall because tileShare is rounded. Exact own-tile history should preserve land expansion while raw tiles are still rising and retain the existing escape branch only when raw tiles are flat.",
+  "candidate": {
+    "live_parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
+    "safety_invariant_base_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "source_commit": "ddb980e389c61915fafaa1c91fea282937ad85b5",
+    "branch": "rci/rs1-raw-stall",
+    "source_delta": "Conditionally persist validated own tiles as a selector-private, non-enumerable state field and veto the rounded-share stall only when the current raw count exceeds the oldest count in a complete four-record window. The optional planner therefore receives the exact parent JSON state. Preserve the exact parent state/history shape and tileShare behavior when raw history is absent or non-growing. The previously verified Gravity identity protection remains a mandatory K1Z invariant."
+  },
+  "causal_contract": {
+    "guard": "The legacy rounded-share detector reports a neutral stall; current plus four recent raw tile counts are valid; current raw tiles exceed the oldest count; a parent escape boat or build is available; a different neutral land action is legal; and no parent counterattack, pressure, collapse, or cadence-build branch outranks it.",
+    "action_change": "Replace that exact parent escape action with the normal v89 neutral-land action.",
+    "marker": "rs1 only when the selected neutral-land action ID differs from the available parent escape action ID.",
+    "failure": "Reject on zero marker reach, any unexplained hold/reject, any K1Z harm, or no matched opening-territory advantage. Do not tune the percentage cadence or add a scheduler."
+  },
+  "replay_basis": {
+    "round": 581,
+    "observed_false_stalls": 5,
+    "observed_true_stalls": 2,
+    "false_stall_action": "neutral boat selected while land35 remained legal",
+    "evidence": "experiments/diagnosis-qd1n-r581-opening-yield-20260720.json"
+  },
+  "source_gate": {
+    "red_first": "exact safety-invariant base: core rising-raw test fails; five counterfactual lock-ins pass",
+    "red_log_sha256": "5cd8ed9435f5bf7889342898ea7fb8f6b163d364e21ff0f88740f76072623fca",
+    "candidate_focused": "6/6 pass",
+    "focused_log_sha256": "18e235c5d08cab870dfbb16df5e8b0f571b4fef387562ea006f4a6ea244bf57c",
+    "candidate_full": "154/154 pass",
+    "full_log_sha256": "09abe7f0343ae0a928d57dbcef7f4a58d6f606d38564ae04a13c557071757f00",
+    "planner_prompt_parity": "red-first proof: raw tiles remain selector-readable and persist into history, but are non-enumerable and absent from JSON.stringify(state); old source failed; red log sha256 60de48b49ea62786b76dffd25dc6807fc0bf134f10c79f0cd7409438d8833fc8",
+    "independent_rci": "PASS after revision; 5,000 randomized planner-state serializations matched the safety base byte-for-byte; missing-raw selector parity had zero mismatches; 5,000 targeted cases produced 2,934 truthful rs1 markers"
+  },
+  "local_canary": {
+    "purpose": "Fail fast on one trace-proven repair cell. This canary proves mechanism reach and directional opening lift only; it is not the full local matched gate.",
+    "fixture_template": {
+      "path": "/private/tmp/proxywar-ht1-screen-a-48d57e95/jobs/parent.json",
+      "sha256": "d53b4fd342a874cccce29d874b14342982b84bed0f94118382b7f7d947cb4718",
+      "map": "Pangaea",
+      "map_size": "Normal",
+      "seed": 20260722,
+      "subject_slot": 0,
+      "subject_name": "K1Z Hrafn",
+      "max_decision_steps": 30
+    },
+    "ordered_jobs": [
+      {
+        "id": "control",
+        "path": "/private/tmp/proxywar-rs1-slot0-canary-20260720/jobs/control.json",
+        "sha256": "60c479db19ddbb095c7f0d99b6acba6de79e0de27f6bafc52bb0167e9f6edaf8",
+        "subject_image": "proxywar-agent-llm:qd1n-v89-kiz1-gravity-1ccaff73-amd64",
+        "subject_image_id": "sha256:de2a15be36a86cf8f74029539f6576b0559554c89ac5800ebf4814c6b863677e"
+      },
+      {
+        "id": "candidate",
+        "path": "/private/tmp/proxywar-rs1-slot0-canary-20260720/jobs/candidate.json",
+        "sha256": "fe81e4d79fae86cbf05c8715c44e9e8d68fc17b501592754f4f4b04243722f6e",
+        "subject_image": "proxywar-agent-llm:qd1n-v89-rs1-ddb980e3-amd64",
+        "subject_image_id": "sha256:24051929164cb19a6ed95f6ed184c57c1b4f8a7c21efbe8ba3e879a9058e0637"
+      }
+    ],
+    "control_opportunity": "The prior exact-parent trace first becomes RS1-eligible at active decision 21 / turn 2400, not turn 2200: observation-side own tiles are 32321 and the four raw history records are 32167/32167/32167/32168; rounded share remains 0.08 with three recent neutral land attacks; threat count is zero; no hostile attack ID is legal; cadence build is false; the only legal attacks are Terra Nullius 10/20/35; and control selects accepted boat:442484:8. At turn 2200 observation-side tiles are still flat, while at turn 2300 a disciplined rival attack retains precedence. The safety-invariant base differs only in K1Z Gravity identity protection and must reproduce the turn-2400 opportunity before the candidate may run.",
+    "pass": "Control reproduces the legacy turn-2400 opportunity. Before turn 2400, candidate and control must have exact all-lobby selected-action and ordered-legal-action traces, and exact subject observation-side ownTiles/share plus fallback/degraded mode. Candidate then emits reason token rs1 on an accepted Terra Nullius land action (expected expand:terra-nullius:10) that replaces the corresponding control boat/build action. Every decision is accepted; zero unexplained holds, rejects, or K1Z harm; and candidate AUC25, defined as sum(tacticalAffordances.openingExpansionTempo.ownTiles at each of the first 25 non-spawn subject decisions minus that field at the first non-spawn subject decision), is strictly greater than control AUC25. Detect reach from the rs1 reason token because decisions.jsonl does not reliably expose policyMarker.",
+    "archived_reference": "The prior exact-v89 trace has subject AUC25 516155, first source-state tile count 52, and decision-25 source-state tile count 32479. The rerun control must establish its own baseline; this reference cannot substitute for the control job.",
+    "failure": "Reject RS1 immediately if the control opportunity is absent, marker reach is zero, the pre-marker trace diverges, any safety gate fails, or AUC25 does not improve.",
+    "next_on_pass": "Run a cheap safety-base-only adjacent-seed reach scan. Run the candidate only for the first fresh seed with a preregistered opportunity. The full local matched gate still requires two independent reach cells and at least 10 percent mean AUC25 lift."
+  },
+  "gates": {
+    "source": "red-first rising-raw regression, flat-raw lock-in, full suite, exact linux/amd64 image byte check",
+    "local": "slot-0 fail-fast canary first, followed only on pass by one fresh adjacent-seed control/candidate cell; marker reach in both independent cells, all accepted, zero unexplained holds/rejects/K1Z harm, positive AUC25 in both and at least 10 percent mean gain",
+    "hosted": "current-roster 4/4 only after local pass",
+    "regression": "separate map-and-seat 20/20 only after hosted 4/4",
+    "promotion": "automatic only after every gate in AUTONOMOUS_PROMOTION.md passes"
+  },
+  "league_mutation_allowed_now": false
+}

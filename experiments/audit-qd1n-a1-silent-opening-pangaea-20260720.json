@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "arm": "a1-silent-opening",
+  "status": "rejected",
+  "decision": "NO_SUBMIT",
+  "reason": [
+    "zero replay-visible a1 marker reach",
+    "candidate score trailed the exact parent",
+    "candidate retained unexplained holds"
+  ],
+  "candidate": {
+    "source_commit": "c5a8c101e80bcb2125b0611be0793829544a4e04",
+    "image_id": "sha256:0eedc3b0146d1bcfcda1296268cfb68a0e0f2bd72af5d8c4923b06ecaf0cf521",
+    "run_id": "a1-c5a8c101-pangaea-20260720-r3-a",
+    "spec_sha256": "0f522828522d647dd1169f6cf5ffee5e1f8d41142e731e8aa1c50858371ec9c4",
+    "results_sha256": "59ececedcf9233783f6af3351635b677b331196636b3dac2f7958b42b60b6b61",
+    "replay_sha256": "43a791dd05df3fc2d5c146a01326727705f0e8254b43e034e488a1f7dbdf64a2",
+    "score": 0.23969044427703476,
+    "tiles": 24499,
+    "decisions": 83,
+    "accepted": 83,
+    "rejected": 0,
+    "unexplained_holds": 13,
+    "a1_markers": 0,
+    "alliance_requests": 10,
+    "k1z_harm": 0
+  },
+  "exact_parent": {
+    "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+    "run_id": "a1-c5a8c101-pangaea-20260720-r3-b",
+    "spec_sha256": "7df76692757232999644d2deb9d011597ae8bc12be025ebc89cf2815044d6c22",
+    "results_sha256": "4d5ae9dae7f6b6db43184b28b42af6a02422bbde16d154cf94c9a0f7f75834fe",
+    "replay_sha256": "6fd67e0e71b3619dfaee49feb4b12e4f336939ac8ad967f72a9bbbfd71c5bcdc",
+    "score": 0.25344630225709563,
+    "tiles": 25905,
+    "decisions": 83,
+    "accepted": 83,
+    "rejected": 0,
+    "unexplained_holds": 13,
+    "k1z_harm": 0
+  },
+  "comparison": {
+    "score_delta_candidate_minus_parent": -0.01375585798006087,
+    "tile_delta_candidate_minus_parent": -1406,
+    "same_seed": 20260720,
+    "map": "Pangaea",
+    "map_size": "Compact",
+    "roster": [
+      "K1Z odin free",
+      "K1Z Hrafn",
+      "K1Z juryoku-koku",
+      "K1Z katanasan"
+    ],
+    "max_decision_steps": 80
+  },
+  "transport": {
+    "bundle_sha256": "33a2e304d211d87a5422913dfc4cefcc72c770779e09796cd25714ba6da282dd",
+    "bundle_manifest_sha256": "5429166c586f0d1b6ecf3ca9ab1fceebc9cfb243e2b326b235433a45d8dde534",
+    "execution_class": "formal_evaluation",
+    "receipt_verified": true
+  },
+  "next_step": "Refresh official replay evidence and nominate one new early-opening mechanism. Do not revive A1, A2, or A3 from this result."
+}

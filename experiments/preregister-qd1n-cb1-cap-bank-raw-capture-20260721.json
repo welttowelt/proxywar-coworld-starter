@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-21T03:13:30Z",
+  "cycle_id": "odin-cb1-cap-bank-capture-20260721",
+  "arm": "cb1",
+  "hypothesis": "On Pangaea, qd1n can freeze on upgrades while land is flat, troop capacity is nearly full, no transport is active, and legal naval conversion exists. A safe non-K1Z boat may convert otherwise wasted regeneration into territory, but production code requires one complete raw selector request before the action can be chosen faithfully.",
+  "causal_mechanism": "After four consecutive flat upgrades at own troopRatio at least 0.90, retain the exact observation and full legal-action objects before selection. This acquisition phase changes logging only and cannot alter the selected action.",
+  "official_evidence": {
+    "round": 591,
+    "episode_id": "1f84274e-bd8b-4f06-b3c0-abf8930f49f1",
+    "map": "Pangaea",
+    "turn": 12000,
+    "selected_action": "upgrade:City:1852",
+    "flat_tiles": 33255,
+    "flat_window": "turns 10000 through 14000, 41 decisions",
+    "upgrade_count": 26,
+    "troop_ratio": 0.94,
+    "active_transports": 0,
+    "legal_boat_ids": 14,
+    "post_decision_evaluator_best": "boat:556167:16 to non-K1Z Ron SWGY",
+    "replay_sha256": "91cb15ebf82c87b0e772966deece8c09b5c3e2ee1fa8cd20b6a2a1159ced8fab",
+    "turn_record_sha256_with_lf": "7baa7a57726f4712e4b59b89572ad4ee64bfe55a0df01070aebee0cd0a8d19d6"
+  },
+  "public_replay_limit": {
+    "verdict": "NO_GO_FOR_PRODUCTION_FIXTURE",
+    "reason": "The replay omits the raw observation and full offered LegalAction objects. Tactical affordances are computed after qd1n responds. Filling target ratios, source tiles, per-action risk, or legal reasons from later state would fabricate selector input."
+  },
+  "historical_recurrence": {
+    "query_definition": "Odin episode with at least 20 decisions where banking_recommended=true and selected action_kind=upgrade_structure",
+    "dataset_latest_completed_at": "2026-07-19T13:44:51.930Z",
+    "episodes": 13,
+    "wins": 0,
+    "pangaea": 4,
+    "world": 9,
+    "decisions_parquet_sha256": "ef532d32c09b6c26b1422b9288898c5cba17e0f0fca7688145a2f083a2319c21",
+    "episodes_parquet_sha256": "73de9b71fc1b6f00868a70ae00465e7fa917b83b2832b72b20c058b2b6210f7e",
+    "participants_parquet_sha256": "fbec3e44ccc21f2ab17b7fc06422c659203c7ae4ed5497ad2e1cfbaccced5656"
+  },
+  "capture_contract": {
+    "live_image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+    "live_strategy_sha256": "f2ee66d570033508c4158bcb83d56d81dc198cdcebb91098d7e67eefdc8e6a7a",
+    "live_player_sha256": "1154115fdf5ebb89fa170bba6060d5a730615970d4cc23c00dbfa97e42b31563",
+    "live_chassis_sha256": "de45b447513ddcac5e9bf1be14417bfab0dd5e8e92156670539e8eda01478ca1",
+    "capture_image_id": "sha256:9326630e4485157eae4526d893408c8496043c7b6797a80f5299febba74e6fd6",
+    "instrumented_player_sha256": "5c6324ba008cc8836c6c4e53953fe7a5937898aec22b846b480d155960c80ae4",
+    "instrumentation": "A hash-checking build script derives from the verified live image and adds one environment-gated stdout record after the decision response is queued. It contains requestID, observation, legalActions, selector state, full compact history, plan snapshot, selected engine, and parent-chosen action. Strategy-engine and chassis stay byte-identical to live.",
+    "instrumenter": "experiments/cb1/instrument-live-player.mjs",
+    "dockerfile": "experiments/cb1/Dockerfile.capture",
+    "trigger": {
+      "map": "Pangaea",
+      "own_troop_ratio_min": 0.9,
+      "recent_consecutive_upgrades": 4,
+      "max_tile_share_delta": 0.0005,
+      "legal_boat_min": 1
+    },
+    "job": "experiments/job-qd1n-cb1-cap-bank-raw-capture-pangaea-20260721.json",
+    "job_commit": "68c0092e6e9c411df572f8fb93384df490f250ff",
+    "job_sha256": "698f63aa24c58c29e797d2fb505cc7418de80b534585c600e5ae2cce8f6f345d",
+    "map": "Pangaea",
+    "players": 12,
+    "seed": 20260721,
+    "max_decision_steps": 120,
+    "all_slots_instrumented": true
+  },
+  "discarded_prebuild": {
+    "commit": "b7dc1d8344022f83fbf3d7a33d5e74f5dc08d8dc",
+    "run_started": false,
+    "reason": "The branch was based on source commit 1ccaff73, whose strategy SHA256 52d156a3... differs from live qd1n:v89 f2ee66d5.... It is excluded from evidence."
+  },
+  "capture_pass": [
+    "At least one policy log contains exactly one CB1_RAW_REQUEST_V1 record.",
+    "The record includes the complete raw observation, all legal-action objects, derived selector state, full compact history, plan snapshot, selected engine, and chosen parent action.",
+    "The record satisfies the sealed trigger using only fields present in that request.",
+    "At least one legal non-K1Z boat contains targetID, targetName, relativeTroopRatio, troopPercent, risk, and legalReason.",
+    "The strategy-engine and strategy-chassis bytes match exact live qd1n:v89."
+  ],
+  "capture_stop": [
+    "No trigger reaches in the single preregistered job.",
+    "The log omits or truncates raw observation or legal actions.",
+    "No legal boat can be resolved safely away from K1Z.",
+    "Any policy selection code differs from exact parent."
+  ],
+  "promotion_boundary": "Raw capture can only make CB1 source-ready. It cannot justify a matched pair, upload, hosted request, regression, submission, membership, or champion change.",
+  "forbidden": [
+    "Use post-decision tacticalAffordances as if they were policy input.",
+    "Invent missing boat metadata from later replay state.",
+    "Tune or run a second seed after zero capture without a new preregistration.",
+    "Mutate qd1n:v89 or any league state."
+  ]
+}

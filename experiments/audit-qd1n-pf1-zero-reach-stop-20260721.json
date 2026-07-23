@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-21T02:57:20Z",
+  "cycle_id": "odin-pf1-zero-reach-stop-20260721",
+  "arm": "pf1",
+  "status": "TERMINAL_REJECTED_ZERO_REACH",
+  "preregistration": "experiments/preregister-qd1n-pf1-first-strike-pvp-floor-pangaea-20260721.json",
+  "source": {
+    "parent_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "candidate_commit": "767b9eb4cff3effa57d3d521427dad700065541e",
+    "candidate_image_id": "sha256:393963d0226f85b54a1efe927a0046522d0cf04af2f551731c79e412915ae300",
+    "candidate_strategy_engine_sha256": "6aa6f9f50162859c4d7a37fb4cfc50f8aa02af02245d209ad19a5a65eae00f7d",
+    "source_bytes_match": true,
+    "tests": "163/163"
+  },
+  "job": {
+    "path": "experiments/job-qd1n-pf1-mechanism-pangaea-seat9-20260721.json",
+    "commit": "ed2b97239531783c16aee69e296d7f456c69b510",
+    "sha256": "ad9a0739a6ae13f0b3940bfb70a8ebb1299699ff958338bb9af4ec7b35b0aa3e",
+    "map": "Pangaea",
+    "seed": 20260721,
+    "players": 12,
+    "candidate_seat_zero_based": 9,
+    "max_decision_steps": 70
+  },
+  "pre_game_failure": {
+    "run_id": "pf1-mechanism-seat9-e7e1ce9e",
+    "result": "ABORTED_BEFORE_GAME_START",
+    "reason": "Coworld rejected non-runtime evidentiary keys in the first job document.",
+    "episode_started": false,
+    "policy_evidence": false,
+    "corrective_commit": "ed2b97239531783c16aee69e296d7f456c69b510"
+  },
+  "canary": {
+    "run_id": "pf1-mechanism-seat9-ed2b9723",
+    "output": "/private/tmp/proxywar-pf1-mechanism-seat9-ed2b9723",
+    "game_id": "CWBSITMN",
+    "turn_count": 7400,
+    "global_decisions": 793,
+    "global_accepted": 793,
+    "global_fallbacks": 757,
+    "global_degraded": 757,
+    "odin": {
+      "decisions": 73,
+      "non_spawn_decisions": 70,
+      "accepted": 73,
+      "rejected": 0,
+      "holds": 0,
+      "fallbacks": 70,
+      "pf1_reach": 0,
+      "hostile_land_attacks": 0,
+      "attributable_k1z_harm": 0,
+      "unresolved_naval_target_ownership": 2,
+      "final_tiles": 1401,
+      "final_score": 0.0033330557769398216,
+      "alive": true
+    }
+  },
+  "hashes": {
+    "config_sha256": "058fdeef5e564d819ceaed1a4872e08d7bf4fd446e8ee892c1ccb6d36d397bbd",
+    "results_sha256": "8cb8cb3ebf8b96aefbf2a4a182c61e96d30df3d3037c2016848eace6e83bd026",
+    "decisions_sha256": "a0de71354a790ac4d8944733929e4059061c6caf72bac12e35a2172fa819acf0",
+    "replay_sha256": "e6fc710d39f3a99a3428d08dc5f3147a47ac269ab1c8ba60feec889ff4500934"
+  },
+  "transport_scope": {
+    "local_bedrock_available": false,
+    "planner_fallback_expected": true,
+    "local_mechanism_verified": false,
+    "reason": "Even a reached marker could only have supplied deterministic mechanism evidence in this environment. Zero reach ends the arm before that distinction becomes relevant."
+  },
+  "safety_scope": {
+    "attributable_k1z_harm": 0,
+    "resolved_enemy_transport_targets": 5,
+    "unresolved_enemy_trade_ship_targets": 2,
+    "absolute_zero_k1z_harm_proven": false,
+    "reason": "Five enemy Transport targets resolve outside K1Z, but decision telemetry omits owner identity for two selected enemy Trade Ship targets. Zero PF1 reach already closes the arm; the unresolved ownership is an additional fail-closed safety limitation."
+  },
+  "verdict": {
+    "result": "REJECTED_ZERO_REACH",
+    "reason": "The exact candidate never obtained or selected a hostile land attack, so PF1 produced no replay-visible action change. The preregistered mechanism gate and active-arm transition both require an immediate stop on zero reach.",
+    "matched_pair": false,
+    "diagnostic_upload": false,
+    "hosted_request": false,
+    "regression_20_of_20": false,
+    "submission": false,
+    "membership_change": false,
+    "champion_change": false,
+    "prior_champion_preserved": true
+  },
+  "next": "Do not tune or rerun PF1. Refresh the current field and select one new structural mechanism with replay-visible deterministic reach; preserve exact qd1n:v89 until complete gates prove a successor."
+}

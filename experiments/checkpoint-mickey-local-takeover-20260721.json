@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-07-20T23:08:26Z",
+  "transition": "hrafn_studio_only_mickey_local_operator",
+  "hrafn": {
+    "host": "studio",
+    "source_commit": "98288c8b9211513cfb71ceb88707de1721f351e3",
+    "image_id": "sha256:2402b45caa3702b2dfb63878eba16125b91703589b2fcde582efbf1ce08beeb8",
+    "isolated_player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "isolated_player_name": "K1Z Hrafn",
+    "mailbox_request_commit": "eba05ef3830b5ad58aaf41069bc0220180ba7998",
+    "mailbox_ready_commit": "b4f4063b55c64b33060c45d199458ee359a6d7f5",
+    "packet_audit": "APPROVE",
+    "operator_scope": "studio_only"
+  },
+  "local": {
+    "normal_home_active_player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "normal_home_active_player_name": "K1Z odin free",
+    "hrafn_active_in_normal_home": false,
+    "runner_state": "free",
+    "hrafn_processes": 0
+  },
+  "mickey": {
+    "operator_scope": "local_source_and_evidence",
+    "source_branch": "codex/mickey-cpu-surrogates",
+    "source_commit": "26c36eca6f30272c921f6c7049187192fc100e21",
+    "source_receipt_commit": "068afee40b55ee80e00b55966905c0e3f3c3df10",
+    "ops_branch": "codex/mickey-cpu-fanout-ops",
+    "ops_commit": "0ff0dbe563807a4c9bd16972eeb69e62df4a7153",
+    "source_tests": "184/184",
+    "distinct_arms": 5,
+    "zero_k1z_harm": true,
+    "linux_amd64_images": 6,
+    "dedicated_home": "/Users/olifreuler/.mickey-coworld-home",
+    "dedicated_home_active_player": null,
+    "player_create_attempt": {
+      "requested_name": "K1Z Mickey Mouse",
+      "result": "HTTP_409_CONFLICT",
+      "detail": "Users are limited to 2 active players",
+      "player_created": false
+    },
+    "live_operations_allowed": false,
+    "identity_blocker": "A distinct Softmax user credential or available player slot is required; do not rename or reuse Hrafn."
+  },
+  "parallel_fanout_draft": {
+    "status": "local_unpushed_quarantined_not_accepted",
+    "commit": "f79b7af3",
+    "latest_test_result": "14/14 focused",
+    "reason": "The parallel worker committed 3676 lines after the takeover audit. It remains outside the accepted lean path until an independent RCI review proves the final gate fixes and justifies the launchd layer."
+  },
+  "mutations": {
+    "coworld_episode_started": false,
+    "runner_acquired": false,
+    "upload": false,
+    "submission": false,
+    "membership": false,
+    "champion": false
+  },
+  "result": "MICKEY_LOCAL_OPERATOR_READY_DEDICATED_PLAYER_BLOCKED"
+}

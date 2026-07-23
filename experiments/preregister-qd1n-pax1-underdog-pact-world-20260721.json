@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-21T06:00:25Z",
+  "cycle_id": "odin-pax1-underdog-pact-20260721",
+  "arm": {
+    "id": "pax1",
+    "name": "pact_before_doomed_probe",
+    "status": "PREREGISTERED_SOURCE_REVIEW",
+    "map_cell": "World",
+    "mechanism_count": 1
+  },
+  "objective": "Improve Odin's general first-place conversion by replacing one terminal emergency ordering inversion without adding a named-opponent rule.",
+  "live_control": {
+    "player": "K1Z odin free",
+    "policy_label": "qd1n:v89",
+    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "membership_id": "lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6",
+    "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+    "source_commit": "f1347251",
+    "strategy_sha256": "f2ee66d570033508c4158bcb83d56d81dc198cdcebb91098d7e67eefdc8e6a7a"
+  },
+  "live_snapshot": {
+    "checked_at": "2026-07-21T05:46:41Z",
+    "leader": "daveey",
+    "leader_score": 40.208272,
+    "odin_rank": 2,
+    "odin_score": 16.793518,
+    "gap_to_leader": 23.414754,
+    "latest_completed_round": 596,
+    "running_round": 597
+  },
+  "evidence": {
+    "round": 596,
+    "round_id": "round_db58d6e7-8eb9-4314-8829-e2b5da6723fe",
+    "episode_id": "58a4e081-ff0b-4694-b561-454ef1f557eb",
+    "episode_request_id": "ereq_6394acdd-8b43-4e91-9b03-4506c0334784",
+    "job_id": "6d12aa25-376b-4520-a193-110583aaa181",
+    "winner": "Ron SWGY",
+    "replay_path": "/private/tmp/proxywar-r596-58a4e081-6d12aa25.replay",
+    "replay_size_bytes": 39435345,
+    "replay_sha256": "2ae3acbadc076e14287ac02b8b2aea315775116bf6e2cd4d5dce9d87d2245715",
+    "embedded_decisions_sha256": "2aedb79c6e1edd7a63c3174d57c8ac862270dfc051387c6f394e3130372f6e45",
+    "canonical_cell": {
+      "turn": 10700,
+      "decisions_line": 993,
+      "row_sha256_with_lf": "3d3644fede1e4856aac9b294c231c2f7ebbb43bdada81b4844a129aef3480cb5",
+      "selected_action": "attack:idjkf73n:10",
+      "selected_action_accepted": true,
+      "selected_target": "Ron SWGY",
+      "selected_target_id": "idjkf73n",
+      "own_troops": 682828,
+      "target_troops": 3308586,
+      "relative_troop_ratio": 0.21,
+      "relation": 0,
+      "incoming_attack": false,
+      "outgoing_attack": false,
+      "same_target_alliance_action": "alliance:idjkf73n",
+      "ordered_legal_action_count": 49,
+      "ordered_legal_ids_sha256": "f28302bc45532deabb9f4a69abc3c18403244a2d02c22e888e68296fcba94194",
+      "compact_fixture_sha256": "c8cff0128cc2b671e2f4f09caeea4141485db39afb5f0a4717754361a51dca31"
+    },
+    "independent_recurrence": {
+      "observed_cells": 2,
+      "matched_cells": 2,
+      "turns": [10600, 10700],
+      "ratios": [0.25, 0.21],
+      "same_target_pact_selected_within_decisions": [4, 1]
+    }
+  },
+  "causal_source": {
+    "normal_attack_filter": "strategy-engine.mjs:425-427 rejects ratios below attackThreshold.",
+    "ordering_inversion": "strategy-engine.mjs:895-901 restores every unprotected rival attack as a 10-percent emergency before strategy-engine.mjs:903-904 considers a stable alliance request.",
+    "hidden_planner_dependency": false,
+    "reason": "The replacement is evaluated only inside the exact emergencyAttack return path after the parent has selected the target."
+  },
+  "single_delta": {
+    "guard": [
+      "The exact emergencyAttack branch selected a non-neutral 10-percent rival attack.",
+      "rivalIsProtected is already false for the selected target.",
+      "The selected target's relativeTroopRatio is finite and below 0.50.",
+      "The selected attack metadata reports incomingAttack=false and outgoingAttack=false.",
+      "stableAllianceRequests contains the exact same-target alliance action; its existing relation!=2 rule is unchanged."
+    ],
+    "replacement": "Return the exact same-target alliance request with policyMarker pax1 instead of the emergency 10-percent attack.",
+    "otherwise": "Return the exact parent emergency attack unchanged.",
+    "recent_request_guard": "The existing rivalIsProtected gate already suppresses an emergency attack after a recent same-target alliance request, so PAX1 adds no second cooldown."
+  },
+  "safety": {
+    "k1z": "Coalition rivals are already protected before emergencyAttacks is built. PAX1 never creates an attack or changes target identity.",
+    "legal_action": "The replacement must be the exact offered alliance action for the selected target.",
+    "scope": "No generic attack floor, diplomacy reorder, opponent name, map-wide rule, or planner change."
+  },
+  "red_regression": {
+    "parent": "The hash-bound turn-10700 fixture selects attack:idjkf73n:10 without a pax1 marker.",
+    "candidate": "The same fixture selects alliance:idjkf73n with marker pax1.",
+    "lock_ins": [
+      "ratio at or above 0.50 preserves the parent attack",
+      "current incoming or outgoing attack preserves the parent attack",
+      "Neutral relation preserves the parent attack through stableAllianceRequests",
+      "missing or different-target alliance preserves the parent attack",
+      "K1Z target remains protected and cannot enter the emergency branch"
+    ]
+  },
+  "smallest_screen": {
+    "stage": "one hash-bound mechanism and K1Z-safety canary before any matched pair",
+    "pass": "pax1 reaches, the exact alliance replacement is accepted, all decisions are accepted, and there are zero unexplained holds, rejects, unresolved harmful targets, or K1Z harm.",
+    "fail": "Stop on fixture mismatch, zero reach, rejected replacement, any safety defect, or any parent action change outside the one branch."
+  },
+  "promotion_gates": {
+    "source_ready": false,
+    "local_mechanism_verified": false,
+    "diagnostic_uploaded": false,
+    "hosted_4_of_4": false,
+    "regression_20_of_20": false,
+    "final_rci": false,
+    "submitted": false,
+    "champion_verified": false,
+    "round_confirmed": false
+  },
+  "authorization": {
+    "source_edit": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutated": false
+  },
+  "next": "Independent RCI must approve this exact preregistration and fixture provenance. Then create one dedicated worktree from exact live commit f1347251 and write the red regression before source code."
+}

@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260721T091359Z-56732",
+  "recorded_at": "2026-07-21T09:16:45Z",
+  "transition": "round603_bounded_live_checkpoint_no_new_mechanism",
+  "priority_packet": null,
+  "mailbox_head": "deedb839f3f05be6841c7c9773f0cf2ab44209eb",
+  "active_arm": null,
+  "selector_decision_input": {
+    "audit": "experiments/audit-qd1n-round599-normalized-loss-cell-20260721.json",
+    "selector_raw_input_reviewed": false,
+    "causal_mechanism_claimed": false,
+    "new_arm_authorized": false,
+    "reason": "The hash-bound loss cell contains terminal replay evidence but no reviewed raw selector input, so it cannot preregister a distinct selector mechanism."
+  },
+  "official_checkpoint": {
+    "server": "https://softmax.com/api",
+    "coworld_version": "0.1.28",
+    "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+    "checked_at": "2026-07-21T09:16:45Z",
+    "latest_completed_round": {
+      "round_number": 603,
+      "round_id": "round_7928ed44-4170-4dbd-9d89-76ec3f64834f",
+      "completed_at": "2026-07-21T09:11:57.394150Z",
+      "qd1n_policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+      "qd1n_policy_label": "qd1n:v89",
+      "qd1n_rank": 4,
+      "qd1n_score": 0.25,
+      "qd1n_completed_episode_count": 4,
+      "leader": "richard",
+      "leader_policy": "co-gas-proxywar-richard:v7",
+      "leader_score": 0.5
+    },
+    "running_round": {
+      "round_number": 604,
+      "round_id": "round_aa4527ad-0247-4d6f-88d3-426ee5b8dd36",
+      "started_at": "2026-07-21T09:12:19.808698Z",
+      "status": "running",
+      "qd1n_policy_version_present": true
+    },
+    "scope": "latest three official rounds plus the latest completed round result only",
+    "aggregate_scoreboard_refreshed": false,
+    "replays_opened": false
+  },
+  "decision": {
+    "verdict": "COMPLETE_ROUND603_BOUNDED_LIVE_CHECKPOINT_NO_NEW_MECHANISM",
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "submitted": false,
+    "membership_changed": false,
+    "champion_changed": false,
+    "prior_verified_champion_preserved": true
+  },
+  "next": "Remain without an active arm. Act on any newer hash-bound verdict first; otherwise take one bounded live checkpoint or inspect one newest completed loss cell for raw selector evidence. Preserve qd1n:v89 until every promotion gate passes."
+}

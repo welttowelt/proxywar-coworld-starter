@@ -1,0 +1,154 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-llm:qd1n-v89-gc2-amd64",
+    "parent_ref": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+    "exact_deltas": [
+      "centralize every outbound alliance request under one eight-decision global clock, let incoming K1Z reverse handshakes bypass it, and suppress only when the production chooser returns a concrete safe tactical replacement"
+    ],
+    "source_commit": "9efe990d900f16ff6ae08013d0c48bfad0092a4b",
+    "parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
+    "strategy_sha256": "7270e4175b25f31844e16d3f0a80211e6c6beeb27d5c3f9f5e567dd1b8838a18",
+    "player_sha256": "e34e62dcb306ae82dbc419d2a0d5bf2ec5240fb2d17609568e378be1437abc7c",
+    "image_id": "sha256:593eedf2fa9dd7ee70c24800da6fedcbc203baf5b8310ca0185022be14207677",
+    "parent_image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478"
+  },
+  "hypothesis": "a single global request clock converts repeated coalition-request decisions into safe tactical actions without delaying incoming K1Z handshakes or creating holds, rejects, or protected-ally harm",
+  "mechanism": {
+    "marker": "gc2",
+    "prior_reachable_decisions": 3,
+    "source": "HRAFN_TO_CODEX_ODIN_GC2_SOURCE_RECEIPT_RUNNER_GO_20260719.md",
+    "reach_note": "the replay-shaped source fixture reaches GC2; Docker-level marker reach remains pending until the matched replay"
+  },
+  "runtime": {
+    "coworld_version": "0.1.30",
+    "embedded_manifest_sha256": "a43dafa9bb7e68a5c708b3fc6a44e80097e04e1da07131d62a00b7a8a445d86d",
+    "matched_game_config_sha256": "b2ad49534890d4c7783e90eaf7d947d09440979dcc8281e0b08728c5ffe3de43",
+    "parent_image_ref": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+    "candidate_image_ref": "proxywar-agent-llm:qd1n-v89-gc2-amd64"
+  },
+  "matched_setup": {
+    "map": "Pangaea",
+    "parities": [
+      0,
+      1
+    ],
+    "request_a_path": "/private/tmp/gc2-mirror-pangaea-a.json",
+    "request_b_path": "/private/tmp/gc2-mirror-pangaea-b.json",
+    "request_a_sha256": "da869967abf8c59a3dddeddfaf1f8efd84ee590ba98dda75203b5d7273ee8265",
+    "request_b_sha256": "06dd781c75d2e869b456bfdd44b345fd4facdf6bf21107283014451349f864c8",
+    "replay_a_sha256": null,
+    "replay_b_sha256": null,
+    "auditor": "scripts/audit-local-mirrors.mjs",
+    "request_hashes_required_before_run": true
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "wins": 0,
+    "self_play": false,
+    "evaluated_seats": 2,
+    "accepted_decisions": 58,
+    "holds": 0,
+    "unexplained_holds": 0,
+    "rejections": 0,
+    "mechanism_reached": false,
+    "container_marker_reach": "failed_zero_reach",
+    "qualifier_status": "failed_zero_gc2_reach",
+    "qualifier_request": {
+      "evidence_commit": "978c77df",
+      "manifest_path": "experiments/gc2-qualifier-canonical-manifest-20260719.json",
+      "manifest_file_sha256": "f5e6b4dd247b2b2e534a415d293babab7fd655d44b2004db4257a2df3a01dab0",
+      "request_path": "experiments/gc2-qualifier-explicit-player-jobs-20260719.json",
+      "request_file_sha256": "04c9eb52c145c7ba5ebf6a81ad066d2cfb61faab2649681c42c4489dec122975",
+      "canonical_request_sha256": "22162a04e7f5977d622f11aea561a9010d165fbb8de12536b698b47f99ec1458",
+      "canonical_effective_config_sha256": "c014924752ee05b25e6d6366a9d5ee0f10c88bb1b49f5c56d239fc2db4048a8c",
+      "hrafn_review": "exact qualifier job APPROVE at mailbox 4d9cb04; zero-reach stop APPROVE at mailbox 4901247"
+    },
+    "qualifier_attempts": [
+      {
+        "path": "/private/tmp/proxywar-qd1n-gc2-amd64-qualifier-20260719-cycle1",
+        "policy_decisions": 0,
+        "result": "failed before connection: inherited starter command /app/integration/src/starter-player.mjs was absent from the GC2 image",
+        "config_sha256": "bdf6187fe430814194a5eb997240823397684536df9c04a9ee05cb392d3c0133",
+        "game_stderr_sha256": "33b6216385b8341c79b76230833be8f5dc45dd8297224ad233800c15499f564c",
+        "policy_log_sha256": "309a64f50b655641794d7a48201c86ec6dec365c474f279ddfd80a693ed40b10"
+      },
+      {
+        "path": "/private/tmp/proxywar-qd1n-gc2-amd64-qualifier-20260719-cycle2",
+        "policy_decisions": 0,
+        "result": "failed before connection: CLI --run was passed as one JSON-string executable instead of argv",
+        "config_sha256": "1bb7f6916e59c98a18a3d06e3f1e61af9189bbfa2fcbc416afee82847633cddf",
+        "game_stderr_sha256": "33b6216385b8341c79b76230833be8f5dc45dd8297224ad233800c15499f564c",
+        "policy_log_sha256": "721bd4363aea05963e06d5a80f6e769c8bc919b69d1416313ee138ee28d8c4eb"
+      },
+      {
+        "path": "/private/tmp/proxywar-qd1n-gc2-amd64-qualifier-20260719-cycle3",
+        "connected_players": 2,
+        "policy_decisions": 58,
+        "accepted_decisions": 58,
+        "rejected_decisions": 0,
+        "holds": 0,
+        "gc2_marker_executions": 0,
+        "k1z_harmful_actions": 0,
+        "result": "completed, but failed the approved gate on zero replay-visible gc2 reach",
+        "config_sha256": "6da328d0fa45eb5b9a8f461e23ee3e8449b8396f5a42c788a9de7946de1e01db",
+        "results_sha256": "048c7bd794dce00fe71ecc8b5d78ef9433edc0ec8a3561f85981479ecf783f1d",
+        "replay_sha256": "44c399fceb196d5ba97a1cc27077af0fd42079dea0f99ab05bc26269447515e1"
+      }
+    ],
+    "missing_evidence": "Docker-level gc2 reach; the approved qualifier completed with zero marker executions, so the matched pair is closed"
+  },
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    },
+    "result": {
+      "status": "pending",
+      "episodes": 0,
+      "wins": 0,
+      "holds": 0,
+      "rejections": 0,
+      "mechanism_executions": 0,
+      "planner_degradation_rule_passed": false
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false,
+    "result": {
+      "status": "pending",
+      "episodes": 0,
+      "wins": 0,
+      "holds": 0,
+      "rejections": 0
+    }
+  },
+  "k1z_invariant": {
+    "canonical_names": [
+      "katanasan",
+      "juryoku-koku",
+      "hrafn"
+    ],
+    "stable_player_ids": [
+      "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
+      "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
+      "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863"
+    ],
+    "max_harmful_actions": 0
+  },
+  "stop_conditions": [
+    "zero replay-visible gc2 reach",
+    "any rejected decision",
+    "any unexplained hold",
+    "any harmful action against a K1Z identity",
+    "any runtime, request, source, or image hash mismatch",
+    "no mirrored placement or finish advantage over exact v89"
+  ],
+  "verdict": "QUALIFIER GATE FAILED: Hrafn approved the exact committed job at mailbox 4d9cb04. Both seats connected and produced 58/58 accepted decisions with zero holds, zero rejects, and zero K1Z harm, but replay-visible gc2 reach was zero. The runner was released and no matched pair ran. LOCAL_QUALIFIED is false; hosted, upload, submission, membership, champion, and GR1 evaluation remain closed"
+}

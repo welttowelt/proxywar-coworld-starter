@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260720T220201Z-40724",
+  "checked_at": "2026-07-20T22:03:52Z",
+  "kind": "bounded_live_identity_checkpoint",
+  "source": {
+    "api": "official Coworld CLI",
+    "package": "coworld==0.1.28",
+    "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+    "query": "coworld memberships --league league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42 --mine --active-only --json",
+    "normalized_projection": "membership_id,status,substatus,is_champion,policy_version_id,policy_label,player_id,player_name",
+    "normalized_response_sha256": "a540a145e893a70ba3560075e2680ad2f45d48a009fe3878b066a6dc1fe6bfdd"
+  },
+  "dispatch_mailbox_head": "51345b04cd7ace9c8a600ba4a2a8f3130ddcdbd9",
+  "observed": {
+    "authenticated_player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "authenticated_player_name": "K1Z Hrafn",
+    "champion": {
+      "membership_id": "lpm_e822de7f-1124-4b5f-b0ef-1025d46ae211",
+      "status": "competing",
+      "substatus": "active",
+      "is_champion": true,
+      "policy_label": "hrafn-fylking:v5",
+      "policy_version_id": "10c32300-4593-408a-a17d-02e1d70e4a2e"
+    },
+    "support": {
+      "membership_id": "lpm_a01e4100-7707-442a-a1fb-fc1c201c72bf",
+      "status": "competing",
+      "substatus": "benched",
+      "is_champion": false,
+      "policy_label": "hrafn-fylking-support:v1",
+      "policy_version_id": "68cde4d5-266f-475f-b247-da8323ffae10"
+    },
+    "qd1n_visible_in_mine_scope": false
+  },
+  "scope_guard": "The --mine response proves the currently authenticated identity is Hrafn; it does not prove that Qd1n has no membership outside this identity-scoped response.",
+  "verdict": "IDENTITY_BLOCK_NO_ODIN_RUN",
+  "mutation_performed": false,
+  "runner_used": false,
+  "next_automatic_transition": "After Hrafn posts a reseal/closure receipt and restores K1Z odin free, verify the restored identity and run the preregistered RS1 slot-0 control first."
+}

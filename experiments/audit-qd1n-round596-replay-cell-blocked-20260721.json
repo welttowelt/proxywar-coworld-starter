@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260721T053835Z-53531",
+  "recorded_at": "2026-07-21T05:43:34Z",
+  "transition": "bounded_live_state_checkpoint",
+  "active_arm": null,
+  "prior_closed_arm": {
+    "id": "cb1",
+    "verdict": "STOP_ZERO_CAPTURE"
+  },
+  "official_round": {
+    "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+    "division": "Competition",
+    "id": "round_db58d6e7-8eb9-4314-8829-e2b5da6723fe",
+    "number": 596,
+    "status": "completed",
+    "completed_at": "2026-07-21T05:36:04.283733Z",
+    "entrants": 14
+  },
+  "odin_result": {
+    "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "policy_label": "qd1n:v89",
+    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "rank": 11,
+    "score": 0.0,
+    "completed_episode_count": 4
+  },
+  "round_leader": {
+    "player": "Auri",
+    "policy_label": "proxywar-keystone:v42",
+    "rank": 1,
+    "score": 0.5,
+    "completed_episode_count": 4
+  },
+  "bounded_loss_cell": {
+    "status": "BLOCKED_NO_EPISODE_PAYLOAD",
+    "query_scope": "round 596 plus exact qd1n:v89 policy-version ID, replay required, limit 4",
+    "observed_output": "empty payload",
+    "missing_evidence": [
+      "episode request ID",
+      "map and seat",
+      "replay URL and replay SHA256",
+      "replay-visible action sequence"
+    ],
+    "integrity_rule": "Do not select or open a mechanism from aggregate round rank without one replay-backed loss cell whose selector inputs are faithful."
+  },
+  "decision": {
+    "verdict": "STOP_EVIDENCE_INTEGRITY_BLOCK",
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "submitted": false,
+    "membership_changed": false,
+    "champion_changed": false,
+    "prior_verified_champion_preserved": true
+  },
+  "next": "Retry only the exact round 596 qd1n:v89 episode listing. Audit one replay-backed loss cell, then open only a different replay-visible mechanism with faithful selector inputs."
+}

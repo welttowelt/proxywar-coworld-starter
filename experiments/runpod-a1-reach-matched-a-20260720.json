@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "game_config": {
+    "seed": 20260720,
+    "map": "Pangaea",
+    "map_size": "Compact",
+    "difficulty": "Easy",
+    "num_agents": 4,
+    "max_decision_steps": 80,
+    "turns_per_decision_step": 100,
+    "max_decision_ms": 15000,
+    "replay_tail_turns": 500,
+    "episode_timeout_seconds": 1800,
+    "player_connect_timeout_seconds": 120
+  },
+  "players": [
+    {
+      "name": "K1Z odin free",
+      "policy": "qd1n-a1",
+      "cwd": "policies/qd1n-a1/app",
+      "run": [
+        "node",
+        "llm-player.mjs"
+      ],
+      "env": {
+        "POLICY_CODENAME": "s4ntai",
+        "POLICY_ENGINE": "",
+        "AWS_EC2_METADATA_DISABLED": "true"
+      }
+    },
+    {
+      "name": "K1Z Hrafn",
+      "policy": "hrafn-v5",
+      "cwd": "policies/hrafn-v5/app",
+      "run": [
+        "node",
+        "hrafn-player.mjs"
+      ],
+      "env": {
+        "POLICY_CODENAME": "hrafn-gjof",
+        "POLICY_ENGINE": "",
+        "HRAFN_RV1": "1"
+      }
+    },
+    {
+      "name": "K1Z juryoku-koku",
+      "policy": "juryoku-v3",
+      "cwd": "policies/juryoku-v3/app",
+      "run": [
+        "node",
+        "llm-player.mjs"
+      ],
+      "env": {
+        "AWS_EC2_METADATA_DISABLED": "true"
+      }
+    },
+    {
+      "name": "K1Z katanasan",
+      "policy": "katanasan-v39",
+      "cwd": "policies/katanasan-v39/app",
+      "run": [
+        "node",
+        "llm-player.mjs"
+      ],
+      "env": {
+        "AWS_EC2_METADATA_DISABLED": "true"
+      }
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "arm": "odc1",
+  "candidate_image_id": "sha256:3af909f391a179356876b54e810fd8c197d9cd88432ff4916a6c4e83c50a41a9",
+  "candidate_source_commit": "23ada8a8cfc1f41b1c798cfcb3b71f6fc2f21587",
+  "competitive_evidence": false,
+  "contract_sha256": "5182e85926b43372b2454aad0dfaf85467a25edf62787652ce5331e4ce16e82d",
+  "differential_unit_proof": {
+    "arm": "odc1",
+    "candidate": {
+      "selected_action_id": "expand:terra-nullius:10",
+      "source_commit": "23ada8a8cfc1f41b1c798cfcb3b71f6fc2f21587"
+    },
+    "fixture": {
+      "id": "odc1-routine-k1z-vs-neutral",
+      "legal_action_ids_sha256": "d6b49e107bb15c0e41b9fd5d8e6fe1ccad3b7d50b82fe8559043155d2da73d9c",
+      "sha256": "4f5dd380013f4cdd125222a4ea0162c428d3c6f3f8668480042610ab3f303b1f"
+    },
+    "parent": {
+      "selected_action_id": "alliance:kata",
+      "source_commit": "f1347251834a6283182b631e1336595eb2e08342"
+    },
+    "same_fixture": true,
+    "schema_version": 2,
+    "test_command": [
+      "node",
+      "experiments/odc1/verify-differential.mjs",
+      ".",
+      "f1347251834a6283182b631e1336595eb2e08342",
+      "23ada8a8cfc1f41b1c798cfcb3b71f6fc2f21587",
+      "experiments/odc1/differential-fixture.json",
+      "experiments/odc1/differential-proof-23ada8a8.json"
+    ],
+    "test_exit_code": 0,
+    "verifier": {
+      "evaluator_commit": "915476fcc9c3bbbc651dc933a3852145f20f43c4",
+      "path": "experiments/odc1/verify-differential.mjs",
+      "sha256": "3835de8d2bb3e2d3e76de562966d56bb47b5dbabc40c6959436539a392e103ba"
+    }
+  },
+  "failures": [],
+  "pair_id": "odc1-rci2-pangaea-20260720",
+  "paired_deltas": {},
+  "parent_image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478",
+  "parent_source_commit": "f1347251834a6283182b631e1336595eb2e08342",
+  "required_coalition_roles": [
+    "katanasan"
+  ],
+  "runs": [
+    {
+      "candidate": {
+        "accepted": 66,
+        "alive": true,
+        "decision_count": 66,
+        "declared_win": false,
+        "degradation_turns": [],
+        "fallback_turns": [],
+        "harmful_k1z_actions": [],
+        "illegal_turns": [],
+        "k1z_endgame_exemptions": [],
+        "marker_counts": {
+          "odc10": 5,
+          "odc25": 5,
+          "odc40": 3,
+          "odec1": 1,
+          "odec2": 1,
+          "odef": 1,
+          "odg10": 12,
+          "odg20": 10,
+          "odg35": 21,
+          "odn8": 1
+        },
+        "post_opening_route_execution_count": 7,
+        "rejected_turns": [],
+        "route_execution_count": 10,
+        "score": 0.25763593617127706,
+        "slot": 0,
+        "tiles": 25752,
+        "unexplained_holds": [],
+        "unresolved_harmful_targets": []
+      },
+      "coalition_roles_present": [
+        "katanasan",
+        "odin"
+      ],
+      "config_sha256": "3f01b4f8e36635c08ca54aa283da9f31c0ba68a5ce0b605d99e0dc52e774ef7e",
+      "decisions_sha256": "77b83502a92f21e1abb31e80b1001c8fc50488a90e48015f5226b79323369f11",
+      "directory": "/private/tmp/proxywar-odc1-rci2-mechanism2-23ada8a8-20260720",
+      "game_id": "CWBSITMM",
+      "job_sha256": "a3a38a2b207b369653608c8330e0161c32832ba93bb67690f0dafd4095e1f29e",
+      "orientation": "A",
+      "orientation_advantage": null,
+      "parent": {
+        "alive": true,
+        "decision_count": 66,
+        "declared_win": false,
+        "degradation_count": 60,
+        "degradation_turns": null,
+        "fallback_count": 60,
+        "fallback_turns": null,
+        "odc1_marker_count": 0,
+        "runtime_excluded_from_verdict": true,
+        "score": 0.0027512380571257065,
+        "slot": 1,
+        "tiles": 275
+      },
+      "replay_sha256": "26d158e0687e3e35997dfecdbc7aaba3b61f0f4ddfa9942705f1b7724bc09d63",
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image": "proxywar-agent-llm:qd1n-v89-odc1-rci2-amd64",
+            "image_id": "sha256:3af909f391a179356876b54e810fd8c197d9cd88432ff4916a6c4e83c50a41a9"
+          },
+          "parent": {
+            "image": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+            "image_id": "sha256:ebd9eed3f8a936cc2d0813f54944a0e3e826a0141932356041d71f0c3638a478"
+          }
+        },
+        "path": "/private/tmp/odc1-rci2-gate/resolved-images-a.json",
+        "sha256": "adab0b72aae5b834dfb0db83a88d85ec29efec8b04ff11c109f6bed9595d5e26"
+      },
+      "results_sha256": "830c5b93f10052018258683d599203591cd47dcac9aa57b14d0abf05ea29d32b",
+      "seed": 20260720,
+      "violations": []
+    }
+  ],
+  "schema_version": 2,
+  "scope": "candidate mechanism, runtime, and K1Z safety only; no local competitive lift claim",
+  "screen_mode": "mechanism",
+  "verdict": "PASS_MECHANISM_SCREEN"
+}

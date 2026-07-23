@@ -171,8 +171,13 @@ const PUBLIC_KIND = {
 function publicReason(chosen, hasPlan, degraded, errorClass) {
   const mode = degraded ? `dgd:${errorClass || "err"}` : hasPlan ? "pln" : "rul";
   const kind = PUBLIC_KIND[chosen.kind] || "act";
-  const marker = clean(chosen.policyMarker).toLowerCase().replace(/[^a-z0-9]/g, "");
-  return `${mode}:${kind}${marker ? `:${marker}` : ""}`;
+  const markers = [...new Set([
+    ...(Array.isArray(chosen.policyMarkers) ? chosen.policyMarkers : []),
+    chosen.policyMarker,
+  ]
+    .map((marker) => clean(marker).toLowerCase().replace(/[^a-z0-9]/g, ""))
+    .filter(Boolean))];
+  return `${mode}:${kind}${markers.length > 0 ? `:${markers.join(":")}` : ""}`;
 }
 
 function handleMessage(activeSocket, data) {

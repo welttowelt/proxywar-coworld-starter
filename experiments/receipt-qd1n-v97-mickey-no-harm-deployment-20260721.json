@@ -1,0 +1,75 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-07-21T11:10:00Z",
+  "directive": "Never harm K1Z Mickey Mouse until Oli explicitly changes the instruction.",
+  "trigger": {
+    "round": 605,
+    "episode_id": "0b018bcf-e093-4fca-8e61-5126ebd7a110",
+    "replay_sha256": "6423abe529478ee6687c5152418666a553ed10d725ceb845fd842a840e8a7a0",
+    "live_v89_harmful_actions_against_mickey": 14
+  },
+  "candidate": {
+    "parent_label": "qd1n:v89",
+    "parent_source_commit": "db02545feac007e8d5f0184da1b2d45d2c8c5e17",
+    "parent_strategy_sha256": "f2ee66d570033508c4158bcb83d56d81dc198cdcebb91098d7e67eefdc8e6a7a",
+    "source_commit": "d50f34058fe60de39fb932a9b7c81f1b54415ee3",
+    "branch": "safety/mickey-no-harm-v89",
+    "strategy_sha256": "753ee7ff49fffc9147dc592db8105c9ef1e07684e9efd9eb8d3c5394d7266881",
+    "image": "proxywar-agent-llm:qd1n-v89-mickey-guard-d50f3405-amd64",
+    "image_id": "sha256:b1edb1f4957300de57615e10bfc4e1f33897d5ebd3cdc01c35a8fcff865f3abf",
+    "architecture": "amd64",
+    "delta": "Every shipped file is byte-identical to qd1n:v89 except strategy-engine.mjs; the strategy delta is the Mickey-only 13-line guard."
+  },
+  "verification": {
+    "red_first": {
+      "tests": 102,
+      "passed": 99,
+      "failed": 3
+    },
+    "green": {
+      "focused_tests": 102,
+      "focused_passed": 102,
+      "full_tests": 143,
+      "full_passed": 143
+    },
+    "behaviors": [
+      "protect Mickey by canonical name and stable player ID",
+      "remain no-harm even after observed incoming pressure",
+      "accept Mickey alliance offers with kp2 priority",
+      "preserve offense against outsiders"
+    ]
+  },
+  "upload": {
+    "label": "qd1n:v97",
+    "policy_version_id": "e83d7832-ff6e-4dde-a049-037cbf25c821",
+    "diagnostic_duplicate": "qd1n:v96 was the same image uploaded without the complete hash tags and was never submitted."
+  },
+  "qualification": {
+    "retry_round_id": "round_a7878112-1546-495b-a0f3-693e2e89585e",
+    "retry_round_number": 437,
+    "status": "completed",
+    "episodes_completed": 2,
+    "score": 1.0,
+    "note": "Round 436 failed before play because the commissioner requested two primary seats for one entrant; automatic retry 437 completed both crash-check episodes."
+  },
+  "deployment": {
+    "submission_id": "sub_7f154c46-eb32-4787-b8b9-4215736b0b88",
+    "submission_status": "placed",
+    "membership_id": "lpm_d8ca71ea-a783-4e36-ac2b-d1a18981a83a",
+    "membership_status": "competing",
+    "membership_substatus": "champion",
+    "is_champion": true,
+    "previous_live": "qd1n:v89",
+    "previous_substatus": "benched"
+  },
+  "round_boundary": {
+    "round_606_id": "round_892afc97-4bfb-42ae-a1f2-98f214b75b31",
+    "round_606_status_at_promotion": "running",
+    "round_606_was_sealed_with_v89": true,
+    "round_606_includes_mickey": true,
+    "v97_first_eligible_round": 607,
+    "note": "A champion switch cannot replace a policy version already sealed into a running round; audit Round 606 after completion."
+  },
+  "promotion_class": "DIRECT_USER_ORDER_SAFETY_FIX",
+  "performance_experiment_mixed_in": false
+}

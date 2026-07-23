@@ -23,13 +23,19 @@ function normalizedRivalName(value) {
 }
 
 const RECIPROCAL_RIVALS = new Set(
-  ["katanasan", "juryoku-koku", "gravity", "hrafn", "odin free"].map(normalizedRivalName),
+  ["katanasan", "juryoku-koku", "gravity", "hrafn", "odin free", "mickey mouse"]
+    .map(normalizedRivalName),
 );
 const RECIPROCAL_RIVAL_IDS = new Set([
   "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
   "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
   "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
   "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+  "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+]);
+const ABSOLUTE_NO_HARM_RIVALS = new Set(["mickey mouse"].map(normalizedRivalName));
+const ABSOLUTE_NO_HARM_RIVAL_IDS = new Set([
+  "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
 ]);
 const MIN_DESPERATE_INVASION_RATIO = 0.5;
 const MIN_CONVERSION_TILE_SHARE = 0.002;
@@ -319,11 +325,17 @@ function isReciprocalRival(rival) {
     RECIPROCAL_RIVAL_IDS.has(String(rival?.id ?? "").toLowerCase());
 }
 
+function isAbsoluteNoHarmRival(rival) {
+  return ABSOLUTE_NO_HARM_RIVALS.has(normalizedRivalName(rival?.name)) ||
+    ABSOLUTE_NO_HARM_RIVAL_IDS.has(String(rival?.id ?? "").toLowerCase());
+}
+
 function reciprocalTrustIntact(state, history, rival) {
   return isReciprocalRival(rival) && recentHostility(state, history, rival, history.length) === 0;
 }
 
 export function rivalIsProtected(state, history, rival) {
+  if (isAbsoluteNoHarmRival(rival)) return true;
   if (rival.isAllied) return true;
   if (reciprocalTrustIntact(state, history, rival)) return true;
   if (state.self.tileShare >= 0.35) return false;
@@ -516,6 +528,7 @@ function chooseRivalAttack(actions, state, plan, history, avoid, threatCount = 0
 }
 
 const KINGMAKER_RETRY_COOLDOWN = 6;
+const GLOBAL_COALITION_COOLDOWN = 8;
 
 // Reciprocal partners come from two channels: visible rivals, and
 // alliance_request metadata when the partner is outside the visible set.
@@ -802,16 +815,56 @@ function chooseParentAction(actions, state, plan = null, history = []) {
     : null;
   if (defensiveBuild) return defensiveBuild;
 
-  const kingmakerAlliance = kingmakerAllianceAction(actions, state, history);
+  // gc1: global coalition-request cadence. The per-partner retry cooldown
+  // multiplies across partners, so interleaved retries became a permanent
+  // social stream (v91 leaders spent 122 and 82 of 503 capped decisions on
+  // requests and froze at peak territory). While any reliable tactical action
+  // is legal, a fresh partner retry must wait out the global cadence window;
+  // a genuine pending reverse handshake is still accepted on sight.
+  let gc1Suppress = false;
+  let suppressedKingmakerAlliance = null;
+  let kingmakerAlliance = kingmakerAllianceAction(actions, state, history);
+  if (kingmakerAlliance) {
+    const lastCoalitionRequest = decisionsSince(history, (entry) =>
+      entry.kind === "alliance_request" &&
+      entry.policyMarker === "kp2" &&
+      entry.allianceDirection !== "inbound");
+    if (lastCoalitionRequest < GLOBAL_COALITION_COOLDOWN &&
+      hasReliableTacticalAction(actions)) {
+      const partners = reciprocalPartners(actions, state);
+      const partnerOfferPending = safeActions(actions, (action) =>
+        action.kind === "alliance_reject" &&
+        partners.some((partner) => matchesKingmakerPartner(action, partner, state))
+      ).length > 0;
+      if (!partnerOfferPending) {
+        suppressedKingmakerAlliance = kingmakerAlliance;
+        kingmakerAlliance = null;
+        gc1Suppress = true;
+      }
+    }
+  }
   if (kingmakerAlliance) return kingmakerAlliance;
 
+  const withGc1 = (action) => {
+    if (!gc1Suppress || !action) return action;
+    const policyMarkers = [...new Set([
+      "gc1",
+      ...(Array.isArray(action.policyMarkers) ? action.policyMarkers : []),
+      action.policyMarker,
+    ].filter(Boolean))];
+    return {
+      ...action,
+      policyMarker: action.policyMarker ?? "gc1",
+      policyMarkers,
+    };
+  };
   const atomBomb = chooseAtomBomb(actions, state, history);
-  if (atomBomb) return atomBomb;
+  if (atomBomb) return withGc1(atomBomb);
 
   const rivalAttack = chooseRivalAttack(actions, state, plan, history, avoid, threatCount);
   const peaceRedirect = rivalAttack?.peaceRedirect === true;
   const withPeace = (action) =>
-    peaceRedirect && action && !action.policyMarker ? { ...action, policyMarker: "kp1" } : action;
+    withGc1(peaceRedirect && action && !action.policyMarker ? { ...action, policyMarker: "kp1" } : action);
   const routedRivalAttack = state.mapFingerprint === "Asia" && rivalAttack?.action &&
     (state.self.incomingAttackerIDs || []).includes(rivalAttack.rival.id.toLowerCase())
     ? { ...rivalAttack.action, policyMarker: "ia1" }
@@ -824,9 +877,9 @@ function chooseParentAction(actions, state, plan = null, history = []) {
     rivalAttack.rival.relativeTroopRatio < 1.3 && !pc1Band;
   const disciplinedAttack = pileOnDiscipline ? null : routedRivalAttack;
   const withDiscipline = (action) =>
-    pileOnDiscipline && action && !action.policyMarker
+    withGc1(pileOnDiscipline && action && !action.policyMarker
       ? { ...action, policyMarker: "pd2" }
-      : action;
+      : action);
   const neutralAttack = chooseNeutralAttack(actions, history, avoid);
   const build = chooseBuild(actions, history);
   const sinceBuild = decisionsSince(history, (entry) =>
@@ -839,7 +892,7 @@ function chooseParentAction(actions, state, plan = null, history = []) {
     rivalAttack.rival.relativeTroopRatio >= 1.5;
   const collapsing = territoryCollapsing(state, history);
 
-  if (collapsing && build && sinceBuild >= 3 && !finishingTarget) return build;
+  if (collapsing && build && sinceBuild >= 3 && !finishingTarget) return withGc1(build);
 
   const allianceMove = chooseAllianceMove(
     actions,
@@ -853,7 +906,7 @@ function chooseParentAction(actions, state, plan = null, history = []) {
     allianceMove && !finishingTarget &&
     (allianceMove.kind === "break_alliance" || !hasReliableTacticalAction(actions))
   ) {
-    return allianceMove;
+    return withGc1(allianceMove);
   }
 
   const conversionReady = decisionsSince(
@@ -864,11 +917,11 @@ function chooseParentAction(actions, state, plan = null, history = []) {
     const conversion = disciplinedAttack || chooseUtility(actions, state, plan, history) ||
       (sinceBuild >= 3 ? build : null) ||
       chooseBoat(actions, state, history, avoid, false, true);
-    if (conversion) return { ...conversion, policyMarker: "cv1" };
+    if (conversion) return withGc1({ ...conversion, policyMarker: "cv1" });
   }
 
   if (neutralExpansionStalled(state, history)) {
-    if (disciplinedAttack) return disciplinedAttack;
+    if (disciplinedAttack) return withGc1(disciplinedAttack);
     const boatStreak = consecutive(history, (entry) => entry.kind === "boat");
     if (boatStreak >= 2 && build) return withDiscipline(withPeace(build));
     const escapeBoat = chooseBoat(actions, state, history, avoid);
@@ -878,9 +931,9 @@ function chooseParentAction(actions, state, plan = null, history = []) {
 
   if (cadenceBuild && !finishingTarget) return withDiscipline(withPeace(build));
   if (state.self.tileShare < 0.12 && neutralAttack && threatCount === 0 && !collapsing) {
-    return neutralAttack;
+    return withGc1(neutralAttack);
   }
-  if (disciplinedAttack) return disciplinedAttack;
+  if (disciplinedAttack) return withGc1(disciplinedAttack);
   if (neutralAttack) return withDiscipline(withPeace(neutralAttack));
   if (build && sinceBuild >= 5) return withDiscipline(withPeace(build));
 
@@ -903,7 +956,7 @@ function chooseParentAction(actions, state, plan = null, history = []) {
     const rival = rivalForAction(action, state);
     return plan?.focus === "ally" && rival?.isAllied === true;
   })[0];
-  if (donation) return donation;
+  if (donation) return withGc1(donation);
 
   // Holding while legal tactical actions remain turns a weak position into a certain loss.
   if (build) return withDiscipline(withPeace(build));
@@ -918,17 +971,21 @@ function chooseParentAction(actions, state, plan = null, history = []) {
     return rival && !rivalIsProtected(state, history, rival);
   });
   const emergencyAttack = pickPercent(emergencyAttacks, 10, avoid);
-  if (emergencyAttack) return emergencyAttack;
+  if (emergencyAttack) return withGc1(emergencyAttack);
 
+  // The tactical precheck is deliberately broad. If every apparent alternative
+  // is later rejected by the full safety selectors, restore the eligible
+  // coalition request instead of turning a false positive into a hold.
+  if (suppressedKingmakerAlliance) return suppressedKingmakerAlliance;
   const survivalAlliance = bestAllianceRequest(actions, state, history);
-  if (survivalAlliance) return survivalAlliance;
+  if (survivalAlliance) return withGc1(survivalAlliance);
   const pressure = safeActions(actions, (action) => action.kind === "target_player")
     .map((action) => ({ action, rival: rivalForAction(action, state) }))
     .filter(({ rival }) => rival && !rivalIsProtected(state, history, rival))
     .sort((left, right) => right.rival.tileShare - left.rival.tileShare)[0]?.action;
-  if (pressure) return pressure;
+  if (pressure) return withGc1(pressure);
 
-  return actions.find((action) => action.kind === "hold") ?? actions[0];
+  return withGc1(actions.find((action) => action.kind === "hold") ?? actions[0]);
 }
 
 const MM1_OPENING_DECISIONS = 20;
@@ -1126,6 +1183,7 @@ export function recordDecision(history, action, state) {
     mapFingerprint: state.mapFingerprint,
     policyMarker: action.policyMarker ?? null,
     allianceDirection: action.allianceDirection ?? null,
+    policyMarkers: Array.isArray(action.policyMarkers) ? [...action.policyMarkers] : [],
   });
   if (history.length > 320) history.shift();
 }

@@ -1,0 +1,223 @@
+{
+  "schema_version": 1,
+  "date": "2026-07-19",
+  "experiment": "qd1n Pangaea pending-pact escape PE1",
+  "status": "rejected",
+  "causal_basis": {
+    "official_round": 517,
+    "map": "Pangaea",
+    "live_policy": "qd1n:v89",
+    "official_rank": 3,
+    "official_score": 0.25,
+    "declared_episode_wins": 1,
+    "mean_final_tiles": 85063.5,
+    "holds": 60,
+    "root_episode": {
+      "episode_id": "38d6e72e-a824-4460-bd7d-eb30e5a35e74",
+      "participant_position": 7,
+      "holds": 58,
+      "actionable_holds": 57,
+      "pending_pact_protected_holds": 24,
+      "finding": "A pending alliance request to runaway outsider Richard Higgins suppressed otherwise legal attacks and boats while Odin held about one percent of the map."
+    },
+    "round_519_reproduction": {
+      "official_rank": 12,
+      "official_score": 0,
+      "declared_episode_wins": 0,
+      "mean_final_tiles": 930.3,
+      "holds": 24,
+      "finding": "Two more Pangaea losses exposed legal outsider boats during terminal pact-state hold loops."
+    }
+  },
+  "parent": {
+    "live_policy": "qd1n:v89",
+    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "strategy_sha256": "f2ee66d570033508c4158bcb83d56d81dc198cdcebb91098d7e67eefdc8e6a7a",
+    "local_image": "proxywar-agent-llm:qd1n-v89-parent-arm64"
+  },
+  "candidate": {
+    "name": "Pangaea terminal pending-pact escape PE1",
+    "marker": "pe1",
+    "branch": "rci/pe1",
+    "commits": [
+      "2d2e9dcd417256f8635e4372a6f4cb2851be7be2",
+      "d7d9337c"
+    ],
+    "strategy_sha256": "93e57797a58fff4a73ce6963a967f40b398ea0ba3d3355bd9c96caf99bcfd583",
+    "local_image": "proxywar-agent-llm:qd1n-v89-pe1-amd64",
+    "local_image_id": "sha256:f8c6eb5439aff2b7f18244d30c03fa8ed2bba228dac299b5943f62749d6f87f8",
+    "hosted_policy": "qd1n:v90",
+    "hosted_policy_version_id": "a413d96b-3808-4cc4-bffc-c07b1fb17764",
+    "isolated_delta": "On exact Pangaea below one-percent tile share after forty active decisions, allow one terminal attack or boat against an outsider through pending-request protection while preserving actual allies and reciprocal K1Z partners."
+  },
+  "verification": {
+    "tests": {
+      "focused_passed": 104,
+      "full_passed": 153,
+      "failed": 0
+    },
+    "amd64_qualifier": {
+      "path": "/private/tmp/proxywar-qd1n-pe1-amd64-qualifier-v2-20260719",
+      "decisions": 34,
+      "accepted": 34,
+      "rejected": 0,
+      "holds": 0,
+      "fallbacks": 10,
+      "replay_verified": true,
+      "replay_sha256": "c0a8e5730382e21953be77dbc9c9a569dc202eb2d6ecbdc2f66a98fa093043cd"
+    },
+    "bounded_matched_pangaea": {
+      "configuration": {
+        "map": "Pangaea",
+        "players": 8,
+        "max_decision_steps": 200,
+        "turns_per_decision_step": 100,
+        "seat_swap": "candidate even in A and odd in B"
+      },
+      "orientation_a": {
+        "replay_sha256": "9806528b69ace973e1a32c935f8635883d9ca6ddc88c76d37202285ea56196db",
+        "candidate_markers": 2
+      },
+      "orientation_b": {
+        "replay_sha256": "37585101491d6fd2bde4a2b4e46fdd0864da0554d64836d550fb15c3844ba833",
+        "candidate_markers": 4
+      },
+      "aggregate": {
+        "candidate": {
+          "score": 1.0047842792058716,
+          "tiles": 422346,
+          "surviving_seats": 3,
+          "holds": 3,
+          "marker_executions": 6
+        },
+        "parent": {
+          "score": 0.9952157207941284,
+          "tiles": 418324,
+          "surviving_seats": 3,
+          "holds": 3
+        },
+        "candidate_score_delta": 0.0095685584117432,
+        "candidate_tile_delta": 4022,
+        "candidate_survivor_delta": 0
+      }
+    },
+    "hosted_diagnostic": {
+      "experience_request_id": "xreq_df3924cd-f07a-4e61-b59a-d29b7a3da0d6",
+      "variant": "tournament-12p-pangaea",
+      "roster": "Exact Round 518 episode 06f531d3 roster and seats; only qd1n:v89 replaced by qd1n:v90.",
+      "episodes": 4,
+      "wins": 0,
+      "win_rate_pct": 0,
+      "final_tiles": [
+        2076,
+        810,
+        2090,
+        712
+      ],
+      "mean_final_tiles": 1422,
+      "holds": 4,
+      "rejected": 0,
+      "fallbacks": 287,
+      "marker_executions": 29,
+      "all_marker_actions_accepted": true,
+      "winners": [
+        "daveey",
+        "Ron @ SWGY",
+        "daveey",
+        "Auri"
+      ],
+      "episode_replays": [
+        {
+          "episode_id": "d666e16a-5b5f-40df-b588-2e2aef58dd10",
+          "final_tiles": 2076,
+          "holds": 0,
+          "marker_executions": 0,
+          "replay_sha256": "535020045a7721510a09e83df2f6c9f37795fb5631a3e21478525fda04f23e56"
+        },
+        {
+          "episode_id": "474fd43a-3c07-4378-989b-9be32f702301",
+          "final_tiles": 810,
+          "holds": 0,
+          "marker_executions": 7,
+          "replay_sha256": "db165194435e69dc97e8baede425e6a41b874ed39286f753bc0cbfe4036d3ffa"
+        },
+        {
+          "episode_id": "4853d1f7-2c92-41ce-b7aa-26e51e8398a4",
+          "final_tiles": 2090,
+          "holds": 3,
+          "marker_executions": 22,
+          "replay_sha256": "42695b729e682d74025f7a9d6c6a8c36a3c02bd65aaa56d9fe4841fbe6415635"
+        },
+        {
+          "episode_id": "0263d4f6-7e27-4f6f-af3e-2fb6bb452c81",
+          "final_tiles": 712,
+          "holds": 1,
+          "marker_executions": 0,
+          "replay_sha256": "0d189c12a1a0d2066bb43e962b6355d4989c26fc61a390171a563cc235a00289"
+        }
+      ]
+    }
+  },
+  "promotion_gates": {
+    "mechanism_reach": "passed: 29 accepted replay-visible PE1 actions",
+    "accepted_actions": "failed strict gate: zero rejections but four holds",
+    "matched_advantage": "passed locally: +0.00957 score and +4,022 tiles with survival tied",
+    "hosted_4_of_4": "failed: 0/4",
+    "regression_20_of_20": "not run after hosted failure",
+    "live_identity_submission_membership": "unchanged qd1n:v89"
+  },
+  "postmortem": {
+    "finding": "PE1 fixed the selected hold loop but acted after collapse. In one hosted loss it fired 22 times across multiple outsiders, preserving a small remnant without recovering territory.",
+    "defense_post_signal": {
+      "odin_high_pressure_legal_opportunities": 46,
+      "odin_defense_posts_selected": 0,
+      "ron_winning_episode_defense_posts": 29,
+      "ron_winning_episode_confirmed_defense_posts": 17,
+      "auri_winning_episode_defense_posts": 4,
+      "auri_winning_episode_confirmed_defense_posts": 4,
+      "finding": "The parent explicitly excludes Defense Post from reliable builds even though current hosted replays show accepted and confirmed construction."
+    }
+  },
+  "official_checkpoint_after": {
+    "round_520": {
+      "map": "World",
+      "official_rank": 1,
+      "official_score": 0.5,
+      "declared_episode_wins": 1,
+      "mean_final_tiles": 250370,
+      "holds": 0,
+      "official_first_place_streak": "1/1000"
+    },
+    "round_521": {
+      "map": "Pangaea",
+      "official_rank": 10,
+      "official_score": 0,
+      "declared_episode_wins": 0,
+      "official_first_place_streak": "0/1000"
+    },
+    "overall_leaderboard": [
+      {
+        "rank": 1,
+        "player": "daveey",
+        "score": 32.4048818676283
+      },
+      {
+        "rank": 2,
+        "player": "K1Z odin free",
+        "score": 21.7475373648783
+      },
+      {
+        "rank": 3,
+        "player": "Richard Higgins",
+        "score": 15.126641968761781
+      }
+    ]
+  },
+  "verdict": {
+    "decision": "reject PE1",
+    "reason": "The terminal escape mechanism was reachable and productive at the action layer, but qd1n:v90 lost all four hosted episodes and averaged only 1,422 final tiles.",
+    "live_policy_after": "qd1n:v89",
+    "submission_membership_champion_changes": 0
+  },
+  "next_hypothesis": "Test an isolated early Pangaea Defense Post override at current high incoming pressure. It must act before collapse, use a replay marker and bounded cadence, and beat the exact parent in mirrored twelve-player evidence before upload."
+}

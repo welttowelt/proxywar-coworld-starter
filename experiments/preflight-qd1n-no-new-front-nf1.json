@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-llm:qd1n-v89-nf1-amd64",
+    "parent_ref": "qd1n:v89",
+    "exact_deltas": [
+      "prefer a current or recent attacker while a hostile front is active, preserve only an existing 1.5-ratio finish beside that front, and require 1.3 for a fresh rival attack when a non-front tactical alternative exists"
+    ],
+    "policy_version_id": null
+  },
+  "hypothesis": "concentrating land pressure on the attacker already fighting Odin will prevent retaliation-driven pile-ons without repeating ef1's passive opening or cancelling proven finish and leader-pressure paths",
+  "mechanism": {
+    "marker": "nf1",
+    "prior_reachable_decisions": 4,
+    "source": "experiments/diagnosis-qd1n-no-new-front-rci-20260718.json"
+  },
+  "local": {
+    "runs": 3,
+    "independent_traces": 3,
+    "wins": 0,
+    "self_play": true,
+    "evaluated_seats": 10,
+    "accepted_decisions": 1715,
+    "holds": 8,
+    "unexplained_holds": 8,
+    "rejections": 0,
+    "planner_degraded_decisions": 1667,
+    "mechanism_reached": true,
+    "qualifier_replay_sha256": "3e237bd9a23993d12a48a1888763f078d1fa36168349c1579561b0e69ddfb5e2",
+    "mechanism_executions": 115,
+    "candidate_score_units": 1,
+    "parent_score_units": 1,
+    "candidate_tiles": 651609,
+    "parent_tiles": 651609,
+    "orientation_a_replay_sha256": "0b1054ba1d2a0b79d2381942d388566c3b0d2cafd7320ae5f45a39e3ad607200",
+    "orientation_b_replay_sha256": "c9d5f21d8bdd4376ba1a0eb57944611395e9dca7ea3a8a2b0ff7626c2b760da1"
+  },
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    },
+    "request_id": null,
+    "result": {
+      "status": "not_started",
+      "episodes": 0,
+      "wins": 0,
+      "holds": 0,
+      "rejections": 0,
+      "mechanism_executions": 0,
+      "planner_degradation_rule_passed": false
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  },
+  "verdict": "REJECTED: nf1 executed 115 times but tied the exact parent after the seat swap at 1 score unit and 651609 tiles each; no extension, upload, submission, or champion change",
+  "matched_baseline": {
+    "policy_ref": "qd1n:v89",
+    "request_id": null,
+    "same_roster": true,
+    "same_variant": true
+  }
+}

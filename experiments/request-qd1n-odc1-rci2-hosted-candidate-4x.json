@@ -1,0 +1,81 @@
+{
+  "idempotency_key": "qd1n-odc1-rci2-v93-hosted-4x-top12-pangaea-20260720",
+  "coworld_id": "cow_236e7c2e-acdb-404a-b1b9-41852e5ac658",
+  "variant_id": "tournament-12p-pangaea",
+  "roster": [
+    {
+      "slot": 0,
+      "player": {
+        "policy_ref": "2ac33c94-19e2-446e-bf25-2ee64a9ec133"
+      }
+    },
+    {
+      "slot": 1,
+      "player": {
+        "policy_ref": "cea2bb5b-add0-4dd3-aa32-9442280142c5"
+      }
+    },
+    {
+      "slot": 2,
+      "player": {
+        "policy_ref": "dffb6fb2-673e-4be5-9e35-ba69d6731754"
+      }
+    },
+    {
+      "slot": 3,
+      "player": {
+        "policy_ref": "9f233579-4837-4a27-b352-ed3135301135"
+      }
+    },
+    {
+      "slot": 4,
+      "player": {
+        "policy_ref": "4110c5a3-f340-44d6-ad60-106f5672df88"
+      }
+    },
+    {
+      "slot": 5,
+      "player": {
+        "policy_ref": "2b8cdf1f-7602-4340-ac38-3e6eba911ec7"
+      }
+    },
+    {
+      "slot": 6,
+      "player": {
+        "policy_ref": "b378acb9-2446-45c9-b3ce-67eac8e72170"
+      }
+    },
+    {
+      "slot": 7,
+      "player": {
+        "policy_ref": "3d498947-09a1-490f-80d4-b893609c2f00"
+      }
+    },
+    {
+      "slot": 8,
+      "player": {
+        "policy_ref": "10c32300-4593-408a-a17d-02e1d70e4a2e"
+      }
+    },
+    {
+      "slot": 9,
+      "player": {
+        "policy_ref": "d1df6aca-c4dd-47bc-a0c8-17456d3ca80a"
+      }
+    },
+    {
+      "slot": 10,
+      "player": {
+        "policy_ref": "74d4670d-76b5-4466-8e5c-743e3ffd5621"
+      }
+    },
+    {
+      "slot": 11,
+      "player": {
+        "policy_ref": "3ed5713d-7940-45f1-b347-76d596b90fe8"
+      }
+    }
+  ],
+  "num_episodes": 4,
+  "notes": "ODC1 RCI2 diagnostic-only hosted gate against the current Competition top 12 from round 575. Candidate qd1n:v93 replaces only qd1n:v89 at slot 7. No league submission or champion change."
+}

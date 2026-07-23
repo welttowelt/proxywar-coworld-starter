@@ -1,0 +1,81 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-llm:qd1n-v89-kiz1-gravity-1ccaff73-amd64",
+    "parent_ref": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+    "exact_deltas": [
+      "Add the current canonical gravity alias to the existing reciprocal K1Z identity set."
+    ],
+    "source_commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "parent_commit": "f1347251834a6283182b631e1336595eb2e08342",
+    "image_id": "sha256:de2a15be36a86cf8f74029539f6576b0559554c89ac5800ebf4814c6b863677e",
+    "uploaded_label": "qd1n:v94",
+    "policy_version_id": "e141216a-5a79-47a2-b885-7538b5d0003e",
+    "upload_receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/receipt-qd1n-kiz1-gravity-diagnostic-upload-20260720.json",
+      "sha256": "08668084d17608b5421fa96d778078d9d9bd9296bbd1ed572db85f38d35828bc"
+    }
+  },
+  "hypothesis": "Recognizing the renamed K1Z Gravity restores the existing reciprocal handshake and prevents attacks, boats, and nukes against Gravity while preserving offense against outsiders and retaliation after betrayal.",
+  "mechanism": {
+    "marker": "kp2",
+    "prior_reachable_decisions": 6
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "contract_sha256": "1faa4e03d4c4a13f8d5559807d25ff86f61fe1e6cfabd1b1be0f79c8c29b3f49",
+    "audit_receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-qd1n-kiz1-gravity-local-screen-20260720.json",
+      "sha256": "9cc7bf7eb0c5b6bb799c146d2e1bc43d37d09a32ef6a9c49de3190d47e6cad4e"
+    },
+    "differential_binding": {
+      "verifier_path": "experiments/kiz1/verify-differential.mjs",
+      "fixture_path": "experiments/kiz1/differential-fixture.json"
+    },
+    "mechanism_harness": {
+      "resolved_image_id": "sha256:39548883b562262c5bdbe6bcc0fcc6115d330bd1a099308fcea33723b0150194",
+      "base_candidate_image_id": "sha256:de2a15be36a86cf8f74029539f6576b0559554c89ac5800ebf4814c6b863677e",
+      "strategy_engine_sha256": "52d156a3646a2591ef4dc9f058b2834c0782b3a9bfff60d7d9be508110e30d02",
+      "evaluator_commit": "b8b4b4fa5232ba49e015adb6de5b1abd5a2ba758",
+      "artifacts": {
+        "player": {
+          "path": "experiments/kiz1/selector-player.mjs",
+          "sha256": "fff9dd163284082b67a1a43ddb875f18b4ed83b245416d98cecd2f88cc7486c7"
+        },
+        "dockerfile": {
+          "path": "experiments/kiz1/Dockerfile.mechanism",
+          "sha256": "b63787f4a7250a2217f7d4ad7ec8b9da6486408150ea77e1507737e1019651d6"
+        }
+      }
+    }
+  },
+  "preupload_rci": {
+    "receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-qd1n-kiz1-gravity-preupload-rci-20260720.json",
+      "sha256": "8a8499746a0e52f7578c542304ae0c55dc123b99d648c1d6a03bfa3c5323b4fe"
+    }
+  },
+  "matched_baseline": {
+    "policy_ref": "proxywar-agent-llm:qd1n-v89-exact-amd64",
+    "request_id": "xreq_38a50cf3-0476-470e-b357-877cbf6285e7",
+    "same_roster": true,
+    "same_variant": true
+  },
+  "diagnostic_only": false,
+  "hosted": {
+    "request_id": "xreq_41f198c5-8ecf-4c1b-82bb-7628d949b672",
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "max_k1z_harm": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  }
+}

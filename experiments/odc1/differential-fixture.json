@@ -1,0 +1,70 @@
+{
+  "id": "odc1-routine-k1z-vs-neutral",
+  "legalActions": [
+    {
+      "id": "expand:terra-nullius:10",
+      "kind": "attack",
+      "label": "Expand into neutral land with 10% troops",
+      "risk": {
+        "level": "low"
+      }
+    },
+    {
+      "id": "expand:terra-nullius:20",
+      "kind": "attack",
+      "label": "Expand into neutral land with 20% troops",
+      "risk": {
+        "level": "low"
+      }
+    },
+    {
+      "id": "expand:terra-nullius:35",
+      "kind": "attack",
+      "label": "Expand into neutral land with 35% troops",
+      "risk": {
+        "level": "low"
+      }
+    },
+    {
+      "id": "alliance:kata",
+      "kind": "alliance_request",
+      "label": "Alliance with K1Z katanasan",
+      "risk": {
+        "level": "low"
+      },
+      "metadata": {
+        "recipientID": "kata",
+        "recipientName": "K1Z katanasan",
+        "relation": 2
+      }
+    }
+  ],
+  "observation": {
+    "phase": "active",
+    "ownState": {
+      "tileShare": 0.04,
+      "troopRatio": 0.8,
+      "troops": 500000,
+      "gold": 250000,
+      "borderTiles": 100,
+      "incomingAttacks": [],
+      "spawnTile": 1180588
+    },
+    "combat": {
+      "incomingAttackPlayerIDs": []
+    },
+    "visiblePlayers": [
+      {
+        "id": "kata",
+        "name": "K1Z katanasan",
+        "isAlive": true,
+        "sharesBorder": true,
+        "canAttack": true,
+        "isAllied": false,
+        "tileShare": 0.08,
+        "relativeTroopRatio": 1
+      }
+    ]
+  },
+  "history": []
+}

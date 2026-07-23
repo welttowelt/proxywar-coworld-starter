@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-20T16:43:24Z",
+  "verdict": "PASS_PREUPLOAD_RCI",
+  "status": "passed",
+  "candidate_source_commit": "23ada8a8cfc1f41b1c798cfcb3b71f6fc2f21587",
+  "candidate_image_id": "sha256:3af909f391a179356876b54e810fd8c197d9cd88432ff4916a6c4e83c50a41a9",
+  "parent_source_commit": "f1347251834a6283182b631e1336595eb2e08342",
+  "unresolved_violations": [],
+  "checks": {
+    "source_identity": true,
+    "source_pushed": true,
+    "source_tests_173_of_173": true,
+    "image_identity": true,
+    "image_architecture_amd64": true,
+    "six_shipped_files_byte_identical": true,
+    "qualifier_34_of_34_accepted": true,
+    "differential_proof_reproduced": true,
+    "mechanism_receipt_reproduced": true,
+    "mechanism_reach": true,
+    "k1z_safety": true,
+    "active_arm_identity": true,
+    "operator_guards_39_of_39": true,
+    "diagnostic_upload_isolated_from_league_mutation": true
+  },
+  "evidence": {
+    "differential_proof": {
+      "path": "experiments/odc1/differential-proof-23ada8a8.json",
+      "sha256": "425fe2a390a29bb40da4f5ebae4e8c7e4a05eeb3edb154a69aae6d7f3fa2e300",
+      "evaluator_commit": "915476fcc9c3bbbc651dc933a3852145f20f43c4"
+    },
+    "mechanism_receipt": {
+      "path": "experiments/audit-qd1n-odc1-rci2-mechanism-20260720.json",
+      "sha256": "84bda8495c5f0178e5c4c5555b30a7e2d4be3d9a8ab392a9c6acea757fd20d9c",
+      "contract_sha256": "5182e85926b43372b2454aad0dfaf85467a25edf62787652ce5331e4ce16e82d"
+    },
+    "qualifier_path": "/private/tmp/proxywar-odc1-rci2-qualifier-23ada8a8-20260720"
+  },
+  "mechanism_metrics": {
+    "candidate_decisions": 66,
+    "candidate_accepted": 66,
+    "route_executions": 10,
+    "post_opening_route_executions": 7,
+    "odec1_executions": 1,
+    "illegal_actions": 0,
+    "fallbacks": 0,
+    "degradation": 0,
+    "holds": 0,
+    "rejections": 0,
+    "k1z_harm": 0,
+    "unresolved_targets": 0
+  },
+  "scope_limits": {
+    "competitive_evidence": false,
+    "parent_runtime_excluded": "local parent lacked Bedrock credentials",
+    "remaining_before_league_mutation": [
+      "hosted 4/4",
+      "distinct 20/20 regression",
+      "final RCI"
+    ]
+  }
+}

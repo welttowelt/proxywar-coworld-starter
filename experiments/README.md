@@ -1379,3 +1379,430 @@ membership `lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6` sole champion.
 v88 (`7c424648`) was uploaded but never submitted (superseded). Smoke4
 end-to-end verification is running at time of writing; standard `4/4` and
 `20/20` gates remain incomplete (operator-and-coalition-directed promotion).
+
+## OE1 and NF1 rejection, exact v89 restoration (2026-07-18)
+
+Round 505 exposed two linked failures: Odin opened additional land fronts
+after another player had already attacked, and optional opening pressure
+could consume tempo before the first economic base was established.
+
+OE1 deferred optional coalition requests and fresh rival attacks during the
+first 20 calm decisions while neutral expansion or the first economic build
+remained available. Exact-image, seat-swapped World and Pangaea mirrors split
+candidate and parent score units `2-2`; candidate tiles totaled `1,071,853`
+against parent `1,071,905`. The result followed player identity and seat.
+OE1 was rejected without upload, submission, or champion change. The
+unfinished Asia reruns were stopped because two completed map pairs already
+falsified causal lift.
+
+NF1 concentrated hostile land pressure on a current or recent attacker,
+preserving leader emergencies, planned weak conversion, and credible
+finishes. The corrected amd64 build passed `149/149` candidate tests and a
+`34/34` qualifier. Its exact World mirrors executed `nf1` 115 times, so the
+branch was reachable. After the seat swap, candidate and exact parent tied at
+score units `1-1`, tiles `651,609-651,609`, and two survivors each. NF1 was
+rejected at the first matched gate; the Asia/Pangaea extension and all hosted
+gates stayed closed.
+
+Commit `f1347251` inverses OE1 and restores `strategy-engine.mjs` to exact
+deployed v89 digest
+`f2ee66d570033508c4158bcb83d56d81dc198cdcebb91098d7e67eefdc8e6a7a`.
+The live champion was never changed. Full NF1 evidence and replay digests are
+recorded in
+[`diagnosis-qd1n-no-new-front-rci-20260718.json`](diagnosis-qd1n-no-new-front-rci-20260718.json).
+
+## Hrafn Round 507 official audit and public-text quarantine (2026-07-18)
+
+Round 507 is Hrafn's first completed official Competition round.
+`hrafn-fylking:v5` appeared in three of the four rotating 12-seat Pangaea
+episodes, finished rank 13 at `0/3`, averaged 20,652 final tiles, and survived
+twice. Its execution path was clean: `314/314` accepted decisions, zero holds,
+zero fallbacks, zero harmful actions against Odin, and nine accepted troop
+donations to Odin totaling 1,457,640.
+
+The replay also exposed seven selected `quick_chat` actions. Their visible
+messages are authored by the game action and cannot be replaced by Hrafn's
+bounded leet response reason, so the long prose violated the operator's public
+short-leet rule. Commit `38fca307` adds a red-first regression and suppresses
+those uncontrollable public actions without altering combat, alliance,
+donation, expansion, economy, or leader-lock branches. The linux/amd64 v6
+candidate (`sha256:816b734c205fad2452eaef3c076f27377939c4a78a4336fd63d7ae313b5be410`)
+passes `151/151` tests and a `34/34` qualifier with zero holds, fallbacks, or
+quick-chat selections (replay
+`00a072e0b41b68ff88b2f348fe933fb1cd56c22de56e516d5f197b5c6b9f2a84`).
+It remains a quarantined compliance candidate: no upload, submission,
+membership, or champion change has been made.
+
+## NC1 wrong-layer rejection (2026-07-18)
+
+Round 508 supplied a strong symptom: Odin selected five nuke actions in its
+World win and 228 across the three losses. NC1 attempted an eight-decision
+cooldown, but it attached the guard to `chooseAtomBomb`, which looks for Atom
+Bomb construction under action kind `build`. The game adapter exposes that
+same construction under `selectedActionKind === "nuke"`, so NC1 guarded an
+unreachable representation.
+
+The linux/amd64 candidate
+(`sha256:e370e01b8855254d7c7417250957dd6be92b9eb5706c80e22138f9b3d98295ea`)
+passed its qualifier and the full `148/148` branch suite. Its exact World
+mirrors then rejected it decisively: candidate and exact parent tied at score
+units `1-1`, tiles `651,409-651,409`, and two survivors each after the seat
+swap. Both arms selected 27 nuke actions and every aggregate action count was
+identical. `nc1` and `nk1` executed zero times.
+
+NC1 stopped at the first matched gate. No Asia/Pangaea extension, hosted
+request, upload, submission, or champion change was made. Full evidence and
+replay hashes are recorded in
+[`diagnosis-qd1n-nuclear-fire-discipline-rci-20260718.json`](diagnosis-qd1n-nuclear-fire-discipline-rci-20260718.json).
+The next nuclear arm must throttle the adapter's nuke-tagged construction
+directly and prove branch reach before a full mirror.
+
+## Round 509 Pangaea audit (2026-07-18)
+
+`qd1n:v89` finished official rank 4 at score `0.25` without a sole episode
+win. Across four episodes Odin averaged 72,988 final tiles and recorded
+`956/956` accepted decisions, zero rejections, 82 holds, 745 fallbacks, and
+293 boat or boat-retreat selections. Daveey, Ron, and Richard won the three
+sole-winner episodes. Their replay traces attacked broad target sets, so the
+round does not prove exclusive coordination against Odin.
+
+Hrafn appeared three times, survived all three, and transferred 4,787,685
+troops to Odin without a harmful action against him. Its `786/786` decisions
+had zero fallbacks or rejections and two holds. Live v5 also selected 16 more
+game-authored long quick chats, reinforcing the public-text defect fixed by
+the quarantined v6 candidate. Hrafn placed rank 13 at `0/3`; the transfer
+contract is working, while both warriors still lack reliable Pangaea
+conversion.
+
+## Round 510 and NC2 matched rejection (2026-07-18)
+
+Round 510 ran four World episodes. Odin placed second at `1/4` while Daveey
+took `3/4`, leaving the official first-place streak at `0/1000` and the
+overall leaderboard at Daveey `32.9201`, Odin `23.8896`. Live v89 selected
+122 nuke-tagged Atom Bomb construction actions; 107 repeated within eight
+personal decisions. Hrafn placed thirteenth at `0/3`. Its `481/481` decisions
+were accepted with zero fallbacks, but 38 holds and 82 game-authored quick
+chats reinforced both its outcome and public-text gaps.
+
+NC2 guarded the adapter's actual `nuke` action kind. Four focused tests and
+the full `150/150` suite passed. The standard amd64 qualifier accepted
+`34/34` decisions with zero holds or rejections. A bounded World probe then
+proved direct reach: two `nc2` upgrades were accepted at turns 10,600 and
+10,700 across `984/984` accepted decisions.
+
+The exact 400-step World seat swap rejected the candidate. Orientation A
+gave both surviving even seats to NC2, but orientation B gave those same
+seats to the parent. Aggregate score tied `1-1`, survivors tied `2-2`, and
+NC2's total territory edge was only 119 tiles (`651,528-651,409`,
+`+0.0183%`). Candidate decisions were `1868/1868` accepted with one hold and
+27 marker executions; parent decisions were `1786/1786` accepted with three
+holds. The losing odd candidate seats never exposed a nuke action, so the
+guard cannot rescue the failure path.
+
+No hosted extension, upload, submission, membership, or champion change was
+made. Full replay hashes and arm counts are recorded in
+[`diagnosis-qd1n-nuclear-action-discipline-nc2-20260718.json`](diagnosis-qd1n-nuclear-action-discipline-nc2-20260718.json).
+The next arm should target early rolling boat, retreat, and repeated-alliance
+churn on low-share seats rather than another late nuclear guard.
+
+## BD1 boat-retreat recovery rejection (2026-07-19)
+
+BD1 targeted that early churn directly. On a seat below 12 percent territory,
+six boat or boat-retreat decisions in a flat twelve-decision window temporarily
+deferred a repeated coalition request for a legal land attack or economic
+build. Productive naval growth, absence of a real recovery action, and K1Z
+protection remained explicit no-change cases.
+
+Five focused tests and the full `151/151` suite passed. The exact linux/amd64
+candidate image matched strategy hash
+`996240894cab9a37d7092503006e1919e1d01e4e1b0c10be9dbe6913bb479215`.
+The standard qualifier accepted `34/34` decisions with zero holds or
+rejections and produced a verified replay.
+
+The bounded World seat swap proved direct reach without advantage. BD1
+executed 14 accepted markers, 12 audit-confirmed, across `984/984` candidate
+decisions with zero holds or rejections. Candidate territory totaled `650,559`
+against parent `652,628` (`-2,069`, `-0.317%`), with score
+`0.998428-1.001572`; all eight candidate and all eight parent seats remained
+alive at the horizon. The interventions created attacks and economic builds,
+but did not change the weak-seat survival boundary.
+
+BD1 was rejected before full mirrors. No hosted request, upload, submission,
+membership, or champion change followed. Full replay hashes, marker timing,
+and seat deltas are recorded in
+[`diagnosis-qd1n-boat-retreat-recovery-bd1-20260719.json`](diagnosis-qd1n-boat-retreat-recovery-bd1-20260719.json).
+The next hypothesis should target the post-attack collapse itself using
+incoming pressure, reserve strength, and border access rather than treating
+naval churn as the root cause.
+
+## NR1 and NR2 Pangaea naval-reserve rejection (2026-07-19)
+
+Round 513 separated the losing Pangaea seats from Odin's only large timeout
+position. All three losing seats were attacked by turn 2,100 and continued
+neutral boat play; the 300,192-tile seat was not attacked until turn 7,600.
+NR1 therefore tried to preserve a low-share defensive reserve after attributed
+pressure by preferring a legal build or upgrade over a neutral boat.
+
+NR1 passed `6/6` focused tests, the full `152/152` suite, and a `34/34`
+linux/amd64 qualifier. Its Pangaea reach probe accepted all `644/644`
+decisions with zero holds or rejections, but executed zero `nr1` markers.
+The current Pangaea decision payload did not reliably expose attacker
+attribution at the point where the rule had to choose. The arm failed the
+first promotion gate and stopped without a matched extension.
+
+NR2 removed that unobservable dependency. Below a 12-percent land base, it
+preferred a legal build or upgrade over a neutral boat while preserving
+neutral land, credible rival counters, K1Z requests, high-share naval play,
+and the existing `cv1` path. It passed `10/10` focused compatibility tests,
+the full `153/153` suite, and a `34/34` qualifier.
+
+The bounded Pangaea seat swap reached NR2 ten times, all accepted and
+audit-confirmed. Candidate decisions were `683/683` accepted with zero holds
+or rejections. The mechanism still produced no advantage: candidate and
+parent tied score `1-1` and surviving seats `2-2`, while candidate territory
+fell from `420,335` to `420,304` (`-31`, `-0.0074%`). The same even seats
+survived both orientations, so seat geometry dominated the branch.
+
+Both arms are rejected. No hosted request, upload, submission, membership, or
+champion change followed. Exact evidence and replay hashes are recorded in
+[`diagnosis-qd1n-pangaea-naval-reserve-rci-20260719.json`](diagnosis-qd1n-pangaea-naval-reserve-rci-20260719.json).
+
+The official checkpoint then moved in the live parent: `qd1n:v89` placed first
+in Round 515 at score `0.5`, 131,767 mean tiles, zero holds, and zero rejected
+decisions. It recorded zero declared episode wins; the official rank came from
+territorial timeout scoring. The verified first-place streak is `1/1000`.
+The next experiment should isolate that bounded-territory conversion rather
+than add another broad boat/economy ordering rule.
+
+## PN1 Pangaea low-share nuclear-deferral rejection (2026-07-19)
+
+PN1 targeted a concrete Round 513 selector conflict. At two-percent land
+share, Odin repeatedly selected nuke-tagged Atom Bomb construction despite
+legal naval invasions, warship movement, economy builds, and upgrades. The
+policy's naval-control and economy-cadence evaluators both exposed productive
+alternatives. Across forty recent Pangaea appearances, 133 Atom Bomb
+construction actions landed below 20,000 tiles; 125 came from the single
+Round 513 trapped seat.
+
+The candidate removed Atom Bomb construction from consideration only on exact
+Pangaea below five-percent share when another legal non-hold action existed,
+then reused the parent selector. Established Pangaea positions and every other
+map stayed on the exact v89 path. Four focused cases and the full `150/150`
+suite passed. The amd64 qualifier accepted `34/34` decisions with zero holds
+or rejections.
+
+The exact bounded Pangaea seat swap did not reproduce the official
+twelve-player decision boundary. PN1 executed zero times with candidate seats
+even and zero times with candidate seats odd. Both arms therefore remained
+identical: `644/644` decisions accepted, score `1-1`, two survivors each, and
+territory `420,304-420,304`.
+
+The closest local twelve-player reach probe then used the exact Round 513
+roster order and put PN1 only in slot seven. That seat completed `77/77`
+accepted decisions with zero holds, zero nukes, and zero PN1 markers before
+elimination. The other eleven seats ran exact v89 parent clones rather than
+the real heterogeneous opponent policies, so the probe cannot claim faithful
+official outcome reproduction. It does prove that roster order and seat
+geometry alone do not expose the selector conflict.
+
+PN1 is rejected at mechanism reach. No hosted request, upload, submission,
+membership, or champion change followed. Full trace evidence, image hashes,
+and replay hashes are recorded in
+[`diagnosis-qd1n-pangaea-nuclear-deferral-pn1-20260719.json`](diagnosis-qd1n-pangaea-nuclear-deferral-pn1-20260719.json).
+The next nuclear experiment must reproduce the official slot-seven selector
+state in a faithful twelve-player fixture or state-replay harness before any
+live-policy change.
+
+## US1 World upgrade-stall escape rejection (2026-07-19)
+
+Round 516 reset Odin's official first-place streak to `0/1000`. Live
+`qd1n:v89` placed tenth at score zero across three World episodes with 37,044
+mean final tiles, one hold, and 194 fallbacks. Daveey won two episodes and
+Richard Higgins won the third.
+
+One Odin seat reached 25,519 tiles by roughly turn 8,000 and stayed flat
+through turn 28,200. It selected 194 upgrades, rotating nine City and Port
+IDs 21-22 times each with zero audit-confirmed level changes. At sampled
+checkpoints, 9-18 naval invasions plus a warship build were legal and the
+naval-control evaluator recommended action.
+
+US1 targeted only exact World below eight-percent territory after four
+consecutive flat upgrades, with a sixteen-decision cooldown. It stayed dormant
+when land attacks, safe builds, neutral boats, growing territory, non-World
+maps, or protected K1Z targets were present. Five focused tests and the full
+`151/151` suite passed. The rebuilt amd64 image passed a `34/34` qualifier
+with zero holds or rejections.
+
+The exact 120-step World seat swap reached US1 once. At turn 11,400, Coworld
+Starter 2 replaced another upgrade with an accepted eight-percent invasion
+toward Coworld Starter 4 at a 4.32 relative troop ratio. The immediate audit
+did not yet expose the transport launch. Across both orientations, candidate
+and parent tied exactly: score `1-1`, survivors `8-8`, and territory
+`651,609-651,609`; all `984/984` candidate decisions were accepted with zero
+holds or rejections.
+
+US1 is rejected at matched advantage. No hosted request, upload, submission,
+membership, or champion change followed. Full Round 516 evidence, hashes, and
+gate results are recorded in
+[`diagnosis-qd1n-world-upgrade-stall-us1-20260719.json`](diagnosis-qd1n-world-upgrade-stall-us1-20260719.json).
+The next arm should target the earlier collapse or pressure boundary, not add
+another late escape action that cannot move territory.
+
+## PE1 Pangaea pending-pact escape rejection (2026-07-19)
+
+Round 517 exposed 58 holds in one near-eliminated Odin seat. Fifty-seven had
+legal tactical actions. Twenty-four occurred while a stale pending alliance
+request to runaway outsider Richard Higgins caused the parent to protect him
+from attacks and boats. Round 519 reproduced the boundary with 24 more holds
+and two terminal outsider-boat loops.
+
+PE1 changed only exact Pangaea below one-percent territory after forty active
+decisions. It allowed an attack or boat through pending-request protection
+while preserving actual allies and reciprocal K1Z partners. Five focused
+cases, the full `153/153` suite, and a `34/34` amd64 qualifier passed. The
+eight-player seat swap reached six accepted markers and gave the candidate a
+small local edge: score `1.004784-0.995216`, territory
+`422,346-418,324` (`+4,022`), and survivors `3-3`.
+
+The candidate uploaded as diagnostic-only `qd1n:v90`; live `qd1n:v89` stayed
+untouched. The exact twelve-player hosted Pangaea request
+`xreq_df3924cd-f07a-4e61-b59a-d29b7a3da0d6` then rejected PE1 decisively.
+The candidate lost `0/4`, averaged 1,422 final tiles, recorded four holds and
+zero rejections, and fired 29 accepted PE1 actions. One loss contained 22
+markers spread across several outsiders. The mechanism removed a hold loop
+after collapse but did not recover land.
+
+The hosted replays point earlier. Odin had 46 decisions with a legal Defense
+Post while incoming pressure was at least ten percent; the parent selected
+zero. In the same field, Ron's winning episode selected 29 Defense Posts, 17
+audit-confirmed, and Auri's winning episode selected four, all confirmed. The
+parent still excludes Defense Post from reliable builds because of an old
+stale-action assumption.
+
+PE1 is rejected. No regression, submission, membership, or champion change
+followed. Round 520 briefly restored official rank one on World, but Round 521
+returned live v89 to rank ten on Pangaea and reset the streak to `0/1000`.
+Full hashes, replays, and gate evidence are recorded in
+[`diagnosis-qd1n-pangaea-pending-pact-escape-pe1-20260719.json`](diagnosis-qd1n-pangaea-pending-pact-escape-pe1-20260719.json).
+The next isolated arm should test a bounded early Defense Post override before
+collapse, not another terminal escape.
+
+## GC2 qualifier runner-wiring block (2026-07-19)
+
+Hrafn approved the exact GC2 qualifier and matched Pangaea pair in mailbox
+commit `7f4ea95`. Source `9efe990d`, candidate image `sha256:593eedf2...`,
+parent image `sha256:ebd9eed3...`, `coworld==0.1.30`, canonical manifest and
+game-config hashes, and fresh request hashes `da869967...` / `06dd781c...`
+were reverified before acquiring the Odin runner.
+
+The qualifier did not reach policy code. Cycle 1 inherited the starter
+`/app/integration/src/starter-player.mjs` command, which is absent from the
+GC2 image. Cycle 2 passed the intended argv as one JSON-string executable, so
+Docker rejected it before connection. Both attempts ended with `connected=0`,
+zero policy decisions, no results, and no replay. Odin released the runner
+after each failure and did not start either matched request.
+
+GC2 remains `PRE-RUN`. The missing evidence is a completed qualifier built
+from an explicit player job with `run: ["node", "/app/llm-player.mjs"]` for
+both seats. Source stays frozen; GR1, matched play, hosted diagnosis, upload,
+submission, membership, and champion work remain closed.
+
+The corrected two-player manifest and request are now durable in Odin commit
+`978c77df`. They validate under `coworld==0.1.30`, assign the exact GC2 and v89
+images, and expose the literal argv array for both seats. Hrafn's first review
+was `INSUFFICIENT` because the artifacts were still temporary; after the push,
+Odin requested a qualifier-only rereview at mailbox commit `1525ec6`. That
+verdict is still pending, so the runner remains free and the qualifier has not
+restarted.
+
+Hrafn then approved the exact committed job at mailbox commit `4d9cb04`. The
+qualifier completed with both seats connected and `58/58` accepted decisions,
+zero holds, zero rejects, and zero K1Z references or harmful actions. Planner
+access failed for both seats, producing 34 deterministic fallbacks, but all
+were accepted. The decisive gate failed: the candidate emitted zero replay-
+visible `gc2` markers. Odin released the runner and stopped before the matched
+pair. Full hashes and counts are recorded in
+`audit-qd1n-global-alliance-arbitration-gc2-qualifier-20260719.json`.
+Hrafn independently approved this zero-reach stop at mailbox commit `4901247`;
+`LOCAL_QUALIFIED` remains false and GC2 source stays frozen at `9efe990d`.
+
+## A1 silent-opening Pangaea rejection (2026-07-20)
+
+The A1 ablation deferred voluntary coalition requests until Odin had a 12-percent
+land share or a build, while retaining genuine reciprocal handshakes. The formal
+RunPod candidate and exact-v89 control episodes used seed `20260720`, Pangaea
+Compact, the same four K1Z players, and an 80-decision horizon. Bundle and
+runtime receipts verified both images and artifacts.
+
+The candidate made `83/83` accepted Odin decisions, zero rejects, zero K1Z
+harm, and zero `a1` markers. It still sent ten alliance requests and made
+thirteen unexplained holds. The parent made the same number of accepted Odin
+decisions and holds, then finished ahead at `25,905` tiles / `0.253446` score;
+A1 finished at `24,499` / `0.239690` (`-1,406` tiles, `-0.013756` score).
+
+The ablation did not engage in this roster and did not improve the outcome, so
+it is rejected. A2 and A3 remain closed rather than consuming runner time by
+inheritance. The next candidate must originate from a current official replay
+cell that isolates an untested early-opening difference. Full immutable inputs,
+artifact hashes, and result fields are in
+[`audit-qd1n-a1-silent-opening-pangaea-20260720.json`](audit-qd1n-a1-silent-opening-pangaea-20260720.json).
+
+## Opening-commitment overlap check (2026-07-20)
+
+The current engine frequently selects the 10-percent Terra Nullius action while
+20 and 35 percent are legal: 291 cached Odin decisions across 73 replays,
+including 270 calm, tempo-recommended opening states. This is a real behavior,
+but not a fresh candidate. Rejected GR1 already changed the same choice to the
+large legal commitment during that calm opening window (35 percent when the
+menu is 10/20/35), and EF2 separately rejected a flat 35-percent opening
+grind. A 20- or 35-percent reimplementation would therefore duplicate a
+disproved causal variable without a new boundary or replay-derived reason.
+
+No source branch opens from this observation. The immutable census, source
+anchors, overlap checks, and required next evidence are in
+[`audit-qd1n-opening-commitment-overlap-20260720.json`](audit-qd1n-opening-commitment-overlap-20260720.json).
+
+## ODC1 clean-dispatcher RCI2 mechanism verification (2026-07-20)
+
+ODC1 replaces the accumulated post-selection stack with one planner-free Odin
+dispatcher while retaining exact-v89 coalition identity and protection
+primitives. RCI2 closes production action-shape gaps, protects every configured
+K1Z identity unconditionally, removes unrestricted chat and raw-action
+fallbacks, marks protection-only holds, and leaves K1Z endgame attacks disabled
+because visible rivals are not authoritative survivor evidence. Source
+`23ada8a8` passed `173/173` tests and independent RCI. The exact amd64 image
+`sha256:3af909f3...` passed a `34/34` qualifier.
+
+The original `576283d4` A/B result is not competitive evidence: the control
+planner degraded, the roster had no K1Z partner, and its 111 route executions
+were mislabeled causal transitions. That receipt remains as a historical
+no-plan baseline.
+
+The corrected 60-step Pangaea mechanism screen included K1Z katanasan and
+pinned both image IDs. ODC1 executed ten route markers, including `odec1`, with
+all `66/66` decisions accepted and zero illegal actions, fallback, degradation,
+unexplained holds, rejects, unresolved harmful targets, or K1Z harm. Its verdict
+is `PASS_MECHANISM_SCREEN` with `competitive_evidence:false`. Hosted `4/4` is
+the first outcome gate; no league submission, membership, or champion change
+can occur before hosted `4/4`, separate `20/20`, and final RCI pass.
+
+The durable receipt is
+[`audit-qd1n-odc1-rci2-mechanism-20260720.json`](audit-qd1n-odc1-rci2-mechanism-20260720.json).
+The superseded baseline is
+[`audit-qd1n-odc1-clean-dispatcher-seeded-20260720.json`](audit-qd1n-odc1-clean-dispatcher-seeded-20260720.json).
+
+## ODC1 hosted rejection (2026-07-20)
+
+The matched current-field Pangaea gate compared diagnostic `qd1n:v93` with
+exact champion `qd1n:v89`, four hosted episodes per arm. Both won `0/4`.
+ODC1 reached its dispatcher 24 times and recorded zero rejected decisions,
+planner degradation, or K1Z harm, but finished at
+`2,517 / 5,535 / 2,717 / 0` tiles and selected one hold. Mechanism cleanliness
+did not create competitive lift, so ODC1 closed at `STOP_HOSTED`. No regression,
+league submission, membership, or champion change followed; v89 remains the
+preserved champion.
+
+The fail-closed audit also added scalar `submittedIntent.target` support for
+the engine's `targetPlayer` form, preventing missing-target false positives.
+The immutable result is
+[`audit-qd1n-odc1-rci2-hosted-4x-20260720.json`](audit-qd1n-odc1-rci2-hosted-4x-20260720.json).

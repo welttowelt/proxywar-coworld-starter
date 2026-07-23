@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-21T01:19:40Z",
+  "cycle_id": "odin-20260721T011723Z-26365",
+  "arm": "fc1",
+  "name": "deterministic_finish_continuity",
+  "status": "PREREGISTERED_REPLAY_FIXTURE_PENDING",
+  "parent": {
+    "commit": "1ccaff73e519ec1a5fa5066ac3d296afa2bc68bc",
+    "strategy_engine_sha256": "52d156a3646a2591ef4dc9f058b2834c0782b3a9bfff60d7d9be508110e30d02",
+    "live_policy": "qd1n:v89"
+  },
+  "bounded_cell": {
+    "source": "CODEX_ODIN_TO_KIMI_DETERMINISTIC_BASE_FORK_20260721.md",
+    "source_sha256": "94ea9d160f1846a030178733c4fc6cf6f431ec38fcb96c543d080b3d194f4ddf",
+    "round": 588,
+    "map": "World",
+    "turn": 11100,
+    "target_name": "RelhAlpha",
+    "target_id": "idjkf73n",
+    "consecutive_target_attacks": 5,
+    "relative_troop_ratio": 1.44,
+    "selected_action": "build:Port",
+    "recommended_legal_action": "attack:idjkf73n:25",
+    "later_finish_tile_delta": 46112,
+    "replay_hash": null,
+    "fixture_integrity": "PENDING_EXACT_PUBLIC_REPLAY_EXTRACTION"
+  },
+  "source_audit": {
+    "observed_conflict": "chooseRivalAttack deterministically selects 25 percent after one continued attack at ratios at least 1.1, but economy cadence can replace that attack because finishingTarget requires a ratio of at least 1.5.",
+    "current_finish_guard": "rivalAttack.streak > 0 && relativeTroopRatio >= 1.5",
+    "single_action_hypothesis": "At the exact five-attack World continuity cell, suppress only the due economy build and execute the already selected legal rival attack while the target remains non-protected and the ratio is at least 1.4.",
+    "planned_marker": "fc1",
+    "k1z_guard": "Reuse chooseRivalAttack after rivalIsProtected filtering; never override a protected K1Z target.",
+    "planner_transport": "DETERMINISTIC_NO_BEDROCK"
+  },
+  "smallest_falsifiable_test": {
+    "red_regression": "Reconstruct the hash-bound R588 turn-11100 observation, legal actions, and five-decision target history; parent must select the Port and FC1 must select attack:idjkf73n:25 with marker fc1.",
+    "matched_discriminator": "Run one identical World seed, seat, roster, runtime, and parent image pair with only the FC1 source delta. Require marker reach, accepted replacement, zero holds or rejects, zero planner fallback or degradation, zero K1Z harm, and higher post-trigger tiles without worse placement.",
+    "failure": "Reject FC1 on fixture mismatch, unreachable marker, any protected-target action, any fallback or degradation, any hold or rejection, or no matched outcome improvement after direct reach."
+  },
+  "main_hidden_risk": "The 1.44 ratio may be transient or stale; forcing continuity could spend the reserve into a collapsing front and forgo a recovery build.",
+  "authorization": {
+    "code_edit": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutated": false
+  },
+  "next_transition": "Extract and hash the exact public R588 turn-11100 fixture, then write the single red regression on a dedicated FC1 worktree from parent commit 1ccaff73. Do not edit policy code until the fixture reproduces the parent Port choice."
+}

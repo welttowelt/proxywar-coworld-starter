@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-21T06:08:37Z",
+  "action": "stop_unused_storm_matrix_warm_pool",
+  "reason": "The active Mickey G000 r9 diagnostic created four exact-bound ephemeral workers, so the eight older warm-pool pods had no assigned ProxyWar process and no reason to keep billing.",
+  "stopped_pods": [
+    {"id": "ne262xferohtdi", "name": "storm-matrix-e", "cost_per_hour": 0.06},
+    {"id": "825a2frvggm1k4", "name": "storm-matrix-f", "cost_per_hour": 0.06},
+    {"id": "lshjhv5avqjsaj", "name": "storm-matrix-g", "cost_per_hour": 0.06},
+    {"id": "szlrnk3ucex44f", "name": "storm-matrix-h", "cost_per_hour": 0.06},
+    {"id": "sxrtmdyd62n3ia", "name": "storm-matrix-i", "cost_per_hour": 0.06},
+    {"id": "67yzvbbp54aizm", "name": "storm-matrix-j", "cost_per_hour": 0.06},
+    {"id": "rwvsgeancauyug", "name": "storm-matrix-k", "cost_per_hour": 0.06},
+    {"id": "og13wgkfcmblx9", "name": "storm-matrix-l2", "cost_per_hour": 0.06}
+  ],
+  "stopped_count": 8,
+  "idle_cost_removed_per_hour_usd": 0.48,
+  "idle_cost_removed_per_day_usd": 11.52,
+  "active_screen": {
+    "run_id": "mickey-screen-g000-r9-20260721t040132z",
+    "runner_owner": "mickey",
+    "worker_count": 4,
+    "worker_cost_per_hour_usd": 0.07,
+    "total_cost_per_hour_usd": 0.28,
+    "evidence_scope": "diagnostic_only",
+    "exact_id_reaper_active": true,
+    "affected_by_warm_pool_stop": false
+  },
+  "steady_state_after_screen": {
+    "running_pod_count": 0,
+    "cost_per_hour_usd": 0.0
+  }
+}

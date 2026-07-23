@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-20T21:08:00Z",
+  "lane": "qd1n",
+  "source_round": 581,
+  "live_control": "qd1n:v89",
+  "question": "Why did current-round winners create much more opening territory than Odin, and does the legal-action surface expose a new selector lever?",
+  "episodes": [
+    {
+      "request_prefix": "ereq_1803244c",
+      "winner": "Auri",
+      "replay_sha256": "3af1d84bfa5e974cd3466681291e4a97e34c7a4c248ef2bd37e0ac4633235b6b",
+      "odin_first20": { "neutral_land": 14, "land35": 6, "neutral_boat": 4, "decision21_tiles": 26490 },
+      "winner_first20": { "neutral_land": 18, "land35": 18, "neutral_boat": 0, "decision21_tiles": 67168 },
+      "odin_boats_with_land35_legal": 2
+    },
+    {
+      "request_prefix": "ereq_4173df53",
+      "winner": "daveey",
+      "replay_sha256": "75740915cfed3a9efc733fc33a8435931524e3575f33e0a7a5ae999fede1936f",
+      "odin_first20": { "neutral_land": 13, "land35": 7, "neutral_boat": 3, "decision21_tiles": 30519 },
+      "winner_first20": { "neutral_land": 13, "land35": 13, "neutral_boat": 0, "decision21_tiles": 56006 },
+      "odin_boats_with_land35_legal": 3
+    },
+    {
+      "request_prefix": "ereq_a4d8f084",
+      "winner": "K1Z katanasan",
+      "replay_sha256": "91a8e6f660cedbdba4ced1079f7eac565b55f1b539b80865867d4995e02457d6",
+      "odin_first20": { "neutral_land": 7, "land35": 2, "neutral_boat": 2, "decision21_tiles": 9584 },
+      "winner_first20": { "neutral_land": 7, "land35": 6, "neutral_boat": 0, "decision21_tiles": 50562 },
+      "odin_boats_with_land35_legal": 0
+    },
+    {
+      "request_prefix": "ereq_ff26906f",
+      "winner": "K1Z Gravity",
+      "replay_sha256": "222c38463877b16f0568b37711c7486366265200a7d69c46ef7d98c0e85c912b",
+      "odin_first20": { "neutral_land": 9, "land35": 2, "neutral_boat": 6, "decision21_tiles": 14901 },
+      "winner_first20": { "neutral_land": 13, "land35": 13, "neutral_boat": 0, "decision21_tiles": 122126 },
+      "odin_boats_with_land35_legal": 2
+    }
+  ],
+  "aggregate": {
+    "odin": { "neutral_land": 43, "land35": 17, "neutral_boat": 15, "mean_decision21_tiles": 20374 },
+    "winners": { "neutral_land": 51, "land35": 50, "neutral_boat": 0, "mean_decision21_tiles": 73966 },
+    "odin_boats_with_land35_legal": 7,
+    "realized_next_decision_gain_for_those_boats": [389, 154, 60, 0, 437, 0, 31],
+    "mean_realized_boat_gain": 153,
+    "winner_land35_selections_with_boat_legal": 40,
+    "mean_realized_winner_land35_gain": 4273
+  },
+  "identifiability": {
+    "neutral_land_action_ids": ["expand:terra-nullius:10", "expand:terra-nullius:20", "expand:terra-nullius:35"],
+    "land_target_metadata": "All 141 inspected neutral-land selections had targetID=null, targetName=Terra Nullius, and no coordinate or frontier field.",
+    "consequence": "The policy cannot select a better neutral-land tile. It can choose only commitment and action class.",
+    "causal_limit": "Winner comparisons are confounded by seat, spawn, policy, and concurrent conquest; a matched same-seat screen is required."
+  },
+  "decision": {
+    "percent_only": "CLOSED_ALREADY_TESTED_BY_EF2_GR1_PG2",
+    "broad_opening_scheduler": "CLOSED_AS_OS1_TPL1_COMPLEXITY",
+    "boat_to_land35": "DIRECTIONAL_BUT_NOT_OPENED; most observed reroutable boats followed flat land, so marker reach alone would not establish productive growth",
+    "oi2_worktree": "REMOVED_WITHOUT_UNIQUE_CODE",
+    "active_experiment": "HRAFN_HI1_DYNAMIC_GROW_OR_CONVERT_ONLY",
+    "next_odin_action": "Port only a behavior that HI1 proves under matched evidence; otherwise retain exact qd1n:v89."
+  },
+  "league_mutation": false,
+  "upload": false,
+  "submission": false,
+  "champion_change": false
+}

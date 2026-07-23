@@ -1,0 +1,607 @@
+{
+  "schema_version": 1,
+  "arm": "pg2",
+  "gate": "hosted_4_of_4",
+  "request_id": "xreq_281aefb8-4d52-4d7c-ac81-9dd7ebf93a27",
+  "request_status": "completed",
+  "completed_episodes": 4,
+  "wins": 0,
+  "marker_reach": 4,
+  "verdict": "STOP",
+  "violations": [
+    "ereq_728fbb6c-4944-4691-badb-91150c82a6f3: Odin had unexplained holds",
+    "ereq_78892e2b-32f4-4214-b2b2-2c7e82524c3d: Odin had unexplained holds",
+    "ereq_7f618562-8305-4ce0-8a7e-b7437d4fa2c8: Odin had unexplained holds"
+  ],
+  "episodes": [
+    {
+      "episode_request_id": "ereq_728fbb6c-4944-4691-badb-91150c82a6f3",
+      "episode_id": "9c2fec5d-7da1-4465-ae67-0d152bd38ba2",
+      "replay_sha256": "970b8791eb7af77851bc867d136ff2fb1f9977730a2641f4df074d94a2df3ad7",
+      "decision_count": 147,
+      "accepted_decisions": 147,
+      "rejected_decisions": [],
+      "unexplained_holds": [
+        {
+          "turn": 11400,
+          "reason": "dgd:err:h0d",
+          "tactical_actions": [
+            {
+              "kind": "boat",
+              "id": "boat:758582:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:758582:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:433415:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:433415:16",
+              "target_id": null
+            }
+          ]
+        },
+        {
+          "turn": 11700,
+          "reason": "dgd:err:h0d",
+          "tactical_actions": [
+            {
+              "kind": "boat",
+              "id": "boat:758582:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:758582:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:480501:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:480501:16",
+              "target_id": null
+            }
+          ]
+        },
+        {
+          "turn": 11900,
+          "reason": "dgd:err:h0d",
+          "tactical_actions": [
+            {
+              "kind": "boat",
+              "id": "boat:477572:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:477572:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:758582:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:758582:16",
+              "target_id": null
+            }
+          ]
+        },
+        {
+          "turn": 12100,
+          "reason": "dgd:err:h0d",
+          "tactical_actions": [
+            {
+              "kind": "boat",
+              "id": "boat:504611:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:504611:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:758582:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:758582:16",
+              "target_id": null
+            }
+          ]
+        },
+        {
+          "turn": 12500,
+          "reason": "dgd:err:h0d",
+          "tactical_actions": [
+            {
+              "kind": "boat",
+              "id": "boat:562614:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:562614:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:758582:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:758582:16",
+              "target_id": null
+            }
+          ]
+        },
+        {
+          "turn": 12700,
+          "reason": "dgd:err:h0d",
+          "tactical_actions": [
+            {
+              "kind": "boat",
+              "id": "boat:617623:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:617623:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:758582:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:758582:16",
+              "target_id": null
+            }
+          ]
+        },
+        {
+          "turn": 12900,
+          "reason": "dgd:err:h0d",
+          "tactical_actions": [
+            {
+              "kind": "boat",
+              "id": "boat:580546:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:580546:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:758582:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:758582:16",
+              "target_id": null
+            }
+          ]
+        },
+        {
+          "turn": 13200,
+          "reason": "dgd:err:h0d",
+          "tactical_actions": [
+            {
+              "kind": "boat",
+              "id": "boat:640595:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:640595:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:758582:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:758582:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:109597:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:109597:16",
+              "target_id": null
+            }
+          ]
+        },
+        {
+          "turn": 13400,
+          "reason": "dgd:err:h0d",
+          "tactical_actions": [
+            {
+              "kind": "boat",
+              "id": "boat:372129:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:372129:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:796626:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:796626:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:109597:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:109597:16",
+              "target_id": null
+            }
+          ]
+        }
+      ],
+      "marker_count": 11,
+      "marker_scope_violations": [],
+      "k1z_harmful_actions": [],
+      "coalition_harmful_actions": [],
+      "score": 0.0,
+      "won": false,
+      "final_tiles": 2231
+    },
+    {
+      "episode_request_id": "ereq_78892e2b-32f4-4214-b2b2-2c7e82524c3d",
+      "episode_id": "4a8d9b24-e611-4f0b-83a1-8746ee571117",
+      "replay_sha256": "ad6a1d0a2859b0a271b8f24b01bc5ad455d37500e724d7da8bb159918635a993",
+      "decision_count": 117,
+      "accepted_decisions": 117,
+      "rejected_decisions": [],
+      "unexplained_holds": [
+        {
+          "turn": 11000,
+          "reason": "pln:h0d",
+          "tactical_actions": [
+            {
+              "kind": "boat",
+              "id": "boat:716215:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:716215:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:459315:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:459315:16",
+              "target_id": null
+            }
+          ]
+        },
+        {
+          "turn": 11300,
+          "reason": "pln:h0d",
+          "tactical_actions": [
+            {
+              "kind": "attack",
+              "id": "attack:25ze9gxs:10",
+              "target_id": "25ze9gxs"
+            },
+            {
+              "kind": "attack",
+              "id": "attack:25ze9gxs:25",
+              "target_id": "25ze9gxs"
+            },
+            {
+              "kind": "attack",
+              "id": "attack:25ze9gxs:40",
+              "target_id": "25ze9gxs"
+            },
+            {
+              "kind": "boat",
+              "id": "boat:454319:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:454319:16",
+              "target_id": null
+            }
+          ]
+        },
+        {
+          "turn": 11500,
+          "reason": "dgd:err:h0d",
+          "tactical_actions": [
+            {
+              "kind": "boat",
+              "id": "boat:716215:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:716215:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:454319:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:454319:16",
+              "target_id": null
+            }
+          ]
+        }
+      ],
+      "marker_count": 11,
+      "marker_scope_violations": [],
+      "k1z_harmful_actions": [],
+      "coalition_harmful_actions": [],
+      "score": 0.0,
+      "won": false,
+      "final_tiles": 2599
+    },
+    {
+      "episode_request_id": "ereq_7f618562-8305-4ce0-8a7e-b7437d4fa2c8",
+      "episode_id": "ae576d51-b2ff-4569-9388-ffc8d04bf7ea",
+      "replay_sha256": "719ab60337627795481f5b8a3a95282f0db58b0e88fa96c60cbb93d449e37f71",
+      "decision_count": 150,
+      "accepted_decisions": 150,
+      "rejected_decisions": [],
+      "unexplained_holds": [
+        {
+          "turn": 12700,
+          "reason": "dgd:err:h0d",
+          "tactical_actions": [
+            {
+              "kind": "attack",
+              "id": "attack:25ze9gxs:10",
+              "target_id": "25ze9gxs"
+            },
+            {
+              "kind": "attack",
+              "id": "attack:25ze9gxs:25",
+              "target_id": "25ze9gxs"
+            },
+            {
+              "kind": "attack",
+              "id": "attack:25ze9gxs:40",
+              "target_id": "25ze9gxs"
+            },
+            {
+              "kind": "boat",
+              "id": "boat:796625:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:796625:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:481245:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:481245:16",
+              "target_id": null
+            }
+          ]
+        },
+        {
+          "turn": 13300,
+          "reason": "dgd:err:h0d",
+          "tactical_actions": [
+            {
+              "kind": "boat",
+              "id": "boat:719209:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:719209:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:697663:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:697663:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:430378:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:430378:16",
+              "target_id": null
+            }
+          ]
+        },
+        {
+          "turn": 13900,
+          "reason": "dgd:err:h0d",
+          "tactical_actions": [
+            {
+              "kind": "boat",
+              "id": "boat:719209:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:719209:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:697663:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:697663:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:430378:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:430378:16",
+              "target_id": null
+            }
+          ]
+        },
+        {
+          "turn": 14200,
+          "reason": "dgd:err:h0d",
+          "tactical_actions": [
+            {
+              "kind": "boat",
+              "id": "boat:719209:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:719209:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:697663:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:697663:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:430378:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:430378:16",
+              "target_id": null
+            }
+          ]
+        },
+        {
+          "turn": 14500,
+          "reason": "dgd:err:h0d",
+          "tactical_actions": [
+            {
+              "kind": "boat",
+              "id": "boat:719209:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:719209:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:697663:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:697663:16",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:430378:8",
+              "target_id": null
+            },
+            {
+              "kind": "boat",
+              "id": "boat:430378:16",
+              "target_id": null
+            }
+          ]
+        }
+      ],
+      "marker_count": 11,
+      "marker_scope_violations": [],
+      "k1z_harmful_actions": [],
+      "coalition_harmful_actions": [],
+      "score": 0.0,
+      "won": false,
+      "final_tiles": 0
+    },
+    {
+      "episode_request_id": "ereq_7b247383-ecd9-4526-8d5f-cba9d904ec56",
+      "episode_id": "f26dbee6-b40b-47ab-b35e-f9c3f8cc3a2f",
+      "replay_sha256": "508f52292caccaedc0812da9dc0ae3e8a97a257447a220a6547b73b9932424db",
+      "decision_count": 101,
+      "accepted_decisions": 101,
+      "rejected_decisions": [],
+      "unexplained_holds": [],
+      "marker_count": 10,
+      "marker_scope_violations": [],
+      "k1z_harmful_actions": [],
+      "coalition_harmful_actions": [],
+      "score": 0.0,
+      "won": false,
+      "final_tiles": 6493
+    }
+  ]
+}

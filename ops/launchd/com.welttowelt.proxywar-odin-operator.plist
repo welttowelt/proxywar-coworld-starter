@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.welttowelt.proxywar-odin-operator</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/zsh</string>
+    <string>/Users/olifreuler/proxywar-coworld-starter/scripts/run-proxywar-operator-cycle.sh</string>
+    <string>odin</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/Users/olifreuler/proxywar-coworld-starter</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>HOME</key>
+    <string>/Users/olifreuler</string>
+    <key>PATH</key>
+    <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+  </dict>
+  <key>ProcessType</key>
+  <string>Background</string>
+  <key>StartInterval</key>
+  <integer>300</integer>
+  <key>StandardOutPath</key>
+  <string>/Users/olifreuler/Library/Logs/proxywar-odin-operator.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/olifreuler/Library/Logs/proxywar-odin-operator.error.log</string>
+</dict>
+</plist>

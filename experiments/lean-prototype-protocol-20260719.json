@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "owner": "odin",
+  "purpose": "Fast, bounded screening before an expensive matched proof matrix.",
+  "candidate": "pg2",
+  "parent": "qd1n:v89 exact control",
+  "screen": {
+    "pairs": [
+      {"pair": "world-20260721", "lane": "a", "wave": 1, "map": "World", "seed": 20260721},
+      {"pair": "pangaea-20260721", "lane": "a", "wave": 5, "map": "Pangaea", "seed": 20260721}
+    ],
+    "hard_stops": [
+      "candidate artifact or identity violation",
+      "candidate rejected decision",
+      "candidate unexplained hold",
+      "candidate K1Z harm",
+      "zero candidate marker reach",
+      "negative paired final score in both cells"
+    ],
+    "advance_rule": "Both pair audits must continue, candidate safety must be clean, and at least one paired final score must be non-negative. This screen is not promotion evidence."
+  },
+  "proof": {
+    "matrix": "experiments/pg2-matrix-42e9a181.json",
+    "parallelism": "12 matched pairs per wave, 2 waves",
+    "required_after_screen": ["independent matrix audit", "hosted 4/4", "regression 20/20", "fail-closed RCI"]
+  },
+  "anti_clutter": [
+    "one policy mechanism per arm",
+    "one reusable pair runner",
+    "one screen receipt",
+    "no new arm until the current arm has a verdict"
+  ]
+}

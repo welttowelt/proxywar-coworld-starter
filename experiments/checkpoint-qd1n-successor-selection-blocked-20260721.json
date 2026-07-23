@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260721T001052Z-77195",
+  "checked_at": "2026-07-21T00:12:00Z",
+  "transition": "successor_selection_blocked_no_unique_replay_mechanism",
+  "live_control": {
+    "player_name": "K1Z odin free",
+    "policy_label": "qd1n:v89",
+    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "is_champion": true
+  },
+  "inputs": {
+    "active_arm": ".codex/active-arm.json",
+    "active_arm_sha256": "90496b9bfcecb44c9090388a5034aa78323fb0ac790384ee72cf68626113bd6d",
+    "opening_yield_diagnosis": "experiments/diagnosis-qd1n-r581-opening-yield-20260720.json",
+    "opening_yield_diagnosis_sha256": "2b18043c60996ddabfa6164c007fa2671d33dc18fa90afbf01fa5a59c621b591",
+    "hi1_terminal_reject_mailbox_commit": "a53a5a04841882f4aeeb4422e00e6a513d16e310",
+    "hi1_terminal_reject_content_sha256": "e09b32084599c83dcae17399663376dcded6a5d10e5cf8eb15f1c7e4f4d6af31"
+  },
+  "candidate_routes": {
+    "percent_only": "CLOSED_ALREADY_TESTED_BY_EF2_GR1_PG2",
+    "broad_opening_scheduler": "CLOSED_AS_OS1_TPL1_COMPLEXITY",
+    "boat_to_land": "CLOSED_BY_RS1_NEGATIVE_AUC25_DELTA_585",
+    "dynamic_grow_or_convert": "CLOSED_BY_HI1_TERMINAL_REJECT"
+  },
+  "blocker": {
+    "kind": "evidence_integrity",
+    "detail": "The only replay-backed opening-yield levers in the bounded round-581 diagnosis map to closed arms. Naming or editing a successor without a new bounded replay cell would invent causal support.",
+    "required_evidence": "One fresh bounded replay cell identifying a distinct reachable offensive action change outside closed percent, scheduler, boat-reroute, and dynamic-intent mechanisms."
+  },
+  "mutations": {
+    "source_edit": false,
+    "coworld_episode_started": false,
+    "runner_acquired": false,
+    "diagnostic_upload": false,
+    "submission": false,
+    "membership": false,
+    "champion": false
+  },
+  "prior_verified_champion_preserved": true,
+  "result": "BLOCKED_NO_UNIQUE_REPLAY_BACKED_SUCCESSOR"
+}

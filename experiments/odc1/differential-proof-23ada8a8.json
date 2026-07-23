@@ -1,0 +1,33 @@
+{
+  "schema_version": 2,
+  "arm": "odc1",
+  "same_fixture": true,
+  "verifier": {
+    "evaluator_commit": "915476fcc9c3bbbc651dc933a3852145f20f43c4",
+    "path": "experiments/odc1/verify-differential.mjs",
+    "sha256": "3835de8d2bb3e2d3e76de562966d56bb47b5dbabc40c6959436539a392e103ba"
+  },
+  "fixture": {
+    "id": "odc1-routine-k1z-vs-neutral",
+    "sha256": "4f5dd380013f4cdd125222a4ea0162c428d3c6f3f8668480042610ab3f303b1f",
+    "legal_action_ids_sha256": "d6b49e107bb15c0e41b9fd5d8e6fe1ccad3b7d50b82fe8559043155d2da73d9c"
+  },
+  "parent": {
+    "source_commit": "f1347251834a6283182b631e1336595eb2e08342",
+    "selected_action_id": "alliance:kata"
+  },
+  "candidate": {
+    "source_commit": "23ada8a8cfc1f41b1c798cfcb3b71f6fc2f21587",
+    "selected_action_id": "expand:terra-nullius:10"
+  },
+  "test_command": [
+    "node",
+    "experiments/odc1/verify-differential.mjs",
+    ".",
+    "f1347251834a6283182b631e1336595eb2e08342",
+    "23ada8a8cfc1f41b1c798cfcb3b71f6fc2f21587",
+    "experiments/odc1/differential-fixture.json",
+    "experiments/odc1/differential-proof-23ada8a8.json"
+  ],
+  "test_exit_code": 0
+}
