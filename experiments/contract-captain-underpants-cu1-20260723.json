@@ -1,0 +1,85 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-23",
+  "entrant": {
+    "player_name": "Captain Underpants Maximum Aura",
+    "policy_label": "captain-underpants-max-aura:v1",
+    "player_id": null,
+    "policy_version_id": null
+  },
+  "source": {
+    "branch": "rci/captain-underpants-cu1-20260723",
+    "worktree": "/private/tmp/proxywar-captain-underpants-source-20260723",
+    "exact_behavioral_parent_commit": "ce5c15b0a423590340595537ac5d7483e61d41a4",
+    "candidate_mechanism_commit": "c50025ef2775fcc5193b2cdb56b0abbbd7f71261",
+    "candidate_marker": "cu1"
+  },
+  "hypothesis": {
+    "statement": "In the first 20 active Pangaea decisions, replacing a repeated cooldown-bound outbound protected-partner alliance request with the unchanged selector's offered low-risk neutral expansion improves mirrored placement, survival, or final tiles without protected-partner harm.",
+    "single_mechanism": true,
+    "planner_mode": "off_for_parent_and_candidate",
+    "eligible_map": "Pangaea",
+    "active_decision_horizon": 20,
+    "outbound_retry_cooldown_decisions": 24
+  },
+  "guards": [
+    "inbound protected-partner handshakes remain immediate",
+    "pressure and territorial-collapse behavior remain exact-parent",
+    "replacement must be an offered non-high-risk neutral expansion",
+    "non-Pangaea behavior remains exact-parent",
+    "zero harmful action against protected partners",
+    "zero unexplained holds or rejected decisions",
+    "no rerun after a declared cell produces a valid replay"
+  ],
+  "matched_gate": {
+    "pairs": 4,
+    "players": 12,
+    "map": "Normal Pangaea",
+    "mirrored_seats": true,
+    "fixed_dimensions": [
+      "map",
+      "roster",
+      "runtime_package",
+      "parent_image",
+      "seed_treatment",
+      "decision_horizon"
+    ],
+    "primary_order": [
+      "placement",
+      "survival",
+      "final_tiles"
+    ],
+    "pass": [
+      "cu1 reaches in every eligible cell",
+      "candidate wins at least 3 of 4 mirrored pair comparisons",
+      "aggregate candidate final tiles exceed parent",
+      "no catastrophic weak-seat mirror loss",
+      "planner counts are zero in both arms",
+      "fallbackUsed and llmPlannerDegraded are false in deterministic mode"
+    ],
+    "reject": [
+      "zero mechanism reach",
+      "direct-reach matched loss",
+      "protected-partner harm",
+      "rejected decision",
+      "unexplained hold",
+      "planner use or degradation in the deterministic gate"
+    ]
+  },
+  "promotion_gates": {
+    "exact_amd64_image_receipt": false,
+    "dedicated_player_identity": false,
+    "diagnostic_uploaded": false,
+    "hosted_4_of_4": false,
+    "regression_20_of_20": false,
+    "submitted": false,
+    "membership_created": false,
+    "first_round_verified": false
+  },
+  "scope": {
+    "mickey_unchanged": true,
+    "odin_unchanged": true,
+    "hrafn_source_unchanged": true,
+    "live_league_mutation_performed": false
+  }
+}

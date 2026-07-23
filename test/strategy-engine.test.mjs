@@ -5,7 +5,7 @@ import {
   boatConversionStalled,
   buildState,
   chooseAction,
-  chooseMickeyRuntimeAction,
+  chooseCaptainUnderpantsRuntimeAction,
   recordDecision,
 } from "../strategy-engine.mjs";
 
@@ -1399,7 +1399,7 @@ test("katanasan alliance retries respect the cooldown", () => {
   assert.equal(rested.policyMarker, "kp2");
 });
 
-test("Mickey suppresses a repeated outgoing K1Z request on Pangaea", () => {
+test("CU1 entrant suppresses a repeated outgoing K1Z request on Pangaea", () => {
   const hrafn = {
     id: "hrafn-live-id",
     name: "K1Z Hrafn",
@@ -1441,13 +1441,13 @@ test("Mickey suppresses a repeated outgoing K1Z request on Pangaea", () => {
     }), [ally, neutral], history);
 
     assert.equal(chooseAction([ally, neutral], state, null, history).id, ally.id);
-    const selected = chooseMickeyRuntimeAction([ally, neutral], state, null, history);
+    const selected = chooseCaptainUnderpantsRuntimeAction([ally, neutral], state, null, history);
     assert.equal(selected.id, neutral.id);
-    assert.equal(selected.policyMarker, "mr2");
+    assert.equal(selected.policyMarker, "cu1");
   }
 });
 
-test("Mickey always accepts a real reverse K1Z handshake during cooldown", () => {
+test("CU1 entrant always accepts a real reverse K1Z handshake during cooldown", () => {
   const hrafn = {
     id: "hrafn-live-id",
     name: "K1Z Hrafn",
@@ -1478,13 +1478,13 @@ test("Mickey always accepts a real reverse K1Z handshake during cooldown", () =>
     rivals: [hrafn],
   }), [ally, reject, neutral], history);
 
-  const selected = chooseMickeyRuntimeAction([ally, reject, neutral], state, null, history);
+  const selected = chooseCaptainUnderpantsRuntimeAction([ally, reject, neutral], state, null, history);
   assert.equal(selected.id, ally.id);
   assert.equal(selected.policyMarker, "kp2");
   assert.equal(selected.allianceDirection, "inbound");
 });
 
-test("Mickey does not count an accepted handshake as optional outbound outreach", () => {
+test("CU1 entrant does not count an accepted handshake as optional outbound outreach", () => {
   const hrafn = {
     id: "hrafn-live-id",
     name: "K1Z Hrafn",
@@ -1511,7 +1511,7 @@ test("Mickey does not count an accepted handshake as optional outbound outreach"
     spawnTile: 659528,
     rivals: [hrafn, gravity],
   }), [acceptHrafn, rejectHrafn], []);
-  const accepted = chooseMickeyRuntimeAction(
+  const accepted = chooseCaptainUnderpantsRuntimeAction(
     [acceptHrafn, rejectHrafn],
     firstState,
     null,
@@ -1534,7 +1534,7 @@ test("Mickey does not count an accepted handshake as optional outbound outreach"
     spawnTile: 659528,
     rivals: [hrafn, gravity],
   }), [requestGravity, neutral], history);
-  const selected = chooseMickeyRuntimeAction(
+  const selected = chooseCaptainUnderpantsRuntimeAction(
     [requestGravity, neutral],
     secondState,
     null,
@@ -1547,7 +1547,7 @@ test("Mickey does not count an accepted handshake as optional outbound outreach"
   assert.equal(selected.allianceDirection, undefined);
 });
 
-test("Mickey records an accepted handshake as inbound even under pressure", () => {
+test("CU1 entrant records an accepted handshake as inbound even under pressure", () => {
   const hrafn = {
     id: "hrafn-live-id",
     name: "K1Z Hrafn",
@@ -1580,7 +1580,7 @@ test("Mickey records an accepted handshake as inbound even under pressure", () =
       { id: "outsider", name: "Outsider", tileShare: 0.1, relativeTroopRatio: 0.9 },
     ],
   }), [acceptHrafn, rejectHrafn], []);
-  const accepted = chooseMickeyRuntimeAction(
+  const accepted = chooseCaptainUnderpantsRuntimeAction(
     [acceptHrafn, rejectHrafn],
     pressuredState,
     null,
@@ -1603,7 +1603,7 @@ test("Mickey records an accepted handshake as inbound even under pressure", () =
     spawnTile: 659528,
     rivals: [hrafn, gravity],
   }), [requestGravity, neutral], history);
-  const selected = chooseMickeyRuntimeAction(
+  const selected = chooseCaptainUnderpantsRuntimeAction(
     [requestGravity, neutral],
     calmState,
     null,
@@ -1615,7 +1615,7 @@ test("Mickey records an accepted handshake as inbound even under pressure", () =
   assert.equal(selected.id, requestGravity.id);
 });
 
-test("Mickey leaves rested K1Z requests and non-Pangaea retries unchanged", () => {
+test("CU1 entrant leaves rested K1Z requests and non-Pangaea retries unchanged", () => {
   const hrafn = {
     id: "hrafn-live-id",
     name: "K1Z Hrafn",
@@ -1654,13 +1654,13 @@ test("Mickey leaves rested K1Z requests and non-Pangaea retries unchanged", () =
       spawnTile,
       rivals: [hrafn],
     }), [ally, neutral], history);
-    const selected = chooseMickeyRuntimeAction([ally, neutral], state, null, history);
+    const selected = chooseCaptainUnderpantsRuntimeAction([ally, neutral], state, null, history);
     assert.equal(selected.id, ally.id);
     assert.equal(selected.policyMarker, "kp2");
   }
 });
 
-test("Mickey keeps a repeated request when no productive replacement is offered", () => {
+test("CU1 entrant keeps a repeated request when no productive replacement is offered", () => {
   const ally = {
     ...action("alliance:hidden-hrafn", "alliance_request", "Request alliance"),
     metadata: { recipientID: "hidden-hrafn", recipientName: "K1Z Hrafn", relation: 0 },
@@ -1684,12 +1684,12 @@ test("Mickey keeps a repeated request when no productive replacement is offered"
     rivals: [],
   }), [ally, hold], history);
 
-  const selected = chooseMickeyRuntimeAction([ally, hold], state, null, history);
+  const selected = chooseCaptainUnderpantsRuntimeAction([ally, hold], state, null, history);
   assert.equal(selected.id, ally.id);
   assert.equal(selected.policyMarker, "kp2");
 });
 
-test("Mickey tracks invisible partners by alliance metadata", () => {
+test("CU1 entrant tracks invisible partners by alliance metadata", () => {
   const ally = {
     ...action("alliance:hidden-hrafn", "alliance_request", "Request alliance"),
     metadata: { recipientID: "hidden-hrafn", recipientName: "K1Z Hrafn", relation: 0 },
@@ -1716,12 +1716,12 @@ test("Mickey tracks invisible partners by alliance metadata", () => {
     rivals: [],
   }), [ally, neutral], history);
 
-  const selected = chooseMickeyRuntimeAction([ally, neutral], state, null, history);
+  const selected = chooseCaptainUnderpantsRuntimeAction([ally, neutral], state, null, history);
   assert.equal(selected.id, neutral.id);
-  assert.equal(selected.policyMarker, "mr2");
+  assert.equal(selected.policyMarker, "cu1");
 });
 
-test("Mickey allows the first optional opening K1Z request", () => {
+test("CU1 entrant allows the first optional opening K1Z request", () => {
   const gravity = {
     ...action("alliance:gravity", "alliance_request", "Request K1Z Gravity"),
     metadata: { recipientID: "gravity", recipientName: "K1Z Gravity", relation: 0 },
@@ -1737,12 +1737,12 @@ test("Mickey allows the first optional opening K1Z request", () => {
     rivals: [{ id: "gravity", name: "K1Z Gravity", tileShare: 0.1, relativeTroopRatio: 1.1 }],
   }), [gravity, neutral], []);
 
-  const selected = chooseMickeyRuntimeAction([gravity, neutral], state, null, []);
+  const selected = chooseCaptainUnderpantsRuntimeAction([gravity, neutral], state, null, []);
   assert.equal(selected.id, gravity.id);
   assert.equal(selected.policyMarker, "kp2");
 });
 
-test("Mickey opening cooldown is global across reciprocal partners", () => {
+test("CU1 entrant opening cooldown is global across reciprocal partners", () => {
   const hrafn = {
     ...action("alliance:hrafn", "alliance_request", "Request K1Z Hrafn"),
     metadata: { recipientID: "hrafn", recipientName: "K1Z Hrafn", relation: 0 },
@@ -1769,9 +1769,9 @@ test("Mickey opening cooldown is global across reciprocal partners", () => {
     rivals: [{ id: "gravity", name: "K1Z Gravity", tileShare: 0.1, relativeTroopRatio: 1.1 }],
   }), [gravity, neutral], history);
 
-  const selected = chooseMickeyRuntimeAction([gravity, neutral], state, null, history);
+  const selected = chooseCaptainUnderpantsRuntimeAction([gravity, neutral], state, null, history);
   assert.equal(selected.id, neutral.id);
-  assert.equal(selected.policyMarker, "mr2");
+  assert.equal(selected.policyMarker, "cu1");
 });
 
 test("no harmful action of any kind is ever taken against katanasan", () => {

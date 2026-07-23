@@ -10,7 +10,8 @@
  * blocking legal action selection.
  *
  * To change how it PLAYS, edit the compile-time selection in
- * mickey-production-doctrine.mjs and strategy-engine.mjs, which controls the
+ * captain-underpants-production-doctrine.mjs and strategy-engine.mjs, which
+ * control the
  * compact state, target scoring, action cadence, and legal move. That's your
  * agent. Everything else is plumbing.
  */
@@ -18,7 +19,7 @@ import { WebSocket } from "ws";
 import { AnthropicBedrock } from "@anthropic-ai/bedrock-sdk";
 import {
   buildState,
-  chooseMickeyRuntimeAction as chooseSelectorAction,
+  chooseCaptainUnderpantsRuntimeAction as chooseSelectorAction,
   clean,
   recordDecision,
 } from "./strategy-engine.mjs";
@@ -28,7 +29,9 @@ import {
   intentRefreshInterval,
   parseIntentDirective,
 } from "./intent-controller.mjs";
-import { MICKEY_PRODUCTION_DOCTRINE } from "./mickey-production-doctrine.mjs";
+import {
+  CAPTAIN_UNDERPANTS_PRODUCTION_DOCTRINE,
+} from "./captain-underpants-production-doctrine.mjs";
 import { chooseChassisAction } from "./strategy-chassis.mjs";
 
 const chooseAction =
@@ -55,7 +58,8 @@ const TEST_INTENT_DIRECTIVE = process.env.NODE_ENV === "test"
   : null;
 
 // -- YOUR STRATEGY -- final screen selection lives in one compile-time module -
-const STRATEGY = MICKEY_PRODUCTION_DOCTRINE;
+const STRATEGY = CAPTAIN_UNDERPANTS_PRODUCTION_DOCTRINE;
+const PLANNER_ENABLED = process.env.PLAN_MODE === "on";
 const PLAN_EVERY = Math.max(1, Number(process.env.PLAN_EVERY) || 8);
 const PLAN_TIMEOUT_MS = Math.max(1000, Number(process.env.PLAN_TIMEOUT_MS) || 12000);
 const PLAN_FAILURE_COOLDOWN_MS = Math.max(
@@ -194,14 +198,19 @@ function handleMessage(activeSocket, data) {
   }
   const state = buildState(obs, actions, history);
 
-  // Keep the plan fresh WITHOUT blocking — the answer below never waits on Bedrock.
-  planDecisionAge += 1;
-  if (plan === null || planDecisionAge >= intentRefreshInterval(plan, PLAN_EVERY)) {
-    refreshPlanInBackground(state);
+  // CU1 defaults to a deterministic causal gate. Planner-on is a separate,
+  // explicit attribution arm and still never blocks the action below.
+  if (PLANNER_ENABLED) {
+    planDecisionAge += 1;
+    if (plan === null || planDecisionAge >= intentRefreshInterval(plan, PLAN_EVERY)) {
+      refreshPlanInBackground(state);
+    }
   }
 
-  const degraded = lastPlanError !== null;
-  const executionPlan = executableIntentPlan(plan, planDecisionAge, degraded);
+  const degraded = PLANNER_ENABLED && lastPlanError !== null;
+  const executionPlan = PLANNER_ENABLED
+    ? executableIntentPlan(plan, planDecisionAge, degraded)
+    : null;
   const chosen = chooseAction(actions, state, executionPlan, history);
   const reason = publicReason(chosen, executionPlan !== null, degraded, lastPlanErrorClass);
 
@@ -212,8 +221,8 @@ function handleMessage(activeSocket, data) {
     selectedLegalActionId: chosen.id,
     reason: reason.slice(0, 48),
     confidence: executionPlan !== null ? 0.75 : 0.4,
-    fallbackUsed: executionPlan === null,
-    llmPlannerDegraded: executionPlan === null,
+    fallbackUsed: PLANNER_ENABLED && executionPlan === null,
+    llmPlannerDegraded: PLANNER_ENABLED && executionPlan === null,
   });
   if (activeSocket.readyState !== WebSocket.OPEN) return;
   activeSocket.send(response, (error) => {

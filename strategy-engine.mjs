@@ -1032,8 +1032,8 @@ export function chooseAction(actions, state, plan = null, history = []) {
   return { ...chosen, policyMarker: "mm1c" };
 }
 
-const MICKEY_OPENING_DECISIONS = 20;
-const MICKEY_RECIPROCAL_RETRY_COOLDOWN = 24;
+const CU1_OPENING_DECISIONS = 20;
+const CU1_RECIPROCAL_RETRY_COOLDOWN = 24;
 
 function reciprocalRequestPartner(action, state) {
   if (action?.kind !== "alliance_request") return null;
@@ -1059,13 +1059,18 @@ function recordedReciprocalRequest(entry) {
     (RECIPROCAL_RIVAL_IDS.has(entryID) || RECIPROCAL_RIVALS.has(entryName));
 }
 
-// MR2 escapes the opening alliance loop visible in Mickey's weak live Pangaea
+// CU1 escapes the opening alliance loop visible in Mickey's weak live Pangaea
 // games. After one optional K1Z request, later opening requests yield to the
 // unchanged neutral-growth selector. A real reverse handshake stays immediate.
-export function chooseMickeyRuntimeAction(actions, state, plan = null, history = []) {
+export function chooseCaptainUnderpantsRuntimeAction(
+  actions,
+  state,
+  plan = null,
+  history = [],
+) {
   const baseline = chooseAction(actions, state, plan, history);
   if (state.mapFingerprint !== "Pangaea" ||
-      activeDecisionCount(history) >= MICKEY_OPENING_DECISIONS) {
+      activeDecisionCount(history) >= CU1_OPENING_DECISIONS) {
     return baseline;
   }
 
@@ -1080,7 +1085,7 @@ export function chooseMickeyRuntimeAction(actions, state, plan = null, history =
   if (!partner) return baseline;
 
   const retryAge = decisionsSince(history, recordedReciprocalRequest);
-  if (retryAge >= MICKEY_RECIPROCAL_RETRY_COOLDOWN) return baseline;
+  if (retryAge >= CU1_RECIPROCAL_RETRY_COOLDOWN) return baseline;
 
   const neutralGrowthOffered = actions.some((action) =>
     isNeutralExpansion(action) && action.risk?.level !== "high"
@@ -1093,7 +1098,7 @@ export function chooseMickeyRuntimeAction(actions, state, plan = null, history =
   if (!replacement || replacement.id === baseline.id || !isNeutralExpansion(replacement)) {
     return baseline;
   }
-  return { ...replacement, policyMarker: "mr2" };
+  return { ...replacement, policyMarker: "cu1" };
 }
 
 export function recordDecision(history, action, state) {

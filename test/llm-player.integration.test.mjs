@@ -119,8 +119,11 @@ test("deployed player wiring expands first and converts a weak rival next", asyn
   );
   for (const response of responses) {
     assert.match(response.reason, /^[a-z0-9:]+$/);
+    assert.match(response.reason, /^rul:/);
     assert.ok(response.reason.length <= 48);
     assert.equal(response.reason.toLowerCase().includes("weak"), false);
+    assert.equal(response.fallbackUsed, false);
+    assert.equal(response.llmPlannerDegraded, false);
   }
 });
 
@@ -198,14 +201,15 @@ test("planner contract asks only for intent, target ID, and horizon", async () =
   const { readFile } = await import("node:fs/promises");
   const source = await readFile(playerPath, "utf8");
   const doctrine = await readFile(
-    fileURLToPath(new URL("../mickey-production-doctrine.mjs", import.meta.url)),
+    fileURLToPath(new URL("../captain-underpants-production-doctrine.mjs", import.meta.url)),
     "utf8",
   );
   assert.match(doctrine, /INTENT:/);
   assert.match(doctrine, /CONSTRAINTS:/);
   assert.match(doctrine, /SUCCESS:/);
   assert.match(doctrine, /FREEDOM:/);
-  assert.match(doctrine, /export const MICKEY_SCREEN_WINNER = (?:null|"[a-z-]+");/);
+  assert.match(doctrine, /CAPTAIN_UNDERPANTS_PRODUCTION_DOCTRINE/);
+  assert.match(source, /process\.env\.PLAN_MODE === "on"/);
   assert.match(source, /"intent":/);
   assert.match(source, /"targetID":/);
   assert.match(source, /"horizon":/);
@@ -278,6 +282,7 @@ test("a normalized nondegraded intent reaches the deployed MM1 selector", async 
     env: {
       ...process.env,
       NODE_ENV: "test",
+      PLAN_MODE: "on",
       INTENT_TEST_DIRECTIVE: JSON.stringify({
         intent: "grow",
         targetID: null,
@@ -382,6 +387,7 @@ test("an exact visible convert intent reaches the deployed MM1 selector", async 
     env: {
       ...process.env,
       NODE_ENV: "test",
+      PLAN_MODE: "on",
       INTENT_TEST_DIRECTIVE: JSON.stringify({
         intent: "convert",
         targetID: "large",
@@ -487,6 +493,7 @@ test("a wrapped planner reply fails closed in the deployed player", async () => 
     env: {
       ...process.env,
       NODE_ENV: "test",
+      PLAN_MODE: "on",
       INTENT_TEST_DIRECTIVE:
         'plan: {"intent":"grow","targetID":null,"horizon":4}',
       COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,

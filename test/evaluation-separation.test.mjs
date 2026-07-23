@@ -4,36 +4,26 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import {
-  MICKEY_PRODUCTION_DOCTRINE,
-  MICKEY_SCREEN_DOCTRINE_IDS,
-  MICKEY_SCREEN_WINNER,
-} from "../mickey-production-doctrine.mjs";
+  CAPTAIN_UNDERPANTS_PRODUCTION_DOCTRINE,
+} from "../captain-underpants-production-doctrine.mjs";
 
 const root = fileURLToPath(new URL("..", import.meta.url));
 
 test("production player has no static-surrogate activation path", async () => {
   const production = await readFile(`${root}/llm-player.mjs`, "utf8");
-  const doctrine = await readFile(`${root}/mickey-production-doctrine.mjs`, "utf8");
+  const doctrine = await readFile(
+    `${root}/captain-underpants-production-doctrine.mjs`,
+    "utf8",
+  );
   assert.doesNotMatch(production, /evaluation-static-intent/i);
   assert.doesNotMatch(production, /static[_-]intent[_-]arm/i);
   assert.doesNotMatch(production, /evaluation[_-]surrogate/i);
   assert.doesNotMatch(doctrine, /evaluation-static-intent/i);
   assert.doesNotMatch(doctrine, /process\.env|process\.argv/);
-  assert.match(doctrine, /export const MICKEY_SCREEN_WINNER = (?:null|"[a-z-]+");/);
-  assert.deepEqual(MICKEY_SCREEN_DOCTRINE_IDS, [
-    "grow-opening", "grow-low-share", "convert-weakest", "convert-largest",
-  ]);
-  assert.ok(
-    MICKEY_SCREEN_WINNER === null ||
-      MICKEY_SCREEN_DOCTRINE_IDS.includes(MICKEY_SCREEN_WINNER),
-  );
-  if (MICKEY_SCREEN_WINNER === null) {
-    assert.match(MICKEY_PRODUCTION_DOCTRINE, /SCREEN PREFERENCE: unselected/);
-    assert.doesNotMatch(MICKEY_PRODUCTION_DOCTRINE, /prefer grow during the first twenty/);
-    assert.doesNotMatch(MICKEY_PRODUCTION_DOCTRINE, /prefer convert against/);
-  } else {
-    assert.doesNotMatch(MICKEY_PRODUCTION_DOCTRINE, /SCREEN PREFERENCE: unselected/);
-  }
+  assert.doesNotMatch(doctrine, /MICKEY_SCREEN|grow-opening|convert-weakest/);
+  assert.match(CAPTAIN_UNDERPANTS_PRODUCTION_DOCTRINE, /CU1 is a deterministic selector correction/);
+  assert.doesNotMatch(CAPTAIN_UNDERPANTS_PRODUCTION_DOCTRINE, /prefer grow during the first twenty/);
+  assert.doesNotMatch(CAPTAIN_UNDERPANTS_PRODUCTION_DOCTRINE, /prefer convert against/);
 });
 
 test("default Docker target is hardened production and excludes evaluation source", async () => {
@@ -46,7 +36,7 @@ test("default Docker target is hardened production and excludes evaluation sourc
   assert.match(dockerfile, /^FROM node:24-bookworm-slim@sha256:[a-f0-9]{64}\s+AS\s+/m);
   assert.match(dockerfile, /--mount=type=cache/);
   assert.match(dockerfile, /node --check intent-controller\.mjs/);
-  assert.match(dockerfile, /node --check mickey-production-doctrine\.mjs/);
+  assert.match(dockerfile, /node --check captain-underpants-production-doctrine\.mjs/);
   assert.match(dockerfile, /^USER node$/m);
   assert.equal(stages.at(-1), "production");
   assert.match(

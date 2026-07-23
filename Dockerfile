@@ -10,9 +10,9 @@ RUN --mount=type=cache,id=proxywar-npm-cache,target=/root/.npm,sharing=locked \
     npm ci --omit=dev --ignore-scripts
 
 FROM dependencies AS production-source
-COPY llm-player.mjs mickey-production-doctrine.mjs intent-controller.mjs strategy-engine.mjs strategy-chassis.mjs planner-backoff.mjs starter-player.mjs ./
+COPY llm-player.mjs captain-underpants-production-doctrine.mjs intent-controller.mjs strategy-engine.mjs strategy-chassis.mjs planner-backoff.mjs starter-player.mjs ./
 RUN node --check llm-player.mjs \
-    && node --check mickey-production-doctrine.mjs \
+    && node --check captain-underpants-production-doctrine.mjs \
     && node --check intent-controller.mjs \
     && node --check strategy-engine.mjs \
     && node --check strategy-chassis.mjs \
@@ -40,7 +40,7 @@ RUN node --check evaluation-static-intent.mjs \
     && node --check evaluation-grow-low-share-player.mjs \
     && node --check evaluation-convert-weakest-player.mjs \
     && node --check evaluation-convert-largest-player.mjs
-LABEL org.opencontainers.image.title="ProxyWar Mickey static intent evaluator" \
+LABEL org.opencontainers.image.title="ProxyWar Captain Underpants static intent evaluator" \
       com.welttowelt.proxywar.evaluation-source="static-eval-v1" \
       com.welttowelt.proxywar.upload-eligible="false"
 
