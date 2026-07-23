@@ -14,7 +14,27 @@ CREATE OR REPLACE TEMP VIEW leaderboard AS
 SELECT * FROM read_ndjson_auto('data/staging/leaderboard.ndjson');
 
 CREATE OR REPLACE TEMP VIEW memberships AS
-SELECT * FROM read_ndjson_auto('data/staging/memberships.ndjson');
+SELECT * FROM read_ndjson(
+  'data/staging/memberships.ndjson',
+  columns = {
+    membership_id: 'VARCHAR',
+    status: 'VARCHAR',
+    substatus: 'VARCHAR',
+    is_champion: 'BOOLEAN',
+    division_id: 'VARCHAR',
+    division_name: 'VARCHAR',
+    policy_id: 'VARCHAR',
+    policy_name: 'VARCHAR',
+    policy_version: 'BIGINT',
+    policy_version_id: 'VARCHAR',
+    policy_label: 'VARCHAR',
+    player_id: 'VARCHAR',
+    player_name: 'VARCHAR',
+    start_time: 'TIMESTAMP',
+    end_time: 'TIMESTAMP',
+    collected_at: 'TIMESTAMP'
+  }
+);
 
 CREATE OR REPLACE TEMP VIEW challenger_memberships AS
 SELECT * FROM read_ndjson(
@@ -604,6 +624,7 @@ COPY (
     (SELECT count(*) FROM episodes) AS episodes,
     (SELECT count(*) FROM participants) AS participant_rows,
     (SELECT count(*) FROM decisions) AS decisions,
+    (SELECT last_round_number FROM official_streak) AS official_streak_last_round,
     (SELECT current_first_place_streak FROM official_streak) AS current_first_place_streak,
     1000 AS target_first_place_streak,
     (SELECT first_place_finishes FROM official_streak) AS first_place_finishes,

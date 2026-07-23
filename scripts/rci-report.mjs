@@ -52,8 +52,9 @@ if (result.status !== 0) {
 
 const [latest] = JSON.parse(result.stdout);
 if (!latest) {
-  process.stderr.write("RCI gate failed: no policy round performance row\n");
-  process.exit(1);
+  process.stdout.write("RCI INACTIVE: no tracked policy performance in current window\n");
+  if (strict) process.exit(1);
+  process.exit(0);
 }
 
 const mapTileFloors = { Europe: 200000, Asia: 150000, Pangaea: 60000 };

@@ -1,91 +1,85 @@
 player_name,policy_version,won,phase,decisions,rival_attack_rate_pct,neutral_attack_rate_pct,build_rate_pct,social_rate_pct,hold_rate_pct,mean_attack_ratio,mean_attack_percent
-Auri,42,true,opening,110,0.0,69.09,0.91,0.0,0.0,,
-Auri,42,true,conversion,165,14.55,63.64,13.94,3.64,0.0,2.34,27.5
-Auri,42,true,finish,1994,35.21,5.52,11.89,5.52,0.0,5.03,29.3
-Auri,42,false,opening,640,0.0,67.81,2.19,0.0,0.0,,
-Auri,42,false,conversion,960,18.02,56.35,15.0,4.79,0.21,2.27,29.8
-Auri,42,false,finish,7241,18.53,10.83,20.83,11.43,1.55,2.25,29.4
-Calc,27,false,opening,550,0.0,42.0,20.0,8.0,0.0,,
-Calc,27,false,conversion,819,2.93,32.84,13.8,43.59,4.76,2.79,18.1
-Calc,27,false,finish,5073,5.24,11.75,19.85,32.92,12.16,2.78,17.2
-James Boggs,1,false,opening,670,9.7,35.07,20.0,3.13,0.0,1.6,10.5
-James Boggs,1,false,conversion,931,54.46,7.95,15.15,15.68,0.0,1.09,10.1
-James Boggs,1,false,finish,2247,34.71,0.71,11.88,35.74,0.27,0.74,10.1
-K1Z Hrafn,5,false,opening,670,0.0,59.4,0.6,10.0,0.0,,
-K1Z Hrafn,5,false,conversion,1005,5.87,44.08,11.24,29.85,0.0,2.02,11.8
-K1Z Hrafn,5,false,finish,12148,6.73,11.66,6.58,20.49,1.69,4.56,13.6
-K1Z juryoku-koku,3,true,opening,60,0.0,23.33,1.67,45.0,0.0,,
-K1Z juryoku-koku,3,true,conversion,90,3.33,60.0,14.44,7.78,0.0,1.58,40.0
-K1Z juryoku-koku,3,true,finish,1481,17.22,9.93,3.92,22.96,0.0,3.46,35.2
-K1Z juryoku-koku,3,false,opening,690,0.0,20.87,1.59,46.96,0.58,,
-K1Z juryoku-koku,3,false,conversion,900,1.56,55.0,18.0,7.11,2.11,1.34,38.9
-K1Z juryoku-koku,3,false,finish,12630,2.53,7.96,6.09,27.43,2.36,2.7,34.4
-K1Z katanasan,39,true,opening,20,0.0,30.0,0.0,40.0,0.0,,
-K1Z katanasan,39,true,conversion,30,0.0,70.0,13.33,13.33,0.0,,
-K1Z katanasan,39,true,finish,387,12.14,10.59,2.58,12.4,0.0,1.7,38.1
-K1Z katanasan,39,false,opening,730,0.0,18.08,1.92,48.08,1.92,,
-K1Z katanasan,39,false,conversion,1019,0.39,34.15,15.21,19.43,11.48,1.1,32.5
-K1Z katanasan,39,false,finish,10833,1.48,7.35,6.76,30.67,1.92,5.0,35.3
-RelhAlpha,3,true,opening,20,0.0,70.0,0.0,0.0,0.0,,
-RelhAlpha,3,true,conversion,30,73.33,23.33,0.0,3.33,0.0,1.15,25.7
-RelhAlpha,3,true,finish,522,37.55,34.1,5.75,3.64,2.11,6.88,30.4
-RelhAlpha,3,false,opening,730,0.0,70.0,0.0,0.0,0.0,,
-RelhAlpha,3,false,conversion,1068,29.4,51.59,5.81,4.21,3.84,1.21,27.9
-RelhAlpha,3,false,finish,9394,40.64,10.78,5.11,4.57,7.96,1.94,29.6
-Richard Higgins,7,true,opening,60,0.0,70.0,0.0,0.0,0.0,,
-Richard Higgins,7,true,conversion,90,55.56,37.78,3.33,3.33,0.0,1.21,25.3
-Richard Higgins,7,true,finish,1081,44.96,7.12,5.09,2.22,6.2,6.28,31.5
-Richard Higgins,7,false,opening,520,0.0,70.0,0.0,0.0,0.0,,
-Richard Higgins,7,false,conversion,778,57.58,31.36,3.98,5.66,0.0,1.62,25.9
-Richard Higgins,7,false,finish,8268,39.68,10.45,4.83,3.97,7.28,1.93,29.9
-Ron @ SWGY,1,true,opening,20,5.0,20.0,20.0,0.0,0.0,3.93,25.0
-Ron @ SWGY,1,true,conversion,30,26.67,13.33,16.67,13.33,0.0,2.16,19.4
-Ron @ SWGY,1,true,finish,273,43.59,1.1,18.68,14.29,0.0,3.75,23.1
-Ron @ SWGY,1,false,opening,730,4.25,21.51,21.1,5.34,0.0,2.16,22.6
-Ron @ SWGY,1,false,conversion,986,31.64,9.74,19.47,16.02,0.0,2.04,19.4
-Ron @ SWGY,1,false,finish,8324,14.27,5.37,15.93,22.26,0.17,2.07,18.2
-Sefirot,27,false,opening,120,16.67,45.0,8.33,0.0,0.0,1.1,28.0
-Sefirot,27,false,conversion,179,14.53,44.69,18.44,0.0,0.0,1.26,30.2
-Sefirot,27,false,finish,1715,7.11,16.15,7.41,6.76,0.0,2.31,31.6
-Sefirot,28,true,opening,20,0.0,50.0,20.0,0.0,0.0,,
-Sefirot,28,true,conversion,30,66.67,26.67,3.33,0.0,0.0,1.55,30.3
-Sefirot,28,true,finish,368,53.53,7.07,5.43,0.54,0.0,3.1,31.2
-Sefirot,28,false,opening,310,17.42,41.29,11.29,0.0,0.0,1.23,28.1
-Sefirot,28,false,conversion,463,48.38,17.93,9.5,1.94,0.0,1.63,29.2
-Sefirot,28,false,finish,4614,15.41,12.01,7.93,3.99,0.02,2.27,31.2
-Sefirot,31,false,opening,30,3.33,40.0,20.0,3.33,0.0,1.69,10.0
-Sefirot,31,false,conversion,45,42.22,15.56,6.67,17.78,0.0,0.87,10.0
-Sefirot,31,false,finish,126,49.21,1.59,7.94,38.1,0.0,1.74,10.0
-Sefirot,32,false,opening,30,3.33,40.0,20.0,3.33,0.0,1.69,10.0
-Sefirot,32,false,conversion,45,42.22,15.56,11.11,15.56,0.0,0.98,10.0
-Sefirot,32,false,finish,190,57.37,0.0,10.53,27.89,0.0,1.76,10.0
-Sefirot,34,false,opening,40,7.5,37.5,20.0,2.5,0.0,1.69,10.0
-Sefirot,34,false,conversion,58,48.28,10.34,8.62,15.52,0.0,1.29,10.0
-Sefirot,34,false,finish,256,41.02,0.39,8.2,34.38,1.56,1.19,10.0
-Sefirot,35,false,opening,30,3.33,40.0,20.0,3.33,0.0,1.28,10.0
-Sefirot,35,false,conversion,42,50.0,9.52,11.9,21.43,0.0,0.89,10.0
-Sefirot,35,false,finish,212,28.77,0.94,13.68,42.45,0.47,1.97,10.0
-Sefirot,36,false,opening,40,10.0,35.0,20.0,0.0,0.0,1.61,10.0
-Sefirot,36,false,conversion,60,51.67,3.33,15.0,16.67,0.0,1.13,10.0
-Sefirot,36,false,finish,199,30.65,0.5,14.07,43.22,0.0,0.98,10.0
-daveey,22,true,opening,70,4.29,55.71,10.0,0.0,0.0,0.85,25.0
-daveey,22,true,conversion,105,55.24,38.1,4.76,0.95,0.0,2.64,31.7
-daveey,22,true,finish,729,49.25,6.58,7.13,2.74,0.69,5.52,30.1
-daveey,22,false,opening,240,5.0,55.83,9.17,0.0,0.0,1.16,25.0
-daveey,22,false,conversion,360,33.61,35.83,7.5,5.28,9.44,1.78,22.4
-daveey,22,false,finish,4525,23.14,7.09,17.46,4.55,9.81,2.39,26.3
-daveey,24,true,opening,100,2.0,58.0,10.0,0.0,0.0,0.6,25.0
-daveey,24,true,conversion,150,19.33,56.67,6.67,2.0,2.0,3.34,19.3
-daveey,24,true,finish,1384,41.18,7.15,16.98,3.11,2.67,4.67,30.1
-daveey,24,false,opening,250,0.8,59.2,10.0,0.0,0.0,1.45,25.0
-daveey,24,false,conversion,375,20.0,58.4,6.13,1.6,0.53,1.62,23.8
-daveey,24,false,finish,4262,21.98,8.73,18.35,3.21,16.33,4.54,25.4
-docxology,1,false,opening,750,22.13,47.87,0.0,0.0,0.0,0.89,10.0
-docxology,1,false,conversion,851,96.71,3.29,0.0,0.0,0.0,0.51,10.0
-docxology,1,false,finish,299,100.0,0.0,0.0,0.0,0.0,0.64,10.0
-odin free,89,true,opening,60,0.0,41.67,0.0,28.33,0.0,,
-odin free,89,true,conversion,90,2.22,53.33,10.0,5.56,0.0,2.24,17.5
-odin free,89,true,finish,1066,28.89,15.67,10.6,16.32,0.0,6.33,20.0
-odin free,89,false,opening,690,0.29,38.84,1.45,28.99,0.0,0.95,10.0
-odin free,89,false,conversion,996,2.01,38.65,13.25,6.22,0.0,1.33,16.8
-odin free,89,false,finish,14196,6.56,4.71,5.4,14.75,2.42,4.75,17.9
+Auri,42,true,opening,50,0.0,66.0,4.0,0.0,0.0,,
+Auri,42,true,conversion,75,20.0,57.33,12.0,4.0,0.0,2.13,35.0
+Auri,42,true,finish,923,35.97,10.94,8.34,8.88,0.22,4.24,31.1
+Auri,42,false,opening,740,0.54,66.49,2.97,0.0,0.0,1.39,32.5
+Auri,42,false,conversion,1100,26.18,44.82,16.45,5.64,0.0,2.39,29.4
+Auri,42,false,finish,5087,17.73,15.04,19.48,15.29,1.67,2.46,29.2
+Calc,90,false,opening,200,0.0,40.0,20.0,10.0,0.0,,
+Calc,90,false,conversion,300,13.33,23.0,10.33,29.67,13.33,1.9,25.4
+Calc,90,false,finish,1760,8.58,4.09,12.33,18.07,8.52,2.06,24.7
+Calc,106,true,opening,80,0.0,40.0,20.0,10.0,0.0,,
+Calc,106,true,conversion,120,6.67,40.83,11.67,11.67,22.5,2.18,25.0
+Calc,106,true,finish,1830,38.85,2.24,3.11,0.87,4.75,8.69,25.6
+Calc,106,false,opening,510,0.0,40.0,20.0,10.0,0.0,,
+Calc,106,false,conversion,765,9.54,53.2,7.84,9.15,15.95,1.7,27.3
+Calc,106,false,finish,6434,15.78,5.74,10.77,11.47,11.13,3.22,24.9
+James Boggs,1,false,opening,590,11.53,35.25,20.68,0.85,0.0,1.64,11.1
+James Boggs,1,false,conversion,722,34.9,14.13,13.99,15.37,0.0,1.11,10.8
+James Boggs,1,false,finish,2821,12.69,2.8,7.69,49.63,0.11,0.96,10.9
+K1Z Mickey Mouse,1,true,opening,80,0.0,66.25,3.75,0.0,0.0,,
+K1Z Mickey Mouse,1,true,conversion,120,30.83,51.67,7.5,0.0,0.0,2.41,24.6
+K1Z Mickey Mouse,1,true,finish,1067,46.39,5.06,13.4,0.0,0.0,5.83,22.7
+K1Z Mickey Mouse,1,false,opening,710,0.28,68.45,1.27,0.0,0.0,1.1,10.0
+K1Z Mickey Mouse,1,false,conversion,1065,32.68,36.53,11.08,0.0,0.0,1.84,23.1
+K1Z Mickey Mouse,1,false,finish,9711,22.9,8.57,12.05,3.13,0.64,3.44,21.2
+Ron @ SWGY,1,false,opening,790,4.43,23.54,20.38,5.57,0.0,1.63,21.6
+Ron @ SWGY,1,false,conversion,1065,19.44,10.33,18.03,21.5,0.0,1.56,17.2
+Ron @ SWGY,1,false,finish,5173,9.99,3.83,14.19,27.6,0.62,1.97,17.9
+Sefirot,1,false,opening,740,15.68,31.49,9.86,0.0,0.0,0.78,40.0
+Sefirot,1,false,conversion,898,66.59,3.45,4.57,14.7,0.0,0.63,40.0
+Sefirot,1,false,finish,3402,36.33,1.0,9.49,20.4,0.0,1.28,39.8
+daveey,24,true,opening,150,0.67,59.33,10.0,0.0,0.0,0.6,25.0
+daveey,24,true,conversion,225,28.0,45.78,6.67,0.89,7.56,2.27,23.1
+daveey,24,true,finish,2243,40.88,5.75,7.22,4.68,6.06,3.12,27.2
+daveey,24,false,opening,640,0.16,59.84,10.0,0.0,0.0,0.6,25.0
+daveey,24,false,conversion,960,27.71,38.65,6.67,3.13,7.4,2.15,22.0
+daveey,24,false,finish,8013,21.84,6.44,15.29,5.8,13.78,2.24,22.7
+djizus,12,true,opening,20,25.0,35.0,10.0,0.0,0.0,1.72,40.0
+djizus,12,true,conversion,30,23.33,63.33,0.0,0.0,0.0,1.9,40.0
+djizus,12,true,finish,348,39.94,7.18,3.74,4.02,0.29,4.22,37.0
+djizus,12,false,opening,100,11.0,49.0,10.0,0.0,0.0,1.7,37.3
+djizus,12,false,conversion,150,39.33,56.0,0.0,0.0,0.0,1.35,35.9
+djizus,12,false,finish,957,41.07,15.67,4.7,6.58,0.52,1.01,38.9
+djizus,13,true,opening,20,20.0,40.0,10.0,0.0,0.0,1.33,32.5
+djizus,13,true,conversion,30,33.33,43.33,0.0,0.0,0.0,1.13,38.5
+djizus,13,true,finish,288,37.5,17.36,2.08,1.39,0.0,2.13,38.9
+djizus,13,false,opening,180,13.33,46.67,10.0,0.0,0.0,1.31,37.5
+djizus,13,false,conversion,265,41.89,38.49,1.51,0.0,0.0,1.19,38.0
+djizus,13,false,finish,2036,35.95,7.07,3.14,7.56,0.2,1.11,38.6
+djizus,14,true,opening,40,7.5,52.5,10.0,0.0,0.0,1.95,40.0
+djizus,14,true,conversion,60,10.0,78.33,0.0,0.0,0.0,0.99,40.0
+djizus,14,true,finish,557,42.19,16.16,4.85,0.9,0.54,2.18,39.4
+djizus,14,false,opening,290,13.45,46.55,10.0,0.0,0.0,1.48,40.0
+djizus,14,false,conversion,435,23.68,55.63,0.0,0.0,0.0,1.28,40.0
+djizus,14,false,finish,3686,38.23,7.05,3.09,3.28,0.05,1.14,38.8
+docxology,1,false,opening,790,26.08,43.92,0.0,0.0,0.0,0.9,10.0
+docxology,1,false,conversion,612,98.53,1.47,0.0,0.0,0.0,0.55,10.0
+docxology,1,false,finish,23,100.0,0.0,0.0,0.0,0.0,0.83,10.0
+relh,3,true,opening,20,0.0,70.0,0.0,0.0,0.0,,
+relh,3,true,conversion,30,6.67,80.0,6.67,6.67,0.0,3.11,32.5
+relh,3,true,finish,433,33.26,5.77,5.31,2.54,15.24,3.22,32.8
+relh,3,false,opening,770,0.0,70.0,0.0,0.0,0.0,,
+relh,3,false,conversion,1147,32.61,53.62,5.58,5.49,1.05,1.14,27.8
+relh,3,false,finish,6697,47.98,8.74,4.66,3.39,6.51,1.81,28.1
+richard,7,true,opening,210,0.0,70.0,0.0,0.0,0.0,,
+richard,7,true,conversion,315,40.32,50.48,5.4,3.81,0.0,1.42,26.7
+richard,7,true,finish,2363,58.23,8.89,5.12,1.99,2.96,5.07,28.5
+richard,7,false,opening,380,0.0,70.0,0.0,0.0,0.0,,
+richard,7,false,conversion,568,41.55,48.42,4.75,5.28,0.0,1.52,26.8
+richard,7,false,finish,4461,51.06,6.61,4.1,4.39,6.34,2.5,29.4
+salomon-shdow,10,false,opening,160,5.0,48.75,7.5,8.75,0.0,1.13,13.8
+salomon-shdow,10,false,conversion,236,20.76,34.75,13.98,12.29,0.0,1.5,20.4
+salomon-shdow,10,false,finish,1086,13.72,10.41,9.21,12.34,0.55,2.23,19.6
+salomon-shdow,11,true,opening,30,0.0,60.0,0.0,10.0,0.0,,
+salomon-shdow,11,true,conversion,45,6.67,55.56,8.89,13.33,0.0,1.34,25.0
+salomon-shdow,11,true,finish,365,44.11,6.03,15.89,5.48,0.0,3.94,22.0
+salomon-shdow,11,false,opening,440,0.0,61.14,0.0,8.86,0.0,,
+salomon-shdow,11,false,conversion,660,28.48,37.88,11.36,11.36,0.0,1.98,22.9
+salomon-shdow,11,false,finish,5789,11.42,7.51,9.47,12.42,1.07,3.31,20.6
+salomon-shdow,12,false,opening,150,0.0,68.67,1.33,0.0,0.0,,
+salomon-shdow,12,false,conversion,225,24.44,47.11,10.67,0.89,0.0,2.23,25.8
+salomon-shdow,12,false,finish,1925,21.04,15.06,14.39,8.68,0.31,3.69,25.0
+softmaxwell,1,false,opening,600,0.67,69.33,0.0,0.0,0.0,2.48,32.5
+softmaxwell,1,false,conversion,900,33.33,42.33,9.22,1.44,4.67,2.36,30.2
+softmaxwell,1,false,finish,5857,6.03,17.02,13.85,12.05,29.88,2.66,32.4
