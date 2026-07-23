@@ -25,9 +25,13 @@
   },
   "credential_state": {
     "one_time_browser_code_generated": true,
-    "isolated_cli_credential_exchanged": false,
+    "isolated_cli_credential_exchanged": true,
+    "isolated_home": "/private/tmp/softmax-captain-underpants-home",
+    "active_player_id": "ply_02c1e39b-94af-4b38-8e12-645e6cd06ec1",
+    "player_session_expires_at": "2026-07-24T17:21:32.283162+00:00",
     "odin_cli_credential_changed": false,
-    "mickey_cli_credential_changed": false
+    "mickey_cli_credential_changed": false,
+    "normal_home_active_player": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c"
   },
   "readiness": {
     "dedicated_player_identity": true,
