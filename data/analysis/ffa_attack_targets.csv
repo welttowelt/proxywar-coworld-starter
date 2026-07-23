@@ -1,154 +1,174 @@
 attacker,target_name,rival_attacks,mean_relative_troop_ratio,median_relative_troop_ratio,mean_troop_percent
-Auri,daveey,318,2.68,1.29,31.3
-Auri,djizus,210,3.5,1.96,32.8
-Auri,relh,185,2.27,1.53,31.2
-Auri,Calc,183,3.38,1.33,31.1
-Auri,K1Z Mickey Mouse,169,2.4,1.6,27.0
+Auri,daveey,317,2.68,1.29,31.2
+Auri,djizus,200,3.5,1.9,33.0
+Auri,relh,186,2.25,1.51,31.0
+Auri,Calc,178,3.45,1.34,31.3
+Auri,K1Z Mickey Mouse,158,2.45,1.6,27.2
 Auri,Sefirot,150,3.35,2.21,33.4
-Auri,salomon shdow,138,2.8,1.29,28.3
-Auri,softmaxwell,108,2.48,1.57,24.7
-Auri,Ron SWGY,93,3.0,2.1,18.7
-Auri,richard,85,2.85,1.78,33.6
+Auri,salomon shdow,136,2.66,1.29,27.8
+Auri,softmaxwell,97,2.65,1.65,25.2
+Auri,Ron SWGY,92,2.95,1.88,18.3
+Auri,richard,83,2.89,1.78,33.1
 Auri,docxology,25,3.78,2.32,33.4
-Auri,James Boggs,20,2.03,2.01,21.3
-Calc,daveey,373,10.5,1.62,25.2
+Auri,James Boggs,22,2.38,2.08,20.2
+Auri,Captain Underpants Maximum,4,1.57,1.61,32.5
+Calc,daveey,357,10.89,1.69,25.4
 Calc,richard,317,2.6,1.35,25.8
-Calc,Auri,295,3.24,1.58,24.8
+Calc,Auri,288,3.03,1.61,24.8
 Calc,djizus,279,5.73,3.51,26.2
-Calc,K1Z Mickey Mouse,274,2.4,1.42,25.4
-Calc,relh,271,3.96,1.9,25.3
-Calc,softmaxwell,156,2.72,1.52,26.0
-Calc,Ron SWGY,153,5.56,2.88,22.8
-Calc,salomon shdow,149,3.46,2.2,24.4
+Calc,relh,276,3.92,1.9,25.3
+Calc,K1Z Mickey Mouse,275,2.38,1.42,25.4
+Calc,Ron SWGY,154,5.73,2.96,22.9
+Calc,salomon shdow,153,3.44,2.19,24.6
+Calc,softmaxwell,138,2.86,1.57,26.4
 Calc,Sefirot,110,4.59,2.42,23.1
 Calc,James Boggs,68,6.65,4.31,23.9
-Calc,docxology,2,4.03,4.03,25.0
-James Boggs,richard,223,1.02,1.1,10.3
-James Boggs,relh,185,0.79,0.65,10.0
-James Boggs,K1Z Mickey Mouse,62,1.38,1.08,11.0
+Calc,docxology,2,4.38,4.38,25.0
+Captain Underpants Maximum Aura,relh,34,4.08,1.69,27.2
+Captain Underpants Maximum Aura,Calc,21,3.54,2.54,20.0
+Captain Underpants Maximum Aura,K1Z Mickey Mouse,20,2.01,1.81,21.3
+Captain Underpants Maximum Aura,Auri,14,2.5,1.58,25.0
+Captain Underpants Maximum Aura,Ron SWGY,12,6.92,3.12,21.3
+Captain Underpants Maximum Aura,daveey,7,2.56,1.49,18.6
+Captain Underpants Maximum Aura,djizus,6,3.4,2.64,27.5
+Captain Underpants Maximum Aura,richard,6,1.18,1.21,20.0
+Captain Underpants Maximum Aura,softmaxwell,4,5.81,3.53,13.8
+Captain Underpants Maximum Aura,Sefirot,3,1.41,1.4,25.0
+Captain Underpants Maximum Aura,salomon shdow,2,6.59,6.59,10.0
+James Boggs,richard,219,1.01,1.1,10.3
+James Boggs,relh,180,0.78,0.65,10.1
 James Boggs,salomon shdow,59,1.39,1.14,10.5
 James Boggs,Calc,58,0.79,0.41,10.0
+James Boggs,K1Z Mickey Mouse,58,1.39,1.08,11.0
 James Boggs,softmaxwell,53,1.0,0.95,11.1
-James Boggs,djizus,50,0.25,0.11,11.2
-James Boggs,Ron SWGY,44,1.39,1.19,10.0
+James Boggs,djizus,47,0.21,0.1,11.3
+James Boggs,Ron SWGY,45,1.39,1.19,10.0
 James Boggs,daveey,38,1.26,1.19,10.0
-James Boggs,Auri,12,1.27,0.98,10.0
+James Boggs,Auri,14,1.32,1.36,11.1
 James Boggs,docxology,4,3.26,2.42,28.8
-K1Z Mickey Mouse,Calc,371,3.18,1.66,18.5
-K1Z Mickey Mouse,relh,350,3.6,1.51,22.2
-K1Z Mickey Mouse,Auri,290,2.96,1.59,20.3
-K1Z Mickey Mouse,salomon shdow,273,4.56,1.54,21.3
-K1Z Mickey Mouse,daveey,271,3.19,1.53,21.1
-K1Z Mickey Mouse,richard,271,2.42,1.53,23.8
-K1Z Mickey Mouse,Ron SWGY,262,4.24,2.16,19.1
-K1Z Mickey Mouse,softmaxwell,243,2.44,1.43,23.0
-K1Z Mickey Mouse,djizus,218,2.79,1.91,22.9
-K1Z Mickey Mouse,James Boggs,145,3.51,2.1,18.8
+K1Z Mickey Mouse,Calc,371,3.24,1.66,18.3
+K1Z Mickey Mouse,relh,322,3.46,1.51,22.0
+K1Z Mickey Mouse,Auri,280,3.06,1.63,20.3
+K1Z Mickey Mouse,richard,280,2.37,1.5,23.9
+K1Z Mickey Mouse,Ron SWGY,272,4.19,2.11,19.3
+K1Z Mickey Mouse,salomon shdow,270,4.66,1.54,21.2
+K1Z Mickey Mouse,daveey,259,3.2,1.53,20.9
+K1Z Mickey Mouse,softmaxwell,237,2.06,1.41,22.9
+K1Z Mickey Mouse,djizus,184,2.94,2.01,22.1
+K1Z Mickey Mouse,James Boggs,141,3.57,2.24,18.7
 K1Z Mickey Mouse,Sefirot,105,5.16,3.56,21.6
-K1Z Mickey Mouse,docxology,20,3.99,3.11,16.0
-Ron @ SWGY,djizus,126,1.59,1.31,17.6
-Ron @ SWGY,K1Z Mickey Mouse,73,1.43,1.15,16.4
-Ron @ SWGY,softmaxwell,71,1.7,1.32,18.0
-Ron @ SWGY,richard,61,1.39,1.26,16.1
-Ron @ SWGY,relh,60,0.96,1.04,13.0
-Ron @ SWGY,Calc,55,1.75,1.18,16.5
-Ron @ SWGY,salomon shdow,55,1.34,1.11,16.8
+K1Z Mickey Mouse,docxology,20,3.92,3.11,16.0
+K1Z Mickey Mouse,Captain Underpants Maximum,6,1.08,1.11,15.0
+Ron @ SWGY,djizus,118,1.48,1.27,17.0
+Ron @ SWGY,K1Z Mickey Mouse,73,1.46,1.22,16.8
+Ron @ SWGY,softmaxwell,68,1.83,1.36,18.8
+Ron @ SWGY,relh,65,1.01,1.05,13.2
+Ron @ SWGY,richard,63,1.38,1.26,16.0
+Ron @ SWGY,salomon shdow,60,1.41,1.21,17.0
+Ron @ SWGY,Calc,54,1.77,1.25,16.7
 Ron @ SWGY,docxology,47,2.78,2.23,25.0
-Ron @ SWGY,Auri,41,3.37,1.34,17.0
-Ron @ SWGY,James Boggs,39,1.97,1.73,20.4
-Ron @ SWGY,daveey,37,1.4,1.1,16.5
+Ron @ SWGY,James Boggs,42,2.01,1.71,20.0
+Ron @ SWGY,Auri,41,3.34,1.34,17.0
+Ron @ SWGY,daveey,38,1.4,1.08,16.3
 Ron @ SWGY,Sefirot,35,1.77,1.41,18.1
+Ron @ SWGY,Captain Underpants Maximum,3,0.26,0.3,10.0
 Sefirot,relh,574,0.76,0.54,39.8
 Sefirot,Auri,295,0.63,0.57,39.9
 Sefirot,Ron SWGY,156,1.83,1.29,39.8
-Sefirot,richard,128,0.58,0.5,39.8
-Sefirot,salomon shdow,103,1.51,0.55,39.7
-Sefirot,softmaxwell,87,0.69,0.65,40.0
-Sefirot,K1Z Mickey Mouse,86,1.49,0.32,40.0
-Sefirot,Calc,80,0.73,0.44,39.6
-Sefirot,djizus,79,1.12,0.8,40.0
+Sefirot,salomon shdow,105,1.02,0.45,39.7
+Sefirot,richard,98,0.54,0.49,39.7
+Sefirot,K1Z Mickey Mouse,87,1.36,0.32,40.0
+Sefirot,djizus,81,1.11,0.79,40.0
+Sefirot,Calc,79,0.73,0.47,39.6
+Sefirot,softmaxwell,74,0.69,0.64,40.0
 Sefirot,docxology,72,1.29,1.04,40.0
-Sefirot,daveey,42,1.52,0.4,40.0
+Sefirot,daveey,39,1.6,0.37,40.0
+Sefirot,Captain Underpants Maximum,12,1.16,1.08,40.0
 Sefirot,James Boggs,1,35.78,35.78,40.0
-daveey,relh,625,2.06,1.38,27.8
-daveey,K1Z Mickey Mouse,460,1.87,1.4,22.7
-daveey,djizus,456,2.34,1.62,27.1
-daveey,salomon shdow,401,1.53,1.12,22.6
-daveey,Calc,371,2.96,1.14,25.7
-daveey,Auri,366,2.03,1.17,23.1
-daveey,richard,364,2.58,1.35,22.0
-daveey,Ron SWGY,88,4.78,3.54,33.9
-daveey,James Boggs,87,2.76,1.86,23.3
-daveey,softmaxwell,69,2.74,1.92,21.3
-daveey,Sefirot,68,5.68,2.98,32.7
-daveey,docxology,33,4.57,3.35,29.5
-djizus,Calc,829,1.13,0.64,39.3
-djizus,Auri,485,0.69,0.47,37.9
-djizus,daveey,438,1.99,0.98,39.6
-djizus,Sefirot,345,0.61,0.3,38.7
-djizus,relh,299,1.12,0.95,39.8
-djizus,Ron SWGY,250,2.37,1.27,38.6
-djizus,richard,231,0.68,0.48,39.7
-djizus,salomon shdow,200,1.45,1.09,38.4
-djizus,K1Z Mickey Mouse,129,1.05,0.63,39.2
-djizus,docxology,60,1.97,1.74,39.8
-djizus,James Boggs,35,5.54,3.11,38.7
-djizus,softmaxwell,21,0.91,0.87,37.1
-docxology,relh,233,0.7,0.85,10.0
+daveey,relh,637,2.08,1.37,28.0
+daveey,K1Z Mickey Mouse,456,1.89,1.4,23.0
+daveey,djizus,452,2.35,1.59,27.0
+daveey,salomon shdow,408,1.52,1.12,22.5
+daveey,Calc,363,3.02,1.15,25.9
+daveey,richard,362,2.59,1.36,22.1
+daveey,Auri,351,1.93,1.17,23.2
+daveey,Ron SWGY,94,4.54,3.12,33.1
+daveey,James Boggs,90,2.73,1.81,23.2
+daveey,softmaxwell,76,2.8,1.97,21.6
+daveey,Sefirot,63,5.68,2.98,32.6
+daveey,docxology,34,4.7,3.53,30.3
+daveey,Captain Underpants Maximum,17,1.05,1.06,26.8
+djizus,Calc,946,1.38,1.08,39.5
+djizus,Auri,473,0.71,0.5,37.8
+djizus,daveey,462,2.63,1.08,39.6
+djizus,Sefirot,364,0.6,0.3,38.6
+djizus,relh,303,1.13,0.96,39.9
+djizus,Ron SWGY,225,2.48,1.34,38.5
+djizus,richard,197,0.72,0.49,39.7
+djizus,salomon shdow,183,1.52,1.15,38.8
+djizus,K1Z Mickey Mouse,130,1.5,0.66,39.2
+djizus,docxology,57,1.97,1.94,40.0
+djizus,James Boggs,27,6.86,4.71,38.3
+djizus,softmaxwell,21,1.65,1.05,37.1
+djizus,Captain Underpants Maximum,6,1.71,1.76,32.5
+docxology,relh,226,0.71,0.85,10.0
 docxology,Auri,199,0.64,0.63,10.0
-docxology,softmaxwell,167,0.7,0.77,10.0
+docxology,softmaxwell,169,0.7,0.81,10.0
 docxology,djizus,124,0.48,0.47,10.0
 docxology,Ron SWGY,46,0.48,0.47,10.0
 docxology,richard,13,0.38,0.41,10.0
 docxology,salomon shdow,13,0.53,0.51,10.0
 docxology,Sefirot,11,0.83,0.85,10.0
+docxology,K1Z Mickey Mouse,6,1.03,1.03,10.0
 docxology,James Boggs,5,0.58,0.56,10.0
-docxology,K1Z Mickey Mouse,5,1.03,1.03,10.0
 docxology,Calc,2,0.78,0.78,10.0
-relh,daveey,818,1.06,0.79,27.3
-relh,Calc,545,1.5,0.69,30.2
-relh,djizus,457,1.24,1.05,25.4
-relh,salomon shdow,411,1.75,1.02,27.7
-relh,richard,406,1.31,0.66,27.9
-relh,K1Z Mickey Mouse,376,1.04,0.77,30.1
-relh,Auri,350,1.53,0.91,26.6
-relh,Sefirot,217,3.12,0.55,28.0
-relh,James Boggs,131,4.45,2.92,29.2
-relh,Ron SWGY,83,2.59,1.35,28.8
-relh,softmaxwell,61,4.99,1.08,27.5
+relh,daveey,825,1.07,0.81,27.3
+relh,Calc,575,1.57,0.7,29.9
+relh,djizus,462,1.23,1.05,25.4
+relh,salomon shdow,418,1.8,1.04,27.5
+relh,richard,391,1.4,0.66,27.9
+relh,K1Z Mickey Mouse,352,1.02,0.76,30.5
+relh,Auri,341,1.55,0.9,26.6
+relh,Sefirot,216,3.16,0.55,28.1
+relh,James Boggs,133,4.42,2.92,29.2
+relh,Ron SWGY,76,2.72,1.23,29.1
+relh,softmaxwell,63,4.86,1.04,27.4
+relh,Captain Underpants Maximum,24,1.04,0.69,25.6
 relh,docxology,4,11.13,11.13,40.0
-richard,Calc,710,2.43,1.01,28.8
-richard,daveey,639,3.07,0.92,28.1
-richard,K1Z Mickey Mouse,502,1.76,0.98,27.6
-richard,djizus,417,2.27,1.78,27.7
-richard,relh,309,4.02,1.4,29.4
-richard,salomon shdow,290,1.79,1.13,28.3
-richard,Auri,287,2.39,1.27,26.9
-richard,Ron SWGY,278,5.29,3.72,33.9
-richard,James Boggs,157,5.29,1.79,29.0
+richard,Calc,712,2.47,1.01,28.9
+richard,daveey,636,3.1,0.92,28.1
+richard,K1Z Mickey Mouse,479,1.78,0.98,27.8
+richard,djizus,418,2.22,1.67,27.6
+richard,relh,315,3.45,1.38,29.3
+richard,salomon shdow,285,1.8,1.12,28.5
+richard,Ron SWGY,282,5.36,3.57,33.7
+richard,Auri,275,2.44,1.28,26.9
+richard,James Boggs,156,5.3,1.79,28.9
 richard,Sefirot,154,6.95,1.97,28.7
-richard,softmaxwell,149,2.97,1.7,24.8
-salomon-shdow,daveey,338,2.81,1.29,21.9
-salomon-shdow,relh,277,2.0,1.37,23.8
-salomon-shdow,Ron SWGY,223,3.53,1.92,22.9
-salomon-shdow,Auri,198,3.47,1.46,23.3
-salomon-shdow,Calc,171,4.21,1.88,22.5
-salomon-shdow,djizus,170,2.48,1.8,25.0
-salomon-shdow,softmaxwell,120,2.41,1.69,25.0
-salomon-shdow,Sefirot,110,4.68,2.64,23.2
-salomon-shdow,richard,110,2.01,1.54,24.2
-salomon-shdow,K1Z Mickey Mouse,85,2.36,1.47,24.3
+richard,softmaxwell,142,3.1,1.84,24.7
+richard,Captain Underpants Maximum,21,1.7,1.05,24.3
+salomon-shdow,daveey,343,2.82,1.29,22.2
+salomon-shdow,relh,256,2.05,1.4,23.9
+salomon-shdow,Ron SWGY,211,3.01,1.79,23.5
+salomon-shdow,Auri,206,3.39,1.46,23.4
+salomon-shdow,Calc,161,4.36,1.9,22.2
+salomon-shdow,djizus,152,2.55,1.84,24.8
+salomon-shdow,softmaxwell,119,2.36,1.67,25.1
+salomon-shdow,Sefirot,117,4.67,2.83,23.3
+salomon-shdow,richard,110,2.01,1.54,24.3
+salomon-shdow,K1Z Mickey Mouse,96,2.35,1.56,25.0
 salomon-shdow,James Boggs,73,6.89,5.88,22.5
-salomon-shdow,docxology,5,4.48,2.31,25.0
-softmaxwell,docxology,80,3.24,2.53,25.0
-softmaxwell,relh,76,2.96,1.67,31.1
-softmaxwell,Auri,61,2.34,1.78,29.4
-softmaxwell,salomon shdow,59,1.69,1.46,35.9
-softmaxwell,Sefirot,58,2.44,1.7,34.6
-softmaxwell,James Boggs,49,2.17,1.42,32.3
-softmaxwell,Ron SWGY,35,3.07,2.6,28.0
-softmaxwell,daveey,35,2.75,1.81,29.7
-softmaxwell,K1Z Mickey Mouse,25,1.42,1.32,34.0
-softmaxwell,Calc,20,1.94,1.6,35.5
-softmaxwell,richard,12,2.29,1.78,32.5
+salomon-shdow,docxology,8,3.47,2.05,25.0
+softmaxwell,docxology,79,3.26,2.37,25.0
+softmaxwell,relh,73,3.04,1.82,31.6
+softmaxwell,salomon shdow,67,1.78,1.46,36.0
+softmaxwell,James Boggs,50,2.15,1.4,32.2
+softmaxwell,Auri,48,2.53,1.87,28.4
+softmaxwell,Sefirot,41,2.19,1.83,34.1
+softmaxwell,Ron SWGY,30,3.05,2.37,27.0
+softmaxwell,daveey,28,2.42,1.77,30.4
+softmaxwell,Calc,18,2.08,1.73,36.7
+softmaxwell,K1Z Mickey Mouse,18,1.56,1.39,35.0
 softmaxwell,djizus,7,6.24,3.29,27.1
+softmaxwell,richard,5,1.93,1.61,31.0
+softmaxwell,Captain Underpants Maximum,1,1.02,1.02,40.0
