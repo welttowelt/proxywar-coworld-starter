@@ -23,12 +23,14 @@ function normalizedRivalName(value) {
 }
 
 const RECIPROCAL_RIVALS = new Set(
-  ["katanasan", "juryoku-koku", "hrafn", "mickey mouse"].map(normalizedRivalName),
+  ["katanasan", "juryoku-koku", "gravity", "hrafn", "odin free", "mickey mouse"]
+    .map(normalizedRivalName),
 );
 const RECIPROCAL_RIVAL_IDS = new Set([
   "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba",
   "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335",
   "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+  "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
   "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
 ]);
 const ABSOLUTE_NO_HARM_RIVALS = new Set(["mickey mouse"].map(normalizedRivalName));
@@ -42,7 +44,7 @@ const MAP_SPAWN_TILES = new Map([
     .map((tile) => [tile, "Asia"]),
   ...[1088580, 1216626, 877134, 659476, 494334, 628394, 994502, 1333674]
     .map((tile) => [tile, "World"]),
-  ...[659528, 534350, 266554, 687420, 622372, 589302, 450306, 740346]
+  ...[659528, 534350, 266554, 687420, 622372, 589302, 450306, 740346, 856604, 855528]
     .map((tile) => [tile, "Pangaea"]),
 ]);
 
@@ -51,6 +53,10 @@ export const PLAN_KINDS = [
   "warship", "move_warship", "alliance_request", "alliance_extend", "break_alliance",
   "target_player", "embargo", "embargo_all", "embargo_stop", "donate_gold",
   "donate_troops", "quick_chat", "emoji", "hold",
+];
+
+export const PLAN_INTENTS = [
+  "grow", "convert",
 ];
 
 export function clean(value) {
@@ -231,6 +237,24 @@ export function rivalForAction(action, state) {
     action?.metadata?.targetName ?? action?.metadata?.recipientName ?? "",
   );
   const canonicalMetadataName = normalizedRivalName(metadataName);
+
+  // Server-supplied target IDs are authoritative. Resolve them before touching
+  // rival-controlled display names or action labels, which can deliberately
+  // collide with generic words such as "Attack".
+  if (metadataID.length > 0) {
+    const exactID = state.rivals.find((rival) =>
+      clean(rival.id).toLowerCase() === metadataID
+    );
+    if (exactID) return exactID;
+  }
+
+  if (canonicalMetadataName.length > 0) {
+    const exactName = state.rivals.find((rival) =>
+      normalizedRivalName(rival.name) === canonicalMetadataName
+    );
+    if (exactName) return exactName;
+  }
+
   return state.rivals.find((rival) => {
     const canonicalName = normalizedRivalName(rival.name);
     const nameMatches = rival.name && (
@@ -238,10 +262,7 @@ export function rivalForAction(action, state) {
       (canonicalName.length >= 3 && text.includes(canonicalName))
     );
     const idMatches = rival.id && text.includes(rival.id.toLowerCase());
-    const metadataNameMatches = canonicalName.length > 0 &&
-      canonicalMetadataName === canonicalName;
-    const metadataIDMatches = rival.id && metadataID === rival.id.toLowerCase();
-    return metadataNameMatches || metadataIDMatches || nameMatches || idMatches;
+    return nameMatches || idMatches;
   });
 }
 
@@ -313,7 +334,7 @@ function reciprocalTrustIntact(state, history, rival) {
   return isReciprocalRival(rival) && recentHostility(state, history, rival, history.length) === 0;
 }
 
-function rivalIsProtected(state, history, rival) {
+export function rivalIsProtected(state, history, rival) {
   if (isAbsoluteNoHarmRival(rival)) return true;
   if (rival.isAllied) return true;
   if (reciprocalTrustIntact(state, history, rival)) return true;
@@ -779,7 +800,7 @@ export function chooseUtility(actions, state, plan, history) {
   return null;
 }
 
-export function chooseAction(actions, state, plan = null, history = []) {
+function chooseParentAction(actions, state, plan = null, history = []) {
   if (!Array.isArray(actions) || actions.length === 0) {
     throw new Error("decision request had no legal actions");
   }
@@ -805,7 +826,9 @@ export function chooseAction(actions, state, plan = null, history = []) {
   let kingmakerAlliance = kingmakerAllianceAction(actions, state, history);
   if (kingmakerAlliance) {
     const lastCoalitionRequest = decisionsSince(history, (entry) =>
-      entry.kind === "alliance_request" && entry.policyMarker === "kp2");
+      entry.kind === "alliance_request" &&
+      entry.policyMarker === "kp2" &&
+      entry.allianceDirection !== "inbound");
     if (lastCoalitionRequest < GLOBAL_COALITION_COOLDOWN &&
       hasReliableTacticalAction(actions)) {
       const partners = reciprocalPartners(actions, state);
@@ -965,6 +988,176 @@ export function chooseAction(actions, state, plan = null, history = []) {
   return withGc1(actions.find((action) => action.kind === "hold") ?? actions[0]);
 }
 
+const MM1_OPENING_DECISIONS = 20;
+
+function activeDecisionCount(history) {
+  return history.filter((entry) => entry.kind !== "spawn").length;
+}
+
+function hasCurrentPressure(state) {
+  return incomingThreatCount(state.self.incomingAttacks) > 0 ||
+    (state.self.incomingAttackerIDs || []).length > 0 ||
+    (state.self.allProtocolAttackerIDs || []).length > 0;
+}
+
+function pendingReciprocalHandshake(actions, state) {
+  for (const partner of reciprocalPartners(actions, state)) {
+    const pending = actions.some((action) =>
+      action.kind === "alliance_reject" &&
+      matchesKingmakerPartner(action, partner, state)
+    );
+    if (!pending) continue;
+    const request = actions.find((action) =>
+      action.kind === "alliance_request" &&
+      matchesKingmakerPartner(action, partner, state)
+    );
+    if (request) {
+      return { ...request, policyMarker: "kp2", allianceDirection: "inbound" };
+    }
+  }
+  return null;
+}
+
+function validIntentPlan(plan) {
+  return plan &&
+    ["grow", "convert"].includes(plan.intent) &&
+    Number.isInteger(plan.horizon) &&
+    plan.horizon >= 2 &&
+    plan.horizon <= 12 &&
+    (plan.intent === "grow"
+      ? plan.targetID === null
+      : typeof plan.targetID === "string" && plan.targetID.length > 0 &&
+        clean(plan.targetID) === plan.targetID);
+}
+
+function exactIntentTarget(state, targetID) {
+  return state.rivals.find((rival) => clean(rival.id) === targetID) ?? null;
+}
+
+function intentTargetActions(actions, state, target) {
+  return actions.filter((action) => {
+    if (action.risk?.level === "high" || !["attack", "boat"].includes(action.kind)) {
+      return false;
+    }
+    if (isNeutralExpansion(action) || isNeutralBoat(action)) return false;
+    const metadataTargetID = clean(
+      action?.metadata?.targetID ?? action?.metadata?.recipientID ?? "",
+    );
+    return metadataTargetID.length > 0 &&
+      !RECIPROCAL_RIVAL_IDS.has(metadataTargetID.toLowerCase()) &&
+      metadataTargetID === target.id;
+  });
+}
+
+// MM1 is a narrow mission-command adapter. The model provides only grow or
+// convert, an exact visible player ID, and a bounded decision horizon. The
+// proven selector first computes the full-menu baseline. An intent may then
+// expose a smaller safe menu, but the same selector still chooses the exact
+// server-offered action. Invalid, pressured, stale, protected, or unavailable
+// intent always returns to the full-menu baseline.
+export function chooseAction(actions, state, plan = null, history = []) {
+  const baseline = chooseParentAction(actions, state, null, history);
+  if (!validIntentPlan(plan) || baseline.kind === "spawn" || hasCurrentPressure(state) ||
+      territoryCollapsing(state, history)) return baseline;
+
+  const reverseHandshake = pendingReciprocalHandshake(actions, state);
+  if (reverseHandshake) return reverseHandshake;
+
+  if (plan.intent === "grow") {
+    if (baseline.kind !== "alliance_request" ||
+        activeDecisionCount(history) >= MM1_OPENING_DECISIONS ||
+        neutralExpansionStalled(state, history)) return baseline;
+    const avoid = new Set(avoidActionIDs(history));
+    const safeLand = actions.filter((action) => action.risk?.level !== "high");
+    const neutral = chooseNeutralAttack(safeLand, history, avoid);
+    if (!neutral || neutral.id === baseline.id) return baseline;
+    return { ...neutral, policyMarker: "mm1g" };
+  }
+
+  const target = exactIntentTarget(state, plan.targetID);
+  if (!target || rivalIsProtected(state, history, target) ||
+      state.self.tileShare < 0.12 || !Number.isFinite(target.relativeTroopRatio) ||
+      target.relativeTroopRatio < 1.3) return baseline;
+  const targeted = intentTargetActions(actions, state, target);
+  if (targeted.length === 0) return baseline;
+  const holds = actions.filter((action) => action.kind === "hold");
+  const chosen = chooseParentAction([...targeted, ...holds], state, {
+    target: target.name,
+  }, history);
+  if (chosen.kind === "hold" || !targeted.some((action) => action.id === chosen.id) ||
+      chosen.id === baseline.id) return baseline;
+  return { ...chosen, policyMarker: "mm1c" };
+}
+
+const CU1_OPENING_DECISIONS = 20;
+const CU1_RECIPROCAL_RETRY_COOLDOWN = 24;
+
+function reciprocalRequestPartner(action, state) {
+  if (action?.kind !== "alliance_request") return null;
+  const visible = rivalForAction(action, state);
+  if (visible && isReciprocalRival(visible)) return visible;
+
+  const id = clean(
+    action?.metadata?.recipientID ?? action?.metadata?.targetID ?? "",
+  ).toLowerCase();
+  const name = clean(
+    action?.metadata?.recipientName ?? action?.metadata?.targetName ?? "",
+  );
+  if (!RECIPROCAL_RIVAL_IDS.has(id) && !RECIPROCAL_RIVALS.has(normalizedRivalName(name))) {
+    return null;
+  }
+  return { id: id || name, name: name || id };
+}
+
+function recordedReciprocalRequest(entry) {
+  const entryID = clean(entry?.targetID).toLowerCase();
+  const entryName = normalizedRivalName(entry?.targetName);
+  return entry?.kind === "alliance_request" && entry?.allianceDirection !== "inbound" &&
+    (RECIPROCAL_RIVAL_IDS.has(entryID) || RECIPROCAL_RIVALS.has(entryName));
+}
+
+// CU1 escapes the opening alliance loop visible in Mickey's weak live Pangaea
+// games. After one optional K1Z request, later opening requests yield to the
+// unchanged neutral-growth selector. A real reverse handshake stays immediate.
+export function chooseCaptainUnderpantsRuntimeAction(
+  actions,
+  state,
+  plan = null,
+  history = [],
+) {
+  const baseline = chooseAction(actions, state, plan, history);
+  if (state.mapFingerprint !== "Pangaea" ||
+      activeDecisionCount(history) >= CU1_OPENING_DECISIONS) {
+    return baseline;
+  }
+
+  const reverseHandshake = pendingReciprocalHandshake(actions, state);
+  if (hasCurrentPressure(state) || territoryCollapsing(state, history)) {
+    return reverseHandshake?.id === baseline.id ? reverseHandshake : baseline;
+  }
+  if (reverseHandshake) return reverseHandshake;
+  if (baseline.kind !== "alliance_request" || baseline.policyMarker !== "kp2") return baseline;
+
+  const partner = reciprocalRequestPartner(baseline, state);
+  if (!partner) return baseline;
+
+  const retryAge = decisionsSince(history, recordedReciprocalRequest);
+  if (retryAge >= CU1_RECIPROCAL_RETRY_COOLDOWN) return baseline;
+
+  const neutralGrowthOffered = actions.some((action) =>
+    isNeutralExpansion(action) && action.risk?.level !== "high"
+  );
+  if (!neutralGrowthOffered) return baseline;
+
+  const withoutAllianceRequests = actions.filter((action) => action.kind !== "alliance_request");
+  if (withoutAllianceRequests.length === 0) return baseline;
+  const replacement = chooseAction(withoutAllianceRequests, state, plan, history);
+  if (!replacement || replacement.id === baseline.id || !isNeutralExpansion(replacement)) {
+    return baseline;
+  }
+  return { ...replacement, policyMarker: "cu1" };
+}
+
 export function recordDecision(history, action, state) {
   const rival = rivalForAction(action, state);
   const metadataTargetID = clean(
@@ -989,6 +1182,7 @@ export function recordDecision(history, action, state) {
     incomingAttackerNames,
     mapFingerprint: state.mapFingerprint,
     policyMarker: action.policyMarker ?? null,
+    allianceDirection: action.allianceDirection ?? null,
     policyMarkers: Array.isArray(action.policyMarkers) ? [...action.policyMarkers] : [],
   });
   if (history.length > 320) history.shift();

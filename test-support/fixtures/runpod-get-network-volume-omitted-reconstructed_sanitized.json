@@ -1,0 +1,21 @@
+{
+  "fixture_label": "reconstructed_sanitized",
+  "id": "mickey-live-shape-001",
+  "name": "proxywar-mickey-cpu-fanout-live-shape-fixture",
+  "desiredStatus": "RUNNING",
+  "costPerHr": 0.08,
+  "gpuCount": 0,
+  "vcpuCount": 2,
+  "memoryInGb": 4,
+  "containerDiskInGb": 20,
+  "volumeInGb": 0,
+  "networkVolumeInspection": {
+    "includeNetworkVolumeRequested": true,
+    "networkVolumeId": {
+      "present": false
+    },
+    "networkVolume": {
+      "present": false
+    }
+  }
+}

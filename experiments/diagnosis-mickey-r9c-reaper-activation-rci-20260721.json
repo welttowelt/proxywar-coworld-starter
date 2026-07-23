@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "kind": "mickey_cpu_fanout_rci_diagnosis",
+  "recorded_at": "2026-07-21T08:14:00Z",
+  "failed_run": {
+    "run_id": "mickey-screen-g000-r9c-20260721t075155z",
+    "manifest_sha256": "b0eff46e6871bac5c38ba85f1c32c6c0e66ff85f0a3bb26ec9c9343fa83e4299",
+    "archive_path": "/private/tmp/mickey-screen-g000-r9c-20260721t075155z.aborted-20260721T080221Z-mickey-screen-g000-r9c-20260721t075155z",
+    "run_verdict_sha256": "50366e1782d087c5e86de0ff659ea428e0d74d0ade96c4b56cf832468a147362",
+    "events_sha256": "9c5af508640a9d6fc04f9114a5120dffd6ee4f4cd9907125945e7685dc3fe8d0",
+    "initial_ledger_boundary_sha256": "cf4817e29edfa471ebfbad8a2c813210b9ff0e286a0976e4ce417be9de0ffeae",
+    "initial_ledger_revision": 83,
+    "final_ledger_revision": 83,
+    "run_owned_ledger_records": 0,
+    "provider_create_commands": 0,
+    "run_owned_provider_resources_created": 0,
+    "provider_reads": 1,
+    "provider_read_kind": "pod_list"
+  },
+  "diagnosis": {
+    "failure_phase": "register_cleanup_before_provider_discovery",
+    "error": "ownership record is outside the exact r9 activation",
+    "root_cause": "The hash-pinned r9c runner passed its r9c run ID, while two foreground reaper checks still authorized only the prior r9b prefix.",
+    "evidence_eligible": false,
+    "policy_verdict_available": false
+  },
+  "revision": {
+    "run_id": "mickey-screen-g000-r9d-20260721t080619z",
+    "manifest_path": "experiments/manifest-mickey-cpu-screen-g000-r9d-20260721.json",
+    "manifest_sha256": "e644f80820cb1ffb526cfc010375b8e456156844d39444696315362a880b930f",
+    "semantic_manifest_digest": "ff4f80c7bea4b09de19adc5a921b98e2ee3305b4969a16d5baf290e01d841582",
+    "runner_sha256": "eb4e290720fc354a064549246d23dad6d776af7f3373cd4a995ae9b7776cd9f1",
+    "foreground_reaper_sha256": "c5545b4e4b741119e9ecb63710352ce120f0c090faa23fd111e6168c4d3629e7",
+    "fix": "Mint a fresh r9d identity, authorize it through one exact foreground reaper constant, and route pre-provider blocking through the shared assertion.",
+    "unknown_activation_rejected_before_provider_io": true,
+    "current_manifest_registration_regression": true,
+    "current_manifest_pre_post_block_regression": true,
+    "full_test_suite": {
+      "passed": 303,
+      "failed": 0
+    },
+    "dry_run": {
+      "ok": true,
+      "network_calls": 0,
+      "pair_count": 16,
+      "max_concurrency": 4,
+      "promotion_possible": false
+    }
+  }
+}

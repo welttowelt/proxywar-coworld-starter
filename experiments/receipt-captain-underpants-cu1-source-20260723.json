@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-23",
+  "entrant": "Captain Underpants Maximum Aura",
+  "policy_label": "captain-underpants-max-aura:v1",
+  "source": {
+    "branch": "rci/captain-underpants-cu1-20260723",
+    "commit": "cfc5865acfd4ebf807a0abf823ac9705822905f5",
+    "tree": "0f21bb8fd1bfcfe528d4890a6b6e6d87c46aa01b",
+    "behavioral_parent_commit": "ce5c15b0a423590340595537ac5d7483e61d41a4",
+    "mechanism_source_commit": "c50025ef2775fcc5193b2cdb56b0abbbd7f71261"
+  },
+  "sha256": {
+    "llm-player.mjs": "2e18b93b571a5f8f16a7045829b43da6737d0c2734f16bf9bb16df1cd9630906",
+    "strategy-engine.mjs": "008699680d06fe9c830ff3e55f952be9a2d71e4be3e68654c2f0576d5d8b9f49",
+    "captain-underpants-production-doctrine.mjs": "7f3725c87fcf045144e5d0750fa5c485c6ca2e11a4d5b553b195d9e246fff9d5",
+    "Dockerfile": "213e818f42d1267825e6487f965ebff037b5ebe257fc2afe8afe56431417d5b3",
+    "experiments/contract-captain-underpants-cu1-20260723.json": "c820a8afb236e1fa117a9548646b7ca41760df8292ca3895d3c824e3130be627"
+  },
+  "behavior": {
+    "planner_default": "off",
+    "planner_opt_in": "PLAN_MODE=on",
+    "deterministic_mode_fallback_used": false,
+    "deterministic_mode_planner_degraded": false,
+    "candidate_marker": "cu1",
+    "single_mechanism": "replace a cooldown-bound repeated outbound protected-partner request with an offered low-risk neutral expansion during the first 20 active Pangaea decisions"
+  },
+  "verification": {
+    "node_check": "pass",
+    "focused_tests": {
+      "passed": 119,
+      "failed": 0,
+      "command": "node --test test/strategy-engine.test.mjs test/llm-player.integration.test.mjs test/evaluation-separation.test.mjs"
+    },
+    "full_suite": {
+      "passed": 329,
+      "failed": 4,
+      "command": "npm test",
+      "new_failures": 0,
+      "baseline_evidence": "experiments/diagnosis-mickey-mr2-opening-alliance-cooldown-rci-20260721.json",
+      "failure_scope": "the same four pre-existing absolute-path-bound Mickey CPU-fanout activation tests"
+    },
+    "json_validation": "pass",
+    "diff_check": "pass"
+  },
+  "readiness": {
+    "source_implemented": true,
+    "local_matched_full_game_gate": false,
+    "amd64_image_built": false,
+    "dedicated_player_created": true,
+    "policy_uploaded": false,
+    "submitted": false,
+    "league_membership_created": false
+  },
+  "identity_blocker_receipt": "experiments/receipt-hrafn-retirement-block-20260723.json"
+}

@@ -9,19 +9,29 @@
  * BACKGROUND every few decisions. The model still steers the doctrine without
  * blocking legal action selection.
  *
- * To change how it PLAYS, edit STRATEGY below and strategy-engine.mjs, which
- * controls the compact state, target scoring, action cadence, and legal move.
- * That's your agent. Everything else is plumbing.
+ * To change how it PLAYS, edit the compile-time selection in
+ * captain-underpants-production-doctrine.mjs and strategy-engine.mjs, which
+ * control the
+ * compact state, target scoring, action cadence, and legal move. That's your
+ * agent. Everything else is plumbing.
  */
 import { WebSocket } from "ws";
 import { AnthropicBedrock } from "@anthropic-ai/bedrock-sdk";
 import {
-  PLAN_KINDS,
   buildState,
-  chooseAction as chooseSelectorAction,
+  chooseCaptainUnderpantsRuntimeAction as chooseSelectorAction,
   clean,
   recordDecision,
 } from "./strategy-engine.mjs";
+import {
+  buildIntentSnapshot,
+  executableIntentPlan,
+  intentRefreshInterval,
+  parseIntentDirective,
+} from "./intent-controller.mjs";
+import {
+  CAPTAIN_UNDERPANTS_PRODUCTION_DOCTRINE,
+} from "./captain-underpants-production-doctrine.mjs";
 import { chooseChassisAction } from "./strategy-chassis.mjs";
 
 const chooseAction =
@@ -43,29 +53,13 @@ const MODELS = [
 let bedrock = null;
 try { bedrock = new AnthropicBedrock({ awsRegion: REGION }); } catch (e) { bedrock = null; }
 let lockedModel = null;
+const TEST_INTENT_DIRECTIVE = process.env.NODE_ENV === "test"
+  ? process.env.INTENT_TEST_DIRECTIVE
+  : null;
 
-// -- YOUR STRATEGY -- edit this to change how your agent thinks ---------------
-const STRATEGY = [
-  "You are the strategy commander of an autonomous nation in ProxyWar, a territorial-conquest game.",
-  "Win by owning the most land. You are NOT picking a single move — you are writing a short",
-  "standing PLAN your nation will follow for the next few decisions.",
-  "Open with legal Terra Nullius expansion at the strongest legal commitment until about 12% land;",
-  "and do not attack any rival before that threshold unless they attacked you first.",
-  "After roughly 10-15% land, convert the most vulnerable bordered rival and finish that target.",
-  "After spawning, HOLD is failure unless no productive legal action exists.",
-  "Attack bordered rivals only at relativeTroopRatio 1.3 or better; pressure a runaway leader down to 0.9.",
-  "Commit 35% to neutral expansion and finish weakening targets at 40%; never open a second front while under attack.",
-  "Build cities, factories, ports, and reliable structures on a regular cadence without interrupting a finish.",
-  "Never select Defense Post; its advertised action IDs can be stale and degrade to HOLD.",
-  "Use boats for neutral expansion or favorable invasion, but never let boats replace land conversion.",
-  "If isolated and only rival boats remain, invade the safest non-allied target instead of holding.",
-  "If territory is collapsing, defend, retreat exposed boats, or probe a rival before considering HOLD.",
-  "When a nuke is legal, use it to stop the leader, break a stalemate, or finish a rival.",
-  "Request alliances only when no tactical action exists; social IDs can disappear during simultaneous resolution.",
-  "Donate only to an allied recipient when it prevents their collapse.",
-  "Do not loop embargo, donation, chat, or emoji actions when expansion, economy, or combat is available.",
-  "Break or ignore alliances late when converting territory can secure the win.",
-].join(" ");
+// -- YOUR STRATEGY -- final screen selection lives in one compile-time module -
+const STRATEGY = CAPTAIN_UNDERPANTS_PRODUCTION_DOCTRINE;
+const PLANNER_ENABLED = process.env.PLAN_MODE === "on";
 const PLAN_EVERY = Math.max(1, Number(process.env.PLAN_EVERY) || 8);
 const PLAN_TIMEOUT_MS = Math.max(1000, Number(process.env.PLAN_TIMEOUT_MS) || 12000);
 const PLAN_FAILURE_COOLDOWN_MS = Math.max(
@@ -84,35 +78,24 @@ const SECURITY =
 // -- anti-loop and target-continuity memory -----------------------------------
 const history = []; // compact decision records appended after each decision
 
-// -- lenient JSON extraction (models often wrap JSON in prose) ----------------
-function extractJson(text) {
-  const s = String(text);
-  let depth = 0, start = -1, inStr = false, esc = false;
-  for (let i = 0; i < s.length; i++) {
-    const c = s[i];
-    if (inStr) { if (esc) esc = false; else if (c === "\\") esc = true; else if (c === '"') inStr = false; continue; }
-    if (c === '"') inStr = true;
-    else if (c === "{") { if (depth === 0) start = i; depth++; }
-    else if (c === "}") { depth--; if (depth === 0 && start >= 0) { try { return JSON.parse(s.slice(start, i + 1)); } catch (e) {} } }
-  }
-  return null;
-}
-
 async function askBedrock(state, signal) {
+  if (TEST_INTENT_DIRECTIVE) {
+    return { text: TEST_INTENT_DIRECTIVE, model: "intent-test-fixture" };
+  }
   if (!bedrock) throw new Error("bedrock client did not initialize");
   const prompt =
     STRATEGY + "\n" + SECURITY + "\n" +
-    'Reply with ONLY JSON: {"focus":"<one of expand|economy|attack|defend|ally>",' +
-    '"preferKinds":["<action kinds from this list, best first: ' + PLAN_KINDS.join("|") + '>"],' +
-    '"target":"<exact rival name to pressure, or null>","avoidTargets":["<rival names not to attack>"],' +
-    '"reason":"<one short sentence>"}\n' +
-    "GAME:\n" + JSON.stringify(state);
+    'Reply with ONLY JSON and exactly these three keys. Use one shape: ' +
+    '{"intent":"grow","targetID":null,"horizon":4} or ' +
+    '{"intent":"convert","targetID":"<exact visible rival ID>","horizon":4}. ' +
+    'Horizon must be an integer from 2 through 12.\n' +
+    "GAME:\n" + JSON.stringify(buildIntentSnapshot(state));
   const candidates = [...new Set([lockedModel, ...MODELS].filter(Boolean))];
   let lastErr;
   for (const model of candidates) {
     try {
       const r = await bedrock.messages.create(
-        { model, max_tokens: 180, messages: [{ role: "user", content: prompt }] },
+        { model, max_tokens: 100, messages: [{ role: "user", content: prompt }] },
         { signal, timeout: Math.min(8000, PLAN_TIMEOUT_MS), maxRetries: 0 },
       );
       lockedModel = model;
@@ -123,7 +106,7 @@ async function askBedrock(state, signal) {
 }
 
 // -- the PLAN: written by the model in the background, executed instantly -----
-let plan = null;          // { focus, preferKinds, target, avoidTargets, reason, model }
+let plan = null;          // { intent, targetID, horizon, model }
 let planDecisionAge = 0;  // decisions answered since the last successful refresh
 let planRefreshInFlight = false;
 let lastPlanError = null; // set when the most recent refresh failed (loud degradation)
@@ -137,19 +120,9 @@ function refreshPlanInBackground(state) {
   const controller = new AbortController();
   withTimeout(askBedrock(state, controller.signal), PLAN_TIMEOUT_MS, () => controller.abort())
     .then(({ text, model }) => {
-      const parsed = extractJson(text);
-      if (!parsed || typeof parsed !== "object") throw new Error("plan reply had no JSON");
-      const preferKinds = Array.isArray(parsed.preferKinds)
-        ? parsed.preferKinds.filter((k) => PLAN_KINDS.includes(k))
-        : [];
-      plan = {
-        focus: clean(parsed.focus) || "expand",
-        preferKinds,
-        target: parsed.target ? clean(parsed.target) : null,
-        avoidTargets: Array.isArray(parsed.avoidTargets) ? parsed.avoidTargets.map(clean) : [],
-        reason: clean(parsed.reason).slice(0, 120),
-        model,
-      };
+      const nextPlan = parseIntentDirective(text, state, model);
+      if (!nextPlan) throw new Error("plan reply had no valid intent");
+      plan = nextPlan;
       planDecisionAge = 0;
       lastPlanError = null;
       lastPlanErrorClass = null;
@@ -230,13 +203,21 @@ function handleMessage(activeSocket, data) {
   }
   const state = buildState(obs, actions, history);
 
-  // Keep the plan fresh WITHOUT blocking — the answer below never waits on Bedrock.
-  planDecisionAge += 1;
-  if (plan === null || planDecisionAge >= PLAN_EVERY) refreshPlanInBackground(state);
+  // CU1 defaults to a deterministic causal gate. Planner-on is a separate,
+  // explicit attribution arm and still never blocks the action below.
+  if (PLANNER_ENABLED) {
+    planDecisionAge += 1;
+    if (plan === null || planDecisionAge >= intentRefreshInterval(plan, PLAN_EVERY)) {
+      refreshPlanInBackground(state);
+    }
+  }
 
-  const chosen = chooseAction(actions, state, plan, history);
-  const degraded = lastPlanError !== null;
-  const reason = publicReason(chosen, plan !== null, degraded, lastPlanErrorClass);
+  const degraded = PLANNER_ENABLED && lastPlanError !== null;
+  const executionPlan = PLANNER_ENABLED
+    ? executableIntentPlan(plan, planDecisionAge, degraded)
+    : null;
+  const chosen = chooseAction(actions, state, executionPlan, history);
+  const reason = publicReason(chosen, executionPlan !== null, degraded, lastPlanErrorClass);
 
   recordDecision(history, chosen, state);
   const response = JSON.stringify({
@@ -244,9 +225,9 @@ function handleMessage(activeSocket, data) {
     requestID: message.requestID,
     selectedLegalActionId: chosen.id,
     reason: reason.slice(0, 48),
-    confidence: plan !== null ? (degraded ? 0.5 : 0.75) : 0.4,
-    fallbackUsed: plan === null || degraded,
-    llmPlannerDegraded: plan === null || degraded,
+    confidence: executionPlan !== null ? 0.75 : 0.4,
+    fallbackUsed: PLANNER_ENABLED && executionPlan === null,
+    llmPlannerDegraded: PLANNER_ENABLED && executionPlan === null,
   });
   if (activeSocket.readyState !== WebSocket.OPEN) return;
   activeSocket.send(response, (error) => {

@@ -1,0 +1,642 @@
+From 5eafbd3aead9b50b7b70ae064a0d9d7cdea5273c Mon Sep 17 00:00:00 2001
+From: welttowelt <welttowelt@users.noreply.github.com>
+Date: Tue, 21 Jul 2026 03:22:04 +0200
+Subject: [PATCH 2/4] Make REST CPU cleanup recovery-only
+
+---
+ cmd/pod/create.go               | 111 ++++++++----
+ cmd/pod/create_rest_cpu_test.go | 307 ++++++++++++++++++++++++++------
+ internal/api/pods.go            |   1 +
+ 3 files changed, 337 insertions(+), 82 deletions(-)
+
+diff --git a/cmd/pod/create.go b/cmd/pod/create.go
+index 7be9b6a..48115e4 100644
+--- a/cmd/pod/create.go
++++ b/cmd/pod/create.go
+@@ -82,7 +82,7 @@ func init() {
+ 	createCmd.Flags().IntVar(&createGpuCount, "gpu-count", 1, "number of gpus")
+ 	createCmd.Flags().StringArrayVar(&createCPUFlavorIDs, "cpu-flavor-id", nil, "cpu flavor id (repeat for fallback order; CPU only)")
+ 	createCmd.Flags().IntVar(&createVCPUCount, "vcpu-count", 0, "number of vcpus (CPU only)")
+-	createCmd.Flags().Float64Var(&createMaxCostPerHour, "max-cost-per-hour", 0, "client-side CPU hourly cost ceiling; an over-limit exact-name pod is immediately deleted")
++	createCmd.Flags().Float64Var(&createMaxCostPerHour, "max-cost-per-hour", 0, "client-side CPU hourly cost ceiling; validation failures require outer exact-ID reconciliation")
+ 	createCmd.Flags().IntVar(&createVolumeInGb, "volume-in-gb", 0, "volume size in gb")
+ 	createCmd.Flags().IntVar(&createContainerDiskInGb, "container-disk-in-gb", 20, "container disk size in gb")
+ 	createCmd.Flags().StringVar(&createVolumeMountPath, "volume-mount-path", "/workspace", "volume mount path")
+@@ -294,6 +294,7 @@ func createPodREST(computeType, gpuTypeID, cloudType string, supportPublicIP boo
+ 	}
+ 	if computeType == "CPU" {
+ 		req.CPUFlavorIDs = append([]string(nil), createCPUFlavorIDs...)
++		req.CPUFlavorPriority = requiredCPUFlavorPriority
+ 		req.VcpuCount = createVCPUCount
+ 	}
+ 
+@@ -323,7 +324,13 @@ func createPodREST(computeType, gpuTypeID, cloudType string, supportPublicIP boo
+ 
+ 	if createEnv != "" {
+ 		var env map[string]string
+-		if err := json.Unmarshal([]byte(createEnv), &env); err != nil {
++		if computeType == "CPU" {
++			var err error
++			env, err = parseCPUCreateEnv(createEnv)
++			if err != nil {
++				return nil, err
++			}
++		} else if err := json.Unmarshal([]byte(createEnv), &env); err != nil {
+ 			return nil, fmt.Errorf("invalid env json: %w", err)
+ 		}
+ 		req.Env = env
+@@ -331,6 +338,9 @@ func createPodREST(computeType, gpuTypeID, cloudType string, supportPublicIP boo
+ 
+ 	pod, err := client.CreatePod(req)
+ 	if err != nil {
++		if computeType == "CPU" {
++			return nil, redactCPUCreateError(err, req.Env)
++		}
+ 		return nil, err
+ 	}
+ 	if computeType != "CPU" {
+@@ -338,34 +348,16 @@ func createPodREST(computeType, gpuTypeID, cloudType string, supportPublicIP boo
+ 	}
+ 
+ 	validationErr := validateCPUCreateResponse(pod, req, createMaxCostPerHour)
+-	cleanupAttempted := false
+-	cleanupSucceeded := false
+-	cleanupError := ""
+-	if validationErr != nil && pod.ID != "" && pod.Name == req.Name && !strings.HasPrefix(pod.Name, "storm-") {
+-		cleanupAttempted = true
+-		if deleteErr := client.DeletePod(pod.ID); deleteErr != nil {
+-			cleanupError = deleteErr.Error()
+-		} else {
+-			cleanupSucceeded = true
+-		}
+-	}
+-
+ 	receipt, receiptErr := createCPUCreateReceipt(
+ 		pod,
+ 		req,
+ 		createMaxCostPerHour,
+ 		validationErr,
+-		cleanupAttempted,
+-		cleanupSucceeded,
+-		cleanupError,
+ 	)
+ 	if receiptErr != nil {
+ 		return nil, receiptErr
+ 	}
+ 	if validationErr != nil {
+-		if cleanupAttempted && !cleanupSucceeded {
+-			return receipt, fmt.Errorf("cpu create response validation failed and exact pod cleanup failed: %v; cleanup: %s", validationErr, cleanupError)
+-		}
+ 		return receipt, fmt.Errorf("cpu create response validation failed: %w", validationErr)
+ 	}
+ 	return receipt, nil
+@@ -373,7 +365,14 @@ func createPodREST(computeType, gpuTypeID, cloudType string, supportPublicIP boo
+ 
+ var requiredCPUFlavorIDs = []string{"cpu5c", "cpu3c"}
+ 
+-const restRequestInputHashAlgorithm = "sorted-json-sha256-v1"
++const (
++	requiredCPUFlavorPriority     = "custom"
++	cpuControlPlaneNonceEnvKey    = "MICKEY_CONTROL_PLANE_NONCE"
++	restRequestInputHashAlgorithm = "sorted-json-sha256-v1"
++	restRequestInputHashScope     = "raw-request-before-redaction"
++	cpuEnvRedactionSchema         = "env-values-v1"
++	cpuEnvRedactedValueMarker     = "[REDACTED]"
++)
+ 
+ func validateCPUCreateConfig(cloudType string) error {
+ 	flavors := make([]string, len(createCPUFlavorIDs))
+@@ -413,9 +412,44 @@ func validateCPUCreateConfig(cloudType string) error {
+ 	if strings.TrimSpace(createStopAfter) != "" || strings.TrimSpace(createTerminateAfter) != "" {
+ 		return fmt.Errorf("CPU REST create does not support --stop-after or --terminate-after; use an independent exact-ID cleanup watchdog")
+ 	}
++	if _, err := parseCPUCreateEnv(createEnv); err != nil {
++		return err
++	}
+ 	return nil
+ }
+ 
++func parseCPUCreateEnv(encoded string) (map[string]string, error) {
++	if strings.TrimSpace(encoded) == "" {
++		return nil, nil
++	}
++	var env map[string]string
++	if err := json.Unmarshal([]byte(encoded), &env); err != nil {
++		return nil, fmt.Errorf("CPU --env must be a JSON object containing only a 64-hex %s value", cpuControlPlaneNonceEnvKey)
++	}
++	nonce, ok := env[cpuControlPlaneNonceEnvKey]
++	if !ok || len(env) != 1 || len(nonce) != 64 {
++		return nil, fmt.Errorf("CPU --env must contain only a 64-hex %s value", cpuControlPlaneNonceEnvKey)
++	}
++	decoded, err := hex.DecodeString(nonce)
++	if err != nil || len(decoded) != 32 {
++		return nil, fmt.Errorf("CPU --env must contain only a 64-hex %s value", cpuControlPlaneNonceEnvKey)
++	}
++	return env, nil
++}
++
++func redactCPUCreateError(err error, env map[string]string) error {
++	if err == nil {
++		return nil
++	}
++	message := err.Error()
++	for _, value := range env {
++		if value != "" {
++			message = strings.ReplaceAll(message, value, cpuEnvRedactedValueMarker)
++		}
++	}
++	return fmt.Errorf("%s", message)
++}
++
+ func isFinitePositive(value float64) bool {
+ 	return value > 0 && !math.IsNaN(value) && !math.IsInf(value, 0)
+ }
+@@ -474,9 +508,6 @@ func createCPUCreateReceipt(
+ 	req *api.PodCreateRequest,
+ 	maxCostPerHour float64,
+ 	validationErr error,
+-	cleanupAttempted bool,
+-	cleanupSucceeded bool,
+-	cleanupError string,
+ ) (map[string]interface{}, error) {
+ 	podJSON, err := json.Marshal(pod)
+ 	if err != nil {
+@@ -486,33 +517,53 @@ func createCPUCreateReceipt(
+ 	if err := json.Unmarshal(podJSON, &receipt); err != nil {
+ 		return nil, fmt.Errorf("decode cpu create response: %w", err)
+ 	}
++	responseEnvRedacted := redactJSONEnvValues(receipt)
+ 
+ 	requestJSON, err := canonicalRESTRequestJSON(req)
+ 	if err != nil {
+ 		return nil, fmt.Errorf("canonicalize cpu REST request: %w", err)
+ 	}
+-	var requestInput interface{}
++	var requestInput map[string]interface{}
+ 	if err := json.Unmarshal(requestJSON, &requestInput); err != nil {
+ 		return nil, fmt.Errorf("decode cpu REST request: %w", err)
+ 	}
+ 	digest := sha256.Sum256(requestJSON)
++	requestInputRedacted := redactJSONEnvValues(requestInput)
+ 	receipt["requestInput"] = requestInput
+ 	receipt["requestInputSha256"] = hex.EncodeToString(digest[:])
+ 	receipt["requestInputHashAlgorithm"] = restRequestInputHashAlgorithm
++	receipt["requestInputHashScope"] = restRequestInputHashScope
++	receipt["requestInputRedacted"] = requestInputRedacted
++	receipt["requestInputRedactionSchema"] = cpuEnvRedactionSchema
++	receipt["responseEnvRedacted"] = responseEnvRedacted
++	receipt["responseEnvRedactionSchema"] = cpuEnvRedactionSchema
++	receipt["redactedEnvValueMarker"] = cpuEnvRedactedValueMarker
+ 	receipt["transport"] = "rest-v1"
+ 	receipt["clientMaxCostPerHour"] = maxCostPerHour
+ 	receipt["validationPassed"] = validationErr == nil
+ 	if validationErr != nil {
+ 		receipt["validationError"] = validationErr.Error()
+ 	}
+-	receipt["cleanupAttempted"] = cleanupAttempted
+-	receipt["cleanupSucceeded"] = cleanupSucceeded
+-	if cleanupError != "" {
+-		receipt["cleanupError"] = cleanupError
+-	}
++	receipt["cleanupAttempted"] = false
++	receipt["cleanupSucceeded"] = false
+ 	return receipt, nil
+ }
+ 
++func redactJSONEnvValues(object map[string]interface{}) bool {
++	rawEnv, ok := object["env"]
++	if !ok {
++		return false
++	}
++	env, ok := rawEnv.(map[string]interface{})
++	if !ok || len(env) == 0 {
++		return false
++	}
++	for key := range env {
++		env[key] = cpuEnvRedactedValueMarker
++	}
++	return true
++}
++
+ func canonicalRESTRequestJSON(value interface{}) ([]byte, error) {
+ 	encoded, err := json.Marshal(value)
+ 	if err != nil {
+diff --git a/cmd/pod/create_rest_cpu_test.go b/cmd/pod/create_rest_cpu_test.go
+index 694cd0b..557df71 100644
+--- a/cmd/pod/create_rest_cpu_test.go
++++ b/cmd/pod/create_rest_cpu_test.go
+@@ -10,6 +10,7 @@ import (
+ 	"os"
+ 	"reflect"
+ 	"strings"
++	"sync/atomic"
+ 	"testing"
+ 
+ 	"github.com/runpod/runpodctl/internal/api"
+@@ -177,6 +178,9 @@ func TestCPUCreateRESTUsesExactRequestAndReturnsAttestedReceipt(t *testing.T) {
+ 	if got := body["cpuFlavorIds"]; !reflect.DeepEqual(got, wantFlavors) {
+ 		t.Fatalf("cpuFlavorIds = %#v, want %#v", got, wantFlavors)
+ 	}
++	if got := body["cpuFlavorPriority"]; got != "custom" {
++		t.Fatalf("cpuFlavorPriority = %#v, want custom", got)
++	}
+ 	assertRESTJSONNumber(t, body, "vcpuCount", 2)
+ 	assertRESTJSONNumber(t, body, "containerDiskInGb", 20)
+ 	assertRESTJSONNumber(t, body, "volumeInGb", 0)
+@@ -197,6 +201,9 @@ func TestCPUCreateRESTUsesExactRequestAndReturnsAttestedReceipt(t *testing.T) {
+ 	if receipt["transport"] != "rest-v1" || receipt["validationPassed"] != true {
+ 		t.Fatalf("receipt transport/validation = %#v", receipt)
+ 	}
++	if receipt["cleanupAttempted"] != false || receipt["cleanupSucceeded"] != false {
++		t.Fatalf("successful receipt must not claim cleanup: %#v", receipt)
++	}
+ 	requestInput, ok := receipt["requestInput"].(map[string]interface{})
+ 	if !ok || !reflect.DeepEqual(requestInput, body) {
+ 		t.Fatalf("requestInput = %#v, want exact POST body %#v", receipt["requestInput"], body)
+@@ -227,66 +234,167 @@ func assertRESTJSONNumber(t *testing.T, object map[string]interface{}, key strin
+ 	}
+ }
+ 
+-func TestCPUCreateRESTDeletesExactNamePodAboveClientCostCeiling(t *testing.T) {
++func TestCPUCreateRESTNeverDeletesOnInvalidProviderResponse(t *testing.T) {
++	tests := []struct {
++		name        string
++		requestName string
++		response    string
++		wantError   string
++		wantID      string
++	}{
++		{
++			name:        "over cost",
++			requestName: "proxywar-mickey-cpu-canary",
++			response:    `{"id":"over-cost-pod","name":"proxywar-mickey-cpu-canary","containerDiskInGb":20,"volumeInGb":0,"costPerHr":"0.11"}`,
++			wantError:   "exceeds client ceiling",
++			wantID:      "over-cost-pod",
++		},
++		{
++			name:        "malformed shape missing cost",
++			requestName: "proxywar-mickey-cpu-canary",
++			response:    `{"id":"malformed-shape-pod","name":"proxywar-mickey-cpu-canary","containerDiskInGb":20,"volumeInGb":0}`,
++			wantError:   "omitted a finite positive costPerHr",
++			wantID:      "malformed-shape-pod",
++		},
++		{
++			name:        "id could belong to preexisting storm object",
++			requestName: "proxywar-mickey-cpu-canary",
++			response:    `{"id":"storm-preexisting-object-id","name":"proxywar-mickey-cpu-canary","containerDiskInGb":20,"volumeInGb":0,"costPerHr":0.11}`,
++			wantError:   "exceeds client ceiling",
++			wantID:      "storm-preexisting-object-id",
++		},
++		{
++			name:        "response uses protected storm name",
++			requestName: "proxywar-mickey-cpu-canary",
++			response:    `{"id":"possibly-preexisting-id","name":"storm-protected","containerDiskInGb":20,"volumeInGb":0,"costPerHr":0.06}`,
++			wantError:   "provider returned pod name",
++			wantID:      "possibly-preexisting-id",
++		},
++		{
++			name:        "response normalizes request whitespace",
++			requestName: " proxywar-mickey-cpu-canary ",
++			response:    `{"id":"normalized-name-id","name":"proxywar-mickey-cpu-canary","containerDiskInGb":20,"volumeInGb":0,"costPerHr":0.06}`,
++			wantError:   "provider returned pod name",
++			wantID:      "normalized-name-id",
++		},
++		{
++			name:        "response omits name",
++			requestName: "proxywar-mickey-cpu-canary",
++			response:    `{"id":"missing-name-id","containerDiskInGb":20,"volumeInGb":0,"costPerHr":0.06}`,
++			wantError:   "provider returned pod name",
++			wantID:      "missing-name-id",
++		},
++	}
++
++	for _, tt := range tests {
++		t.Run(tt.name, func(t *testing.T) {
++			viper.Reset()
++			t.Cleanup(viper.Reset)
++			setExactCPUCreateGlobals(t)
++			createName = tt.requestName
++
++			var deleteCalls atomic.Int32
++			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++				if r.Method == http.MethodDelete {
++					deleteCalls.Add(1)
++					w.WriteHeader(http.StatusNoContent)
++					return
++				}
++				if r.Method != http.MethodPost || r.URL.Path != "/pods" {
++					t.Errorf("unexpected request %s %s", r.Method, r.URL.Path)
++					w.WriteHeader(http.StatusNotFound)
++					return
++				}
++				_, _ = w.Write([]byte(tt.response))
++			}))
++			t.Cleanup(server.Close)
++			t.Setenv("RUNPOD_API_KEY", "test-key")
++			t.Setenv("RUNPOD_API_URL", server.URL)
++
++			result, err := createPodREST("CPU", "", "COMMUNITY", false)
++			if err == nil || !strings.Contains(err.Error(), tt.wantError) {
++				t.Fatalf("error = %v, want %q", err, tt.wantError)
++			}
++			if got := deleteCalls.Load(); got != 0 {
++				t.Fatalf("DELETE calls = %d, want 0", got)
++			}
++			receipt, ok := result.(map[string]interface{})
++			if !ok {
++				t.Fatalf("receipt type = %T", result)
++			}
++			if receipt["id"] != tt.wantID || receipt["validationPassed"] != false {
++				t.Fatalf("failed receipt lost provider identity/validation: %#v", receipt)
++			}
++			if receipt["cleanupAttempted"] != false || receipt["cleanupSucceeded"] != false {
++				t.Fatalf("CLI must leave cleanup to outer reaper: %#v", receipt)
++			}
++			if _, err := json.Marshal(receipt); err != nil {
++				t.Fatalf("failed receipt must remain parseable JSON: %v", err)
++			}
++		})
++	}
++}
++
++func TestCPUCreateRESTPreservesPublicIPAndSSHPortWithoutInventingStartSSH(t *testing.T) {
+ 	viper.Reset()
+ 	t.Cleanup(viper.Reset)
+ 	setExactCPUCreateGlobals(t)
++	createPorts = "22/tcp"
+ 
+-	deleted := make(chan string, 1)
++	requestBody := make(chan map[string]interface{}, 1)
+ 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+-		switch {
+-		case r.Method == http.MethodPost && r.URL.Path == "/pods":
+-			_, _ = w.Write([]byte(`{
+-				"id":"over-cost-pod",
+-				"name":"proxywar-mickey-cpu-canary",
+-				"computeType":"CPU",
+-				"cloudType":"COMMUNITY",
+-				"imageName":"example.invalid/mickey:cpu",
+-				"containerDiskInGb":20,
+-				"volumeInGb":0,
+-				"memoryInGb":4,
+-				"vcpuCount":2,
+-				"costPerHr":"0.11"
+-			}`))
+-		case r.Method == http.MethodDelete && r.URL.Path == "/pods/over-cost-pod":
+-			deleted <- r.URL.Path
+-			w.WriteHeader(http.StatusNoContent)
+-		default:
+-			t.Errorf("unexpected request %s %s", r.Method, r.URL.Path)
+-			w.WriteHeader(http.StatusNotFound)
++		var body map[string]interface{}
++		if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
++			t.Errorf("decode request: %v", err)
++			return
+ 		}
++		requestBody <- body
++		_ = json.NewEncoder(w).Encode(api.Pod{
++			ID:                "cpu-pod-with-ssh-port",
++			Name:              createName,
++			ComputeType:       "CPU",
++			CloudType:         "COMMUNITY",
++			ImageName:         createImageName,
++			ContainerDiskInGb: 20,
++			MemoryInGb:        4,
++			VcpuCount:         2,
++			CostPerHr:         0.06,
++		})
+ 	}))
+ 	t.Cleanup(server.Close)
+ 	t.Setenv("RUNPOD_API_KEY", "test-key")
+ 	t.Setenv("RUNPOD_API_URL", server.URL)
+ 
+-	result, err := createPodREST("CPU", "", "COMMUNITY", false)
+-	if err == nil || !strings.Contains(err.Error(), "exceeds client ceiling") {
+-		t.Fatalf("error = %v, want cost ceiling failure", err)
++	result, err := createPodREST("CPU", "", "COMMUNITY", true)
++	if err != nil {
++		t.Fatalf("create pod: %v", err)
+ 	}
+-	if got := <-deleted; got != "/pods/over-cost-pod" {
+-		t.Fatalf("deleted path = %q", got)
++	body := <-requestBody
++	if got := body["supportPublicIp"]; got != true {
++		t.Fatalf("supportPublicIp = %#v, want true", got)
++	}
++	if got := body["ports"]; !reflect.DeepEqual(got, []interface{}{"22/tcp"}) {
++		t.Fatalf("ports = %#v, want [22/tcp]", got)
++	}
++	if _, present := body["startSsh"]; present {
++		t.Fatalf("REST request must not invent unsupported startSsh: %#v", body)
+ 	}
+ 	receipt, ok := result.(map[string]interface{})
+ 	if !ok {
+ 		t.Fatalf("receipt type = %T", result)
+ 	}
+-	if receipt["id"] != "over-cost-pod" || receipt["costPerHr"] != 0.11 {
+-		t.Fatalf("failed receipt does not preserve provider identity/cost: %#v", receipt)
+-	}
+-	if receipt["validationPassed"] != false || receipt["cleanupAttempted"] != true || receipt["cleanupSucceeded"] != true {
+-		t.Fatalf("failed receipt cleanup status = %#v", receipt)
+-	}
+-	if _, err := json.Marshal(receipt); err != nil {
+-		t.Fatalf("failed receipt must remain parseable JSON: %v", err)
++	requestInput, ok := receipt["requestInput"].(map[string]interface{})
++	if !ok || !reflect.DeepEqual(requestInput, body) {
++		t.Fatalf("receipt requestInput = %#v, want exact POST body %#v", receipt["requestInput"], body)
+ 	}
+ }
+ 
+-func TestCPUCreateRESTPreservesPublicIPAndSSHPortWithoutInventingStartSSH(t *testing.T) {
++func TestCPUCreateRESTHashesRawNonceButRedactsAllReceiptEnvValues(t *testing.T) {
+ 	viper.Reset()
+ 	t.Cleanup(viper.Reset)
+ 	setExactCPUCreateGlobals(t)
+-	createPorts = "22/tcp"
++	nonce := strings.Repeat("ab", 32)
++	createEnv = `{"MICKEY_CONTROL_PLANE_NONCE":"` + nonce + `"}`
+ 
+ 	requestBody := make(chan map[string]interface{}, 1)
+ 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+@@ -297,7 +405,7 @@ func TestCPUCreateRESTPreservesPublicIPAndSSHPortWithoutInventingStartSSH(t *tes
+ 		}
+ 		requestBody <- body
+ 		_ = json.NewEncoder(w).Encode(api.Pod{
+-			ID:                "cpu-pod-with-ssh-port",
++			ID:                "cpu-pod-redacted-env",
+ 			Name:              createName,
+ 			ComputeType:       "CPU",
+ 			CloudType:         "COMMUNITY",
+@@ -306,33 +414,129 @@ func TestCPUCreateRESTPreservesPublicIPAndSSHPortWithoutInventingStartSSH(t *tes
+ 			MemoryInGb:        4,
+ 			VcpuCount:         2,
+ 			CostPerHr:         0.06,
++			Env: map[string]string{
++				cpuControlPlaneNonceEnvKey: nonce,
++			},
+ 		})
+ 	}))
+ 	t.Cleanup(server.Close)
+ 	t.Setenv("RUNPOD_API_KEY", "test-key")
+ 	t.Setenv("RUNPOD_API_URL", server.URL)
+ 
+-	result, err := createPodREST("CPU", "", "COMMUNITY", true)
++	result, err := createPodREST("CPU", "", "COMMUNITY", false)
+ 	if err != nil {
+ 		t.Fatalf("create pod: %v", err)
+ 	}
+ 	body := <-requestBody
+-	if got := body["supportPublicIp"]; got != true {
+-		t.Fatalf("supportPublicIp = %#v, want true", got)
+-	}
+-	if got := body["ports"]; !reflect.DeepEqual(got, []interface{}{"22/tcp"}) {
+-		t.Fatalf("ports = %#v, want [22/tcp]", got)
+-	}
+-	if _, present := body["startSsh"]; present {
+-		t.Fatalf("REST request must not invent unsupported startSsh: %#v", body)
++	rawEnv, ok := body["env"].(map[string]interface{})
++	if !ok || rawEnv[cpuControlPlaneNonceEnvKey] != nonce {
++		t.Fatalf("raw REST request env = %#v, want nonce", body["env"])
+ 	}
+ 	receipt, ok := result.(map[string]interface{})
+ 	if !ok {
+ 		t.Fatalf("receipt type = %T", result)
+ 	}
+ 	requestInput, ok := receipt["requestInput"].(map[string]interface{})
+-	if !ok || !reflect.DeepEqual(requestInput, body) {
+-		t.Fatalf("receipt requestInput = %#v, want exact POST body %#v", receipt["requestInput"], body)
++	if !ok {
++		t.Fatalf("requestInput = %#v", receipt["requestInput"])
++	}
++	redactedRequestEnv, ok := requestInput["env"].(map[string]interface{})
++	if !ok || redactedRequestEnv[cpuControlPlaneNonceEnvKey] != cpuEnvRedactedValueMarker {
++		t.Fatalf("redacted request env = %#v", requestInput["env"])
++	}
++	redactedResponseEnv, ok := receipt["env"].(map[string]interface{})
++	if !ok || redactedResponseEnv[cpuControlPlaneNonceEnvKey] != cpuEnvRedactedValueMarker {
++		t.Fatalf("redacted response env = %#v", receipt["env"])
++	}
++	if receipt["requestInputRedacted"] != true || receipt["responseEnvRedacted"] != true {
++		t.Fatalf("redaction booleans = %#v", receipt)
++	}
++	if receipt["requestInputRedactionSchema"] != cpuEnvRedactionSchema || receipt["responseEnvRedactionSchema"] != cpuEnvRedactionSchema {
++		t.Fatalf("redaction schema = %#v", receipt)
++	}
++	if receipt["requestInputHashScope"] != restRequestInputHashScope || receipt["redactedEnvValueMarker"] != cpuEnvRedactedValueMarker {
++		t.Fatalf("hash scope/redaction marker = %#v", receipt)
++	}
++	rawCanonical, err := canonicalRESTRequestJSON(body)
++	if err != nil {
++		t.Fatalf("canonical raw request: %v", err)
++	}
++	rawDigest := sha256.Sum256(rawCanonical)
++	if receipt["requestInputSha256"] != hex.EncodeToString(rawDigest[:]) {
++		t.Fatalf("request hash was not computed over raw request: %#v", receipt)
++	}
++	encoded, err := json.Marshal(receipt)
++	if err != nil {
++		t.Fatalf("marshal receipt: %v", err)
++	}
++	if strings.Contains(string(encoded), nonce) {
++		t.Fatalf("receipt leaked nonce: %s", encoded)
++	}
++}
++
++func TestCPUCreateRESTScrubsNonceFromProviderError(t *testing.T) {
++	viper.Reset()
++	t.Cleanup(viper.Reset)
++	setExactCPUCreateGlobals(t)
++	nonce := strings.Repeat("cd", 32)
++	createEnv = `{"MICKEY_CONTROL_PLANE_NONCE":"` + nonce + `"}`
++
++	var deleteCalls atomic.Int32
++	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
++		if r.Method == http.MethodDelete {
++			deleteCalls.Add(1)
++		}
++		w.WriteHeader(http.StatusBadRequest)
++		_, _ = w.Write([]byte(`{"error":"provider echoed ` + nonce + `"}`))
++	}))
++	t.Cleanup(server.Close)
++	t.Setenv("RUNPOD_API_KEY", "test-key")
++	t.Setenv("RUNPOD_API_URL", server.URL)
++
++	result, err := createPodREST("CPU", "", "COMMUNITY", false)
++	if err == nil {
++		t.Fatal("expected provider error")
++	}
++	if result != nil {
++		t.Fatalf("result = %#v, want nil", result)
++	}
++	if strings.Contains(err.Error(), nonce) {
++		t.Fatalf("provider error leaked nonce: %v", err)
++	}
++	if got := deleteCalls.Load(); got != 0 {
++		t.Fatalf("DELETE calls = %d, want 0", got)
++	}
++}
++
++func TestCPUCreateConfigAllowsOnlyControlPlaneNonceEnv(t *testing.T) {
++	tests := []struct {
++		name string
++		env  string
++	}{
++		{name: "other key", env: `{"PASSWORD":"` + strings.Repeat("a", 64) + `"}`},
++		{name: "extra key", env: `{"MICKEY_CONTROL_PLANE_NONCE":"` + strings.Repeat("a", 64) + `","EXTRA":"secret"}`},
++		{name: "short", env: `{"MICKEY_CONTROL_PLANE_NONCE":"abcd"}`},
++		{name: "not hex", env: `{"MICKEY_CONTROL_PLANE_NONCE":"` + strings.Repeat("z", 64) + `"}`},
++		{name: "malformed", env: `{"MICKEY_CONTROL_PLANE_NONCE":"` + strings.Repeat("a", 64)},
++	}
++	for _, tt := range tests {
++		t.Run(tt.name, func(t *testing.T) {
++			setExactCPUCreateGlobals(t)
++			createEnv = tt.env
++			err := validateCPUCreateConfig("COMMUNITY")
++			if err == nil || !strings.Contains(err.Error(), cpuControlPlaneNonceEnvKey) {
++				t.Fatalf("error = %v, want value-free nonce allowlist rejection", err)
++			}
++			if strings.Contains(err.Error(), strings.Repeat("a", 64)) || strings.Contains(err.Error(), "secret") {
++				t.Fatalf("validation error leaked env value: %v", err)
++			}
++		})
++	}
++
++	setExactCPUCreateGlobals(t)
++	createEnv = `{"MICKEY_CONTROL_PLANE_NONCE":"` + strings.Repeat("aB", 32) + `"}`
++	if err := validateCPUCreateConfig("COMMUNITY"); err != nil {
++		t.Fatalf("valid allowlisted nonce rejected: %v", err)
+ 	}
+ }
+ 
+@@ -351,9 +555,8 @@ func TestRunCreateKeepsStdoutParseableWhenPostCreateValidationFails(t *testing.T
+ 				"volumeInGb":0,
+ 				"costPerHr":"0.11"
+ 			}`))
+-		case http.MethodDelete:
+-			w.WriteHeader(http.StatusNoContent)
+ 		default:
++			t.Errorf("unexpected request method %s; CLI must not attempt cleanup", r.Method)
+ 			w.WriteHeader(http.StatusMethodNotAllowed)
+ 		}
+ 	}))
+@@ -393,7 +596,7 @@ func TestRunCreateKeepsStdoutParseableWhenPostCreateValidationFails(t *testing.T
+ 	if receipt["id"] != "over-cost-stdout-pod" || receipt["name"] != createName || receipt["costPerHr"] != 0.11 {
+ 		t.Fatalf("stdout receipt lost exact provider identity/cost: %#v", receipt)
+ 	}
+-	if receipt["validationPassed"] != false || receipt["cleanupSucceeded"] != true {
++	if receipt["validationPassed"] != false || receipt["cleanupAttempted"] != false || receipt["cleanupSucceeded"] != false {
+ 		t.Fatalf("stdout receipt lost validation/cleanup state: %#v", receipt)
+ 	}
+ }
+diff --git a/internal/api/pods.go b/internal/api/pods.go
+index 28b5eed..3584248 100644
+--- a/internal/api/pods.go
++++ b/internal/api/pods.go
+@@ -102,6 +102,7 @@ type PodCreateRequest struct {
+ 	GpuTypeIDs        []string          `json:"gpuTypeIds,omitempty"`
+ 	GpuCount          int               `json:"gpuCount,omitempty"`
+ 	CPUFlavorIDs      []string          `json:"cpuFlavorIds,omitempty"`
++	CPUFlavorPriority string            `json:"cpuFlavorPriority,omitempty"`
+ 	VcpuCount         int               `json:"vcpuCount,omitempty"`
+ 	VolumeInGb        int               `json:"volumeInGb"`
+ 	ContainerDiskInGb int               `json:"containerDiskInGb,omitempty"`

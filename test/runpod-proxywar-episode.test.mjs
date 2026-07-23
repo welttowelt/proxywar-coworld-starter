@@ -371,6 +371,37 @@ test("bundle verification accepts a clean selected policy", async () => {
   assert.equal(verified.policies[0].key, "candidate");
 });
 
+test("bundle verification accepts a hash-bound multi-policy spec set", async () => {
+  const { root, orchestratorPath, players } = await manifestFixture();
+  const extraBody =
+    '{"arm":"second-candidate","game_config":{"max_decision_steps":80}}\n';
+  const extraPath = path.join(root, "specs", "grow-low-share-candidate.json");
+  await writeFile(extraPath, extraBody);
+  const fileManifestPath = path.join(root, "files.sha256");
+  const fileManifestBody = `${await readFile(fileManifestPath, "utf8")}${sha256(extraBody)}  specs/grow-low-share-candidate.json\n`;
+  await writeFile(fileManifestPath, fileManifestBody);
+  const manifestPath = path.join(root, "manifest.json");
+  const manifest = JSON.parse(await readFile(manifestPath, "utf8"));
+  manifest.file_manifest.sha256 = sha256(fileManifestBody);
+  manifest.file_manifest.file_count += 1;
+  manifest.experiment_specs.push({
+    label: "grow-low-share-candidate",
+    path: "specs/grow-low-share-candidate.json",
+    sha256: sha256(extraBody),
+    role: "candidate",
+    max_decision_steps: 80,
+  });
+  const manifestBody = `${JSON.stringify(manifest, null, 2)}\n`;
+  await writeFile(manifestPath, manifestBody);
+  await writeFile(
+    path.join(root, "manifest.sha256"),
+    `${sha256(manifestBody)}  manifest.json\n`,
+  );
+  const verified = await verifyBundleManifest(root, players, { orchestratorPath });
+  assert.equal(verified.experiment_specs.length, 3);
+  assert.equal(verified.experiment_specs[2].label, "grow-low-share-candidate");
+});
+
 test("bundle verification rejects a tampered selected policy file", async () => {
   const { root, policyRoot, orchestratorPath, players } =
     await manifestFixture();
