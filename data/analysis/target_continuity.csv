@@ -1,23 +1,24 @@
 player_name,policy_version,won,rival_attacks,target_switches,switch_rate_pct,mean_attack_ratio,mean_attack_percent
-daveey,24,true,1652,441,27.09,2.71,27.0
-richard,7,true,709,140,20.03,4.36,28.0
+daveey,24,true,1576,427,27.5,2.76,26.8
+Captain Underpants Maximum Aura,1,true,686,195,28.85,4.6,22.1
 Calc,106,true,612,291,48.18,4.54,24.4
-Captain Underpants Maximum Aura,1,true,599,180,30.46,4.63,21.7
-djizus,14,true,424,78,18.57,2.22,39.5
+richard,7,true,557,112,20.4,3.59,28.3
+djizus,14,true,460,90,19.78,2.32,39.5
 Auri,42,true,315,89,28.71,3.44,33.0
-K1Z Mickey Mouse,1,true,185,68,37.78,4.79,20.1
 relh,3,true,149,27,18.62,5.7,24.5
-relh,3,false,3564,515,14.76,1.43,28.1
-richard,7,false,3110,601,19.58,2.49,28.8
-djizus,14,false,2631,489,18.92,1.37,38.8
-daveey,24,false,2274,514,23.17,1.96,23.8
-K1Z Mickey Mouse,1,false,1985,680,35.6,3.07,19.7
-Calc,106,false,1917,702,38.05,3.37,25.4
-salomon-shdow,12,false,1843,421,23.8,3.01,25.1
-Sefirot,1,false,1581,275,18.2,1.01,39.9
-Captain Underpants Maximum Aura,1,false,1367,432,32.36,3.75,21.5
-Auri,42,false,1164,353,32.42,2.26,28.6
-docxology,1,false,758,49,7.23,0.64,10.0
-James Boggs,1,false,732,137,20.09,1.02,10.6
-Ron @ SWGY,1,false,653,271,46.89,1.74,17.6
-softmaxwell,1,false,440,124,32.38,2.5,32.1
+K1Z Mickey Mouse,1,true,146,56,39.44,4.8,19.9
+Sefirot,1,true,47,16,34.78,2.47,40.0
+relh,3,false,3594,525,14.92,1.52,28.1
+richard,7,false,3146,602,19.39,2.5,28.8
+djizus,14,false,2560,462,18.36,1.36,38.8
+daveey,24,false,2309,521,23.13,1.97,24.1
+K1Z Mickey Mouse,1,false,1983,686,35.97,3.12,19.6
+Calc,106,false,1892,683,37.53,3.37,25.4
+salomon-shdow,12,false,1758,397,23.57,2.87,25.0
+Sefirot,1,false,1534,267,18.21,0.98,39.9
+Captain Underpants Maximum Aura,1,false,1421,447,32.23,3.79,21.6
+Auri,42,false,1159,353,32.56,2.26,28.9
+docxology,1,false,744,48,7.23,0.65,10.0
+James Boggs,1,false,726,137,20.24,1.01,10.5
+Ron @ SWGY,1,false,676,288,47.92,1.69,17.4
+softmaxwell,1,false,439,125,32.72,2.47,32.1
