@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260724T162457Z-36284",
+  "recorded_at": "2026-07-24T16:25:46Z",
+  "transition": "terminal_precontact_source_identity_block_checkpoint",
+  "priority_packet": null,
+  "dispatch_mailbox_head": "6c453079f42b27160dfdbbb41e5e92e4a6ae1c7b",
+  "repository_input": {
+    "head": "ec143dcd94805ae3ad035f32256492665a147d05",
+    "origin_main": "ec143dcd94805ae3ad035f32256492665a147d05",
+    "head_subject": "Diagnose ProxyWar participation gating",
+    "head_changed_path": "experiments/diagnosis-captain-participation-gating-20260724.json",
+    "active_arm_sha256": "d4bb79f79c90ba8682545833f1f16a54a6932217dd077d63f648c76424d2452f",
+    "source_identity_audit_sha256": "e64623b6386cb7f73a3c2c791fac0dca4e21ca5979e97a675c3c5662e663f47d",
+    "mickey_no_harm_receipt_sha256": "32b8c1d7eaa0714ff81ae97d7ffde86ccb18abda88bbe326b04f80777600e8c7"
+  },
+  "authority_check": {
+    "mailbox_head": "6c453079f42b27160dfdbbb41e5e92e4a6ae1c7b",
+    "dispatch_mailbox_head_match": true,
+    "priority_packet_present": false,
+    "new_hash_bound_v89_parent_record_referenced": false,
+    "gate_effect": "NO_CLEARANCE"
+  },
+  "runner_check": {
+    "state": "free",
+    "run_started": false
+  },
+  "deadline_check": {
+    "soft_deadline_epoch": 1784910777,
+    "hard_deadline_epoch": 1784911197,
+    "checkpoint_epoch": 1784910346,
+    "soft_deadline_reached": false,
+    "action": "TERMINAL_BLOCK_CHECKPOINT_AND_EXIT"
+  },
+  "identity_gate": {
+    "source_episode_id": "f2b16473-b3b7-42ab-926b-dee8d0c2b357",
+    "source_episode_policy_label": "qd1n:v95",
+    "source_episode_policy_version_id": "ccf3a01d-f4bd-4eaa-a1c4-a1c900b78844",
+    "live_parent_policy_label": "qd1n:v89",
+    "live_parent_policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "identity_match": false,
+    "hash_bound_v89_precontact_parent_record": false,
+    "legal_candidate_parent_action_difference_proven": false
+  },
+  "verdict": "BLOCK_EVIDENCE_IDENTITY_MISMATCH_NO_STATE_SEAL",
+  "reason": "The dispatch contains no priority packet or new hash-bound qd1n:v89 parent record. The dispatch mailbox head matches the live mailbox head but grants no evidence clearance. The only active-arm pre-contact episode remains qd1n:v95, so its action cannot establish the live qd1n:v89 selector choice or a legal candidate-parent action difference. Repository head ec143dcd adds only a Captain participation-gating diagnosis and does not clear the Odin identity gate.",
+  "decision": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "prior_verified_champion_preserved": true
+  },
+  "next_automatic_transition": "Obtain one hash-bound qd1n:v89 parent decision record before hostile contact, or reproduce the exact v89 selector on a separately preregistered hash-bound fixture for the same state. Seal a state only after that parent record proves a legal candidate-parent action difference. Carry the committed Mickey no-harm guard. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates."
+}

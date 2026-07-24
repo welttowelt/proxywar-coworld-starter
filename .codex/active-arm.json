@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-24T15:23:04Z",
-  "cycle_id": "odin-20260724T152221Z-97763",
+  "updated_at": "2026-07-24T16:25:46Z",
+  "cycle_id": "odin-20260724T162457Z-36284",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
   "state": "blocked_precontact_source_identity_mismatch",
@@ -216,11 +216,11 @@
     "league_mutation": false
   },
   "latest_checkpoint": {
-    "cycle_id": "odin-20260724T152221Z-97763",
-    "recorded_at": "2026-07-24T15:23:04Z",
-    "audit": "experiments/audit-qd1n-precontact-source-identity-checkpoint-20260724T152304Z.json",
+    "cycle_id": "odin-20260724T162457Z-36284",
+    "recorded_at": "2026-07-24T16:25:46Z",
+    "audit": "experiments/audit-qd1n-precontact-source-identity-checkpoint-20260724T162546Z.json",
     "verdict": "BLOCK_EVIDENCE_IDENTITY_MISMATCH_NO_STATE_SEAL",
-    "dispatch_mailbox_head": "ef62a42926fdc85fb1029e6d26a94f5fca26ac30",
+    "dispatch_mailbox_head": "6c453079f42b27160dfdbbb41e5e92e4a6ae1c7b",
     "source_change": false,
     "runner_started": false,
     "league_mutation": false
