@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260724T152221Z-97763",
+  "recorded_at": "2026-07-24T15:23:04Z",
+  "transition": "terminal_precontact_source_identity_block_checkpoint",
+  "priority_packet": null,
+  "dispatch_mailbox_head": "ef62a42926fdc85fb1029e6d26a94f5fca26ac30",
+  "repository_input": {
+    "head": "cb26d316ce79c2be8686d81a232f309932381122",
+    "origin_main": "cb26d316ce79c2be8686d81a232f309932381122",
+    "active_arm_sha256": "2402a8c32ed87e4d4f97ef33bc86dbabfd2a393d5d65582a8361221d0b17f3a2",
+    "source_identity_audit_sha256": "e64623b6386cb7f73a3c2c791fac0dca4e21ca5979e97a675c3c5662e663f47d",
+    "mickey_no_harm_receipt_sha256": "32b8c1d7eaa0714ff81ae97d7ffde86ccb18abda88bbe326b04f80777600e8c7"
+  },
+  "authority_check": {
+    "mailbox_head": "ef62a42926fdc85fb1029e6d26a94f5fca26ac30",
+    "dispatch_mailbox_head_match": true,
+    "priority_packet_present": false,
+    "new_hash_bound_v89_parent_record_referenced": false,
+    "gate_effect": "NO_CLEARANCE"
+  },
+  "runner_check": {
+    "state": "free",
+    "run_started": false
+  },
+  "deadline_check": {
+    "soft_deadline_epoch": 1784907021,
+    "hard_deadline_epoch": 1784907441,
+    "checkpoint_epoch": 1784906584,
+    "soft_deadline_reached": false,
+    "action": "TERMINAL_BLOCK_CHECKPOINT_AND_EXIT"
+  },
+  "identity_gate": {
+    "source_episode_id": "f2b16473-b3b7-42ab-926b-dee8d0c2b357",
+    "source_episode_policy_label": "qd1n:v95",
+    "source_episode_policy_version_id": "ccf3a01d-f4bd-4eaa-a1c4-a1c900b78844",
+    "live_parent_policy_label": "qd1n:v89",
+    "live_parent_policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "identity_match": false,
+    "hash_bound_v89_precontact_parent_record": false,
+    "legal_candidate_parent_action_difference_proven": false
+  },
+  "verdict": "BLOCK_EVIDENCE_IDENTITY_MISMATCH_NO_STATE_SEAL",
+  "reason": "The dispatch contains no priority packet or new hash-bound qd1n:v89 parent record. The dispatch mailbox head matches the live mailbox head but grants no evidence clearance. The only active-arm pre-contact episode remains qd1n:v95, so its action cannot establish the live qd1n:v89 selector choice or a legal candidate-parent action difference. Repository head cb26d316 is a dashboard-data refresh and does not clear the identity gate.",
+  "decision": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "prior_verified_champion_preserved": true
+  },
+  "next_automatic_transition": "Obtain one hash-bound qd1n:v89 parent decision record before hostile contact, or reproduce the exact v89 selector on a separately preregistered hash-bound fixture for the same state. Seal a state only after that parent record proves a legal candidate-parent action difference. Carry the committed Mickey no-harm guard. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates."
+}
