@@ -1,17 +1,4 @@
 round_number,rank,score,player_name,policy_name,policy_version,policy_version_id,completed_episode_count,seed_order
-713,1,0.5,Calc,my-proxywar-agent,106,93b8e253-6b9c-4ae6-983e-857e044c4842,4,10
-713,2,0.3333333333333333,richard,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,0
-713,3,0.25,daveey,daveey-proxywar,24,3ed5713d-7940-45f1-b347-76d596b90fe8,4,8
-713,4,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,3,1
-713,5,0.0,softmaxwell,Sun Tzu,1,cc75524f-648c-46fb-aadf-01ffada3430e,3,2
-713,6,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
-713,7,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,4
-713,8,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,5
-713,9,0.0,relh,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,6
-713,10,0.0,salomon-shdow,fortress-empire-ohf,12,59b677dc-7fe1-45f1-85ae-12003e597aad,4,7
-713,11,0.0,K1Z Mickey Mouse,mickey-mouse-intent,1,7329eda7-b041-4853-9ee6-e05cc1a98ac2,4,9
-713,12,0.0,Sefirot,Eva-00-C5,1,4833a1a6-f170-45d5-ae7c-30a5e10dfbd9,4,11
-713,13,0.0,djizus,gandhi,14,7d5abda6-cdb1-4fc2-8ee8-a586cb82a51f,3,12
 714,1,0.5,daveey,daveey-proxywar,24,3ed5713d-7940-45f1-b347-76d596b90fe8,4,8
 714,2,0.3333333333333333,richard,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,3,0
 714,3,0.25,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
@@ -275,3 +262,17 @@ round_number,rank,score,player_name,policy_name,policy_version,policy_version_id
 732,12,0.0,K1Z Mickey Mouse,mickey-mouse-intent,1,7329eda7-b041-4853-9ee6-e05cc1a98ac2,4,9
 732,13,0.0,Sefirot,Eva-00-C5,1,4833a1a6-f170-45d5-ae7c-30a5e10dfbd9,3,12
 732,14,0.0,djizus,gandhi,14,7d5abda6-cdb1-4fc2-8ee8-a586cb82a51f,2,13
+733,1,1.0,djizus,gandhi,14,7d5abda6-cdb1-4fc2-8ee8-a586cb82a51f,2,13
+733,2,0.25,Captain Underpants Maximum Aura,captain-underpants-max-aura,1,348b11ff-29b1-4743-b456-e735dbf1520d,4,10
+733,3,0.25,Calc,my-proxywar-agent,106,93b8e253-6b9c-4ae6-983e-857e044c4842,4,11
+733,4,0.0,richard,co-gas-proxywar-richard,7,cea2bb5b-add0-4dd3-aa32-9442280142c5,2,0
+733,5,0.0,James Boggs,jamesboggs-warlord,1,dffb6fb2-673e-4be5-9e35-ba69d6731754,2,1
+733,6,0.0,softmaxwell,Sun Tzu,1,cc75524f-648c-46fb-aadf-01ffada3430e,3,2
+733,7,0.0,Auri,proxywar-keystone,42,9f233579-4837-4a27-b352-ed3135301135,4,3
+733,8,0.0,docxology,daf-proxywar-v2,1,4110c5a3-f340-44d6-ad60-106f5672df88,4,4
+733,9,0.0,Ron @ SWGY,ron-frontier-ranker,1,2b8cdf1f-7602-4340-ac38-3e6eba911ec7,4,5
+733,10,0.0,relh,co-gas-proxywar-relhalpha,3,b378acb9-2446-45c9-b3ce-67eac8e72170,4,6
+733,11,0.0,salomon-shdow,fortress-empire-ohf,13,13cfba2f-2270-4b1f-97a2-d9cd3d391b21,4,7
+733,12,0.0,daveey,daveey-proxywar,24,3ed5713d-7940-45f1-b347-76d596b90fe8,4,8
+733,13,0.0,K1Z Mickey Mouse,mickey-mouse-intent,1,7329eda7-b041-4853-9ee6-e05cc1a98ac2,4,9
+733,14,0.0,Sefirot,Eva-00-C5,1,4833a1a6-f170-45d5-ae7c-30a5e10dfbd9,3,12
