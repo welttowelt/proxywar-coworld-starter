@@ -1,0 +1,131 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-24T15:52:58Z",
+  "repository_head": "a4c6c54be53cad0c991f2e03fdd4143f8b2fb42f",
+  "scope": {
+    "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+    "division_id": "div_b54268ee-6b2f-4156-9c2a-8542645e31bc",
+    "completed_rounds": {
+      "first": 732,
+      "last": 751,
+      "count": 20
+    },
+    "excluded_live_round": {
+      "round_number": 752,
+      "round_id": "round_42155545-8cfc-4522-a6bc-7c0d8844fbaf",
+      "status_at_measurement": "running"
+    }
+  },
+  "official_scoring": {
+    "round_score": "Episode win indicators, including shared first-place ties, averaged across the episodes assigned to the policy in that round.",
+    "division_score": "EWMA of valid completed-round scores with a 24-round half-life, displayed after multiplication by 100.",
+    "provisional_rounds": 5
+  },
+  "participation_finding": {
+    "entrant_count": 14,
+    "episodes_per_round": 4,
+    "players_per_episode": 12,
+    "total_episode_slots_per_round": 48,
+    "all_current_players_entered_all_20_rounds": true,
+    "seed_and_episode_counts_were_constant_across_all_20_rounds": true,
+    "assigned_episode_counts_by_seed": {
+      "0": 2,
+      "1": 2,
+      "2": 3,
+      "3": 4,
+      "4": 4,
+      "5": 4,
+      "6": 4,
+      "7": 4,
+      "8": 4,
+      "9": 4,
+      "10": 4,
+      "11": 4,
+      "12": 3,
+      "13": 2
+    },
+    "verdict": "The apparent partial participation is deterministic roster allocation, not evidence that current players voluntarily select individual episodes."
+  },
+  "map_finding": {
+    "observed_schedule": "World on even rounds and Pangaea on odd rounds for every round from 732 through 751.",
+    "captain_seed": 10,
+    "captain_episode_positions_each_round": [7, 8, 9, 10],
+    "captain_round_score_by_map": {
+      "Pangaea": {
+        "rounds": 10,
+        "mean_percent": 20.0,
+        "rounds_with_positive_score_percent": 70.0
+      },
+      "World": {
+        "rounds": 10,
+        "mean_percent": 12.5,
+        "rounds_with_positive_score_percent": 50.0
+      }
+    },
+    "captain_episode_win_cells": {
+      "Pangaea": {
+        "7": "1/10",
+        "8": "1/10",
+        "9": "2/10",
+        "10": "4/10"
+      },
+      "World": {
+        "7": "2/10",
+        "8": "0/10",
+        "9": "2/10",
+        "10": "0/10"
+      }
+    },
+    "captain_pangaea_over_world_one_sided_fisher_p": 0.17410313465142596,
+    "verdict": "Map is forecastable in this window, but Captain has no pre-round sure-win cell. The strongest observed cell won only 4/10, the map difference is not yet statistically decisive, and all four Captain positions are bundled into one round."
+  },
+  "leader_comparison": {
+    "live_scores_after_round_751": {
+      "daveey": 27.24935790722059,
+      "djizus": 25.093516672215703,
+      "richard": 24.913497952390614,
+      "Captain Underpants Maximum Aura": 19.576434678168724
+    },
+    "last_20_mean_round_score_percent": {
+      "daveey": 28.75,
+      "djizus": 35.0,
+      "richard": 30.0,
+      "Captain Underpants Maximum Aura": 16.25
+    },
+    "map_specialization_percent": {
+      "daveey": {
+        "Pangaea": 10.0,
+        "World": 47.5
+      },
+      "djizus": {
+        "Pangaea": 50.0,
+        "World": 20.0
+      },
+      "richard": {
+        "Pangaea": 60.0,
+        "World": 0.0
+      }
+    }
+  },
+  "control_surface": {
+    "round_752_created_at": "2026-07-24T15:30:49.508531Z",
+    "round_752_started_at": "2026-07-24T15:30:54.691464Z",
+    "round_752_episode_requests_created_at": "2026-07-24T15:31:01Z",
+    "available_membership_exit": "retire-membership",
+    "pause_command_exposed_by_cli": false,
+    "reentry_requires_submission_and_qualification": true,
+    "verdict": "Do not use retirement and resubmission as a per-round switch. The entrant snapshot is sealed before episode requests, and the operation risks losing the live seat."
+  },
+  "operator_policy_update": {
+    "scope": "Future Captain Underpants candidate only; do not mutate Mickey Mouse or qd1n by implication.",
+    "identity_protected_players": [],
+    "alliances": "Tactical, optional, and breakable. No player receives permanent protection by K1Z identity or name.",
+    "targeting": "Any rival, including K1Z Mickey Mouse, may be attacked or eliminated when the deterministic controller estimates that doing so improves Captain's chance to finish first.",
+    "live_v1_changed": false
+  },
+  "decision": {
+    "participation_gate": "REJECT_CURRENT_EVIDENCE",
+    "reason": "No current player skipped any of the measured rounds, no sure-win pre-entry signal exists, and Captain's observed Pangaea-only mean of 20 percent cannot converge above the current 27.249-point leader if that rate persists.",
+    "next_arm": "Keep continuous participation. Build a Captain-scoped map-and-seat intent controller with tactical alliances and no identity protection, then require a replay-bound improvement above the current leader-rate threshold before promotion."
+  }
+}
