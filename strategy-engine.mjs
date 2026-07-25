@@ -36,7 +36,12 @@ const MIN_CONVERSION_TILE_SHARE = 0.002;
 const MAP_SPAWN_TILES = new Map([
   ...[1180588, 1228670, 1216916, 1214746, 1224834, 892476, 1020678, 1450648]
     .map((tile) => [tile, "Asia"]),
-  ...[1088580, 1216626, 877134, 659476, 494334, 628394, 994502, 1333674]
+  ...[
+    373314, 500334, 628394, 629398, 659476, 673074, 877134,
+    997490, 1080668, 1088580, 1216626, 1333674,
+    // Retain validated anchors from the preceding World build.
+    494334, 994502,
+  ]
     .map((tile) => [tile, "World"]),
   ...[659528, 534350, 266554, 687420, 622372, 589302, 450306, 740346, 856604, 855528]
     .map((tile) => [tile, "Pangaea"]),
@@ -1077,9 +1082,8 @@ export function chooseCaptainUnderpantsRuntimeAction(
       !isNeutralExpansion(baseline)
     ? rivalForAction(baseline, state)
     : null;
-  const calmEarlyWorldFirstContact =
+  const calmWorldFirstContact =
     state.mapFingerprint === "World" &&
-    activeDecisionCount(history) < CU1_OPENING_DECISIONS &&
     !history.some(recordedPlayerConflict) &&
     !hasCurrentPressure(state) &&
     recentDistinctAttackerCount(state, history) === 0 &&
@@ -1092,18 +1096,21 @@ export function chooseCaptainUnderpantsRuntimeAction(
     worldFirstContactTarget.relativeTroopRatio >= 1 &&
     worldFirstContactTarget.relativeTroopRatio < 1.3 &&
     recentHostility(state, history, worldFirstContactTarget) === 0;
-  if (calmEarlyWorldFirstContact) {
+  if (calmWorldFirstContact) {
     const avoid = new Set(avoidActionIDs(history));
     const safeGrowthActions = actions.filter((action) => action.risk?.level !== "high");
+    const neutralLand = neutralExpansionStalled(state, history)
+      ? null
+      : chooseNeutralAttack(safeGrowthActions, history, avoid);
     const neutralBoat = chooseBoat(
       safeGrowthActions.filter(isNeutralBoat),
       state,
       history,
       avoid,
     );
-    const replacement = neutralBoat || chooseBuild(safeGrowthActions, history);
+    const replacement = neutralLand || neutralBoat || chooseBuild(safeGrowthActions, history);
     if (replacement && replacement.id !== baseline.id) {
-      return { ...replacement, policyMarker: "wc5" };
+      return { ...replacement, policyMarker: "wc6" };
     }
   }
   if (state.mapFingerprint !== "Pangaea" ||
