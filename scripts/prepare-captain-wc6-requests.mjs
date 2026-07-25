@@ -7,18 +7,18 @@ import path from "node:path";
 const CONTROL_COMMIT = "96482ba6595273e5b32be11c73a4907864f64933";
 const CANDIDATE_COMMIT = "9aa9da46a1a7241b6c6d9981815692afaad814b7";
 const QUALIFIER_SEEDS = Object.freeze([
-  20260752,
-  20260753,
-  20260754,
-  20260755,
-  20260756,
-  20260757,
-  20260758,
-  20260759,
-  20260760,
-  20260761,
-  20260762,
-  20260763,
+  20260764,
+  20260765,
+  20260766,
+  20260767,
+  20260768,
+  20260769,
+  20260770,
+  20260771,
+  20260772,
+  20260773,
+  20260774,
+  20260775,
 ]);
 const ROSTER = Object.freeze(
   Array.from({ length: 12 }, (_, slot) => `Captain parity clone ${slot}`),
@@ -149,7 +149,7 @@ function makeRequest(base, {
   };
   request.players = images.map(makePolicy);
   request.episode_tags = {
-    campaign: "captain-wc6-v3-r2",
+    campaign: "captain-wc6-v3-r3-current",
     phase,
     seed: String(seed),
     selected_slot: selectedSlot === null ? "none" : String(selectedSlot),
@@ -179,11 +179,11 @@ async function main() {
   const manifest = JSON.parse(await readFile(args.manifest, "utf8"));
   if (
     manifest?.game?.name !== "proxywar" ||
-    manifest?.game?.version !== "0.1.10" ||
+    manifest?.game?.version !== "0.1.11" ||
     base?.game_config?.players?.length !== ROSTER.length ||
     base?.players?.length !== ROSTER.length
   ) {
-    throw new Error("base request is not the pinned 12-player ProxyWar 0.1.10 request");
+    throw new Error("base request is not the pinned 12-player ProxyWar 0.1.11 request");
   }
   const starter = base.players[0];
   if (
