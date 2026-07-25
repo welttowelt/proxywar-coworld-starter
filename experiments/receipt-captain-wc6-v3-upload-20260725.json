@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-25T04:25:28Z",
+  "entrant": {
+    "player_id": "ply_02c1e39b-94af-4b38-8e12-645e6cd06ec1",
+    "player_name": "Captain Underpants Maximum Aura",
+    "policy_id": "6a58a87d-fde1-4afe-bffe-0b93daafe775",
+    "policy_label": "captain-underpants-max-aura:v3",
+    "policy_version_id": "d49a5027-9a42-4d03-a72a-3fa3d86885af",
+    "owner_user_id": "o6jt54kxig46lrv8sk54e99e",
+    "owner_name": "claudeclaudeclaudius-blip"
+  },
+  "source": {
+    "commit": "80d54f18ad3071e35b4c0b80377e115c0f701d75",
+    "branch": "rci/captain-wc6-neutral-first-20260725",
+    "local_gate_evidence": "experiments/evidence-captain-wc6-observable-first-contact-20260725.json"
+  },
+  "image": {
+    "reference": "proxywar-captain-wc6-r5:80d54f18",
+    "id": "sha256:2d273db10769d57076b1d72dccac06aff0eb519ffaf574a95ad97b29949dd86a",
+    "platform": "linux/amd64",
+    "user": "node",
+    "command": [
+      "node",
+      "/app/llm-player.mjs"
+    ],
+    "labels": {
+      "org.opencontainers.image.revision": "80d54f18ad3071e35b4c0b80377e115c0f701d75",
+      "com.welttowelt.proxywar.policy-marker": "wc6-observable-first-contact"
+    }
+  },
+  "hosted_image": {
+    "id": "img_5026ed89-f2c5-4886-b9df-c9a3b4554a5b",
+    "name": "proxywar-captain-wc6-r5",
+    "version": 1,
+    "client_hash": "sha256:2d273db10769d57076b1d72dccac06aff0eb519ffaf574a95ad97b29949dd86a",
+    "image_digest": "sha256:4a325acf70b5a7e1fd19edacb968240d4a305217ca071bdc46d4991ce34c080e",
+    "status": "ready"
+  },
+  "upload": {
+    "server": "https://softmax.com/api",
+    "coworld_package": "coworld==0.1.34",
+    "bedrock_capability_enabled": true,
+    "private_tags": {
+      "source_commit": "80d54f18ad3071e35b4c0b80377e115c0f701d75",
+      "image_id": "2d273db10769d57076b1d72dccac06aff0eb519ffaf574a95ad97b29949dd86a",
+      "local_gate": "wc6-observable-first-contact-pass"
+    },
+    "run": [
+      "node",
+      "/app/llm-player.mjs"
+    ],
+    "result": "Upload complete: captain-underpants-max-aura:v3"
+  },
+  "post_upload_verification": {
+    "active_player_verified": true,
+    "policy_version_verified": true,
+    "source_tag_verified": true,
+    "image_id_tag_verified": true,
+    "local_gate_tag_verified": true,
+    "run_command_verified": true,
+    "hosted_image_ready": true,
+    "v1_live_membership_changed": false,
+    "live_membership_id": "lpm_819658c0-6899-4bb7-9449-379da288ec5a",
+    "live_policy_version_id": "348b11ff-29b1-4743-b456-e735dbf1520d",
+    "live_membership_status": "competing",
+    "live_membership_is_champion": true
+  },
+  "gate_state": {
+    "diagnostic_uploaded": true,
+    "local_causal_gate": true,
+    "hosted_4_of_4": false,
+    "regression_20_of_20": false,
+    "submitted": false,
+    "membership_created": false,
+    "verdict": "DIAGNOSTIC_UPLOAD_ONLY"
+  }
+}
