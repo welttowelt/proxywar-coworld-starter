@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-25T04:27:09Z",
+  "request": {
+    "id": "xreq_14a5dd84-71b3-431e-88c8-10e8e89bbad6",
+    "idempotency_key": "captain-wc6-v3-hosted-4x-top12-world-r776-20260725",
+    "source": "experiments/request-captain-wc6-v3-hosted-current-world-4x.json",
+    "status_at_receipt": "pending",
+    "episode_count": 4,
+    "episode_request_ids": [
+      "ereq_ff4e8a78-dd50-4a2d-9cc3-758df6afde38",
+      "ereq_947ad6ec-28ee-4d25-9321-5d0420ec23ad",
+      "ereq_3a021d72-a12e-4380-b7db-84abfa450ca1",
+      "ereq_b3103755-dab8-4a64-8960-67038d1afc23"
+    ]
+  },
+  "runtime": {
+    "coworld_id": "cow_5d275752-ff30-4f5c-a1c1-6db56b518ef2",
+    "coworld_name": "proxywar",
+    "coworld_version": "0.1.11",
+    "variant_id": "tournament-12p-world",
+    "map": "World",
+    "num_agents": 12
+  },
+  "field": {
+    "source_round_id": "round_f24ce19a-4e3e-4b12-9d8a-f663501e1205",
+    "source_round_number": 776,
+    "source_round_status_at_dispatch": "running",
+    "frozen_entrant_prefix_count": 12,
+    "candidate_slot": 9,
+    "replaced_live_policy_version_id": "348b11ff-29b1-4743-b456-e735dbf1520d",
+    "candidate_policy_version_id": "d49a5027-9a42-4d03-a72a-3fa3d86885af"
+  },
+  "gate": {
+    "required_wins": 4,
+    "required_episodes": 4,
+    "required_marker": "wc6",
+    "maximum_unexplained_holds": 0,
+    "maximum_rejections": 0,
+    "maximum_fallbacks": 0,
+    "maximum_degraded_decisions": 0,
+    "submission_authorized": false
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "idempotency_key": "captain-wc6-v3-hosted-4x-top12-world-r776-20260725",
+  "coworld_id": "cow_5d275752-ff30-4f5c-a1c1-6db56b518ef2",
+  "variant_id": "tournament-12p-world",
+  "roster": [
+    {
+      "slot": 0,
+      "player": {
+        "policy_ref": "cea2bb5b-add0-4dd3-aa32-9442280142c5"
+      }
+    },
+    {
+      "slot": 1,
+      "player": {
+        "policy_ref": "dffb6fb2-673e-4be5-9e35-ba69d6731754"
+      }
+    },
+    {
+      "slot": 2,
+      "player": {
+        "policy_ref": "9f233579-4837-4a27-b352-ed3135301135"
+      }
+    },
+    {
+      "slot": 3,
+      "player": {
+        "policy_ref": "4110c5a3-f340-44d6-ad60-106f5672df88"
+      }
+    },
+    {
+      "slot": 4,
+      "player": {
+        "policy_ref": "2b8cdf1f-7602-4340-ac38-3e6eba911ec7"
+      }
+    },
+    {
+      "slot": 5,
+      "player": {
+        "policy_ref": "b378acb9-2446-45c9-b3ce-67eac8e72170"
+      }
+    },
+    {
+      "slot": 6,
+      "player": {
+        "policy_ref": "13cfba2f-2270-4b1f-97a2-d9cd3d391b21"
+      }
+    },
+    {
+      "slot": 7,
+      "player": {
+        "policy_ref": "3ed5713d-7940-45f1-b347-76d596b90fe8"
+      }
+    },
+    {
+      "slot": 8,
+      "player": {
+        "policy_ref": "7329eda7-b041-4853-9ee6-e05cc1a98ac2"
+      }
+    },
+    {
+      "slot": 9,
+      "player": {
+        "policy_ref": "d49a5027-9a42-4d03-a72a-3fa3d86885af"
+      }
+    },
+    {
+      "slot": 10,
+      "player": {
+        "policy_ref": "93b8e253-6b9c-4ae6-983e-857e044c4842"
+      }
+    },
+    {
+      "slot": 11,
+      "player": {
+        "policy_ref": "08a431c6-7b6d-48d2-ad08-5b7e3530528d"
+      }
+    }
+  ],
+  "num_episodes": 4,
+  "notes": "WC6 promotion gate on canonical ProxyWar 0.1.11. The roster freezes the first twelve entrants from running Competition round 776 in sealed order; candidate captain-underpants-max-aura:v3 replaces only live v1 at original slot 9. Exact source and image identity are sealed in receipt-captain-wc6-v3-upload-20260725.json. No league submission or champion change before this 4/4 gate and a separate 20/20 gate pass."
+}
