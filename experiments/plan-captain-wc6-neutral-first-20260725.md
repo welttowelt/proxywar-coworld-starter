@@ -58,9 +58,12 @@ Compute exact v2 first. Replace it only when every condition holds:
 7. Captain-to-target troop ratio is at least `1.0` and below `1.3`.
 8. A non-high-risk neutral land, neutral boat, or economy build is legal.
 
-The unchanged selectors choose neutral land first, then a neutral boat, then
-an economy build. Emit `wc6` only for the executed replacement. The old
-twenty-decision cutoff is removed for this first-contact guard.
+On a legacy World route inside the old twenty-decision horizon, return the
+exact v2 replacement and retain marker `wc5`. Outside that exact v2 boundary,
+the unchanged selectors choose neutral land first, then a neutral boat, then an
+economy build. Emit `wc6` only for a replacement that v2 would not make. This
+includes current 12-player World anchors absent from v2 and calm first contacts
+after the old horizon.
 
 ## Explicit non-changes
 
@@ -78,6 +81,12 @@ The red test uses the sealed hosted spawn `373314`, a calm larger target,
 neutral land, and twenty-four prior active decisions. Exact v2 attacks; WC6
 must select the offered neutral land with marker `wc6`. Pressure and
 smaller-target fixtures must remain deeply equal to v2.
+
+The first local qualifier implementation incorrectly renamed an in-horizon v2
+`wc5` action to `wc6`. Seed `20260741`, slot 6, turn 1,800 selected the same
+neutral boat in both images; the exact-v2 control proved the marker was not
+causal. The candidate pair was terminated, its partial output was quarantined,
+and the marker boundary above was added red-first before any outcome claim.
 
 Promotion remains fail closed:
 

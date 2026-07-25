@@ -33,15 +33,17 @@ const RECIPROCAL_RIVAL_IDS = new Set([
 ]);
 const MIN_DESPERATE_INVASION_RATIO = 0.5;
 const MIN_CONVERSION_TILE_SHARE = 0.002;
+const LEGACY_WORLD_SPAWN_TILES = new Set([
+  1088580, 1216626, 877134, 659476, 494334, 628394, 994502, 1333674,
+]);
+const CURRENT_WORLD_SPAWN_TILES = new Set([
+  373314, 500334, 628394, 629398, 659476, 673074, 877134,
+  997490, 1080668, 1088580, 1216626, 1333674,
+]);
 const MAP_SPAWN_TILES = new Map([
   ...[1180588, 1228670, 1216916, 1214746, 1224834, 892476, 1020678, 1450648]
     .map((tile) => [tile, "Asia"]),
-  ...[
-    373314, 500334, 628394, 629398, 659476, 673074, 877134,
-    997490, 1080668, 1088580, 1216626, 1333674,
-    // Retain validated anchors from the preceding World build.
-    494334, 994502,
-  ]
+  ...[...new Set([...LEGACY_WORLD_SPAWN_TILES, ...CURRENT_WORLD_SPAWN_TILES])]
     .map((tile) => [tile, "World"]),
   ...[659528, 534350, 266554, 687420, 622372, 589302, 450306, 740346, 856604, 855528]
     .map((tile) => [tile, "Pangaea"]),
@@ -175,6 +177,14 @@ export function avoidActionIDs(history) {
 export function buildState(observation, actions, history = []) {
   const own = observation?.ownState || {};
   const mapFingerprint = inferMapFingerprint(observation, history);
+  const spawnTile = Number(own.spawnTile);
+  const recordedWorldRouteV2 = [...history].reverse().find(
+    (entry) => typeof entry?.worldRouteV2 === "boolean",
+  )?.worldRouteV2;
+  const worldRouteV2 = mapFingerprint === "World" && (
+    (Number.isFinite(spawnTile) && LEGACY_WORLD_SPAWN_TILES.has(spawnTile)) ||
+    (!Number.isFinite(spawnTile) && recordedWorldRouteV2 === true)
+  );
   const visiblePlayers = (observation?.visiblePlayers || [])
     .filter((player) => player && player.isAlive);
   const baseIncomingAttackerIDs = incomingAttackerIDs(own.incomingAttacks);
@@ -216,6 +226,7 @@ export function buildState(observation, actions, history = []) {
   }));
   return {
     mapFingerprint,
+    worldRouteV2,
     phase: clean(observation?.phase),
     decisionNumber: history.length,
     self,
@@ -1099,16 +1110,24 @@ export function chooseCaptainUnderpantsRuntimeAction(
   if (calmWorldFirstContact) {
     const avoid = new Set(avoidActionIDs(history));
     const safeGrowthActions = actions.filter((action) => action.risk?.level !== "high");
-    const neutralLand = neutralExpansionStalled(state, history)
-      ? null
-      : chooseNeutralAttack(safeGrowthActions, history, avoid);
     const neutralBoat = chooseBoat(
       safeGrowthActions.filter(isNeutralBoat),
       state,
       history,
       avoid,
     );
-    const replacement = neutralLand || neutralBoat || chooseBuild(safeGrowthActions, history);
+    const economyBuild = chooseBuild(safeGrowthActions, history);
+    if (state.worldRouteV2 &&
+        activeDecisionCount(history) < CU1_OPENING_DECISIONS) {
+      const exactV2Replacement = neutralBoat || economyBuild;
+      if (exactV2Replacement && exactV2Replacement.id !== baseline.id) {
+        return { ...exactV2Replacement, policyMarker: "wc5" };
+      }
+    }
+    const neutralLand = neutralExpansionStalled(state, history)
+      ? null
+      : chooseNeutralAttack(safeGrowthActions, history, avoid);
+    const replacement = neutralLand || neutralBoat || economyBuild;
     if (replacement && replacement.id !== baseline.id) {
       return { ...replacement, policyMarker: "wc6" };
     }
@@ -1168,6 +1187,7 @@ export function recordDecision(history, action, state) {
     allProtocolAttackerIDs: state.self.allProtocolAttackerIDs || [],
     incomingAttackerNames,
     mapFingerprint: state.mapFingerprint,
+    worldRouteV2: state.worldRouteV2,
     policyMarker: action.policyMarker ?? null,
     allianceDirection: action.allianceDirection ?? null,
   });

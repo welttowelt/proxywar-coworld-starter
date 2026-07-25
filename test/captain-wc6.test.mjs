@@ -117,11 +117,11 @@ function candidate(f) {
   return chooseCaptainUnderpantsRuntimeAction(f.actions, f.state, null, f.history);
 }
 
-test("WC6 defers replay-shaped calm World first contact at marginal ratio", () => {
+test("WC6 preserves exact WC5 behavior inside the legacy opening horizon", () => {
   const f = fixture();
   assert.equal(parent(f).id, f.rivalAttack.id);
   assert.equal(candidate(f).id, f.neutralBoat.id);
-  assert.equal(candidate(f).policyMarker, "wc6");
+  assert.equal(candidate(f).policyMarker, "wc5");
 });
 
 test("WC6 preserves current and recent retaliation byte-for-byte", () => {
@@ -168,6 +168,28 @@ test("WC6 preserves exact v2 after the old horizon for a smaller target", () => 
 test("WC6 red: current 12-player World spawn reaches neutral land after the old horizon", () => {
   const f = fixture({
     spawnTile: 373314,
+    historyLength: 24,
+    ownTileShare: 0.14,
+    targetTileShare: 0.2,
+    includeNeutralLand: true,
+  });
+  f.history[f.history.length - 2] = {
+    actionID: "build:city:prior",
+    kind: "build",
+    neutral: false,
+    tileShare: 0.14,
+    incomingAttackerIDs: [],
+    allProtocolAttackerIDs: [],
+    incomingAttackerNames: [],
+  };
+  assert.equal(parent(f).id, f.rivalAttack.id);
+  assert.equal(candidate(f).id, f.neutralLand.id);
+  assert.equal(candidate(f).policyMarker, "wc6");
+});
+
+test("WC6 red: a legacy World route emits wc6 only after the WC5 horizon", () => {
+  const f = fixture({
+    spawnTile: 1088580,
     historyLength: 24,
     ownTileShare: 0.14,
     targetTileShare: 0.2,
