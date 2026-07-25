@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-25T01:15:08Z",
+  "gate": "hosted_current_field_4_of_4",
+  "request": {
+    "id": "xreq_b6b9d83c-e1af-405f-8724-6e1d58a573af",
+    "body": "experiments/request-captain-wc5-v2-hosted-current-world-4x.json",
+    "body_sha256": "70d4b9c318224c1abf57a8abfe2e23784e56efe818d4701be2969d1bf96301cc",
+    "idempotency_key": "captain-wc5-v2-hosted-4x-top12-world-r770-20260725",
+    "status_at_receipt": "pending"
+  },
+  "runtime": {
+    "coworld_id": "cow_5d275752-ff30-4f5c-a1c1-6db56b518ef2",
+    "coworld_version": "0.1.11",
+    "variant": "tournament-12p-world",
+    "episodes": 4,
+    "candidate_slot": 9,
+    "candidate_policy_version_id": "a5a12c09-f27e-4bb6-9927-c68d2c48c81f"
+  },
+  "episode_request_ids": [
+    "ereq_b547b5c4-7fb3-4b79-9ef6-02beb205ae92",
+    "ereq_5c77d604-cb87-4b6b-9655-cc5e5667881e",
+    "ereq_b8628fb1-a33a-4767-a5a2-db856f97f608",
+    "ereq_e3097c29-129b-426e-a61c-11ceb51f4b1d"
+  ],
+  "mutation_boundary": {
+    "diagnostic_only": true,
+    "submission_created": false,
+    "membership_changed": false,
+    "live_v1_changed": false
+  }
+}

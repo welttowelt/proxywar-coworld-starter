@@ -238,7 +238,9 @@
     "uploaded": true,
     "uploaded_label": "captain-underpants-max-aura:v2",
     "policy_version_id": "a5a12c09-f27e-4bb6-9927-c68d2c48c81f",
-    "hosted_gate_run": false,
+    "hosted_gate_run": true,
+    "hosted_request_id": "xreq_b6b9d83c-e1af-405f-8724-6e1d58a573af",
+    "hosted_gate_status": "pending",
     "submitted": false,
     "live_v1_changed": false
   }
