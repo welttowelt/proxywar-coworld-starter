@@ -4,21 +4,21 @@ import { createHash } from "node:crypto";
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
-const CONTROL_COMMIT = "cfc5865acfd4ebf807a0abf823ac9705822905f5";
-const CANDIDATE_COMMIT = "96482ba6595273e5b32be11c73a4907864f64933";
+const CONTROL_COMMIT = "96482ba6595273e5b32be11c73a4907864f64933";
+const CANDIDATE_COMMIT = "d53f2b6b2ac8c9a4de71f0924d04ace708a60a33";
 const QUALIFIER_SEEDS = Object.freeze([
-  20260728,
-  20260729,
-  20260730,
-  20260731,
-  20260732,
-  20260733,
-  20260734,
-  20260735,
-  20260736,
-  20260737,
-  20260738,
-  20260739,
+  20260740,
+  20260741,
+  20260742,
+  20260743,
+  20260744,
+  20260745,
+  20260746,
+  20260747,
+  20260748,
+  20260749,
+  20260750,
+  20260751,
 ]);
 const ROSTER = Object.freeze(
   Array.from({ length: 12 }, (_, slot) => `Captain parity clone ${slot}`),
@@ -27,7 +27,7 @@ const ROSTER = Object.freeze(
 function usage() {
   return [
     "Usage:",
-    "  node scripts/prepare-captain-wc5-requests.mjs \\",
+    "  node scripts/prepare-captain-wc6-requests.mjs \\",
     "    --mode qualifier|matched --base-request ABS_JSON --manifest ABS_JSON \\",
     "    --output-dir ABS_DIR --candidate-image SHA256 --control-image SHA256 \\",
     "    [--seed INTEGER --slot 0..11]",
@@ -149,7 +149,7 @@ function makeRequest(base, {
   };
   request.players = images.map(makePolicy);
   request.episode_tags = {
-    campaign: "captain-wc5-v2",
+    campaign: "captain-wc6-v3",
     phase,
     seed: String(seed),
     selected_slot: selectedSlot === null ? "none" : String(selectedSlot),
@@ -207,7 +207,7 @@ async function main() {
       });
       index.push(await writeRequest(
         args.outputDir,
-        `captain-wc5-qualifier-${seed}.json`,
+        `captain-wc6-qualifier-${seed}.json`,
         request,
         { seed, phase: "qualifier" },
       ));
@@ -232,7 +232,7 @@ async function main() {
       });
       index.push(await writeRequest(
         args.outputDir,
-        `captain-wc5-matched-${args.seed}-slot-${args.slot}-${variant}.json`,
+        `captain-wc6-matched-${args.seed}-slot-${args.slot}-${variant}.json`,
         request,
         {
           seed: args.seed,
@@ -252,6 +252,6 @@ async function main() {
 }
 
 main().catch((error) => {
-  process.stderr.write(`CAPTAIN_WC5_PREPARE_FAILED: ${error.message}\n`);
+  process.stderr.write(`CAPTAIN_WC6_PREPARE_FAILED: ${error.message}\n`);
   process.exitCode = 1;
 });
