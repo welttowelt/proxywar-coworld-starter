@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "arm": "WC6",
+  "gate": "hosted_current_field_4_of_4",
+  "request_id": "xreq_14a5dd84-71b3-431e-88c8-10e8e89bbad6",
+  "episode_count": 4,
+  "expected_episode_request_ids": [
+    "ereq_ff4e8a78-dd50-4a2d-9cc3-758df6afde38",
+    "ereq_947ad6ec-28ee-4d25-9321-5d0420ec23ad",
+    "ereq_3a021d72-a12e-4380-b7db-84abfa450ca1",
+    "ereq_b3103755-dab8-4a64-8960-67038d1afc23"
+  ],
+  "coworld_id": "cow_5d275752-ff30-4f5c-a1c1-6db56b518ef2",
+  "coworld_version": "0.1.11",
+  "variant_id": "tournament-12p-world",
+  "map": "World",
+  "expected_policy_version_ids": [
+    "cea2bb5b-add0-4dd3-aa32-9442280142c5",
+    "dffb6fb2-673e-4be5-9e35-ba69d6731754",
+    "9f233579-4837-4a27-b352-ed3135301135",
+    "4110c5a3-f340-44d6-ad60-106f5672df88",
+    "2b8cdf1f-7602-4340-ac38-3e6eba911ec7",
+    "b378acb9-2446-45c9-b3ce-67eac8e72170",
+    "13cfba2f-2270-4b1f-97a2-d9cd3d391b21",
+    "3ed5713d-7940-45f1-b347-76d596b90fe8",
+    "7329eda7-b041-4853-9ee6-e05cc1a98ac2",
+    "d49a5027-9a42-4d03-a72a-3fa3d86885af",
+    "93b8e253-6b9c-4ae6-983e-857e044c4842",
+    "08a431c6-7b6d-48d2-ad08-5b7e3530528d"
+  ],
+  "candidate_slot": 9,
+  "candidate_policy_version_id": "d49a5027-9a42-4d03-a72a-3fa3d86885af",
+  "candidate_player_id": "ply_02c1e39b-94af-4b38-8e12-645e6cd06ec1",
+  "candidate_player_name": "Captain Underpants Maximum Aura",
+  "marker": "wc6",
+  "minimum_marker_count": 1
+}
