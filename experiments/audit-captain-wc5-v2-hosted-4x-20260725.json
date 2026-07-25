@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "arm": "WC5",
+  "gate": "hosted_current_field_4_of_4",
+  "recorded_at": "2026-07-25T01:50:28.847Z",
+  "request_id": "xreq_b6b9d83c-e1af-405f-8724-6e1d58a573af",
+  "request_status": "completed",
+  "coworld_id": "cow_5d275752-ff30-4f5c-a1c1-6db56b518ef2",
+  "coworld_version": "0.1.11",
+  "variant": "tournament-12p-world",
+  "completed_episodes": 4,
+  "wins": 0,
+  "marker_count": 0,
+  "violations": [
+    "ereq_5c77d604-cb87-4b6b-9655-cc5e5667881e: candidate had unexplained holds",
+    "candidate won 0/4, not 4/4",
+    "wc5 did not reach in the hosted field"
+  ],
+  "verdict": "STOP",
+  "episodes": [
+    {
+      "episode_request_id": "ereq_b547b5c4-7fb3-4b79-9ef6-02beb205ae92",
+      "episode_id": "f7a4dc64-3d10-44ee-b83d-0a52c2ead913",
+      "identity_checks": {
+        "completed": true,
+        "expected_episode_request": true,
+        "exact_roster": true,
+        "exact_candidate": true,
+        "exact_runtime": true,
+        "replay_available": true
+      },
+      "replay_sha256": "8a9b0d07b0b7bcb7df34fe12a0c42986c5e28dde5d010ff0e7529f56f2aafdff",
+      "score": 0,
+      "won": false,
+      "final_tiles": 0,
+      "is_alive": false,
+      "decision_count": 95,
+      "accepted_decision_count": 95,
+      "rejected_decision_count": 0,
+      "unconfirmed_decision_count": 0,
+      "fallback_count": 0,
+      "degraded_count": 0,
+      "hold_count": 0,
+      "unexplained_hold_count": 0,
+      "holds": [],
+      "marker_count": 0,
+      "invalid_marker_count": 0,
+      "markers": []
+    },
+    {
+      "episode_request_id": "ereq_5c77d604-cb87-4b6b-9655-cc5e5667881e",
+      "episode_id": "8e2d1661-681d-474d-bcd8-8521a180e312",
+      "identity_checks": {
+        "completed": true,
+        "expected_episode_request": true,
+        "exact_roster": true,
+        "exact_candidate": true,
+        "exact_runtime": true,
+        "replay_available": true
+      },
+      "replay_sha256": "912ded11b507d8871173ce8096adf6c14d4d36a5af056686ad224ea3d7fa0a95",
+      "score": 0,
+      "won": false,
+      "final_tiles": 0,
+      "is_alive": false,
+      "decision_count": 154,
+      "accepted_decision_count": 154,
+      "rejected_decision_count": 0,
+      "unconfirmed_decision_count": 0,
+      "fallback_count": 0,
+      "degraded_count": 0,
+      "hold_count": 2,
+      "unexplained_hold_count": 2,
+      "holds": [
+        {
+          "turn": 14300,
+          "reason": "rul:h0d",
+          "legal_kinds": [
+            "boat",
+            "embargo_stop",
+            "embargo",
+            "embargo_all",
+            "alliance_request",
+            "target_player",
+            "quick_chat",
+            "emoji",
+            "delete_unit",
+            "hold"
+          ],
+          "tactical_kinds": [
+            "boat"
+          ],
+          "explained": false
+        },
+        {
+          "turn": 15000,
+          "reason": "rul:h0d",
+          "legal_kinds": [
+            "boat",
+            "donate_troops",
+            "donate_gold",
+            "break_alliance",
+            "embargo_stop",
+            "embargo",
+            "embargo_all",
+            "alliance_request",
+            "target_player",
+            "quick_chat",
+            "emoji",
+            "hold"
+          ],
+          "tactical_kinds": [
+            "boat"
+          ],
+          "explained": false
+        }
+      ],
+      "marker_count": 0,
+      "invalid_marker_count": 0,
+      "markers": []
+    },
+    {
+      "episode_request_id": "ereq_b8628fb1-a33a-4767-a5a2-db856f97f608",
+      "episode_id": "2b69b2c1-6225-4d91-aeb6-5de708c92af5",
+      "identity_checks": {
+        "completed": true,
+        "expected_episode_request": true,
+        "exact_roster": true,
+        "exact_candidate": true,
+        "exact_runtime": true,
+        "replay_available": true
+      },
+      "replay_sha256": "688ac835a5251070655fe941321eac3ffd3fb93946958c03f2436f89cf95ac9b",
+      "score": 0,
+      "won": false,
+      "final_tiles": 4424,
+      "is_alive": true,
+      "decision_count": 160,
+      "accepted_decision_count": 160,
+      "rejected_decision_count": 0,
+      "unconfirmed_decision_count": 0,
+      "fallback_count": 0,
+      "degraded_count": 0,
+      "hold_count": 0,
+      "unexplained_hold_count": 0,
+      "holds": [],
+      "marker_count": 0,
+      "invalid_marker_count": 0,
+      "markers": []
+    },
+    {
+      "episode_request_id": "ereq_e3097c29-129b-426e-a61c-11ceb51f4b1d",
+      "episode_id": "af288a95-ca49-43de-b8b9-57e97f306cfa",
+      "identity_checks": {
+        "completed": true,
+        "expected_episode_request": true,
+        "exact_roster": true,
+        "exact_candidate": true,
+        "exact_runtime": true,
+        "replay_available": true
+      },
+      "replay_sha256": "d265782fe2336ce3fa67fa2371c999854295129e601a5c8e6770fd8a9b025ca1",
+      "score": 0,
+      "won": false,
+      "final_tiles": 3248,
+      "is_alive": true,
+      "decision_count": 125,
+      "accepted_decision_count": 125,
+      "rejected_decision_count": 0,
+      "unconfirmed_decision_count": 0,
+      "fallback_count": 0,
+      "degraded_count": 0,
+      "hold_count": 0,
+      "unexplained_hold_count": 0,
+      "holds": [],
+      "marker_count": 0,
+      "invalid_marker_count": 0,
+      "markers": []
+    }
+  ]
+}

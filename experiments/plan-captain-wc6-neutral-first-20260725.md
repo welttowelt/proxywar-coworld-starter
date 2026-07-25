@@ -16,14 +16,15 @@ Recorded: 2026-07-25
 
 ## Sealed hosted diagnosis
 
-WC5 v2 lost its first three completed current-field World episodes and emitted
-zero `wc5` markers in all three. Captain's fixed slot finished with 0, 4,424,
-and 3,248 tiles.
+WC5 v2 lost all four current-field World episodes and emitted zero `wc5`
+markers. Captain's fixed slot finished with 0, 0, 4,424, and 3,248 tiles. The
+runtime had zero rejections, fallbacks, or degradation, but one episode also
+contained two holds while tactical actions remained legal.
 
 The first failure was operational: current 12-player World placed Captain on
 final spawn tile `373314`, while the source's validated World fingerprint table
 did not include that anchor. The branch therefore stayed byte-for-byte on v1.
-All three sealed replays used the same twelve current World anchors:
+The completed sealed replays used the same twelve current World anchors:
 
 `373314, 500334, 628394, 629398, 659476, 673074, 877134, 997490, 1080668,
 1088580, 1216626, 1333674`.
