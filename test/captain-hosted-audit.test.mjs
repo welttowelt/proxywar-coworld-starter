@@ -4,7 +4,9 @@ import test from "node:test";
 import {
   auditCaptainDecisions,
   classifyCaptainHold,
+  compressCaptainReplay,
 } from "../scripts/audit-captain-hosted.mjs";
+import { gunzipSync } from "node:zlib";
 
 test("generic Captain audit treats a tactical hold as unexplained", () => {
   const hold = classifyCaptainHold({
@@ -71,4 +73,11 @@ test("generic Captain audit rejects degraded, rejected, or parsed-failure marker
   assert.equal(audit.fallback_count, 1);
   assert.equal(audit.degraded_count, 1);
   assert.equal(audit.parse_failure_count, 1);
+});
+
+test("generic Captain audit retains replay bytes in a compact deterministic envelope", () => {
+  const raw = Buffer.from('{"replay":"captain"}\n'.repeat(100));
+  const compressed = compressCaptainReplay(raw);
+  assert.deepEqual(gunzipSync(compressed), raw);
+  assert.ok(compressed.length < raw.length);
 });

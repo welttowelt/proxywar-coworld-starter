@@ -6,6 +6,7 @@ import { readFile, mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
 import { pathToFileURL } from "node:url";
+import { gzipSync } from "node:zlib";
 
 const COWORLD_PACKAGE = "coworld==0.1.34";
 const SERVER = "https://softmax.com/api";
@@ -107,6 +108,10 @@ export function auditCaptainDecisions(rows, marker) {
     invalid_marker_count: markers.filter((entry) => !entry.valid).length,
     markers,
   };
+}
+
+export function compressCaptainReplay(bytes) {
+  return gzipSync(bytes, { level: 9, mtime: 0 });
 }
 
 function coworldJson(args) {
@@ -254,17 +259,21 @@ async function auditEpisode(episode, config, replayCache) {
   const score = scoreForCandidate(episode, config);
   const replayPlayer = replay?.results?.players?.[config.candidate_slot] ?? {};
   const replayWon = replay?.results?.winner_slot === config.candidate_slot;
+  const compressedReplay = compressCaptainReplay(bytes);
   const replayPath = path.join(
     replayCache,
-    `${episode.episode_id ?? episode.id}.replay`,
+    `${episode.episode_id ?? episode.id}.replay.gz`,
   );
-  await writeFile(replayPath, bytes, { flag: "wx", mode: 0o600 });
+  await writeFile(replayPath, compressedReplay, { flag: "wx", mode: 0o600 });
   return {
     episode_request_id: episode.id,
     episode_id: episode.episode_id,
     identity_checks: identity.checks,
     replay_sha256: sha256(bytes),
     replay_bytes: bytes.length,
+    replay_cache_sha256: sha256(compressedReplay),
+    replay_cache_bytes: compressedReplay.length,
+    replay_cache_encoding: "gzip",
     score,
     won: score === 1 || replayWon,
     final_tiles: replayPlayer.tiles_owned ?? replayPlayer.tilesOwned ?? null,
