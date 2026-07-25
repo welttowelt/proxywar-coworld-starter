@@ -246,3 +246,17 @@ passed Qualifier Round 318 and now owns the sole active Hrafn Competition
 membership. Round 507 sealed `hrafn-fylking:v5` among 13 entrants and started
 four episodes, confirming Hrafn's official Competition participation beside
 `qd1n:v89`. The official Odin first-place streak remains `0/1000`.
+
+Captain WC5 local checkpoint, 2026-07-25. The exact-v1 child adds one boundary
+to the WC3 first-contact deferral: the target must be at least as large
+territorially as Captain. A fresh outcome-blind qualifier selected seed
+`20260733`, slot 10, turn 1300. There, exact v1 attacked a 5%-share neutral
+rival at `1.06x` while Captain held 3% and eighteen neutral boat expansions
+remained; WC5 instead launched an accepted neutral boat. In the same-seat
+100-decision pair, WC5 stayed alive and improved from score `0.001114` /
+718 tiles to `0.001596` / 1,036 tiles. All 2,248 pair decisions were accepted
+with zero fallback or degradation; the candidate's three field holds exposed
+no tactical legal action, so unexplained holds are zero. The exact linux/amd64
+image `sha256:aa4b1f3a` passes the local causal gate and is authorized for
+upload only. Hosted `4/4`, independent `20/20`, submission, and live membership
+verification remain open; v1 is unchanged.

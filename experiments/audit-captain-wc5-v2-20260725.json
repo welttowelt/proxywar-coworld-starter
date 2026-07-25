@@ -1,0 +1,67 @@
+{
+  "audit": "Captain Underpants Maximum Aura v2 WC5 promotion audit",
+  "recorded_at": "2026-07-25T01:06:20Z",
+  "target": {
+    "source_commit": "96482ba6595273e5b32be11c73a4907864f64933",
+    "image_id": "sha256:aa4b1f3acc57a74708d07c7c7aa546a7cd09dd53b0c181e3d9ae68575e331dc0",
+    "requested_policy_label": "captain-underpants-max-aura:v2"
+  },
+  "criteria": [
+    {
+      "problem": "A local score increase without direct branch reach would not identify WC5 as the cause.",
+      "evidence": "The outcome-blind qualifier selected seed 20260733, slot 10, turn 1300 before scores were inspected. The matched candidate emitted one wc5 marker at that exact decision; control emitted zero.",
+      "practical_impact": "Without fixed, outcome-blind reach, a favorable seed could be mistaken for policy improvement.",
+      "behavior_or_implementation_check": "Exact v1 selected attack:p6laiyav:10 at 1.06x against a 0.05-share rival while Captain held 0.03. WC5 selected the accepted neutral boat boat:804503:8.",
+      "smallest_useful_fix": "No source change. Preserve the exact candidate and carry this fixed seed and seat into the causal evidence.",
+      "status": "PASS"
+    },
+    {
+      "problem": "WC4 showed that the broad troop-ratio guard could suppress a profitable attack on a smaller rival.",
+      "evidence": "The red-first 0.03-versus-0.02 fixture fails under WC4 and passes under WC5; WC5 remains deeply equal to exact v1 on that fixture.",
+      "practical_impact": "Omitting territorial parity recreates the 266-tile WC4 collapse and weakens exact-v1 conversion against smaller rivals.",
+      "behavior_or_implementation_check": "The only new behavioral boundary requires finite target tile share greater than or equal to Captain's finite tile share.",
+      "smallest_useful_fix": "No broader rewrite. Retain the territorial-parity predicate as the sole WC5 correction.",
+      "status": "PASS"
+    },
+    {
+      "problem": "Accepted decisions can still conceal avoidable holds or degraded execution.",
+      "evidence": "The matched pair recorded 2,248 accepted decisions, zero fallbacks, and zero degradation. Candidate field holds occurred at turns 7400, 7600, and 10100.",
+      "practical_impact": "An avoidable no-op could erase the apparent gain or expose a controller defect that the score hides.",
+      "behavior_or_implementation_check": "Every hold exposed only social, delete-unit, and hold actions. No tactical spawn, attack, boat, build, upgrade, or retreat was legal. Selected-seat unexplained holds are zero.",
+      "smallest_useful_fix": "Classify and retain the three hold records in evidence; do not alter policy behavior to force a social action.",
+      "status": "PASS"
+    },
+    {
+      "problem": "An unbound or wrong-architecture image could invalidate the local comparison after upload.",
+      "evidence": "The exact tested image is sha256:aa4b1f3acc57a74708d07c7c7aa546a7cd09dd53b0c181e3d9ae68575e331dc0, linux/amd64, user node, command node /app/llm-player.mjs. Its committed source hashes are recorded in the evidence packet.",
+      "practical_impact": "Uploading a mutable tag or arm64 build would sever the link between the passing replay and the hosted policy.",
+      "behavior_or_implementation_check": "Docker inspection and source hashing match the preregistered candidate commit 96482ba6595273e5b32be11c73a4907864f64933.",
+      "smallest_useful_fix": "Upload only this immutable image ID under captain-underpants-max-aura:v2 and verify the returned policy-version identity.",
+      "status": "PASS"
+    },
+    {
+      "problem": "The one-seed local causal pair does not establish current-field or cross-map robustness.",
+      "evidence": "No hosted diagnostic or independent 20-episode map-and-seat regression has run for WC5.",
+      "practical_impact": "Submitting now could replace a known live policy with a candidate that only succeeds in one controlled World seat.",
+      "behavior_or_implementation_check": "The preregistration and ProxyWar promotion doctrine require hosted 4/4 and separate 20/20 completion before submission.",
+      "smallest_useful_fix": "Upload the exact image, run the frozen hosted 4/4, then run an independent 20/20 regression. Keep v1 live until both pass.",
+      "status": "OPEN"
+    }
+  ],
+  "gate_status": {
+    "source_and_red_first": "PASS",
+    "full_tests": "PASS_WITH_FOUR_PRE_EXISTING_ABSOLUTE_PATH_FAILURES",
+    "exact_amd64_image": "PASS",
+    "outcome_blind_reach": "PASS",
+    "same_seat_causal_advantage": "PASS",
+    "runtime_cleanliness": "PASS",
+    "hosted_current_field_4_of_4": "PENDING",
+    "independent_map_seat_20_of_20": "PENDING",
+    "submission_identity_and_membership": "PENDING"
+  },
+  "verdict": {
+    "upload_exact_image": true,
+    "submit": false,
+    "reason": "Local causal and executable gates pass. Hosted and regression gates remain open."
+  }
+}

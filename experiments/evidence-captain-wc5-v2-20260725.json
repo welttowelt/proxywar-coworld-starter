@@ -1,0 +1,243 @@
+{
+  "campaign": "captain-underpants-max-aura-v2",
+  "arm": "WC5",
+  "recorded_at": "2026-07-25T01:06:20Z",
+  "verdict": "PASS_LOCAL_CAUSAL_GATE_UPLOAD_AUTHORIZED",
+  "control": {
+    "source_commit": "cfc5865acfd4ebf807a0abf823ac9705822905f5",
+    "policy_version_id": "348b11ff-29b1-4743-b456-e735dbf1520d",
+    "image": "proxywar-captain-underpants-cu1:cfc5865a",
+    "image_id": "sha256:02562271dae6503a89b90a74bf9fddc272cb5aebefe383859bc36bbb7ade086c"
+  },
+  "candidate": {
+    "source_commit": "96482ba6595273e5b32be11c73a4907864f64933",
+    "request_builder_commit": "d9a9dbffa179daf2edbbf6d8cd0ed00db2aaf42e",
+    "image": "proxywar-captain-wc5-v2:96482ba6",
+    "image_id": "sha256:aa4b1f3acc57a74708d07c7c7aa546a7cd09dd53b0c181e3d9ae68575e331dc0",
+    "platform": "linux/amd64",
+    "user": "node",
+    "command": [
+      "node",
+      "/app/llm-player.mjs"
+    ],
+    "source_hashes": {
+      "llm-player.mjs": "2e18b93b571a5f8f16a7045829b43da6737d0c2734f16bf9bb16df1cd9630906",
+      "strategy-engine.mjs": "bf6fd14dda2e48380d86d0a31a14912fb05b01923af12387898c798469ecf4a0",
+      "captain-underpants-production-doctrine.mjs": "7f3725c87fcf045144e5d0750fa5c485c6ca2e11a4d5b553b195d9e246fff9d5",
+      "Dockerfile": "213e818f42d1267825e6487f965ebff037b5ebe257fc2afe8afe56431417d5b3"
+    }
+  },
+  "source_validation": {
+    "red_first": {
+      "fixture": "Captain 0.03 tile share, rival 0.02, exact-v1 attack at 1.16x",
+      "broad_wc4_action": "neutral boat",
+      "expected_wc5_action": "deeply equal to exact v1",
+      "failed_before_wc5_implementation": true
+    },
+    "focused_wc5_tests": {
+      "passed": 6,
+      "failed": 0
+    },
+    "strategy_tests": {
+      "passed": 109,
+      "failed": 0
+    },
+    "full_suite": {
+      "passed": 335,
+      "new_failures_vs_control": 0,
+      "pre_existing_absolute_path_failures": 4
+    },
+    "source_delta": {
+      "behavioral_file_count": 1,
+      "behavioral_file": "strategy-engine.mjs",
+      "mechanism": "first calm World contact deferral only when the target is at least as large territorially and troop ratio is 1.0x to below 1.3x"
+    }
+  },
+  "outcome_blind_qualifier": {
+    "coworld_id": "cow_236e7c2e-acdb-404a-b1b9-41852e5ac658",
+    "coworld_version": "0.1.10",
+    "manifest_hash": "b23b69d885e6629ad32c7a68a7a782a24d3e5f521b05c4d2d78553bb521336ea",
+    "map": "World",
+    "decision_steps": 25,
+    "roster": "twelve candidate parity clones",
+    "selection_rule": "first ordered seed with wc5, then earliest turn and lowest slot; outcomes were not inspected",
+    "ordered_seed_results": [
+      {
+        "seed": 20260728,
+        "request_hash": "c630e5097ae2c34f9f6f35f9d19c8cb801b3b5f912fdd915ba0aad0cdc179c8e",
+        "marker_count": 0,
+        "decision_count": 336,
+        "accepted_decision_count": 336,
+        "fallback_count": 0,
+        "degraded_count": 0,
+        "hold_count": 0,
+        "results_hash": "1c6d9bd90dc37054248d7d5c28c1e195bc456fc571d57f21b95dc8c49033d85b",
+        "replay_hash": "92ad6f1f6e85dc1deb99a9c9e2ffbc538a506abedb05b95025e44effe6f267c7"
+      },
+      {
+        "seed": 20260729,
+        "request_hash": "2f47c60aa0728f041a3a61ac9a6406fea74fa7b73cf59e160a7a26bf3f007e09",
+        "marker_count": 0,
+        "decision_count": 336,
+        "accepted_decision_count": 336,
+        "fallback_count": 0,
+        "degraded_count": 0,
+        "hold_count": 0,
+        "results_hash": "15ba44e250a32784ced254aa78f84070f2ce519ece3931bcd8e70310ed2ce8d4",
+        "replay_hash": "e522305e182d2b4f47a564dbc1b8bccc952117c2c605941620f7499bd6188037"
+      },
+      {
+        "seed": 20260730,
+        "request_hash": "5ff01528625975bdf02117f623e8fb670a03c70fb150b4fd5395e12ab3b43710",
+        "marker_count": 0,
+        "decision_count": 336,
+        "accepted_decision_count": 336,
+        "fallback_count": 0,
+        "degraded_count": 0,
+        "hold_count": 0,
+        "results_hash": "9916654e35209658a6397e5cd9a290397766baecfb316c9672dc69f8ac34e7c4",
+        "replay_hash": "cc85e110625f637657ff4ee8f8a4d7acff625eb7468c0828a3ac0e4197c9ff8e"
+      },
+      {
+        "seed": 20260731,
+        "request_hash": "506ecc246da3c2e47f53d81fe3089bb7a871d816e57975d81c3b26d2548dce6c",
+        "marker_count": 0,
+        "decision_count": 336,
+        "accepted_decision_count": 336,
+        "fallback_count": 0,
+        "degraded_count": 0,
+        "hold_count": 0,
+        "results_hash": "b98a9691d64241c90eaf0ddeaac0e636b562afed508bae7d5ce0a9b6405f36ba",
+        "replay_hash": "c859c6a9e26e015c41c00f5fc56c7b89512aa983273a0824e0aa407d108bf49c"
+      },
+      {
+        "seed": 20260732,
+        "request_hash": "2f53419b1732fb6ce112e14a68abbfd4684f6041624c6344ead5e59de19771a7",
+        "marker_count": 0,
+        "decision_count": 336,
+        "accepted_decision_count": 336,
+        "fallback_count": 0,
+        "degraded_count": 0,
+        "hold_count": 0,
+        "results_hash": "38b55d2ebd16e2f784fec7169aa0e90fddd675ac3f200d01f8f51c4c526a4f4e",
+        "replay_hash": "0607d6716b1fc5aeba3e166278b0d3f4869c087f893aa8dfa913bb20252ee25c"
+      },
+      {
+        "seed": 20260733,
+        "request_hash": "7927295f4b46a759579ce9f188c23817fd87b2bfd392bce5d58630c8fb96e20f",
+        "marker_count": 1,
+        "decision_count": 336,
+        "accepted_decision_count": 336,
+        "fallback_count": 0,
+        "degraded_count": 0,
+        "hold_count": 0,
+        "first_marker": {
+          "turn": 1300,
+          "slot": 10,
+          "username": "Captain parity clone 10",
+          "selected_action": "boat:804503:8",
+          "accepted": true
+        },
+        "results_hash": "5e0a8d763515252e985f044d397ca94060d01c41fa9370bcc1162b0d0190163c",
+        "replay_hash": "09266793686922ec65f1936c8a70b1892d506f59fe6be79c6554f52806ba667a"
+      }
+    ]
+  },
+  "same_seat_gate": {
+    "seed": 20260733,
+    "slot": 10,
+    "decision_steps": 100,
+    "request_delta": "Only slot 10 image and descriptive episode phase tag differ",
+    "request_hashes": {
+      "control": "2c39c04a516a0d01a579284b054859cc3e842fa30ac0b5cc400f19a2a350f330",
+      "candidate": "919d80503a6b92a2b8955224bb64c8181c87ec8544030560fb161d6d4bbb126d"
+    },
+    "control": {
+      "decision_count": 1124,
+      "accepted_decision_count": 1124,
+      "fallback_count": 0,
+      "degraded_count": 0,
+      "marker_count": 0,
+      "field_hold_count": 0,
+      "selected_seat": {
+        "score": 0.0011143911668203223,
+        "tiles_owned": 718,
+        "is_alive": true,
+        "hold_count": 0
+      },
+      "results_hash": "867225f68ae6b51f871b7ae8400322a0905ad04804969be0619b894cf3b37431",
+      "replay_hash": "a7f2e63d8c2a0d6de029dc69b9fa1ca6bfba01ad84d80849f9a096c70bad238e"
+    },
+    "candidate": {
+      "decision_count": 1124,
+      "accepted_decision_count": 1124,
+      "fallback_count": 0,
+      "degraded_count": 0,
+      "marker_count": 1,
+      "field_hold_count": 3,
+      "unexplained_field_hold_count": 0,
+      "selected_seat": {
+        "score": 0.0015958938083633462,
+        "tiles_owned": 1036,
+        "is_alive": true,
+        "hold_count": 2,
+        "unexplained_hold_count": 0
+      },
+      "hold_evidence": [
+        {
+          "turn": 7400,
+          "slot": 10,
+          "reason": "rul:h0d",
+          "classification": "explained",
+          "explanation": "Only social, delete-unit, and hold actions were legal; no tactical spawn, attack, boat, build, upgrade, or retreat existed."
+        },
+        {
+          "turn": 7600,
+          "slot": 8,
+          "reason": "rul:h0d",
+          "classification": "explained",
+          "explanation": "Only social, delete-unit, and hold actions were legal; this unchanged v1 seat was outside the causal intervention."
+        },
+        {
+          "turn": 10100,
+          "slot": 10,
+          "reason": "rul:h0d",
+          "classification": "explained",
+          "explanation": "Only social, delete-unit, and hold actions were legal; no tactical spawn, attack, boat, build, upgrade, or retreat existed."
+        }
+      ],
+      "results_hash": "bb578b03db9b770fcc7a5835b346d97fb3a50eddf3f24c5dc355a70240043256",
+      "replay_hash": "ba856aa8c49bc56d133a2496f150a9b61643be967745df6beb92bfd2d82a088c"
+    },
+    "mechanism_reach": {
+      "turn": 1300,
+      "exact_v1_action": "attack:p6laiyav:10",
+      "candidate_action": "boat:804503:8",
+      "relative_troop_ratio": 1.06,
+      "captain_tile_share": 0.03,
+      "target_tile_share": 0.05,
+      "target_relation": 2,
+      "neutral_boat_action_count": 18,
+      "accepted": true
+    },
+    "selected_seat_comparison": {
+      "candidate_beats_control": true,
+      "deciding_field": "score",
+      "score_delta": 0.0004815026415430239,
+      "tiles_delta": 318,
+      "both_alive": true
+    }
+  },
+  "causal_read": {
+    "observed": "WC5 reached exactly once and deferred the preregistered failure class: a calm first World contact at 1.06x against a territorially larger target while eighteen neutral boat expansions were legal.",
+    "outcome": "The selected candidate seat remained alive and improved from 718 to 1,036 tiles, with every decision accepted and no fallback, degradation, or unexplained hold.",
+    "boundary_preserved": "The red-first test proves WC5 leaves exact v1 unchanged against territorially smaller targets, fixing the collapse exposed by WC4.",
+    "limit": "This is a one-seed same-seat causal result. It authorizes upload of the exact tested image for hosted diagnostics, not submission."
+  },
+  "external_state": {
+    "uploaded": false,
+    "hosted_gate_run": false,
+    "submitted": false,
+    "live_v1_changed": false
+  }
+}
