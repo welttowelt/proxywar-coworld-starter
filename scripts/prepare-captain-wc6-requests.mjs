@@ -5,20 +5,20 @@ import { mkdir, readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 const CONTROL_COMMIT = "96482ba6595273e5b32be11c73a4907864f64933";
-const CANDIDATE_COMMIT = "9aa9da46a1a7241b6c6d9981815692afaad814b7";
+const CANDIDATE_COMMIT = "e8fc4c23e072774044633b229209fc722c060bbc";
 const QUALIFIER_SEEDS = Object.freeze([
-  20260764,
-  20260765,
-  20260766,
-  20260767,
-  20260768,
-  20260769,
-  20260770,
-  20260771,
-  20260772,
-  20260773,
-  20260774,
-  20260775,
+  20260776,
+  20260777,
+  20260778,
+  20260779,
+  20260780,
+  20260781,
+  20260782,
+  20260783,
+  20260784,
+  20260785,
+  20260786,
+  20260787,
 ]);
 const ROSTER = Object.freeze(
   Array.from({ length: 12 }, (_, slot) => `Captain parity clone ${slot}`),
@@ -149,7 +149,7 @@ function makeRequest(base, {
   };
   request.players = images.map(makePolicy);
   request.episode_tags = {
-    campaign: "captain-wc6-v3-r3-current",
+    campaign: "captain-wc6-v3-r4-geometry",
     phase,
     seed: String(seed),
     selected_slot: selectedSlot === null ? "none" : String(selectedSlot),
