@@ -235,7 +235,9 @@
     "limit": "This is a one-seed same-seat causal result. It authorizes upload of the exact tested image for hosted diagnostics, not submission."
   },
   "external_state": {
-    "uploaded": false,
+    "uploaded": true,
+    "uploaded_label": "captain-underpants-max-aura:v2",
+    "policy_version_id": "a5a12c09-f27e-4bb6-9927-c68d2c48c81f",
     "hosted_gate_run": false,
     "submitted": false,
     "live_v1_changed": false

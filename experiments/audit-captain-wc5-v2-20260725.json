@@ -4,7 +4,8 @@
   "target": {
     "source_commit": "96482ba6595273e5b32be11c73a4907864f64933",
     "image_id": "sha256:aa4b1f3acc57a74708d07c7c7aa546a7cd09dd53b0c181e3d9ae68575e331dc0",
-    "requested_policy_label": "captain-underpants-max-aura:v2"
+    "requested_policy_label": "captain-underpants-max-aura:v2",
+    "uploaded_policy_version_id": "a5a12c09-f27e-4bb6-9927-c68d2c48c81f"
   },
   "criteria": [
     {
@@ -60,7 +61,7 @@
     "submission_identity_and_membership": "PENDING"
   },
   "verdict": {
-    "upload_exact_image": true,
+    "upload_exact_image": "COMPLETED",
     "submit": false,
     "reason": "Local causal and executable gates pass. Hosted and regression gates remain open."
   }

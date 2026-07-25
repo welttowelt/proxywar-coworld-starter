@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-07-25T01:11:30Z",
+  "entrant": {
+    "player_id": "ply_02c1e39b-94af-4b38-8e12-645e6cd06ec1",
+    "player_name": "Captain Underpants Maximum Aura",
+    "policy_label": "captain-underpants-max-aura:v2",
+    "policy_version_id": "a5a12c09-f27e-4bb6-9927-c68d2c48c81f"
+  },
+  "source": {
+    "commit": "96482ba6595273e5b32be11c73a4907864f64933",
+    "branch": "rci/captain-wc5-v2-20260725",
+    "local_gate_evidence": "experiments/evidence-captain-wc5-v2-20260725.json"
+  },
+  "image": {
+    "reference": "proxywar-captain-wc5-v2:96482ba6",
+    "id": "sha256:aa4b1f3acc57a74708d07c7c7aa546a7cd09dd53b0c181e3d9ae68575e331dc0",
+    "platform": "linux/amd64",
+    "user": "node",
+    "command": [
+      "node",
+      "/app/llm-player.mjs"
+    ]
+  },
+  "upload": {
+    "server": "https://softmax.com/api",
+    "coworld_package": "coworld==0.1.34",
+    "bedrock_capability_enabled": true,
+    "private_tags": {
+      "source_commit": "96482ba6595273e5b32be11c73a4907864f64933",
+      "image_id": "aa4b1f3acc57a74708d07c7c7aa546a7cd09dd53b0c181e3d9ae68575e331dc0"
+    },
+    "result": "Upload complete: captain-underpants-max-aura:v2"
+  },
+  "naming_contract": {
+    "initial_attempt": "rejected before policy creation because coworld 0.1.34 requires the base name without a colon",
+    "successful_name_argument": "captain-underpants-max-aura",
+    "server_assigned_version": 2
+  },
+  "post_upload_verification": {
+    "active_player_verified": true,
+    "policy_version_verified": true,
+    "source_tag_verified": true,
+    "image_id_tag_verified": true,
+    "run_command_verified": true,
+    "v1_policy_version_still_present": true,
+    "v1_live_membership_changed": false
+  },
+  "gate_state": {
+    "diagnostic_uploaded": true,
+    "local_causal_gate": true,
+    "hosted_4_of_4": false,
+    "regression_20_of_20": false,
+    "submitted": false,
+    "membership_created": false,
+    "verdict": "DIAGNOSTIC_UPLOAD_ONLY"
+  }
+}
