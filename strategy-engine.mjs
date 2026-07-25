@@ -1059,6 +1059,10 @@ function recordedReciprocalRequest(entry) {
     (RECIPROCAL_RIVAL_IDS.has(entryID) || RECIPROCAL_RIVALS.has(entryName));
 }
 
+function recordedPlayerConflict(entry) {
+  return (entry?.kind === "attack" || entry?.kind === "boat") && entry?.neutral !== true;
+}
+
 // CU1 escapes the opening alliance loop visible in Mickey's weak live Pangaea
 // games. After one optional K1Z request, later opening requests yield to the
 // unchanged neutral-growth selector. A real reverse handshake stays immediate.
@@ -1069,6 +1073,39 @@ export function chooseCaptainUnderpantsRuntimeAction(
   history = [],
 ) {
   const baseline = chooseAction(actions, state, plan, history);
+  const worldFirstContactTarget = baseline.kind === "attack" &&
+      !isNeutralExpansion(baseline)
+    ? rivalForAction(baseline, state)
+    : null;
+  const calmEarlyWorldFirstContact =
+    state.mapFingerprint === "World" &&
+    activeDecisionCount(history) < CU1_OPENING_DECISIONS &&
+    !history.some(recordedPlayerConflict) &&
+    !hasCurrentPressure(state) &&
+    recentDistinctAttackerCount(state, history) === 0 &&
+    worldFirstContactTarget &&
+    !rivalIsProtected(state, history, worldFirstContactTarget) &&
+    Number.isFinite(worldFirstContactTarget.tileShare) &&
+    Number.isFinite(state.self.tileShare) &&
+    worldFirstContactTarget.tileShare >= state.self.tileShare &&
+    Number.isFinite(worldFirstContactTarget.relativeTroopRatio) &&
+    worldFirstContactTarget.relativeTroopRatio >= 1 &&
+    worldFirstContactTarget.relativeTroopRatio < 1.3 &&
+    recentHostility(state, history, worldFirstContactTarget) === 0;
+  if (calmEarlyWorldFirstContact) {
+    const avoid = new Set(avoidActionIDs(history));
+    const safeGrowthActions = actions.filter((action) => action.risk?.level !== "high");
+    const neutralBoat = chooseBoat(
+      safeGrowthActions.filter(isNeutralBoat),
+      state,
+      history,
+      avoid,
+    );
+    const replacement = neutralBoat || chooseBuild(safeGrowthActions, history);
+    if (replacement && replacement.id !== baseline.id) {
+      return { ...replacement, policyMarker: "wc5" };
+    }
+  }
   if (state.mapFingerprint !== "Pangaea" ||
       activeDecisionCount(history) >= CU1_OPENING_DECISIONS) {
     return baseline;
