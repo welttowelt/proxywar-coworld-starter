@@ -138,6 +138,29 @@ The focused Captain/strategy suite passes `124/124`. The full repository suite
 passes `344/348`; the only four failures are the same pre-existing Mickey
 fanout activation-path failures, outside the Captain behavioral files.
 
+## Local causal result
+
+Fresh outcome-blind seed `20260789` reached twice with no runtime fault. The
+predeclared first marker was slot 2 at turn 800. The frozen matched requests
+then differed only in slot 2's image and the descriptive phase tag.
+
+On the identical turn-800 observation, exact v2 selected
+`attack:iaio5l86:10` at `1.13` troop ratio. WC6 selected the offered neutral
+boat `boat:1003477:8`; both actions were accepted. Three neutral-land actions,
+eighteen neutral boats, and four builds were legal.
+
+At turn 10,400, the exact-v2 seat was alive with 4,391 tiles and score
+`0.0067490716376066694`. The WC6 seat was alive with 6,664 tiles and score
+`0.010226991953763684`: `+2,273` tiles and `+51.53%` score. Both arms recorded
+zero holds, rejections, fallbacks, degradation, or parse failures. Hashes,
+image identity, source receipts, reach evidence, and the two pre-episode
+operator failures are recorded in
+`evidence-captain-wc6-observable-first-contact-20260725.json`.
+
+The local causal gate passes and authorizes upload of only image
+`sha256:2d273db10769d57076b1d72dccac06aff0eb519ffaf574a95ad97b29949dd86a`.
+It does not authorize league submission.
+
 Promotion remains fail closed:
 
 1. Focused and full source suites.

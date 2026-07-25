@@ -1,0 +1,172 @@
+{
+  "campaign": "captain-wc6-observable-first-contact",
+  "recorded_at": "2026-07-25T04:19:26Z",
+  "verdict": "PASS_LOCAL_CAUSAL_GATE_UPLOAD_AUTHORIZED",
+  "behavioral_source": {
+    "commit": "80d54f18ad3071e35b4c0b80377e115c0f701d75",
+    "request_builder_commit": "d838b4577c2aa226a6a4ff925d27261c7c94ee2b",
+    "mechanism": "On a recognized-World or map-unobservable calm first contact, defer an exact-parent marginal attack against a same-size-or-larger rival for legal neutral growth.",
+    "source_validation": {
+      "focused_passed": 124,
+      "focused_failed": 0,
+      "full_passed": 344,
+      "full_failed": 4,
+      "new_failures": 0,
+      "pre_existing_failures": "four Mickey fanout activation-path tests outside Captain behavioral files"
+    }
+  },
+  "candidate_image": {
+    "reference": "proxywar-captain-wc6-r5:80d54f18",
+    "id": "sha256:2d273db10769d57076b1d72dccac06aff0eb519ffaf574a95ad97b29949dd86a",
+    "platform": "linux/amd64",
+    "user": "node",
+    "command": [
+      "node",
+      "/app/llm-player.mjs"
+    ],
+    "labels": {
+      "org.opencontainers.image.revision": "80d54f18ad3071e35b4c0b80377e115c0f701d75",
+      "com.welttowelt.proxywar.policy-marker": "wc6-observable-first-contact"
+    },
+    "source_hashes": {
+      "llm-player.mjs": "2e18b93b571a5f8f16a7045829b43da6737d0c2734f16bf9bb16df1cd9630906",
+      "strategy-engine.mjs": "0e2c195f22a452d0cabfbdca4591072017a4bfe0af7638f7120b08ef251140a7",
+      "captain-underpants-production-doctrine.mjs": "7f3725c87fcf045144e5d0750fa5c485c6ca2e11a4d5b553b195d9e246fff9d5",
+      "intent-controller.mjs": "98c991b05d9b76e5780119a04d8be01a11d5a5a2c602909f5c3a57b2dd51caa6",
+      "strategy-chassis.mjs": "de45b447513ddcac5e9bf1be14417bfab0dd5e8e92156670539e8eda01478ca1",
+      "planner-backoff.mjs": "b286da97da20e388a8b33114520f15e2286ee2f0f63cc20f3e344d988280dbf3",
+      "starter-player.mjs": "3b9dd1906faec00fd61fe6738ab53233e13996ca82012b01223051f65cd086a5",
+      "Dockerfile": "213e818f42d1267825e6487f965ebff037b5ebe257fc2afe8afe56431417d5b3"
+    }
+  },
+  "control_image": {
+    "behavioral_source_commit": "96482ba6595273e5b32be11c73a4907864f64933",
+    "rebuilt_reference": "proxywar-captain-wc5-v2-control:96482ba6",
+    "rebuilt_id": "sha256:683b240f3445f56f3ab4deb638938384d5838d46be298b8b4526ced69bdf46d7",
+    "previously_uploaded_id": "sha256:aa4b1f3acc57a74708d07c7c7aa546a7cd09dd53b0c181e3d9ae68575e331dc0",
+    "platform": "linux/amd64",
+    "source_hash_match_to_uploaded_evidence": true,
+    "behavioral_difference_from_uploaded_v2": false
+  },
+  "outcome_blind_reach": {
+    "game": {
+      "coworld_id": "cow_5d275752-ff30-4f5c-a1c1-6db56b518ef2",
+      "version": "0.1.11",
+      "map": "World",
+      "map_size": "Normal",
+      "players": 12,
+      "decision_steps": 25
+    },
+    "selection_rule": "First successful ordered seed with an accepted wc6 marker, then earliest turn and lowest slot; inspect outcomes only after fixing reach.",
+    "non_evidence_attempt": {
+      "seed": 20260788,
+      "reason": "Coworld CLI 0.1.30 rejected the current manifest schema before an episode existed.",
+      "quarantined": true
+    },
+    "selected": {
+      "seed": 20260789,
+      "slot": 2,
+      "turn": 800,
+      "request_sha256": "1f0d000651105d29751348bf2a044d1f73d890884cf05ff9a53cf24b8703b091",
+      "results_sha256": "64164394639cdc9ba7d3232192b58e148ff7483202c8b2b3ab94e2ccae8a45a6",
+      "replay_sha256": "47d0dad18d6b11683c5efbfd20f107ebc153a985a2f24d05e97e8120be59a935",
+      "decisions_sha256": "8f33717bf362db6315c579e187091cbce71fdaed6eff730072f372ac090c5998",
+      "decision_count": 336,
+      "accepted_decision_count": 336,
+      "rejected_count": 0,
+      "fallback_count": 0,
+      "degraded_count": 0,
+      "parse_failure_count": 0,
+      "hold_count": 0,
+      "wc6_marker_count": 2,
+      "first_marker_action": "boat:1003477:8"
+    }
+  },
+  "matched_same_seat": {
+    "seed": 20260789,
+    "slot": 2,
+    "turn_count": 10400,
+    "decision_steps": 100,
+    "request_delta": "Only slot 2 image and the descriptive same-seat phase tag differ.",
+    "control": {
+      "request_sha256": "9702de257cf35193f2ea21d65362479d1ddd473596688318c4835320fbb0b363",
+      "results_sha256": "863413541b1a84aab0425ad2ef049903e635e918c9ee5e5a415a3c1be70d40c2",
+      "replay_sha256": "00453297fcbda819e7b6766f0e42e4693eac29a02d9b6b3752cb154985d4aa88",
+      "decisions_sha256": "0bdbad5471fffa60b6e56d680441fee3667a85160b935ce212aafe3086ed9bbe",
+      "decision_count": 1122,
+      "accepted_decision_count": 1122,
+      "rejected_count": 0,
+      "fallback_count": 0,
+      "degraded_count": 0,
+      "parse_failure_count": 0,
+      "hold_count": 0,
+      "wc6_marker_count": 0,
+      "selected_seat": {
+        "score": 0.0067490716376066694,
+        "tiles_owned": 4391,
+        "is_alive": true
+      }
+    },
+    "candidate": {
+      "request_sha256": "dce1bd793bb0150a1eaae9dde61f84d24b09b1e989d55ea2c8fb60f218e4f82a",
+      "results_sha256": "e325db8fa672a115619ff4e76a009e929186b9ed9fab6cea744e097776a49aa7",
+      "replay_sha256": "a576479067650ced1d393952b5d7562762114d1c77ce8a97b771b6017a9e1c37",
+      "decisions_sha256": "b794678ad31366e89352e1e399c0e388411b38276aa43e0984b80f38db057995",
+      "decision_count": 1102,
+      "accepted_decision_count": 1102,
+      "rejected_count": 0,
+      "fallback_count": 0,
+      "degraded_count": 0,
+      "parse_failure_count": 0,
+      "hold_count": 0,
+      "selected_seat_hold_count": 0,
+      "wc6_marker_count": 1,
+      "selected_seat": {
+        "score": 0.010226991953763684,
+        "tiles_owned": 6664,
+        "is_alive": true
+      }
+    },
+    "causal_decision": {
+      "turn": 800,
+      "observation_summary_identical": true,
+      "own_tiles_before_decision": 2499,
+      "own_troops_before_decision": 256351,
+      "target_relative_troop_ratio": 1.13,
+      "target_tile_share": 0.01,
+      "neutral_land_action_count": 3,
+      "neutral_boat_action_count": 18,
+      "build_action_count": 4,
+      "control_action": "attack:iaio5l86:10",
+      "candidate_action": "boat:1003477:8",
+      "candidate_marker": "wc6",
+      "candidate_action_was_offered": true,
+      "candidate_action_accepted": true,
+      "candidate_same_tick_audit_status": "unknown because transport launch was not visible at the decision tick"
+    },
+    "selected_seat_gain": {
+      "score_delta": 0.0034779203161570144,
+      "score_ratio": 1.5153183286390988,
+      "score_percent_gain": 51.53183286390988,
+      "tiles_delta": 2273,
+      "tiles_percent_gain": 51.76497381006604,
+      "candidate_beats_control": true
+    },
+    "non_evidence_attempt": {
+      "reason": "First candidate command supplied the game image reference in the manifest argument position and failed before an episode existed.",
+      "quarantined": true,
+      "request_changed_after_failure": false
+    }
+  },
+  "gate_status": {
+    "source_and_red_first": "PASS",
+    "exact_linux_amd64_image": "PASS",
+    "outcome_blind_reach": "PASS",
+    "same_seat_causal_advantage": "PASS",
+    "runtime_cleanliness": "PASS",
+    "upload": "AUTHORIZED",
+    "hosted_current_field_4_of_4": "PENDING",
+    "independent_20_of_20": "PENDING",
+    "submission": "BLOCKED_UNTIL_HOSTED_GATES_PASS"
+  }
+}
