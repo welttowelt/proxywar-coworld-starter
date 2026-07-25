@@ -1,0 +1,55 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260724T183615Z-92323",
+  "recorded_at": "2026-07-25T04:25:30Z",
+  "transition": "terminal_precontact_source_identity_block_checkpoint",
+  "priority_packet": null,
+  "dispatch_mailbox_head": "5c99c83f43ddfe4d65b42a75cac7a4085e61191d",
+  "repository_input": {
+    "head": "6bc2c6718c7ddcce70a70afada3fec7514a68961",
+    "origin_main": "6bc2c6718c7ddcce70a70afada3fec7514a68961",
+    "head_subject": "Refresh Proxy War dashboard data",
+    "head_change_class": "dashboard_and_processed_data_only",
+    "active_arm_sha256": "026fcb8c45466c6429aaa718f2ffcdbcce0eb38e7867e88c8e8abd1eca3d2c02",
+    "source_identity_audit_sha256": "e64623b6386cb7f73a3c2c791fac0dca4e21ca5979e97a675c3c5662e663f47d",
+    "mickey_no_harm_receipt_sha256": "32b8c1d7eaa0714ff81ae97d7ffde86ccb18abda88bbe326b04f80777600e8c7"
+  },
+  "authority_check": {
+    "mailbox_head": "5c99c83f43ddfe4d65b42a75cac7a4085e61191d",
+    "dispatch_mailbox_head_match": true,
+    "priority_packet_present": false,
+    "new_hash_bound_v89_parent_record_referenced": false,
+    "gate_effect": "NO_CLEARANCE"
+  },
+  "runner_check": {
+    "run_started": false
+  },
+  "deadline_check": {
+    "soft_deadline_epoch": 1784918655,
+    "hard_deadline_epoch": 1784919075,
+    "checkpoint_epoch": 1784953530,
+    "soft_deadline_reached": true,
+    "hard_deadline_reached": true,
+    "action": "TERMINAL_BLOCK_CHECKPOINT_AND_EXIT"
+  },
+  "identity_gate": {
+    "source_episode_id": "f2b16473-b3b7-42ab-926b-dee8d0c2b357",
+    "source_episode_policy_label": "qd1n:v95",
+    "source_episode_policy_version_id": "ccf3a01d-f4bd-4eaa-a1c4-a1c900b78844",
+    "live_parent_policy_label": "qd1n:v89",
+    "live_parent_policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "identity_match": false,
+    "hash_bound_v89_precontact_parent_record": false,
+    "legal_candidate_parent_action_difference_proven": false
+  },
+  "verdict": "BLOCK_EVIDENCE_IDENTITY_MISMATCH_NO_STATE_SEAL",
+  "reason": "The dispatch contains no priority packet or new hash-bound qd1n:v89 parent record. The only active-arm pre-contact episode remains qd1n:v95, so its action cannot establish the live qd1n:v89 selector choice or a legal candidate-parent action difference. The dispatch hard deadline expired before this operator cycle resumed; no runner or league mutation is permitted.",
+  "decision": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "prior_verified_champion_preserved": true
+  },
+  "next_automatic_transition": "Obtain one hash-bound qd1n:v89 parent decision record before hostile contact, or reproduce the exact v89 selector on a separately preregistered hash-bound fixture for the same state. Seal a state only after that parent record proves a legal candidate-parent action difference. Carry the committed Mickey no-harm guard. Preserve qd1n:v89; no upload, submission, membership, or champion mutation without the full gates."
+}
