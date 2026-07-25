@@ -181,17 +181,18 @@ async function main() {
     manifest?.game?.name !== "proxywar" ||
     manifest?.game?.version !== "0.1.11" ||
     base?.game_config?.players?.length !== ROSTER.length ||
-    base?.players?.length !== ROSTER.length
+    base?.players?.length !== ROSTER.length ||
+    sha256(JSON.stringify(base?.manifest)) !== sha256(JSON.stringify(manifest))
   ) {
     throw new Error("base request is not the pinned 12-player ProxyWar 0.1.11 request");
   }
-  const starter = base.players[0];
+  const starter = manifest?.player?.[0];
   if (
     starter?.type !== "player" ||
     !Array.isArray(starter.run) ||
     starter.run.join(" ") !== "node /app/integration/src/starter-player.mjs"
   ) {
-    throw new Error("base request does not expose the pinned starter control");
+    throw new Error("pinned manifest does not expose the expected starter control");
   }
   base.manifest = manifest;
   await mkdir(args.outputDir, { recursive: false });
