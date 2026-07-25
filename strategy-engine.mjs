@@ -133,87 +133,7 @@ export function isNeutralExpansion(action) {
   );
 }
 
-function inferredSpawnGeometry(actions) {
-  const samples = actions
-    .filter((action) => action?.kind === "spawn")
-    .map((action) => ({
-      tile: Number(action?.metadata?.tile),
-      x: Number(action?.metadata?.x),
-      y: Number(action?.metadata?.y),
-      diplomacyScore: Number(action?.metadata?.diplomacyScore),
-    }))
-    .filter((sample) =>
-      Number.isFinite(sample.tile) &&
-      Number.isFinite(sample.x) &&
-      Number.isFinite(sample.y) &&
-      Number.isFinite(sample.diplomacyScore) &&
-      sample.y > 0 &&
-      sample.diplomacyScore > 0 &&
-      sample.diplomacyScore <= 1
-    );
-  if (samples.length < 3) return null;
-
-  const geometryVotes = new Map();
-  for (const sample of samples) {
-    const rawWidth = (sample.tile - sample.x) / sample.y;
-    const width = Math.round(rawWidth);
-    if (
-      width <= sample.x ||
-      Math.abs(rawWidth - width) > 1e-6
-    ) {
-      continue;
-    }
-
-    const centerCandidates = [
-      sample.y / sample.diplomacyScore,
-      sample.y / (2 - sample.diplomacyScore),
-    ];
-    const sampleGeometries = new Set();
-    for (const centerY of centerCandidates) {
-      const rawHeight = centerY * 2 + 1;
-      const height = Math.round(rawHeight);
-      if (
-        height <= sample.y ||
-        Math.abs(rawHeight - height) > 1e-3
-      ) {
-        continue;
-      }
-      sampleGeometries.add(`${width}:${height}`);
-    }
-    for (const geometry of sampleGeometries) {
-      geometryVotes.set(geometry, (geometryVotes.get(geometry) || 0) + 1);
-    }
-  }
-
-  const ranked = [...geometryVotes.entries()]
-    .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]));
-  const minimumVotes = Math.max(3, Math.ceil(samples.length * 0.6));
-  if (
-    ranked.length === 0 ||
-    ranked[0][1] < minimumVotes ||
-    ranked[0][1] === ranked[1]?.[1]
-  ) {
-    return null;
-  }
-  const [width, height] = ranked[0][0].split(":").map(Number);
-  return { width, height };
-}
-
-function mapFingerprintFromGeometry(geometry) {
-  if (!geometry) return null;
-  const aspectRatio = geometry.width / geometry.height;
-  if (Math.abs(aspectRatio - 2) <= 0.01) return "World";
-  if (Math.abs(aspectRatio - (5 / 3)) <= 0.01) return "Asia";
-  if (Math.abs(aspectRatio - 1) <= 0.01) return "Pangaea";
-  return null;
-}
-
-export function inferMapFingerprint(observation, history = [], actions = []) {
-  const geometryFingerprint = mapFingerprintFromGeometry(
-    inferredSpawnGeometry(actions),
-  );
-  if (geometryFingerprint) return geometryFingerprint;
-
+export function inferMapFingerprint(observation, history = []) {
   const spawnTile = Number(observation?.ownState?.spawnTile);
   if (Number.isFinite(spawnTile) && MAP_SPAWN_TILES.has(spawnTile)) {
     return MAP_SPAWN_TILES.get(spawnTile);
@@ -256,7 +176,7 @@ export function avoidActionIDs(history) {
 
 export function buildState(observation, actions, history = []) {
   const own = observation?.ownState || {};
-  const mapFingerprint = inferMapFingerprint(observation, history, actions);
+  const mapFingerprint = inferMapFingerprint(observation, history);
   const spawnTile = Number(own.spawnTile);
   const recordedWorldRouteV2 = [...history].reverse().find(
     (entry) => typeof entry?.worldRouteV2 === "boolean",
@@ -1169,25 +1089,25 @@ export function chooseCaptainUnderpantsRuntimeAction(
   history = [],
 ) {
   const baseline = chooseAction(actions, state, plan, history);
-  const worldFirstContactTarget = baseline.kind === "attack" &&
+  const calmFirstContactTarget = baseline.kind === "attack" &&
       !isNeutralExpansion(baseline)
     ? rivalForAction(baseline, state)
     : null;
-  const calmWorldFirstContact =
-    state.mapFingerprint === "World" &&
+  const calmUnresolvedOrWorldFirstContact =
+    (state.mapFingerprint === "World" || state.mapFingerprint === null) &&
     !history.some(recordedPlayerConflict) &&
     !hasCurrentPressure(state) &&
     recentDistinctAttackerCount(state, history) === 0 &&
-    worldFirstContactTarget &&
-    !rivalIsProtected(state, history, worldFirstContactTarget) &&
-    Number.isFinite(worldFirstContactTarget.tileShare) &&
+    calmFirstContactTarget &&
+    !rivalIsProtected(state, history, calmFirstContactTarget) &&
+    Number.isFinite(calmFirstContactTarget.tileShare) &&
     Number.isFinite(state.self.tileShare) &&
-    worldFirstContactTarget.tileShare >= state.self.tileShare &&
-    Number.isFinite(worldFirstContactTarget.relativeTroopRatio) &&
-    worldFirstContactTarget.relativeTroopRatio >= 1 &&
-    worldFirstContactTarget.relativeTroopRatio < 1.3 &&
-    recentHostility(state, history, worldFirstContactTarget) === 0;
-  if (calmWorldFirstContact) {
+    calmFirstContactTarget.tileShare >= state.self.tileShare &&
+    Number.isFinite(calmFirstContactTarget.relativeTroopRatio) &&
+    calmFirstContactTarget.relativeTroopRatio >= 1 &&
+    calmFirstContactTarget.relativeTroopRatio < 1.3 &&
+    recentHostility(state, history, calmFirstContactTarget) === 0;
+  if (calmUnresolvedOrWorldFirstContact) {
     const avoid = new Set(avoidActionIDs(history));
     const safeGrowthActions = actions.filter((action) => action.risk?.level !== "high");
     const neutralBoat = chooseBoat(

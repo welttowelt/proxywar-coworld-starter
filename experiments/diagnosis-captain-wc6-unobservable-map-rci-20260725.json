@@ -1,0 +1,72 @@
+{
+  "campaign": "captain-wc6-neutral-first",
+  "recorded_at": "2026-07-25T03:28:04Z",
+  "classification": "bounded_non_promotion_diagnostic",
+  "question": "Why did exact ProxyWar 0.1.11 qualifiers emit no wc6 marker even when calm first-contact conditions appeared reachable?",
+  "exact_game": {
+    "coworld_id": "cow_5d275752-ff30-4f5c-a1c1-6db56b518ef2",
+    "version": "0.1.11",
+    "seed": 20260777,
+    "max_decision_steps": 15
+  },
+  "diagnostic_image": {
+    "id": "sha256:a9bf0c07c4e1d9ae194abd2989ce39bf68fb8fa53e40e64831d2bc34c6739756",
+    "platform": "linux/amd64",
+    "upload_eligible": false,
+    "deleted_after_evidence_capture": true
+  },
+  "artifact_hashes": {
+    "request_sha256": "60c918bb522c217f2d84c90606788c9aae7fee9dd59e220c9f6556207fdac1fa",
+    "config_sha256": "7d41b7fa26fc85dc6cd97516fdad6d144f6d7bde29a7e7b25d17ca5fe61b8cb7",
+    "results_sha256": "400e668530b8b19b7d744aa4019e0b4d288ecc02689c969c487bd19ab3720280",
+    "replay_sha256": "93de314200aefc65c1f8d8fb2e30787fd79bdb9fa7caadcd461ceedc13c5c1c3"
+  },
+  "runtime": {
+    "game_id": "CWBSITOR",
+    "turn_count": 1900,
+    "decision_count": 216,
+    "accepted_decision_count": 216,
+    "fallback_count": 0,
+    "degraded_count": 0,
+    "wc5_marker_count": 0,
+    "wc6_marker_count": 0
+  },
+  "source_contract": {
+    "spawn_path": "/app/proxywar/src/server/agents/AgentLeagueMatch.ts::submitAndRecordSpawn",
+    "spawn_action_selection": "synthetic deterministic internal decision",
+    "spawn_external_action_call": false,
+    "observation_type": "/app/proxywar/src/server/agents/AgentTypes.ts::AgentObservation",
+    "map_name_exposed": false,
+    "map_dimensions_exposed": false,
+    "consequence": "The external policy never receives spawn legal-action geometry, so production map inference from spawn actions is unreachable."
+  },
+  "decisive_observation": {
+    "history_length": 8,
+    "active_decision_count": 8,
+    "own_spawn_tile": 1014590,
+    "map_fingerprint": null,
+    "world_route_v2": false,
+    "own_tile_share": 0.03,
+    "target_tile_share": 0.04,
+    "relative_troop_ratio": 1.29,
+    "prior_player_conflict": false,
+    "recent_attacker_ids": [],
+    "target_protected": false,
+    "target_recent_hostility": 0,
+    "neutral_expansion_stalled": false,
+    "neutral_boat_count": 18,
+    "economy_build_count": 3,
+    "exact_parent_action": "attack:bjqilvz1:10",
+    "available_neutral_boat": "boat:802570:8",
+    "available_economy_build": "build:City:1014599",
+    "diagnostic_candidate_action": "attack:bjqilvz1:10"
+  },
+  "root_cause": "The World-only guard depended on a map fingerprint the active external-policy wire contract cannot derive for unlisted spawn anchors.",
+  "smallest_useful_fix": "Apply the same complete calm-first-contact guard when the map fingerprint is unavailable, while preserving recognized non-World routes and every retaliation, prior-conflict, smaller-target, strong-conversion, protection, hostility, and no-replacement boundary.",
+  "cleanup": {
+    "temporary_source_instrumentation_removed": true,
+    "temporary_request_builder_removed": true,
+    "diagnostic_image_removed": true,
+    "large_local_output_removed_after_hash_capture": true
+  }
+}
