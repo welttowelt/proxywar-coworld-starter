@@ -134,9 +134,10 @@ diagnostic regression passes along with legacy WC5 parity, retaliation,
 prior-conflict, smaller-target, strong-conversion, and recognized non-World
 preservation tests.
 
-The focused Captain/strategy suite passes `124/124`. The full repository suite
-passes `344/348`; the only four failures are the same pre-existing Mickey
-fanout activation-path failures, outside the Captain behavioral files.
+The focused Captain/strategy suite passes `124/124`. After adding the
+fail-closed hosted auditor and its four tests, the full repository suite passes
+`348/352`; the only four failures are the same pre-existing Mickey fanout
+activation-path failures, outside the Captain behavioral files.
 
 ## Local causal result
 
