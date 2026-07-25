@@ -88,11 +88,33 @@ neutral boat in both images; the exact-v2 control proved the marker was not
 causal. The candidate pair was terminated, its partial output was quarantined,
 and the marker boundary above was added red-first before any outcome claim.
 
+The corrected source then showed zero causal reach on fresh seed `20260752`
+under ProxyWar 0.1.10. Seed `20260753` was stopped before artifacts when the
+exact live 0.1.11 package was found locally; the lease reaper removed all
+thirteen orphaned containers and quarantined the partial output. Neither
+interrupted run is eligible evidence. The active qualifier restarts on fresh
+seeds against exact current ProxyWar 0.1.11.
+
+The first exact-0.1.11 seed (`20260764`) completed cleanly but exposed the
+remaining routing defect: explicit seeds produce valid World spawn tiles
+outside the hand-curated anchor table, so the route still had zero causal
+reach. Inspection of the exact 0.1.11 wire contract showed no direct map name,
+but every spawn action carries public `tile`, `x`, `y`, and
+`diplomacyScore` metadata. Those values deterministically recover map geometry:
+World is 2:1, Asia is 5:3, and Pangaea is 1:1 at every supported size. WC6 now
+requires a unique 60%-quorum geometry across at least three spawn actions,
+caches the result in decision history, and otherwise fails closed to the old
+anchor/history route. Red-first tests cover all three map families, an unlisted
+current World spawn, incomplete evidence, contradictory evidence, legacy WC5
+parity, retaliation, and non-World preservation. Focused tests pass 128/128;
+the full suite passes 345/349 with the same four unrelated pre-existing Mickey
+fanout activation failures.
+
 Promotion remains fail closed:
 
 1. Focused and full source suites.
 2. Exact linux/amd64 image and file-hash receipt.
-3. Fresh outcome-blind reach qualifier.
+3. Fresh outcome-blind reach qualifier on exact live ProxyWar 0.1.11.
 4. Matched same-seat causal improvement with zero unexplained holds,
    rejections, fallbacks, or degradation.
 5. Hosted current-field 4/4 actual wins with at least one valid `wc6` marker.
