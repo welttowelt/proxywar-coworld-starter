@@ -1,0 +1,631 @@
+{
+  "artifact_count": 20,
+  "errors": [],
+  "failed": 0,
+  "manifest_sha256": "62f2c3fca9e8aa80e110f8d87c9c4d91414ff9027d1feec60e3da2f9da5a984e",
+  "passed": 20,
+  "records": [
+    {
+      "actual": {
+        "bytes": 6905,
+        "executable": false,
+        "sha256": "c8d46fa820a8020fdef002ec1456259393e2e41ad1bed578d40d4664643a08bc"
+      },
+      "checks": {
+        "bytes_format": true,
+        "bytes_match": true,
+        "executable_format": true,
+        "executable_match": true,
+        "exists": true,
+        "id_format": true,
+        "id_unique": true,
+        "path_inside_root": true,
+        "path_relative": true,
+        "path_unique": true,
+        "regular_file": true,
+        "sha256_format": true,
+        "sha256_match": true
+      },
+      "errors": [],
+      "expected": {
+        "bytes": 6905,
+        "executable": null,
+        "sha256": "c8d46fa820a8020fdef002ec1456259393e2e41ad1bed578d40d4664643a08bc"
+      },
+      "id": "preregistration",
+      "path": "Users/m1/Documents/Codex/2026-07-26-whats-missing-to-control-the-mac/projects/proxywar-cyan7/experiments/preregistration-captain-cyan7-20260726.json",
+      "status": "pass"
+    },
+    {
+      "actual": {
+        "bytes": 677,
+        "executable": false,
+        "sha256": "6409ce31804cd4da44eb5b1644ed5bf78fa0a26b1985116bf7a64e5fdef76912"
+      },
+      "checks": {
+        "bytes_format": true,
+        "bytes_match": true,
+        "executable_format": true,
+        "executable_match": true,
+        "exists": true,
+        "id_format": true,
+        "id_unique": true,
+        "path_inside_root": true,
+        "path_relative": true,
+        "path_unique": true,
+        "regular_file": true,
+        "sha256_format": true,
+        "sha256_match": true
+      },
+      "errors": [],
+      "expected": {
+        "bytes": 677,
+        "executable": null,
+        "sha256": "6409ce31804cd4da44eb5b1644ed5bf78fa0a26b1985116bf7a64e5fdef76912"
+      },
+      "id": "preregistration-audit",
+      "path": "Users/m1/Documents/Codex/2026-07-26-whats-missing-to-control-the-mac/projects/proxywar-cyan7/experiments/audit-preregistration-captain-cyan7-20260726.json",
+      "status": "pass"
+    },
+    {
+      "actual": {
+        "bytes": 8569,
+        "executable": false,
+        "sha256": "63ec1608cbff35365d1f8845a21e14de9fe2f8281c770f4a2a09be51a415cedc"
+      },
+      "checks": {
+        "bytes_format": true,
+        "bytes_match": true,
+        "executable_format": true,
+        "executable_match": true,
+        "exists": true,
+        "id_format": true,
+        "id_unique": true,
+        "path_inside_root": true,
+        "path_relative": true,
+        "path_unique": true,
+        "regular_file": true,
+        "sha256_format": true,
+        "sha256_match": true
+      },
+      "errors": [],
+      "expected": {
+        "bytes": 8569,
+        "executable": null,
+        "sha256": "63ec1608cbff35365d1f8845a21e14de9fe2f8281c770f4a2a09be51a415cedc"
+      },
+      "id": "terminal-evidence",
+      "path": "Users/m1/Documents/Codex/2026-07-26-whats-missing-to-control-the-mac/projects/proxywar-cyan7/experiments/evidence-captain-cyan7-liquid-alliance-20260726.json",
+      "status": "pass"
+    },
+    {
+      "actual": {
+        "bytes": 10430,
+        "executable": false,
+        "sha256": "cde6b49020d23dd94e30c6bbb119399c32054e4e4c0a6142f517597d06c40fdb"
+      },
+      "checks": {
+        "bytes_format": true,
+        "bytes_match": true,
+        "executable_format": true,
+        "executable_match": true,
+        "exists": true,
+        "id_format": true,
+        "id_unique": true,
+        "path_inside_root": true,
+        "path_relative": true,
+        "path_unique": true,
+        "regular_file": true,
+        "sha256_format": true,
+        "sha256_match": true
+      },
+      "errors": [],
+      "expected": {
+        "bytes": 10430,
+        "executable": null,
+        "sha256": "cde6b49020d23dd94e30c6bbb119399c32054e4e4c0a6142f517597d06c40fdb"
+      },
+      "id": "candidate-entrypoint",
+      "path": "Users/m1/Documents/Codex/2026-07-26-whats-missing-to-control-the-mac/projects/proxywar-cyan7/llm-player.mjs",
+      "status": "pass"
+    },
+    {
+      "actual": {
+        "bytes": 52562,
+        "executable": false,
+        "sha256": "a43129674cd69b347bb64ef7f1a9024b5f585ac9fa61498fd2681b2b5f80a821"
+      },
+      "checks": {
+        "bytes_format": true,
+        "bytes_match": true,
+        "executable_format": true,
+        "executable_match": true,
+        "exists": true,
+        "id_format": true,
+        "id_unique": true,
+        "path_inside_root": true,
+        "path_relative": true,
+        "path_unique": true,
+        "regular_file": true,
+        "sha256_format": true,
+        "sha256_match": true
+      },
+      "errors": [],
+      "expected": {
+        "bytes": 52562,
+        "executable": null,
+        "sha256": "a43129674cd69b347bb64ef7f1a9024b5f585ac9fa61498fd2681b2b5f80a821"
+      },
+      "id": "candidate-strategy",
+      "path": "Users/m1/Documents/Codex/2026-07-26-whats-missing-to-control-the-mac/projects/proxywar-cyan7/strategy-engine.mjs",
+      "status": "pass"
+    },
+    {
+      "actual": {
+        "bytes": 1589,
+        "executable": false,
+        "sha256": "24cef1703bb8779c590ec503d2f48844257882192a050281f2a526aaf8d82bdc"
+      },
+      "checks": {
+        "bytes_format": true,
+        "bytes_match": true,
+        "executable_format": true,
+        "executable_match": true,
+        "exists": true,
+        "id_format": true,
+        "id_unique": true,
+        "path_inside_root": true,
+        "path_relative": true,
+        "path_unique": true,
+        "regular_file": true,
+        "sha256_format": true,
+        "sha256_match": true
+      },
+      "errors": [],
+      "expected": {
+        "bytes": 1589,
+        "executable": null,
+        "sha256": "24cef1703bb8779c590ec503d2f48844257882192a050281f2a526aaf8d82bdc"
+      },
+      "id": "candidate-doctrine",
+      "path": "Users/m1/Documents/Codex/2026-07-26-whats-missing-to-control-the-mac/projects/proxywar-cyan7/captain-underpants-production-doctrine.mjs",
+      "status": "pass"
+    },
+    {
+      "actual": {
+        "bytes": 5344,
+        "executable": false,
+        "sha256": "28fb3a423626f15bcf782ce1131ea060fc417948d205f881d277e3987c1d508c"
+      },
+      "checks": {
+        "bytes_format": true,
+        "bytes_match": true,
+        "executable_format": true,
+        "executable_match": true,
+        "exists": true,
+        "id_format": true,
+        "id_unique": true,
+        "path_inside_root": true,
+        "path_relative": true,
+        "path_unique": true,
+        "regular_file": true,
+        "sha256_format": true,
+        "sha256_match": true
+      },
+      "errors": [],
+      "expected": {
+        "bytes": 5344,
+        "executable": null,
+        "sha256": "28fb3a423626f15bcf782ce1131ea060fc417948d205f881d277e3987c1d508c"
+      },
+      "id": "candidate-tests",
+      "path": "Users/m1/Documents/Codex/2026-07-26-whats-missing-to-control-the-mac/projects/proxywar-cyan7/test/cyan7.test.mjs",
+      "status": "pass"
+    },
+    {
+      "actual": {
+        "bytes": 6919,
+        "executable": false,
+        "sha256": "8fb8856a4e452b4b04c4a2179b09a88121abe5d705c2449d3d9ae281033abf57"
+      },
+      "checks": {
+        "bytes_format": true,
+        "bytes_match": true,
+        "executable_format": true,
+        "executable_match": true,
+        "exists": true,
+        "id_format": true,
+        "id_unique": true,
+        "path_inside_root": true,
+        "path_relative": true,
+        "path_unique": true,
+        "regular_file": true,
+        "sha256_format": true,
+        "sha256_match": true
+      },
+      "errors": [],
+      "expected": {
+        "bytes": 6919,
+        "executable": null,
+        "sha256": "8fb8856a4e452b4b04c4a2179b09a88121abe5d705c2449d3d9ae281033abf57"
+      },
+      "id": "request-generator",
+      "path": "Users/m1/Documents/Codex/2026-07-26-whats-missing-to-control-the-mac/projects/proxywar-cyan7/scripts/prepare-cyan7-requests.mjs",
+      "status": "pass"
+    },
+    {
+      "actual": {
+        "bytes": 2470,
+        "executable": true,
+        "sha256": "21a04df2ab00967079dbaff219518a25994d7a5b4fae389b9d31fda1a22e4fb3"
+      },
+      "checks": {
+        "bytes_format": true,
+        "bytes_match": true,
+        "executable_format": true,
+        "executable_match": true,
+        "exists": true,
+        "id_format": true,
+        "id_unique": true,
+        "path_inside_root": true,
+        "path_relative": true,
+        "path_unique": true,
+        "regular_file": true,
+        "sha256_format": true,
+        "sha256_match": true
+      },
+      "errors": [],
+      "expected": {
+        "bytes": 2470,
+        "executable": true,
+        "sha256": "21a04df2ab00967079dbaff219518a25994d7a5b4fae389b9d31fda1a22e4fb3"
+      },
+      "id": "matched-batch-supervisor",
+      "path": "Users/m1/Documents/Codex/2026-07-26-whats-missing-to-control-the-mac/projects/proxywar-cyan7/scripts/run-cyan7-matched-batch.sh",
+      "status": "pass"
+    },
+    {
+      "actual": {
+        "bytes": 10087,
+        "executable": true,
+        "sha256": "73ce740bcdb6612d4239a42767ba972e8fa76cfa65eeab6bd8e8731cda1a83b1"
+      },
+      "checks": {
+        "bytes_format": true,
+        "bytes_match": true,
+        "executable_format": true,
+        "executable_match": true,
+        "exists": true,
+        "id_format": true,
+        "id_unique": true,
+        "path_inside_root": true,
+        "path_relative": true,
+        "path_unique": true,
+        "regular_file": true,
+        "sha256_format": true,
+        "sha256_match": true
+      },
+      "errors": [],
+      "expected": {
+        "bytes": 10087,
+        "executable": true,
+        "sha256": "73ce740bcdb6612d4239a42767ba972e8fa76cfa65eeab6bd8e8731cda1a83b1"
+      },
+      "id": "binding-checker",
+      "path": "Users/m1/.codex/skills/audit-computational-certificate/scripts/audit_artifact_bindings.py",
+      "status": "pass"
+    },
+    {
+      "actual": {
+        "bytes": 32842,
+        "executable": false,
+        "sha256": "40d45c8652ba4345c8fb9fe7b5a3171ee2fdf8c446d0818dce80e126e8cadbb4"
+      },
+      "checks": {
+        "bytes_format": true,
+        "bytes_match": true,
+        "executable_format": true,
+        "executable_match": true,
+        "exists": true,
+        "id_format": true,
+        "id_unique": true,
+        "path_inside_root": true,
+        "path_relative": true,
+        "path_unique": true,
+        "regular_file": true,
+        "sha256_format": true,
+        "sha256_match": true
+      },
+      "errors": [],
+      "expected": {
+        "bytes": 32842,
+        "executable": null,
+        "sha256": "40d45c8652ba4345c8fb9fe7b5a3171ee2fdf8c446d0818dce80e126e8cadbb4"
+      },
+      "id": "selected-qualifier-request",
+      "path": "private/tmp/cyan7-qualifier-requests-c8d46fa8/cyan7-qualifier-20260801.json",
+      "status": "pass"
+    },
+    {
+      "actual": {
+        "bytes": 2375,
+        "executable": false,
+        "sha256": "4f40aff0dbc631a5691e6da417e1e26d2c0eadcea028a7a6792b926cb581ba88"
+      },
+      "checks": {
+        "bytes_format": true,
+        "bytes_match": true,
+        "executable_format": true,
+        "executable_match": true,
+        "exists": true,
+        "id_format": true,
+        "id_unique": true,
+        "path_inside_root": true,
+        "path_relative": true,
+        "path_unique": true,
+        "regular_file": true,
+        "sha256_format": true,
+        "sha256_match": true
+      },
+      "errors": [],
+      "expected": {
+        "bytes": 2375,
+        "executable": null,
+        "sha256": "4f40aff0dbc631a5691e6da417e1e26d2c0eadcea028a7a6792b926cb581ba88"
+      },
+      "id": "selected-qualifier-results",
+      "path": "Users/m1/.stormforge/proxywar-runs/cyan7-q-20260801/results.json",
+      "status": "pass"
+    },
+    {
+      "actual": {
+        "bytes": 8788853,
+        "executable": false,
+        "sha256": "f28df372a3ee8f170a4d1c7fb7a37044771ef94973782a81a620c040038846a2"
+      },
+      "checks": {
+        "bytes_format": true,
+        "bytes_match": true,
+        "executable_format": true,
+        "executable_match": true,
+        "exists": true,
+        "id_format": true,
+        "id_unique": true,
+        "path_inside_root": true,
+        "path_relative": true,
+        "path_unique": true,
+        "regular_file": true,
+        "sha256_format": true,
+        "sha256_match": true
+      },
+      "errors": [],
+      "expected": {
+        "bytes": 8788853,
+        "executable": null,
+        "sha256": "f28df372a3ee8f170a4d1c7fb7a37044771ef94973782a81a620c040038846a2"
+      },
+      "id": "selected-qualifier-replay",
+      "path": "Users/m1/.stormforge/proxywar-runs/cyan7-q-20260801/replay",
+      "status": "pass"
+    },
+    {
+      "actual": {
+        "bytes": 32823,
+        "executable": false,
+        "sha256": "f007ad0efc07d780ba751a61d5c1de8f056a509d3a4004afad6fc7c467df8988"
+      },
+      "checks": {
+        "bytes_format": true,
+        "bytes_match": true,
+        "executable_format": true,
+        "executable_match": true,
+        "exists": true,
+        "id_format": true,
+        "id_unique": true,
+        "path_inside_root": true,
+        "path_relative": true,
+        "path_unique": true,
+        "regular_file": true,
+        "sha256_format": true,
+        "sha256_match": true
+      },
+      "errors": [],
+      "expected": {
+        "bytes": 32823,
+        "executable": null,
+        "sha256": "f007ad0efc07d780ba751a61d5c1de8f056a509d3a4004afad6fc7c467df8988"
+      },
+      "id": "matched-control-request",
+      "path": "private/tmp/cyan7-matched-20260801-slot0-c8d46fa8/cyan7-matched-20260801-slot-0-control.json",
+      "status": "pass"
+    },
+    {
+      "actual": {
+        "bytes": 32825,
+        "executable": false,
+        "sha256": "6a8c657e505b1eb741a119a8199f1ddd116fcea1a65039766414f6eaa0e14feb"
+      },
+      "checks": {
+        "bytes_format": true,
+        "bytes_match": true,
+        "executable_format": true,
+        "executable_match": true,
+        "exists": true,
+        "id_format": true,
+        "id_unique": true,
+        "path_inside_root": true,
+        "path_relative": true,
+        "path_unique": true,
+        "regular_file": true,
+        "sha256_format": true,
+        "sha256_match": true
+      },
+      "errors": [],
+      "expected": {
+        "bytes": 32825,
+        "executable": null,
+        "sha256": "6a8c657e505b1eb741a119a8199f1ddd116fcea1a65039766414f6eaa0e14feb"
+      },
+      "id": "matched-candidate-request",
+      "path": "private/tmp/cyan7-matched-20260801-slot0-c8d46fa8/cyan7-matched-20260801-slot-0-candidate.json",
+      "status": "pass"
+    },
+    {
+      "actual": {
+        "bytes": 2594,
+        "executable": false,
+        "sha256": "6c64a835299d588d5cf7e374df7cbcf3769463aa70ee432f000a1c6781dbb31f"
+      },
+      "checks": {
+        "bytes_format": true,
+        "bytes_match": true,
+        "executable_format": true,
+        "executable_match": true,
+        "exists": true,
+        "id_format": true,
+        "id_unique": true,
+        "path_inside_root": true,
+        "path_relative": true,
+        "path_unique": true,
+        "regular_file": true,
+        "sha256_format": true,
+        "sha256_match": true
+      },
+      "errors": [],
+      "expected": {
+        "bytes": 2594,
+        "executable": null,
+        "sha256": "6c64a835299d588d5cf7e374df7cbcf3769463aa70ee432f000a1c6781dbb31f"
+      },
+      "id": "matched-control-game-stderr",
+      "path": "Users/m1/.stormforge/proxywar-runs/cyan7-matched-20260801-slot0-control.aborted-20260726T220626Z-cyan7-matched-20260801-s0/logs/game.stderr.log",
+      "status": "pass"
+    },
+    {
+      "actual": {
+        "bytes": 433,
+        "executable": false,
+        "sha256": "51e7f22a98ce9e0061d284a9a5f64293becc1536dfee3c7a59b4dfe2f1bc414d"
+      },
+      "checks": {
+        "bytes_format": true,
+        "bytes_match": true,
+        "executable_format": true,
+        "executable_match": true,
+        "exists": true,
+        "id_format": true,
+        "id_unique": true,
+        "path_inside_root": true,
+        "path_relative": true,
+        "path_unique": true,
+        "regular_file": true,
+        "sha256_format": true,
+        "sha256_match": true
+      },
+      "errors": [],
+      "expected": {
+        "bytes": 433,
+        "executable": null,
+        "sha256": "51e7f22a98ce9e0061d284a9a5f64293becc1536dfee3c7a59b4dfe2f1bc414d"
+      },
+      "id": "matched-control-abort-receipt",
+      "path": "Users/m1/.stormforge/proxywar-runs/cyan7-matched-20260801-slot0-control.aborted-20260726T220626Z-cyan7-matched-20260801-s0/runner-abort-receipt.json",
+      "status": "pass"
+    },
+    {
+      "actual": {
+        "bytes": 1342,
+        "executable": false,
+        "sha256": "dfd0f688c1a4a8d92690cd079261607da55d2f9d9b274badbcc6dedbe9084075"
+      },
+      "checks": {
+        "bytes_format": true,
+        "bytes_match": true,
+        "executable_format": true,
+        "executable_match": true,
+        "exists": true,
+        "id_format": true,
+        "id_unique": true,
+        "path_inside_root": true,
+        "path_relative": true,
+        "path_unique": true,
+        "regular_file": true,
+        "sha256_format": true,
+        "sha256_match": true
+      },
+      "errors": [],
+      "expected": {
+        "bytes": 1342,
+        "executable": null,
+        "sha256": "dfd0f688c1a4a8d92690cd079261607da55d2f9d9b274badbcc6dedbe9084075"
+      },
+      "id": "matched-candidate-game-stderr",
+      "path": "Users/m1/.stormforge/proxywar-runs/cyan7-matched-20260801-slot0-candidate.aborted-20260726T220626Z-cyan7-matched-20260801-s0/logs/game.stderr.log",
+      "status": "pass"
+    },
+    {
+      "actual": {
+        "bytes": 4313,
+        "executable": false,
+        "sha256": "3f39412b903cb5154ec4dcb7a8b53f55c8d82ad1efe82b010785f6d398a0cf4e"
+      },
+      "checks": {
+        "bytes_format": true,
+        "bytes_match": true,
+        "executable_format": true,
+        "executable_match": true,
+        "exists": true,
+        "id_format": true,
+        "id_unique": true,
+        "path_inside_root": true,
+        "path_relative": true,
+        "path_unique": true,
+        "regular_file": true,
+        "sha256_format": true,
+        "sha256_match": true
+      },
+      "errors": [],
+      "expected": {
+        "bytes": 4313,
+        "executable": null,
+        "sha256": "3f39412b903cb5154ec4dcb7a8b53f55c8d82ad1efe82b010785f6d398a0cf4e"
+      },
+      "id": "matched-candidate-operator-stderr",
+      "path": "Users/m1/.stormforge/proxywar-runs/cyan7-matched-20260801-slot0-candidate.aborted-20260726T220626Z-cyan7-matched-20260801-s0/operator.stderr.log",
+      "status": "pass"
+    },
+    {
+      "actual": {
+        "bytes": 437,
+        "executable": false,
+        "sha256": "ee363a70cf6776b9389da21d4aeb46fd7fbc2a962bcacc0952ad9872b350372e"
+      },
+      "checks": {
+        "bytes_format": true,
+        "bytes_match": true,
+        "executable_format": true,
+        "executable_match": true,
+        "exists": true,
+        "id_format": true,
+        "id_unique": true,
+        "path_inside_root": true,
+        "path_relative": true,
+        "path_unique": true,
+        "regular_file": true,
+        "sha256_format": true,
+        "sha256_match": true
+      },
+      "errors": [],
+      "expected": {
+        "bytes": 437,
+        "executable": null,
+        "sha256": "ee363a70cf6776b9389da21d4aeb46fd7fbc2a962bcacc0952ad9872b350372e"
+      },
+      "id": "matched-candidate-abort-receipt",
+      "path": "Users/m1/.stormforge/proxywar-runs/cyan7-matched-20260801-slot0-candidate.aborted-20260726T220626Z-cyan7-matched-20260801-s0/runner-abort-receipt.json",
+      "status": "pass"
+    }
+  ],
+  "schema": "computational-certificate-binding-audit/v1",
+  "status": "pass"
+}

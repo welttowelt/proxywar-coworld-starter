@@ -1,0 +1,52 @@
+{
+  "schema": "computational-certificate-audit/v1",
+  "status": "bounded-run-unknown",
+  "evidence_unit": "Captain cyan7 exact source and images, selected seed-20260801 qualifier, and incomplete same-seat matched batch",
+  "binding_audit": {
+    "manifest": "experiments/bindings-captain-cyan7-20260726.json",
+    "manifest_sha256": "62f2c3fca9e8aa80e110f8d87c9c4d91414ff9027d1feec60e3da2f9da5a984e",
+    "audit": "experiments/audit-bindings-captain-cyan7-20260726.json",
+    "audit_sha256": "bad7fd5fcdd4c7399c9855b3633ebf46d52ac586a803253fd066581c08df3895",
+    "artifact_count": 20,
+    "passed": 20,
+    "failed": 0
+  },
+  "semantic_checks": {
+    "preregistration_validation": "pass",
+    "source_controls": "35 of 35 focused tests passed, including no protection, profit-only request, liquid break, and WC6 parity",
+    "full_source_suite": "352 passed and the same four pre-existing non-Captain Mickey environment tests failed; no new failure",
+    "qualifier_request_binding": "Coworld 0.1.34 validated the exact embedded ProxyWar 0.1.11 manifest, seed 20260801, 12 candidate images, and 25-step config",
+    "qualifier_marker": "The first eligible row was frozen before outcome inspection at seed 20260801, slot 0, turn 1200: accepted alliance:gmaj04ts with reason rul:4ly:c71 and no fallback, degradation, or parse failure",
+    "qualifier_runtime": "334 of 334 decisions accepted; zero holds, rejections, fallbacks, degradation, or parse failures",
+    "matched_request_binding": "Coworld 0.1.34 validated identical 100-step manifests and game configs; only slot 0's immutable image differed",
+    "matched_completeness": "fail to complete: candidate game exited status 137 at the last turn heartbeat 3400; control was intentionally stopped at heartbeat 6000 after the pair became invalid; neither results file exists",
+    "matched_metric": "not observed",
+    "hosted_gates": "not run",
+    "identity_and_submission": "no Captain authentication, upload, hosted request, submission, membership mutation, or champion mutation was attempted"
+  },
+  "run_classification": {
+    "return_code": "candidate Coworld runner raised after game container status 137; batch supervisor was then interrupted and the token-bound stale reaper quarantined both outputs",
+    "termination_cause": "not proven beyond status 137; runner or resource pressure remains possible",
+    "artifact_completeness": "qualifier complete; matched control and candidate partial",
+    "resource_boundary": "4,567 of the declared 7,200 run-wall seconds were consumed, leaving 2,633 seconds, which was insufficient for a fresh 100-step arm at the observed exact-0.1.11 local rate",
+    "evidence_ladder_reason": "A killed process and incomplete matched evidence must remain bounded-run-unknown even though all available artifact bindings pass."
+  },
+  "independence": {
+    "binding_checker": "The pinned audit_artifact_bindings.py independently recomputed file sizes, hashes, regular-file status, path constraints, and executable bits without executing bound artifacts.",
+    "semantic_independence_limit": "No independent complete matched replay or result exists; therefore no performance claim can be independently checked."
+  },
+  "adversarial_controls": {
+    "outcome_leakage_control": "Completed seed 20260800 was excluded after Coworld exposed scores before marker freezing.",
+    "partial_artifact_control": "Both quarantined matched arms are explicitly evidence_eligible false and were not replayed or scored as terminal evidence.",
+    "identity_control": "No older player, Odin account, or non-Captain submission was used as a substitute."
+  },
+  "claim_closed": "Only this claim: the cyan7 packet is byte-bound and its preregistered local promotion experiment ended bounded-run-unknown.",
+  "claims_not_closed": [
+    "cyan7 beats exact WC6 v3 by at least 15 percent",
+    "cyan7 is the best Captain policy",
+    "cyan7 wins the current hosted field",
+    "cyan7 passes 4 of 4 or 20 of 20 hosted gates",
+    "cyan7 is authorized for upload, league submission, or champion replacement"
+  ],
+  "next_legal_action": "Keep Captain v1 live. Resume only the same matched step with frozen source, images, seed 20260801, slot 0, and request bytes after a runner and newly authorized budget can complete both arms."
+}

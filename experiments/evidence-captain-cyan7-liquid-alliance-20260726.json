@@ -1,0 +1,191 @@
+{
+  "schema": "proxywar-candidate-evidence/v1",
+  "campaign": "captain-cyan7-liquid-alliance",
+  "recorded_at": "2026-07-26T22:08:05Z",
+  "verdict": "UNKNOWN_MATCHED_RUNNER_OR_MEMORY_CEILING",
+  "promotion_authorized": false,
+  "upload_authorized": false,
+  "submission_authorized": false,
+  "champion_change_authorized": false,
+  "preregistration": {
+    "path": "experiments/preregistration-captain-cyan7-20260726.json",
+    "sha256": "c8d46fa820a8020fdef002ec1456259393e2e41ad1bed578d40d4664643a08bc",
+    "validation_path": "experiments/audit-preregistration-captain-cyan7-20260726.json",
+    "validation_sha256": "6409ce31804cd4da44eb5b1644ed5bf78fa0a26b1985116bf7a64e5fdef76912",
+    "terminal_rule": "A runner, memory, artifact, time, or verification ceiling that prevents a complete matched result is unknown; never infer a candidate win or loss."
+  },
+  "candidate": {
+    "name": "cyan7",
+    "intended_policy_version": "cyan7:v1",
+    "player": "Captain Underpants Maximum Aura",
+    "behavioral_source_commit": "efc4babed920cd2073124b160b4f36ce8d89d410",
+    "tooling_head_commit_before_receipt": "467d57fa1390b1dabe0048faa9da87d95748f655",
+    "mechanism": "No identity protection or durable alliance loyalty; request an alliance only for observable positional value and break it whenever leader pressure, finish obstruction, hostility, or favorable conversion is more valuable.",
+    "image": {
+      "id": "sha256:aabe135f4db813cf940ad3198c15f41c3672e4bd50f37ef1c29f14ac01a54d82",
+      "os": "linux",
+      "architecture": "amd64",
+      "user": "node",
+      "command": [
+        "node",
+        "/app/llm-player.mjs"
+      ],
+      "labels": {
+        "org.opencontainers.image.revision": "efc4babed920cd2073124b160b4f36ce8d89d410",
+        "com.welttowelt.proxywar.policy-marker": "cyan7-liquid-alliance"
+      }
+    }
+  },
+  "control": {
+    "name": "exact Captain WC6 v3",
+    "behavioral_source_commit": "80d54f18ad3071e35b4c0b80377e115c0f701d75",
+    "image": {
+      "id": "sha256:6dcda65c69b0920d7110a7b2cc5ab43cb2376b8f2fcce8d749a40a2e46605baa",
+      "os": "linux",
+      "architecture": "amd64",
+      "user": "node",
+      "command": [
+        "node",
+        "/app/llm-player.mjs"
+      ],
+      "labels": {
+        "org.opencontainers.image.revision": "80d54f18ad3071e35b4c0b80377e115c0f701d75",
+        "com.welttowelt.proxywar.policy-marker": "wc6-observable-first-contact"
+      }
+    }
+  },
+  "source_validation": {
+    "focused": {
+      "passed": 35,
+      "failed": 0
+    },
+    "full": {
+      "passed": 352,
+      "failed": 4,
+      "new_failures": 0,
+      "pre_existing_failures": "The same four Mickey activation and reaper environment failures documented on the WC6 parent."
+    },
+    "controls": [
+      "no identity protection",
+      "profit-only alliance request",
+      "immediate liquid alliance break",
+      "exact WC6 parity when the mechanism is irrelevant"
+    ]
+  },
+  "outcome_blind_qualifier": {
+    "game": {
+      "coworld_id": "cow_5d275752-ff30-4f5c-a1c1-6db56b518ef2",
+      "version": "0.1.11",
+      "variant": "tournament-12p-world",
+      "map": "World",
+      "players": 12,
+      "max_decision_steps": 25
+    },
+    "selection_rule": "First clean ordered seed with an accepted c71 or c72 marker, then earliest turn and lowest slot, before outcome inspection.",
+    "excluded_attempts": [
+      {
+        "kind": "operator_state_path",
+        "seed": 20260800,
+        "episode_started": false,
+        "reason": "The shared lease wrapper defaulted to the stale /Users/olifreuler state root and failed before acquisition."
+      },
+      {
+        "kind": "docker_bind_path",
+        "seed": 20260800,
+        "episode_started": false,
+        "reason": "A /private/tmp output bind appeared empty inside Colima; the game failed healthz before decisions and the lease quarantined it."
+      },
+      {
+        "kind": "outcome_leakage",
+        "seed": 20260800,
+        "episode_started": true,
+        "completed": true,
+        "evidence_eligible": false,
+        "reason": "Coworld printed scores to the operator stream before the marker was frozen.",
+        "request_sha256": "c52ba8aea04afa9cb5ff6bd1d08635c3cfaf9e370fb8fcfa82b4109ddd148274",
+        "results_sha256": "8ebf0bfb661be3794dc6808be15ac5ac550206895b4a8d61aa0f10245abd8797",
+        "replay_sha256": "3501d1e96595baebfc71b30cbac8b5016bc828fed9e8b36c9de16b0e2a58b10a",
+        "decisions_sha256": "02bcdb9af6d37129c291612aa7d262b6781988e3e46a8c81a5a078dae5042143"
+      }
+    ],
+    "selected": {
+      "seed": 20260801,
+      "slot": 0,
+      "turn": 1200,
+      "username": "cyan7 parity clone 0",
+      "action": "alliance:gmaj04ts",
+      "reason": "rul:4ly:c71",
+      "accepted": true,
+      "fallback": false,
+      "degraded": false,
+      "parse_success": true,
+      "request_sha256": "40d45c8652ba4345c8fb9fe7b5a3171ee2fdf8c446d0818dce80e126e8cadbb4",
+      "results_sha256": "4f40aff0dbc631a5691e6da417e1e26d2c0eadcea028a7a6792b926cb581ba88",
+      "replay_sha256": "f28df372a3ee8f170a4d1c7fb7a37044771ef94973782a81a620c040038846a2",
+      "decisions_sha256": "866444b47ab008b40a135a42444b1b59eec0a0147d07f4f10914df6442abdf45",
+      "first_marker_sha256": "f5e6f006d56488947447cee1edae5604b18dbd1a24fa8b70b2353a9d908f9f1d",
+      "decision_count": 334,
+      "accepted_decision_count": 334,
+      "marker_count": 14,
+      "hold_count": 0,
+      "rejected_count": 0,
+      "fallback_count": 0,
+      "degraded_count": 0,
+      "parse_failure_count": 0
+    }
+  },
+  "matched_same_seat": {
+    "seed": 20260801,
+    "slot": 0,
+    "max_decision_steps": 100,
+    "request_binding": "Coworld 0.1.34 validated identical manifests and game configs; only slot 0's immutable image differs.",
+    "control_request_sha256": "f007ad0efc07d780ba751a61d5c1de8f056a509d3a4004afad6fc7c467df8988",
+    "candidate_request_sha256": "6a8c657e505b1eb741a119a8199f1ddd116fcea1a65039766414f6eaa0e14feb",
+    "batch_started_at": "2026-07-26T21:28:10Z",
+    "batch_stopped_at": "2026-07-26T22:06:09Z",
+    "control": {
+      "last_turn_heartbeat": 6000,
+      "results_present": false,
+      "termination": "operator stopped after the candidate arm had already made the pair invalid",
+      "game_stderr_sha256": "6c64a835299d588d5cf7e374df7cbcf3769463aa70ee432f000a1c6781dbb31f",
+      "abort_receipt_sha256": "51e7f22a98ce9e0061d284a9a5f64293becc1536dfee3c7a59b4dfe2f1bc414d"
+    },
+    "candidate": {
+      "last_turn_heartbeat": 3400,
+      "results_present": false,
+      "termination": "game container exited with status 137",
+      "proven_cause": "unknown; consistent with runner or resource pressure, but not sufficient to claim an OOM or a policy loss",
+      "game_stderr_sha256": "dfd0f688c1a4a8d92690cd079261607da55d2f9d9b274badbcc6dedbe9084075",
+      "operator_stderr_sha256": "3f39412b903cb5154ec4dcb7a8b53f55c8d82ad1efe82b010785f6d398a0cf4e",
+      "abort_receipt_sha256": "ee363a70cf6776b9389da21d4aeb46fd7fbc2a962bcacc0952ad9872b350372e"
+    },
+    "runner_cleanup": {
+      "initial_signal_exit_status": 75,
+      "initial_cleanup": "refused because the process group existed without its leader",
+      "recovery": "The token-bound stale reaper quarantined exactly the two claimed outputs and released the lease.",
+      "quarantined_outputs_evidence_eligible": false,
+      "final_runner_state": "free",
+      "residual_coworld_run_containers": 0
+    },
+    "primary_metric_observed": false,
+    "promotion_threshold_evaluated": false
+  },
+  "budget_accounting": {
+    "declared_run_wall_seconds": 7200,
+    "completed_seed_20260800_lease_wall_seconds": 1098,
+    "completed_seed_20260801_lease_wall_seconds": 1190,
+    "matched_batch_wall_seconds": 2279,
+    "total_observed_lease_wall_seconds": 4567,
+    "remaining_declared_run_wall_seconds": 2633,
+    "reason_not_rerun": "A fresh 100-step arm could not complete within the remaining bound at the observed exact-0.1.11 local rate."
+  },
+  "external_state": {
+    "captain_authentication_attempted": false,
+    "policy_upload_attempted": false,
+    "hosted_request_attempted": false,
+    "league_submission_attempted": false,
+    "membership_or_champion_mutation_attempted": false,
+    "preservation": "The existing Captain v1 membership was not mutated. The ordinary local CLI remained on the non-Captain account."
+  },
+  "next_action": "Keep Captain v1 live. Resume only the incomplete matched same-seat step with the same source, images, seed 20260801, slot 0, and requests after provisioning a runner that can complete both arms inside a newly authorized bound."
+}
