@@ -19,7 +19,7 @@ import { WebSocket } from "ws";
 import { AnthropicBedrock } from "@anthropic-ai/bedrock-sdk";
 import {
   buildState,
-  chooseCaptainUnderpantsRuntimeAction as chooseSelectorAction,
+  chooseCyan7RuntimeAction as chooseSelectorAction,
   clean,
   recordDecision,
 } from "./strategy-engine.mjs";
@@ -30,7 +30,7 @@ import {
   parseIntentDirective,
 } from "./intent-controller.mjs";
 import {
-  CAPTAIN_UNDERPANTS_PRODUCTION_DOCTRINE,
+  CYAN7_PRODUCTION_DOCTRINE,
 } from "./captain-underpants-production-doctrine.mjs";
 import { chooseChassisAction } from "./strategy-chassis.mjs";
 
@@ -58,7 +58,7 @@ const TEST_INTENT_DIRECTIVE = process.env.NODE_ENV === "test"
   : null;
 
 // -- YOUR STRATEGY -- final screen selection lives in one compile-time module -
-const STRATEGY = CAPTAIN_UNDERPANTS_PRODUCTION_DOCTRINE;
+const STRATEGY = CYAN7_PRODUCTION_DOCTRINE;
 const PLANNER_ENABLED = process.env.PLAN_MODE === "on";
 const PLAN_EVERY = Math.max(1, Number(process.env.PLAN_EVERY) || 8);
 const PLAN_TIMEOUT_MS = Math.max(1000, Number(process.env.PLAN_TIMEOUT_MS) || 12000);

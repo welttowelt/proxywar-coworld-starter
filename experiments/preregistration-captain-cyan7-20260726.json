@@ -1,0 +1,82 @@
+{
+  "schema": "computational-experiment-preregistration/v1",
+  "name": "captain cyan7 liquid-alliance successor",
+  "hypothesis": "Replacing identity-based protection and alliance loyalty with one observable profit arbiter will improve Captain WC6 v3 same-seat score by at least 15 percent while preserving runtime correctness.",
+  "evidence_unit": "one hash-bound cyan7:v1 candidate derived from Captain WC6 v3, evaluated at the first outcome-blind local seat that emits an accepted cyan7 alliance marker and then against the frozen current-field hosted roster",
+  "claim_boundary": "A pass authorizes only cyan7:v1 as a successor candidate for Captain Underpants Maximum Aura. It does not establish global dominance, transfer evidence to Odin, Mickey, Hrafn, or another player, or justify any later source change.",
+  "baseline": {
+    "evidence": "Captain WC6 v3 policy version d49a5027-9a42-4d03-a72a-3fa3d86885af, branch origin/rci/captain-wc6-neutral-first-20260725, behavioral source commit 80d54f18ad3071e35b4c0b80377e115c0f701d75, exact linux/amd64 image sha256:2d273db10769d57076b1d72dccac06aff0eb519ffaf574a95ad97b29949dd86a, local causal receipt experiments/evidence-captain-wc6-observable-first-contact-20260725.json",
+    "measurement": "WC6 v3 beat its exact v2 control by 51.53 percent at the selected local seat, but its hosted 4-of-4 terminal result is absent, its independent 20-of-20 gate is open, and it was never submitted. The comparison baseline for cyan7 is score ratio 1.0 against exact WC6 v3 at the frozen cyan7 reach seat."
+  },
+  "intervention": {
+    "one_change": "Replace all identity-based protection and durable alliance loyalty in the Captain runtime with one liquid-alliance profit arbiter: every rival remains attackable, alliance requests require observable positional value, and any alliance may be broken immediately when leader pressure or favorable conversion has greater observable value.",
+    "forbidden_confounds": [
+      "changing the WC6 neutral-first guard",
+      "changing attack percentages, build cadence, boat selection, planner protocol, or model configuration",
+      "special-casing any player name, player ID, coalition tag, or prior ally",
+      "changing the outcome-blind seed schedule after observing results",
+      "relaxing zero unexplained holds, rejections, fallbacks, degradation, or identity checks",
+      "submitting or changing the live Captain v1 membership before every promotion gate passes"
+    ]
+  },
+  "controls": [
+    {
+      "name": "no-identity-protection",
+      "purpose": "prove that cyan7 gives no player or former ally immunity",
+      "expected": "with an otherwise best legal conversion against a K1Z-labelled or formerly reciprocal rival, cyan7 selects the conversion and emits no protection redirect"
+    },
+    {
+      "name": "profit-only-request",
+      "purpose": "prove that alliances cannot consume tempo without observable survival or position value",
+      "expected": "cyan7 rejects alliance requests when reliable growth or conversion is available and requests only a nonhostile materially sized rival while trailing under pressure or collapse"
+    },
+    {
+      "name": "liquid-break",
+      "purpose": "prove that no alliance is permanent",
+      "expected": "cyan7 selects an offered break immediately when an ally is the leader, blocks a competitive finish, or is a favorable material conversion, regardless of identity or alliance age"
+    },
+    {
+      "name": "wc6-parity",
+      "purpose": "bind unrelated behavior to the exact diagnostic parent",
+      "expected": "all fixtures without a profitable alliance request, alliance break, or identity-protection conflict remain deeply equal to Captain WC6 v3"
+    }
+  ],
+  "primary_metric": {
+    "name": "matched same-seat normalized score ratio versus exact WC6 v3",
+    "direction": "increase",
+    "unit": "candidate score divided by control score",
+    "baseline": 1.0,
+    "promotion_threshold": 1.15
+  },
+  "budgets": {
+    "engineering_seconds": 14400,
+    "run_wall_seconds": 7200,
+    "memory_bytes": 8589934592,
+    "artifact_bytes": 2147483648,
+    "verification_wall_seconds": 1800
+  },
+  "terminal_outcomes": {
+    "promote": "All controls and source suites pass; the exact linux/amd64 image reaches an accepted cyan7 marker outcome-blind; the matched seat ratio is at least 1.15 with zero unexplained holds, rejections, fallbacks, or degradation; hosted current-field is 4 wins of 4 with a valid marker; independent regression is 20 wins of 20; Captain identity and policy hashes match.",
+    "park": "The run and audit are valid but cyan7 misses the 1.15 local floor, loses any hosted episode, misses any regression win, or is dominated by WC6 v3.",
+    "unknown": "The seed schedule, runner, hosted service, credential, time, memory, artifact, or verification ceiling prevents a complete bound result.",
+    "audit-failed": "A source, image, roster, replay, marker, semantic-equivalence, identity, runtime-cleanliness, or control binding fails."
+  },
+  "stop_rules": [
+    "stop before any episode if a control, focused source test, image identity, or request binding fails",
+    "stop the local reach schedule at the first accepted cyan7 marker and freeze that seed, seat, turn, request, and replay before inspecting outcome",
+    "stop and park on any unexplained hold, rejection, fallback, degradation, invalid marker, or matched score ratio below 1.15",
+    "stop and park on the first hosted or regression loss",
+    "stop and preserve Captain v1 on any credential, player, policy, membership, or champion mismatch",
+    "stop at every declared engineering, wall, memory, artifact, or verification ceiling; never infer failure from an incomplete run"
+  ],
+  "next_actions": {
+    "promote": "Upload cyan7:v1 under the Captain player if not already uploaded, submit with auto-champion always, verify qualification, sole champion identity, and the first completed Competition round, then record and push receipts.",
+    "park": "Keep Captain v1 live, archive cyan7 evidence, and select a different single mechanism from replay diagnosis.",
+    "unknown": "Preserve all complete artifacts, keep Captain v1 live, and resume only the incomplete bound step without changing source or seeds.",
+    "audit-failed": "Keep Captain v1 live and repair only the smallest failed binding or checker before any rerun."
+  },
+  "authority": {
+    "data_scope": "user-owned repository plus official Coworld/Softmax APIs, hosted results, and public replays for the ProxyWar game only",
+    "external_actions": "The user explicitly authorized a new Captain submission. Official cyan7 diagnostic upload, hosted requests, league submission, membership, and champion change are authorized only after the complete preregistered gates pass; paid compute and unrelated accounts remain not authorized."
+  }
+}

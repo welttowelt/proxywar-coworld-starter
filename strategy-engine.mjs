@@ -340,6 +340,7 @@ function reciprocalTrustIntact(state, history, rival) {
 }
 
 export function rivalIsProtected(state, history, rival) {
+  if (state?.cyan7 === true) return false;
   if (rival.isAllied) return true;
   if (reciprocalTrustIntact(state, history, rival)) return true;
   if (state.self.tileShare >= 0.35) return false;
@@ -416,6 +417,96 @@ function chooseAllianceMove(actions, state, history, threatCount, collapsing, ac
   }
 
   return bestAllianceRequest(actions, state, history, true);
+}
+
+const CYAN7_REQUEST_COOLDOWN = 8;
+const CYAN7_MIN_PARTNER_SHARE = 0.04;
+
+function cyan7BreakAlliance(actions, state, history) {
+  return safeActions(actions, (action) => action.kind === "break_alliance")
+    .map((action) => ({ action, rival: rivalForAction(action, state) }))
+    .filter(({ rival }) => rival?.isAllied === true)
+    .map((candidate) => {
+      const rival = candidate.rival;
+      const leaderBlock = rival.tileShare >= state.topRivalTileShare - 0.005;
+      const finishBlock = state.self.tileShare >= 0.25 &&
+        state.self.tileShare >= state.topRivalTileShare - 0.03;
+      const favorableConversion = Number.isFinite(rival.relativeTroopRatio) &&
+        rival.relativeTroopRatio >= 1.25 &&
+        rival.tileShare >= CYAN7_MIN_PARTNER_SHARE;
+      const hostile = recentHostility(state, history, rival) > 0;
+      const profitable = leaderBlock || finishBlock || favorableConversion || hostile;
+      const score = Number(leaderBlock) * 4 + Number(finishBlock) * 3 +
+        Number(favorableConversion) * 2 + Number(hostile) * 5 + rival.tileShare;
+      return { ...candidate, profitable, score };
+    })
+    .filter((candidate) => candidate.profitable)
+    .sort((left, right) => right.score - left.score)[0]?.action ?? null;
+}
+
+function cyan7AllianceRequest(
+  actions,
+  state,
+  history,
+  threatCount,
+  collapsing,
+  activeDecisions,
+) {
+  const sinceAllianceMove = decisionsSince(
+    history,
+    (entry) => entry.kind === "alliance_request" || entry.kind === "break_alliance",
+  );
+  const trailing = state.self.tileShare + 0.02 < state.topRivalTileShare;
+  const pressured = threatCount > 0 || recentDistinctAttackerCount(state, history) > 0;
+  if (
+    state.rivals.length < 2 ||
+    activeDecisions < 8 ||
+    sinceAllianceMove < CYAN7_REQUEST_COOLDOWN ||
+    (!pressured && !collapsing && !trailing)
+  ) {
+    return null;
+  }
+
+  const candidates = safeActions(actions, (action) => action.kind === "alliance_request")
+    .map((action) => ({ action, rival: rivalForAction(action, state) }))
+    .filter(({ rival }) =>
+      rival &&
+      !rival.isAllied &&
+      recentHostility(state, history, rival) === 0 &&
+      rival.tileShare >= Math.max(CYAN7_MIN_PARTNER_SHARE, state.self.tileShare * 0.5)
+    )
+    .map((candidate) => ({
+      ...candidate,
+      leader: candidate.rival.tileShare >= state.topRivalTileShare - 0.005,
+      score: candidate.rival.tileShare +
+        (Number.isFinite(candidate.rival.relativeTroopRatio)
+          ? Math.max(0, 1 - candidate.rival.relativeTroopRatio) * 0.1
+          : 0),
+    }));
+  const nonLeaders = candidates.filter((candidate) => !candidate.leader);
+  return (nonLeaders.length > 0 ? nonLeaders : candidates)
+    .sort((left, right) => right.score - left.score)[0]?.action ?? null;
+}
+
+function chooseCyan7AllianceMove(
+  actions,
+  state,
+  history,
+  threatCount,
+  collapsing,
+  activeDecisions,
+) {
+  const sever = cyan7BreakAlliance(actions, state, history);
+  if (sever) return { ...sever, policyMarker: "c72" };
+  const request = cyan7AllianceRequest(
+    actions,
+    state,
+    history,
+    threatCount,
+    collapsing,
+    activeDecisions,
+  );
+  return request ? { ...request, policyMarker: "c71" } : null;
 }
 
 export function safeActions(actions, predicate = () => true) {
@@ -796,7 +887,7 @@ export function chooseUtility(actions, state, plan, history) {
   }
 
   const recentSocial = decisionsSince(history, (entry) => SOCIAL_KINDS.has(entry.kind));
-  if (recentSocial >= 12 && plan?.focus === "ally") {
+  if (state.cyan7 !== true && recentSocial >= 12 && plan?.focus === "ally") {
     const alliance = stableAllianceRequests(actions)[0];
     if (alliance) return alliance;
   }
@@ -818,7 +909,9 @@ function chooseParentAction(actions, state, plan = null, history = []) {
     : null;
   if (defensiveBuild) return defensiveBuild;
 
-  const kingmakerAlliance = kingmakerAllianceAction(actions, state, history);
+  const kingmakerAlliance = state.cyan7 === true
+    ? null
+    : kingmakerAllianceAction(actions, state, history);
   if (kingmakerAlliance) return kingmakerAlliance;
 
   const atomBomb = chooseAtomBomb(actions, state, history);
@@ -857,17 +950,30 @@ function chooseParentAction(actions, state, plan = null, history = []) {
 
   if (collapsing && build && sinceBuild >= 3 && !finishingTarget) return build;
 
-  const allianceMove = chooseAllianceMove(
+  const allianceMove = state.cyan7 === true
+    ? chooseCyan7AllianceMove(
+        actions,
+        state,
+        history,
+        threatCount,
+        collapsing,
+        activeDecisions,
+      )
+    : chooseAllianceMove(
     actions,
     state,
     history,
     threatCount,
     collapsing,
     activeDecisions,
-  );
+      );
   if (
     allianceMove && !finishingTarget &&
-    (allianceMove.kind === "break_alliance" || !hasReliableTacticalAction(actions))
+    (
+      allianceMove.kind === "break_alliance" ||
+      allianceMove.policyMarker === "c71" ||
+      !hasReliableTacticalAction(actions)
+    )
   ) {
     return allianceMove;
   }
@@ -917,7 +1023,7 @@ function chooseParentAction(actions, state, plan = null, history = []) {
   const donation = safeActions(actions, (action) => {
     if (action.kind !== "donate_gold" && action.kind !== "donate_troops") return false;
     const rival = rivalForAction(action, state);
-    return plan?.focus === "ally" && rival?.isAllied === true;
+    return state.cyan7 !== true && plan?.focus === "ally" && rival?.isAllied === true;
   })[0];
   if (donation) return donation;
 
@@ -936,7 +1042,9 @@ function chooseParentAction(actions, state, plan = null, history = []) {
   const emergencyAttack = pickPercent(emergencyAttacks, 10, avoid);
   if (emergencyAttack) return emergencyAttack;
 
-  const survivalAlliance = bestAllianceRequest(actions, state, history);
+  const survivalAlliance = state.cyan7 === true
+    ? null
+    : bestAllianceRequest(actions, state, history);
   if (survivalAlliance) return survivalAlliance;
   const pressure = safeActions(actions, (action) => action.kind === "target_player")
     .map((action) => ({ action, rival: rivalForAction(action, state) }))
@@ -1003,7 +1111,8 @@ function intentTargetActions(actions, state, target) {
       action?.metadata?.targetID ?? action?.metadata?.recipientID ?? "",
     );
     return metadataTargetID.length > 0 &&
-      !RECIPROCAL_RIVAL_IDS.has(metadataTargetID.toLowerCase()) &&
+      (state.cyan7 === true ||
+        !RECIPROCAL_RIVAL_IDS.has(metadataTargetID.toLowerCase())) &&
       metadataTargetID === target.id;
   });
 }
@@ -1019,7 +1128,9 @@ export function chooseAction(actions, state, plan = null, history = []) {
   if (!validIntentPlan(plan) || baseline.kind === "spawn" || hasCurrentPressure(state) ||
       territoryCollapsing(state, history)) return baseline;
 
-  const reverseHandshake = pendingReciprocalHandshake(actions, state);
+  const reverseHandshake = state.cyan7 === true
+    ? null
+    : pendingReciprocalHandshake(actions, state);
   if (reverseHandshake) return reverseHandshake;
 
   if (plan.intent === "grow") {
@@ -1137,7 +1248,9 @@ export function chooseCaptainUnderpantsRuntimeAction(
     return baseline;
   }
 
-  const reverseHandshake = pendingReciprocalHandshake(actions, state);
+  const reverseHandshake = state.cyan7 === true
+    ? null
+    : pendingReciprocalHandshake(actions, state);
   if (hasCurrentPressure(state) || territoryCollapsing(state, history)) {
     return reverseHandshake?.id === baseline.id ? reverseHandshake : baseline;
   }
@@ -1162,6 +1275,20 @@ export function chooseCaptainUnderpantsRuntimeAction(
     return baseline;
   }
   return { ...replacement, policyMarker: "cu1" };
+}
+
+export function chooseCyan7RuntimeAction(
+  actions,
+  state,
+  plan = null,
+  history = [],
+) {
+  return chooseCaptainUnderpantsRuntimeAction(
+    actions,
+    { ...state, cyan7: true },
+    plan,
+    history,
+  );
 }
 
 export function recordDecision(history, action, state) {

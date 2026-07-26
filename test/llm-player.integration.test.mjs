@@ -209,6 +209,9 @@ test("planner contract asks only for intent, target ID, and horizon", async () =
   assert.match(doctrine, /SUCCESS:/);
   assert.match(doctrine, /FREEDOM:/);
   assert.match(doctrine, /CAPTAIN_UNDERPANTS_PRODUCTION_DOCTRINE/);
+  assert.match(doctrine, /CYAN7_PRODUCTION_DOCTRINE/);
+  assert.match(doctrine, /no player is protected/);
+  assert.match(source, /chooseCyan7RuntimeAction as chooseSelectorAction/);
   assert.match(source, /process\.env\.PLAN_MODE === "on"/);
   assert.match(source, /"intent":/);
   assert.match(source, /"targetID":/);
@@ -220,7 +223,7 @@ test("planner contract asks only for intent, target ID, and horizon", async () =
   assert.doesNotMatch(source, /Commit 35% to neutral expansion/);
 });
 
-test("a normalized nondegraded intent reaches the deployed MM1 selector", async () => {
+test("a normalized nondegraded grow intent preserves cyan7 profitable growth", async () => {
   const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
   await new Promise((resolve) => server.once("listening", resolve));
   const { port } = server.address();
@@ -302,8 +305,8 @@ test("a normalized nondegraded intent reaches the deployed MM1 selector", async 
     }, 8000);
     server.once("connection", (socket) => {
       // Planning is deliberately nonblocking. Spawn uses the exact parent while
-      // the fixture resolves; the first active decision then proves that the
-      // normalized directive reaches MM1 without a prior social cooldown.
+      // the fixture resolves; cyan7 then keeps the same profitable land action
+      // instead of manufacturing a protected-player alliance detour.
       socket.send(JSON.stringify(request("intent-1", spawnActions, spawnObservation)));
       socket.on("message", (data) => {
         responses.push(JSON.parse(String(data)));
@@ -334,7 +337,7 @@ test("a normalized nondegraded intent reaches the deployed MM1 selector", async 
   assert.equal(responses[0].fallbackUsed, true);
   assert.equal(responses[1].selectedLegalActionId, "expand:terra-nullius:10");
   assert.equal(responses[1].fallbackUsed, false);
-  assert.match(responses[1].reason, /mm1g/);
+  assert.match(responses[1].reason, /^pln:atk/);
 });
 
 test("an exact visible convert intent reaches the deployed MM1 selector", async () => {
@@ -537,7 +540,7 @@ test("a wrapped planner reply fails closed in the deployed player", async () => 
 
   assert.deepEqual(
     responses.map((response) => response.selectedLegalActionId),
-    ["alliance:katanasan", "expand:terra-nullius:10"],
+    ["expand:terra-nullius:10", "expand:terra-nullius:10"],
   );
   assert.equal(responses[1].fallbackUsed, true);
   assert.equal(responses[1].llmPlannerDegraded, true);
