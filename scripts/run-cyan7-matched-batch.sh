@@ -14,7 +14,7 @@ CONTROL_OUTPUT="$4"
 CANDIDATE_OUTPUT="$5"
 DOCKER_SOCKET="unix:///Users/m1/.colima/default/docker.sock"
 COWORLD_VERSION="0.1.34"
-TIMEOUT_SECONDS="5400"
+TIMEOUT_SECONDS="4700"
 
 for input in "$MANIFEST" "$CONTROL_REQUEST" "$CANDIDATE_REQUEST"; do
   [[ "$input" == /* && -f "$input" && ! -L "$input" ]] || {
