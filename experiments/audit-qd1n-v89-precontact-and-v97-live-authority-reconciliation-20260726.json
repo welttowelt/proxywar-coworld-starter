@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260726T183058Z",
+  "recorded_at": "2026-07-26T18:30:58Z",
+  "transition": "resolve_exact_v89_precontact_identity_then_block_on_current_v97_authority",
+  "repository_input": {
+    "head": "1f2eab32bc3f6ad1bf48df9729f279da512995fd",
+    "active_arm_sha256": "4f425783f310256a06a2404b2d74eead69335fd3b240814c723f408a52f248c5",
+    "round599_audit": "experiments/audit-qd1n-round599-normalized-loss-cell-20260721.json",
+    "round599_audit_sha256": "30161e0429ee242a33ab0605525222490fb85d027039f2a4fcae5eff6642c626",
+    "v97_deployment_receipt": "experiments/receipt-qd1n-v97-mickey-no-harm-deployment-20260721.json",
+    "v97_deployment_receipt_sha256": "ad379bbc4671b1e280df5a836ce515788cfe23608f485c7b28a1705f76dbba07"
+  },
+  "exact_v89_parent_record": {
+    "round_number": 599,
+    "episode_id": "358ba53b-f2a9-459c-b0d4-7b9fbc770109",
+    "player_name": "K1Z odin free",
+    "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "policy_label": "qd1n:v89",
+    "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+    "replay_url": "https://softmax-public.s3.amazonaws.com/replays/432c7ce4-cf65-4db4-9397-dc48a86efaf5.replay",
+    "replay_sha256": "cfcbd9b7542f093f6a8d0a6740dbbd308085a8864fdf9adc54353fb31222fac7",
+    "replay_bytes": 33907943,
+    "canonicalization": "Each selected decisions.jsonl record was parsed as JSON, emitted with jq -cS, and terminated by LF before SHA-256.",
+    "active_precontact_decision_count": 26,
+    "active_precontact_turn_range": {
+      "inclusive_first": 400,
+      "inclusive_last": 2900
+    },
+    "active_precontact_records_sha256": "822300e18c8247f685a2c4c589e01e26be1fd2288901196e26d33b8b4618b321",
+    "last_precontact_record": {
+      "turn": 2900,
+      "sequence": 324,
+      "canonical_record_sha256": "2677fbba099754fee78840183bed8e0d32eaa601af5db4e02a7fe2a20f62ba41",
+      "selected_action": "boat:306141:16",
+      "selected_kind": "boat",
+      "selected_result": "accepted",
+      "fallback_used": true,
+      "own_tiles": 24691,
+      "own_tile_share": 0.06,
+      "own_troop_ratio": 0.92,
+      "active_transport_count": 2,
+      "active_transport_troops": 285951,
+      "neutral_boat_action_count": 18,
+      "hostile_attack_action_count": 3,
+      "favorable_hostile_attack_action_count": 0,
+      "legal_candidate_classes": [
+        "boat: 8, 16, or 25 percent",
+        "build: Defense Post",
+        "build: City",
+        "build: Warship",
+        "upgrade: City"
+      ],
+      "policy_evaluators": {
+        "transport_troop_banking": "recommended",
+        "opening_expansion_tempo": "recommended",
+        "frontier_conversion_timing": "not recommended; zero favorable hostile attacks",
+        "economy_cadence": "not recommended; City is the best safe economy build",
+        "naval_control": "recommended; build:Warship:400260 is the best naval action"
+      }
+    },
+    "first_hostile_contact_against_odin": {
+      "turn": 3000,
+      "sequence": 330,
+      "actor": "James Boggs",
+      "actor_game_player_id": "28k1hctz",
+      "selected_action": "attack:sjh3tur2:10",
+      "target_game_player_id": "sjh3tur2",
+      "selected_result": "accepted",
+      "canonical_record_sha256": "2d8c30145d059751c7ac4c118d007f2f6a044ba299f3b0e64fc96b85d4b29ede"
+    },
+    "identity_gate": "PASS_EXACT_HASH_BOUND_V89_PARENT_PRECONTACT_RECORD"
+  },
+  "candidate_gate": {
+    "legal_candidate_parent_action_difference_visible": true,
+    "candidate_action_selected": false,
+    "state_sealed_for_source": false,
+    "reason": "The exact record proves that legal actions differed from the parent choice, but the obvious boat-size, economy-build, Defense Post, social, and broad naval substitutions overlap already-closed NB1, NR2, EB3, DP1, GC1, ODC1, TPL1, or related families. The record alone does not justify reopening one of them or inventing a threshold revision.",
+    "required_next_evidence": "One causally distinct structural replacement action class with a replay-visible marker, primary territory or placement metric, and terminal disproof condition."
+  },
+  "live_authority_reconciliation": {
+    "control_file_claim": {
+      "policy_label": "qd1n:v89",
+      "policy_version_id": "ca4a4e76-fd83-4c92-bf9f-f2440d1f867f",
+      "membership_id": "lpm_7f695f76-b1d6-43e9-8af6-338a041ccfa6",
+      "claim_status": "STALE_AND_CONTRADICTED"
+    },
+    "last_deployment_receipt": {
+      "policy_label": "qd1n:v97",
+      "policy_version_id": "e83d7832-ff6e-4dde-a049-037cbf25c821",
+      "membership_id": "lpm_d8ca71ea-a783-4e36-ac2b-d1a18981a83a",
+      "submission_id": "sub_7f154c46-eb32-4787-b8b9-4215736b0b88",
+      "source_commit": "d50f34058fe60de39fb932a9b7c81f1b54415ee3",
+      "last_verified_status": "competing champion",
+      "current_status": "UNVERIFIED"
+    },
+    "public_snapshot": {
+      "manifest": "data/processed/manifest.json",
+      "manifest_sha256": "af4844df8aab8d0b56461ee027d6d6d4125c4ed935e1dc4704509774ac3b4159",
+      "source_fingerprint": "e50acd70cea8d57e586249c02deb57bb426dd56d90a03f47c40715d0785bb4f8",
+      "collected_at": "2026-07-25T04:34:17.199Z",
+      "round_range": {
+        "first": 756,
+        "last": 776
+      },
+      "membership_rows": 0,
+      "leaderboard_rows": 14,
+      "odin_participant_rows": 0,
+      "odin_leaderboard_rows": 0,
+      "membership_parquet_sha256": "c6e515e6a0c832352880b3bb7ae0526ea36d11ee273fee901178c272b59c8944"
+    },
+    "last_preserved_odin_result": {
+      "source": "data/processed/official_streak.json",
+      "source_sha256": "070099dedb5bca66049ca25ea78700cafeae96ee08456b221b903f6df7349b19",
+      "round_number": 654,
+      "created_at": "2026-07-22T14:21:48.220Z",
+      "policy_label": "qd1n:v97",
+      "policy_version_id": "e83d7832-ff6e-4dde-a049-037cbf25c821",
+      "rank": 10,
+      "score": 0
+    },
+    "authenticated_read": {
+      "status": "BLOCKED_LOGIN_PENDING",
+      "credentials_present": false,
+      "required_checks": [
+        "active Softmax player identity",
+        "current Odin league membership and substatus",
+        "current qd1n champion policy version",
+        "retirement, expiry, or roster-removal cause",
+        "exact v97 replay availability"
+      ]
+    },
+    "verdict": "BLOCK_LIVE_AUTHORITY_UNVERIFIED_DO_NOT_MUTATE_LEAGUE"
+  },
+  "decision": {
+    "exact_v89_identity_block_resolved": true,
+    "new_arm_opened": false,
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "submission_changed": false,
+    "membership_changed": false,
+    "champion_changed": false,
+    "mickey_no_harm_guard_preserved": true,
+    "prior_verified_champion_claim_reclassified_as_historical": true
+  },
+  "next_automatic_transition": "Complete the pending official Softmax login and perform read-only authenticated checks for Odin, qd1n:v97, membership lpm_d8ca71ea-a783-4e36-ac2b-d1a18981a83a, and submission sub_7f154c46-eb32-4787-b8b9-4215736b0b88. Do not restore, submit, promote, retire, or otherwise mutate a seat until the current authority is reconciled. After reconciliation, obtain one exact v97 replay or prove the v89 plus Mickey-only guard is selector-equivalent for the chosen non-Mickey state, then require a causally distinct structural action class before source work."
+}
