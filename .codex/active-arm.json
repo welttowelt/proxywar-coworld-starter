@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-07-26T18:32:43Z",
-  "cycle_id": "odin-20260726T183058Z",
+  "updated_at": "2026-08-08T19:31:27Z",
+  "cycle_id": "odin-20260808T192328Z-12854",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "blocked_live_authority_unverified_no_distinct_candidate",
+  "state": "blocked_live_authority_unverified_official_client_no_observable_read_surface",
   "arm": {
     "id": "rc1",
     "name": "post_hit_retaliation_conversion",
@@ -217,20 +217,24 @@
     "league_mutation": false
   },
   "latest_checkpoint": {
-    "cycle_id": "odin-20260726T183058Z",
-    "recorded_at": "2026-07-26T18:30:58Z",
-    "audit": "experiments/audit-qd1n-v89-precontact-and-v97-live-authority-reconciliation-20260726.json",
-    "audit_sha256": "355fa545fdf821395e170195b4e01b6024adb3a339cfa8fbb442bffec728d0cf",
-    "verdict": "PASS_EXACT_V89_PARENT_RECORD_THEN_BLOCK_LIVE_AUTHORITY_UNVERIFIED",
+    "cycle_id": "odin-20260808T192328Z-12854",
+    "recorded_at": "2026-08-08T19:31:27Z",
+    "audit": "experiments/audit-qd1n-live-authority-cli-block-20260808.json",
+    "audit_sha256": "df2f6339d6fe4dccc3be40d8e464343d5af59682e60897d01590429fc6e279ab",
+    "verdict": "BLOCK_LIVE_AUTHORITY_UNVERIFIED_OFFICIAL_CLIENT_RETURNED_NO_OBSERVABLE_READ_SURFACE",
     "dispatch_mailbox_head": "fb2440d46c19ab23a7f0c92e28e3681eeec7ad60",
     "exact_v89_identity_block_resolved": true,
     "legal_candidate_parent_action_difference_visible": true,
+    "authenticated_player_identity_verified": false,
+    "membership_verified": false,
+    "submission_verified": false,
+    "champion_verified": false,
     "causally_distinct_candidate_selected": false,
     "source_change": false,
     "runner_started": false,
     "league_mutation": false
   },
-  "next_automatic_transition": "Complete the pending official Softmax login and perform read-only authenticated checks for the current Odin player, qd1n:v97 membership, submission, and champion state. Do not restore, submit, promote, retire, or otherwise mutate a seat until current authority is reconciled. Then obtain an exact v97 replay or prove selector equivalence for a non-Mickey v89 state and require one causally distinct structural replacement action class before source work.",
+  "next_automatic_transition": "Re-run one observable read-only coworld==0.1.28 command with explicit exit-code capture against the official Softmax API. If login is still pending, preserve the blocker. If authenticated, reconcile player ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c, membership lpm_d8ca71ea-a783-4e36-ac2b-d1a18981a83a, submission sub_7f154c46-eb32-4787-b8b9-4215736b0b88, and qd1n:v97 champion identity before any mutation.",
   "prior_verified_champion_preserved": true,
   "current_champion_verification": "pending_authenticated_read"
 }

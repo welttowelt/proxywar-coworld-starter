@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260808T192328Z-12854",
+  "recorded_at": "2026-08-08T19:31:27Z",
+  "transition": "bounded_read_only_live_authority_checkpoint",
+  "dispatch_mailbox_head": "fb2440d46c19ab23a7f0c92e28e3681eeec7ad60",
+  "active_arm_input": {
+    "state": "blocked_live_authority_unverified_no_distinct_candidate",
+    "policy_label": "qd1n:v97",
+    "policy_version_id": "e83d7832-ff6e-4dde-a049-037cbf25c821",
+    "membership_id": "lpm_d8ca71ea-a783-4e36-ac2b-d1a18981a83a",
+    "submission_id": "sub_7f154c46-eb32-4787-b8b9-4215736b0b88"
+  },
+  "read_only_attempts": [
+    {
+      "command_class": "global coworld help",
+      "result": "BLOCKED_COMMAND_NOT_FOUND"
+    },
+    {
+      "command_class": "repository pnpm coworld help",
+      "result": "BLOCKED_COMMAND_NOT_FOUND"
+    },
+    {
+      "command_class": "uvx coworld 0.1.28 help for root, players, memberships, policies, and submissions",
+      "result": "NO_OBSERVABLE_OUTPUT"
+    }
+  ],
+  "repository_entrypoint": {
+    "source": "scripts/proxywar-qd1n-mutation.sh",
+    "official_client": "uvx --from coworld==0.1.28 coworld",
+    "server": "https://softmax.com/api"
+  },
+  "verdict": "BLOCK_LIVE_AUTHORITY_UNVERIFIED_OFFICIAL_CLIENT_RETURNED_NO_OBSERVABLE_READ_SURFACE",
+  "evidence_integrity": {
+    "authenticated_player_identity_verified": false,
+    "membership_verified": false,
+    "submission_verified": false,
+    "champion_verified": false
+  },
+  "actions": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "prior_verified_champion_preserved": true
+  },
+  "next_automatic_transition": "Re-run one observable read-only coworld==0.1.28 command with explicit exit-code capture against the official Softmax API. If login is still pending, preserve the blocker. If authenticated, reconcile player ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c, membership lpm_d8ca71ea-a783-4e36-ac2b-d1a18981a83a, submission sub_7f154c46-eb32-4787-b8b9-4215736b0b88, and qd1n:v97 champion identity before any mutation."
+}
