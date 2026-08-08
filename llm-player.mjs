@@ -216,8 +216,19 @@ function handleMessage(activeSocket, data) {
   const executionPlan = PLANNER_ENABLED
     ? executableIntentPlan(plan, planDecisionAge, degraded)
     : null;
-  const chosen = chooseAction(actions, state, executionPlan, history);
-  const reason = publicReason(chosen, executionPlan !== null, degraded, lastPlanErrorClass);
+  // Exact legal-action identity gate: never send an ID the match did not
+  // offer on this decision. A stale plan target falls through to the
+  // plan-free deterministic selection — not an unknown ID, not a synthetic
+  // hold (round 1325: six stale alliance IDs were emitted and became holds).
+  const offered = (action) => actions.some((entry) => entry?.id === action?.id);
+  const plannedChoice = chooseAction(actions, state, executionPlan, history);
+  let chosen = plannedChoice;
+  if (!offered(chosen)) chosen = chooseAction(actions, state, null, history);
+  if (!offered(chosen)) {
+    chosen = actions.find((entry) => entry?.kind === "hold") ?? actions[0] ?? chosen;
+  }
+  const planApplied = executionPlan !== null && chosen === plannedChoice;
+  const reason = publicReason(chosen, planApplied, degraded, lastPlanErrorClass);
 
   recordDecision(history, chosen, state);
   const response = JSON.stringify({
@@ -225,9 +236,9 @@ function handleMessage(activeSocket, data) {
     requestID: message.requestID,
     selectedLegalActionId: chosen.id,
     reason: reason.slice(0, 48),
-    confidence: executionPlan !== null ? 0.75 : 0.4,
-    fallbackUsed: PLANNER_ENABLED && executionPlan === null,
-    llmPlannerDegraded: PLANNER_ENABLED && executionPlan === null,
+    confidence: planApplied ? 0.75 : 0.4,
+    fallbackUsed: PLANNER_ENABLED && !planApplied,
+    llmPlannerDegraded: PLANNER_ENABLED && !planApplied,
   });
   if (activeSocket.readyState !== WebSocket.OPEN) return;
   activeSocket.send(response, (error) => {

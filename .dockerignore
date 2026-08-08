@@ -7,6 +7,8 @@
 !package.json
 !package-lock.json
 !llm-player.mjs
+!intent-controller.mjs
+!captain-underpants-production-doctrine.mjs
 !strategy-engine.mjs
 !strategy-chassis.mjs
 !planner-backoff.mjs

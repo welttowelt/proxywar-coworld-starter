@@ -45,13 +45,57 @@ export function normalizeIntentDirective(value, state, model = "unknown") {
   };
 }
 
-// The production planner response is a protocol packet, not prose. Parse the
-// complete response as JSON and reject wrappers, multiple objects, or repairs.
+// Transport recovery: a planner reply is accepted only when it carries
+// exactly one complete top-level JSON object. Provider framing around that
+// object — a markdown code fence, leading or trailing prose — is stripped;
+// zero objects, multiple objects, stray braces, and truncated objects stay
+// rejected. Round-1325 live evidence: the whole-response-only contract
+// rejected 464/482 planner replies whose packet was otherwise recoverable.
+function singleJsonObjectPayload(text) {
+  let s = text.trim();
+  const fence = s.match(/^```[a-zA-Z0-9_-]*[ \t]*\r?\n?([\s\S]*?)\r?\n?```$/);
+  if (fence) s = fence[1].trim();
+  let depth = 0;
+  let start = -1;
+  let inString = false;
+  let escaped = false;
+  let found = null;
+  for (let i = 0; i < s.length; i++) {
+    const ch = s[i];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (ch === "\\") escaped = true;
+      else if (ch === '"') inString = false;
+      continue;
+    }
+    if (depth > 0 && ch === '"') {
+      inString = true;
+    } else if (ch === "{") {
+      if (depth === 0) {
+        if (found !== null) return null;
+        start = i;
+      }
+      depth++;
+    } else if (ch === "}") {
+      if (depth === 0) return null;
+      depth--;
+      if (depth === 0) found = s.slice(start, i + 1);
+    }
+  }
+  if (depth !== 0) return null;
+  return found;
+}
+
+// The production planner response is a protocol packet, not prose. Recover
+// the single transport-framed JSON object, then reject unknown keys, coerced
+// values, and every other repair exactly as before.
 export function parseIntentDirective(text, state, model = "unknown") {
   if (typeof text !== "string") return null;
+  const payload = singleJsonObjectPayload(text);
+  if (payload === null) return null;
   let value;
   try {
-    value = JSON.parse(text);
+    value = JSON.parse(payload);
   } catch {
     return null;
   }
