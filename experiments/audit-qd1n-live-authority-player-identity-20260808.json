@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260808T204321Z-56612",
+  "recorded_at": "2026-08-08T20:53:14Z",
+  "transition": "bounded_read_only_active_player_identity_checkpoint",
+  "dispatch_mailbox_head": "fb2440d46c19ab23a7f0c92e28e3681eeec7ad60",
+  "official_client": {
+    "package": "coworld==0.1.28",
+    "server": "https://softmax.com/api",
+    "command_class": "player list --json",
+    "exit_code": 0,
+    "stdout_observed": true,
+    "stderr_observed": false
+  },
+  "expected_identity": {
+    "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "prior_player_name": "K1Z odin free"
+  },
+  "observed_identity": {
+    "active_player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "active_player_name": "odinfree max underpants",
+    "active": true,
+    "is_default": true,
+    "disabled_at": null,
+    "secondary_player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "secondary_player_active": false
+  },
+  "evidence_integrity": {
+    "official_login_authenticated": true,
+    "expected_active_player_id_verified": true,
+    "player_display_name_drift_observed": true,
+    "membership_verified": false,
+    "submission_verified": false,
+    "champion_verified": false
+  },
+  "verdict": "PASS_ACTIVE_PLAYER_ID_AUTHORITY_ONLY_STOP_BEFORE_UNVERIFIED_LIVE_CONTROL",
+  "actions": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "prior_verified_champion_preserved": true
+  },
+  "next_automatic_transition": "Run one bounded read-only official reconciliation of membership lpm_d8ca71ea-a783-4e36-ac2b-d1a18981a83a, submission sub_7f154c46-eb32-4787-b8b9-4215736b0b88, policy qd1n:v97 / e83d7832-ff6e-4dde-a049-037cbf25c821, and champion state. Preserve the display-name drift as explicit identity evidence and do not mutate league state before all live-control identities agree."
+}

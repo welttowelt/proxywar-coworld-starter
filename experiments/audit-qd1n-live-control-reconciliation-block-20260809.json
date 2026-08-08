@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260808T230901Z-45089",
+  "recorded_at": "2026-08-08T23:16:09.312Z",
+  "transition": "bounded_read_only_live_control_reconciliation",
+  "dispatch_mailbox_head": "c418d1357cc16f10c763b5dfe7bdd252e8a5ec96",
+  "expected_live_control": {
+    "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "membership_id": "lpm_d8ca71ea-a783-4e36-ac2b-d1a18981a83a",
+    "submission_id": "sub_7f154c46-eb32-4787-b8b9-4215736b0b88",
+    "policy_label": "qd1n:v97",
+    "policy_version_id": "e83d7832-ff6e-4dde-a049-037cbf25c821"
+  },
+  "official_client": {
+    "package": "coworld==0.1.28",
+    "server": "https://softmax.com/api",
+    "commands_attempted": [
+      "player list --json",
+      "memberships --league league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42 --mine --active-only --json"
+    ],
+    "observable_stdout": false,
+    "observable_stderr": false,
+    "result": "NO_OBSERVABLE_PAYLOAD"
+  },
+  "evidence_integrity": {
+    "prior_authenticated_player_id_verification_preserved": true,
+    "player_display_name_drift_preserved": true,
+    "membership_verified": false,
+    "submission_verified": false,
+    "policy_verified": false,
+    "champion_verified": false
+  },
+  "verdict": "BLOCK_LIVE_CONTROL_RECONCILIATION_NO_OBSERVABLE_OFFICIAL_PAYLOAD",
+  "actions": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "prior_verified_champion_preserved": true
+  },
+  "next_automatic_transition": "Retry exactly one bounded read-only official live-control reconciliation with observable exit code, stdout, and stderr. Require the expected player, membership, submission, policy version, and champion identity to agree before any mutation."
+}
+
