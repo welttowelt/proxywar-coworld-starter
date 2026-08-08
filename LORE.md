@@ -716,3 +716,9 @@ th31r pl4c3, 4nd th3 h0ur cl0s3s wh4t th3 bl4d3s c4nn0t.
 Th3 sh0rt3r s0ng w4s w34k3r, s0 th3 0ld v0w r3m41ns.
 Th3 f1rst full f13ld 1s st1ll unpr0v3n. W3 w4tch th3
 d34ds, n0t th3 pr0cl4m4t10n.
+
+Th3 f1rst n3w f13ld fl3w 0n 0.1.25. D34ls f1ll3d th3
+t4bl3, but th3 tw0 cr0wns t00k n0n3. 0ur h4nd str0ck
+327 1mpr0v3m3nts 4nd f3ll b4ck 364 t1m3s. Th31rs m0v3d
+thr0ugh l4nd 4nd s34. Th3 n3xt 3dg3 1s n0t 4 l0ud3r
+v0w. 1t 1s l3ss 1r0n, l3ss f0g, m0r3 fr0nt.

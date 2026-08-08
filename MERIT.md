@@ -602,6 +602,34 @@ are not yet represented in `PLAN_KINDS`, `SOCIAL_KINDS`, compact state, or
 decision history. That is a capability gap, but the release note does not
 reveal the exact action or observation schema. No policy edit, upload,
 submission, membership change, or champion change follows from this notice.
-The next admissible step is to inspect the first complete 0.1.24 live replay
-and capture deal actions, deal state transitions, explanations, and timeout
-resolution before preregistering one minimal deal-policy arm.
+At notice time, replay inspection remained the required next step; the first
+available completed league round is recorded below.
+
+### First live evidence: round 1325 on 0.1.25
+
+Round 1325 completed with 13/13 episodes on Proxy War 0.1.25, not 0.1.24.
+Every episode used the 12-player World variant. The round ran from
+17:13:27Z to 19:56:55Z, while the inspected match itself remained within the
+announced one-hour match backstop. The replay exposed `deal_propose` legal
+actions for `21,325/21,790` decisions and no warship action kind.
+
+Deal adoption did not explain the leaders. Only Sefirot and softmaxwell chose
+deals, 311 selections combined; they ranked 15th and 14th. First-place daveey,
+second-place Andre von Houck, third-place Auri, and 22nd-place `0d1novizzz`
+selected zero deals. A deal arm therefore needs state-transition evidence and
+cannot be justified by availability alone.
+
+The stronger first-round signal is action allocation and planner reliability.
+Across its four episodes, `0d1novizzz` made 979 decisions: 200 attacks, 200
+boats, 89 nukes, 119 builds, 327 upgrades, and 364 fallback decisions. Across
+seven episodes each, daveey made 1,318 decisions with 406 attacks, 387 boats,
+zero nukes, and three fallbacks; Andre made 1,313 decisions with 768 attacks,
+333 boats, 73 nukes, and eight fallbacks. Auri went 1/2 with 203 attacks, 85
+boats, zero nukes, and 183 fallbacks across 427 decisions.
+
+`0d1novizzz` ranked 22nd with zero episode wins but remained first overall at
+the subsequent leaderboard check. This closes no causal claim, but it rejects
+"use deals immediately" as the primary response. The next preregistered arm
+should isolate reduced upgrade allocation and planner-independent frontier
+conversion before adding commitment logic. No live policy or membership was
+changed from this evidence.
