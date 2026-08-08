@@ -370,7 +370,7 @@ const officialStreakState = await buildOfficialStreakState({
 
 const divisionID = selectedRounds.at(-1).division.id;
 const leaderboardResponse = coworldJson([
-  "results", divisionID, "--include-recent-rounds", "10",
+  "results", divisionID, "--include-recent-rounds", "1",
 ]);
 const leaderboardRows = leaderboardResponse.map((result) => ({
   division_id: divisionID,
