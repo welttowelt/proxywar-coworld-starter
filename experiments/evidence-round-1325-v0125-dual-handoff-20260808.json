@@ -1,0 +1,252 @@
+{
+  "schema_version": 1,
+  "kind": "proxywar_round_dual_policy_handoff_evidence",
+  "collected_at": "2026-08-08T20:47:10Z",
+  "league": {
+    "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+    "division_id": "div_b54268ee-6b2f-4156-9c2a-8542645e31bc",
+    "round_id": "round_1b9e9073-0cda-4d74-84d9-4e68d2e8790a",
+    "round_number": 1325,
+    "status": "completed",
+    "started_at": "2026-08-08T17:13:27.014354Z",
+    "completed_at": "2026-08-08T19:56:55.157461Z",
+    "coworld_version": "0.1.25",
+    "episode_count": 13,
+    "episode_status": "13/13 completed",
+    "variant": "Tournament 12P - World"
+  },
+  "release_context": {
+    "reported_version": "0.1.24",
+    "observed_live_version": "0.1.25",
+    "reported_changes": [
+      "structured deals with commitments, compliance, defection, and explanations",
+      "warships removed",
+      "deterministic spawns",
+      "60-minute match-resolution backstop",
+      "replay, memory, matchmaking, and dispatch improvements"
+    ],
+    "prompt_compression_correction": "The core developer withdrew the claim that an approximately 67 percent input-prompt reduction preserved performance; the reduced prompt degraded performance and the full prompt remained.",
+    "known_display_issues": [
+      "current champion version may display incorrectly",
+      "decisive moments may display incorrectly"
+    ]
+  },
+  "field_result": {
+    "leaders": [
+      {
+        "rank": 1,
+        "player": "daveey",
+        "policy": "daveey-proxywar:v24",
+        "score": 0.5714285714285714,
+        "completed_episodes": 7
+      },
+      {
+        "rank": 2,
+        "player": "Andre von Houck",
+        "policy": "kutuzov:v29",
+        "score": 0.5714285714285714,
+        "completed_episodes": 7
+      },
+      {
+        "rank": 3,
+        "player": "Auri",
+        "policy": "proxywar-keystone:v49",
+        "score": 0.5,
+        "completed_episodes": 2
+      }
+    ],
+    "deal_observations": {
+      "total_decisions": 21790,
+      "deal_offer_decisions": 21325,
+      "selected_deals": 311,
+      "deal_selectors": [
+        { "player": "Sefirot", "count": 158, "round_rank": 15 },
+        { "player": "softmaxwell", "count": 153, "round_rank": 14 }
+      ],
+      "leaders_selected_deals": 0,
+      "interpretation": "Deal availability alone did not explain the winning policies in this round."
+    },
+    "leader_action_totals": {
+      "daveey": {
+        "decisions": 1318,
+        "attack": 406,
+        "boat": 387,
+        "nuke": 0,
+        "build": 147,
+        "upgrade_structure": 178,
+        "alliance": 5,
+        "deal": 0,
+        "fallback": 3
+      },
+      "Andre von Houck": {
+        "decisions": 1313,
+        "attack": 768,
+        "boat": 333,
+        "nuke": 73,
+        "build": 53,
+        "upgrade_structure": 47,
+        "alliance": 24,
+        "deal": 0,
+        "fallback": 8
+      },
+      "Auri": {
+        "decisions": 427,
+        "attack": 203,
+        "boat": 85,
+        "nuke": 0,
+        "build": 79,
+        "upgrade_structure": 10,
+        "alliance": 39,
+        "deal": 0,
+        "fallback": 183
+      }
+    }
+  },
+  "policies": {
+    "0d1novizzz": {
+      "player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+      "policy": "xX_UwU_Senpai_420_Xx:v10",
+      "policy_version_id": "6274f77a-aee1-4a95-9020-43899cafdb35",
+      "membership_id": "lpm_2b006ee6-4787-4325-a00d-ee6a25f8418a",
+      "membership_status": "competing/active/champion",
+      "overall_rank": 1,
+      "overall_score": 17.334572207551236,
+      "overall_rounds_played": 344,
+      "round_rank": 22,
+      "round_score": 0.0,
+      "completed_episodes": 4,
+      "episode_wins": 0,
+      "decisions": 979,
+      "accepted": 979,
+      "rejected": 0,
+      "holds": 5,
+      "fallback": 364,
+      "degraded": 361,
+      "deal_offer_decisions": 975,
+      "deals_selected": 0,
+      "actions": {
+        "alliance_request": 24,
+        "attack": 200,
+        "boat": 200,
+        "build": 119,
+        "hold": 5,
+        "nuke": 89,
+        "retreat": 2,
+        "spawn": 4,
+        "target_player": 9,
+        "upgrade_structure": 327
+      },
+      "episodes": [
+        {
+          "episode_id": "0776897b-c0d2-410e-a969-56f3994576e8",
+          "winner": "Auri",
+          "final_tiles": 0,
+          "alive": false,
+          "replay_sha256": "05f3e81b5b57775d7e9658fd60442edf1af192bb9ddeaefc40b30dd84007cdfe",
+          "replay_url": "https://softmax-public.s3.amazonaws.com/replays/a620d6ba-2408-4bf1-bda5-327fcf50e6d2.replay"
+        },
+        {
+          "episode_id": "31865160-828a-463d-a6dc-ae5139f6070c",
+          "winner": "SIAN VOIDCROWN",
+          "final_tiles": 1861,
+          "alive": true,
+          "replay_sha256": "40900628643031bf41d5dd8dfacefa8e47156646ee1c03eb216ab67a9d19397d",
+          "replay_url": "https://softmax-public.s3.amazonaws.com/replays/c12b94f2-4651-4d6e-8f4e-7340c97ef9dd.replay"
+        },
+        {
+          "episode_id": "de60a365-60cd-4aac-88de-aa340d0d45b0",
+          "winner": "Andre von Houck",
+          "final_tiles": 0,
+          "alive": false,
+          "replay_sha256": "6c6f526b1989f7e1c2f40ac3e1dafa856f1dc1493f16eb5488ba02f256f76f07",
+          "replay_url": "https://softmax-public.s3.amazonaws.com/replays/01c82141-eb47-4ee6-a958-fcece300e07d.replay"
+        },
+        {
+          "episode_id": "ab2e1fcd-0287-47e3-9e37-ad2252792c17",
+          "winner": "Andre von Houck",
+          "final_tiles": 45969,
+          "alive": true,
+          "replay_sha256": "fea26538644bbf53b62ea46171bbbbbf9ae7d733ce14b6b123b41d2d43db812b",
+          "replay_url": "https://softmax-public.s3.amazonaws.com/replays/343400cf-c2e2-46bc-8b25-aa0f36b6f440.replay"
+        }
+      ],
+      "source_truth": "The public reason format matches the current compact planner/selector family, but no build receipt proves that repository HEAD is the exact deployed v10 image.",
+      "bounded_next_hypothesis": "The policy loses conversion by overallocating to upgrades and, in degraded periods, nukes. Test one planner-independent World-only guard that replaces an optional upgrade with the best safe land attack or transport when frontier conversion is available and reserve constraints pass."
+    },
+    "odinfree max underpants": {
+      "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+      "policy": "underpants switch speed:v2",
+      "policy_version_id": "b14cb801-07a7-4559-a3c4-a7419fe39929",
+      "membership_id": "lpm_d67dcc41-00dd-4be5-ba80-19fc612658c0",
+      "membership_status": "competing/active/champion",
+      "overall_rank": 21,
+      "overall_score": 0.000005493196925173284,
+      "overall_rounds_played": 476,
+      "round_rank": 23,
+      "round_score": 0.0,
+      "completed_episodes": 3,
+      "episode_wins": 0,
+      "decisions": 488,
+      "accepted": 488,
+      "rejected": 0,
+      "holds": 12,
+      "fallback": 467,
+      "degraded": 467,
+      "typed_contract_failures": 464,
+      "unknown_action_id_fallbacks": 6,
+      "successful_intents": 18,
+      "deal_offer_decisions": 485,
+      "deals_selected": 0,
+      "actions": {
+        "alliance_request": 43,
+        "attack": 183,
+        "boat": 191,
+        "build": 56,
+        "hold": 12,
+        "spawn": 3
+      },
+      "episodes": [
+        {
+          "episode_id": "0776897b-c0d2-410e-a969-56f3994576e8",
+          "winner": "Auri",
+          "final_tiles": 0,
+          "alive": false,
+          "replay_sha256": "05f3e81b5b57775d7e9658fd60442edf1af192bb9ddeaefc40b30dd84007cdfe",
+          "replay_url": "https://softmax-public.s3.amazonaws.com/replays/a620d6ba-2408-4bf1-bda5-327fcf50e6d2.replay"
+        },
+        {
+          "episode_id": "31865160-828a-463d-a6dc-ae5139f6070c",
+          "winner": "SIAN VOIDCROWN",
+          "final_tiles": 16334,
+          "alive": true,
+          "replay_sha256": "40900628643031bf41d5dd8dfacefa8e47156646ee1c03eb216ab67a9d19397d",
+          "replay_url": "https://softmax-public.s3.amazonaws.com/replays/c12b94f2-4651-4d6e-8f4e-7340c97ef9dd.replay"
+        },
+        {
+          "episode_id": "de60a365-60cd-4aac-88de-aa340d0d45b0",
+          "winner": "Andre von Houck",
+          "final_tiles": 0,
+          "alive": false,
+          "replay_sha256": "6c6f526b1989f7e1c2f40ac3e1dafa856f1dc1493f16eb5488ba02f256f76f07",
+          "replay_url": "https://softmax-public.s3.amazonaws.com/replays/01c82141-eb47-4ee6-a958-fcece300e07d.replay"
+        }
+      ],
+      "source_truth": "The exact deployed source is unverified. The distinctive BOOTSTRAP RULE reason family exists in repository history at commit fa2ea1e846e933721ce545e263f6aec8a5bd379d, which is a source-recovery lead rather than an artifact-identity proof.",
+      "bounded_next_hypothesis": "The dominant failure is planner protocol incompatibility, not deal selection. Reproduce the typed-contract failure against the historical source candidate, repair only parsing and exact legal-action identity handling, then verify the same tactical choices with fallback and unknown-action counts reduced to zero."
+    }
+  },
+  "repository_truth": {
+    "evidence_parent_commit": "a3283d14f969b2fc7276e61213c83e8f38af68a0",
+    "stale_control_warning": ".codex/active-arm.json still describes K1Z odin free / qd1n:v97 and must not be treated as current authority for either handoff lane.",
+    "live_policy_changed": false,
+    "submission_changed": false,
+    "membership_changed": false,
+    "champion_changed": false
+  },
+  "sources": {
+    "leaderboard": "https://softmax.com/api/observatory/v2/divisions/div_b54268ee-6b2f-4156-9c2a-8542645e31bc/leaderboard?include_recent_rounds=1",
+    "round_results_command": "uvx --from coworld==0.1.28 coworld results round_1b9e9073-0cda-4d74-84d9-4e68d2e8790a --json",
+    "round_episodes_command": "uvx --from coworld==0.1.28 coworld episodes --round round_1b9e9073-0cda-4d74-84d9-4e68d2e8790a --with-replay --limit 200 --json",
+    "memberships_command": "uvx --from coworld==0.1.28 coworld memberships --league league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42 --mine --active-only --json"
+  }
+}
