@@ -125,3 +125,20 @@ no-submit boundary, so the review lane executed the runbook itself:
   eligibility), not transport — that telemetry picks between ladder arms 2
   and 3.
 
+
+## Live status (2026-08-08 ~21:55Z)
+
+- Qualifier round 647 (self-pair fixture): PASSED — membership `lpm_ff335946`
+  promoted to **competing** with champion v24 after one round.
+- Qualifier planner telemetry was DEGRADED (`dgd:err` after bootstrap, both
+  seats). Ambiguous between qualifier-pod Bedrock denial (the Larslllllll
+  403 class) and a reply-shape class the transport repair does not cover;
+  pod logs are auth-blocked (`softmax login` refresh unlocks
+  `coworld episode-logs`). Competition pods provably grant Bedrock (v2's 18
+  INTENT successes in round 1325), so the first Competition round seating
+  v24 is the decisive live probe — watch armed.
+- The old v2 seat `lpm_d67dcc41` still competes in parallel. Retiring it is
+  explicitly outside this lane's boundary — Odin/Oli decision.
+- Telemetry pipeline (any replay): jq
+  `.inlineRunArtifacts["decisions.jsonl"]` → filter `.username` →
+  tally `.reason` prefixes (INTENT/pln = healthy, BOOTSTRAP/dgd = degraded).
