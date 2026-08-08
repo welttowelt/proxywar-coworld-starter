@@ -580,3 +580,28 @@ control `516,155`, a delta of `-585` (`-0.113%`), and decision-25 territory was
 seed, hosted diagnostic, regression set, upload, submission, membership, and
 champion change were not run. `qd1n:v89` remains live. Receipt:
 [`audit-qd1n-rs1-raw-stall-pangaea-20260721.json`](experiments/audit-qd1n-rs1-raw-stall-pangaea-20260721.json).
+
+## Proxy War 0.1.24 engine transition watch (2026-08-08)
+
+The core developer reported that Proxy War 0.1.24 adds structured deals with
+commitment, compliance, defection, and explanation states; removes warships;
+makes spawns deterministic; adds a 60-minute resolution backstop; improves
+replay portability and controls; opens self-serve league entry; and hardens
+memory, matchmaking, and dispatch. The release was described as published and
+certified, but not yet production-proven pending its first complete live league
+round. The current champion and decisive-moment displays may also be wrong.
+
+The same update corrected an earlier claim that a roughly 67-percent prompt
+reduction preserved agent performance. It degraded performance, so the full
+prompt remains in use. This is evidence against prompt compression as a free
+cost reduction, not evidence that every smaller prompt must fail.
+
+The current policy remains legal-action constrained, so removed warship kinds
+become unreachable branches rather than illegal selections. Structured deals
+are not yet represented in `PLAN_KINDS`, `SOCIAL_KINDS`, compact state, or
+decision history. That is a capability gap, but the release note does not
+reveal the exact action or observation schema. No policy edit, upload,
+submission, membership change, or champion change follows from this notice.
+The next admissible step is to inspect the first complete 0.1.24 live replay
+and capture deal actions, deal state transitions, explanations, and timeout
+resolution before preregistering one minimal deal-policy arm.

@@ -706,3 +706,13 @@ D3f3ns3 P0st und3r h34vy f1r3. Z3r0 r0s3. R0n r41s3d
 
 V90 1s r3j3ct3d. N0 subm1t. V89 st4ys l1v3.
 R0und 520: f1rst. R0und 521: t3nth. Str34k: 0/1000.
+
+## 0.1.24 - 04ths 1n th3 0p3n
+
+Th3 w4rsh1ps l3ft th3 s34. D34ls n0w c4rry 4 pr0m1s3,
+4 r3ck0n1ng, 4nd 4 r34s0n f0r th3 br34k. Sp4wns h0ld
+th31r pl4c3, 4nd th3 h0ur cl0s3s wh4t th3 bl4d3s c4nn0t.
+
+Th3 sh0rt3r s0ng w4s w34k3r, s0 th3 0ld v0w r3m41ns.
+Th3 f1rst full f13ld 1s st1ll unpr0v3n. W3 w4tch th3
+d34ds, n0t th3 pr0cl4m4t10n.
