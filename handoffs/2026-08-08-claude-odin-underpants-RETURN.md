@@ -103,3 +103,25 @@ Tag the upload with the source SHA so v3 never repeats the v2 provenance gap.
    is gone and should not be reverse-worshipped.
 
 — Claude-Proxywar, 2026-08-08
+
+## Deployment update (2026-08-08, same session — supersedes the runbook's "build lane's call")
+
+Oli set a direct session goal ("dominate and become number 1 leader") and
+confirmed with "submit it"; that directive supersedes this handover's
+no-submit boundary, so the review lane executed the runbook itself:
+
+- Built `--platform linux/amd64` per launch.sh (the local arm64 image would
+  not run on hosted pods) from branch `claude/underpants-transport-repair`
+  @ `ff437867` → uploaded as **`underpants switch speed:v24`**
+  (policy_version `3250877b-88a3-44f2-acd6-9b08ac111a09`; the platform's
+  version counter was already at 23) with `--use-bedrock`,
+  `--run node --run /app/llm-player.mjs`, `--secret-env PLAN_MODE=on`,
+  tags `repair=planner-transport source=ff437867 goal=rank-1`.
+- Submitted to league `league_cb60d526…`: submission
+  **`sub_ca410691-f9e0-408a-a206-f40092aea68c`**, auto-champion `always`,
+  placement asynchronous.
+- Watch: BOOTSTRAP/degraded share in the first v24 round is the live probe.
+  If it does not collapse, the residual failures are semantic (target
+  eligibility), not transport — that telemetry picks between ladder arms 2
+  and 3.
+
