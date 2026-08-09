@@ -69,5 +69,13 @@ uvx --from coworld==0.1.38 coworld upload-policy proxywar-agent-candidate:local 
 uvx --from coworld==0.1.38 coworld submit <policy_version_id>
 ```
 
-Chain to complete after upload: policy_version id → submission id →
-membership state → champion receipt, appended here.
+## Shipped receipts (2026-08-09, on Oli's explicit "Ship it now")
+
+- Uploaded: `xX_UwU_Senpai_420_Xx:v11`, policy_version
+  `0898bd15-2bbd-438f-add3-a6775fc1e2f6` (image sha256:b17245a0..., source
+  commit a2065d8b).
+- Submitted: `sub_40bb7ac9-b0bb-4fa3-b183-3c3cf285d392`, league
+  `league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42`, status pending,
+  auto-champion: always (placement async).
+- Membership: lpm_2b006ee6-4787-4325-a00d-ee6a25f8418a — verify champion swap
+  to v11 once placement completes.
