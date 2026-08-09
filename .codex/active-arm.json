@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-09T00:26:34Z",
-  "cycle_id": "odin-20260809T002141Z-68483",
+  "updated_at": "2026-08-09T01:28:50Z",
+  "cycle_id": "odin-20260809T012850Z-88521",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "blocked_live_control_identity_mismatch_expected_qd1n_v97_replaced",
+  "state": "blocked_evidence_integrity_live_replacement_receipt_missing",
   "arm": {
     "id": "rc1",
     "name": "post_hit_retaliation_conversion",
@@ -28,7 +28,7 @@
     "last_verified_is_champion": true,
     "current_status": "active_player_champion_verified_identity_mismatch",
     "current_is_champion": true,
-    "verification_blocker": "The expected qd1n:v97 membership is absent from active memberships. The same player ID is champion through membership lpm_ff335946-9ca3-4467-932c-211080deca8c with policy underpants switch speed:v24 / 3250877b-88a3-44f2-acd6-9b08ac111a09; its submission and authorized source provenance are not yet reconciled."
+    "verification_blocker": "The expected qd1n:v97 membership is absent from active memberships. The same player ID is champion through membership lpm_ff335946-9ca3-4467-932c-211080deca8c with policy underpants switch speed:v24 / 3250877b-88a3-44f2-acd6-9b08ac111a09, but no hash-bound qd1n transition receipt for its source, submission, membership authorization, or champion state exists in the repository or dispatch mailbox head."
   },
   "live_scoreboard": {
     "checked_at": "2026-07-25T04:34:17.199Z",
@@ -52,7 +52,7 @@
     "runner": "free",
     "studio_runner": "owned:hrafn:hi1-pangaea-control-65b83f97-r2",
     "qd1n_mutation": "free",
-    "active_player": "blocked:ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c:expected_qd1n_v97_replaced",
+    "active_player": "blocked:ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c:live_replacement_receipt_missing",
     "mailbox_commit": "fb2440d46c19ab23a7f0c92e28e3681eeec7ad60"
   },
   "operator_topology": {
@@ -218,17 +218,17 @@
     "league_mutation": false
   },
   "latest_checkpoint": {
-    "cycle_id": "odin-20260809T002141Z-68483",
-    "recorded_at": "2026-08-09T00:26:34Z",
-    "audit": "experiments/audit-qd1n-live-control-identity-mismatch-block-20260809.json",
-    "audit_sha256": "26fea4e1b505645768e105f43739d86a2ff4e070610e2c64a863914fdacf710f",
-    "verdict": "BLOCK_LIVE_CONTROL_IDENTITY_MISMATCH_EXPECTED_QD1N_V97_REPLACED",
+    "cycle_id": "odin-20260809T012850Z-88521",
+    "recorded_at": "2026-08-09T01:28:50Z",
+    "audit": "experiments/audit-qd1n-live-replacement-receipt-missing-block-20260809.json",
+    "verdict": "BLOCK_EVIDENCE_INTEGRITY_LIVE_REPLACEMENT_RECEIPT_MISSING",
     "dispatch_mailbox_head": "c418d1357cc16f10c763b5dfe7bdd252e8a5ec96",
     "authenticated_player_identity_previously_verified": true,
     "active_player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
     "active_player_name": "odinfree max underpants",
     "player_display_name_drift_observed": true,
     "membership_verified": true,
+    "transition_receipt_found": false,
     "submission_verified": false,
     "policy_verified": false,
     "champion_verified": false,
@@ -241,9 +241,9 @@
     "observed_policy_version_id": "3250877b-88a3-44f2-acd6-9b08ac111a09",
     "expected_membership_present": false,
     "expected_policy_present": false,
-    "next_automatic_transition": "Reconcile the provenance and authorization of live membership lpm_ff335946-9ca3-4467-932c-211080deca8c and policy underpants switch speed:v24 from the directly linked qd1n transition receipt. Do not mutate league state until source, submission, membership, and champion identities are hash-bound and consistent."
+    "next_automatic_transition": "Recover a hash-bound qd1n transition receipt that identifies the authorized source commit, policy version, submission, membership, and champion state for underpants switch speed:v24. Until then, do not mutate qd1n league state or dispatch another arm."
   },
-  "next_automatic_transition": "Reconcile the provenance and authorization of live membership lpm_ff335946-9ca3-4467-932c-211080deca8c and policy underpants switch speed:v24 from the directly linked qd1n transition receipt. Do not mutate league state until source, submission, membership, and champion identities are hash-bound and consistent.",
+  "next_automatic_transition": "Recover a hash-bound qd1n transition receipt that identifies the authorized source commit, policy version, submission, membership, and champion state for underpants switch speed:v24. Until then, do not mutate qd1n league state or dispatch another arm.",
   "prior_verified_champion_preserved": true,
   "current_champion_verification": "blocked_identity_mismatch_expected_qd1n_v97_replaced"
 }

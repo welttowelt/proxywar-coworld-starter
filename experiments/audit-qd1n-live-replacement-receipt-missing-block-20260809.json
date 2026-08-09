@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260809T012850Z-88521",
+  "recorded_at": "2026-08-09T01:28:50Z",
+  "transition": "terminal_live_replacement_receipt_integrity_block",
+  "dispatch_mailbox_head": "c418d1357cc16f10c763b5dfe7bdd252e8a5ec96",
+  "expected_live_control": {
+    "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "membership_id": "lpm_d8ca71ea-a783-4e36-ac2b-d1a18981a83a",
+    "submission_id": "sub_7f154c46-eb32-4787-b8b9-4215736b0b88",
+    "policy_label": "qd1n:v97",
+    "policy_version_id": "e83d7832-ff6e-4dde-a049-037cbf25c821"
+  },
+  "observed_live_replacement": {
+    "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "membership_id": "lpm_ff335946-9ca3-4467-932c-211080deca8c",
+    "policy_label": "underpants switch speed:v24",
+    "policy_version_id": "3250877b-88a3-44f2-acd6-9b08ac111a09",
+    "is_champion": true,
+    "submission_id": null
+  },
+  "receipt_reconciliation": {
+    "exact_identifier_search_scope": [
+      "repository",
+      "/Users/olifreuler/.stormforge/team-mailbox"
+    ],
+    "matching_transition_receipt_found": false,
+    "dispatch_head_subject": "Claude->Odin: 0d1novizzz ug1 candidate on branch claude/0d1novizzz-ug1",
+    "dispatch_head_is_qd1n_transition_receipt": false,
+    "dispatch_head_explicitly_separate_from_qd1n": true,
+    "source_provenance_verified": false,
+    "submission_verified": false,
+    "membership_authorization_verified": false,
+    "champion_identity_verified": false
+  },
+  "verdict": "BLOCK_EVIDENCE_INTEGRITY_LIVE_REPLACEMENT_RECEIPT_MISSING",
+  "actions": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "prior_verified_champion_preserved_as_historical_only": true
+  },
+  "next_automatic_transition": "Recover a hash-bound qd1n transition receipt that identifies the authorized source commit, policy version, submission, membership, and champion state for underpants switch speed:v24. Until then, do not mutate qd1n league state or dispatch another arm."
+}
