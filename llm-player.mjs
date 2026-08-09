@@ -95,11 +95,17 @@ async function askBedrock(state, signal) {
   for (const model of candidates) {
     try {
       const r = await bedrock.messages.create(
-        { model, max_tokens: 100, messages: [{ role: "user", content: prompt }] },
+        { model, max_tokens: 300, messages: [{ role: "user", content: prompt }] },
         { signal, timeout: Math.min(8000, PLAN_TIMEOUT_MS), maxRetries: 0 },
       );
       lockedModel = model;
-      return { text: r?.content?.[0]?.text || "", model };
+      // Join every text block: some model profiles front non-text blocks, so
+      // content[0] alone can be empty while the packet sits in a later block.
+      const text = (Array.isArray(r?.content) ? r.content : [])
+        .map((block) => (typeof block?.text === "string" ? block.text : ""))
+        .filter(Boolean)
+        .join("\n");
+      return { text, model };
     } catch (e) { lastErr = e; }
   }
   throw lastErr || new Error("no bedrock model responded");
@@ -168,7 +174,7 @@ const PUBLIC_KIND = {
   donate_troops: "d0n", quick_chat: "cht", emoji: "emj", hold: "h0d",
 };
 
-function publicReason(chosen, hasPlan, degraded, errorClass) {
+function publicReason(chosen, hasPlan, degraded, errorClass, errorText = null) {
   const mode = degraded ? `dgd:${errorClass || "err"}` : hasPlan ? "pln" : "rul";
   const kind = PUBLIC_KIND[chosen.kind] || "act";
   const markers = [...new Set([
@@ -177,7 +183,13 @@ function publicReason(chosen, hasPlan, degraded, errorClass) {
   ]
     .map((marker) => clean(marker).toLowerCase().replace(/[^a-z0-9]/g, ""))
     .filter(Boolean))];
-  return `${mode}:${kind}${markers.length > 0 ? `:${markers.join(":")}` : ""}`;
+  const base = `${mode}:${kind}${markers.length > 0 ? `:${markers.join(":")}` : ""}`;
+  if (!degraded || !errorText) return base;
+  // Degradation telemetry: carry the refresh-error head on the wire so the
+  // public replay diagnoses the planner without pod-log access. The response
+  // path caps reasons at 48 chars; sanitize so the snippet stays greppable.
+  const snippet = String(errorText).replace(/[^\x20-\x7e]/g, " ").replace(/\|/g, "/").trim();
+  return `${base}|${snippet}`;
 }
 
 function handleMessage(activeSocket, data) {
@@ -228,7 +240,7 @@ function handleMessage(activeSocket, data) {
     chosen = actions.find((entry) => entry?.kind === "hold") ?? actions[0] ?? chosen;
   }
   const planApplied = executionPlan !== null && chosen === plannedChoice;
-  const reason = publicReason(chosen, planApplied, degraded, lastPlanErrorClass);
+  const reason = publicReason(chosen, planApplied, degraded, lastPlanErrorClass, lastPlanError);
 
   recordDecision(history, chosen, state);
   const response = JSON.stringify({

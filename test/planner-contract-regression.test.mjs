@@ -308,3 +308,80 @@ test("transport framing does not change tactical selection", async () => {
   assert.equal(bare.at(-1).llmPlannerDegraded, false);
   assert.equal(fenced.at(-1).llmPlannerDegraded, false);
 });
+
+// Degradation telemetry: a failing refresh must expose its error head on the
+// wire so public replays diagnose the planner without pod-log access.
+test("degraded decisions carry the refresh-error snippet on the wire", async () => {
+  const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
+  await new Promise((resolve) => server.once("listening", resolve));
+  const { port } = server.address();
+  const lowRisk = { level: "low" };
+  const legalActions = [
+    { id: "expand:terra-nullius:10", kind: "attack", risk: lowRisk,
+      label: "Expand into neutral land with 10% troops",
+      metadata: { expansion: true, troopPercent: 10 } },
+    { id: "hold", kind: "hold", label: "Hold", risk: lowRisk },
+  ];
+  const obs = {
+    phase: "active",
+    ownState: {
+      tileShare: 0.05, troopRatio: 0.8, troops: 500000, gold: 250000,
+      borderTiles: 100, incomingAttacks: [],
+    },
+    visiblePlayers: [],
+  };
+  const requests = [
+    request("t1", legalActions, obs),
+    request("t2", legalActions, obs),
+  ];
+  const responses = [];
+  let stderr = "";
+  const child = spawn(process.execPath, [playerPath], {
+    env: {
+      ...process.env,
+      NODE_ENV: "test",
+      PLAN_MODE: "on",
+      INTENT_TEST_DIRECTIVE: "no packet here at all",
+      COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
+      AWS_EC2_METADATA_DISABLED: "true",
+    },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  child.stderr.on("data", (chunk) => { stderr += String(chunk); });
+  const completed = new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      child.kill("SIGKILL");
+      reject(new Error(`telemetry test timed out: ${stderr}`));
+    }, 8000);
+    server.once("connection", (socket) => {
+      socket.send(JSON.stringify(requests[0]));
+      socket.on("message", (data) => {
+        responses.push(JSON.parse(String(data)));
+        if (responses.length < requests.length) {
+          setTimeout(() => {
+            socket.send(JSON.stringify(requests[responses.length]));
+          }, 30);
+        } else {
+          socket.send(JSON.stringify({ type: "final" }));
+        }
+      });
+    });
+    child.once("error", reject);
+    child.once("exit", (code) => {
+      clearTimeout(timeout);
+      if (code === 0) resolve();
+      else reject(new Error(`player exited ${code}: ${stderr}`));
+    });
+  });
+  try {
+    await completed;
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+  assert.match(responses[1].reason, /^dgd:err:/);
+  assert.ok(
+    responses[1].reason.includes("|plan reply had no valid intent".slice(0, 48 - "dgd:err:atk".length)),
+    `reason must carry the error snippet, got: ${responses[1].reason}`,
+  );
+  assert.ok(responses[1].reason.length <= 48);
+});
