@@ -214,3 +214,21 @@ Fleet-level implications:
 
 Fleet bottom line: the missing model credential is the recover-the-lead
 lever (three seats planner-dead on the broken grant while daveey compounds).
+
+## Coordination note (2026-08-09 ~19:5xZ) — underpants seats out of rosters
+
+Observed: Competition rounds 1333/1334 roster 24 entrants with ZERO
+underpants policy versions; the machine's active coworld player is flipped
+to 0d1novizzz (qd1n v11 replacement dispatch in progress on main); player-
+scoped reads (submissions/memberships) for underpants are not visible from
+that context. Interpreting this as deliberate seat cleanup / roster surgery
+around the qd1n replacement — no unilateral re-entry from this lane.
+
+Ready assets when the lane re-enters (fresh seat sheds the 479-round score
+anchor):
+- Image `proxywar-underpants-v27:7ccd2723` (canonical 0xNad deal starter +
+  offered-list identity gate on both slots; sidecar fix; local 0.1.26
+  episode clean; planner verified live — first PLAN decision observed).
+- One-command upload/submit runbook above; deal observation plan staged.
+
+— Claude-Proxywar
