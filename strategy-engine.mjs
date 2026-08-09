@@ -44,8 +44,22 @@ const MAP_SPAWN_TILES = new Map([
     .map((tile) => [tile, "Asia"]),
   ...[1088580, 1216626, 877134, 659476, 494334, 628394, 994502, 1333674]
     .map((tile) => [tile, "World"]),
-  ...[659528, 534350, 266554, 687420, 622372, 589302, 450306, 740346, 856604, 855528]
+  // Tile 534350 spawns on BOTH Pangaea and 0.1.26 NorthAmerica; an ambiguous
+  // tile fingerprints as neither (a missing fingerprint is neutral, a wrong
+  // one activates the other map's opening doctrine).
+  ...[659528, 266554, 687420, 622372, 589302, 450306, 740346, 856604, 855528]
     .map((tile) => [tile, "Pangaea"]),
+  // 0.1.26 rotates a new map generation with deterministic 12P spawns.
+  // Harvested from live round replays (2 episodes per map agree exactly):
+  // rounds 1328-1331, 2026-08-09. Europe/Britannia pending replay publication.
+  ...[87062, 103422, 204804, 528376, 680556, 823450, 931556, 1227812, 1346942,
+    1372678, 1548490, 1549104].map((tile) => [tile, "BlackSea"]),
+  ...[139982, 158414, 159174, 159476, 318806, 476042, 787846, 805724, 966024,
+    1277640, 1605498, 1618670].map((tile) => [tile, "EastAsia"]),
+  ...[94258, 533412, 782258, 784490, 1100538, 1546436, 2031300,
+    2065364, 2554544, 3308084, 4042276].map((tile) => [tile, "NorthAmerica"]),
+  ...[24054, 230178, 996628, 1000504, 1108410, 1160598, 1168508, 1196714,
+    1334418, 1334584, 1336292, 1558664].map((tile) => [tile, "Oceania"]),
 ]);
 
 export const PLAN_KINDS = [
@@ -709,14 +723,16 @@ export function boatConversionStalled(state, history) {
   return currentShare <= shares[0] + 0.002;
 }
 
-// ug1: the upgrade-sink twin of boatConversionStalled. A World seat whose
-// frontier is frozen while the recent stream is dominated by utility upgrades
-// is land-locked: the invasion transport pool is share-gated (>= 0.15) far
-// above realistic 12-player World shares, and cv1 cannot fire without boats in
-// recent history, so the selector repeats upgrades until the round is lost
+// ug1: the upgrade-sink twin of boatConversionStalled. A seat whose frontier
+// is frozen while the recent stream is dominated by utility upgrades is
+// land-locked: the invasion transport pool is share-gated (>= 0.15) far above
+// realistic 12-player shares, and cv1 cannot fire without boats in recent
+// history, so the selector repeats upgrades until the round is lost
 // (round 1325: 83 consecutive upgrades over 8,400 frozen turns in ab2e1fcd).
+// Derived on World, but the mechanism is map-general — the 0.1.26 generation
+// rotates naval-heavy maps every round, where a dead boat lane is fatal — so
+// the guard fires on any map, fingerprinted or not; every other gate holds.
 export function upgradeLockStalled(state, history) {
-  if (state.mapFingerprint !== "World") return false;
   const currentShare = finiteNumber(state?.self?.tileShare, NaN);
   if (!Number.isFinite(currentShare) || currentShare < MIN_CONVERSION_TILE_SHARE) return false;
   // Only seats BELOW the ordinary invasion-pool share gate are land-locked in

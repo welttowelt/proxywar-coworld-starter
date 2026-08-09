@@ -345,9 +345,18 @@ test("official Normal-map spawn tiles identify every supported route", () => {
     Asia: [1180588, 1228670, 1216916, 1214746, 1224834, 892476, 1020678, 1450648],
     World: [1088580, 1216626, 877134, 659476, 494334, 628394, 994502, 1333674],
     Pangaea: [
-      659528, 534350, 266554, 687420, 622372, 589302, 450306, 740346,
+      659528, 266554, 687420, 622372, 589302, 450306, 740346,
       856604, 855528,
     ],
+    // 0.1.26 rotating generation, harvested from live round replays.
+    BlackSea: [87062, 103422, 204804, 528376, 680556, 823450, 931556,
+      1227812, 1346942, 1372678, 1548490, 1549104],
+    EastAsia: [139982, 158414, 159174, 159476, 318806, 476042, 787846,
+      805724, 966024, 1277640, 1605498, 1618670],
+    NorthAmerica: [94258, 533412, 782258, 784490, 1100538, 1546436,
+      2031300, 2065364, 2554544, 3308084, 4042276],
+    Oceania: [24054, 230178, 996628, 1000504, 1108410, 1160598, 1168508,
+      1196714, 1334418, 1334584, 1336292, 1558664],
   };
   for (const [map, spawnTiles] of Object.entries(cases)) {
     for (const spawnTile of spawnTiles) {
@@ -355,6 +364,11 @@ test("official Normal-map spawn tiles identify every supported route", () => {
       assert.equal(state.mapFingerprint, map);
     }
   }
+  // Tile 534350 spawns on both Pangaea and NorthAmerica: ambiguous tiles
+  // fingerprint as neither, because a wrong fingerprint activates the other
+  // map's opening doctrine while a missing one stays neutral.
+  const ambiguous = buildState(observation({ spawnTile: 534350 }), [action("hold", "hold", "Hold")]);
+  assert.equal(ambiguous.mapFingerprint, null);
 });
 
 test("unknown spawn tiles fail closed and recorded map identity persists", () => {
@@ -3140,28 +3154,30 @@ test("ug1 stays inert below the troop-ratio reserve floor", () => {
   assert.equal(selected.policyMarker, undefined);
 });
 
-test("ug1 is World-only", () => {
+test("ug1 releases on any map, fingerprinted or not", () => {
   const upgrade = action("upgrade:city:next", "upgrade_structure", "Upgrade City");
   const boat8 = invasionBoat("boat:93699:8", "weakling", "Weakling", 8);
-  const history = upgradeLockHistory().map((entry) => ({
-    ...entry,
-    mapFingerprint: "Pangaea",
-  }));
-  const selected = choose(
+  const rivals = [
+    { id: "weakling", name: "Weakling", tileShare: 0.03, relativeTroopRatio: 1.4, sharesBorder: false },
+  ];
+  // Pangaea-fingerprinted seat
+  const onPangaea = choose(
     [upgrade, boat8],
-    observation({
-      tileShare: 0.05,
-      troopRatio: 0.9,
-      spawnTile: 659528,
-      rivals: [
-        { id: "weakling", name: "Weakling", tileShare: 0.03, relativeTroopRatio: 1.4, sharesBorder: false },
-      ],
-    }),
+    observation({ tileShare: 0.05, troopRatio: 0.9, spawnTile: 659528, rivals }),
     null,
-    history,
+    upgradeLockHistory().map((entry) => ({ ...entry, mapFingerprint: "Pangaea" })),
   );
-  assert.equal(selected.id, upgrade.id);
-  assert.equal(selected.policyMarker, undefined);
+  assert.equal(onPangaea.id, boat8.id);
+  assert.equal(onPangaea.policyMarker, "ug1");
+  // Unknown-map seat (0.1.26 rotating generation, no fingerprint)
+  const onUnknown = choose(
+    [upgrade, boat8],
+    observation({ tileShare: 0.05, troopRatio: 0.9, spawnTile: 999999999, rivals }),
+    null,
+    upgradeLockHistory().map((entry) => ({ ...entry, mapFingerprint: null })),
+  );
+  assert.equal(onUnknown.id, boat8.id);
+  assert.equal(onUnknown.policyMarker, "ug1");
 });
 
 test("ug1 never fires at a protected or allied target and never holds", () => {
@@ -3460,4 +3476,24 @@ test("ug1 needs a full-length history window", () => {
     upgradeLockHistory({ length: 6, upgrades: 4 }),
   );
   assert.equal(selected.id, upgrade.id);
+});
+
+test("ug1 refuses a forced release against a pact partner", () => {
+  const upgrade = action("upgrade:city:next", "upgrade_structure", "Upgrade City");
+  const boatPartner = invasionBoat("boat:93699:8", "partner", "Partner", 8);
+  const obs = {
+    ...pactObservation(),
+    ownState: {
+      tileShare: 0.05, troopRatio: 0.9, troops: 500000, gold: 250000,
+      borderTiles: 100, incomingAttacks: [], playerID: "odin",
+      spawnTile: WORLD_SPAWN_TILE,
+    },
+    visiblePlayers: [{
+      isAlive: true, sharesBorder: false, canAttack: true, isAllied: false,
+      id: "partner", name: "Partner", tileShare: 0.03, relativeTroopRatio: 1.4,
+    }],
+  };
+  const selected = choose([upgrade, boatPartner], obs, null, upgradeLockHistory());
+  assert.equal(selected.id, upgrade.id);
+  assert.equal(selected.policyMarker, undefined);
 });

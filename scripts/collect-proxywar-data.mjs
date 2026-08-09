@@ -151,11 +151,46 @@ function parseInlineJson(replay, name) {
 
 function parseDecisions(replay) {
   const value = replay?.inlineRunArtifacts?.["decisions.jsonl"];
-  if (typeof value !== "string") throw new Error("replay is missing inline decisions.jsonl");
+  // Engine 0.1.26 stopped inlining per-decision streams in hosted replays
+  // (decisions live server-side; deal-ledger.json arrived instead). Decision
+  // analytics for those episodes are simply absent — an empty stream must
+  // not abort the whole collection run.
+  if (typeof value !== "string") return [];
   return value
     .split("\n")
     .filter(Boolean)
     .map((line) => JSON.parse(line));
+}
+
+// 0.1.26 structured-deal ledger; absent (null) on older replays.
+function parseDealLedger(replay) {
+  const value = replay?.inlineRunArtifacts?.["deal-ledger.json"];
+  if (typeof value !== "string") return null;
+  try {
+    return JSON.parse(value);
+  } catch {
+    return null;
+  }
+}
+
+function dealRow(deal, episode, replayHash) {
+  return {
+    episode_id: episode.episode_id,
+    round_id: episode.round_id,
+    replay_sha256: replayHash,
+    deal_id: deal.dealID ?? null,
+    template: deal.template ?? null,
+    status: deal.status ?? null,
+    proposer_player_id: deal.proposerPlayerID ?? null,
+    proposer_name: deal.proposerName ?? null,
+    recipient_player_id: deal.recipientPlayerID ?? null,
+    recipient_name: deal.recipientName ?? null,
+    proposed_at_step: numberOrNull(deal.proposedAtStep),
+    responded_at_step: numberOrNull(deal.respondedAtStep),
+    active_from_step: numberOrNull(deal.activeFromStep),
+    expires_after_step: numberOrNull(deal.expiresAfterStep),
+    duration_steps: numberOrNull(deal.durationSteps),
+  };
 }
 
 function participantRow(episode, replay, position) {
@@ -462,6 +497,7 @@ for (const round of selectedRounds) {
 const episodeRows = [];
 const participantRows = [];
 const decisionRows = [];
+const dealRows = [];
 const replayManifest = [];
 await mapWithConcurrency(episodes, REPLAY_DOWNLOAD_CONCURRENCY, async (episode) => {
   const destination = path.join(cacheDir, `${episode.episode_id}.replay`);
@@ -477,6 +513,10 @@ for (const episode of episodes) {
   const replay = JSON.parse(bytes.toString("utf8"));
   const gameRecord = parseInlineJson(replay, "game-record.json");
   const decisions = parseDecisions(replay);
+  const dealLedger = parseDealLedger(replay);
+  for (const deal of dealLedger?.deals || []) {
+    dealRows.push(dealRow(deal, episode, replayHash));
+  }
   const participants = episode.participants.map((_, position) =>
     participantRow(episode, replay, position)
   );
@@ -539,6 +579,7 @@ await writeFile(
 await writeFile(path.join(stagingDir, "episodes.ndjson"), ndjson(episodeRows));
 await writeFile(path.join(stagingDir, "participants.ndjson"), ndjson(participantRows));
 await writeFile(path.join(stagingDir, "decisions.ndjson"), ndjson(decisionRows));
+await writeFile(path.join(stagingDir, "deals.ndjson"), ndjson(dealRows));
 await writeFile(officialStreakPath, `${JSON.stringify(officialStreakState, null, 2)}\n`);
 await writeFile(manifestPath, `${JSON.stringify({
   schema_version: 4,
