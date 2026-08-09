@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260809T140644Z-43844",
+  "recorded_at": "2026-08-09T14:09:19Z",
+  "transition": "terminal_live_replacement_receipt_integrity_block_reconfirmed",
+  "dispatch_mailbox_head": "c418d1357cc16f10c763b5dfe7bdd252e8a5ec96",
+  "prior_checkpoint_commit": "710aed80",
+  "receipt_reconciliation": {
+    "exact_identifiers": [
+      "3250877b-88a3-44f2-acd6-9b08ac111a09",
+      "lpm_ff335946-9ca3-4467-932c-211080deca8c",
+      "underpants switch speed:v24"
+    ],
+    "dispatch_mailbox_head_verified_current": true,
+    "dispatch_mailbox_head_unchanged_from_prior_checkpoint": true,
+    "dispatch_mailbox_head_subject": "Claude->Odin: 0d1novizzz ug1 candidate on branch claude/0d1novizzz-ug1",
+    "dispatch_mailbox_head_is_replacement_receipt": false,
+    "dispatch_checkout_branch": "claude/0d1novizzz-ug1",
+    "dispatch_checkout_mutated": false,
+    "odin_checkpoint_worktree": "/private/tmp/proxywar-odin-20260809T104435Z",
+    "odin_checkpoint_branch": "main",
+    "matching_transition_receipt_found": false,
+    "source_provenance_verified": false,
+    "submission_verified": false,
+    "membership_authorization_verified": false,
+    "champion_identity_verified": false
+  },
+  "verdict": "BLOCK_EVIDENCE_INTEGRITY_LIVE_REPLACEMENT_RECEIPT_MISSING",
+  "actions": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "candidate_policy_branch_edited": false
+  },
+  "next_automatic_transition": "Recover a hash-bound qd1n transition receipt that identifies the authorized source commit, policy version, submission, membership, and champion state for underpants switch speed:v24. Until then, do not mutate qd1n league state or dispatch another arm."
+}
