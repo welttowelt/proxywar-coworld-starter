@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-09T16:24:41Z",
-  "cycle_id": "odin-20260809T162205Z-39828",
+  "updated_at": "2026-08-09T17:29:33Z",
+  "cycle_id": "odin-20260809T172757Z-16143",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
   "state": "blocked_evidence_integrity_live_replacement_receipt_missing",
@@ -53,7 +53,7 @@
     "studio_runner": "owned:hrafn:hi1-pangaea-control-65b83f97-r2",
     "qd1n_mutation": "free",
     "active_player": "blocked:ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c:live_replacement_receipt_missing",
-    "mailbox_commit": "9a60cdde0552f6c6b4547ca088fa8581f10542c9"
+    "mailbox_commit": "ccdfb22ed627d2cff6eb3b24e813fe10a6108b87"
   },
   "operator_topology": {
     "odin": "sole writable qd1n operator and live authority",
@@ -218,18 +218,18 @@
     "league_mutation": false
   },
   "latest_checkpoint": {
-    "cycle_id": "odin-20260809T162205Z-39828",
-    "recorded_at": "2026-08-09T16:24:41Z",
-    "audit": "experiments/audit-qd1n-live-replacement-receipt-block-refresh-20260809T162441Z.json",
+    "cycle_id": "odin-20260809T172757Z-16143",
+    "recorded_at": "2026-08-09T17:29:33Z",
+    "audit": "experiments/audit-qd1n-live-replacement-receipt-block-refresh-20260809T172933Z.json",
     "verdict": "BLOCK_EVIDENCE_INTEGRITY_LIVE_REPLACEMENT_RECEIPT_MISSING",
-    "dispatch_mailbox_head": "9a60cdde0552f6c6b4547ca088fa8581f10542c9",
+    "dispatch_mailbox_head": "ccdfb22ed627d2cff6eb3b24e813fe10a6108b87",
     "authenticated_player_identity_previously_verified": true,
     "mailbox_head_unchanged_from_prior_checkpoint": false,
     "dispatch_mailbox_head_verified_current": true,
-    "dispatch_mailbox_head_subject": "Odin: receipt block on qd1n live replacement",
+    "dispatch_mailbox_head_subject": "Claude->Odin: v11 candidate ready, receipt chain prepared",
     "dispatch_mailbox_head_is_replacement_receipt": false,
     "reconciliation_scope": "active-arm state and exact new dispatch mailbox head only",
-    "dispatch_checkout_branch": "claude/0d1novizzz-deals",
+    "dispatch_checkout_branch": "claude/0d1novizzz-candidate",
     "dispatch_checkout_mutated": false,
     "odin_checkpoint_branch": "main",
     "odin_checkpoint_worktree": "/private/tmp/proxywar-odin-20260809T104435Z",
