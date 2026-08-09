@@ -48,9 +48,12 @@ it with one command and a verified chain.
 
 - 4P Pangaea (deals arm, image from 025b6d00): winner = most active
   dealmaker; ledger `scratchpad/play4p/proxywar-runs/*/deal-ledger.json`.
-- 4P Europe (new-generation map, full candidate image from a2065d8b):
-  run artifacts under `scratchpad/play4p-europe/` — see the mailbox note for
-  the verdict.
+- 4P Europe (new-generation map, full candidate image, engine 0.1.26):
+  VERDICT HEALTHY — 400 decisions, 0 fallbacks, full 10,300-turn match on an
+  unfingerprinted map; 21 deals proposed / 9 accepted; action mix 271 attack /
+  79 boat / 26 build / 1 upgrade (no upgrade-lock formed, ug1 correctly
+  silent; cv1 fired 5x); all four seats alive at the end. The exact regime
+  where v10 posted five 0-win rounds.
 
 ## Ship commands (operator-only, in order)
 
