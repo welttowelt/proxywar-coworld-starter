@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260809T002141Z-68483",
+  "recorded_at": "2026-08-09T00:26:34Z",
+  "transition": "bounded_read_only_live_control_reconciliation",
+  "dispatch_mailbox_head": "c418d1357cc16f10c763b5dfe7bdd252e8a5ec96",
+  "official_client": {
+    "package": "coworld==0.1.28",
+    "server": "https://softmax.com/api",
+    "command": "memberships --league league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42 --mine --active-only --json",
+    "timeout_seconds": 75,
+    "exit_code": 0,
+    "stdout_observed": true,
+    "stderr_observed": true,
+    "stderr": ""
+  },
+  "expected_live_control": {
+    "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "membership_id": "lpm_d8ca71ea-a783-4e36-ac2b-d1a18981a83a",
+    "submission_id": "sub_7f154c46-eb32-4787-b8b9-4215736b0b88",
+    "policy_label": "qd1n:v97",
+    "policy_version_id": "e83d7832-ff6e-4dde-a049-037cbf25c821"
+  },
+  "observed_live_control": {
+    "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "player_name": "odinfree max underpants",
+    "membership_id": "lpm_ff335946-9ca3-4467-932c-211080deca8c",
+    "membership_status": "competing",
+    "membership_substatus": "champion",
+    "is_champion": true,
+    "policy_label": "underpants switch speed:v24",
+    "policy_version_id": "3250877b-88a3-44f2-acd6-9b08ac111a09",
+    "membership_start_time": "2026-08-08T21:48:06.636809Z",
+    "submission_id": null
+  },
+  "identity_comparison": {
+    "player_id_matches": true,
+    "display_name_drift_preserved": true,
+    "expected_membership_present_in_active_memberships": false,
+    "expected_policy_present_in_active_memberships": false,
+    "expected_submission_verified": false,
+    "expected_champion_identity_matches": false
+  },
+  "verdict": "BLOCK_LIVE_CONTROL_IDENTITY_MISMATCH_EXPECTED_QD1N_V97_REPLACED",
+  "actions": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "prior_verified_champion_preserved_as_historical_only": true
+  },
+  "next_automatic_transition": "Reconcile the provenance and authorization of live membership lpm_ff335946-9ca3-4467-932c-211080deca8c and policy underpants switch speed:v24 from the directly linked qd1n transition receipt. Do not mutate league state until the source, submission, membership, and champion identities are hash-bound and consistent."
+}

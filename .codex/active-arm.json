@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-08T23:16:09.312Z",
-  "cycle_id": "odin-20260808T230901Z-45089",
+  "updated_at": "2026-08-09T00:26:34Z",
+  "cycle_id": "odin-20260809T002141Z-68483",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "blocked_live_control_reconciliation_no_observable_official_payload",
+  "state": "blocked_live_control_identity_mismatch_expected_qd1n_v97_replaced",
   "arm": {
     "id": "rc1",
     "name": "post_hit_retaliation_conversion",
@@ -26,9 +26,9 @@
     "last_verified_status": "competing",
     "last_verified_substatus": "champion",
     "last_verified_is_champion": true,
-    "current_status": "active_player_id_verified",
-    "current_is_champion": null,
-    "verification_blocker": "Official Coworld login is authenticated and the exact expected player ID is active. The display name drifted from K1Z odin free to odinfree max underpants; membership, submission, policy, and champion state remain unverified."
+    "current_status": "active_player_champion_verified_identity_mismatch",
+    "current_is_champion": true,
+    "verification_blocker": "The expected qd1n:v97 membership is absent from active memberships. The same player ID is champion through membership lpm_ff335946-9ca3-4467-932c-211080deca8c with policy underpants switch speed:v24 / 3250877b-88a3-44f2-acd6-9b08ac111a09; its submission and authorized source provenance are not yet reconciled."
   },
   "live_scoreboard": {
     "checked_at": "2026-07-25T04:34:17.199Z",
@@ -52,7 +52,7 @@
     "runner": "free",
     "studio_runner": "owned:hrafn:hi1-pangaea-control-65b83f97-r2",
     "qd1n_mutation": "free",
-    "active_player": "verified:ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c:name_drift",
+    "active_player": "blocked:ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c:expected_qd1n_v97_replaced",
     "mailbox_commit": "fb2440d46c19ab23a7f0c92e28e3681eeec7ad60"
   },
   "operator_topology": {
@@ -218,26 +218,32 @@
     "league_mutation": false
   },
   "latest_checkpoint": {
-    "cycle_id": "odin-20260808T230901Z-45089",
-    "recorded_at": "2026-08-08T23:16:09.312Z",
-    "audit": "experiments/audit-qd1n-live-control-reconciliation-block-20260809.json",
-    "audit_sha256": "1eb67a913e83db97e9599befe6f8bf7c57f4d5fee58c6fa97d620b872986bcd0",
-    "verdict": "BLOCK_LIVE_CONTROL_RECONCILIATION_NO_OBSERVABLE_OFFICIAL_PAYLOAD",
+    "cycle_id": "odin-20260809T002141Z-68483",
+    "recorded_at": "2026-08-09T00:26:34Z",
+    "audit": "experiments/audit-qd1n-live-control-identity-mismatch-block-20260809.json",
+    "audit_sha256": "26fea4e1b505645768e105f43739d86a2ff4e070610e2c64a863914fdacf710f",
+    "verdict": "BLOCK_LIVE_CONTROL_IDENTITY_MISMATCH_EXPECTED_QD1N_V97_REPLACED",
     "dispatch_mailbox_head": "c418d1357cc16f10c763b5dfe7bdd252e8a5ec96",
     "authenticated_player_identity_previously_verified": true,
     "active_player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
     "active_player_name": "odinfree max underpants",
     "player_display_name_drift_observed": true,
-    "membership_verified": false,
+    "membership_verified": true,
     "submission_verified": false,
     "policy_verified": false,
     "champion_verified": false,
+    "observed_replacement_is_champion": true,
     "source_change": false,
     "runner_started": false,
     "league_mutation": false,
-    "next_automatic_transition": "Retry exactly one bounded read-only official live-control reconciliation with observable exit code, stdout, and stderr. Require the expected player, membership, submission, policy version, and champion identity to agree before any mutation."
+    "observed_membership_id": "lpm_ff335946-9ca3-4467-932c-211080deca8c",
+    "observed_policy_label": "underpants switch speed:v24",
+    "observed_policy_version_id": "3250877b-88a3-44f2-acd6-9b08ac111a09",
+    "expected_membership_present": false,
+    "expected_policy_present": false,
+    "next_automatic_transition": "Reconcile the provenance and authorization of live membership lpm_ff335946-9ca3-4467-932c-211080deca8c and policy underpants switch speed:v24 from the directly linked qd1n transition receipt. Do not mutate league state until source, submission, membership, and champion identities are hash-bound and consistent."
   },
-  "next_automatic_transition": "Run one bounded read-only official reconciliation of membership lpm_d8ca71ea-a783-4e36-ac2b-d1a18981a83a, submission sub_7f154c46-eb32-4787-b8b9-4215736b0b88, policy qd1n:v97 / e83d7832-ff6e-4dde-a049-037cbf25c821, and champion state. Preserve the display-name drift as explicit identity evidence and do not mutate league state before all live-control identities agree.",
+  "next_automatic_transition": "Reconcile the provenance and authorization of live membership lpm_ff335946-9ca3-4467-932c-211080deca8c and policy underpants switch speed:v24 from the directly linked qd1n transition receipt. Do not mutate league state until source, submission, membership, and champion identities are hash-bound and consistent.",
   "prior_verified_champion_preserved": true,
-  "current_champion_verification": "pending_membership_submission_policy_champion_read"
+  "current_champion_verification": "blocked_identity_mismatch_expected_qd1n_v97_replaced"
 }
