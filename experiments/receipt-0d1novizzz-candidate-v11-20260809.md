@@ -79,3 +79,23 @@ uvx --from coworld==0.1.38 coworld submit <policy_version_id>
   auto-champion: always (placement async).
 - Membership: lpm_2b006ee6-4787-4325-a00d-ee6a25f8418a — verify champion swap
   to v11 once placement completes.
+
+## Incident + final ship state (2026-08-09 ~18:30Z)
+
+- The first ship (v11) bound to the account's ACTIVE PLAYER, which defaulted to
+  `odinfree max underpants` (ply_ad3816d3) — NOT 0d1novizzz — and auto-champion
+  displaced that lane's `underpants switch speed:v27`. Cross-lane mis-ship,
+  caused by this lane (player context was never checked before upload).
+- Containment, in order: (1) `softmax player use` → 0d1novizzz; (2) re-upload
+  of the identical image as `xX_UwU_Senpai_420_Xx:v12` = policy_version
+  `a1946e26-98d2-433d-b824-cf374a1d620e`, submission
+  `sub_587d703a-e3c4-4651-82d7-faaa763979c7` (placed, player-verified
+  0d1novizzz); (3) retire of the mis-shipped membership `lpm_b460efce`
+  (audit reason on the record, ended 18:29:20Z); (4) player context restored.
+- FINAL STATE: 0d1novizzz champion = **v12** on `lpm_8c4ad356-f9e0-4191`
+  (competing/champion, started 18:28:14Z), v10 benched. v11 (0898bd15…) exists
+  as an unseated policy version only. Underpants lane: v24-v27 memberships
+  intact but NO champion seated — their operator must re-champion (one
+  submission); flagged in the mailbox.
+- Lesson (binding): ALWAYS `softmax player list` and verify the active player
+  before any upload/submit; the CLI binds silently to the session's player.
