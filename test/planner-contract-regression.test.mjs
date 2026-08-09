@@ -384,4 +384,7 @@ test("degraded decisions carry the refresh-error snippet on the wire", async () 
     `reason must carry the error snippet, got: ${responses[1].reason}`,
   );
   assert.ok(responses[1].reason.length <= 48);
+  // Bootstrap decisions under planner-on expose the credential-env
+  // fingerprint (names only) for public-replay diagnosis.
+  assert.match(responses[0].reason, /\|env:/);
 });

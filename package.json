@@ -20,6 +20,7 @@
   },
   "dependencies": {
     "ws": "^8.18.0",
-    "@anthropic-ai/bedrock-sdk": "^0.29.2"
+    "@anthropic-ai/bedrock-sdk": "^0.29.2",
+    "@anthropic-ai/sdk": "0.111.0"
   }
 }

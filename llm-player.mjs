@@ -17,6 +17,7 @@
  */
 import { WebSocket } from "ws";
 import { AnthropicBedrock } from "@anthropic-ai/bedrock-sdk";
+import Anthropic from "@anthropic-ai/sdk";
 import {
   buildState,
   chooseCaptainUnderpantsRuntimeAction as chooseSelectorAction,
@@ -52,7 +53,26 @@ const MODELS = [
 
 let bedrock = null;
 try { bedrock = new AnthropicBedrock({ awsRegion: REGION }); } catch (e) { bedrock = null; }
+// Direct Anthropic-protocol client: the hosted credential grant may be a
+// prefixed API key for a gateway (Bearer auth) rather than SigV4 material —
+// live round telemetry showed SigV4-style calls rejected with
+// `403 Invalid API Key format`. Constructible only when a key env exists.
+let anthropicDirect = null;
+try {
+  if (process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN) {
+    anthropicDirect = new Anthropic({});
+  }
+} catch (e) { anthropicDirect = null; }
+// Env-presence fingerprint (names only, never values) for wire telemetry.
+const ENV_FINGERPRINT = [
+  ["ANTHROPIC_API_KEY", "A"], ["ANTHROPIC_AUTH_TOKEN", "T"],
+  ["ANTHROPIC_BASE_URL", "B"], ["ANTHROPIC_BEDROCK_BASE_URL", "X"],
+  ["AWS_ACCESS_KEY_ID", "K"], ["AWS_SECRET_ACCESS_KEY", "S"],
+  ["AWS_SESSION_TOKEN", "N"], ["AWS_REGION", "R"],
+  ["AWS_DEFAULT_REGION", "D"], ["USE_BEDROCK", "U"], ["BEDROCK_MODEL", "M"],
+].map(([name, code]) => (process.env[name] ? code : "")).join("");
 let lockedModel = null;
+let lockedPath = null;
 const TEST_INTENT_DIRECTIVE = process.env.NODE_ENV === "test"
   ? process.env.INTENT_TEST_DIRECTIVE
   : null;
@@ -82,7 +102,7 @@ async function askBedrock(state, signal) {
   if (TEST_INTENT_DIRECTIVE) {
     return { text: TEST_INTENT_DIRECTIVE, model: "intent-test-fixture" };
   }
-  if (!bedrock) throw new Error("bedrock client did not initialize");
+  if (!bedrock && !anthropicDirect) throw new Error("no model client initialized");
   const prompt =
     STRATEGY + "\n" + SECURITY + "\n" +
     'Reply with ONLY JSON and exactly these three keys. Use one shape: ' +
@@ -93,22 +113,41 @@ async function askBedrock(state, signal) {
   const candidates = [...new Set([lockedModel, ...MODELS].filter(Boolean))];
   let lastErr;
   for (const model of candidates) {
-    try {
-      const r = await bedrock.messages.create(
-        { model, max_tokens: 300, messages: [{ role: "user", content: prompt }] },
-        { signal, timeout: Math.min(8000, PLAN_TIMEOUT_MS), maxRetries: 0 },
-      );
-      lockedModel = model;
-      // Join every text block: some model profiles front non-text blocks, so
-      // content[0] alone can be empty while the packet sits in a later block.
-      const text = (Array.isArray(r?.content) ? r.content : [])
-        .map((block) => (typeof block?.text === "string" ? block.text : ""))
-        .filter(Boolean)
-        .join("\n");
-      return { text, model };
-    } catch (e) { lastErr = e; }
+    // Per model: SigV4 Bedrock first, then the direct Anthropic-protocol
+    // client with the raw id and the deprefixed id. A gateway grant accepts
+    // one of the direct forms; real AWS accepts the SigV4 call. The first
+    // success locks both the model and the transport for later refreshes.
+    const stripped = model
+      .replace(/^(us\.|global\.)?anthropic\./, "")
+      .replace(/-v\d+:\d+$/, "");
+    const attempts = [];
+    if (bedrock) attempts.push([bedrock, "bdk", model]);
+    if (anthropicDirect) {
+      attempts.push([anthropicDirect, "api", model]);
+      if (stripped !== model) attempts.push([anthropicDirect, "api2", stripped]);
+    }
+    if (model === lockedModel && lockedPath) {
+      attempts.sort((a, b) => (a[1] === lockedPath ? -1 : b[1] === lockedPath ? 1 : 0));
+    }
+    for (const [client, path, id] of attempts) {
+      try {
+        const r = await client.messages.create(
+          { model: id, max_tokens: 300, messages: [{ role: "user", content: prompt }] },
+          { signal, timeout: Math.min(8000, PLAN_TIMEOUT_MS), maxRetries: 0 },
+        );
+        lockedModel = model;
+        lockedPath = path;
+        // Join every text block: some model profiles front non-text blocks,
+        // so content[0] alone can be empty while the packet sits later.
+        const text = (Array.isArray(r?.content) ? r.content : [])
+          .map((block) => (typeof block?.text === "string" ? block.text : ""))
+          .filter(Boolean)
+          .join("\n");
+        return { text, model: `${model}@${path}` };
+      } catch (e) { lastErr = e; }
+    }
   }
-  throw lastErr || new Error("no bedrock model responded");
+  throw lastErr || new Error("no model responded on any transport");
 }
 
 // -- the PLAN: written by the model in the background, executed instantly -----
@@ -240,7 +279,13 @@ function handleMessage(activeSocket, data) {
     chosen = actions.find((entry) => entry?.kind === "hold") ?? actions[0] ?? chosen;
   }
   const planApplied = executionPlan !== null && chosen === plannedChoice;
-  const reason = publicReason(chosen, planApplied, degraded, lastPlanErrorClass, lastPlanError);
+  let reason = publicReason(chosen, planApplied, degraded, lastPlanErrorClass, lastPlanError);
+  // Bootstrap decisions (planner on, no plan yet) carry the credential-env
+  // fingerprint — env NAMES only, never values — so one public replay shows
+  // which grant shape the pod actually received.
+  if (PLANNER_ENABLED && !degraded && !planApplied) {
+    reason += `|env:${ENV_FINGERPRINT}`;
+  }
 
   recordDecision(history, chosen, state);
   const response = JSON.stringify({
