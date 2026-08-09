@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260809T151443Z-17177",
+  "recorded_at": "2026-08-09T15:16:56Z",
+  "transition": "terminal_live_replacement_receipt_integrity_block_reconfirmed_on_new_dispatch",
+  "dispatch_mailbox_head": "bface75114490237c3dc6eaca493bd19561a37c4",
+  "prior_checkpoint_commit": "30906cb9",
+  "receipt_reconciliation": {
+    "exact_identifiers": [
+      "3250877b-88a3-44f2-acd6-9b08ac111a09",
+      "lpm_ff335946-9ca3-4467-932c-211080deca8c",
+      "underpants switch speed:v24"
+    ],
+    "dispatch_mailbox_head_verified_current": true,
+    "dispatch_mailbox_head_changed_from_prior_checkpoint": true,
+    "dispatch_mailbox_head_subject": "Claude->Odin: deals landed + urgent v10 five-round collapse alarm",
+    "dispatch_mailbox_packet": "CLAUDE_TO_ODIN_0D1NOVIZZZ_DEALS_LANDED_AND_COLLAPSE_ALARM_20260809.md",
+    "dispatch_mailbox_blob": "977822ead614ef1f79d3e135df963f2cbc746224",
+    "dispatch_mailbox_head_is_replacement_receipt": false,
+    "dispatch_packet_contains_live_replacement_identifiers": false,
+    "dispatch_packet_requests_new_recovery_arm": true,
+    "new_arm_dispatch_preempted_by_active_integrity_block": true,
+    "dispatch_checkout_branch": "claude/0d1novizzz-deals",
+    "dispatch_checkout_mutated": false,
+    "odin_checkpoint_worktree": "/private/tmp/proxywar-odin-20260809T104435Z",
+    "odin_checkpoint_branch": "main",
+    "matching_transition_receipt_found": false,
+    "source_provenance_verified": false,
+    "submission_verified": false,
+    "membership_authorization_verified": false,
+    "champion_identity_verified": false
+  },
+  "verdict": "BLOCK_EVIDENCE_INTEGRITY_LIVE_REPLACEMENT_RECEIPT_MISSING",
+  "actions": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "candidate_policy_branch_edited": false,
+    "successor_arm_dispatched": false
+  },
+  "next_automatic_transition": "Recover a hash-bound qd1n transition receipt that identifies the authorized source commit, policy version, submission, membership, and champion state for underpants switch speed:v24. Until then, do not mutate qd1n league state or dispatch another arm."
+}
