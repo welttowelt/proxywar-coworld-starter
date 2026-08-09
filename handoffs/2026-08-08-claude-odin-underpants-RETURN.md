@@ -175,3 +175,24 @@ Unblock paths (either works; v26's image self-arms, no rebuild):
 Meanwhile the seat competes at deterministic-selector grade (the CU-lineage
 floor that held ~rank 21). `softmax login` (browser) additionally unlocks
 `coworld episode-logs` and `coworld secret` for future forensics.
+
+## Fleet picture (2026-08-09 ~04:1xZ board read)
+
+Competition leaderboard: **0d1novizzz = RANK 1 (16.59)** — the fleet holds
+the top seat; daveey #2 trails by only 0.16. CYAN HELLSTAR #6 (12.55),
+Captain Underpants Maximum Aura #8 (12.01), odinfree max underpants #17
+(2.03, anchored by 479 broken-history rounds). CYAN won 8/11 episodes in
+round 1328 on the deterministic selector alone.
+
+Fleet-level implications:
+- The platform `--use-bedrock` 403 very likely caps THREE of our seats
+  (underpants, CYAN, CU Maximum Aura all show the dgd:err class). One
+  credential (`--secret-env ANTHROPIC_API_KEY=…` re-upload) or one core-dev
+  grant fix lifts all three. Highest-leverage single action on the board.
+- Deals are currently live noise: ledgers show fallthrough proposals
+  ("fallthrough: any safe action") expiring unanswered. The deal-engagement
+  arm is DEPRIORITIZED below (a) the credential unblock and (b)
+  tech-transfer of CYAN's current selector stack onto the underpants seat.
+- Defend #1: 0d1novizzz's lane stays untouched from here (its own handoff
+  governs it); margin-building comes from lifting our mid-board seats so
+  rivals' round scores get squeezed.
