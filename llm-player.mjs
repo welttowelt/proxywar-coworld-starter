@@ -33,6 +33,7 @@ import {
   CAPTAIN_UNDERPANTS_PRODUCTION_DOCTRINE,
 } from "./captain-underpants-production-doctrine.mjs";
 import { chooseChassisAction } from "./strategy-chassis.mjs";
+import { chooseDealMove, isDealActionKind } from "./deal-desk.mjs";
 
 const chooseAction =
   process.env.POLICY_ENGINE === "qd2n" ? chooseChassisAction : chooseSelectorAction;
@@ -196,10 +197,27 @@ function handleMessage(activeSocket, data) {
   }
   if (message.type !== "decision_request") return;
 
-  const actions = message.request.legalActions ?? [];
+  const allActions = message.request.legalActions ?? [];
   const obs = message.request.observation ?? {};
   if (process.env.DEBUG_ACTIONS === "1" && history.length === 3) {
-    console.log(`debug legal actions: ${JSON.stringify(actions)}`);
+    console.log(`debug legal actions: ${JSON.stringify(allActions)}`);
+  }
+  // Structured-deal meta-actions (0.1.26+) are never a valid PRIMARY move —
+  // they ride the separate selectedDealActionId slot below. Keep them out of
+  // the selector's menu so no fallback path can burn the turn on one.
+  const actions = allActions.filter((action) => !isDealActionKind(action.kind));
+  if (actions.length === 0 && allActions.length > 0) {
+    // Degenerate menu of only deal meta-actions: answer with the first one
+    // rather than stalling the match (mirrors the upstream starter fallback).
+    if (activeSocket.readyState !== WebSocket.OPEN) return;
+    activeSocket.send(JSON.stringify({
+      type: "decision_response",
+      requestID: message.requestID,
+      selectedLegalActionId: allActions[0].id,
+      reason: "rul:d4l",
+      confidence: 0.4,
+    }));
+    return;
   }
   const state = buildState(obs, actions, history);
 
@@ -218,12 +236,22 @@ function handleMessage(activeSocket, data) {
     : null;
   const chosen = chooseAction(actions, state, executionPlan, history);
   const reason = publicReason(chosen, executionPlan !== null, degraded, lastPlanErrorClass);
+  // The OPTIONAL diplomacy slot (0.1.26+): negotiating never costs the game
+  // move. Deterministic desk, planner-independent; a throw must never take
+  // the primary response down with it.
+  let dealMove = null;
+  try {
+    dealMove = chooseDealMove(allActions, obs, executionPlan, history);
+  } catch (error) {
+    console.error(`deal desk failed: ${error?.message || error}`);
+  }
 
   recordDecision(history, chosen, state);
   const response = JSON.stringify({
     type: "decision_response",
     requestID: message.requestID,
     selectedLegalActionId: chosen.id,
+    ...(dealMove ? { selectedDealActionId: dealMove.id } : {}),
     reason: reason.slice(0, 48),
     confidence: executionPlan !== null ? 0.75 : 0.4,
     fallbackUsed: PLANNER_ENABLED && executionPlan === null,

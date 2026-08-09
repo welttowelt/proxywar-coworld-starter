@@ -12,14 +12,15 @@ RUN --mount=type=cache,id=proxywar-npm-cache,target=/root/.npm,sharing=locked \
     npm ci --omit=dev --ignore-scripts
 
 FROM dependencies AS production-source
-COPY llm-player.mjs captain-underpants-production-doctrine.mjs intent-controller.mjs strategy-engine.mjs strategy-chassis.mjs planner-backoff.mjs starter-player.mjs ./
+COPY llm-player.mjs captain-underpants-production-doctrine.mjs intent-controller.mjs strategy-engine.mjs strategy-chassis.mjs planner-backoff.mjs starter-player.mjs deal-desk.mjs ./
 RUN node --check llm-player.mjs \
     && node --check captain-underpants-production-doctrine.mjs \
     && node --check intent-controller.mjs \
     && node --check strategy-engine.mjs \
     && node --check strategy-chassis.mjs \
     && node --check planner-backoff.mjs \
-    && node --check starter-player.mjs
+    && node --check starter-player.mjs \
+    && node --check deal-desk.mjs
 USER node
 
 # Evaluation stages are explicit opt-in build targets. The surrogate source is

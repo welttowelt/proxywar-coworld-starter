@@ -173,6 +173,32 @@ export function avoidActionIDs(history) {
   return [...new Set([...(streak >= 2 ? streakIDs : []), ...exactRepeats])];
 }
 
+// Inline twin of deal-desk.mjs dealConstraints().noAttack: strategy-engine
+// must stay relocatable with no local imports (the KIZ1 CPU-runner copies
+// only selector-player.mjs + strategy-engine.mjs — see
+// test/experiment-preflight.test.mjs "cold-starts from a relocated cwd").
+// Parity between the two implementations is pinned in test/deal-desk.test.mjs.
+function pactNoAttackIDs(observation) {
+  const ownID = clean(observation?.ownState?.playerID ?? "");
+  if (!ownID) return [];
+  const bound = [];
+  for (const deal of observation?.deals?.activeDeals || []) {
+    if (deal?.template !== "non_aggression_pact" &&
+        deal?.template !== "trade_security_pact") continue;
+    const mine = (deal.obligations || []).find(
+      (obligation) =>
+        clean(obligation?.obligorPlayerID ?? "") === ownID &&
+        obligation?.status === "pending",
+    );
+    if (!mine) continue;
+    const partnerID = clean(deal.proposerPlayerID ?? "") === ownID
+      ? clean(deal.recipientPlayerID ?? "")
+      : clean(deal.proposerPlayerID ?? "");
+    if (partnerID) bound.push(partnerID.toLowerCase());
+  }
+  return [...new Set(bound)];
+}
+
 export function buildState(observation, actions, history = []) {
   const own = observation?.ownState || {};
   const mapFingerprint = inferMapFingerprint(observation, history);
@@ -198,6 +224,7 @@ export function buildState(observation, actions, history = []) {
     incomingAttacks: own.incomingAttacks,
     incomingAttackerIDs: activeIncomingAttackerIDs,
     allProtocolAttackerIDs: currentProtocolIncomingAttackerIDs,
+    dealNoAttackIDs: pactNoAttackIDs(observation),
   };
   const rivals = visiblePlayers.map((player) => ({
       id: playerID(player),
@@ -337,6 +364,14 @@ function reciprocalTrustIntact(state, history, rival) {
 export function rivalIsProtected(state, history, rival) {
   if (isAbsoluteNoHarmRival(rival)) return true;
   if (rival.isAllied) return true;
+  // An accepted non-aggression / trade-security pact binds the whole move
+  // channel while our obligation is pending. Self-defense stays exempt: a
+  // partner currently attacking us has already defected on the record.
+  const rivalID = rival.id.toLowerCase();
+  if ((state.self.dealNoAttackIDs || []).includes(rivalID) &&
+      !(state.self.incomingAttackerIDs || []).includes(rivalID)) {
+    return true;
+  }
   if (reciprocalTrustIntact(state, history, rival)) return true;
   if (state.self.tileShare >= 0.35) return false;
   if ((state.self.incomingAttackerIDs || []).includes(rival.id.toLowerCase())) return false;

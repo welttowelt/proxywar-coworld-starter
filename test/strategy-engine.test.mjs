@@ -2973,3 +2973,68 @@ test("a Mickey alliance offer is accepted with coalition priority", () => {
   assert.equal(selected.id, mickeyAlliance.id);
   assert.equal(selected.policyMarker, "kp2");
 });
+
+// Structured-deal pact keeping (engine 0.1.26): an accepted non-aggression /
+// trade-security pact binds the whole move channel while our obligation is
+// pending — attacks, nukes, and forced conversion transports all treat the
+// partner as protected. Self-defense stays exempt: a partner currently
+// attacking us is fair game (their defection is the recorded one).
+
+function pactObservation(extra = {}) {
+  return {
+    ...observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      rivals: [
+        { id: "partner", name: "Partner", tileShare: 0.12, relativeTroopRatio: 1.5 },
+        { id: "neutralfoe", name: "Neutralfoe", tileShare: 0.1, relativeTroopRatio: 1.4 },
+      ],
+      ...extra,
+    }),
+    ownState: {
+      tileShare: 0.1, troopRatio: 0.9, troops: 500000, gold: 250000,
+      borderTiles: 100, incomingAttacks: extra.incomingAttacks ?? [],
+      playerID: "odin",
+    },
+    deals: {
+      activeDeals: [{
+        template: "non_aggression_pact",
+        proposerPlayerID: "partner", recipientPlayerID: "odin",
+        proposerName: "Partner", recipientName: "Odin",
+        obligations: [
+          { obligorPlayerID: "odin", status: "pending" },
+          { obligorPlayerID: "partner", status: "pending" },
+        ],
+      }],
+      incomingProposals: [],
+      outgoingProposals: [],
+    },
+  };
+}
+
+test("an active pact steers attacks away from the partner", () => {
+  const attackPartner = {
+    ...action("attack:partner:10", "attack", "Attack Partner 10%"),
+    metadata: { targetID: "partner", targetName: "Partner", troopPercent: 10 },
+  };
+  const attackFoe = {
+    ...action("attack:neutralfoe:10", "attack", "Attack Neutralfoe 10%"),
+    metadata: { targetID: "neutralfoe", targetName: "Neutralfoe", troopPercent: 10 },
+  };
+  const selected = choose([attackPartner, attackFoe], pactObservation(), null, []);
+  assert.equal(selected.id, attackFoe.id);
+});
+
+test("a partner attacking us forfeits pact protection", () => {
+  const attackPartner = {
+    ...action("attack:partner:10", "attack", "Attack Partner 10%"),
+    metadata: { targetID: "partner", targetName: "Partner", troopPercent: 10 },
+  };
+  const selected = choose(
+    [attackPartner],
+    pactObservation({ incomingAttacks: [{ attackerID: "partner" }] }),
+    null,
+    [],
+  );
+  assert.equal(selected.id, attackPartner.id);
+});
