@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-09T02:42:33Z",
-  "cycle_id": "odin-20260809T023837Z-9253",
+  "updated_at": "2026-08-09T03:48:22Z",
+  "cycle_id": "odin-20260809T034500Z-27907",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
   "state": "blocked_evidence_integrity_live_replacement_receipt_missing",
@@ -218,12 +218,15 @@
     "league_mutation": false
   },
   "latest_checkpoint": {
-    "cycle_id": "odin-20260809T023837Z-9253",
-    "recorded_at": "2026-08-09T02:42:33Z",
-    "audit": "experiments/audit-qd1n-live-replacement-receipt-block-refresh-20260809T024233Z.json",
+    "cycle_id": "odin-20260809T034500Z-27907",
+    "recorded_at": "2026-08-09T03:48:22Z",
+    "audit": "experiments/audit-qd1n-live-replacement-receipt-block-refresh-20260809T034822Z.json",
     "verdict": "BLOCK_EVIDENCE_INTEGRITY_LIVE_REPLACEMENT_RECEIPT_MISSING",
     "dispatch_mailbox_head": "c418d1357cc16f10c763b5dfe7bdd252e8a5ec96",
     "authenticated_player_identity_previously_verified": true,
+    "mailbox_head_unchanged_from_prior_checkpoint": true,
+    "exact_identifier_search_repeated": true,
+    "repository_matches_are_prior_blocker_audits_only": true,
     "active_player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
     "active_player_name": "odinfree max underpants",
     "player_display_name_drift_observed": true,
