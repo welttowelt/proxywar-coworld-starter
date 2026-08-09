@@ -3038,3 +3038,426 @@ test("a partner attacking us forfeits pact protection", () => {
   );
   assert.equal(selected.id, attackPartner.id);
 });
+
+// UG1: a World upgrade-lock at a frozen frontier releases one bounded forced
+// conversion transport instead of another unconditional utility upgrade.
+// Round-1325 evidence: ab2e1fcd froze at 46,015 tiles for 8,400 turns while
+// selecting 83 consecutive upgrades with invasion transports legal; the
+// invasion pool was gated off by the tileShare >= 0.15 bar at realistic World
+// shares, and cv1 could not fire without boats in recent history.
+
+const WORLD_SPAWN_TILE = 1088580;
+
+function upgradeLockHistory({
+  tileShare = 0.05,
+  upgrades = 6,
+  length = 8,
+  marker = null,
+} = {}) {
+  return Array.from({ length }, (_, index) => ({
+    actionID: index < upgrades ? `upgrade:city:${index}` : `build:city:${index}`,
+    kind: index < upgrades ? "upgrade_structure" : "build",
+    neutral: false,
+    tileShare,
+    policyMarker: index === length - 1 ? marker : null,
+    mapFingerprint: "World",
+  }));
+}
+
+function invasionBoat(id, targetID, targetName, troopPercent) {
+  return {
+    ...action(id, "boat", `Transport to ${targetName} ${troopPercent}%`),
+    metadata: {
+      targetID,
+      targetName,
+      troopPercent,
+      navalInvasion: true,
+      expansion: false,
+    },
+  };
+}
+
+test("ug1: a World upgrade-lock converts an optional upgrade into a forced conversion transport", () => {
+  const upgrade = action("upgrade:city:next", "upgrade_structure", "Upgrade City");
+  const boat8 = invasionBoat("boat:93699:8", "weakling", "Weakling", 8);
+  const boat25 = invasionBoat("boat:93699:25", "weakling", "Weakling", 25);
+  const history = upgradeLockHistory();
+  const selected = choose(
+    [upgrade, boat8, boat25],
+    observation({
+      tileShare: 0.05,
+      troopRatio: 0.9,
+      spawnTile: WORLD_SPAWN_TILE,
+      rivals: [
+        { id: "weakling", name: "Weakling", tileShare: 0.03, relativeTroopRatio: 1.4, sharesBorder: false },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, boat8.id);
+  assert.equal(selected.policyMarker, "ug1");
+});
+
+test("ug1 stays inert under incoming pressure", () => {
+  const upgrade = action("upgrade:city:next", "upgrade_structure", "Upgrade City");
+  const boat8 = invasionBoat("boat:93699:8", "weakling", "Weakling", 8);
+  const selected = choose(
+    [upgrade, boat8],
+    observation({
+      tileShare: 0.05,
+      troopRatio: 0.9,
+      spawnTile: WORLD_SPAWN_TILE,
+      incomingAttacks: [{ attackerID: "weakling" }],
+      rivals: [
+        { id: "weakling", name: "Weakling", tileShare: 0.03, relativeTroopRatio: 1.4, sharesBorder: false },
+      ],
+    }),
+    null,
+    upgradeLockHistory(),
+  );
+  assert.equal(selected.id, upgrade.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("ug1 stays inert below the troop-ratio reserve floor", () => {
+  const upgrade = action("upgrade:city:next", "upgrade_structure", "Upgrade City");
+  const boat8 = invasionBoat("boat:93699:8", "weakling", "Weakling", 8);
+  const selected = choose(
+    [upgrade, boat8],
+    observation({
+      tileShare: 0.05,
+      troopRatio: 0.7,
+      spawnTile: WORLD_SPAWN_TILE,
+      rivals: [
+        { id: "weakling", name: "Weakling", tileShare: 0.03, relativeTroopRatio: 1.4, sharesBorder: false },
+      ],
+    }),
+    null,
+    upgradeLockHistory(),
+  );
+  assert.equal(selected.id, upgrade.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("ug1 is World-only", () => {
+  const upgrade = action("upgrade:city:next", "upgrade_structure", "Upgrade City");
+  const boat8 = invasionBoat("boat:93699:8", "weakling", "Weakling", 8);
+  const history = upgradeLockHistory().map((entry) => ({
+    ...entry,
+    mapFingerprint: "Pangaea",
+  }));
+  const selected = choose(
+    [upgrade, boat8],
+    observation({
+      tileShare: 0.05,
+      troopRatio: 0.9,
+      spawnTile: 659528,
+      rivals: [
+        { id: "weakling", name: "Weakling", tileShare: 0.03, relativeTroopRatio: 1.4, sharesBorder: false },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, upgrade.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("ug1 never fires at a protected or allied target and never holds", () => {
+  const upgrade = action("upgrade:city:next", "upgrade_structure", "Upgrade City");
+  const boat8 = invasionBoat("boat:93699:8", "friend", "Friend", 8);
+  const hold = action("hold", "hold", "Hold");
+  const selected = choose(
+    [upgrade, boat8, hold],
+    observation({
+      tileShare: 0.05,
+      troopRatio: 0.9,
+      spawnTile: WORLD_SPAWN_TILE,
+      rivals: [
+        { id: "friend", name: "Friend", tileShare: 0.03, relativeTroopRatio: 1.4, isAllied: true, sharesBorder: false },
+      ],
+    }),
+    null,
+    upgradeLockHistory(),
+  );
+  assert.equal(selected.id, upgrade.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("ug1 cools down after a recent ug1 release", () => {
+  const upgrade = action("upgrade:city:next", "upgrade_structure", "Upgrade City");
+  const boat8 = invasionBoat("boat:93699:8", "weakling", "Weakling", 8);
+  const selected = choose(
+    [upgrade, boat8],
+    observation({
+      tileShare: 0.05,
+      troopRatio: 0.9,
+      spawnTile: WORLD_SPAWN_TILE,
+      rivals: [
+        { id: "weakling", name: "Weakling", tileShare: 0.03, relativeTroopRatio: 1.4, sharesBorder: false },
+      ],
+    }),
+    null,
+    upgradeLockHistory({ marker: "ug1" }),
+  );
+  assert.equal(selected.id, upgrade.id);
+});
+
+test("ug1 needs a genuine upgrade-lock signature, not scattered upgrades", () => {
+  const upgrade = action("upgrade:city:next", "upgrade_structure", "Upgrade City");
+  const boat8 = invasionBoat("boat:93699:8", "weakling", "Weakling", 8);
+  const selected = choose(
+    [upgrade, boat8],
+    observation({
+      tileShare: 0.05,
+      troopRatio: 0.9,
+      spawnTile: WORLD_SPAWN_TILE,
+      rivals: [
+        { id: "weakling", name: "Weakling", tileShare: 0.03, relativeTroopRatio: 1.4, sharesBorder: false },
+      ],
+    }),
+    null,
+    upgradeLockHistory({ upgrades: 3 }),
+  );
+  assert.equal(selected.id, upgrade.id);
+});
+
+test("ug1 stays inert while the frontier is still moving", () => {
+  const upgrade = action("upgrade:city:next", "upgrade_structure", "Upgrade City");
+  const boat8 = invasionBoat("boat:93699:8", "weakling", "Weakling", 8);
+  const history = upgradeLockHistory().map((entry, index) => ({
+    ...entry,
+    tileShare: 0.04 + index * 0.004,
+  }));
+  const selected = choose(
+    [upgrade, boat8],
+    observation({
+      tileShare: 0.072,
+      troopRatio: 0.9,
+      spawnTile: WORLD_SPAWN_TILE,
+      rivals: [
+        { id: "weakling", name: "Weakling", tileShare: 0.03, relativeTroopRatio: 1.4, sharesBorder: false },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, upgrade.id);
+});
+
+// Pins from the adversarial refutation panel (2026-08-08): upper share gate,
+// pressure lookback, ratio-1.0 relaxation, cooldown boundary, shared cv1
+// cooldown, authoritative-target hardening, tier disambiguation, sparse
+// histories, and protocol-only pressure.
+
+test("ug1 releases at forced-conversion ratio 1.05, below the ordinary 1.15 bar", () => {
+  const upgrade = action("upgrade:city:next", "upgrade_structure", "Upgrade City");
+  const boat8 = invasionBoat("boat:93699:8", "weakling", "Weakling", 8);
+  const selected = choose(
+    [upgrade, boat8],
+    observation({
+      tileShare: 0.05,
+      troopRatio: 0.9,
+      spawnTile: WORLD_SPAWN_TILE,
+      rivals: [
+        { id: "weakling", name: "Weakling", tileShare: 0.03, relativeTroopRatio: 1.05, sharesBorder: false },
+      ],
+    }),
+    null,
+    upgradeLockHistory(),
+  );
+  assert.equal(selected.id, boat8.id);
+  assert.equal(selected.policyMarker, "ug1");
+});
+
+test("ug1 respects the full cooldown window boundary: inert at 5, fires at 6", () => {
+  const upgrade = action("upgrade:city:next", "upgrade_structure", "Upgrade City");
+  const boat8 = invasionBoat("boat:93699:8", "weakling", "Weakling", 8);
+  const obs = () => observation({
+    tileShare: 0.05,
+    troopRatio: 0.9,
+    spawnTile: WORLD_SPAWN_TILE,
+    rivals: [
+      { id: "weakling", name: "Weakling", tileShare: 0.03, relativeTroopRatio: 1.4, sharesBorder: false },
+    ],
+  });
+  const withMarkerAt = (index) => upgradeLockHistory().map((entry, i) =>
+    i === index ? { ...entry, kind: "boat", policyMarker: "ug1" } : entry
+  );
+  const inert = choose([upgrade, boat8], obs(), null, withMarkerAt(2)); // decisionsSince = 5
+  assert.equal(inert.id, upgrade.id);
+  const fires = choose([upgrade, boat8], obs(), null, withMarkerAt(1)); // decisionsSince = 6
+  assert.equal(fires.id, boat8.id);
+  assert.equal(fires.policyMarker, "ug1");
+});
+
+test("ug1 shares its cooldown with cv1 releases", () => {
+  const upgrade = action("upgrade:city:next", "upgrade_structure", "Upgrade City");
+  const boat8 = invasionBoat("boat:93699:8", "weakling", "Weakling", 8);
+  const history = upgradeLockHistory().map((entry, i) =>
+    i === 4 ? { ...entry, kind: "boat", policyMarker: "cv1" } : entry // decisionsSince = 3
+  );
+  const selected = choose(
+    [upgrade, boat8],
+    observation({
+      tileShare: 0.05,
+      troopRatio: 0.9,
+      spawnTile: WORLD_SPAWN_TILE,
+      rivals: [
+        { id: "weakling", name: "Weakling", tileShare: 0.03, relativeTroopRatio: 1.4, sharesBorder: false },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, upgrade.id);
+});
+
+test("ug1 does not serve seats above the invasion-pool share gate", () => {
+  const upgrade = action("upgrade:city:next", "upgrade_structure", "Upgrade City");
+  const boat8 = invasionBoat("boat:93699:8", "parity", "Parity", 8);
+  const selected = choose(
+    [upgrade, boat8],
+    observation({
+      tileShare: 0.2,
+      troopRatio: 0.9,
+      spawnTile: WORLD_SPAWN_TILE,
+      rivals: [
+        { id: "parity", name: "Parity", tileShare: 0.18, relativeTroopRatio: 1.05, sharesBorder: false },
+      ],
+    }),
+    null,
+    upgradeLockHistory({ tileShare: 0.2 }),
+  );
+  assert.equal(selected.id, upgrade.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("ug1 treats a one-tick lull in a bursty siege as pressure, not calm", () => {
+  const upgrade = action("upgrade:city:next", "upgrade_structure", "Upgrade City");
+  const boat8 = invasionBoat("boat:93699:8", "weakling", "Weakling", 8);
+  const history = upgradeLockHistory().map((entry) => ({
+    ...entry,
+    incomingAttackerIDs: ["bully"],
+  }));
+  const selected = choose(
+    [upgrade, boat8],
+    observation({
+      tileShare: 0.05,
+      troopRatio: 0.9,
+      spawnTile: WORLD_SPAWN_TILE,
+      rivals: [
+        { id: "weakling", name: "Weakling", tileShare: 0.03, relativeTroopRatio: 1.4, sharesBorder: false },
+        { id: "bully", name: "Bully", tileShare: 0.2, relativeTroopRatio: 0.9, sharesBorder: true },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, upgrade.id);
+});
+
+test("ug1 stays inert under protocol-only incoming pressure", () => {
+  const upgrade = action("upgrade:city:next", "upgrade_structure", "Upgrade City");
+  const boat8 = invasionBoat("boat:93699:8", "weakling", "Weakling", 8);
+  const selected = choose(
+    [upgrade, boat8],
+    observation({
+      tileShare: 0.05,
+      troopRatio: 0.9,
+      spawnTile: WORLD_SPAWN_TILE,
+      incomingAttackPlayerIDs: ["weakling"],
+      rivals: [
+        { id: "weakling", name: "Weakling", tileShare: 0.03, relativeTroopRatio: 1.4, sharesBorder: false },
+      ],
+    }),
+    null,
+    upgradeLockHistory(),
+  );
+  assert.equal(selected.id, upgrade.id);
+});
+
+test("ug1 refuses a release without an authoritative resolvable target ID", () => {
+  const upgrade = action("upgrade:city:next", "upgrade_structure", "Upgrade City");
+  // Metadata-free boat whose label collides with an adversarial rival name.
+  const spoofBoat = action("boat:93699:8", "boat", "Transport to Friend 8%");
+  const selected = choose(
+    [upgrade, spoofBoat],
+    observation({
+      tileShare: 0.05,
+      troopRatio: 0.9,
+      spawnTile: WORLD_SPAWN_TILE,
+      rivals: [
+        { id: "friend", name: "Friend", tileShare: 0.03, relativeTroopRatio: 1.4, isAllied: true, sharesBorder: false },
+        { id: "spoof", name: "transport", tileShare: 0.03, relativeTroopRatio: 1.4, sharesBorder: false },
+      ],
+    }),
+    null,
+    upgradeLockHistory(),
+  );
+  assert.equal(selected.id, upgrade.id);
+  assert.equal(selected.policyMarker, undefined);
+});
+
+test("ug1 picks the 8% tier over a 16% tier on release", () => {
+  const upgrade = action("upgrade:city:next", "upgrade_structure", "Upgrade City");
+  const boat8 = invasionBoat("boat:93699:8", "weakling", "Weakling", 8);
+  const boat16 = invasionBoat("boat:93699:16", "weakling", "Weakling", 16);
+  const boat25 = invasionBoat("boat:93699:25", "weakling", "Weakling", 25);
+  const selected = choose(
+    [upgrade, boat16, boat25, boat8],
+    observation({
+      tileShare: 0.05,
+      troopRatio: 0.9,
+      spawnTile: WORLD_SPAWN_TILE,
+      rivals: [
+        { id: "weakling", name: "Weakling", tileShare: 0.03, relativeTroopRatio: 1.4, sharesBorder: false },
+      ],
+    }),
+    null,
+    upgradeLockHistory(),
+  );
+  assert.equal(selected.id, boat8.id);
+});
+
+test("ug1 needs a dense share history, not a sparse one", () => {
+  const upgrade = action("upgrade:city:next", "upgrade_structure", "Upgrade City");
+  const boat8 = invasionBoat("boat:93699:8", "weakling", "Weakling", 8);
+  const history = upgradeLockHistory().map((entry, i) =>
+    i < 3 ? { ...entry, tileShare: undefined } : entry // only 5 finite shares
+  );
+  const selected = choose(
+    [upgrade, boat8],
+    observation({
+      tileShare: 0.05,
+      troopRatio: 0.9,
+      spawnTile: WORLD_SPAWN_TILE,
+      rivals: [
+        { id: "weakling", name: "Weakling", tileShare: 0.03, relativeTroopRatio: 1.4, sharesBorder: false },
+      ],
+    }),
+    null,
+    history,
+  );
+  assert.equal(selected.id, upgrade.id);
+});
+
+test("ug1 needs a full-length history window", () => {
+  const upgrade = action("upgrade:city:next", "upgrade_structure", "Upgrade City");
+  const boat8 = invasionBoat("boat:93699:8", "weakling", "Weakling", 8);
+  const selected = choose(
+    [upgrade, boat8],
+    observation({
+      tileShare: 0.05,
+      troopRatio: 0.9,
+      spawnTile: WORLD_SPAWN_TILE,
+      rivals: [
+        { id: "weakling", name: "Weakling", tileShare: 0.03, relativeTroopRatio: 1.4, sharesBorder: false },
+      ],
+    }),
+    null,
+    upgradeLockHistory({ length: 6, upgrades: 4 }),
+  );
+  assert.equal(selected.id, upgrade.id);
+});

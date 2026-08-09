@@ -709,6 +709,40 @@ export function boatConversionStalled(state, history) {
   return currentShare <= shares[0] + 0.002;
 }
 
+// ug1: the upgrade-sink twin of boatConversionStalled. A World seat whose
+// frontier is frozen while the recent stream is dominated by utility upgrades
+// is land-locked: the invasion transport pool is share-gated (>= 0.15) far
+// above realistic 12-player World shares, and cv1 cannot fire without boats in
+// recent history, so the selector repeats upgrades until the round is lost
+// (round 1325: 83 consecutive upgrades over 8,400 frozen turns in ab2e1fcd).
+export function upgradeLockStalled(state, history) {
+  if (state.mapFingerprint !== "World") return false;
+  const currentShare = finiteNumber(state?.self?.tileShare, NaN);
+  if (!Number.isFinite(currentShare) || currentShare < MIN_CONVERSION_TILE_SHARE) return false;
+  // Only seats BELOW the ordinary invasion-pool share gate are land-locked in
+  // the sense this guard exists for; at >= 0.15 the plain boat path already
+  // offers favorable invasions and forcing ratio-1.0 targets would override
+  // the 1.15 invasion-quality bar for seats that never needed the bypass.
+  if (currentShare >= 0.15) return false;
+  const recent = history.slice(-8);
+  if (recent.length < 8 ||
+      recent.filter((entry) => entry.kind === "upgrade_structure").length < 4) {
+    return false;
+  }
+  // A momentary clean tick during a bursty siege must not count as calm: the
+  // stall evidence spans 8 decisions, so the pressure lookback must too.
+  const recentlyAttacked = recent.some((entry) =>
+    (entry?.incomingAttackerIDs || []).length > 0 ||
+    (entry?.allProtocolAttackerIDs || []).length > 0
+  );
+  if (recentlyAttacked) return false;
+  const shares = recent
+    .map((entry) => finiteNumber(entry?.tileShare, NaN))
+    .filter(Number.isFinite);
+  if (shares.length < 6) return false;
+  return shares.every((share) => Math.abs(currentShare - share) <= 0.002);
+}
+
 function builtUnits(history) {
   return history
     .filter((entry) => entry.kind === "build")
@@ -978,7 +1012,36 @@ function chooseParentAction(actions, state, plan = null, history = []) {
   if (boat) return withDiscipline(withPeace(boat));
 
   const utility = chooseUtility(actions, state, plan, history);
-  if (utility) return withDiscipline(withPeace(utility));
+  if (utility) {
+    // ug1: before burning another decision on an unconditional utility
+    // upgrade at a frozen World frontier, release one bounded forced
+    // conversion transport through the same target filters cv1 trusts
+    // (protection, alliance, stall, ratio >= 1.0). Reserve and pressure
+    // gates keep the release out of defensive and collapsing positions.
+    // The cooldown is shared with cv1 so the combined forced-release cadence
+    // stays at one boat per 7 decisions even in mixed stall histories.
+    const upgradeLockReady = decisionsSince(
+      history,
+      (entry) => entry.policyMarker === "ug1" || entry.policyMarker === "cv1",
+    ) >= 6;
+    if (utility.kind === "upgrade_structure" && upgradeLockReady && !collapsing &&
+        threatCount === 0 && !hasCurrentPressure(state) &&
+        state.self.troopRatio >= 0.8 && upgradeLockStalled(state, history)) {
+      const release = chooseBoat(actions, state, history, avoid, false, true);
+      // Only an authoritative server-supplied target ID may justify a forced
+      // release: the substring fallback in rivalForAction is spoofable by
+      // rival-controlled display names, and a land-locked seat reaches this
+      // path with no boat history to have burned that risk before.
+      const releaseTargetID = clean(release?.metadata?.targetID ?? "").toLowerCase();
+      const releaseRival = releaseTargetID.length > 0
+        ? state.rivals.find((rival) => clean(rival.id).toLowerCase() === releaseTargetID)
+        : null;
+      if (release && releaseRival && !rivalIsProtected(state, history, releaseRival)) {
+        return withGc1({ ...release, policyMarker: "ug1" });
+      }
+    }
+    return withDiscipline(withPeace(utility));
+  }
 
   const desperateInvasion = !neutralAttack && !rivalAttack?.action && !build;
   if (desperateInvasion) {
