@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260809T162205Z-39828",
+  "recorded_at": "2026-08-09T16:24:41Z",
+  "transition": "terminal_live_replacement_receipt_integrity_block_reconfirmed_on_new_dispatch",
+  "dispatch_mailbox_head": "9a60cdde0552f6c6b4547ca088fa8581f10542c9",
+  "prior_checkpoint_commit": "9cf113c3b79f4f5e35101eaa32075aef3058399f",
+  "receipt_reconciliation": {
+    "exact_identifiers": [
+      "3250877b-88a3-44f2-acd6-9b08ac111a09",
+      "lpm_ff335946-9ca3-4467-932c-211080deca8c",
+      "underpants switch speed:v24"
+    ],
+    "dispatch_mailbox_head_verified_current": true,
+    "dispatch_mailbox_head_changed_from_prior_checkpoint": true,
+    "dispatch_mailbox_head_subject": "Odin: receipt block on qd1n live replacement",
+    "dispatch_mailbox_packet": "ODIN_TO_TEAM_QD1N_REPLACEMENT_RECEIPT_BLOCK_20260809T151900Z.md",
+    "dispatch_mailbox_blob": "308399a86e27d59adb42a2d302b395c3fb3c494f",
+    "dispatch_mailbox_head_is_replacement_receipt": false,
+    "dispatch_packet_contains_live_replacement_identifiers": true,
+    "dispatch_packet_is_prior_blocker_receipt_only": true,
+    "dispatch_checkout_branch": "claude/0d1novizzz-deals",
+    "dispatch_checkout_mutated": false,
+    "odin_checkpoint_worktree": "/private/tmp/proxywar-odin-20260809T104435Z",
+    "odin_checkpoint_branch": "main",
+    "matching_transition_receipt_found": false,
+    "source_provenance_verified": false,
+    "submission_verified": false,
+    "membership_authorization_verified": false,
+    "champion_identity_verified": false
+  },
+  "verdict": "BLOCK_EVIDENCE_INTEGRITY_LIVE_REPLACEMENT_RECEIPT_MISSING",
+  "actions": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "candidate_policy_branch_edited": false,
+    "successor_arm_dispatched": false
+  },
+  "next_automatic_transition": "Recover a hash-bound qd1n transition receipt that identifies the authorized source commit, policy version, submission, membership, and champion state for underpants switch speed:v24. Until then, do not mutate qd1n league state or dispatch another arm."
+}
