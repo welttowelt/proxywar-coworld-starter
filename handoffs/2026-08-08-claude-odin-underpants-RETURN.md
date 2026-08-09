@@ -142,3 +142,36 @@ no-submit boundary, so the review lane executed the runbook itself:
 - Telemetry pipeline (any replay): jq
   `.inlineRunArtifacts["decisions.jsonl"]` → filter `.username` →
   tally `.reason` prefixes (INTENT/pln = healthy, BOOTSTRAP/dgd = degraded).
+
+## Live forensic chain closed: platform Bedrock grant is broken (2026-08-09)
+
+Wire-telemetry versions (v25 error-head, v26 env fingerprint + dual
+transport) read the pod state through public replays, no log access needed:
+
+- v25 qualifier: `dgd:err:atk|403 {"Message":"Invalid API Key form` — every
+  planner call rejected at auth, model never reached. The transport repair
+  was never the live blocker (it never got to parse).
+- v26 qualifier: `rul:atk|env:KSRDU` — pods receive AWS_ACCESS_KEY_ID,
+  AWS_SECRET_ACCESS_KEY, AWS_REGION, AWS_DEFAULT_REGION, USE_BEDROCK; no
+  session token, no Anthropic-protocol envs. Those "AWS" creds hit a
+  Bearer-key gateway answer ("Invalid API Key format: Must start with
+  pre-defined prefix") — not a real AWS error.
+- Cross-entrant differential: Larslllllll and antheducation (platform-grant
+  reliers) fail with byte-identical 403s; Calc (own credentials, richer
+  fork) plans successfully via us.anthropic.claude-sonnet-4-6 in the same
+  rounds. Conclusion: **`--use-bedrock` grant is broken on 0.1.25 for every
+  policy relying on it** — worth reporting to core dev against their
+  "verifying the first full live league round" caveat.
+
+Unblock paths (either works; v26's image self-arms, no rebuild):
+
+1. Own model credential at upload time:
+   `coworld upload-policy proxywar-underpants-v26:f3f72bbe --name "underpants switch speed" \
+      --run node --run /app/llm-player.mjs --secret-env PLAN_MODE=on \
+      --secret-env ANTHROPIC_API_KEY=<key> --tag source=f3f72bbe` then submit.
+   (AWS keys with Bedrock entitlement work too — SigV4 path takes priority.)
+2. Platform fixes the grant — v26 then works as deployed.
+
+Meanwhile the seat competes at deterministic-selector grade (the CU-lineage
+floor that held ~rank 21). `softmax login` (browser) additionally unlocks
+`coworld episode-logs` and `coworld secret` for future forensics.
