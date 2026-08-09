@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260809T023837Z-9253",
+  "recorded_at": "2026-08-09T02:42:33Z",
+  "transition": "terminal_live_replacement_receipt_integrity_block_reconfirmed",
+  "dispatch_mailbox_head": "c418d1357cc16f10c763b5dfe7bdd252e8a5ec96",
+  "prior_block_commit": "1fd6c47f",
+  "revalidation": {
+    "dispatch_head_unchanged_from_prior_block": true,
+    "active_arm_state_unchanged": "blocked_evidence_integrity_live_replacement_receipt_missing",
+    "active_arm_closed": true,
+    "successor_transition_present": false,
+    "new_priority_packet_present": false,
+    "new_qd1n_transition_receipt_observed": false
+  },
+  "verdict": "BLOCK_EVIDENCE_INTEGRITY_LIVE_REPLACEMENT_RECEIPT_MISSING",
+  "actions": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "candidate_policy_branch_edited": false
+  },
+  "next_automatic_transition": "Recover a hash-bound qd1n transition receipt that identifies the authorized source commit, policy version, submission, membership, and champion state for underpants switch speed:v24. Until then, do not mutate qd1n league state or dispatch another arm."
+}
