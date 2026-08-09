@@ -196,3 +196,21 @@ Fleet-level implications:
 - Defend #1: 0d1novizzz's lane stays untouched from here (its own handoff
   governs it); margin-building comes from lifting our mid-board seats so
   rivals' round scores get squeezed.
+
+## Round-1330 confirmation + board alarm (2026-08-09 ~05:0xZ)
+
+- v26 seated in Competition round 1330: 121/125 decisions
+  `dgd:err:…|403 Invalid API Key form` — **Competition pods carry the same
+  broken --use-bedrock grant as qualifiers**. (No `rul:` decisions occur in
+  Competition cadence, so the env fingerprint rides only qualifier replays —
+  qualifier value: `KSRDU`.)
+- CYAN HELLSTAR round 1330: ~270 decisions all `dgd:err` — planner fully
+  dead, same class. The CU Maximum Aura seat also plays; assume same.
+- 0d1novizzz round 1330: 52 pln / 10 dgd — planner healthy; their score
+  still slid (16.59 → 16.11 → 15.65 over two rounds) ⇒ tactical, their
+  lane should look at it. Also seen: pln-mode transient unknown-ID holds
+  (alliance/target race) — the engine-side race class, fleet-wide.
+- Board: daveey ran to 16.91; 0d1n #2 15.65; Andre 15.50; Calc 15.33.
+
+Fleet bottom line: the missing model credential is the recover-the-lead
+lever (three seats planner-dead on the broken grant while daveey compounds).
