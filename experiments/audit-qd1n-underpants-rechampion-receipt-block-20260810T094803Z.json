@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260810T094646Z-66301",
+  "recorded_at": "2026-08-10T09:48:03Z",
+  "transition": "terminal_underpants_rechampion_receipt_integrity_block",
+  "dispatch_mailbox_head": "9138b03b333d2be5365b27b78522bcbf5c9b1b21",
+  "prior_checkpoint_commit": "1aa610e40548019bbc00ca34ff9963629b506799",
+  "receipt_reconciliation": {
+    "dispatch_mailbox_head_verified_current": true,
+    "dispatch_mailbox_head_subject": "Claude->Odin: v12 World win + deal correlation, round 1338",
+    "dispatch_mailbox_head_is_replacement_receipt": false,
+    "directed_action_requested": "underpants re-champion",
+    "directed_action_status": "BLOCKED_EVIDENCE_INTEGRITY",
+    "dispatch_checkout_branch": "claude/0d1novizzz-candidate",
+    "dispatch_checkout_mutated": false,
+    "odin_checkpoint_worktree": "/private/tmp/proxywar-odin-20260809T104435Z",
+    "odin_checkpoint_branch": "main",
+    "matching_transition_receipt_found": false,
+    "source_provenance_verified": false,
+    "submission_verified": false,
+    "membership_authorization_verified": false,
+    "champion_identity_verified": false
+  },
+  "verdict": "BLOCK_EVIDENCE_INTEGRITY_UNDERPANTS_RECHAMPION_RECEIPT_MISSING",
+  "actions": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "candidate_policy_branch_edited": false
+  },
+  "next_automatic_transition": "Recover a hash-bound qd1n transition receipt identifying the intended Underpants source commit, policy version, submission, membership authorization, and champion target; then independently verify active-player and membership state before any mutation through scripts/proxywar-qd1n-mutation.sh."
+}

@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-10T08:43:05Z",
-  "cycle_id": "odin-20260810T084130Z-37209",
+  "updated_at": "2026-08-10T09:48:03Z",
+  "cycle_id": "odin-20260810T094646Z-66301",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "blocked_evidence_integrity_dispatch_mailbox_head_stale",
+  "state": "blocked_evidence_integrity_underpants_rechampion_receipt_missing",
   "arm": {
     "id": "rc1",
     "name": "post_hit_retaliation_conversion",
@@ -52,8 +52,8 @@
     "runner": "free",
     "studio_runner": "owned:hrafn:hi1-pangaea-control-65b83f97-r2",
     "qd1n_mutation": "free",
-    "active_player": "blocked:ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c:dispatch_mailbox_head_stale",
-    "mailbox_commit": "6d028e5a3236e189a7050ad2b41518d5b41e1fa4"
+    "active_player": "blocked:ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c:underpants_rechampion_receipt_missing",
+    "mailbox_commit": "9138b03b333d2be5365b27b78522bcbf5c9b1b21"
   },
   "operator_topology": {
     "odin": "sole writable qd1n operator and live authority",
@@ -218,17 +218,17 @@
     "league_mutation": false
   },
   "latest_checkpoint": {
-    "cycle_id": "odin-20260810T084130Z-37209",
-    "recorded_at": "2026-08-10T08:43:05Z",
-    "audit": "experiments/audit-qd1n-dispatch-mailbox-head-stale-block-20260810T084305Z.json",
-    "verdict": "BLOCK_EVIDENCE_INTEGRITY_DISPATCH_MAILBOX_HEAD_STALE",
-    "dispatch_mailbox_head": "6d028e5a3236e189a7050ad2b41518d5b41e1fa4",
+    "cycle_id": "odin-20260810T094646Z-66301",
+    "recorded_at": "2026-08-10T09:48:03Z",
+    "audit": "experiments/audit-qd1n-underpants-rechampion-receipt-block-20260810T094803Z.json",
+    "verdict": "BLOCK_EVIDENCE_INTEGRITY_UNDERPANTS_RECHAMPION_RECEIPT_MISSING",
+    "dispatch_mailbox_head": "9138b03b333d2be5365b27b78522bcbf5c9b1b21",
     "authenticated_player_identity_previously_verified": true,
-    "mailbox_head_unchanged_from_prior_checkpoint": true,
-    "dispatch_mailbox_head_verified_current": false,
+    "mailbox_head_unchanged_from_prior_checkpoint": false,
+    "dispatch_mailbox_head_verified_current": true,
     "observed_mailbox_head": "9138b03b333d2be5365b27b78522bcbf5c9b1b21",
-    "observed_newer_mailbox_head_opened": false,
-    "dispatch_mailbox_head_subject": "Claude->Odin: v12 first win (round 1337 Pangaea), streak broken",
+    "observed_newer_mailbox_head_opened": true,
+    "dispatch_mailbox_head_subject": "Claude->Odin: v12 World win + deal correlation, round 1338",
     "dispatch_mailbox_head_is_replacement_receipt": false,
     "reconciliation_scope": "active-arm state, exact dispatch mailbox head, and mailbox HEAD identity only",
     "dispatch_checkout_branch": "claude/0d1novizzz-candidate",
@@ -252,7 +252,7 @@
     "observed_policy_version_id": null,
     "expected_membership_present": false,
     "expected_policy_present": false,
-    "next_automatic_transition": "Re-dispatch from the current mailbox head, then inspect only that exact packet. Require a hash-bound qd1n receipt for the intended Underpants champion and independently verify active-player and membership state before any mutation through scripts/proxywar-qd1n-mutation.sh."
+    "next_automatic_transition": "Recover a hash-bound qd1n transition receipt identifying the intended Underpants source commit, policy version, submission, membership authorization, and champion target; then independently verify active-player and membership state before any mutation through scripts/proxywar-qd1n-mutation.sh."
   },
   "next_automatic_transition": "Re-dispatch from the current mailbox head, then inspect only that exact packet. Require a hash-bound qd1n receipt for the intended Underpants champion and independently verify active-player and membership state before any mutation through scripts/proxywar-qd1n-mutation.sh.",
   "prior_verified_champion_preserved": false,
