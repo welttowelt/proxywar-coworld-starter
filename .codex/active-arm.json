@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-09T17:29:33Z",
-  "cycle_id": "odin-20260809T172757Z-16143",
+  "updated_at": "2026-08-09T18:37:03Z",
+  "cycle_id": "odin-20260809T183441Z-46092",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "blocked_evidence_integrity_live_replacement_receipt_missing",
+  "state": "blocked_evidence_integrity_no_champion_reseat_receipt_missing",
   "arm": {
     "id": "rc1",
     "name": "post_hit_retaliation_conversion",
@@ -26,9 +26,9 @@
     "last_verified_status": "competing",
     "last_verified_substatus": "champion",
     "last_verified_is_champion": true,
-    "current_status": "active_player_champion_verified_identity_mismatch",
-    "current_is_champion": true,
-    "verification_blocker": "The expected qd1n:v97 membership is absent from active memberships. The same player ID is champion through membership lpm_ff335946-9ca3-4467-932c-211080deca8c with policy underpants switch speed:v24 / 3250877b-88a3-44f2-acd6-9b08ac111a09, but no hash-bound qd1n transition receipt for its source, submission, membership authorization, or champion state exists in the repository or dispatch mailbox head."
+    "current_status": "reported_no_champion_after_crosslane_misship_evidence_blocked",
+    "current_is_champion": false,
+    "verification_blocker": "Dispatch mailbox head 5249538649a860708d4faab37cb8b74f02cc9b93 reports that a cross-lane v11 submission displaced underpants v27 and was then retired, leaving this player without a champion. The packet does not provide a hash-bound qd1n source, policy-version, submission, membership, and authorization receipt for v27 or v28, and the reported no-champion state has not been independently live-verified."
   },
   "live_scoreboard": {
     "checked_at": "2026-07-25T04:34:17.199Z",
@@ -52,8 +52,8 @@
     "runner": "free",
     "studio_runner": "owned:hrafn:hi1-pangaea-control-65b83f97-r2",
     "qd1n_mutation": "free",
-    "active_player": "blocked:ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c:live_replacement_receipt_missing",
-    "mailbox_commit": "ccdfb22ed627d2cff6eb3b24e813fe10a6108b87"
+    "active_player": "blocked:ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c:no_champion_reseat_receipt_missing",
+    "mailbox_commit": "5249538649a860708d4faab37cb8b74f02cc9b93"
   },
   "operator_topology": {
     "odin": "sole writable qd1n operator and live authority",
@@ -218,17 +218,17 @@
     "league_mutation": false
   },
   "latest_checkpoint": {
-    "cycle_id": "odin-20260809T172757Z-16143",
-    "recorded_at": "2026-08-09T17:29:33Z",
-    "audit": "experiments/audit-qd1n-live-replacement-receipt-block-refresh-20260809T172933Z.json",
-    "verdict": "BLOCK_EVIDENCE_INTEGRITY_LIVE_REPLACEMENT_RECEIPT_MISSING",
-    "dispatch_mailbox_head": "ccdfb22ed627d2cff6eb3b24e813fe10a6108b87",
+    "cycle_id": "odin-20260809T183441Z-46092",
+    "recorded_at": "2026-08-09T18:37:03Z",
+    "audit": "experiments/audit-qd1n-crosslane-incident-reseat-block-20260809T183703Z.json",
+    "verdict": "BLOCK_EVIDENCE_INTEGRITY_NO_CHAMPION_RESEAT_RECEIPT_MISSING",
+    "dispatch_mailbox_head": "5249538649a860708d4faab37cb8b74f02cc9b93",
     "authenticated_player_identity_previously_verified": true,
     "mailbox_head_unchanged_from_prior_checkpoint": false,
     "dispatch_mailbox_head_verified_current": true,
-    "dispatch_mailbox_head_subject": "Claude->Odin: v11 candidate ready, receipt chain prepared",
+    "dispatch_mailbox_head_subject": "Claude->Odin: v11 cross-lane incident disclosed + v12 live on 0d1novizzz",
     "dispatch_mailbox_head_is_replacement_receipt": false,
-    "reconciliation_scope": "active-arm state and exact new dispatch mailbox head only",
+    "reconciliation_scope": "active-arm state, exact new dispatch mailbox head, and its directly referenced incident receipt only",
     "dispatch_checkout_branch": "claude/0d1novizzz-candidate",
     "dispatch_checkout_mutated": false,
     "odin_checkpoint_branch": "main",
@@ -236,23 +236,23 @@
     "active_player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
     "active_player_name": "odinfree max underpants",
     "player_display_name_drift_observed": true,
-    "membership_verified": true,
+    "membership_verified": false,
     "transition_receipt_found": false,
     "submission_verified": false,
     "policy_verified": false,
     "champion_verified": false,
-    "observed_replacement_is_champion": true,
+    "observed_replacement_is_champion": false,
     "source_change": false,
     "runner_started": false,
     "league_mutation": false,
-    "observed_membership_id": "lpm_ff335946-9ca3-4467-932c-211080deca8c",
-    "observed_policy_label": "underpants switch speed:v24",
-    "observed_policy_version_id": "3250877b-88a3-44f2-acd6-9b08ac111a09",
+    "observed_membership_id": null,
+    "observed_policy_label": "underpants switch speed:v27 (reported displaced)",
+    "observed_policy_version_id": null,
     "expected_membership_present": false,
     "expected_policy_present": false,
-    "next_automatic_transition": "Recover a hash-bound qd1n transition receipt that identifies the authorized source commit, policy version, submission, membership, and champion state for underpants switch speed:v24. Until then, do not mutate qd1n league state or dispatch another arm."
+    "next_automatic_transition": "Recover a hash-bound qd1n receipt for the intended underpants champion that identifies its authorized source commit, policy version, submission, membership, and champion transition. Then independently verify the active player and current membership state before any mutation through scripts/proxywar-qd1n-mutation.sh."
   },
-  "next_automatic_transition": "Recover a hash-bound qd1n transition receipt that identifies the authorized source commit, policy version, submission, membership, and champion state for underpants switch speed:v24. Until then, do not mutate qd1n league state or dispatch another arm.",
-  "prior_verified_champion_preserved": true,
-  "current_champion_verification": "blocked_identity_mismatch_expected_qd1n_v97_replaced"
+  "next_automatic_transition": "Recover a hash-bound qd1n receipt for the intended underpants champion that identifies its authorized source commit, policy version, submission, membership, and champion transition. Then independently verify the active player and current membership state before any mutation through scripts/proxywar-qd1n-mutation.sh.",
+  "prior_verified_champion_preserved": false,
+  "current_champion_verification": "reported_absent_after_crosslane_misship_not_independently_live_verified"
 }

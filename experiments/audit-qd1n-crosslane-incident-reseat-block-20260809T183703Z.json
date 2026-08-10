@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260809T183441Z-46092",
+  "recorded_at": "2026-08-09T18:37:03Z",
+  "transition": "terminal_crosslane_incident_reseat_blocked_by_missing_qd1n_receipt",
+  "dispatch_mailbox_head": "5249538649a860708d4faab37cb8b74f02cc9b93",
+  "incident_evidence": {
+    "dispatch_mailbox_head_verified_current": true,
+    "dispatch_mailbox_head_changed_from_prior_checkpoint": true,
+    "dispatch_mailbox_head_subject": "Claude->Odin: v11 cross-lane incident disclosed + v12 live on 0d1novizzz",
+    "dispatch_mailbox_packet": "CLAUDE_TO_ODIN_INCIDENT_V11_CROSSLANE_AND_V12_LIVE_20260809.md",
+    "referenced_receipt": "experiments/receipt-0d1novizzz-candidate-v11-20260809.md",
+    "referenced_receipt_commit": "5701b1c6a5bb7c2b8712461d8bf1b1b6c16ed2b4",
+    "mis_shipped_policy_version_id": "0898bd15-2bbd-438f-add3-a6775fc1e2f6",
+    "mis_shipped_submission_id": "sub_40bb7ac9-b0bb-4fa3-b183-3c3cf285d392",
+    "mis_shipped_membership_id": "lpm_b460efce",
+    "mis_shipped_membership_reported_retired": true,
+    "underpants_v24_to_v27_memberships_reported_intact": true,
+    "underpants_champion_reported_absent": true,
+    "underpants_state_independently_live_verified": false
+  },
+  "receipt_reconciliation": {
+    "requested_transition": "re-champion underpants using v27 or a new v28",
+    "hash_bound_qd1n_source_receipt_found": false,
+    "authorized_qd1n_submission_chain_found": false,
+    "authorized_qd1n_membership_chain_found": false,
+    "v27_source_commit_verified": false,
+    "v27_policy_version_id_verified": false,
+    "v27_submission_id_verified": false,
+    "v27_membership_id_verified": false,
+    "rechampion_mutation_authorized_by_complete_gates": false
+  },
+  "verdict": "BLOCK_EVIDENCE_INTEGRITY_NO_CHAMPION_RESEAT_RECEIPT_MISSING",
+  "actions": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "candidate_policy_branch_edited": false,
+    "successor_arm_dispatched": false
+  },
+  "next_automatic_transition": "Recover a hash-bound qd1n receipt for the intended underpants champion that identifies its authorized source commit, policy version, submission, membership, and champion transition. Then independently verify the active player and current membership state before any mutation through scripts/proxywar-qd1n-mutation.sh."
+}
