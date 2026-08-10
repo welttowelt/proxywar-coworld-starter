@@ -99,3 +99,16 @@ uvx --from coworld==0.1.38 coworld submit <policy_version_id>
   submission); flagged in the mailbox.
 - Lesson (binding): ALWAYS `softmax player list` and verify the active player
   before any upload/submit; the CLI binds silently to the session's player.
+
+## Underpants restoration (2026-08-10, on Oli's direct "fix it")
+
+- The champion-less state left by the contained v11 mis-ship is repaired with
+  the lane's OWN policy version: benched membership lpm_debfc93f (v27) retired
+  with audit reason to free the version (the league 409s a version with any
+  active membership), then `underpants switch speed:v27` resubmitted:
+  submission `sub_e4d8255e-0722-4dc4-8c19-8f0bf7627d90` (placed), new
+  membership `lpm_7976235f-be0b-441d-95ca-a262cc4cb9d1`, auto-champion always.
+- Player context verified before each mutation and restored to 0d1novizzz
+  after. Champion materialization is async; confirmation on the next watch
+  tick. Net effect: underpants back on its operator's chosen v27, zero foreign
+  policy versions live on that lane.
