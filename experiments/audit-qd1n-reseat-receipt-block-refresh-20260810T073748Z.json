@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260810T073624Z-9405",
+  "recorded_at": "2026-08-10T07:37:48Z",
+  "transition": "terminal_no_champion_reseat_receipt_integrity_block_reconfirmed",
+  "dispatch_mailbox_head": "6d028e5a3236e189a7050ad2b41518d5b41e1fa4",
+  "prior_checkpoint_commit": "a6a856b1e073476483d6b7a98e8abf27d7d09026",
+  "receipt_reconciliation": {
+    "dispatch_mailbox_head_verified_current": true,
+    "dispatch_mailbox_head_unchanged_from_prior_checkpoint": false,
+    "dispatch_mailbox_head_subject": "Claude->Odin: v12 first win (round 1337 Pangaea), streak broken",
+    "dispatch_mailbox_head_is_qd1n_reseat_receipt": false,
+    "packet_lane": "0d1novizzz",
+    "packet_action": "none_required_for_0d1novizzz_lane",
+    "packet_qd1n_state": "underpants_rechampion_still_outstanding",
+    "reconciliation_scope": "active-arm state and exact new dispatch mailbox head only",
+    "dispatch_checkout_branch": "claude/0d1novizzz-candidate",
+    "dispatch_checkout_mutated": false,
+    "odin_checkpoint_worktree": "/private/tmp/proxywar-odin-20260809T104435Z",
+    "odin_checkpoint_branch": "main",
+    "matching_transition_receipt_found": false,
+    "source_provenance_verified": false,
+    "submission_verified": false,
+    "membership_authorization_verified": false,
+    "champion_identity_verified": false,
+    "reported_no_champion_state_independently_verified": false
+  },
+  "verdict": "BLOCK_EVIDENCE_INTEGRITY_NO_CHAMPION_RESEAT_RECEIPT_MISSING",
+  "actions": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "candidate_policy_branch_edited": false,
+    "mailbox_ack_emitted": false
+  },
+  "mailbox_ack_reason": "The directed packet requested no Odin action and was not a Hrafn runner handoff, completed matched batch, hosted verdict, or terminal-gate request.",
+  "next_automatic_transition": "Recover a hash-bound qd1n receipt for the intended underpants champion that identifies its authorized source commit, policy version, submission, membership, and champion transition. Then independently verify the active player and current membership state before any mutation through scripts/proxywar-qd1n-mutation.sh."
+}

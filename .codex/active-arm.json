@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-09T18:37:03Z",
-  "cycle_id": "odin-20260809T183441Z-46092",
+  "updated_at": "2026-08-10T07:37:48Z",
+  "cycle_id": "odin-20260810T073624Z-9405",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
   "state": "blocked_evidence_integrity_no_champion_reseat_receipt_missing",
@@ -26,9 +26,9 @@
     "last_verified_status": "competing",
     "last_verified_substatus": "champion",
     "last_verified_is_champion": true,
-    "current_status": "reported_no_champion_after_crosslane_misship_evidence_blocked",
+    "current_status": "reported_no_champion_reseat_still_outstanding_evidence_blocked",
     "current_is_champion": false,
-    "verification_blocker": "Dispatch mailbox head 5249538649a860708d4faab37cb8b74f02cc9b93 reports that a cross-lane v11 submission displaced underpants v27 and was then retired, leaving this player without a champion. The packet does not provide a hash-bound qd1n source, policy-version, submission, membership, and authorization receipt for v27 or v28, and the reported no-champion state has not been independently live-verified."
+    "verification_blocker": "Dispatch mailbox head 6d028e5a3236e189a7050ad2b41518d5b41e1fa4 reports a first win for the separate 0d1novizzz v12 lane and explicitly says the Underpants re-champion remains outstanding. It does not provide a hash-bound qd1n source, policy-version, submission, membership, and authorization receipt for the intended Underpants champion, and the reported no-champion state has not been independently live-verified."
   },
   "live_scoreboard": {
     "checked_at": "2026-07-25T04:34:17.199Z",
@@ -53,7 +53,7 @@
     "studio_runner": "owned:hrafn:hi1-pangaea-control-65b83f97-r2",
     "qd1n_mutation": "free",
     "active_player": "blocked:ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c:no_champion_reseat_receipt_missing",
-    "mailbox_commit": "5249538649a860708d4faab37cb8b74f02cc9b93"
+    "mailbox_commit": "6d028e5a3236e189a7050ad2b41518d5b41e1fa4"
   },
   "operator_topology": {
     "odin": "sole writable qd1n operator and live authority",
@@ -218,17 +218,17 @@
     "league_mutation": false
   },
   "latest_checkpoint": {
-    "cycle_id": "odin-20260809T183441Z-46092",
-    "recorded_at": "2026-08-09T18:37:03Z",
-    "audit": "experiments/audit-qd1n-crosslane-incident-reseat-block-20260809T183703Z.json",
+    "cycle_id": "odin-20260810T073624Z-9405",
+    "recorded_at": "2026-08-10T07:37:48Z",
+    "audit": "experiments/audit-qd1n-reseat-receipt-block-refresh-20260810T073748Z.json",
     "verdict": "BLOCK_EVIDENCE_INTEGRITY_NO_CHAMPION_RESEAT_RECEIPT_MISSING",
-    "dispatch_mailbox_head": "5249538649a860708d4faab37cb8b74f02cc9b93",
+    "dispatch_mailbox_head": "6d028e5a3236e189a7050ad2b41518d5b41e1fa4",
     "authenticated_player_identity_previously_verified": true,
     "mailbox_head_unchanged_from_prior_checkpoint": false,
     "dispatch_mailbox_head_verified_current": true,
-    "dispatch_mailbox_head_subject": "Claude->Odin: v11 cross-lane incident disclosed + v12 live on 0d1novizzz",
+    "dispatch_mailbox_head_subject": "Claude->Odin: v12 first win (round 1337 Pangaea), streak broken",
     "dispatch_mailbox_head_is_replacement_receipt": false,
-    "reconciliation_scope": "active-arm state, exact new dispatch mailbox head, and its directly referenced incident receipt only",
+    "reconciliation_scope": "active-arm state and exact new dispatch mailbox head only",
     "dispatch_checkout_branch": "claude/0d1novizzz-candidate",
     "dispatch_checkout_mutated": false,
     "odin_checkpoint_branch": "main",
@@ -246,7 +246,7 @@
     "runner_started": false,
     "league_mutation": false,
     "observed_membership_id": null,
-    "observed_policy_label": "underpants switch speed:v27 (reported displaced)",
+    "observed_policy_label": "underpants switch speed:v27 (reported displaced; re-champion still outstanding)",
     "observed_policy_version_id": null,
     "expected_membership_present": false,
     "expected_policy_present": false,
