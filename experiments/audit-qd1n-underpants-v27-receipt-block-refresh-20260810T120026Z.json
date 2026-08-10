@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260810T115842Z-16710",
+  "recorded_at": "2026-08-10T12:00:26Z",
+  "transition": "terminal_underpants_v27_receipt_incomplete_integrity_block_reconfirmed",
+  "dispatch_mailbox_head": "6eabcc79b42c27d39b750be3bed37c5bcce4bfca",
+  "prior_checkpoint_commit": "ec66cb66a4bab4e821dfd6affe07c7d778fabe05",
+  "receipt_reconciliation": {
+    "dispatch_mailbox_head_verified_current": true,
+    "dispatch_mailbox_head_unchanged_from_prior_checkpoint": true,
+    "dispatch_mailbox_head_subject": "Claude->Odin: underpants v27 champion restored on Oli's order",
+    "dispatch_mailbox_head_is_replacement_receipt": true,
+    "referenced_receipt": "claude/0d1novizzz-candidate@bbd2a02b010a5f6196ac4aced267913f7845313e:experiments/receipt-0d1novizzz-candidate-v11-20260809.md",
+    "referenced_receipt_sha256": "3960c245bb6cea69148b4a3d37c62d316b13ad1c58aaea46cd0d498ad4c200a6",
+    "reported_policy_label": "underpants switch speed:v27",
+    "reported_submission_id": "sub_e4d8255e-0722-4dc4-8c19-8f0bf7627d90",
+    "reported_membership_id": "lpm_7976235f-be0b-441d-95ca-a262cc4cb9d1",
+    "reported_submission_status": "placed",
+    "reported_champion_status": "competing/champion",
+    "source_provenance_verified": false,
+    "policy_version_verified": false,
+    "submission_verified": false,
+    "membership_authorization_verified": false,
+    "champion_identity_verified": false,
+    "missing_required_fields": [
+      "underpants v27 policy-version ID",
+      "underpants v27 source commit"
+    ],
+    "dispatch_checkout_branch": "claude/0d1novizzz-candidate",
+    "dispatch_checkout_mutated": false,
+    "odin_checkpoint_worktree": "/private/tmp/proxywar-odin-20260809T104435Z",
+    "odin_checkpoint_branch": "main"
+  },
+  "verdict": "BLOCK_EVIDENCE_INTEGRITY_UNDERPANTS_V27_RECEIPT_INCOMPLETE",
+  "actions": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "candidate_policy_branch_edited": false
+  },
+  "next_automatic_transition": "Recover the underpants v27 policy-version ID and hash-bound source commit, then independently verify active-player, policy-version, submission, membership, and champion state. Until then, do not mutate qd1n league state or dispatch another arm."
+}
