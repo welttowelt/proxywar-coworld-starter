@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-10T07:37:48Z",
-  "cycle_id": "odin-20260810T073624Z-9405",
+  "updated_at": "2026-08-10T08:43:05Z",
+  "cycle_id": "odin-20260810T084130Z-37209",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "blocked_evidence_integrity_no_champion_reseat_receipt_missing",
+  "state": "blocked_evidence_integrity_dispatch_mailbox_head_stale",
   "arm": {
     "id": "rc1",
     "name": "post_hit_retaliation_conversion",
@@ -26,9 +26,9 @@
     "last_verified_status": "competing",
     "last_verified_substatus": "champion",
     "last_verified_is_champion": true,
-    "current_status": "reported_no_champion_reseat_still_outstanding_evidence_blocked",
+    "current_status": "dispatch_mailbox_head_stale_current_champion_state_unreconciled",
     "current_is_champion": false,
-    "verification_blocker": "Dispatch mailbox head 6d028e5a3236e189a7050ad2b41518d5b41e1fa4 reports a first win for the separate 0d1novizzz v12 lane and explicitly says the Underpants re-champion remains outstanding. It does not provide a hash-bound qd1n source, policy-version, submission, membership, and authorization receipt for the intended Underpants champion, and the reported no-champion state has not been independently live-verified."
+    "verification_blocker": "The runtime dispatch head 6d028e5a3236e189a7050ad2b41518d5b41e1fa4 was already reconciled as a separate-lane report with no qd1n reseat receipt, but the mailbox repository now points at unreconciled head 9138b03b333d2be5365b27b78522bcbf5c9b1b21. This envelope does not authorize opening the newer artifact, so current receipt, membership, and champion truth remain unverified."
   },
   "live_scoreboard": {
     "checked_at": "2026-07-25T04:34:17.199Z",
@@ -52,7 +52,7 @@
     "runner": "free",
     "studio_runner": "owned:hrafn:hi1-pangaea-control-65b83f97-r2",
     "qd1n_mutation": "free",
-    "active_player": "blocked:ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c:no_champion_reseat_receipt_missing",
+    "active_player": "blocked:ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c:dispatch_mailbox_head_stale",
     "mailbox_commit": "6d028e5a3236e189a7050ad2b41518d5b41e1fa4"
   },
   "operator_topology": {
@@ -218,17 +218,19 @@
     "league_mutation": false
   },
   "latest_checkpoint": {
-    "cycle_id": "odin-20260810T073624Z-9405",
-    "recorded_at": "2026-08-10T07:37:48Z",
-    "audit": "experiments/audit-qd1n-reseat-receipt-block-refresh-20260810T073748Z.json",
-    "verdict": "BLOCK_EVIDENCE_INTEGRITY_NO_CHAMPION_RESEAT_RECEIPT_MISSING",
+    "cycle_id": "odin-20260810T084130Z-37209",
+    "recorded_at": "2026-08-10T08:43:05Z",
+    "audit": "experiments/audit-qd1n-dispatch-mailbox-head-stale-block-20260810T084305Z.json",
+    "verdict": "BLOCK_EVIDENCE_INTEGRITY_DISPATCH_MAILBOX_HEAD_STALE",
     "dispatch_mailbox_head": "6d028e5a3236e189a7050ad2b41518d5b41e1fa4",
     "authenticated_player_identity_previously_verified": true,
-    "mailbox_head_unchanged_from_prior_checkpoint": false,
-    "dispatch_mailbox_head_verified_current": true,
+    "mailbox_head_unchanged_from_prior_checkpoint": true,
+    "dispatch_mailbox_head_verified_current": false,
+    "observed_mailbox_head": "9138b03b333d2be5365b27b78522bcbf5c9b1b21",
+    "observed_newer_mailbox_head_opened": false,
     "dispatch_mailbox_head_subject": "Claude->Odin: v12 first win (round 1337 Pangaea), streak broken",
     "dispatch_mailbox_head_is_replacement_receipt": false,
-    "reconciliation_scope": "active-arm state and exact new dispatch mailbox head only",
+    "reconciliation_scope": "active-arm state, exact dispatch mailbox head, and mailbox HEAD identity only",
     "dispatch_checkout_branch": "claude/0d1novizzz-candidate",
     "dispatch_checkout_mutated": false,
     "odin_checkpoint_branch": "main",
@@ -250,9 +252,9 @@
     "observed_policy_version_id": null,
     "expected_membership_present": false,
     "expected_policy_present": false,
-    "next_automatic_transition": "Recover a hash-bound qd1n receipt for the intended underpants champion that identifies its authorized source commit, policy version, submission, membership, and champion transition. Then independently verify the active player and current membership state before any mutation through scripts/proxywar-qd1n-mutation.sh."
+    "next_automatic_transition": "Re-dispatch from the current mailbox head, then inspect only that exact packet. Require a hash-bound qd1n receipt for the intended Underpants champion and independently verify active-player and membership state before any mutation through scripts/proxywar-qd1n-mutation.sh."
   },
-  "next_automatic_transition": "Recover a hash-bound qd1n receipt for the intended underpants champion that identifies its authorized source commit, policy version, submission, membership, and champion transition. Then independently verify the active player and current membership state before any mutation through scripts/proxywar-qd1n-mutation.sh.",
+  "next_automatic_transition": "Re-dispatch from the current mailbox head, then inspect only that exact packet. Require a hash-bound qd1n receipt for the intended Underpants champion and independently verify active-player and membership state before any mutation through scripts/proxywar-qd1n-mutation.sh.",
   "prior_verified_champion_preserved": false,
   "current_champion_verification": "reported_absent_after_crosslane_misship_not_independently_live_verified"
 }

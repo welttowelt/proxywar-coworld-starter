@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260810T084130Z-37209",
+  "recorded_at": "2026-08-10T08:43:05Z",
+  "transition": "terminal_dispatch_mailbox_head_stale_integrity_block",
+  "dispatch_mailbox_head": "6d028e5a3236e189a7050ad2b41518d5b41e1fa4",
+  "observed_mailbox_head": "9138b03b333d2be5365b27b78522bcbf5c9b1b21",
+  "prior_checkpoint_commit": "044b81ae39d737f5a1ea0ca4c8cc1fa3607b3af3",
+  "receipt_reconciliation": {
+    "dispatch_mailbox_head_verified_current": false,
+    "dispatch_mailbox_head_unchanged_from_prior_checkpoint": true,
+    "dispatch_mailbox_head_subject": "Claude->Odin: v12 first win (round 1337 Pangaea), streak broken",
+    "dispatch_mailbox_head_is_qd1n_reseat_receipt": false,
+    "observed_newer_mailbox_head_opened": false,
+    "reconciliation_scope": "active-arm state, exact dispatch mailbox head, and mailbox HEAD identity only",
+    "dispatch_checkout_branch": "claude/0d1novizzz-candidate",
+    "dispatch_checkout_mutated": false,
+    "odin_checkpoint_worktree": "/private/tmp/proxywar-odin-20260809T104435Z",
+    "odin_checkpoint_branch": "main",
+    "matching_transition_receipt_found_at_dispatch_head": false,
+    "current_receipt_state_reconciled": false,
+    "source_provenance_verified": false,
+    "submission_verified": false,
+    "membership_authorization_verified": false,
+    "champion_identity_verified": false
+  },
+  "verdict": "BLOCK_EVIDENCE_INTEGRITY_DISPATCH_MAILBOX_HEAD_STALE",
+  "actions": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "candidate_policy_branch_edited": false,
+    "mailbox_ack_emitted": false
+  },
+  "mailbox_ack_reason": "No directed Hrafn transition was opened or acted on in this cycle.",
+  "next_automatic_transition": "Re-dispatch from the current mailbox head, then inspect only that exact packet. Require a hash-bound qd1n receipt for the intended Underpants champion and independently verify active-player and membership state before any mutation through scripts/proxywar-qd1n-mutation.sh."
+}
