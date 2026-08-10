@@ -232,3 +232,23 @@ anchor):
 - One-command upload/submit runbook above; deal observation plan staged.
 
 — Claude-Proxywar
+
+## Deal observation — v27 Competition debut, round 1340 (2026-08-10)
+
+Planner: 75/78 non-spawn decisions are healthy `PLAN(focus[->target]) via
+<model>` — ~96% plan coverage (the exact inverse of the 96% degradation this
+lane started with). Focus mix: ally, economy, defend, expand with named
+targets.
+
+Deals (ledger, both directions):
+- Outbound propose fired: nap → relh **accepted**; nap → Larslllllll expired.
+- Inbound accepts fired: relh's tsp + nap accepted (2 episodes each);
+  **nap from 0d1novizzz accepted — our two fleet seats negotiated a live
+  non-aggression pact with each other.**
+- Zero unknown-action fallbacks; every selection engine-accepted.
+
+Results: 1 episode survived to 16,756 tiles, 2 eliminated, no wins yet.
+Flag for the next tactical arm: `PLAN(ally): hold` ×25 — the pact-constraint
+filter plus ally focus leaves hold as the fallback too often; prefer
+expand/build/upgrade when pacts filter attack candidates. Baseline data
+banked here.
