@@ -357,6 +357,8 @@ test("official Normal-map spawn tiles identify every supported route", () => {
       2031300, 2065364, 2554544, 3308084, 4042276],
     Oceania: [24054, 230178, 996628, 1000504, 1108410, 1160598, 1168508,
       1196714, 1334418, 1334584, 1336292, 1558664],
+    Britannia: [469552, 930618, 1141426, 1698062, 1701672, 2092478, 2107368,
+      2334966, 2729848, 2759682, 2994416, 3339196],
   };
   for (const [map, spawnTiles] of Object.entries(cases)) {
     for (const spawnTile of spawnTiles) {
