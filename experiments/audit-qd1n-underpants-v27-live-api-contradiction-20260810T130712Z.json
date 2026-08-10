@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260810T130321Z-49582",
+  "recorded_at": "2026-08-10T13:07:12Z",
+  "transition": "terminal_underpants_v27_live_api_contradiction_block",
+  "dispatch_mailbox_head": "6eabcc79b42c27d39b750be3bed37c5bcce4bfca",
+  "receipt_reconciliation": {
+    "mailbox_subject": "Claude->Odin: underpants v27 champion restored on Oli's order",
+    "receipt_source": "claude/0d1novizzz-candidate@bbd2a02b010a5f6196ac4aced267913f7845313e:experiments/receipt-0d1novizzz-candidate-v11-20260809.md",
+    "receipt_sha256": "3960c245bb6cea69148b4a3d37c62d316b13ad1c58aaea46cd0d498ad4c200a6",
+    "reported_player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "reported_policy_label": "underpants switch speed:v27",
+    "reported_submission_id": "sub_e4d8255e-0722-4dc4-8c19-8f0bf7627d90",
+    "reported_membership_id": "lpm_7976235f-be0b-441d-95ca-a262cc4cb9d1",
+    "reported_status": "competing/champion",
+    "missing_policy_version_id": true,
+    "missing_source_commit": true
+  },
+  "official_api_checkpoint": {
+    "tool": "coworld==0.1.38",
+    "server": "https://softmax.com/api",
+    "player_memberships_query": "memberships --player ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c --limit 100 --json",
+    "player_memberships_result": [],
+    "player_submissions_query": "submissions --player ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c --limit 100 --json",
+    "player_submissions_result": [],
+    "v27_memberships_query": "memberships --policy underpants switch speed:v27 --limit 100 --json",
+    "v27_memberships_result": [],
+    "interpretation": "The official read-only API did not expose the reported submission, membership, policy, or champion state. This contradicts the receipt and cannot verify the replacement identity."
+  },
+  "verdict": "BLOCK_EVIDENCE_INTEGRITY_LIVE_API_CONTRADICTS_UNDERPANTS_V27_RECEIPT",
+  "actions": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "candidate_policy_branch_edited": false
+  },
+  "next_automatic_transition": "Recover a hash-bound v27 policy-version ID and source commit, then independently reconcile the reported submission and membership against a non-empty official player response. Until then, do not mutate qd1n league state or dispatch another arm."
+}

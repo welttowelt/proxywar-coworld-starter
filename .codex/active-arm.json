@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-10T12:00:26Z",
-  "cycle_id": "odin-20260810T115842Z-16710",
+  "updated_at": "2026-08-10T13:07:12Z",
+  "cycle_id": "odin-20260810T130321Z-49582",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "blocked_evidence_integrity_underpants_v27_receipt_incomplete",
+  "state": "blocked_evidence_integrity_live_api_contradicts_underpants_v27_receipt",
   "arm": {
     "id": "rc1",
     "name": "post_hit_retaliation_conversion",
@@ -218,10 +218,10 @@
     "league_mutation": false
   },
   "latest_checkpoint": {
-    "cycle_id": "odin-20260810T115842Z-16710",
-    "recorded_at": "2026-08-10T12:00:26Z",
-    "audit": "experiments/audit-qd1n-underpants-v27-receipt-block-refresh-20260810T120026Z.json",
-    "verdict": "BLOCK_EVIDENCE_INTEGRITY_UNDERPANTS_V27_RECEIPT_INCOMPLETE",
+    "cycle_id": "odin-20260810T130321Z-49582",
+    "recorded_at": "2026-08-10T13:07:12Z",
+    "audit": "experiments/audit-qd1n-underpants-v27-live-api-contradiction-20260810T130712Z.json",
+    "verdict": "BLOCK_EVIDENCE_INTEGRITY_LIVE_API_CONTRADICTS_UNDERPANTS_V27_RECEIPT",
     "dispatch_mailbox_head": "6eabcc79b42c27d39b750be3bed37c5bcce4bfca",
     "authenticated_player_identity_previously_verified": true,
     "mailbox_head_unchanged_from_prior_checkpoint": true,
@@ -238,12 +238,15 @@
     "active_player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
     "active_player_name": "odinfree max underpants",
     "player_display_name_drift_observed": true,
+    "official_api_player_memberships_empty": true,
+    "official_api_player_submissions_empty": true,
+    "official_api_v27_memberships_empty": true,
     "membership_verified": false,
     "transition_receipt_found": true,
     "submission_verified": false,
     "policy_verified": false,
     "champion_verified": false,
-    "observed_replacement_is_champion": true,
+    "observed_replacement_is_champion": false,
     "source_change": false,
     "runner_started": false,
     "league_mutation": false,
@@ -259,9 +262,9 @@
     ],
     "expected_membership_present": false,
     "expected_policy_present": false,
-    "next_automatic_transition": "Recover the underpants v27 policy-version ID and hash-bound source commit, then independently verify active-player, policy-version, submission, membership, and champion state. Until then, do not mutate qd1n league state or dispatch another arm."
+    "next_automatic_transition": "Recover a hash-bound v27 policy-version ID and source commit, then independently reconcile the reported submission and membership against a non-empty official player response. Until then, do not mutate qd1n league state or dispatch another arm."
   },
-  "next_automatic_transition": "Recover the underpants v27 policy-version ID and hash-bound source commit, then independently verify active-player, policy-version, submission, membership, and champion state. Until then, do not mutate qd1n league state or dispatch another arm.",
+  "next_automatic_transition": "Recover a hash-bound v27 policy-version ID and source commit, then independently reconcile the reported submission and membership against a non-empty official player response. Until then, do not mutate qd1n league state or dispatch another arm.",
   "prior_verified_champion_preserved": false,
-  "current_champion_verification": "reported_underpants_v27_competing_champion_not_independently_live_verified"
+  "current_champion_verification": "blocked_official_api_returned_no_player_or_v27_rows"
 }
