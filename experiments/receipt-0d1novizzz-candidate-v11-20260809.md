@@ -112,3 +112,6 @@ uvx --from coworld==0.1.38 coworld submit <policy_version_id>
   after. Champion materialization is async; confirmation on the next watch
   tick. Net effect: underpants back on its operator's chosen v27, zero foreign
   policy versions live on that lane.
+- CONFIRMED 2026-08-10 ~10:55Z: underpants champion = `underpants switch
+  speed:v27` on lpm_7976235f (competing/champion). Incident fully closed —
+  both lanes on their intended policies (0d1novizzz: v12, underpants: v27).
