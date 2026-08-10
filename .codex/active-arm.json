@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-10T13:07:12Z",
-  "cycle_id": "odin-20260810T130321Z-49582",
+  "updated_at": "2026-08-10T14:10:35Z",
+  "cycle_id": "odin-20260810T140913Z-79299",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "blocked_evidence_integrity_live_api_contradicts_underpants_v27_receipt",
+  "state": "blocked_evidence_integrity_underpants_v27_provenance_and_live_identity_unverified",
   "arm": {
     "id": "rc1",
     "name": "post_hit_retaliation_conversion",
@@ -26,9 +26,9 @@
     "last_verified_status": "competing",
     "last_verified_substatus": "champion",
     "last_verified_is_champion": true,
-    "current_status": "receipt_reports_underpants_v27_champion_but_provenance_incomplete",
+    "current_status": "unchanged_receipt_reports_underpants_v27_champion_but_provenance_and_live_identity_unverified",
     "current_is_champion": false,
-    "verification_blocker": "Mailbox head 6eabcc79b42c27d39b750be3bed37c5bcce4bfca reports underpants switch speed:v27 restored as champion through submission sub_e4d8255e-0722-4dc4-8c19-8f0bf7627d90 and membership lpm_7976235f-be0b-441d-95ca-a262cc4cb9d1. Its referenced receipt omits the v27 policy-version ID and hash-bound source commit, so source provenance and current live champion identity remain fail-closed."
+    "verification_blocker": "Mailbox head 6eabcc79b42c27d39b750be3bed37c5bcce4bfca is unchanged and reports underpants switch speed:v27 restored as champion through submission sub_e4d8255e-0722-4dc4-8c19-8f0bf7627d90 and membership lpm_7976235f-be0b-441d-95ca-a262cc4cb9d1. Its referenced receipt omits the v27 policy-version ID and hash-bound source commit, while the prior official API checkpoint returned no player, submission, or v27 membership rows; provenance and live champion identity remain fail-closed."
   },
   "live_scoreboard": {
     "checked_at": "2026-07-25T04:34:17.199Z",
@@ -218,10 +218,10 @@
     "league_mutation": false
   },
   "latest_checkpoint": {
-    "cycle_id": "odin-20260810T130321Z-49582",
-    "recorded_at": "2026-08-10T13:07:12Z",
-    "audit": "experiments/audit-qd1n-underpants-v27-live-api-contradiction-20260810T130712Z.json",
-    "verdict": "BLOCK_EVIDENCE_INTEGRITY_LIVE_API_CONTRADICTS_UNDERPANTS_V27_RECEIPT",
+    "cycle_id": "odin-20260810T140913Z-79299",
+    "recorded_at": "2026-08-10T14:10:35Z",
+    "audit": "experiments/audit-qd1n-underpants-v27-block-reconfirmed-20260810T141035Z.json",
+    "verdict": "BLOCK_EVIDENCE_INTEGRITY_UNDERPANTS_V27_PROVENANCE_AND_LIVE_IDENTITY_UNVERIFIED",
     "dispatch_mailbox_head": "6eabcc79b42c27d39b750be3bed37c5bcce4bfca",
     "authenticated_player_identity_previously_verified": true,
     "mailbox_head_unchanged_from_prior_checkpoint": true,
@@ -230,7 +230,7 @@
     "observed_newer_mailbox_head_opened": false,
     "dispatch_mailbox_head_subject": "Claude->Odin: underpants v27 champion restored on Oli's order",
     "dispatch_mailbox_head_is_replacement_receipt": true,
-    "reconciliation_scope": "active-arm state, exact dispatch mailbox head, and its single directly referenced receipt only",
+    "reconciliation_scope": "canonical active-arm state, exact unchanged dispatch mailbox head, its single directly referenced receipt, and the prior official API checkpoint only",
     "dispatch_checkout_branch": "claude/0d1novizzz-candidate",
     "dispatch_checkout_mutated": false,
     "odin_checkpoint_branch": "main",
@@ -262,6 +262,8 @@
     ],
     "expected_membership_present": false,
     "expected_policy_present": false,
+    "official_api_repeated_this_cycle": false,
+    "prior_official_api_audit": "experiments/audit-qd1n-underpants-v27-live-api-contradiction-20260810T130712Z.json",
     "next_automatic_transition": "Recover a hash-bound v27 policy-version ID and source commit, then independently reconcile the reported submission and membership against a non-empty official player response. Until then, do not mutate qd1n league state or dispatch another arm."
   },
   "next_automatic_transition": "Recover a hash-bound v27 policy-version ID and source commit, then independently reconcile the reported submission and membership against a non-empty official player response. Until then, do not mutate qd1n league state or dispatch another arm.",
