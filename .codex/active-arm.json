@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-11T10:42:09Z",
-  "cycle_id": "odin-20260811T103950Z-37313",
+  "updated_at": "2026-08-11T11:47:37Z",
+  "cycle_id": "odin-20260811T114542Z-78327",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
   "state": "blocked_live_qd1n_champion_retired_transition_receipt_missing",
@@ -53,7 +53,7 @@
     "studio_runner": "owned:hrafn:hi1-pangaea-control-65b83f97-r2",
     "qd1n_mutation": "free",
     "active_player": "blocked:ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c:champion_retired_transition_receipt_missing",
-    "mailbox_commit": "6eabcc79b42c27d39b750be3bed37c5bcce4bfca"
+    "mailbox_commit": "b1278cb4111143ebae7d938a64c0c3db754b39ff"
   },
   "operator_topology": {
     "odin": "sole writable qd1n operator and live authority",
@@ -218,19 +218,19 @@
     "league_mutation": false
   },
   "latest_checkpoint": {
-    "cycle_id": "odin-20260811T103950Z-37313",
-    "recorded_at": "2026-08-11T10:42:09Z",
-    "audit": "experiments/audit-qd1n-underpants-v27-retirement-receipt-block-refresh-20260811T104209Z.json",
+    "cycle_id": "odin-20260811T114542Z-78327",
+    "recorded_at": "2026-08-11T11:47:37Z",
+    "audit": "experiments/audit-qd1n-underpants-v27-retirement-receipt-block-refresh-20260811T114737Z.json",
     "verdict": "BLOCK_LIVE_QD1N_CHAMPION_RETIRED_TRANSITION_RECEIPT_MISSING",
-    "dispatch_mailbox_head": "6eabcc79b42c27d39b750be3bed37c5bcce4bfca",
+    "dispatch_mailbox_head": "b1278cb4111143ebae7d938a64c0c3db754b39ff",
     "authenticated_player_identity_previously_verified": true,
-    "mailbox_head_unchanged_from_prior_checkpoint": true,
+    "mailbox_head_unchanged_from_prior_checkpoint": false,
     "dispatch_mailbox_head_verified_current": true,
-    "observed_mailbox_head": "6eabcc79b42c27d39b750be3bed37c5bcce4bfca",
-    "observed_newer_mailbox_head_opened": false,
-    "dispatch_mailbox_head_subject": "Claude->Odin: underpants v27 champion restored on Oli's order",
-    "dispatch_mailbox_head_is_replacement_receipt": true,
-    "reconciliation_scope": "canonical active-arm state, exact unchanged dispatch mailbox head, its single directly referenced restoration receipt, and the prior hash-bound August 11 bounded official API audit; no live API query repeated this cycle",
+    "observed_mailbox_head": "b1278cb4111143ebae7d938a64c0c3db754b39ff",
+    "observed_newer_mailbox_head_opened": true,
+    "dispatch_mailbox_head_subject": "Claude->Odin: v13 shipped (fingerprints+ah1), #1 push with preregistered bar",
+    "dispatch_mailbox_head_is_replacement_receipt": false,
+    "reconciliation_scope": "canonical active-arm state, exact new dispatch mailbox head, and the prior hash-bound August 11 bounded official API audit; no live API query repeated this cycle",
     "dispatch_checkout_branch": "claude/0d1novizzz-candidate",
     "dispatch_checkout_mutated": false,
     "odin_checkpoint_branch": "main",
