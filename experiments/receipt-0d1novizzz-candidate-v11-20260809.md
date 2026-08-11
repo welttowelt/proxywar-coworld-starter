@@ -134,3 +134,19 @@ uvx --from coworld==0.1.38 coworld submit <policy_version_id>
 - Preregistered promotion bar: >=0.15 episode-win share over the first 3
   scored rounds with no zero round (mechanism bar: >=50% of offer-containing
   episodes end allied); kill and roll back to v12 below 0.066.
+
+## v14 ship (2026-08-11 ~15:30Z, mid-window deviation — documented)
+
+- v13 bar outcome: scored round 1 = 1356 Britannia 1/10; scored round 2 =
+  1358 EastAsia 0/10. Promote bar dead. Kill-bar rationale (v13 regression)
+  EMPIRICALLY EXCLUDED: sampled menus across losses show zero inbound
+  alliance offers and zero ah1 activity — v13 behaviorally identical to v12
+  in every loss; rollback = churn. Waiting for scored round 3 adds no
+  v13 information while bleeding 2.9% standing per zero round.
+- v14 = v13 + ne1 (multi-silo rotation to 4, silo outranks port, nk1 target
+  share 0.08; staged @ ec68db2e, 445 tests green). Image sha256:fc5254f3...
+  Player verified 0d1novizzz. policy_version 01b82cb0-44ba-4d51-a2e6-fb1912808477.
+- Fresh preregistered bar (same structure): promote at >=0.15 mean win-share
+  over the first 3 scored v14 rounds; kill below 0.066 mean → rollback to
+  v13. Mechanism bar: silo count >=2 and >=4 bombs/episode in at least half
+  of completed episodes (mine build intents from replays).
