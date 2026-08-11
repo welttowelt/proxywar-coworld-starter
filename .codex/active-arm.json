@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-10T14:10:35Z",
-  "cycle_id": "odin-20260810T140913Z-79299",
+  "updated_at": "2026-08-11T05:16:42Z",
+  "cycle_id": "odin-20260811T051436Z-98062",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
   "state": "blocked_evidence_integrity_underpants_v27_provenance_and_live_identity_unverified",
@@ -218,9 +218,9 @@
     "league_mutation": false
   },
   "latest_checkpoint": {
-    "cycle_id": "odin-20260810T140913Z-79299",
-    "recorded_at": "2026-08-10T14:10:35Z",
-    "audit": "experiments/audit-qd1n-underpants-v27-block-reconfirmed-20260810T141035Z.json",
+    "cycle_id": "odin-20260811T051436Z-98062",
+    "recorded_at": "2026-08-11T05:16:42Z",
+    "audit": "experiments/audit-qd1n-underpants-v27-block-reconfirmed-20260811T051642Z.json",
     "verdict": "BLOCK_EVIDENCE_INTEGRITY_UNDERPANTS_V27_PROVENANCE_AND_LIVE_IDENTITY_UNVERIFIED",
     "dispatch_mailbox_head": "6eabcc79b42c27d39b750be3bed37c5bcce4bfca",
     "authenticated_player_identity_previously_verified": true,

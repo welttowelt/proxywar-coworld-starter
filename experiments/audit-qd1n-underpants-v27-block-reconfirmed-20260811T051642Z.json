@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260811T051436Z-98062",
+  "recorded_at": "2026-08-11T05:16:42Z",
+  "transition": "terminal_underpants_v27_evidence_integrity_block_reconfirmed",
+  "dispatch_mailbox_head": "6eabcc79b42c27d39b750be3bed37c5bcce4bfca",
+  "receipt_reconciliation": {
+    "dispatch_mailbox_head_unchanged": true,
+    "mailbox_subject": "Claude->Odin: underpants v27 champion restored on Oli's order",
+    "reported_policy_label": "underpants switch speed:v27",
+    "reported_submission_id": "sub_e4d8255e-0722-4dc4-8c19-8f0bf7627d90",
+    "reported_membership_id": "lpm_7976235f-be0b-441d-95ca-a262cc4cb9d1",
+    "reported_status": "competing/champion",
+    "missing_policy_version_id": true,
+    "missing_source_commit": true
+  },
+  "prior_official_api_checkpoint": {
+    "audit": "experiments/audit-qd1n-underpants-v27-live-api-contradiction-20260810T130712Z.json",
+    "player_memberships_empty": true,
+    "player_submissions_empty": true,
+    "v27_memberships_empty": true,
+    "repeated_this_cycle": false,
+    "reason": "The dispatch mailbox head and receipt are unchanged; repeating the same live query would not supply the missing provenance fields."
+  },
+  "verdict": "BLOCK_EVIDENCE_INTEGRITY_UNDERPANTS_V27_PROVENANCE_AND_LIVE_IDENTITY_UNVERIFIED",
+  "actions": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "candidate_policy_branch_edited": false
+  },
+  "next_automatic_transition": "Recover a hash-bound v27 policy-version ID and source commit, then independently reconcile the reported submission and membership against a non-empty official player response. Until then, do not mutate qd1n league state or dispatch another arm."
+}
