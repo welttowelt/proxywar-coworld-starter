@@ -945,6 +945,11 @@ function chooseParentAction(actions, state, plan = null, history = []) {
   }
   if (kingmakerAlliance) return kingmakerAlliance;
 
+  // ah1 sits on the every-decision baseline path, not in the last-resort
+  // diplomacy tail — a pending offer answered late is an offer expired.
+  const inboundAlliance = pendingInboundAllianceOffer(actions, state, plan, history);
+  if (inboundAlliance) return inboundAlliance;
+
   const withGc1 = (action) => {
     if (!gc1Suppress || !action) return action;
     const policyMarkers = [...new Set([
@@ -1127,6 +1132,46 @@ function hasCurrentPressure(state) {
   return incomingThreatCount(state.self.incomingAttacks) > 0 ||
     (state.self.incomingAttackerIDs || []).length > 0 ||
     (state.self.allProtocolAttackerIDs || []).length > 0;
+}
+
+const AH1_ACCEPT_COOLDOWN = 6;
+const AH1_ALLY_CAP = 2;
+
+// ah1: generic inbound alliance-handshake accept. The 16P autopsy (rounds
+// 1346-1353) showed every loss was a multi-front gang-kill with zero
+// diplomatic cover while 92 pending inbound offers went unanswered — the
+// server exposes a rival's live offer as an alliance_reject action, and
+// acceptance is selecting the matching alliance_request (same wire mechanism
+// the kp2 reverse-handshake uses, generalized beyond the coalition set).
+// Strongest offerer first; prey stays on the menu; the ally cap bounds the
+// attack-menu freeze from rivalIsProtected's unconditional isAllied branch.
+function pendingInboundAllianceOffer(actions, state, plan, history) {
+  const allies = state.rivals.filter((rival) => rival.isAllied === true).length;
+  if (allies >= AH1_ALLY_CAP) return null;
+  if (decisionsSince(history, (entry) => entry.policyMarker === "ah1") < AH1_ACCEPT_COOLDOWN) {
+    return null;
+  }
+  const convertTargetID = plan?.intent === "convert" ? clean(plan?.targetID ?? "") : "";
+  const offerers = state.rivals
+    .filter((rival) => {
+      if (rival.isAllied || isAbsoluteNoHarmRival(rival)) return false;
+      if (convertTargetID && clean(rival.id) === convertTargetID) return false;
+      const ratio = rival.relativeTroopRatio;
+      if (Number.isFinite(ratio) && ratio >= 1.3) return false;
+      return actions.some((action) =>
+        action.kind === "alliance_reject" && rivalForAction(action, state)?.id === rival.id
+      );
+    })
+    .sort((left, right) => right.tileShare - left.tileShare);
+  for (const offerer of offerers) {
+    const request = actions.find((action) =>
+      action.kind === "alliance_request" && rivalForAction(action, state)?.id === offerer.id
+    );
+    if (request) {
+      return { ...request, policyMarker: "ah1", allianceDirection: "inbound" };
+    }
+  }
+  return null;
 }
 
 function pendingReciprocalHandshake(actions, state) {

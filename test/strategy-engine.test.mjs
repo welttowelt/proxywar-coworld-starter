@@ -3510,3 +3510,140 @@ test("ug1 refuses a forced release against a pact partner", () => {
   assert.equal(selected.id, upgrade.id);
   assert.equal(selected.policyMarker, undefined);
 });
+
+// AH1: generic inbound alliance-handshake accept. Round 1346-1353 autopsy:
+// losses are multi-front gang-kills with zero diplomatic cover; 92 pending
+// inbound native alliance offers across 15/18 losses were never answered
+// (16P winners end with ~1.29 allied edges, we ended with 0.33). Acceptance
+// = selecting the matching alliance_request while the rival's own offer is
+// pending (server exposes the pending offer as an alliance_reject action).
+
+function inboundOffer(rivalID, rivalName) {
+  const reject = {
+    ...action(`alliance:reject:${rivalID}`, "alliance_reject", `Reject ${rivalName}`),
+    metadata: { recipientID: rivalID, recipientName: rivalName },
+  };
+  const request = {
+    ...action(`alliance:request:${rivalID}`, "alliance_request", `Ally with ${rivalName}`),
+    metadata: { recipientID: rivalID, recipientName: rivalName },
+  };
+  return [reject, request];
+}
+
+test("ah1 accepts a strong neighbor's pending alliance offer", () => {
+  const attack = {
+    ...action("attack:minnow:10", "attack", "Attack Minnow 10%"),
+    metadata: { targetID: "minnow", targetName: "Minnow", troopPercent: 10 },
+  };
+  const selected = choose(
+    [...inboundOffer("bully", "Bully"), attack],
+    observation({
+      tileShare: 0.08,
+      troopRatio: 0.9,
+      rivals: [
+        { id: "bully", name: "Bully", tileShare: 0.2, relativeTroopRatio: 0.7 },
+        { id: "minnow", name: "Minnow", tileShare: 0.03, relativeTroopRatio: 1.6, isAllied: false },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.policyMarker, "ah1");
+  assert.equal(selected.kind, "alliance_request");
+  assert.equal(selected.allianceDirection, "inbound");
+});
+
+test("ah1 never buys peace with prey", () => {
+  const attack = {
+    ...action("attack:prey:10", "attack", "Attack Prey 10%"),
+    metadata: { targetID: "prey", targetName: "Prey", troopPercent: 10 },
+  };
+  const selected = choose(
+    [...inboundOffer("prey", "Prey"), attack],
+    observation({
+      tileShare: 0.08,
+      troopRatio: 0.9,
+      rivals: [
+        { id: "prey", name: "Prey", tileShare: 0.1, relativeTroopRatio: 1.5 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.notEqual(selected.policyMarker, "ah1");
+});
+
+test("ah1 respects the two-ally cap", () => {
+  const attack = {
+    ...action("attack:minnow:10", "attack", "Attack Minnow 10%"),
+    metadata: { targetID: "minnow", targetName: "Minnow", troopPercent: 10 },
+  };
+  const selected = choose(
+    [...inboundOffer("third", "Third"), attack],
+    observation({
+      tileShare: 0.08,
+      troopRatio: 0.9,
+      rivals: [
+        { id: "friend1", name: "Friend1", tileShare: 0.1, relativeTroopRatio: 0.9, isAllied: true },
+        { id: "friend2", name: "Friend2", tileShare: 0.1, relativeTroopRatio: 0.9, isAllied: true },
+        { id: "third", name: "Third", tileShare: 0.2, relativeTroopRatio: 0.7 },
+        { id: "minnow", name: "Minnow", tileShare: 0.03, relativeTroopRatio: 1.6 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.notEqual(selected.policyMarker, "ah1");
+});
+
+test("ah1 never accepts the convert target and cools down between accepts", () => {
+  const attack = {
+    ...action("attack:other:10", "attack", "Attack Other 10%"),
+    metadata: { targetID: "other", targetName: "Other", troopPercent: 10 },
+  };
+  const obs = () => observation({
+    tileShare: 0.16,
+    troopRatio: 0.9,
+    rivals: [
+      { id: "target", name: "Target", tileShare: 0.2, relativeTroopRatio: 1.4 },
+      { id: "other", name: "Other", tileShare: 0.1, relativeTroopRatio: 1.2 },
+    ],
+  });
+  const plan = { intent: "convert", targetID: "target", horizon: 4 };
+  const vsTarget = choose([...inboundOffer("target", "Target"), attack], obs(), plan, []);
+  assert.notEqual(vsTarget.policyMarker, "ah1");
+  const cooling = choose(
+    [...inboundOffer("other", "Other"), attack],
+    obs(),
+    null,
+    Array.from({ length: 4 }, (_, index) => ({
+      actionID: `attack:x:${index}`, kind: "attack", neutral: true, tileShare: 0.16,
+      policyMarker: index === 0 ? "ah1" : null,
+    })),
+  );
+  assert.notEqual(cooling.policyMarker, "ah1");
+});
+
+test("ah1 leaves the kingmaker reciprocal handshake untouched", () => {
+  const mickeyReject = {
+    ...action("alliance:reject:mickey", "alliance_reject", "Reject K1Z Mickey Mouse"),
+    metadata: { recipientID: "ply_e982e621-9ca3-47cd-8151-f57ee9d99421", recipientName: "K1Z Mickey Mouse" },
+  };
+  const mickeyRequest = {
+    ...action("alliance:request:mickey", "alliance_request", "Ally with K1Z Mickey Mouse"),
+    metadata: { recipientID: "ply_e982e621-9ca3-47cd-8151-f57ee9d99421", recipientName: "K1Z Mickey Mouse" },
+  };
+  const selected = choose(
+    [mickeyReject, mickeyRequest],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      rivals: [
+        { id: "ply_e982e621-9ca3-47cd-8151-f57ee9d99421", name: "K1Z Mickey Mouse", tileShare: 0.12, relativeTroopRatio: 1.1 },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.policyMarker, "kp2");
+});
