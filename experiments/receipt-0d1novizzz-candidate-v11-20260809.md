@@ -115,3 +115,22 @@ uvx --from coworld==0.1.38 coworld submit <policy_version_id>
 - CONFIRMED 2026-08-10 ~10:55Z: underpants champion = `underpants switch
   speed:v27` on lpm_7976235f (competing/champion). Incident fully closed —
   both lanes on their intended policies (0d1novizzz: v12, underpants: v27).
+
+## v13 ship (2026-08-11, on Oli's "move 0d1novizzz back to number 1")
+
+- Source: branch @ 77c9a8d8 = v12 + 0.1.35/16P spawn fingerprints (44 tiles,
+  6d8514fa) + ah1 inbound-alliance accept (77c9a8d8). Suite 442 pass / 6
+  pre-existing. Image sha256:89a1e201... Local 0.1.35 4P match healthy
+  (353 decisions / 1 fallback).
+- Evidence base: 5-agent autopsy of 18 cached loss replays (rounds
+  1346-1353): losses = multi-front gang-kills, 92 unanswered inbound
+  alliance offers, winners hold ~1.29 allied edges vs our 0.33. Scoring
+  reverse-engineered: standing = 100 x EWMA(round win-share), lambda 0.9707,
+  half-life ~23 rounds; sustained 0.33 win-share takes #1 in ~2 days.
+- Player verified 0d1novizzz before upload. Uploaded v13 = policy_version
+  234377dc-20d2-43a1-8d0c-5509cb56fe53; submitted
+  sub_c4dba540-8582-44a2-b6c2-7d73d8f1aa0c (placed, membership lpm_5d62a261,
+  auto-champion always).
+- Preregistered promotion bar: >=0.15 episode-win share over the first 3
+  scored rounds with no zero round (mechanism bar: >=50% of offer-containing
+  episodes end allied); kill and roll back to v12 below 0.066.
