@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260811T145928Z-78389",
+  "recorded_at": "2026-08-11T15:01:04Z",
+  "transition": "terminal_underpants_v27_august11_transition_receipt_block_reconfirmed",
+  "dispatch_mailbox_head": "b1278cb4111143ebae7d938a64c0c3db754b39ff",
+  "receipt_reconciliation": {
+    "dispatch_mailbox_head_verified_current": true,
+    "dispatch_mailbox_head_unchanged_from_prior_checkpoint": true,
+    "dispatch_mailbox_head_subject": "Claude->Odin: v13 shipped (fingerprints+ah1), #1 push with preregistered bar",
+    "dispatch_mailbox_head_scope": "0d1novizzz v13 only",
+    "dispatch_mailbox_head_is_qd1n_transition_receipt": false,
+    "august_10_qd1n_restoration_receipt_found": true,
+    "august_11_qd1n_retirement_or_successor_receipt_found": false,
+    "restoration_receipt_source": "claude/0d1novizzz-candidate@bbd2a02b010a5f6196ac4aced267913f7845313e:experiments/receipt-0d1novizzz-candidate-v11-20260809.md",
+    "restoration_receipt_sha256": "3960c245bb6cea69148b4a3d37c62d316b13ad1c58aaea46cd0d498ad4c200a6",
+    "missing_fields": [
+      "underpants v27 source commit",
+      "August 11 qd1n retirement or successor authorization",
+      "August 11 qd1n successor policy version",
+      "August 11 qd1n successor submission",
+      "August 11 qd1n successor membership",
+      "August 11 qd1n champion identity"
+    ]
+  },
+  "prior_bounded_official_api_evidence": {
+    "audit": "experiments/audit-qd1n-underpants-v27-live-retirement-block-20260811T093743Z.json",
+    "repeated_this_cycle": false,
+    "player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
+    "policy_label": "underpants switch speed:v27",
+    "policy_version_id": "5322e2d0-460a-437f-b76c-6fcb856e8658",
+    "submission_id": "sub_e4d8255e-0722-4dc4-8c19-8f0bf7627d90",
+    "membership_id": "lpm_7976235f-be0b-441d-95ca-a262cc4cb9d1",
+    "membership_status": "disqualified",
+    "membership_substatus": "inactive",
+    "membership_is_champion": false,
+    "membership_ended_at": "2026-08-11T08:20:37.687493Z",
+    "membership_notes": "operator-directed retirement (Oli 2026-08-11)",
+    "current_competing_or_champion_rows": 0
+  },
+  "verdict": "BLOCK_LIVE_QD1N_CHAMPION_RETIRED_TRANSITION_RECEIPT_MISSING",
+  "actions": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "candidate_policy_branch_edited": false,
+    "dispatch_checkout_mutated": false
+  },
+  "next_automatic_transition": "Recover the hash-bound August 11 qd1n retirement or successor transition receipt, including authorized source commit, policy version, submission, membership, and champion identity. Until then, do not mutate qd1n league state or dispatch another arm."
+}
