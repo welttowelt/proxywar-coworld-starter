@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260811T061917Z-29054",
+  "recorded_at": "2026-08-11T06:20:51Z",
+  "transition": "terminal_underpants_v27_receipt_integrity_block_reconfirmed",
+  "dispatch_mailbox_head": "6eabcc79b42c27d39b750be3bed37c5bcce4bfca",
+  "prior_checkpoint_commit": "264ea82e28fe690a45fd930f449b3d50cdce6efe",
+  "receipt_reconciliation": {
+    "exact_identifiers": [
+      "underpants switch speed:v27",
+      "sub_e4d8255e-0722-4dc4-8c19-8f0bf7627d90",
+      "lpm_7976235f-be0b-441d-95ca-a262cc4cb9d1"
+    ],
+    "dispatch_mailbox_head_verified_current": true,
+    "dispatch_mailbox_head_unchanged_from_prior_checkpoint": true,
+    "dispatch_mailbox_head_subject": "Claude->Odin: underpants v27 champion restored on Oli's order",
+    "dispatch_mailbox_head_is_replacement_receipt": true,
+    "receipt_source": "claude/0d1novizzz-candidate@bbd2a02b010a5f6196ac4aced267913f7845313e:experiments/receipt-0d1novizzz-candidate-v11-20260809.md",
+    "receipt_sha256": "3960c245bb6cea69148b4a3d37c62d316b13ad1c58aaea46cd0d498ad4c200a6",
+    "matching_transition_receipt_found": true,
+    "source_provenance_verified": false,
+    "policy_version_verified": false,
+    "submission_verified": false,
+    "membership_verified": false,
+    "champion_identity_verified": false,
+    "missing_fields": [
+      "underpants v27 policy-version ID",
+      "underpants v27 source commit"
+    ],
+    "official_api_repeated_this_cycle": false,
+    "prior_official_api_audit": "experiments/audit-qd1n-underpants-v27-live-api-contradiction-20260810T130712Z.json"
+  },
+  "verdict": "BLOCK_EVIDENCE_INTEGRITY_UNDERPANTS_V27_PROVENANCE_AND_LIVE_IDENTITY_UNVERIFIED",
+  "actions": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "candidate_policy_branch_edited": false,
+    "dispatch_checkout_mutated": false
+  },
+  "next_automatic_transition": "Recover a hash-bound v27 policy-version ID and source commit, then independently reconcile the reported submission and membership against a non-empty official player response. Until then, do not mutate qd1n league state or dispatch another arm."
+}
