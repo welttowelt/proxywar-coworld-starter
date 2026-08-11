@@ -1,10 +1,10 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-11T08:29:45Z",
-  "cycle_id": "odin-20260811T082803Z-83426",
+  "updated_at": "2026-08-11T09:37:43Z",
+  "cycle_id": "odin-20260811T093140Z-9500",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
-  "state": "blocked_evidence_integrity_underpants_v27_provenance_and_live_identity_unverified",
+  "state": "blocked_live_qd1n_champion_retired_transition_receipt_missing",
   "arm": {
     "id": "rc1",
     "name": "post_hit_retaliation_conversion",
@@ -26,9 +26,9 @@
     "last_verified_status": "competing",
     "last_verified_substatus": "champion",
     "last_verified_is_champion": true,
-    "current_status": "unchanged_receipt_reports_underpants_v27_champion_but_provenance_and_live_identity_unverified",
+    "current_status": "blocked_live_v27_membership_retired_no_current_champion",
     "current_is_champion": false,
-    "verification_blocker": "Mailbox head 6eabcc79b42c27d39b750be3bed37c5bcce4bfca is unchanged and reports underpants switch speed:v27 restored as champion through submission sub_e4d8255e-0722-4dc4-8c19-8f0bf7627d90 and membership lpm_7976235f-be0b-441d-95ca-a262cc4cb9d1. Its referenced receipt omits the v27 policy-version ID and hash-bound source commit, while the prior official API checkpoint returned no player, submission, or v27 membership rows; provenance and live champion identity remain fail-closed."
+    "verification_blocker": "The official API now verifies underpants switch speed:v27 as policy version 5322e2d0-460a-437f-b76c-6fcb856e8658 and verifies the reported placed submission, but membership lpm_7976235f-be0b-441d-95ca-a262cc4cb9d1 was retired at 2026-08-11T08:20:37.687493Z. No current competing or champion membership appeared in the scoped player response, and the dispatch mailbox head contains no hash-bound August 11 retirement or successor receipt."
   },
   "live_scoreboard": {
     "checked_at": "2026-07-25T04:34:17.199Z",
@@ -52,7 +52,7 @@
     "runner": "free",
     "studio_runner": "owned:hrafn:hi1-pangaea-control-65b83f97-r2",
     "qd1n_mutation": "free",
-    "active_player": "blocked:ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c:underpants_v27_receipt_incomplete",
+    "active_player": "blocked:ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c:champion_retired_transition_receipt_missing",
     "mailbox_commit": "6eabcc79b42c27d39b750be3bed37c5bcce4bfca"
   },
   "operator_topology": {
@@ -218,10 +218,10 @@
     "league_mutation": false
   },
   "latest_checkpoint": {
-    "cycle_id": "odin-20260811T082803Z-83426",
-    "recorded_at": "2026-08-11T08:29:45Z",
-    "audit": "experiments/audit-qd1n-underpants-v27-block-reconfirmed-20260811T082945Z.json",
-    "verdict": "BLOCK_EVIDENCE_INTEGRITY_UNDERPANTS_V27_PROVENANCE_AND_LIVE_IDENTITY_UNVERIFIED",
+    "cycle_id": "odin-20260811T093140Z-9500",
+    "recorded_at": "2026-08-11T09:37:43Z",
+    "audit": "experiments/audit-qd1n-underpants-v27-live-retirement-block-20260811T093743Z.json",
+    "verdict": "BLOCK_LIVE_QD1N_CHAMPION_RETIRED_TRANSITION_RECEIPT_MISSING",
     "dispatch_mailbox_head": "6eabcc79b42c27d39b750be3bed37c5bcce4bfca",
     "authenticated_player_identity_previously_verified": true,
     "mailbox_head_unchanged_from_prior_checkpoint": true,
@@ -230,7 +230,7 @@
     "observed_newer_mailbox_head_opened": false,
     "dispatch_mailbox_head_subject": "Claude->Odin: underpants v27 champion restored on Oli's order",
     "dispatch_mailbox_head_is_replacement_receipt": true,
-    "reconciliation_scope": "canonical active-arm state, exact unchanged dispatch mailbox head, its single directly referenced receipt, and the prior official API checkpoint only",
+    "reconciliation_scope": "canonical active-arm state, exact unchanged dispatch mailbox head, its single directly referenced receipt, and a bounded official API query for the reported player and v27 identifiers only",
     "dispatch_checkout_branch": "claude/0d1novizzz-candidate",
     "dispatch_checkout_mutated": false,
     "odin_checkpoint_branch": "main",
@@ -238,13 +238,13 @@
     "active_player_id": "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
     "active_player_name": "odinfree max underpants",
     "player_display_name_drift_observed": true,
-    "official_api_player_memberships_empty": true,
-    "official_api_player_submissions_empty": true,
-    "official_api_v27_memberships_empty": true,
-    "membership_verified": false,
+    "official_api_player_memberships_empty": false,
+    "official_api_player_submissions_empty": false,
+    "official_api_v27_memberships_empty": false,
+    "membership_verified": true,
     "transition_receipt_found": true,
-    "submission_verified": false,
-    "policy_verified": false,
+    "submission_verified": true,
+    "policy_verified": true,
     "champion_verified": false,
     "observed_replacement_is_champion": false,
     "source_change": false,
@@ -253,20 +253,26 @@
     "observed_membership_id": "lpm_7976235f-be0b-441d-95ca-a262cc4cb9d1",
     "observed_submission_id": "sub_e4d8255e-0722-4dc4-8c19-8f0bf7627d90",
     "observed_policy_label": "underpants switch speed:v27",
-    "observed_policy_version_id": null,
+    "observed_policy_version_id": "5322e2d0-460a-437f-b76c-6fcb856e8658",
     "receipt_source": "claude/0d1novizzz-candidate@bbd2a02b010a5f6196ac4aced267913f7845313e:experiments/receipt-0d1novizzz-candidate-v11-20260809.md",
     "receipt_sha256": "3960c245bb6cea69148b4a3d37c62d316b13ad1c58aaea46cd0d498ad4c200a6",
     "receipt_missing_fields": [
-      "underpants v27 policy-version ID",
-      "underpants v27 source commit"
+      "underpants v27 source commit",
+      "August 11 retirement or successor transition receipt"
     ],
     "expected_membership_present": false,
     "expected_policy_present": false,
-    "official_api_repeated_this_cycle": false,
+    "official_api_repeated_this_cycle": true,
     "prior_official_api_audit": "experiments/audit-qd1n-underpants-v27-live-api-contradiction-20260810T130712Z.json",
-    "next_automatic_transition": "Recover a hash-bound v27 policy-version ID and source commit, then independently reconcile the reported submission and membership against a non-empty official player response. Until then, do not mutate qd1n league state or dispatch another arm."
+    "next_automatic_transition": "Recover the hash-bound August 11 retirement or successor transition receipt, including authorized source commit, policy version, submission, membership, and champion identity. Until then, do not mutate qd1n league state or dispatch another arm.",
+    "observed_membership_status": "disqualified",
+    "observed_membership_substatus": "inactive",
+    "observed_membership_is_champion": false,
+    "observed_membership_end_time": "2026-08-11T08:20:37.687493Z",
+    "observed_membership_notes": "operator-directed retirement (Oli 2026-08-11)",
+    "current_competing_or_champion_rows": 0
   },
-  "next_automatic_transition": "Recover a hash-bound v27 policy-version ID and source commit, then independently reconcile the reported submission and membership against a non-empty official player response. Until then, do not mutate qd1n league state or dispatch another arm.",
+  "next_automatic_transition": "Recover the hash-bound August 11 retirement or successor transition receipt, including authorized source commit, policy version, submission, membership, and champion identity. Until then, do not mutate qd1n league state or dispatch another arm.",
   "prior_verified_champion_preserved": false,
-  "current_champion_verification": "blocked_official_api_returned_no_player_or_v27_rows"
+  "current_champion_verification": "blocked_v27_retired_no_current_competing_or_champion_row"
 }
