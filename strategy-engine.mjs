@@ -681,7 +681,9 @@ function chooseAtomBomb(actions, state, history) {
       rival &&
       !rivalIsProtected(state, history, rival) &&
       Number(action?.metadata?.targetSamCoverage ?? 1) === 0 &&
-      (Number(action?.metadata?.targetTileShare ?? 0) >= 0.12 ||
+      // ne1: 0.08 opens the gate on mid-size rivals — the 1346-1353 winners
+      // averaged 17.4 bombs/episode to our 0.9 and fired from midgame.
+      (Number(action?.metadata?.targetTileShare ?? 0) >= 0.08 ||
         (state.self.incomingAttackerIDs || []).includes(rival.id.toLowerCase()))
     );
   const best = candidates.sort((left, right) =>
@@ -791,8 +793,11 @@ export function chooseBuild(actions, history, defend = false) {
     : [
         ...(built.some((id) => id.includes("city")) ? [] : ["city"]),
         ...(built.some((id) => id.includes("factory")) ? [] : ["factory"]),
+        // ne1: silos stay in rotation (winners run many; one is never enough)
+        // and outrank ports once the economy exists.
+        ...(built.filter((id) => id.includes("missile silo")).length >= 4
+          ? [] : ["missile silo"]),
         ...(built.some((id) => id.includes("port")) ? [] : ["port"]),
-        ...(built.some((id) => id.includes("missile silo")) ? [] : ["missile silo"]),
         "city", "factory", "port", "missile silo", "sam launcher",
       ];
   for (const unit of preferences) {

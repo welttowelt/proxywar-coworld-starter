@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 
+import * as strategyEngine from "../strategy-engine.mjs";
 import {
   boatConversionStalled,
   buildState,
@@ -3646,4 +3647,75 @@ test("ah1 leaves the kingmaker reciprocal handshake untouched", () => {
     [],
   );
   assert.equal(selected.policyMarker, "kp2");
+});
+
+// NE1: nuke economy on the winners' clock. Autopsy of rounds 1346-1353:
+// Jordan/Calc stand up their first Missile Silo by tick ~4500 and average
+// 17.4 bombs/episode vs our 0.9 — our build order dropped "missile silo"
+// permanently after one build and nk1's 0.12 share gate rarely opened.
+
+test("ne1 keeps building silos after the first one", () => {
+  const silo = {
+    ...action("build:silo:2", "build", "Build Missile Silo"),
+    metadata: { unit: "Missile Silo" },
+  };
+  const port = {
+    ...action("build:port:2", "build", "Build Port"),
+    metadata: { unit: "Port" },
+  };
+  const history = [
+    { actionID: "build:city:1", kind: "build", tileShare: 0.1 },
+    { actionID: "build:factory:1", kind: "build", tileShare: 0.1 },
+    { actionID: "build:port:1", kind: "build", tileShare: 0.1 },
+    { actionID: "build:missile silo:1", kind: "build", tileShare: 0.1 },
+  ];
+  const { chooseBuild } = strategyEngine;
+  const selected = chooseBuild([port, silo], history);
+  assert.equal(selected.id, silo.id);
+});
+
+test("ne1 fires nk1 at an unshielded mid-size rival", () => {
+  const bomb = {
+    ...action("build:atom:target", "build", "Build Atom Bomb targeting Rival"),
+    metadata: { unit: "Atom Bomb", targetID: "rival", targetName: "Rival", targetSamCoverage: 0, targetTileShare: 0.09 },
+  };
+  const selected = choose(
+    [bomb],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      rivals: [
+        { id: "rival", name: "Rival", tileShare: 0.09, relativeTroopRatio: 1.0, sharesBorder: true },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.equal(selected.policyMarker, "nk1");
+});
+
+test("ne1 still refuses shielded or tiny targets", () => {
+  const shielded = {
+    ...action("build:atom:shielded", "build", "Build Atom Bomb targeting Shielded"),
+    metadata: { unit: "Atom Bomb", targetID: "shielded", targetName: "Shielded", targetSamCoverage: 1, targetTileShare: 0.2 },
+  };
+  const tiny = {
+    ...action("build:atom:tiny", "build", "Build Atom Bomb targeting Tiny"),
+    metadata: { unit: "Atom Bomb", targetID: "tiny", targetName: "Tiny", targetSamCoverage: 0, targetTileShare: 0.03 },
+  };
+  const hold = action("hold", "hold", "Hold");
+  const selected = choose(
+    [shielded, tiny, hold],
+    observation({
+      tileShare: 0.1,
+      troopRatio: 0.9,
+      rivals: [
+        { id: "shielded", name: "Shielded", tileShare: 0.2, relativeTroopRatio: 1.0, sharesBorder: true },
+        { id: "tiny", name: "Tiny", tileShare: 0.03, relativeTroopRatio: 1.0, sharesBorder: true },
+      ],
+    }),
+    null,
+    [],
+  );
+  assert.notEqual(selected.policyMarker, "nk1");
 });
