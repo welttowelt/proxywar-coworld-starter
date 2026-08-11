@@ -62,6 +62,19 @@ const MAP_SPAWN_TILES = new Map([
     1334418, 1334584, 1336292, 1558664].map((tile) => [tile, "Oceania"]),
   ...[469552, 930618, 1141426, 1698062, 1701672, 2092478, 2107368, 2334966,
     2729848, 2759682, 2994416, 3339196].map((tile) => [tile, "Britannia"]),
+  // Engine 0.1.35 (16P rounds, round 1347+): naval maps grew 4 extra 16P
+  // seats on top of their 12P sets, while Pangaea-16P and World were fully
+  // regenerated. Harvested from live round replays (>= 2 episodes agree
+  // except EastAsia's single win replay); zero cross-map collisions.
+  ...[97960, 103112, 508538, 534682].map((tile) => [tile, "BlackSea"]),
+  ...[447782, 484550, 715024, 1118712].map((tile) => [tile, "EastAsia"]),
+  ...[1298456, 1692346, 2378550, 2502336].map((tile) => [tile, "Britannia"]),
+  ...[104126, 1200350, 1340668, 1446708].map((tile) => [tile, "Oceania"]),
+  ...[70318, 71628, 188728, 190532, 249166, 281344, 376534, 431138, 446336,
+    552576, 619140, 640382, 712688, 796512, 855352, 916672]
+    .map((tile) => [tile, "Pangaea"]),
+  ...[50504, 231078, 300170, 369496, 757248, 878938, 1068540, 1239648,
+    1991074, 1991826, 1994392, 1997454].map((tile) => [tile, "World"]),
 ]);
 
 export const PLAN_KINDS = [

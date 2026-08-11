@@ -358,12 +358,23 @@ test("official Normal-map spawn tiles identify every supported route", () => {
     Oceania: [24054, 230178, 996628, 1000504, 1108410, 1160598, 1168508,
       1196714, 1334418, 1334584, 1336292, 1558664],
     Britannia: [469552, 930618, 1141426, 1698062, 1701672, 2092478, 2107368,
-      2334966, 2729848, 2759682, 2994416, 3339196],
+      2334966, 2729848, 2759682, 2994416, 3339196,
+      1298456, 1692346, 2378550, 2502336],
+    // 0.1.35 16P generation additions + regenerated Pangaea/World sets.
+    BlackSea16: [97960, 103112, 508538, 534682],
+    EastAsia16: [447782, 484550, 715024, 1118712],
+    Oceania16: [104126, 1200350, 1340668, 1446708],
+    Pangaea16: [70318, 71628, 188728, 190532, 249166, 281344, 376534, 431138,
+      446336, 552576, 619140, 640382, 712688, 796512, 855352, 916672],
+    World135: [50504, 231078, 300170, 369496, 757248, 878938, 1068540,
+      1239648, 1991074, 1991826, 1994392, 1997454],
   };
+  const LABEL = { BlackSea16: "BlackSea", EastAsia16: "EastAsia",
+    Oceania16: "Oceania", Pangaea16: "Pangaea", World135: "World" };
   for (const [map, spawnTiles] of Object.entries(cases)) {
     for (const spawnTile of spawnTiles) {
       const state = buildState(observation({ spawnTile }), [action("hold", "hold", "Hold")]);
-      assert.equal(state.mapFingerprint, map);
+      assert.equal(state.mapFingerprint, LABEL[map] ?? map);
     }
   }
   // Tile 534350 spawns on both Pangaea and NorthAmerica: ambiguous tiles
