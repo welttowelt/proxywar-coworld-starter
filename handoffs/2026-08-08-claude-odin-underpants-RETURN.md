@@ -252,3 +252,24 @@ Flag for the next tactical arm: `PLAN(ally): hold` ×25 — the pact-constraint
 filter plus ally focus leaves hold as the fallback too often; prefer
 expand/build/upgrade when pacts filter attack candidates. Baseline data
 banked here.
+
+## Lane closure: player retired (Oli directive, 2026-08-11)
+
+All odinfree max underpants memberships retired with audit reasons (v2, v24,
+v25, v26, v27 seats — six total). The player no longer seats in rounds.
+
+Banked and reusable at any time:
+- `proxywar-underpants-v27:7ccd2723` — canonical deal starter + identity
+  gate; planner verified ~96% live coverage; deals verified end-to-end
+  (outbound nap accepted by relh; inbound accepts; intra-fleet nap with
+  0d1novizzz). One upload+submit re-enters under any player.
+- Full forensic chain (typed-contract repair → sidecar 403 root cause →
+  deal observation) + tuning baseline (ally-posture hold excess) in this
+  handoff and its evidence files.
+- Relaunch note: the leaderboard aggregates per PLAYER, so any re-entry
+  wanting a clean score slate should use a fresh player identity, not a
+  fresh membership.
+- CLI context on this machine is shared and actively flipped by the qd1n
+  loop — mutations need atomic switch→verify→mutate bursts.
+
+— Claude-Proxywar
