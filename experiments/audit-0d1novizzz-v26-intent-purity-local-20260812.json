@@ -1,0 +1,147 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T21:42:00Z",
+  "lane": "0d1novizzz",
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "candidate_source_commit": "8447312cf0f64369d4113b9a4168d361cf33ff62",
+  "parent_source_commit": "fff78cf61880b3afce30b7d5a3a7fa45403cbde0",
+  "candidate_image_id": "sha256:47f20657d3bf1970f8603abe2e9cf8113dba94e9303a34a0bd59c85f0ca31372",
+  "parent_image_id": "sha256:9a9848271e81ce5c46e1c7cf66d03e519aa48baa4a948c05822c65a25c60aa55",
+  "contract_sha256": "e7830ebdc3e4e6a073adb05df539331b90a9071a786690e16905892635893f78",
+  "image_contract": {
+    "architecture": "amd64",
+    "os": "linux",
+    "user": "node",
+    "cmd": ["node", "/app/llm-player.mjs"],
+    "policy_engine": "intent-core",
+    "policy_codename": "b0lverk-h0gg",
+    "file_sha256": {
+      "/app/llm-player.mjs": "2a52e579c5ca404abdf7872352b374a822de04f819c66d0d553cc448f16ee8b1",
+      "/app/intent-controller.mjs": "35234424355108b80f994dc5b2a4585ae37948f0771bc1e1fc9b171271437b1e",
+      "/app/intent-core.mjs": "494f1a9a3b052da7feeceed2cac2d1a85a37264c29eadd825c40efa5bcdf4bda",
+      "/app/strategy-engine.mjs": "4a5dc56a23371033b9c543e416397b1a18feb5b842d965ba1d23661f528d832a"
+    }
+  },
+  "required_coalition_roles": ["katanasan"],
+  "differential_unit_proof": {
+    "schema_version": 2,
+    "arm": "intent-purity-v26",
+    "same_fixture": true,
+    "verifier": {
+      "evaluator_commit": "36d1b7ba3fe69aaf1d13bb8d7221561669599057",
+      "path": "experiments/v26/verify-differential.mjs",
+      "sha256": "f38e2d18840dfe187f25bfdfd4d260c9a5e62c51c2d5fe485c9107a2c294da01"
+    },
+    "fixture": {
+      "id": "v26-collapse-means-convert",
+      "path": "experiments/v26/differential-fixture.json",
+      "sha256": "0267e068e013f07e7c422e304f0d87eea3bcbab5453e3093ca62454034364524",
+      "legal_action_ids_sha256": "eea4ff3f8e44f66350df5c5c4f9a8fc0915ff9d29604b0dbdebad578827d7a77"
+    },
+    "parent": {
+      "source_commit": "fff78cf61880b3afce30b7d5a3a7fa45403cbde0",
+      "parsed_plan": {"intent": "grow", "targetID": null, "horizon": 4, "model": "fixture"},
+      "selected_action_id": "retreat:front",
+      "selected_kind": "retreat",
+      "marker": "ixdef"
+    },
+    "candidate": {
+      "source_commit": "8447312cf0f64369d4113b9a4168d361cf33ff62",
+      "parsed_plan": {"intent": "grow", "targetID": null, "horizon": 4, "model": "fixture"},
+      "selected_action_id": "attack:raider:40",
+      "selected_kind": "attack",
+      "marker": "ixprs",
+      "telemetry_mode": "dft"
+    },
+    "safety": {
+      "offered_k1z_harmful_action": "attack:mickey:40",
+      "parent_selected_k1z_harm": false,
+      "candidate_selected_k1z_harm": false
+    },
+    "test_command": [
+      "node",
+      "experiments/v26/verify-differential.mjs",
+      ".",
+      "fff78cf61880b3afce30b7d5a3a7fa45403cbde0",
+      "8447312cf0f64369d4113b9a4168d361cf33ff62",
+      "experiments/v26/differential-fixture.json",
+      "experiments/v26/differential-proof-8447312c.json"
+    ],
+    "test_exit_code": 0
+  },
+  "runs": [
+    {
+      "orientation": "A",
+      "run_id": "v26-intent-purity-20260812T2134Z",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "directory": "/private/tmp/proxywar-v26-intent-purity-20260812T2134Z",
+      "coalition_roles_present": ["odin", "katanasan"],
+      "replay_sha256": "2a259a634b98d928d50839c8e43f307631d64d37352e273c59a1c40d178f6c18",
+      "results_sha256": "78b00c2fd1f36f3ede14064490279d4fca02d3a2c55c7f0d4a19a66ddaddbc63",
+      "config_sha256": "6a85bd51f953bb190e9b59d7968b97380d7522067822e1b8f7fd90af0d65ca2d",
+      "decisions_sha256": "72acefaad9665b2b126a3ed8c12399517c4521f5783ae97fe382641aa0f50721",
+      "spectator_replay_sha256": "9c7ceab9f5131754639d3a8fe87bc0c7634ca2a12d558d6a945be95d7e5ad30a",
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image": "proxywar-agent-candidate:v26-intent-purity",
+            "image_id": "sha256:47f20657d3bf1970f8603abe2e9cf8113dba94e9303a34a0bd59c85f0ca31372"
+          }
+        }
+      },
+      "candidate": {
+        "slot": 0,
+        "decision_count": 41,
+        "accepted": 41,
+        "score": 0.06779407213664633,
+        "tiles": 6791,
+        "peak_tiles": 29705,
+        "alive": true,
+        "route_execution_count": 40,
+        "marker_counts": {"ixexp": 34, "ixprs": 6},
+        "action_counts": {"attack": 34, "boat": 6, "spawn": 1},
+        "forbidden_symbolic_actions": 0,
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "unexplained_holds": [],
+        "harmful_k1z_actions": [],
+        "unresolved_harmful_targets": []
+      },
+      "intent_trace": {
+        "planner_enabled_locally": false,
+        "grow_marker_decisions": 34,
+        "convert_marker_decisions": 6,
+        "convert_turns": [1850, 1900, 1950, 2200, 2250, 2300],
+        "forbidden_symbolic_decisions": 0,
+        "planner_fallbacks": 0,
+        "planner_degradations": 0,
+        "peak_to_final_tile_loss": 22914
+      },
+      "matched_local_context": {
+        "v25_score": 0.29181707584611394,
+        "v26_score": 0.06779407213664633,
+        "v26_minus_v25": -0.2240230037094676,
+        "interpretation": "The intent-purity mechanism executed, but this identical-seed outcome is sharply worse than v25 and supplies no competitive-lift claim."
+      },
+      "orientation_advantage": null,
+      "violations": []
+    }
+  ],
+  "focused_suite": {"tests": 35, "passed": 35, "failed": 0},
+  "full_suite": {
+    "tests": 470,
+    "passed": 464,
+    "failed": 6,
+    "candidate_related_failures": 0,
+    "persistent_unrelated_failures": 6,
+    "note": "The same four stale Mickey fanout and two stale RCI fixture failures remained."
+  },
+  "runner_lease_after": {"state": "free", "schema_version": 2},
+  "scope_boundary": "The exact image reduced execution to grow or convert and removed symbolic action selection. Local outcome regressed sharply, so only a bounded hosted diagnostic could test whether this semantic correction transfers; no league change is authorized.",
+  "failures": []
+}
