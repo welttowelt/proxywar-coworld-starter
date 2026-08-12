@@ -1,0 +1,64 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T21:20:00Z",
+  "lane": "0d1novizzz",
+  "verdict": "FAIL_HOSTED_NO_SUBMIT",
+  "request_id": "xreq_c8c31f32-a584-48cf-9c3f-ada73f3627e4",
+  "candidate_source_commit": "fff78cf61880b3afce30b7d5a3a7fa45403cbde0",
+  "candidate_image_id": "sha256:9a9848271e81ce5c46e1c7cf66d03e519aa48baa4a948c05822c65a25c60aa55",
+  "candidate_policy_version_id": "774dfbb9-faa9-4982-8394-f2e3b49fb0d8",
+  "candidate_uploaded_label": "xX_UwU_Senpai_420_Xx:v24",
+  "hosted_result": {
+    "episodes": 4,
+    "wins": 0,
+    "losses": 4,
+    "candidate_scores": [0, 0, 0, 0],
+    "candidate_final_tiles": [1262, 6561, 12257, 0],
+    "winners": ["Matt Van", "Captain Underpants Maximum Aura", "Matt Van", "Matt Van"]
+  },
+  "first_replay": {
+    "episode_request_id": "ereq_04a980b9-90f3-4afe-85eb-f306a54c1785",
+    "episode_id": "0ccb0156-2db7-4be4-a002-b706ef19c740",
+    "job_id": "ff4e20ab-bd8a-4eb0-8855-afa4e946937d",
+    "sha256": "fb04fe9b1f9a16d2c99b4397430119a43ca3038f5124b5bd5eb742f4389316f1",
+    "candidate_observed_decisions": 34,
+    "candidate_observed_planner_reasons": 33,
+    "candidate_observed_fallbacks": 0,
+    "candidate_observed_rejections": 0,
+    "candidate_peak": {"turn": 3600, "tiles": 101932},
+    "candidate_collapse": {"turn": 6000, "tiles": 1315},
+    "winner_at_candidate_peak": {"name": "Matt Van", "tiles": 88661},
+    "candidate_action_counts": {
+      "attack": 6,
+      "boat": 8,
+      "build": 1,
+      "retreat": 1,
+      "alliance_request": 2,
+      "target_player": 5,
+      "embargo": 1,
+      "embargo_all": 9,
+      "spawn": 1
+    },
+    "winner_action_counts": {"attack": 28, "build": 3, "upgrade_structure": 2, "spawn": 1}
+  },
+  "planner_log": {
+    "connected": true,
+    "unsupported_model_400s": 2,
+    "invalid_intent_replies": 3,
+    "persistent_valid_intent_survived_refresh_errors": true
+  },
+  "diagnosis": {
+    "finding": "The broad planner vocabulary was not the remaining failure. The executor translated grow into symbolic target and embargo actions, while the hidden defend override translated collapse into infrastructure, boats, and alliance requests. These actions did not reverse the board.",
+    "next_hypothesis": "Keep only grow and convert inside the executor as well as the planner. During collapse, convert physical force against the attacker. Exclude target, embargo, alliance, and other symbolic actions from both outcomes.",
+    "decision": "Kill v25 before submission."
+  },
+  "live_state_after": {
+    "candidate_submissions": 0,
+    "candidate_memberships": 0,
+    "active_champion": "xX_UwU_Senpai_420_Xx:v17",
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false,
+    "underpants_lane_mutation": false
+  }
+}

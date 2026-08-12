@@ -1,0 +1,55 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T21:20:00Z",
+  "lane": "0d1novizzz",
+  "arm": "intent-purity-v26",
+  "parent": {
+    "source_commit": "fff78cf61880b3afce30b7d5a3a7fa45403cbde0",
+    "image_id": "sha256:9a9848271e81ce5c46e1c7cf66d03e519aa48baa4a948c05822c65a25c60aa55",
+    "hosted_result": "0/4"
+  },
+  "single_conceptual_change": "The executor has the same two outcomes as the planner. Grow may choose only actions that acquire territory or usable power. Convert may choose only physical force. Territorial collapse converts against the current attacker instead of invoking a hidden defend intent.",
+  "hypothesis": "Strict intent semantics should preserve the strong opening while preventing target, embargo, alliance, and passive-defense actions from impersonating growth or conversion during collapse.",
+  "frozen": [
+    "planner JSON contract and refresh cadence",
+    "bootstrap grow intent",
+    "opponent protection and K1Z no-harm contract",
+    "map, roster, target scoring, commitment sizing, and all non-intent strategy modules"
+  ],
+  "forbidden_selected_kinds": [
+    "target_player",
+    "embargo",
+    "embargo_all",
+    "embargo_stop",
+    "alliance_request",
+    "alliance_extend"
+  ],
+  "local_gate": {
+    "same_fixture_parent_candidate_differential": true,
+    "required_planner_intents": ["grow", "convert"],
+    "required_collapse_outcome": "convert",
+    "focused_tests_required": "all pass",
+    "candidate_related_full_suite_failures": 0,
+    "fallbacks": 0,
+    "holds": 0,
+    "rejections": 0,
+    "k1z_harm": 0
+  },
+  "hosted_gate": {
+    "episodes": 4,
+    "required_wins": 4,
+    "required_planner_reasons": true,
+    "forbidden_selected_kinds": ["target_player", "embargo", "embargo_all", "alliance_request"],
+    "fallbacks": 0,
+    "holds": 0,
+    "rejections": 0,
+    "k1z_harm": 0,
+    "on_any_score_zero": "STOP_HOSTED_NO_SUBMIT"
+  },
+  "promotion_gate": {
+    "separate_regression_episodes": 20,
+    "required_regression_wins": 20,
+    "final_rci": true
+  },
+  "league_mutation_authorized": false
+}
