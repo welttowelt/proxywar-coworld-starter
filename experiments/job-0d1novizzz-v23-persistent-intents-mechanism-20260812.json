@@ -1,0 +1,43 @@
+{
+  "game_config": {
+    "map": "Pangaea",
+    "map_size": "Compact",
+    "difficulty": "Easy",
+    "num_agents": 4,
+    "max_decision_steps": 40,
+    "turns_per_decision_step": 50,
+    "max_decision_ms": 15000,
+    "replay_tail_turns": 0,
+    "episode_timeout_seconds": 300,
+    "player_connect_timeout_seconds": 120,
+    "seed": 2026081,
+    "players": [
+      {"name": "0d1novizzz v23 persistent intents"},
+      {"name": "K1Z katanasan"},
+      {"name": "v17 parent control"},
+      {"name": "Outsider"}
+    ]
+  },
+  "players": [
+    {
+      "type": "player",
+      "image": "sha256:eb791b1a994aceccc70a46bcefcd7cd79095c44dba6c9bd4410f39a7ed822b94",
+      "run": ["node", "/app/llm-player.mjs"]
+    },
+    {
+      "type": "player",
+      "image": "sha256:37fb270f0e0019b09c72df75b4bc873ee49ed6052af442c074acd74dd86c7c49",
+      "run": ["node", "/app/llm-player.mjs"]
+    },
+    {
+      "type": "player",
+      "image": "sha256:37fb270f0e0019b09c72df75b4bc873ee49ed6052af442c074acd74dd86c7c49",
+      "run": ["node", "/app/llm-player.mjs"]
+    },
+    {
+      "type": "player",
+      "image": "sha256:37fb270f0e0019b09c72df75b4bc873ee49ed6052af442c074acd74dd86c7c49",
+      "run": ["node", "/app/llm-player.mjs"]
+    }
+  ]
+}
