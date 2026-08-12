@@ -1,0 +1,52 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T21:47:00Z",
+  "lane": "0d1novizzz",
+  "status": "passed",
+  "verdict": "PASS_PREUPLOAD_RCI",
+  "candidate_source_commit": "8447312cf0f64369d4113b9a4168d361cf33ff62",
+  "candidate_image_id": "sha256:47f20657d3bf1970f8603abe2e9cf8113dba94e9303a34a0bd59c85f0ca31372",
+  "preregister_sha256": "5aa65f010b54d8f0e7358c006c4be304c05d0e478f22e6370e4708fd223c5c40",
+  "local_audit_sha256": "1f123f76dc28a53155350d8c0f1411412780f9052ea3f0ecce42c42f14217a42",
+  "critique": {
+    "strongest_evidence": "The same-fixture differential changes collapse from v25 retreat under hidden defend to v26 physical attack under convert, and the exact-image episode selected 34 grow plus 6 convert actions with zero symbolic actions.",
+    "adverse_evidence": "The identical-seed local score fell from v25 0.29181707584611394 to v26 0.06779407213664633, and v26 lost 22914 tiles after its peak. Local evidence does not support competitive lift.",
+    "remaining_uncertainty": "The local harness has PLAN_MODE off, while the hosted policy uses the live planner and Bedrock sidecar. Only a bounded hosted replay can show whether exact intent semantics improve the live action distribution."
+  },
+  "checks": {
+    "single_intent_level_change": true,
+    "source_identity": true,
+    "image_identity": true,
+    "runtime_identity": true,
+    "differential_reach": true,
+    "two_outcome_contract": true,
+    "grow_semantics_exact": true,
+    "convert_semantics_exact": true,
+    "collapse_converts": true,
+    "symbolic_actions_excluded": true,
+    "k1z_safety": true,
+    "zero_candidate_fallback": true,
+    "zero_candidate_degradation": true,
+    "zero_candidate_hold": true,
+    "zero_candidate_rejection": true,
+    "negative_local_outcome_disclosed": true,
+    "competitive_lift_not_claimed": true,
+    "runner_released": true,
+    "diagnostic_only": true,
+    "league_mutation_forbidden": true
+  },
+  "open_gates": [
+    "diagnostic upload identity binding",
+    "current-roster hosted 4/4",
+    "separate map-and-seat regression 20/20",
+    "final promotion RCI"
+  ],
+  "stop_conditions": [
+    "any hosted score of zero",
+    "any forbidden symbolic selected action",
+    "any fallback, hold, rejection, or K1Z harm",
+    "planner reasons absent from the replay"
+  ],
+  "unresolved_violations": 0,
+  "authorized_next_action": "One diagnostic upload and one four-episode current-roster hosted request only; no league submission, membership change, or champion change."
+}
