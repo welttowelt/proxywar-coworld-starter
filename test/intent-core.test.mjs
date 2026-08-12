@@ -122,6 +122,33 @@ test("active attack pressure overrides an older expand plan with defend", () => 
   assert.equal(selected.policyMarker, "ixdef");
 });
 
+test("territorial collapse keeps defend active between attack signal ticks", () => {
+  const land = action("expand:terra-nullius:35", "attack", "Expand Terra Nullius 35%", {
+    expansion: true, troopPercent: 35,
+  });
+  const retreat = action("retreat:front", "retreat", "Retreat from the active front");
+  const factory = action("build:Factory:42", "build", "Build Factory", { unit: "Factory" });
+  const harmfulMickey = action("attack:mickey:40", "attack", "Attack K1Z Mickey Mouse 40%", {
+    targetID: MICKEY_ID, targetName: "K1Z Mickey Mouse", troopPercent: 40,
+  });
+  const history = [0.2, 0.19, 0.18, 0.16].map((tileShare, index) => ({
+    actionID: `prior:${index}`,
+    kind: "attack",
+    tileShare,
+    incomingAttackerIDs: [],
+    allProtocolAttackerIDs: [],
+  }));
+  const selected = decide([land, retreat, factory, harmfulMickey], {
+    intent: "expand", targetID: null, horizon: 4,
+  }, {
+    history,
+    tileShare: 0.08,
+    rivals: [{ id: MICKEY_ID, name: "K1Z Mickey Mouse", tileShare: 0.1 }],
+  });
+  assert.equal(selected.id, retreat.id);
+  assert.equal(selected.policyMarker, "ixdef");
+});
+
 test("ally intent binds to its exact visible target", () => {
   const mickey = alliance(MICKEY_ID, "K1Z Mickey Mouse");
   const sian = alliance(SIAN_ID, "K1Z katanasan");

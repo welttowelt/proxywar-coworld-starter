@@ -109,7 +109,11 @@ export function intentRefreshInterval(plan, configuredMaximum = 8) {
   return Math.min(maximum, plan.horizon);
 }
 
-export function executableIntentPlan(plan, decisionAge, degraded = false) {
+// Horizon schedules the next planner refresh. It does not turn an outcome into
+// a short-lived tactical instruction: the last valid intent stays in force
+// until a new valid packet replaces it, while the executor keeps reacting to
+// the live board.
+export function executableIntentPlan(plan) {
   const validShape = plan && INTENTS.includes(plan.intent) &&
     Number.isInteger(plan.horizon) &&
     plan.horizon >= MIN_INTENT_HORIZON && plan.horizon <= MAX_INTENT_HORIZON &&
@@ -117,10 +121,7 @@ export function executableIntentPlan(plan, decisionAge, degraded = false) {
       ? plan.targetID === null
       : typeof plan.targetID === "string" && plan.targetID.length > 0 &&
         clean(plan.targetID) === plan.targetID);
-  if (!validShape || degraded || !Number.isInteger(decisionAge) || decisionAge < 0 ||
-      !Number.isInteger(plan.horizon) || decisionAge > plan.horizon) {
-    return null;
-  }
+  if (!validShape) return null;
   return plan;
 }
 

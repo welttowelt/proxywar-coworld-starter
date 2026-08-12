@@ -276,10 +276,12 @@ function handleMessage(activeSocket, data) {
     }
   }
 
-  const degraded = PLANNER_ENABLED && lastPlanError !== null;
   const executionPlan = PLANNER_ENABLED
-    ? executableIntentPlan(plan, planDecisionAge, degraded)
+    ? executableIntentPlan(plan)
     : null;
+  // A refresh error does not erase a valid intent. Degradation is reserved for
+  // the state where no valid planner outcome exists at all.
+  const degraded = PLANNER_ENABLED && executionPlan === null && lastPlanError !== null;
   const chosen = chooseAction(actions, state, executionPlan, history);
   const reason = publicReason(chosen, executionPlan !== null, degraded, lastPlanErrorClass);
   // The intent core has one decision surface. Legacy engines retain their

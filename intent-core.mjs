@@ -6,6 +6,7 @@ import {
   isNeutralExpansion,
   rivalForAction,
   rivalIsProtected,
+  territoryCollapsing,
 } from "./strategy-engine.mjs";
 
 const INTENTS = new Set(["expand", "fortify", "defend", "ally", "pressure"]);
@@ -93,11 +94,12 @@ function currentAttackerIDs(state) {
   ].map(normalizedID).filter(Boolean));
 }
 
-function planIntent(plan, state) {
+function planIntent(plan, state, history) {
   const pressured = incomingThreatCount(state?.self?.incomingAttacks) > 0 ||
-    currentAttackerIDs(state).size > 0;
+    currentAttackerIDs(state).size > 0 || territoryCollapsing(state, history);
   // Intent arbitration follows the live board. A plan written before an
-  // attack cannot keep expanding while the nation is being compressed.
+  // attack cannot keep expanding while the nation is being compressed, even
+  // during a quiet protocol tick between attack waves.
   if (pressured) return { intent: "defend", targetID: null };
   const legacy = plan?.intent === "grow"
     ? "expand"
@@ -228,7 +230,7 @@ export function chooseIntentCoreAction(actions, state, plan = null, history = []
   const spawn = actions.find((action) => action?.kind === "spawn");
   if (spawn) return spawn;
 
-  const directive = planIntent(plan, state);
+  const directive = planIntent(plan, state, history);
   const menu = offeredMenu(actions, state, history, directive);
   if (menu.length === 0) {
     const hold = actions.find((action) => action?.kind === "hold");

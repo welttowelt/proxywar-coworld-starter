@@ -161,11 +161,11 @@ test("refresh interval honors a valid horizon and operator ceiling", () => {
   assert.equal(intentRefreshInterval(null, 6), 6);
 });
 
-test("stale or degraded directives fail closed to no intent", () => {
+test("valid intents persist across refresh age and transient refresh errors", () => {
   const plan = { intent: "grow", targetID: null, horizon: 3, model: "test" };
   assert.equal(executableIntentPlan(plan, 3, false), plan);
-  assert.equal(executableIntentPlan(plan, 4, false), null);
-  assert.equal(executableIntentPlan(plan, 1, true), null);
+  assert.equal(executableIntentPlan(plan, 4, false), plan);
+  assert.equal(executableIntentPlan(plan, 1, true), plan);
   assert.equal(executableIntentPlan(null, 1, false), null);
   assert.equal(executableIntentPlan({
     intent: "finish", targetID: null, horizon: 3, model: "test",
