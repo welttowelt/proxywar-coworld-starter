@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-candidate:v28-two-field-intents",
+    "parent_ref": "proxywar-agent-candidate:v27-strict-outcomes",
+    "exact_deltas": [
+      "The planner reply contains only intent and targetID, with intent restricted to expand, consolidate, or convert; the executor owns all action selection and refresh timing."
+    ],
+    "source_commit": "0743674b02c472a4401ba1a8df897b850b8743d5",
+    "parent_commit": "76d1fa7602176ce42fd931dbdfba35d47afed474",
+    "image_id": "sha256:c122f2333191efa9f2cb112c54d28d18ab809e3baf99505f304514831abe8d60"
+  },
+  "hypothesis": "Reducing planner output to a literal outcome and optional target should preserve strategic adaptation while eliminating parser ambiguity and tactical micromanagement.",
+  "mechanism": {
+    "marker": "ixexp",
+    "prior_reachable_decisions": 40
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "contract_sha256": "101f9aed242f83010fc9e853d4cc56736b35afb9b7e99cb9375c2ca8634de881",
+    "audit_receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v28-two-field-intents-local-20260812.json",
+      "sha256": "a7dee9ca33d5e1cecc49d9b322657622a8f95344e203baa99a135912f3ceb6c1"
+    },
+    "differential_binding": {
+      "verifier_path": "experiments/v28/verify-differential.mjs",
+      "fixture_path": "experiments/v28/differential-fixture.json"
+    }
+  },
+  "preupload_rci": {
+    "receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v28-preupload-rci-20260812.json",
+      "sha256": "d829d316bb157b7873d1faea16b14f9bcd40301afdcef49a3ba479623c24dc39"
+    }
+  },
+  "matched_baseline": null,
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "max_k1z_harm": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  }
+}

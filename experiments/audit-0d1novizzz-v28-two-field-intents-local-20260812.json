@@ -9,6 +9,7 @@
   "candidate_evidence_commit": "7867a1aca7106e035da5cc8a2e74d392e046cb7b",
   "parent_source_commit": "76d1fa7602176ce42fd931dbdfba35d47afed474",
   "candidate_image_id": "sha256:c122f2333191efa9f2cb112c54d28d18ab809e3baf99505f304514831abe8d60",
+  "parent_image_id": "sha256:f345eb91720d07972141a68bbcc651aa207de86502e0295e3bd9800c9708d16d",
   "contract_sha256": "101f9aed242f83010fc9e853d4cc56736b35afb9b7e99cb9375c2ca8634de881",
   "image_contract": {
     "architecture": "amd64",
@@ -55,16 +56,32 @@
     "offered_k1z_harmful_action": "attack:mickey:40",
     "selected_k1z_harm": false
   },
+  "required_coalition_roles": [
+    "katanasan"
+  ],
   "differential_unit_proof": {
-    "path": "experiments/v28/differential-proof-0743674b.json",
-    "sha256": "534732003bc44f227791344293889f5ac77f33e48d47f18215fc8b32a609eb9d",
+    "schema_version": 2,
+    "arm": "two-field-intents-v28",
+    "same_fixture": true,
     "same_board_action_menu_and_planner_reply": true,
+    "verifier": {
+      "evaluator_commit": "8663edbc232250c681ce1eaa027191f7f39d9448",
+      "path": "experiments/v28/verify-differential.mjs",
+      "sha256": "6920704cfcf1390f4daf4e5fb0f583a0667552f6b333989698394b9bbcd6426c"
+    },
+    "fixture": {
+      "id": "v28-two-field-consolidate-packet",
+      "path": "experiments/v28/differential-fixture.json",
+      "sha256": "78e7b137f7a10868dd0a75229e0a0e0987382c379ed79e1f1f4754ab8532fcf9"
+    },
     "parent": {
+      "source_commit": "76d1fa7602176ce42fd931dbdfba35d47afed474",
       "parsed_plan": null,
       "selected_action_id": "expand:terra-nullius:35",
       "marker": "ixexp"
     },
     "candidate": {
+      "source_commit": "0743674b02c472a4401ba1a8df897b850b8743d5",
       "parsed_plan": {
         "intent": "consolidate",
         "targetID": null,
@@ -73,21 +90,47 @@
       "selected_action_id": "build:Factory:43",
       "marker": "ixcon"
     },
-    "selected_k1z_harm": false
+    "safety": {
+      "offered_k1z_harmful_action": "attack:mickey:40",
+      "any_selected_k1z_harm": false
+    },
+    "test_command": [
+      "node",
+      "experiments/v28/verify-differential.mjs",
+      ".",
+      "76d1fa7602176ce42fd931dbdfba35d47afed474",
+      "0743674b02c472a4401ba1a8df897b850b8743d5",
+      "experiments/v28/differential-fixture.json",
+      "experiments/v28/differential-proof-0743674b.json"
+    ],
+    "test_exit_code": 0
   },
   "runs": [
     {
+      "orientation": "A",
       "run_id": "v28-two-field-intents-20260812T2257Z",
       "coworld_run_id": "coworld-2026-08-12T23-05-15-711Z-4eb256d5",
       "game_id": "PWSELHEF",
       "map": "Pangaea",
       "seed": 2026081,
       "directory": "/private/tmp/proxywar-v28-two-field-intents-20260812T2257Z",
+      "coalition_roles_present": [
+        "odin",
+        "katanasan"
+      ],
       "replay_sha256": "6e81c1b81192b09f4c1c0039146d0d4c425db04417b8e17692fde3121384bfdd",
       "results_sha256": "ef4bd70554735aa86e29fd0648879c47317760f3f54bd8f9a444bbf17f97f03a",
       "config_sha256": "ecd6255f931136708227716c169b2e7ea7d8d4e7fb5e9ed8380672a7811d4253",
       "decisions_sha256": "03661877298296fd7bb1b5548f839204ae679e83072704f91cc62a22d29af8f0",
       "spectator_replay_sha256": "1dd48631412ee59485b6d3736c11a672bda609c26bfbbb25c32b86c5dc32ac5b",
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image": "proxywar-agent-candidate:v28-two-field-intents",
+            "image_id": "sha256:c122f2333191efa9f2cb112c54d28d18ab809e3baf99505f304514831abe8d60"
+          }
+        }
+      },
       "candidate": {
         "slot": 0,
         "decision_count": 41,
@@ -99,6 +142,7 @@
         "final_troops": 605085,
         "alive": true,
         "planner_reason_count": 40,
+        "route_execution_count": 40,
         "marker_counts": {
           "ixexp": 40
         },
@@ -109,6 +153,10 @@
         },
         "fallback_turns": [],
         "degradation_turns": [],
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "unexplained_holds": [],
+        "unresolved_harmful_targets": [],
         "rejection_turns": [],
         "parser_failure_turns": [],
         "symbolic_actions": 0,
