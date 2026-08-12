@@ -1,0 +1,65 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T23:09:10Z",
+  "lane": "0d1novizzz",
+  "status": "passed",
+  "verdict": "PASS_PREUPLOAD_RCI",
+  "candidate_source_commit": "0743674b02c472a4401ba1a8df897b850b8743d5",
+  "candidate_image_id": "sha256:c122f2333191efa9f2cb112c54d28d18ab809e3baf99505f304514831abe8d60",
+  "preregister_sha256": "8d25e0173f320b1915e02df58939c272b02987fa84dca0ed8aed1fc25c0c33b0",
+  "local_audit_sha256": "4b5f9438da57d77d0ff82566c98f9fff1ad2cce0c0b238e4aef16d85d5cc8e37",
+  "differential_proof_sha256": "534732003bc44f227791344293889f5ac77f33e48d47f18215fc8b32a609eb9d",
+  "live_baseline": {
+    "policy": "v17",
+    "rank": 10,
+    "score": 7.642312886899775,
+    "round": 1392,
+    "latest_round_score": 0.0,
+    "observed_replay_bearing_episodes": 198,
+    "observed_league_round_episodes": 9,
+    "observed_wins": 0,
+    "planner_sample": "degraded reasons only; no pln:* reasons"
+  },
+  "critique": {
+    "strongest_evidence": "The same-fixture differential isolates the two-field packet: v27 rejects it and defaults to expand, while v28 accepts consolidate and builds a Factory. The exact image independently exercised expand, consolidate, and convert, and the full exact-image episode accepted 41 of 41 decisions with 40 of 40 post-spawn planner reasons.",
+    "adverse_evidence": "The local v28 episode used a static expand reply and reproduced v27's weak score of 0.13799318847218625 and final 13857 tiles. It proves mechanism integrity, not competitive lift. The live v17 baseline is now rank 10 at 7.642312886899775 after another zero, and its sampled planner decisions remain degraded. Historic v18 proved the hosted parser path can emit planner reasons but won only one of four episodes.",
+    "remaining_uncertainty": "Only the hosted Bedrock planner can show whether live two-field replies rotate among expand, consolidate, and convert and whether that outcome selection produces nonzero competitive results against the current roster."
+  },
+  "checks": {
+    "single_intent_level_change": true,
+    "source_identity": true,
+    "image_identity": true,
+    "runtime_identity": true,
+    "differential_reach": true,
+    "two_field_contract": true,
+    "all_outcome_lanes_exact_image": true,
+    "no_tactical_planner_fields": true,
+    "no_timing_planner_fields": true,
+    "zero_candidate_fallback": true,
+    "zero_candidate_degradation": true,
+    "zero_candidate_hold": true,
+    "zero_candidate_rejection": true,
+    "symbolic_actions_excluded": true,
+    "k1z_safety": true,
+    "negative_local_outcome_disclosed": true,
+    "competitive_lift_not_claimed": true,
+    "runner_released": true,
+    "diagnostic_only": true,
+    "league_mutation_forbidden": true
+  },
+  "open_gates": [
+    "diagnostic upload identity binding",
+    "current-roster hosted 4/4",
+    "separate map-and-seat regression 20/20",
+    "final promotion RCI"
+  ],
+  "stop_conditions": [
+    "any hosted score of zero",
+    "planner reasons absent from any replay",
+    "any fallback, degradation, hold, rejection, or parse failure",
+    "any forbidden symbolic action or K1Z harm",
+    "any missing ixexp, ixcon, or ixprs marker across the four-episode request"
+  ],
+  "unresolved_violations": 0,
+  "authorized_next_action": "One diagnostic upload and one four-episode current-roster Asia hosted request only; no league submission, membership change, or champion change."
+}
