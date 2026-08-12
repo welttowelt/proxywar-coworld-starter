@@ -282,14 +282,15 @@ function handleMessage(activeSocket, data) {
     : null;
   const chosen = chooseAction(actions, state, executionPlan, history);
   const reason = publicReason(chosen, executionPlan !== null, degraded, lastPlanErrorClass);
-  // The OPTIONAL diplomacy slot (0.1.26+): negotiating never costs the game
-  // move. Deterministic desk, planner-independent; a throw must never take
-  // the primary response down with it.
+  // The intent core has one decision surface. Legacy engines retain their
+  // separate structured-deal desk for compatibility.
   let dealMove = null;
-  try {
-    dealMove = chooseDealMove(allActions, obs, executionPlan, history);
-  } catch (error) {
-    console.error(`deal desk failed: ${error?.message || error}`);
+  if (POLICY_ENGINE !== "intent-core") {
+    try {
+      dealMove = chooseDealMove(allActions, obs, executionPlan, history);
+    } catch (error) {
+      console.error(`deal desk failed: ${error?.message || error}`);
+    }
   }
 
   recordDecision(history, chosen, state);

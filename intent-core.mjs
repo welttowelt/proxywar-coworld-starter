@@ -62,8 +62,11 @@ function offeredMenu(actions, state, history) {
     action && typeof action.id === "string" && action.id.length > 0 &&
     !protectedHarm(action, state, history)
   );
-  const lowerRisk = legal.filter((action) => action?.risk?.level !== "high");
-  return lowerRisk.length > 0 ? lowerRisk : legal;
+  const active = legal.filter((action) => action?.kind !== "hold");
+  const lowerRisk = active.filter((action) => action?.risk?.level !== "high");
+  if (lowerRisk.length > 0) return lowerRisk;
+  if (active.length > 0) return active;
+  return legal;
 }
 
 function currentAttackerIDs(state) {

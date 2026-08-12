@@ -181,6 +181,20 @@ test("an aligned high-risk action yields to a lower-risk legal action", () => {
   assert.equal(selected.id, factory.id);
 });
 
+test("hold is only selected when no active safe action exists", () => {
+  const risky = {
+    ...action("expand:terra-nullius:35", "attack", "Expand Terra Nullius 35%", {
+      expansion: true, troopPercent: 35,
+    }),
+    risk: { level: "high" },
+  };
+  const hold = action("hold", "hold", "Hold");
+  const selected = decide([risky, hold], {
+    intent: "expand", targetID: null, horizon: 4,
+  });
+  assert.equal(selected.id, risky.id);
+});
+
 test("missing or stale plans fall back to a state-derived intent", () => {
   const land = action("expand:terra-nullius:35", "attack", "Expand Terra Nullius 35%", {
     expansion: true, troopPercent: 35,
