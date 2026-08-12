@@ -1,0 +1,54 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T22:22:00Z",
+  "lane": "0d1novizzz",
+  "arm": "strict-outcomes-v27",
+  "parent": {
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "label": "xX_UwU_Senpai_420_Xx:v17"
+  },
+  "candidate_source_commit": "76d1fa7602176ce42fd931dbdfba35d47afed474",
+  "single_conceptual_change": "Replace the overloaded grow or convert executor with three literal outcome lanes: expand, consolidate, and convert. Each lane can execute only its own action class. If that class is unavailable, hold. No incoming-pressure override, collapse override, alternate target, or alternate outcome is allowed.",
+  "hypothesis": "A planner that chooses literal outcomes while the executor preserves troop reserves between useful moves will avoid the multi-front commitment loop that eliminated v26 in all four hosted episodes.",
+  "required_contract": {
+    "planner_intents": ["expand", "consolidate", "convert"],
+    "expand_actions": ["neutral_land", "neutral_boat"],
+    "consolidate_actions": ["build", "upgrade_structure"],
+    "convert_actions": ["physical_force_against_exact_named_target"],
+    "unavailable_outcome": "hold",
+    "implicit_intent_switches": 0,
+    "implicit_target_switches": 0,
+    "symbolic_actions": 0,
+    "k1z_harm": 0
+  },
+  "local_gate": {
+    "required_focused_tests": "all pass",
+    "required_candidate_related_full_suite_failures": 0,
+    "required_differential": "On the same collapsing board, v26 grow converts against the raider while v27 consolidate builds and v27 convert with an unreachable target holds.",
+    "required_exact_image": true,
+    "required_planner_reach": ["expand", "consolidate", "convert"],
+    "required_candidate_fallbacks": 0,
+    "required_candidate_rejections": 0,
+    "required_k1z_harm": 0,
+    "outcome_bar": "Candidate must remain alive, finish with at least 20000 tiles, and beat the v17 control score in the same local episode."
+  },
+  "hosted_gate": {
+    "authorized_only_if_local_gate_passes": true,
+    "episodes": 4,
+    "variant": "tournament-16p-asia",
+    "required_wins": 4,
+    "any_zero_score": "STOP_HOSTED_NO_SUBMIT",
+    "required_planner_reasons": true,
+    "required_outcome_reach": ["expand", "consolidate", "convert"],
+    "required_symbolic_actions": 0,
+    "required_fallbacks": 0,
+    "required_holds_when_matching_action_exists": 0,
+    "required_k1z_harm": 0
+  },
+  "promotion_gate": {
+    "hosted_4_of_4": true,
+    "regression_20_of_20": true,
+    "final_rci": true,
+    "league_submission_before_all_gates": false
+  }
+}
