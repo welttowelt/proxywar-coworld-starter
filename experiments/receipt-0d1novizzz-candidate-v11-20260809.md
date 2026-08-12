@@ -150,3 +150,19 @@ uvx --from coworld==0.1.38 coworld submit <policy_version_id>
   over the first 3 scored v14 rounds; kill below 0.066 mean → rollback to
   v13. Mechanism bar: silo count >=2 and >=4 bombs/episode in at least half
   of completed episodes (mine build intents from replays).
+
+## v15/v16 planner restoration (2026-08-12, Oli-as-Odin: "proceed anyway")
+
+- ROOT REGRESSION FOUND: v10 (344 rounds at #1) ran PLAN_MODE=on (Bedrock
+  planner, pln:* reasons); every rebuild I shipped (v12-v14) ran planner-OFF
+  (rul:* reasons) because upload never passed --secret-env. v14 verdict:
+  kill bar fired (0.111x2 + zeros overnight, standing #8 10.85); ne1 never
+  fired (0 silos/bombs — eliminated pre-economy).
+- v15 (pv 05a67103, = v14 image + PLAN_MODE=on): submission raced onto
+  underpants by a concurrent context flip (Oli-as-Odin's session);
+  contained — membership lpm_5af1ae95 retired. Underpants lane found
+  mass-disqualified by its owner; left untouched.
+- v16 (pv b636e4ee-d2b6-4ea0-a1a1-d805ffd7c50d, same image + PLAN_MODE=on):
+  sub_365d7136 placed, VERIFIED player 0d1novizzz, membership lpm_6699bf28.
+  Bar: promote >=0.15 mean over first 3 scored rounds; kill <0.066 -> v13;
+  mechanism bar: pln:* reasons visible in sampled replay decisions.
