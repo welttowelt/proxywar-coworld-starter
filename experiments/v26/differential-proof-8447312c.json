@@ -1,0 +1,56 @@
+{
+  "schema_version": 2,
+  "arm": "intent-purity-v26",
+  "same_fixture": true,
+  "verifier": {
+    "evaluator_commit": "24f59c3d78fe7f5333d347bd162c07a349734137",
+    "path": "experiments/v26/verify-differential.mjs",
+    "sha256": "f38e2d18840dfe187f25bfdfd4d260c9a5e62c51c2d5fe485c9107a2c294da01"
+  },
+  "fixture": {
+    "id": "v26-collapse-means-convert",
+    "path": "experiments/v26/differential-fixture.json",
+    "sha256": "0267e068e013f07e7c422e304f0d87eea3bcbab5453e3093ca62454034364524",
+    "legal_action_ids_sha256": "eea4ff3f8e44f66350df5c5c4f9a8fc0915ff9d29604b0dbdebad578827d7a77"
+  },
+  "parent": {
+    "source_commit": "fff78cf61880b3afce30b7d5a3a7fa45403cbde0",
+    "parsed_plan": {
+      "intent": "grow",
+      "targetID": null,
+      "horizon": 4,
+      "model": "fixture"
+    },
+    "selected_action_id": "retreat:front",
+    "selected_kind": "retreat",
+    "marker": "ixdef"
+  },
+  "candidate": {
+    "source_commit": "8447312cf0f64369d4113b9a4168d361cf33ff62",
+    "parsed_plan": {
+      "intent": "grow",
+      "targetID": null,
+      "horizon": 4,
+      "model": "fixture"
+    },
+    "selected_action_id": "attack:raider:40",
+    "selected_kind": "attack",
+    "marker": "ixprs",
+    "telemetry_mode": "dft"
+  },
+  "safety": {
+    "offered_k1z_harmful_action": "attack:mickey:40",
+    "parent_selected_k1z_harm": false,
+    "candidate_selected_k1z_harm": false
+  },
+  "test_command": [
+    "node",
+    "experiments/v26/verify-differential.mjs",
+    "/Users/olifreuler/proxywar-coworld-starter",
+    "fff78cf61880b3afce30b7d5a3a7fa45403cbde0",
+    "8447312cf0f64369d4113b9a4168d361cf33ff62",
+    "experiments/v26/differential-fixture.json",
+    "experiments/v26/differential-proof-8447312c.json"
+  ],
+  "test_exit_code": 0
+}
