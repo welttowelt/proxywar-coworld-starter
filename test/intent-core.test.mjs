@@ -129,6 +129,48 @@ test("pressure intent binds hostile action to its exact visible target", () => {
   assert.equal(selected.policyMarker, "ixprs");
 });
 
+test("pressure applies physical force instead of repeating target signals", () => {
+  const targetPlayer = action("target:target", "target_player", "Target Target", {
+    targetID: "target", targetName: "Target",
+  });
+  const embargo = action("embargo:target:start", "embargo", "Embargo Target", {
+    targetID: "target", targetName: "Target",
+  });
+  const land = action("expand:terra-nullius:35", "attack", "Expand Terra Nullius 35%", {
+    expansion: true, troopPercent: 35,
+  });
+  const selected = decide([targetPlayer, embargo, land], {
+    intent: "pressure", targetID: "target", horizon: 4,
+  }, {
+    rivals: [{
+      id: "target", name: "Target", tileShare: 0.3, relativeTroopRatio: 1.5,
+    }],
+  });
+  assert.equal(selected.id, land.id);
+  assert.equal(selected.policyMarker, "ixprs");
+});
+
+test("pressure still prefers an exact physical strike over expansion", () => {
+  const targetPlayer = action("target:target", "target_player", "Target Target", {
+    targetID: "target", targetName: "Target",
+  });
+  const attack = action("attack:target:25", "attack", "Attack Target 25%", {
+    targetID: "target", targetName: "Target", troopPercent: 25,
+  });
+  const land = action("expand:terra-nullius:35", "attack", "Expand Terra Nullius 35%", {
+    expansion: true, troopPercent: 35,
+  });
+  const selected = decide([targetPlayer, attack, land], {
+    intent: "pressure", targetID: "target", horizon: 4,
+  }, {
+    rivals: [{
+      id: "target", name: "Target", tileShare: 0.3, relativeTroopRatio: 1.5,
+    }],
+  });
+  assert.equal(selected.id, attack.id);
+  assert.equal(selected.policyMarker, "ixprs");
+});
+
 test("no intent can select a harmful action against K1Z Mickey Mouse", () => {
   const harmful = action("attack:mickey:40", "attack", "Attack K1Z Mickey Mouse 40%", {
     targetID: MICKEY_ID,

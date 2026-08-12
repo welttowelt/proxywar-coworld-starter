@@ -13,6 +13,10 @@ const TARGETED_INTENTS = new Set(["ally", "pressure"]);
 const HARMFUL_KINDS = new Set([
   "attack", "boat", "nuke", "target_player", "embargo", "embargo_all",
 ]);
+const PHYSICAL_PRESSURE_KINDS = new Set(["attack", "boat", "nuke"]);
+const PRESSURE_SIGNAL_KINDS = new Set([
+  "target_player", "embargo", "embargo_all", "embargo_stop",
+]);
 const MARKERS = Object.freeze({
   expand: "ixexp",
   fortify: "ixfor",
@@ -31,6 +35,15 @@ function actionUnit(action) {
 
 function isStrike(action) {
   return action?.kind === "nuke" || actionUnit(action) === "atom bomb";
+}
+
+function isPhysicalPressure(action) {
+  if (isNeutralExpansion(action) || isNeutralBoat(action)) return false;
+  return PHYSICAL_PRESSURE_KINDS.has(action?.kind) || isStrike(action);
+}
+
+function isPressureSignal(action) {
+  return PRESSURE_SIGNAL_KINDS.has(action?.kind);
 }
 
 function actionRival(action, state) {
@@ -163,11 +176,15 @@ function intentScore(action, directive, state) {
     return action.kind === "hold" ? -200 : 20;
   }
 
-  if (harmful && exactTarget) return 280;
-  if (harmful) return -120;
-  if (action?.kind === "target_player" && exactTarget) return 250;
-  if (infrastructure) return 110;
-  if (neutralLand || neutralBoat) return 90;
+  // Pressure is an outcome, not a declaration. Prefer actions that change
+  // territory or force over target/embargo toggles, even when the toggle is
+  // aimed at the requested rival.
+  if (isPhysicalPressure(action) && exactTarget) return 300;
+  if (isPhysicalPressure(action)) return -120;
+  if (infrastructure) return 180;
+  if (neutralLand || neutralBoat) return 160;
+  if (isPressureSignal(action) && exactTarget) return 40;
+  if (isPressureSignal(action) || harmful) return -120;
   if (alliance) return 20;
   if (retreat) return 70;
   return action.kind === "hold" ? -200 : 30;
