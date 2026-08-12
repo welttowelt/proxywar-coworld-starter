@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-08-12T15:31:55Z",
-  "cycle_id": "odin-20260812T153057Z-65637",
+  "updated_at": "2026-08-12T16:37:18Z",
+  "cycle_id": "odin-20260812T163453Z-12837",
   "lane": "odin",
   "objective": "Become ProxyWar leader number one while removing policy and operator complexity.",
   "state": "blocked_qd1n_retired_no_authorized_successor_receipt",
@@ -276,9 +276,9 @@
     "current_competing_or_champion_rows": 0
   },
   "latest_checkpoint": {
-    "cycle_id": "odin-20260812T153057Z-65637",
-    "recorded_at": "2026-08-12T15:31:55Z",
-    "audit": "experiments/audit-qd1n-unchanged-handover-block-20260812T153155Z.json",
+    "cycle_id": "odin-20260812T163453Z-12837",
+    "recorded_at": "2026-08-12T16:37:18Z",
+    "audit": "experiments/audit-qd1n-unchanged-handover-block-20260812T163718Z.json",
     "verdict": "BLOCK_QD1N_RETIRED_NO_AUTHORIZED_SUCCESSOR_RECEIPT",
     "dispatch_mailbox_head": "af9bfaf76516a3bc62555c579dfa025697fbd6d7",
     "dispatch_packet": "CLAUDE_TO_ODIN_0D1NOVIZZZ_HANDOVER_20260812.md",
