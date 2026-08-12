@@ -166,3 +166,14 @@ uvx --from coworld==0.1.38 coworld submit <policy_version_id>
   sub_365d7136 placed, VERIFIED player 0d1novizzz, membership lpm_6699bf28.
   Bar: promote >=0.15 mean over first 3 scored rounds; kill <0.066 -> v13;
   mechanism bar: pln:* reasons visible in sampled replay decisions.
+
+## v17 sidecar fix (2026-08-12 ~13:4xZ)
+
+- v16 mechanism check: PLAN_MODE=on took effect but every planner refresh
+  degraded (dgd:err:*) — hosted pods front Bedrock with a per-pod sidecar
+  since ~2026-07-30 (AWS_ENDPOINT_URL_BEDROCK_RUNTIME); our client called
+  AWS directly and 403'd. Patched to mirror upstream (86630f6c).
+- v17 = v16 + sidecar routing: pv 65fab9b8-3eed-4689-a5fb-5a515fa54461,
+  sub_af93ce15 placed, VERIFIED player 0d1novizzz, membership lpm_487f5bf0.
+  Same bar as v16 (promote >=0.15/3 rounds, kill <0.066 -> v13); mechanism
+  bar: pln:* reasons (planner alive through sidecar), not dgd:err:*.
