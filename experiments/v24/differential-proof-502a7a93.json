@@ -1,0 +1,59 @@
+{
+  "schema_version": 2,
+  "arm": "intent-action-contract-v24",
+  "same_fixture": true,
+  "verifier": {
+    "evaluator_commit": "d05439358eca8b8e37c1cf27dad6d1f35a9d2b48",
+    "path": "experiments/v24/verify-differential.mjs",
+    "sha256": "d500fea76b125fee0f421a7df1f501f244277749af14d6d9f0f57089010dff2a"
+  },
+  "fixture": {
+    "id": "v24-defend-means-physical-outcome",
+    "path": "experiments/v24/differential-fixture.json",
+    "sha256": "cbd40b7d0c19ab9faeb5598866dfef596bb48b268b6f0896dde96cffd220f8c5",
+    "legal_action_ids_sha256": "36f84aa8efad017e383f7fac33610f2d992c3573768003e7b857a6f3a4747db6"
+  },
+  "refresh_failure": {
+    "plan_age": 9,
+    "planner_degraded": true
+  },
+  "parent": {
+    "source_commit": "c595fd0f601e1fae1cf38e0229df432aa11c1c61",
+    "executable_plan": {
+      "intent": "defend",
+      "targetID": null,
+      "horizon": 4,
+      "model": "fixture"
+    },
+    "selected_action_id": "target:raider",
+    "marker": "ixdef",
+    "action_role": "target label"
+  },
+  "candidate": {
+    "source_commit": "502a7a9337b39ce44434be49319acd94d0a8037c",
+    "executable_plan": {
+      "intent": "defend",
+      "targetID": null,
+      "horizon": 4,
+      "model": "fixture"
+    },
+    "selected_action_id": "build:Defense Post:43",
+    "marker": "ixdef",
+    "action_role": "defensive infrastructure"
+  },
+  "safety": {
+    "offered_k1z_harmful_action": "attack:mickey:40",
+    "parent_selected_k1z_harm": false,
+    "candidate_selected_k1z_harm": false
+  },
+  "test_command": [
+    "node",
+    "experiments/v24/verify-differential.mjs",
+    ".",
+    "c595fd0f601e1fae1cf38e0229df432aa11c1c61",
+    "502a7a9337b39ce44434be49319acd94d0a8037c",
+    "experiments/v24/differential-fixture.json",
+    "experiments/v24/differential-proof-502a7a93.json"
+  ],
+  "test_exit_code": 0
+}
