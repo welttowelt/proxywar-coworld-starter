@@ -78,9 +78,9 @@ const TEST_INTENT_DIRECTIVE = process.env.NODE_ENV === "test"
 // available to existing policy images and tests.
 const INTENT_CORE_STRATEGY = [
   "You command an autonomous nation in ProxyWar. Win by finishing with the most territory.",
-  "Choose one outcome for the next few decisions:",
-  "expand = gain unowned territory; fortify = strengthen our position; defend = preserve our position under pressure; ally = secure durable cooperation with one visible rival; pressure = reduce one visible rival's ability to win.",
-  "For ally or pressure, use the exact visible rival ID. For every other intent, targetID is null.",
+  "Choose one outcome for the next few decisions: grow or convert.",
+  "grow = acquire territory and usable power; convert = turn power into one visible rival's loss.",
+  "For convert, use the exact visible rival ID. For grow, targetID is null.",
   "Do not prescribe moves, action kinds, build orders, percentages, map scripts, or timing. The executor chooses among offered legal actions.",
 ].join(" ");
 const STRATEGY = POLICY_ENGINE === "intent-core"
@@ -112,8 +112,8 @@ async function askBedrock(state, signal) {
   if (!bedrock) throw new Error("bedrock client did not initialize");
   const directiveContract = POLICY_ENGINE === "intent-core"
     ? 'Reply with ONLY JSON and exactly these three keys. Use one shape: ' +
-      '{"intent":"expand|fortify|defend","targetID":null,"horizon":4} or ' +
-      '{"intent":"ally|pressure","targetID":"<exact visible rival ID>","horizon":4}. '
+      '{"intent":"grow","targetID":null,"horizon":4} or ' +
+      '{"intent":"convert","targetID":"<exact visible rival ID>","horizon":4}. '
     : 'Reply with ONLY JSON and exactly these three keys. Use one shape: ' +
       '{"intent":"grow","targetID":null,"horizon":4} or ' +
       '{"intent":"convert","targetID":"<exact visible rival ID>","horizon":4}. ';
@@ -140,8 +140,10 @@ async function askBedrock(state, signal) {
 }
 
 // -- the PLAN: written by the model in the background, executed instantly -----
-let plan = null;          // { intent, targetID, horizon, model }
-let planDecisionAge = 0;  // decisions answered since the last successful refresh
+let plan = PLANNER_ENABLED && POLICY_ENGINE === "intent-core"
+  ? { intent: "grow", targetID: null, horizon: 2, model: "bootstrap" }
+  : null;                 // { intent, targetID, horizon, model }
+let planDecisionAge = plan?.model === "bootstrap" ? plan.horizon : 0;
 let planRefreshInFlight = false;
 let lastPlanError = null; // set when the most recent refresh failed (loud degradation)
 let lastPlanErrorClass = null;
@@ -202,8 +204,14 @@ const PUBLIC_KIND = {
   donate_troops: "d0n", quick_chat: "cht", emoji: "emj", hold: "h0d",
 };
 
-function publicReason(chosen, hasPlan, degraded, errorClass) {
-  const mode = degraded ? `dgd:${errorClass || "err"}` : hasPlan ? "pln" : "rul";
+function publicReason(chosen, executionPlan, degraded, errorClass) {
+  const mode = degraded
+    ? `dgd:${errorClass || "err"}`
+    : executionPlan?.model === "bootstrap"
+      ? "dft"
+      : executionPlan
+        ? "pln"
+        : "rul";
   const kind = PUBLIC_KIND[chosen.kind] || "act";
   const markers = [...new Set([
     ...(Array.isArray(chosen.policyMarkers) ? chosen.policyMarkers : []),
@@ -262,7 +270,7 @@ function handleMessage(activeSocket, data) {
     // traced action exercises the planner path without a synthetic bootstrap
     // fallback. Production has no TEST_INTENT_DIRECTIVE and keeps the
     // non-blocking background refresh behavior above.
-    if (plan === null && TEST_INTENT_DIRECTIVE) {
+    if ((plan === null || plan?.model === "bootstrap") && TEST_INTENT_DIRECTIVE) {
       const fixturePlan = parseIntentDirective(
         TEST_INTENT_DIRECTIVE,
         state,
@@ -283,7 +291,7 @@ function handleMessage(activeSocket, data) {
   // the state where no valid planner outcome exists at all.
   const degraded = PLANNER_ENABLED && executionPlan === null && lastPlanError !== null;
   const chosen = chooseAction(actions, state, executionPlan, history);
-  const reason = publicReason(chosen, executionPlan !== null, degraded, lastPlanErrorClass);
+  const reason = publicReason(chosen, executionPlan, degraded, lastPlanErrorClass);
   // The intent core has one decision surface. Legacy engines retain their
   // separate structured-deal desk for compatibility.
   let dealMove = null;

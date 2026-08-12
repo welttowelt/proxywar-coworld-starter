@@ -49,26 +49,21 @@ test("accepts only exact grow or convert mission packets", () => {
   );
 });
 
-test("accepts intent-core packets with null or exact targets by intent class", () => {
-  for (const intent of ["expand", "fortify", "defend"]) {
-    assert.deepEqual(
-      normalizeIntentDirective({ intent, targetID: null, horizon: 4 }, state),
-      { intent, targetID: null, horizon: 4, model: "unknown" },
-    );
-    assert.equal(
-      normalizeIntentDirective({ intent, targetID: "player-7", horizon: 4 }, state),
-      null,
-    );
-  }
-  for (const intent of ["ally", "pressure"]) {
-    assert.deepEqual(
-      normalizeIntentDirective({ intent, targetID: "player-7", horizon: 4 }, state),
-      { intent, targetID: "player-7", horizon: 4, model: "unknown" },
-    );
-    assert.equal(
-      normalizeIntentDirective({ intent, targetID: null, horizon: 4 }, state),
-      null,
-    );
+test("accepts only the two planner outcomes", () => {
+  assert.deepEqual(
+    normalizeIntentDirective({ intent: "grow", targetID: null, horizon: 4 }, state),
+    { intent: "grow", targetID: null, horizon: 4, model: "unknown" },
+  );
+  assert.deepEqual(
+    normalizeIntentDirective({ intent: "convert", targetID: "player-7", horizon: 4 }, state),
+    { intent: "convert", targetID: "player-7", horizon: 4, model: "unknown" },
+  );
+  for (const intent of ["expand", "fortify", "defend", "ally", "pressure"]) {
+    assert.equal(normalizeIntentDirective({
+      intent,
+      targetID: ["ally", "pressure"].includes(intent) ? "player-7" : null,
+      horizon: 4,
+    }, state), null);
   }
 });
 

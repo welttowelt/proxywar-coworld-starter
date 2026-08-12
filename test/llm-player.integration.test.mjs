@@ -655,7 +655,7 @@ test("intent-core wiring executes the planner outcome without the legacy selecto
       PLAN_MODE: "on",
       POLICY_ENGINE: "intent-core",
       INTENT_TEST_DIRECTIVE: JSON.stringify({
-        intent: "expand",
+        intent: "grow",
         targetID: null,
         horizon: 4,
       }),
@@ -698,6 +698,78 @@ test("intent-core wiring executes the planner outcome without the legacy selecto
   assert.equal(responses[1].selectedLegalActionId, "expand:terra-nullius:35");
   assert.equal(responses[1].fallbackUsed, false);
   assert.match(responses[1].reason, /^pln:atk:ixexp$/);
+});
+
+test("intent-core starts from an honest grow outcome while the planner is pending", async () => {
+  const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
+  await new Promise((resolve) => server.once("listening", resolve));
+  const { port } = server.address();
+  const lowRisk = { level: "low" };
+  const active = request("intent-core-bootstrap", [
+    {
+      id: "expand:terra-nullius:35",
+      kind: "attack",
+      label: "Expand Terra Nullius 35%",
+      risk: lowRisk,
+      metadata: { expansion: true, troopPercent: 35 },
+    },
+    { id: "hold", kind: "hold", label: "Hold", risk: lowRisk },
+  ], {
+    phase: "active",
+    ownState: {
+      tileShare: 0.05, troopRatio: 0.8, troops: 500000, gold: 250000,
+      borderTiles: 100, incomingAttacks: [],
+    },
+    visiblePlayers: [],
+  });
+
+  let response;
+  let stderr = "";
+  const child = spawn(process.execPath, [playerPath], {
+    env: {
+      ...process.env,
+      PLAN_MODE: "on",
+      POLICY_ENGINE: "intent-core",
+      COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
+      AWS_ACCESS_KEY_ID: "test",
+      AWS_SECRET_ACCESS_KEY: "test",
+      AWS_EC2_METADATA_DISABLED: "true",
+      BEDROCK_MODEL: "invalid-test-model",
+    },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  child.stderr.on("data", (chunk) => { stderr += String(chunk); });
+
+  const completed = new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      child.kill("SIGKILL");
+      reject(new Error(`intent bootstrap test timed out: ${stderr}`));
+    }, 8000);
+    server.once("connection", (socket) => {
+      socket.send(JSON.stringify(active));
+      socket.on("message", (data) => {
+        response = JSON.parse(String(data));
+        socket.send(JSON.stringify({ type: "final" }));
+      });
+    });
+    child.once("error", reject);
+    child.once("exit", (code) => {
+      clearTimeout(timeout);
+      if (code === 0) resolve();
+      else reject(new Error(`intent bootstrap player exited ${code}: ${stderr}`));
+    });
+  });
+
+  try {
+    await completed;
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+
+  assert.equal(response.selectedLegalActionId, "expand:terra-nullius:35");
+  assert.equal(response.fallbackUsed, false);
+  assert.equal(response.llmPlannerDegraded, false);
+  assert.match(response.reason, /^dft:atk:ixexp$/);
 });
 
 test("a single transport-framed planner reply reaches the deployed player", async () => {

@@ -2,12 +2,9 @@ import { clean } from "./strategy-engine.mjs";
 
 export const MIN_INTENT_HORIZON = 2;
 export const MAX_INTENT_HORIZON = 12;
-export const INTENTS = Object.freeze([
-  "grow", "convert",
-  "expand", "fortify", "defend", "ally", "pressure",
-]);
+export const INTENTS = Object.freeze(["grow", "convert"]);
 
-const TARGETED_INTENTS = new Set(["convert", "ally", "pressure"]);
+const TARGETED_INTENTS = new Set(["convert"]);
 
 const DIRECTIVE_KEYS = Object.freeze(["horizon", "intent", "targetID"]);
 
