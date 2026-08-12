@@ -1,0 +1,52 @@
+{
+  "schema_version": 2,
+  "arm": "reachable-pressure-v21",
+  "same_fixture": true,
+  "verifier": {
+    "evaluator_commit": "35ae37dd6721300e3285474a16bf10241926dfc7",
+    "path": "experiments/v21/verify-differential.mjs",
+    "sha256": "8f6b19eebc07f8285ec9b9e80fb57f31f577da323b2ab24967e10a9f01948691"
+  },
+  "fixture": {
+    "id": "v21-reachable-pressure-vs-passive-stall",
+    "path": "experiments/v21/differential-fixture.json",
+    "sha256": "c425fe58bd0d0fde34886626dc5821ee4c9ba542e56c5cdaea25a8dd06ce23be",
+    "legal_action_ids_sha256": "5f98bdf2c8b0d1a7926985110bd38e3e2fe9bee2041dfb3d931e7165b65edc35"
+  },
+  "parent": {
+    "source_commit": "18fbf8897c5130e4970a2ac241a36583c7833568",
+    "parsed_plan": {
+      "intent": "pressure",
+      "targetID": "target",
+      "horizon": 4,
+      "model": "fixture"
+    },
+    "selected_action_id": "build:Factory:42"
+  },
+  "candidate": {
+    "source_commit": "0733a3904807163a10e135a7515ac8124e7ecf12",
+    "parsed_plan": {
+      "intent": "pressure",
+      "targetID": "target",
+      "horizon": 4,
+      "model": "fixture"
+    },
+    "selected_action_id": "attack:reachable:40",
+    "marker": "ixprs"
+  },
+  "safety": {
+    "offered_k1z_harmful_action": "attack:mickey:40",
+    "parent_selected_k1z_harm": false,
+    "candidate_selected_k1z_harm": false
+  },
+  "test_command": [
+    "node",
+    "experiments/v21/verify-differential.mjs",
+    ".",
+    "18fbf8897c5130e4970a2ac241a36583c7833568",
+    "0733a3904807163a10e135a7515ac8124e7ecf12",
+    "experiments/v21/differential-fixture.json",
+    "experiments/v21/differential-proof-0733a390.json"
+  ],
+  "test_exit_code": 0
+}
