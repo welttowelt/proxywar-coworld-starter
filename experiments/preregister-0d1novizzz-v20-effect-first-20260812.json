@@ -1,0 +1,47 @@
+{
+  "schema": "proxywar-preregister-v1",
+  "created_at": "2026-08-12T16:57:00Z",
+  "lane": "0d1novizzz",
+  "parent": {
+    "policy": "xX_UwU_Senpai_420_Xx:v19",
+    "policy_version_id": "71c1fd93-c2a4-46df-8ff1-7fd316c52383",
+    "source_commit": "cda205b78f2f01a974f3a6ed8964da6b1f36a5ed",
+    "hosted_failure_receipt": "experiments/audit-0d1novizzz-v19-hosted-early-stop-20260812.json"
+  },
+  "direction": "Keep the five-intent architecture. Correct one generic executor invariant instead of adding tactical instructions.",
+  "causal_evidence": {
+    "hosted_request_id": "xreq_b9cd6a2b-df63-4c2f-8525-6d5b0040b09f",
+    "first_completed_score": 0,
+    "intent_reach": "24/24 sampled post-spawn decisions carried planner and intent markers with zero fallback, degradation, holds, or rejects.",
+    "failure_shape": "The game record contained 23 target-player actions and 21 embargo toggles, versus 13 attacks and 16 boats. The candidate survived with 33,751 tiles but produced no silos or bombs while daveey won with 800,252 tiles.",
+    "safety": "No direct harm or signal targeted K1Z Mickey Mouse."
+  },
+  "causal_hypothesis": "The intent layer is functioning, but pressure is being mistaken for signaling. Ranking physical effect and productive capacity above target or embargo toggles will turn the same intent into territory, force, and economy without expanding the planner contract.",
+  "candidate": {
+    "codename": "effect-first-v20",
+    "source_commit": "18fbf8897c5130e4970a2ac241a36583c7833568",
+    "single_change": "For pressure only, rank an exact physical strike first, then productive infrastructure or neutral expansion, and rank target or embargo signals below all three.",
+    "unchanged": [
+      "five intents",
+      "directive shape intent targetID horizon",
+      "single generic executor",
+      "exact offered-action ID execution",
+      "K1Z and ally no-harm boundary",
+      "high-risk avoidance",
+      "fail-closed planner transport"
+    ]
+  },
+  "red_fixtures": [
+    "With pressure active, an exact target signal plus neutral land selects neutral land.",
+    "With pressure active, an exact physical strike outranks both target signaling and neutral land.",
+    "No intent can select a harmful action against K1Z Mickey Mouse."
+  ],
+  "local_pass_bar": [
+    "all focused intent and integration tests pass",
+    "full suite adds no candidate-related failure",
+    "exact linux/amd64 image matches the committed source",
+    "local replay shows intent reach with zero fallback, degradation, unexplained holds, rejects, unresolved harmful targets, or K1Z harm",
+    "pressure samples prefer physical or productive actions over target and embargo toggles whenever both are offered"
+  ],
+  "hosted_guard": "No upload follows until local mechanism and pre-upload RCI pass. No league submission or champion change follows until hosted 4/4, separate regression 20/20, and final RCI pass."
+}
