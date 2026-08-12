@@ -1,0 +1,61 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T22:07:00Z",
+  "lane": "0d1novizzz",
+  "verdict": "FAIL_HOSTED_NO_SUBMIT",
+  "request_id": "xreq_79ccc7c4-683f-4a1d-b509-4ef614bfb7fb",
+  "candidate_source_commit": "8447312cf0f64369d4113b9a4168d361cf33ff62",
+  "candidate_image_id": "sha256:47f20657d3bf1970f8603abe2e9cf8113dba94e9303a34a0bd59c85f0ca31372",
+  "candidate_policy_version_id": "374c2c6f-ce73-4227-8cb1-03e7f76e89e3",
+  "candidate_uploaded_label": "xX_UwU_Senpai_420_Xx:v25",
+  "stop_rule": "Any hosted Odin score of zero stops the gate with no league submission.",
+  "triggering_episode": {
+    "episode_request_id": "ereq_1fc32fa4-d684-480d-9f7b-d65e92cba134",
+    "episode_id": "7c933976-dd41-4d93-91e3-e3824cc2e978",
+    "status": "completed",
+    "candidate_slot": 0,
+    "candidate_score": 0,
+    "candidate_final_tiles": 0,
+    "candidate_alive": false,
+    "winner_slot": 12,
+    "winner_name": "SIAN VOIDCROWN",
+    "winner_score": 1,
+    "winner_final_tiles": 883374,
+    "turn_count": 10000
+  },
+  "request_state_at_stop": {
+    "status": "running",
+    "completed_count": 1,
+    "running_count": 3,
+    "failed_count": 0,
+    "remaining_episode_request_ids": [
+      "ereq_55d7b3c4-47bf-4222-ba02-68791af95fcd",
+      "ereq_de87b454-8b3e-4aaa-90b7-0650d8c178ab",
+      "ereq_0025a0df-b889-4428-a216-b48d84e7f135"
+    ]
+  },
+  "decision": {
+    "candidate_killed": true,
+    "league_submission": false,
+    "regression_gate_started": false,
+    "promotion": false,
+    "reason": "The two-intent controller was eliminated in its first completed hosted episode, so it cannot satisfy the 4-of-4 hosted gate."
+  },
+  "live_state_after": {
+    "candidate_submissions": 0,
+    "candidate_memberships": 0,
+    "active_champion_policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "active_champion_label": "xX_UwU_Senpai_420_Xx:v17",
+    "active_membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c",
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false,
+    "underpants_lane_mutation": false
+  },
+  "official_scoreboard_snapshot": {
+    "latest_completed_round": 1391,
+    "rank": 10,
+    "score": 7.868384269940533,
+    "latest_round_score": 0
+  }
+}
