@@ -1,0 +1,52 @@
+{
+  "schema_version": 2,
+  "arm": "effect-first-v20",
+  "same_fixture": true,
+  "verifier": {
+    "evaluator_commit": "097253aee81b8413702a3294e33ccfa95ced5852",
+    "path": "experiments/v20/verify-differential.mjs",
+    "sha256": "8c8a14ffb659addc2352302bfe4eb56fae3a60587ddcf38bd1e62b1ed7c96e85"
+  },
+  "fixture": {
+    "id": "v20-pressure-effect-vs-signal",
+    "path": "experiments/v20/differential-fixture.json",
+    "sha256": "35e8fb60f0ad60ce4c751222494006a75b33a67176d5d4d925a82ca47f3e3f31",
+    "legal_action_ids_sha256": "22a6480146c63f88d865a9c78ee9a6b28bfc2c43ee8ef001acca82704d99f0c5"
+  },
+  "parent": {
+    "source_commit": "cda205b78f2f01a974f3a6ed8964da6b1f36a5ed",
+    "parsed_plan": {
+      "intent": "pressure",
+      "targetID": "target",
+      "horizon": 4,
+      "model": "fixture"
+    },
+    "selected_action_id": "target:target"
+  },
+  "candidate": {
+    "source_commit": "18fbf8897c5130e4970a2ac241a36583c7833568",
+    "parsed_plan": {
+      "intent": "pressure",
+      "targetID": "target",
+      "horizon": 4,
+      "model": "fixture"
+    },
+    "selected_action_id": "expand:terra-nullius:35",
+    "marker": "ixprs"
+  },
+  "safety": {
+    "offered_k1z_harmful_action": "attack:mickey:40",
+    "parent_selected_k1z_harm": false,
+    "candidate_selected_k1z_harm": false
+  },
+  "test_command": [
+    "node",
+    "experiments/v20/verify-differential.mjs",
+    ".",
+    "cda205b78f2f01a974f3a6ed8964da6b1f36a5ed",
+    "18fbf8897c5130e4970a2ac241a36583c7833568",
+    "experiments/v20/differential-fixture.json",
+    "experiments/v20/differential-proof-18fbf889.json"
+  ],
+  "test_exit_code": 0
+}
