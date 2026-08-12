@@ -45,13 +45,53 @@ export function normalizeIntentDirective(value, state, model = "unknown") {
   };
 }
 
-// The production planner response is a protocol packet, not prose. Parse the
-// complete response as JSON and reject wrappers, multiple objects, or repairs.
+// Recover exactly one complete top-level JSON object from provider framing.
+// Multiple objects, stray braces, and truncation remain fail-closed.
+function singleJsonObjectPayload(text) {
+  let source = text.trim();
+  const fence = source.match(/^```[a-zA-Z0-9_-]*[ \t]*\r?\n?([\s\S]*?)\r?\n?```$/);
+  if (fence) source = fence[1].trim();
+
+  let depth = 0;
+  let start = -1;
+  let inString = false;
+  let escaped = false;
+  let found = null;
+  for (let index = 0; index < source.length; index += 1) {
+    const character = source[index];
+    if (inString) {
+      if (escaped) escaped = false;
+      else if (character === "\\") escaped = true;
+      else if (character === '"') inString = false;
+      continue;
+    }
+    if (depth > 0 && character === '"') {
+      inString = true;
+    } else if (character === "{") {
+      if (depth === 0) {
+        if (found !== null) return null;
+        start = index;
+      }
+      depth += 1;
+    } else if (character === "}") {
+      if (depth === 0) return null;
+      depth -= 1;
+      if (depth === 0) found = source.slice(start, index + 1);
+    }
+  }
+  if (depth !== 0) return null;
+  return found;
+}
+
+// The production planner response is a protocol packet, not prose. Strip only
+// transport framing, then retain the exact semantic validation below.
 export function parseIntentDirective(text, state, model = "unknown") {
   if (typeof text !== "string") return null;
+  const payload = singleJsonObjectPayload(text);
+  if (payload === null) return null;
   let value;
   try {
-    value = JSON.parse(text);
+    value = JSON.parse(payload);
   } catch {
     return null;
   }

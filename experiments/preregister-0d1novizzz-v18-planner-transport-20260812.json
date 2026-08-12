@@ -1,0 +1,53 @@
+{
+  "schema": "proxywar-preregister-v1",
+  "created_at": "2026-08-12T14:50:00Z",
+  "lane": "0d1novizzz",
+  "parent": {
+    "policy": "xX_UwU_Senpai_420_Xx:v17",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c",
+    "source_commit": "86630f6ca66e68133a4b0e2dc4908d63fa88cbe4",
+    "handover_commit": "f5eb7d63"
+  },
+  "live_failure": {
+    "round": 1383,
+    "engine": "0.1.39",
+    "variant": "Tournament 16P - BlackSea",
+    "episodes": [
+      "ereq_8b398a9d-d425-4360-828c-f6e216551e73",
+      "ereq_626d32cd-a107-4810-8330-95754d11c862",
+      "ereq_7bb9cc61-a675-44d7-adf5-9d2a064a52ab",
+      "ereq_dcd1de4d-4a07-4919-b24a-64933c7009c1"
+    ],
+    "planner_transport": "connected to match (region=us-east-1, models=4)",
+    "planner_error": "plan reply had no valid intent",
+    "episode_wins": 0,
+    "episodes_completed": 4,
+    "interpretation": "The sidecar route removed the v16 403 failure, but v17 rejects every returned planner packet before intent execution."
+  },
+  "causal_hypothesis": "Provider response framing, multiple text blocks, or a 100-token truncation causes the strict whole-response parser to reject an otherwise valid three-key intent packet.",
+  "candidate": {
+    "codename": "planner-transport-v18",
+    "changes": [
+      "recover exactly one complete top-level JSON object from provider framing",
+      "join all response text blocks",
+      "raise the response budget from 100 to the previously verified 300 tokens"
+    ],
+    "preserved": [
+      "exact three-key semantic contract",
+      "visible exact target ID requirement",
+      "integer horizon range 2 through 12",
+      "multiple-object, stray-brace, and truncation rejection",
+      "deterministic selector and safety guards"
+    ]
+  },
+  "expected_marker": "pln:* on candidate decisions after the background refresh completes",
+  "failure_conditions": [
+    "any semantic contract violation is accepted",
+    "multiple or truncated JSON objects are accepted",
+    "candidate hosted logs still report plan reply had no valid intent",
+    "candidate produces only dgd:* or rul:* reasons",
+    "any unexplained hold, rejected decision, unresolved harmful target, or K1Z harm"
+  ],
+  "promotion_guard": "No league submission or champion change follows from source tests alone. Continue through exact image, qualifier, local mechanism, diagnostic, hosted 4/4, regression 20/20, and final RCI gates."
+}

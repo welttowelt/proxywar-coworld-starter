@@ -49,19 +49,28 @@ test("accepts only exact grow or convert mission packets", () => {
   );
 });
 
-test("parses only a whole-response JSON mission packet", () => {
+test("parses exactly one transport-framed JSON mission packet", () => {
   const packet = '{"intent":"grow","targetID":null,"horizon":4}';
-  assert.deepEqual(
-    parseIntentDirective(packet, state, "planner-model"),
-    { intent: "grow", targetID: null, horizon: 4, model: "planner-model" },
-  );
-  for (const wrapped of [
+  const expected = { intent: "grow", targetID: null, horizon: 4, model: "planner-model" };
+  assert.deepEqual(parseIntentDirective(packet, state, "planner-model"), expected);
+  for (const framed of [
     `Here is the plan: ${packet}`,
     `${packet}\nDone.`,
-    `${packet}${packet}`,
     "```json\n" + packet + "\n```",
+    "```\n" + packet + "\n```",
+    `My mission:\n\n${packet}\n\nGood luck.`,
   ]) {
-    assert.equal(parseIntentDirective(wrapped, state), null);
+    assert.deepEqual(parseIntentDirective(framed, state, "planner-model"), expected);
+  }
+  for (const rejected of [
+    `${packet}${packet}`,
+    `${packet} and also {"intent":"convert"}`,
+    '{"intent":"grow","targetID":null,"horizon":4',
+    `closing stray } before ${packet}`,
+    "no packet at all",
+    "",
+  ]) {
+    assert.equal(parseIntentDirective(rejected, state), null);
   }
 });
 

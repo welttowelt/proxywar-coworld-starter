@@ -106,11 +106,15 @@ async function askBedrock(state, signal) {
   for (const model of candidates) {
     try {
       const r = await bedrock.messages.create(
-        { model, max_tokens: 100, messages: [{ role: "user", content: prompt }] },
+        { model, max_tokens: 300, messages: [{ role: "user", content: prompt }] },
         { signal, timeout: Math.min(8000, PLAN_TIMEOUT_MS), maxRetries: 0 },
       );
       lockedModel = model;
-      return { text: r?.content?.[0]?.text || "", model };
+      const text = (Array.isArray(r?.content) ? r.content : [])
+        .map((block) => (typeof block?.text === "string" ? block.text : ""))
+        .filter(Boolean)
+        .join("\n");
+      return { text, model };
     } catch (e) { lastErr = e; }
   }
   throw lastErr || new Error("no bedrock model responded");

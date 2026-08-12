@@ -361,6 +361,9 @@ test("planner contract asks only for intent, target ID, and horizon", async () =
   assert.match(source, /"intent":/);
   assert.match(source, /"targetID":/);
   assert.match(source, /"horizon":/);
+  assert.match(source, /max_tokens: 300/);
+  assert.match(source, /Array\.isArray\(r\?\.content\)/);
+  assert.match(source, /\.join\("\\n"\)/);
   assert.doesNotMatch(source, /"focus":/);
   assert.doesNotMatch(source, /"preferKinds":/);
   assert.doesNotMatch(source, /"avoidTargets":/);
@@ -588,7 +591,7 @@ test("an exact visible convert intent reaches the deployed MM1 selector", async 
   assert.match(responses[1].reason, /mm1c/);
 });
 
-test("a wrapped planner reply fails closed in the deployed player", async () => {
+test("a single transport-framed planner reply reaches the deployed player", async () => {
   const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
   await new Promise((resolve) => server.once("listening", resolve));
   const { port } = server.address();
@@ -654,7 +657,7 @@ test("a wrapped planner reply fails closed in the deployed player", async () => 
   const completed = new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
       child.kill("SIGKILL");
-      reject(new Error(`fail-closed planner test timed out: ${stderr}`));
+      reject(new Error(`transport-framed planner test timed out: ${stderr}`));
     }, 8000);
     server.once("connection", (socket) => {
       socket.send(JSON.stringify(request("invalid-1", legalActions, obs)));
@@ -687,10 +690,9 @@ test("a wrapped planner reply fails closed in the deployed player", async () => 
     responses.map((response) => response.selectedLegalActionId),
     ["alliance:katanasan", "expand:terra-nullius:10"],
   );
-  assert.equal(responses[1].fallbackUsed, true);
-  assert.equal(responses[1].llmPlannerDegraded, true);
-  assert.match(responses[1].reason, /^dgd:/);
-  assert.doesNotMatch(responses[1].reason, /mm1[gc]/);
+  assert.equal(responses[1].fallbackUsed, false);
+  assert.equal(responses[1].llmPlannerDegraded, false);
+  assert.match(responses[1].reason, /^pln:/);
 });
 
 test("qd2n engine wiring grinds the opening at 35 percent", async () => {
