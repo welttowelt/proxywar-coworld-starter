@@ -85,7 +85,7 @@ test("expand chooses neutral territory and ignores every other outcome", () => {
   const expansion = land();
   const selected = decide([
     attack("rival"), build(), ...symbolic("rival"), expansion, hold(),
-  ], { intent: "expand", targetID: null });
+  ], { intent: "expand" });
   assert.equal(selected.id, expansion.id);
   assert.equal(selected.policyMarker, "ixexp");
 });
@@ -93,13 +93,13 @@ test("expand chooses neutral territory and ignores every other outcome", () => {
 test("expand can use a neutral boat", () => {
   const neutralBoat = boat();
   assert.equal(decide([neutralBoat, build(), hold()], {
-    intent: "expand", targetID: null,
+    intent: "expand",
   }).id, neutralBoat.id);
 });
 
 test("expand waits when neutral territory is unavailable", () => {
   const selected = decide([attack("rival"), build(), hold()], {
-    intent: "expand", targetID: null,
+    intent: "expand",
   });
   assert.equal(selected.id, "hold");
   assert.equal(selected.policyMarker, "ixexp");
@@ -108,7 +108,7 @@ test("expand waits when neutral territory is unavailable", () => {
 test("consolidate chooses infrastructure and never expands or attacks", () => {
   const factory = build();
   const selected = decide([land(), attack("rival"), factory, hold()], {
-    intent: "consolidate", targetID: null,
+    intent: "consolidate",
   });
   assert.equal(selected.id, factory.id);
   assert.equal(selected.policyMarker, "ixcon");
@@ -116,17 +116,25 @@ test("consolidate chooses infrastructure and never expands or attacks", () => {
 
 test("consolidate waits when infrastructure is unavailable", () => {
   const selected = decide([land(), attack("rival"), hold()], {
-    intent: "consolidate", targetID: null,
+    intent: "consolidate",
   });
   assert.equal(selected.id, "hold");
   assert.equal(selected.policyMarker, "ixcon");
 });
 
-test("convert applies physical force only to the named target", () => {
+test("convert continues the executor-owned physical target", () => {
   const named = attack("target", 25);
   const selected = decide([
     attack("decoy", 40), named, land(), build(), ...symbolic("target"), hold(),
-  ], { intent: "convert", targetID: "target" }, {
+  ], { intent: "convert" }, {
+    history: [{
+      actionID: "attack:target:10",
+      kind: "attack",
+      targetID: "target",
+      targetName: "target",
+      tileShare: 0.12,
+      policyMarker: "ixprs",
+    }],
     rivals: [
       { id: "target", name: "target", tileShare: 0.1, relativeTroopRatio: 1.1 },
       { id: "decoy", name: "decoy", tileShare: 0.2, relativeTroopRatio: 1.8 },
@@ -136,20 +144,20 @@ test("convert applies physical force only to the named target", () => {
   assert.equal(selected.policyMarker, "ixprs");
 });
 
-test("convert waits instead of changing target or outcome", () => {
+test("convert chooses a physical target locally when continuity is unavailable", () => {
   const selected = decide([attack("other"), land(), build(), hold()], {
-    intent: "convert", targetID: "unreachable",
+    intent: "convert",
   }, {
     rivals: [{ id: "other", name: "other", tileShare: 0.1, relativeTroopRatio: 1.4 }],
   });
-  assert.equal(selected.id, "hold");
+  assert.equal(selected.id, "attack:other:40");
   assert.equal(selected.policyMarker, "ixprs");
 });
 
 test("incoming pressure does not silently change expand into convert", () => {
   const expansion = land();
   const selected = decide([expansion, attack("raider"), hold()], {
-    intent: "expand", targetID: null,
+    intent: "expand",
   }, {
     incoming: ["raider"],
     rivals: [{ id: "raider", name: "raider", tileShare: 0.2, relativeTroopRatio: 1.3 }],
@@ -168,7 +176,7 @@ test("territorial collapse does not silently change consolidate into convert", (
   }));
   const factory = build();
   const selected = decide([land(), factory, attack("rival"), hold()], {
-    intent: "consolidate", targetID: null,
+    intent: "consolidate",
   }, {
     history,
     tileShare: 0.08,
@@ -180,7 +188,7 @@ test("territorial collapse does not silently change consolidate into convert", (
 
 test("no outcome can harm K1Z Mickey Mouse", () => {
   const selected = decide([attack(MICKEY_ID), hold()], {
-    intent: "convert", targetID: MICKEY_ID,
+    intent: "convert",
   }, {
     rivals: [{
       id: MICKEY_ID,
@@ -193,10 +201,10 @@ test("no outcome can harm K1Z Mickey Mouse", () => {
   assert.equal(selected.policyMarker, "ixprs");
 });
 
-test("convert can accept high-risk force against its exact target", () => {
+test("convert can accept high-risk physical force", () => {
   const riskyForce = attack("rival", 40, "high");
   assert.equal(decide([riskyForce, hold()], {
-    intent: "convert", targetID: "rival",
+    intent: "convert",
   }, {
     rivals: [{ id: "rival", name: "rival", tileShare: 0.2, relativeTroopRatio: 1.4 }],
   }).id, riskyForce.id);
@@ -206,7 +214,7 @@ test("repetition penalty breaks ties within one outcome", () => {
   const city = build("City", "build:City:1");
   const factory = build("Factory", "build:Factory:2");
   const selected = decide([city, factory, hold()], {
-    intent: "consolidate", targetID: null,
+    intent: "consolidate",
   }, {
     history: [{ actionID: city.id, kind: "build", tileShare: 0.2 }],
     tileShare: 0.2,
@@ -225,6 +233,6 @@ test("a missing or stale plan defaults to expand", () => {
 test("spawn passes through before intent arbitration", () => {
   const spawn = action("spawn:1", "spawn", "Spawn");
   assert.equal(decide([land(), spawn], {
-    intent: "convert", targetID: "rival",
+    intent: "convert",
   }).id, spawn.id);
 });

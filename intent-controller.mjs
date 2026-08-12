@@ -6,7 +6,7 @@ export const INTENTS = Object.freeze(["expand", "consolidate", "convert"]);
 
 const TARGETED_INTENTS = new Set(["convert"]);
 
-const OUTCOME_DIRECTIVE_KEYS = Object.freeze(["intent", "targetID"]);
+const OUTCOME_DIRECTIVE_KEYS = Object.freeze(["intent"]);
 const LEGACY_DIRECTIVE_KEYS = Object.freeze(["horizon", "intent", "targetID"]);
 
 function exactKeys(value, expected) {
@@ -46,18 +46,19 @@ export function normalizeIntentDirective(
     return null;
   }
 
-  if (!TARGETED_INTENTS.has(intent) && value.targetID !== null) return null;
-  if (TARGETED_INTENTS.has(intent) &&
-      (typeof value.targetID !== "string" || !eligibleTarget(state, value.targetID))) {
-    return null;
+  if (!outcomeContract) {
+    if (!TARGETED_INTENTS.has(intent) && value.targetID !== null) return null;
+    if (TARGETED_INTENTS.has(intent) &&
+        (typeof value.targetID !== "string" || !eligibleTarget(state, value.targetID))) {
+      return null;
+    }
   }
 
-  const directive = {
-    intent,
-    targetID: TARGETED_INTENTS.has(intent) ? value.targetID : null,
-    model: clean(model) || "unknown",
-  };
-  if (!outcomeContract) directive.horizon = value.horizon;
+  const directive = { intent, model: clean(model) || "unknown" };
+  if (!outcomeContract) {
+    directive.targetID = TARGETED_INTENTS.has(intent) ? value.targetID : null;
+    directive.horizon = value.horizon;
+  }
   return directive;
 }
 
@@ -131,19 +132,22 @@ export function executableIntentPlan(plan, allowedIntents = INTENTS) {
   const accepted = Array.isArray(allowedIntents) ? allowedIntents : INTENTS;
   const outcomeContract = usesOutcomeContract(accepted);
   const validShape = plan && accepted.includes(plan.intent) &&
-    (outcomeContract || (Number.isInteger(plan.horizon) &&
-      plan.horizon >= MIN_INTENT_HORIZON && plan.horizon <= MAX_INTENT_HORIZON)) &&
-    (!TARGETED_INTENTS.has(plan.intent)
+    (outcomeContract
+      ? !Object.hasOwn(plan, "targetID") && !Object.hasOwn(plan, "horizon")
+      : (Number.isInteger(plan.horizon) &&
+        plan.horizon >= MIN_INTENT_HORIZON && plan.horizon <= MAX_INTENT_HORIZON)) &&
+    (outcomeContract || (!TARGETED_INTENTS.has(plan.intent)
       ? plan.targetID === null
       : typeof plan.targetID === "string" && plan.targetID.length > 0 &&
-        clean(plan.targetID) === plan.targetID);
+        clean(plan.targetID) === plan.targetID));
   if (!validShape) return null;
   return plan;
 }
 
-// The commander sees board-level affordances and exact rival IDs, but never
-// legal action IDs or labels. Those remain private to the deterministic layer.
-export function buildIntentSnapshot(state) {
+// The commander sees board-level affordances but never legal action IDs or
+// labels. Intent-only planners also leave rival identity private to the
+// deterministic executor.
+export function buildIntentSnapshot(state, includeTargetIdentity = true) {
   return {
     map: state?.mapFingerprint ?? null,
     phase: state?.phase ?? null,
@@ -156,8 +160,7 @@ export function buildIntentSnapshot(state) {
         : 0,
     },
     rivals: (state?.rivals || []).map((rival) => ({
-      id: rival.id,
-      name: rival.name,
+      ...(includeTargetIdentity ? { id: rival.id, name: rival.name } : {}),
       tileShare: rival.tileShare,
       relativeTroopRatio: rival.relativeTroopRatio,
       sharesBorder: rival.sharesBorder,

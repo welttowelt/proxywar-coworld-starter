@@ -73,12 +73,9 @@ function protectedHarm(action, state, history) {
 
 function mission(plan) {
   if (INTENTS.has(plan?.intent)) {
-    return {
-      intent: plan.intent,
-      targetID: plan.intent === "convert" ? normalizedID(plan?.targetID) : null,
-    };
+    return { intent: plan.intent };
   }
-  return { intent: "expand", targetID: null };
+  return { intent: "expand" };
 }
 
 function actionIntent(action) {
@@ -94,11 +91,19 @@ function offeredMenu(actions, state, history, requested) {
     action && typeof action.id === "string" && action.id.length > 0 &&
     !protectedHarm(action, state, history)
   );
-  const aligned = legal.filter((action) =>
-    actionIntent(action) === requested.intent &&
-    (requested.intent !== "convert" || sameTarget(action, requested.targetID, state))
-  );
-  if (aligned.length > 0) return { directive: requested, actions: aligned };
+  const aligned = legal.filter((action) => actionIntent(action) === requested.intent);
+  if (aligned.length > 0) {
+    if (requested.intent === "convert") {
+      const previousTarget = [...history].reverse().find((entry) =>
+        entry?.policyMarker === MARKERS.convert && typeof entry?.targetID === "string"
+      )?.targetID;
+      if (previousTarget) {
+        const continued = aligned.filter((action) => sameTarget(action, previousTarget, state));
+        if (continued.length > 0) return { directive: requested, actions: continued };
+      }
+    }
+    return { directive: requested, actions: aligned };
+  }
   const hold = legal.find((action) => action.kind === "hold");
   return { directive: requested, actions: hold ? [hold] : [] };
 }
@@ -112,9 +117,6 @@ function missionScore(action, directive, state) {
   const neutralBoat = isNeutralBoat(action);
   const infrastructure = isInfrastructure(action);
   const physical = isPhysicalForce(action);
-  const exactTarget = directive.targetID
-    ? sameTarget(action, directive.targetID, state) : false;
-
   if (directive.intent === "expand") {
     if (neutralLand) return 300;
     if (neutralBoat) return 260;
@@ -126,7 +128,7 @@ function missionScore(action, directive, state) {
     return action.kind === "hold" ? -200 : -1000;
   }
 
-  if (physical && exactTarget) return 340;
+  if (physical) return 340;
   return action.kind === "hold" ? -200 : -1000;
 }
 
