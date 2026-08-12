@@ -1,0 +1,84 @@
+{
+  "id": "v22-live-defense-over-stale-expand",
+  "planner_reply": "Planner packet:\n```json\n{\"intent\":\"expand\",\"targetID\":null,\"horizon\":4}\n```",
+  "legalActions": [
+    {
+      "id": "expand:terra-nullius:35",
+      "kind": "attack",
+      "label": "Expand Terra Nullius 35%",
+      "risk": {"level": "low"},
+      "metadata": {"expansion": true, "troopPercent": 35}
+    },
+    {
+      "id": "attack:raider:40",
+      "kind": "attack",
+      "label": "Counter Raider 40%",
+      "risk": {"level": "low"},
+      "metadata": {
+        "targetID": "raider",
+        "targetName": "Raider",
+        "troopPercent": 40,
+        "incomingAttack": true
+      }
+    },
+    {
+      "id": "embargo:raider:start",
+      "kind": "embargo",
+      "label": "Embargo Raider",
+      "risk": {"level": "low"},
+      "metadata": {"targetID": "raider", "targetName": "Raider"}
+    },
+    {
+      "id": "attack:mickey:40",
+      "kind": "attack",
+      "label": "Attack K1Z Mickey Mouse",
+      "risk": {"level": "low"},
+      "metadata": {
+        "targetID": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+        "targetName": "K1Z Mickey Mouse",
+        "troopPercent": 40
+      }
+    },
+    {
+      "id": "hold",
+      "kind": "hold",
+      "label": "Hold",
+      "risk": {"level": "low"}
+    }
+  ],
+  "observation": {
+    "phase": "active",
+    "ownState": {
+      "tileShare": 0.2,
+      "troopRatio": 1.4,
+      "troops": 2000000,
+      "gold": 500000,
+      "borderTiles": 100,
+      "incomingAttacks": 1
+    },
+    "combat": {"incomingAttackPlayerIDs": ["raider"]},
+    "visiblePlayers": [
+      {
+        "id": "raider",
+        "name": "Raider",
+        "isAlive": true,
+        "sharesBorder": true,
+        "canAttack": true,
+        "isAllied": false,
+        "tileShare": 0.2,
+        "relativeTroopRatio": 1.4
+      },
+      {
+        "id": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+        "name": "K1Z Mickey Mouse",
+        "isAlive": true,
+        "sharesBorder": true,
+        "canAttack": true,
+        "isAllied": false,
+        "tileShare": 0.1,
+        "relativeTroopRatio": 2
+      }
+    ]
+  },
+  "history": []
+}
