@@ -1,0 +1,66 @@
+{
+  "schema_version": 2,
+  "arm": "persistent-intents-v23",
+  "same_fixture": true,
+  "verifier": {
+    "evaluator_commit": "d5dd5d4c327bb24a579a82d4f2e9d4edd8100acc",
+    "path": "experiments/v23/verify-differential.mjs",
+    "sha256": "1a1d325cb16f4b303f9a031b340b923ddf6be7c94ca7fa54eb3d9a02137497f8"
+  },
+  "fixture": {
+    "id": "v23-persistent-intent-under-collapse",
+    "path": "experiments/v23/differential-fixture.json",
+    "sha256": "10f3e4d6e8c74178b1a3a2695203663d49d4b005a1149f71a6e6b259f195e2ed",
+    "legal_action_ids_sha256": "59d23dd1025eedf87465f4b1f531fd0b20a241929cda88a68c90002ea3092fdc"
+  },
+  "refresh_failure": {
+    "plan_age": 9,
+    "planner_degraded": true
+  },
+  "parent": {
+    "source_commit": "e9b91c01820474f6c27db33bad42adbb511e4de2",
+    "parsed_plan": {
+      "intent": "expand",
+      "targetID": null,
+      "horizon": 4,
+      "model": "fixture"
+    },
+    "executable_plan": null,
+    "fallback_used": true,
+    "selected_action_id": "expand:terra-nullius:35",
+    "marker": "ixexp"
+  },
+  "candidate": {
+    "source_commit": "c595fd0f601e1fae1cf38e0229df432aa11c1c61",
+    "parsed_plan": {
+      "intent": "expand",
+      "targetID": null,
+      "horizon": 4,
+      "model": "fixture"
+    },
+    "executable_plan": {
+      "intent": "expand",
+      "targetID": null,
+      "horizon": 4,
+      "model": "fixture"
+    },
+    "fallback_used": false,
+    "selected_action_id": "retreat:front",
+    "marker": "ixdef"
+  },
+  "safety": {
+    "offered_k1z_harmful_action": "attack:mickey:40",
+    "parent_selected_k1z_harm": false,
+    "candidate_selected_k1z_harm": false
+  },
+  "test_command": [
+    "node",
+    "experiments/v23/verify-differential.mjs",
+    "/Users/olifreuler/proxywar-coworld-starter",
+    "e9b91c01820474f6c27db33bad42adbb511e4de2",
+    "c595fd0f601e1fae1cf38e0229df432aa11c1c61",
+    "experiments/v23/differential-fixture.json",
+    "experiments/v23/differential-proof-c595fd0f.json"
+  ],
+  "test_exit_code": 0
+}
