@@ -1,0 +1,60 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T17:15:00Z",
+  "lane": "0d1novizzz",
+  "mode": "hosted_diagnostic_dispatch",
+  "status": "submitted",
+  "experience_request_id": "xreq_8d648e76-f1a0-4c4a-a3ef-a947449fe922",
+  "source_round": {
+    "round_id": "round_7c1f2b94-d95b-43e7-9bbf-deadd5fdfe29",
+    "round_number": 1384,
+    "episode_request_id": "ereq_d68a7b1e-e6e7-4733-b964-c43450114ca1",
+    "roster_replacement_only": true,
+    "comparison_candidate": "v19"
+  },
+  "environment": {
+    "game": "proxywar",
+    "version": "0.1.39",
+    "config": "tournament-16p-eastasia",
+    "episodes": 4
+  },
+  "request_spec_path": "/Users/olifreuler/proxywar-coworld-starter/experiments/request-0d1novizzz-v20-hosted-current16-eastasia-4x.json",
+  "request_spec_sha256": "dcc4c71d8baf0911d590432bca09887230ef1f5e45c4a9eb862b9b93f1578278",
+  "upload_receipt_path": "/Users/olifreuler/proxywar-coworld-starter/experiments/receipt-0d1novizzz-v20-diagnostic-upload-20260812.json",
+  "upload_receipt_sha256": "2899e6eaeaa91461fe8022c3c739113d351843d2ba61350bb536fc4bcc0a5fea",
+  "candidate": {
+    "position": 0,
+    "player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "player_name": "0d1novizzz",
+    "policy_version_id": "a47ae1b2-c2d3-4fa5-847d-a410ee898ba6",
+    "label": "xX_UwU_Senpai_420_Xx:v20"
+  },
+  "episode_request_ids": [
+    "ereq_4b0daf08-9088-4cb8-968e-d455d5cd5b20",
+    "ereq_32d59cf9-1242-49af-b9aa-317608ef41de",
+    "ereq_3d59fc8c-aadf-4dd1-a8e5-39a6af154658",
+    "ereq_9acf31dc-ba92-4a18-a263-0bec9cb9904d"
+  ],
+  "dispatch_verification": {
+    "active_player_before_dispatch": "0d1novizzz",
+    "candidate_bound_to_expected_player_in_all_episodes": true,
+    "initial_episode_statuses": ["submitted", "submitted", "submitted", "submitted"],
+    "initial_episode_errors": [null, null, null, null]
+  },
+  "qualification_rule": {
+    "required_score": "4/4",
+    "required_planner_reasons": "pln:* with ixprs intent markers present",
+    "required_planner_failures": 0,
+    "required_holds": 0,
+    "required_rejections": 0,
+    "required_k1z_harm": 0,
+    "on_any_score_zero": "STOP_HOSTED_NO_SUBMIT",
+    "on_pass": "RUN_SEPARATE_20_OF_20_REGRESSION"
+  },
+  "live_mutations": {
+    "hosted_experience_request": true,
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false
+  }
+}
