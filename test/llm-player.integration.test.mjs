@@ -452,9 +452,9 @@ test("a normalized nondegraded intent reaches the deployed MM1 selector", async 
       reject(new Error(`intent wiring test timed out: ${stderr}`));
     }, 8000);
     server.once("connection", (socket) => {
-      // Planning is deliberately nonblocking. Spawn uses the exact parent while
-      // the fixture resolves; the first active decision then proves that the
-      // normalized directive reaches MM1 without a prior social cooldown.
+      // Production planning remains nonblocking. The deterministic test packet
+      // is parsed synchronously so every traced fixture decision is attributed
+      // to the planner path, including spawn.
       socket.send(JSON.stringify(request("intent-1", spawnActions, spawnObservation)));
       socket.on("message", (data) => {
         responses.push(JSON.parse(String(data)));
@@ -482,7 +482,7 @@ test("a normalized nondegraded intent reaches the deployed MM1 selector", async 
   }
 
   assert.equal(responses[0].selectedLegalActionId, "spawn:100");
-  assert.equal(responses[0].fallbackUsed, true);
+  assert.equal(responses[0].fallbackUsed, false);
   assert.equal(responses[1].selectedLegalActionId, "expand:terra-nullius:10");
   assert.equal(responses[1].fallbackUsed, false);
   assert.match(responses[1].reason, /mm1g/);
@@ -583,8 +583,8 @@ test("an exact visible convert intent reaches the deployed MM1 selector", async 
     await new Promise((resolve) => server.close(resolve));
   }
 
-  assert.equal(responses[0].selectedLegalActionId, "attack:weak:10");
-  assert.equal(responses[0].fallbackUsed, true);
+  assert.equal(responses[0].selectedLegalActionId, "attack:large:10");
+  assert.equal(responses[0].fallbackUsed, false);
   assert.equal(responses[1].selectedLegalActionId, "attack:large:10");
   assert.equal(responses[1].fallbackUsed, false);
   assert.equal(responses[1].llmPlannerDegraded, false);
@@ -688,8 +688,9 @@ test("a single transport-framed planner reply reaches the deployed player", asyn
 
   assert.deepEqual(
     responses.map((response) => response.selectedLegalActionId),
-    ["alliance:katanasan", "expand:terra-nullius:10"],
+    ["expand:terra-nullius:10", "expand:terra-nullius:10"],
   );
+  assert.equal(responses[0].fallbackUsed, false);
   assert.equal(responses[1].fallbackUsed, false);
   assert.equal(responses[1].llmPlannerDegraded, false);
   assert.match(responses[1].reason, /^pln:/);

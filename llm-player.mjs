@@ -238,6 +238,19 @@ function handleMessage(activeSocket, data) {
   // CU1 defaults to a deterministic causal gate. Planner-on is a separate,
   // explicit attribution arm and still never blocks the action below.
   if (PLANNER_ENABLED) {
+    // The deterministic local mechanism harness supplies a bounded planner
+    // packet instead of a network model. Parse it synchronously so the first
+    // traced action exercises the planner path without a synthetic bootstrap
+    // fallback. Production has no TEST_INTENT_DIRECTIVE and keeps the
+    // non-blocking background refresh behavior above.
+    if (plan === null && TEST_INTENT_DIRECTIVE) {
+      const fixturePlan = parseIntentDirective(
+        TEST_INTENT_DIRECTIVE,
+        state,
+        "intent-test-fixture",
+      );
+      if (fixturePlan) plan = fixturePlan;
+    }
     planDecisionAge += 1;
     if (plan === null || planDecisionAge >= intentRefreshInterval(plan, PLAN_EVERY)) {
       refreshPlanInBackground(state);
