@@ -18,6 +18,7 @@ const PHYSICAL_PRESSURE_KINDS = new Set(["attack", "boat", "nuke"]);
 const PRESSURE_SIGNAL_KINDS = new Set([
   "target_player", "embargo", "embargo_all", "embargo_stop",
 ]);
+const DEFENSIVE_UNITS = new Set(["defense post", "sam launcher"]);
 const MARKERS = Object.freeze({
   expand: "ixexp",
   fortify: "ixfor",
@@ -130,6 +131,11 @@ function isInfrastructure(action) {
   return action?.kind === "build" || action?.kind === "upgrade_structure" || isStrike(action);
 }
 
+function isDefensiveInfrastructure(action) {
+  return (action?.kind === "build" || action?.kind === "upgrade_structure") &&
+    DEFENSIVE_UNITS.has(actionUnit(action));
+}
+
 function sameTarget(action, targetID, state) {
   return targetID.length > 0 && actionTargetID(action, state) === targetID;
 }
@@ -144,7 +150,8 @@ function intentScore(action, directive, state) {
   const harmful = isHarmful(action);
   const exactTarget = targetID ? sameTarget(action, targetID, state) : false;
   const attackers = currentAttackerIDs(state);
-  const answersAttacker = harmful && attackers.has(actionTargetID(action, state));
+  const answersAttacker = isPhysicalPressure(action) &&
+    attackers.has(actionTargetID(action, state));
 
   if (intent === "expand") {
     if (neutralLand) return 240;
@@ -166,13 +173,16 @@ function intentScore(action, directive, state) {
   }
 
   if (intent === "defend") {
-    if (answersAttacker) return 260;
-    if (retreat) return 240;
-    if (infrastructure) return 180;
-    if (neutralLand || neutralBoat) return 80;
-    if (alliance) return 60;
-    if (harmful) return 20;
-    return action.kind === "hold" ? -200 : 30;
+    if (answersAttacker) return 300;
+    if (retreat) return 260;
+    if (isDefensiveInfrastructure(action)) return 240;
+    if (isPhysicalPressure(action)) return 100;
+    if (isPressureSignal(action)) return -120;
+    if (infrastructure) return 40;
+    if (neutralLand || neutralBoat) return 20;
+    if (alliance) return 10;
+    if (harmful) return -120;
+    return action.kind === "hold" ? -200 : 0;
   }
 
   if (intent === "ally") {

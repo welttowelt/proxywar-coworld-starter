@@ -122,6 +122,39 @@ test("active attack pressure overrides an older expand plan with defend", () => 
   assert.equal(selected.policyMarker, "ixdef");
 });
 
+test("defend treats physical counterpressure, not a target label, as the outcome", () => {
+  const label = action("target:raider", "target_player", "Target Raider", {
+    targetID: "raider", targetName: "Raider",
+  });
+  const city = action("build:City:42", "build", "Build City", { unit: "City" });
+  const counter = action("attack:raider:25", "attack", "Counter Raider 25%", {
+    targetID: "raider", targetName: "Raider", troopPercent: 25,
+  });
+  const selected = decide([label, city, counter], {
+    intent: "defend", targetID: null, horizon: 4,
+  }, {
+    incoming: ["raider"],
+    rivals: [{ id: "raider", name: "Raider", tileShare: 0.2, relativeTroopRatio: 1.3 }],
+  });
+  assert.equal(selected.id, counter.id);
+  assert.equal(selected.policyMarker, "ixdef");
+});
+
+test("defend distinguishes defensive infrastructure from generic construction", () => {
+  const city = action("build:City:42", "build", "Build City", { unit: "City" });
+  const defense = action("build:Defense Post:43", "build", "Build Defense Post", {
+    unit: "Defense Post",
+  });
+  const neutralBoat = action("boat:terra-nullius:25", "boat", "Sail Terra Nullius", {
+    targetID: null, expansion: true, troopPercent: 25,
+  });
+  const selected = decide([city, defense, neutralBoat], {
+    intent: "defend", targetID: null, horizon: 4,
+  }, { tileShare: 0.2 });
+  assert.equal(selected.id, defense.id);
+  assert.equal(selected.policyMarker, "ixdef");
+});
+
 test("territorial collapse keeps defend active between attack signal ticks", () => {
   const land = action("expand:terra-nullius:35", "attack", "Expand Terra Nullius 35%", {
     expansion: true, troopPercent: 35,
