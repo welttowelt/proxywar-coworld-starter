@@ -1,0 +1,109 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T23:41:01Z",
+  "lane": "0d1novizzz",
+  "verdict": "FAIL_HOSTED_NO_SUBMIT",
+  "request_id": "xreq_a1921007-5786-46b1-9636-2fdc4ea89da2",
+  "candidate_source_commit": "0743674b02c472a4401ba1a8df897b850b8743d5",
+  "candidate_image_id": "sha256:c122f2333191efa9f2cb112c54d28d18ab809e3baf99505f304514831abe8d60",
+  "candidate_policy_version_id": "b21021db-42bd-4745-99a5-52d0aa1a8684",
+  "candidate_uploaded_label": "xX_UwU_Senpai_420_Xx:v26",
+  "stop_rule": "Any hosted Odin score of zero stops the gate with no league submission.",
+  "triggering_results": [
+    {
+      "episode_request_id": "ereq_473fab48-2fde-4460-899b-2633bca3b0a6",
+      "episode_id": "5fb7541e-a4df-4fdd-b751-2504afb0ecfa",
+      "candidate_score": 0,
+      "candidate_final_tiles": 0,
+      "candidate_alive": false,
+      "winner_slot": 9,
+      "winner_name": "Captain Underpants Maximum Aura"
+    },
+    {
+      "episode_request_id": "ereq_18ae7bb3-f03f-4910-9349-461e9f10d73a",
+      "episode_id": "78279488-baa6-4f50-b584-84725120d64f",
+      "candidate_score": 0,
+      "candidate_final_tiles": 0,
+      "candidate_alive": false,
+      "winner_slot": 9,
+      "winner_name": "Captain Underpants Maximum Aura"
+    }
+  ],
+  "request_state_at_stop": {
+    "status": "running",
+    "completed_count": 2,
+    "running_count": 2,
+    "failed_count": 0,
+    "remaining_episode_request_ids": [
+      "ereq_5bade1a9-c47f-488e-a2b7-373cad7478c6",
+      "ereq_6d3c4fdf-875c-4268-95cb-86d32d275cc7"
+    ]
+  },
+  "first_replay": {
+    "job_id": "3a1e10f5-112d-4143-a3de-aeb9edd5949f",
+    "sha256": "3a8f1e49d3fd0c0b07b05af20dbd7d9f4748bd9016d0fbff4ca4bcccd6423156",
+    "candidate_decisions": 6,
+    "candidate_post_spawn_decisions": 5,
+    "candidate_accepted_decisions": 6,
+    "planner_reasons": {
+      "pln:atk:ixexp": 1,
+      "pln:atk:ixprs": 2,
+      "pln:b0t:ixprs": 2
+    },
+    "planner_fallbacks": 0,
+    "planner_degradations": 0,
+    "planner_rejections": 0,
+    "intent_markers_reached": [
+      "ixexp",
+      "ixprs"
+    ],
+    "intent_markers_missing": [
+      "ixcon"
+    ],
+    "candidate_peak": {
+      "turn": 2800,
+      "tiles": 48964,
+      "troops": 1256873
+    },
+    "candidate_last_snapshot": {
+      "turn": 3600,
+      "tiles": 29918,
+      "troops": 1087020,
+      "alive": true
+    },
+    "candidate_final": {
+      "tiles": 0,
+      "alive": false
+    },
+    "candidate_physical_targets": [
+      "Andre von Houck",
+      "richard"
+    ],
+    "harmful_k1z_actions": 0,
+    "diagnosis": "The two-field planner contract worked hosted: every post-spawn decision carried a pln reason, with no fallback, degradation, or rejection. Competitive behavior still failed. Odin expanded once, then spent its remaining four decisions on convert actions against two rivals, never consolidated, and was eliminated after peaking at 48964 tiles. The next change must improve outcome selection while keeping tactics out of the planner packet."
+  },
+  "decision": {
+    "candidate_killed": true,
+    "league_submission": false,
+    "regression_gate_started": false,
+    "promotion": false,
+    "reason": "The simplified planner transport is proven, but the candidate scored zero in each of its first two completed hosted episodes and cannot satisfy the 4-of-4 gate."
+  },
+  "live_state_after": {
+    "candidate_submissions": 0,
+    "candidate_memberships": 0,
+    "active_champion_policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "active_champion_label": "xX_UwU_Senpai_420_Xx:v17",
+    "active_membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c",
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false,
+    "underpants_lane_mutation": false
+  },
+  "official_scoreboard_snapshot": {
+    "latest_completed_round": 1392,
+    "rank": 10,
+    "score": 7.642312886899775,
+    "latest_round_score": 0
+  }
+}
