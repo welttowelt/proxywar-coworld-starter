@@ -1,0 +1,55 @@
+{
+  "id": "v19-expand-intent-k1z-vs-neutral",
+  "planner_reply": "Planner packet:\n```json\n{\"intent\":\"expand\",\"targetID\":null,\"horizon\":4}\n```",
+  "legalActions": [
+    {
+      "id": "expand:terra-nullius:10",
+      "kind": "attack",
+      "label": "Expand into neutral land with 10% troops",
+      "risk": { "level": "low" },
+      "metadata": { "expansion": true, "troopPercent": 10 }
+    },
+    {
+      "id": "alliance:kata",
+      "kind": "alliance_request",
+      "label": "Alliance with K1Z katanasan",
+      "risk": { "level": "low" },
+      "metadata": {
+        "recipientID": "kata",
+        "recipientName": "K1Z katanasan",
+        "relation": 2
+      }
+    },
+    {
+      "id": "hold",
+      "kind": "hold",
+      "label": "Hold",
+      "risk": { "level": "low" }
+    }
+  ],
+  "observation": {
+    "phase": "active",
+    "ownState": {
+      "tileShare": 0.05,
+      "troopRatio": 0.8,
+      "troops": 500000,
+      "gold": 250000,
+      "borderTiles": 100,
+      "incomingAttacks": []
+    },
+    "combat": { "incomingAttackPlayerIDs": [] },
+    "visiblePlayers": [
+      {
+        "id": "kata",
+        "name": "K1Z katanasan",
+        "isAlive": true,
+        "sharesBorder": true,
+        "canAttack": true,
+        "isAllied": false,
+        "tileShare": 0.08,
+        "relativeTroopRatio": 1.2
+      }
+    ]
+  },
+  "history": []
+}
