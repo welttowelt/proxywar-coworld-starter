@@ -1,0 +1,149 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T22:43:12Z",
+  "lane": "0d1novizzz",
+  "verdict": "STOP_LOCAL_NO_UPLOAD",
+  "arm": "strict-outcomes-v27",
+  "candidate_source_commit": "76d1fa7602176ce42fd931dbdfba35d47afed474",
+  "candidate_image_id": "sha256:f345eb91720d07972141a68bbcc651aa207de86502e0295e3bd9800c9708d16d",
+  "parent_policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+  "parent_label": "xX_UwU_Senpai_420_Xx:v17",
+  "preregistered_outcome_bar": "Candidate must remain alive, finish with at least 20000 tiles, and beat the v17 control score in the same local episode.",
+  "run": {
+    "run_id": "v27-strict-outcomes-20260812T2233Z",
+    "coworld_run_id": "coworld-2026-08-12T22-41-11-648Z-d8cce813",
+    "game_id": "PWSELHEF",
+    "directory": "/private/tmp/proxywar-v27-strict-outcomes-20260812T2233Z",
+    "map": "Pangaea",
+    "map_size": "Compact",
+    "seed": 2026081,
+    "turn_count": 2350,
+    "decision_steps": 40,
+    "replay_sha256": "2a99422dda4bb7bff1f9653bf12b598fc68d731730d7518c5c611afc54a8b15f",
+    "results_sha256": "fc93684ea4469b1bb424a6a6ca028ff59cb51af2a1376b0c4768a0eadcd869cf",
+    "config_sha256": "306f603648d51539acb6e8348b1742918f1ab2c66547d3e9d7857dd23e54f2aa",
+    "decisions_sha256": "689fddef4b2b4cc824851d68703faa48a388e4e00ae2900eae86a4f7c2d8fda3"
+  },
+  "results": {
+    "candidate": {
+      "slot": 0,
+      "score": 0.13799318847218625,
+      "final_tiles": 13857,
+      "final_troops": 605085,
+      "alive": true,
+      "peak": {
+        "turn": 1800,
+        "tiles": 29705,
+        "troops": 1029631
+      },
+      "peak_to_final_tile_loss": 15848
+    },
+    "v17_control": {
+      "slot": 2,
+      "score": 0.179828317632297,
+      "final_tiles": 18058,
+      "final_troops": 1066196,
+      "alive": true
+    },
+    "candidate_minus_control_score": -0.04183512916011075,
+    "candidate_minus_control_tiles": -4201,
+    "other_players": [
+      {
+        "slot": 1,
+        "name": "K1Z katanasan",
+        "score": 0.4337867712959828,
+        "final_tiles": 43560,
+        "alive": true
+      },
+      {
+        "slot": 3,
+        "name": "Outsider",
+        "score": 0.24839172259953396,
+        "final_tiles": 24943,
+        "alive": true
+      }
+    ]
+  },
+  "mechanism_audit": {
+    "candidate_decisions": 41,
+    "post_spawn_decisions": 40,
+    "accepted_decisions": 41,
+    "rejected_decisions": 0,
+    "fallbacks": 0,
+    "parse_failures": 0,
+    "planner_degradations": 0,
+    "planner_reason_decisions": 40,
+    "reason_counts": {
+      "pln:atk:ixexp": 38,
+      "pln:b0t:ixexp": 2
+    },
+    "action_counts": {
+      "spawn": 1,
+      "attack_neutral": 38,
+      "boat_neutral": 2
+    },
+    "physical_target_ids": [],
+    "harmful_k1z_actions": 0,
+    "symbolic_actions": 0,
+    "outcome_reach": {
+      "expand_in_episode": true,
+      "consolidate_in_exact_image_harness": true,
+      "convert_unavailable_holds_in_exact_image_harness": true
+    }
+  },
+  "failure_timeline": {
+    "opening_peak": "The literal expand outcome led the field through turn 1800 and peaked at 29705 tiles without opening a player target.",
+    "stalled_expansion": "Neutral expansion stopped adding territory after turn 1150; repeated neutral actions from turns 1200 through 1750 preserved troops but added no tiles.",
+    "incoming_pressure": {
+      "first_observed_turn": 1900,
+      "total_physical_attacks": 10,
+      "by_actor": {
+        "K1Z katanasan": 7,
+        "Outsider": 3
+      }
+    },
+    "collapse": "With the planner fixture fixed to expand, the candidate could neither consolidate nor convert once attacked. Territory fell from 29705 at turn 1800 to 13857 at turn 2350."
+  },
+  "gate_evaluation": {
+    "alive": {
+      "required": true,
+      "observed": true,
+      "pass": true
+    },
+    "final_tiles": {
+      "required_minimum": 20000,
+      "observed": 13857,
+      "pass": false
+    },
+    "beat_v17_control": {
+      "candidate_score": 0.13799318847218625,
+      "control_score": 0.179828317632297,
+      "pass": false
+    },
+    "mechanical_contract": {
+      "pass": true,
+      "note": "The executor honored the exact expand outcome with no switches, fallbacks, degradations, player targets, symbolic actions, or K1Z harm."
+    }
+  },
+  "decision": {
+    "candidate_killed": true,
+    "diagnostic_upload": false,
+    "hosted_gate_started": false,
+    "league_submission": false,
+    "promotion": false,
+    "reason": "v27 failed two mandatory local outcome conditions despite a clean mechanism trace. The exact image is stopped before upload."
+  },
+  "diagnosis": "Literal outcome lanes removed the hidden tactical rules, but a fixed outcome cannot react to a changed board. Expand was correct through the opening and wrong once neutral growth exhausted and two opponents attacked. The next hypothesis must keep the executor literal while letting the planner change only the active outcome and exact target from live state.",
+  "runner_lease_after": {
+    "state": "free",
+    "containers_cleaned": 0
+  },
+  "live_state_after": {
+    "candidate_uploaded": false,
+    "candidate_submissions": 0,
+    "candidate_memberships": 0,
+    "champion_change": false,
+    "membership_change": false,
+    "underpants_lane_mutation": false
+  }
+}
