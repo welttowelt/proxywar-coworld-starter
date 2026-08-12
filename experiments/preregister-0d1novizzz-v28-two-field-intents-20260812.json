@@ -1,0 +1,73 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T22:53:45Z",
+  "lane": "0d1novizzz",
+  "arm": "two-field-intents-v28",
+  "parent": {
+    "source_commit": "76d1fa7602176ce42fd931dbdfba35d47afed474",
+    "local_verdict": "STOP_LOCAL_NO_UPLOAD"
+  },
+  "candidate_source_commit": "0743674b02c472a4401ba1a8df897b850b8743d5",
+  "single_conceptual_change": "Remove horizon from the intent-core planner packet. The planner supplies only an outcome and optional exact target; the runtime refreshes every four decisions. The literal v27 executor is unchanged.",
+  "hypothesis": "A two-field outcome packet will preserve v27's exact execution while allowing the live hosted planner to replace stale outcomes without also prescribing timing.",
+  "required_contract": {
+    "planner_packet_keys": [
+      "intent",
+      "targetID"
+    ],
+    "planner_outcomes": [
+      "expand",
+      "consolidate",
+      "convert"
+    ],
+    "convert_target": "exact visible rival ID",
+    "runtime_refresh_decisions": 4,
+    "planner_timing_fields": 0,
+    "tactical_instruction_fields": 0,
+    "implicit_outcome_switches": 0,
+    "implicit_target_switches": 0,
+    "symbolic_actions": 0,
+    "k1z_harm": 0
+  },
+  "local_gate": {
+    "screen_mode": "mechanism",
+    "competitive_lift_claim": false,
+    "reason": "This Mac has no local Bedrock credentials; hosted planner behavior cannot be reproduced locally.",
+    "required_focused_tests": "all pass",
+    "required_candidate_related_full_suite_failures": 0,
+    "required_differential": "On the same board and two-field consolidate packet, v27 rejects the packet and defaults to neutral expansion while v28 parses consolidate and builds infrastructure.",
+    "required_exact_image": true,
+    "required_exact_image_outcome_reach": [
+      "expand",
+      "consolidate",
+      "convert"
+    ],
+    "required_candidate_fallbacks": 0,
+    "required_candidate_rejections": 0,
+    "required_k1z_harm": 0
+  },
+  "hosted_gate": {
+    "authorized_only_if_local_mechanism_gate_passes": true,
+    "episodes": 4,
+    "variant": "tournament-16p-asia",
+    "required_wins": 4,
+    "any_zero_score": "STOP_HOSTED_NO_SUBMIT",
+    "required_planner_reasons": true,
+    "required_outcome_markers_across_request": [
+      "ixexp",
+      "ixcon",
+      "ixprs"
+    ],
+    "required_fallbacks": 0,
+    "required_degradations": 0,
+    "required_rejections": 0,
+    "required_symbolic_actions": 0,
+    "required_k1z_harm": 0
+  },
+  "promotion_gate": {
+    "hosted_4_of_4": true,
+    "regression_20_of_20": true,
+    "final_rci": true,
+    "league_submission_before_all_gates": false
+  }
+}

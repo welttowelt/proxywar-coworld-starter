@@ -1,0 +1,79 @@
+{
+  "id": "v28-two-field-consolidate-packet",
+  "planner_reply": "{\"intent\":\"consolidate\",\"targetID\":null}",
+  "legalActions": [
+    {
+      "id": "expand:terra-nullius:35",
+      "kind": "attack",
+      "label": "Expand Terra Nullius 35%",
+      "risk": {
+        "level": "low"
+      },
+      "metadata": {
+        "expansion": true,
+        "targetID": null,
+        "troopPercent": 35
+      }
+    },
+    {
+      "id": "build:Factory:43",
+      "kind": "build",
+      "label": "Build Factory",
+      "risk": {
+        "level": "low"
+      },
+      "metadata": {
+        "unit": "Factory"
+      }
+    },
+    {
+      "id": "attack:mickey:40",
+      "kind": "attack",
+      "label": "Attack K1Z Mickey Mouse 40%",
+      "risk": {
+        "level": "low"
+      },
+      "metadata": {
+        "targetID": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+        "targetName": "K1Z Mickey Mouse",
+        "troopPercent": 40
+      }
+    },
+    {
+      "id": "hold",
+      "kind": "hold",
+      "label": "Hold",
+      "risk": {
+        "level": "low"
+      },
+      "metadata": {}
+    }
+  ],
+  "observation": {
+    "phase": "active",
+    "ownState": {
+      "tileShare": 0.12,
+      "troopRatio": 1.1,
+      "troops": 900000,
+      "gold": 500000,
+      "borderTiles": 100,
+      "incomingAttacks": []
+    },
+    "combat": {
+      "incomingAttackPlayerIDs": []
+    },
+    "visiblePlayers": [
+      {
+        "id": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+        "name": "K1Z Mickey Mouse",
+        "isAlive": true,
+        "sharesBorder": true,
+        "canAttack": true,
+        "isAllied": false,
+        "tileShare": 0.1,
+        "relativeTroopRatio": 2
+      }
+    ]
+  },
+  "history": []
+}
