@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-candidate:v22-defense-arbitration",
+    "parent_ref": "proxywar-agent-candidate:v21-reachable-pressure",
+    "exact_deltas": [
+      "Active incoming attack pressure resolves to the existing defend intent before a stale or non-defensive planner intent is executed."
+    ],
+    "source_commit": "e9b91c01820474f6c27db33bad42adbb511e4de2",
+    "parent_commit": "0733a3904807163a10e135a7515ac8124e7ecf12",
+    "image_id": "sha256:aa6cecb270a26b652af1a9ac28d883e48f439c8bc53ddd3e7e5febd1e1648f75"
+  },
+  "hypothesis": "Live attack evidence should override a stale expansion plan so the existing defend executor answers the nation compressing our territory.",
+  "mechanism": {
+    "marker": "ixdef",
+    "prior_reachable_decisions": 10
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "contract_sha256": "2922a94e261f5ec9e59d8561713cdb1c804f789de55cec5f77f4b11667ac947b",
+    "audit_receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v22-defense-arbitration-local-20260812.json",
+      "sha256": "4afdd90fe1fd267e9c6e77f4116a4e25ec09f25a3839dcfed0d76b04ada56eed"
+    },
+    "differential_binding": {
+      "verifier_path": "experiments/v22/verify-differential.mjs",
+      "fixture_path": "experiments/v22/differential-fixture.json"
+    }
+  },
+  "preupload_rci": {
+    "receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v22-preupload-rci-20260812.json",
+      "sha256": "1064bdfec9cecdc1c7a4bfdb24acef48f8abe701cc718fb250966ef5453ec306"
+    }
+  },
+  "matched_baseline": null,
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "max_k1z_harm": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  }
+}

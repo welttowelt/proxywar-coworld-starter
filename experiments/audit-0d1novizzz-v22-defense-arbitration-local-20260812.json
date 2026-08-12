@@ -1,0 +1,125 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T18:30:29Z",
+  "lane": "0d1novizzz",
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "candidate_source_commit": "e9b91c01820474f6c27db33bad42adbb511e4de2",
+  "parent_source_commit": "0733a3904807163a10e135a7515ac8124e7ecf12",
+  "candidate_image_id": "sha256:aa6cecb270a26b652af1a9ac28d883e48f439c8bc53ddd3e7e5febd1e1648f75",
+  "parent_image_id": "sha256:70b77e1cf1de2946b0fb4c5b466182f2d4ead0e870fcedf805fab36ec3d7a024",
+  "contract_sha256": "2922a94e261f5ec9e59d8561713cdb1c804f789de55cec5f77f4b11667ac947b",
+  "image_contract": {
+    "architecture": "amd64",
+    "os": "linux",
+    "user": "node",
+    "cmd": ["node", "/app/llm-player.mjs"],
+    "policy_engine": "intent-core",
+    "policy_codename": "b0lverk-h0gg",
+    "file_sha256": {
+      "/app/llm-player.mjs": "7cae915c9e0acd4b81ec4d97adaf7d1b18fb8092104f49cd6112a4278808ff02",
+      "/app/intent-controller.mjs": "113e8719c392e7e7ba0d7c9e3f1c4d909101715bb970690c911f43097068511f",
+      "/app/intent-core.mjs": "c96344cf708ce78a9ffe674324c7888fb5957a3e23940b2b12368d14d731d4f7",
+      "/app/strategy-engine.mjs": "4a5dc56a23371033b9c543e416397b1a18feb5b842d965ba1d23661f528d832a"
+    }
+  },
+  "required_coalition_roles": ["katanasan"],
+  "differential_unit_proof": {
+    "schema_version": 2,
+    "arm": "defense-arbitration-v22",
+    "same_fixture": true,
+    "verifier": {
+      "evaluator_commit": "bb15f2a62f41c2e0259688a8572721a9b2e7ce73",
+      "path": "experiments/v22/verify-differential.mjs",
+      "sha256": "b735abd06c131b5a2c4b33ec6ccd9f952f6e01e02783b32805c99d55933c80c1"
+    },
+    "fixture": {
+      "id": "v22-live-defense-over-stale-expand",
+      "path": "experiments/v22/differential-fixture.json",
+      "sha256": "76b7a2cfcfe75f2ab1b4a38226daff2f73c358a833269d7ffb04de2008b622c5",
+      "legal_action_ids_sha256": "29dc4b2c27cc8764d6ff255d17990416764578f26cc1fb968815291df8f5f126"
+    },
+    "parent": {
+      "source_commit": "0733a3904807163a10e135a7515ac8124e7ecf12",
+      "selected_action_id": "expand:terra-nullius:35",
+      "marker": "ixexp"
+    },
+    "candidate": {
+      "source_commit": "e9b91c01820474f6c27db33bad42adbb511e4de2",
+      "selected_action_id": "attack:raider:40",
+      "marker": "ixdef"
+    },
+    "safety": {
+      "offered_k1z_harmful_action": "attack:mickey:40",
+      "parent_selected_k1z_harm": false,
+      "candidate_selected_k1z_harm": false
+    },
+    "test_command": [
+      "node",
+      "experiments/v22/verify-differential.mjs",
+      ".",
+      "0733a3904807163a10e135a7515ac8124e7ecf12",
+      "e9b91c01820474f6c27db33bad42adbb511e4de2",
+      "experiments/v22/differential-fixture.json",
+      "experiments/v22/differential-proof-e9b91c01.json"
+    ],
+    "test_exit_code": 0
+  },
+  "runs": [
+    {
+      "orientation": "A",
+      "run_id": "v22-defense-arbitration-20260812T1834Z",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "directory": "/private/tmp/proxywar-v22-defense-arbitration-20260812T1834Z",
+      "coalition_roles_present": ["odin", "katanasan"],
+      "replay_sha256": "8702f2dd71dbdf2a094420814974225d836b29d1c235eeb62e6330a5d07902c0",
+      "results_sha256": "d133681b04e0ace2c9e295c33bc47eb39f74683ef0e67e37f1bfdaa7b03c8738",
+      "decisions_sha256": "933d2500fa7da9640d0f23fcbea4015ff1396ba2d503eb0b087c5ea057a0bca6",
+      "spectator_replay_sha256": "e53ca94ca26ba67a5a1138b9a490994f11c7cc856ebf5c6b5096b0a1ca26724d",
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image": "proxywar-agent-candidate:v22-defense-arbitration",
+            "image_id": "sha256:aa6cecb270a26b652af1a9ac28d883e48f439c8bc53ddd3e7e5febd1e1648f75"
+          }
+        }
+      },
+      "candidate": {
+        "slot": 0,
+        "decision_count": 41,
+        "accepted": 41,
+        "score": 0.13718605460784802,
+        "tiles": 13792,
+        "alive": true,
+        "route_execution_count": 40,
+        "marker_counts": {"ixexp": 30, "ixdef": 10},
+        "action_counts": {"attack": 26, "boat": 7, "build": 6, "target_player": 1, "spawn": 1},
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "unexplained_holds": [],
+        "harmful_k1z_actions": [],
+        "unresolved_harmful_targets": []
+      },
+      "orientation_advantage": null,
+      "violations": []
+    }
+  ],
+  "full_suite": {
+    "tests": 469,
+    "passed": 463,
+    "failed": 6,
+    "candidate_related_failures": 0,
+    "note": "The six failures are the same unrelated Mickey fanout and stale RCI fixture failures present before v22."
+  },
+  "cleared_harness_failures": [
+    "The first launch lacked a local aws executable; it stopped before gameplay and the supervised runner quarantined only that attempt.",
+    "The second launch passed the episode job as the manifest; it stopped before gameplay and the supervised runner quarantined only that attempt.",
+    "The first successful episode omitted PLAN_MODE and was retained only as a non-planner smoke trace. The final mechanism receipt binds the separate planner-enabled run."
+  ],
+  "scope_boundary": "The local trace proves the exact image accepts planner-derived intent actions and preserves K1Z safety. The committed differential proves the live-defense arbitration change. Neither proves hosted competitive lift.",
+  "failures": []
+}
