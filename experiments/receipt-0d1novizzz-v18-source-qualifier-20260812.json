@@ -1,0 +1,101 @@
+{
+  "schema": "proxywar-receipt-v1",
+  "created_at": "2026-08-12T15:08:00Z",
+  "lane": "0d1novizzz",
+  "candidate": {
+    "codename": "planner-transport-v18",
+    "source_commit": "4d547403",
+    "branch": "claude/0d1novizzz-candidate",
+    "pushed": true,
+    "parent_policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "parent_membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  },
+  "live_parent_failure": {
+    "round": 1383,
+    "round_id": "round_14bb3082-01a1-47ac-9ce2-bb0d716d58dd",
+    "status_at_audit": "running",
+    "engine": "0.1.39",
+    "variant": "Tournament 16P - BlackSea",
+    "completed_candidate_episodes": 4,
+    "episode_wins": 0,
+    "pod_transport": "connected to match (region=us-east-1, models=4)",
+    "planner_error": "plan reply had no valid intent",
+    "verdict": "v17 sidecar routing removed the 403 failure, but planner packet parsing still failed in every completed v17 pod"
+  },
+  "tests": {
+    "red_regression": "The transport-framed intent test failed against the exact v17 parser before the source repair.",
+    "focused": {
+      "command": "node --test test/intent-controller.test.mjs test/llm-player.integration.test.mjs",
+      "passed": 17,
+      "failed": 0
+    },
+    "full_suite": {
+      "command": "npm test",
+      "passed": 445,
+      "failed": 6,
+      "preexisting_failures": [
+        "four Mickey r8/r9 activation and reaper baseline tests",
+        "two inactive-player RCI baseline tests"
+      ],
+      "candidate_related_failures": 0
+    }
+  },
+  "image": {
+    "reference": "proxywar-agent-candidate:v18-local",
+    "image_id": "sha256:9b1afbc060da660c2afddfbd297d4ba1a0bda384938f6a9fb76b14014de05ec0",
+    "architecture": "amd64",
+    "user": "node",
+    "command": [
+      "node",
+      "/app/llm-player.mjs"
+    ],
+    "policy_codename": "b0lverk-h0gg"
+  },
+  "local_qualifier": {
+    "engine": "0.1.39",
+    "coworld_id": "cow_e3b19156-63ca-47d2-9736-71b087b269a9",
+    "variant": "qualifier",
+    "runner_lane": "odin",
+    "run_id": "v18-qualifier-20260812T1504Z",
+    "output": "/private/tmp/proxywar-v18-qualifier-20260812T1504Z",
+    "planner_input": "synthetic single transport-framed grow packet",
+    "decisions": 12,
+    "accepted": 12,
+    "rejected": 0,
+    "planner_reasons": 8,
+    "degraded_reasons": 0,
+    "bootstrap_rule_reasons": 2,
+    "holds": 0,
+    "unconfirmed_audits": 0,
+    "results_sha256": "d635765899bc7ae48d5ca299e9311791f0ce4e93403e67329928d891535bd4bd",
+    "replay_sha256": "4c911f6f4e35f6b5fe4f2fda0b4ccbaf54550a8f7f5717527361837537413577",
+    "decisions_sha256": "e68666a305dc7c8acfcfd7f348f82c00beefe1871eb9c2010f53330bcc3541dc"
+  },
+  "gates": {
+    "source_ready": true,
+    "exact_image_built": true,
+    "runtime_qualifier_passed": true,
+    "local_mechanism_verified": false,
+    "diagnostic_uploaded": false,
+    "hosted_passed": false,
+    "regression_passed": false,
+    "submitted": false,
+    "placed": false,
+    "champion_verified": false,
+    "round_confirmed": false
+  },
+  "open_requirements": [
+    "hash-bound local mechanism trace with a configured K1Z partner",
+    "hosted sidecar proof from the exact candidate image",
+    "current-roster 4/4 diagnostic",
+    "separate 20/20 regression",
+    "final fail-closed RCI audit"
+  ],
+  "live_mutations": {
+    "upload": false,
+    "submission": false,
+    "membership_change": false,
+    "champion_change": false
+  },
+  "next_bounded_action": "Construct the K1Z-containing local mechanism fixture for this exact image. Upload only after the local and pre-upload RCI gates pass."
+}
