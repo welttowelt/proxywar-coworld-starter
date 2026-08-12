@@ -1,0 +1,43 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T15:30:00Z",
+  "lane": "0d1novizzz",
+  "mode": "diagnostic",
+  "status": "completed",
+  "reason": "Exact v18 image uploaded after the local mechanism and pre-upload RCI gates passed.",
+  "active_player_before": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz"
+  },
+  "active_player_after": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz"
+  },
+  "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "preflight_path": "/Users/olifreuler/proxywar-coworld-starter/experiments/preflight-0d1novizzz-v18-diagnostic-upload-20260812.json",
+  "preflight_sha256": "e3742da94f81f4a90d5c51c38e942ff0f93d5c267725e8603b7f5568d1f8c348",
+  "candidate_source_commit": "4b1906142a93b5ac3980d08a4f8dff2a5ca269c6",
+  "candidate_evidence_commit": "17a07641ef16277e235474536a03d74e1dbde727",
+  "candidate_image_id": "sha256:2a913f7c02c5f03fce3ab10049bf80ae2a35635ada42ed456ef18caf87e06456",
+  "candidate_policy_ref": "proxywar-agent-candidate:v18-mechanism",
+  "uploaded_label": "xX_UwU_Senpai_420_Xx:v18",
+  "policy_version_id": "e65f23d7-d4b3-43f7-911f-ee2a0b019643",
+  "policy_id": "d2ab8f5b-66ff-4252-990c-71179fc8dc0f",
+  "created_at": "2026-08-12T15:29:10.647680Z",
+  "uploaded_tags": {
+    "goal": "ffa-99",
+    "codename": "b0lverk-h0gg",
+    "experiment": "planner-transport-v18"
+  },
+  "run": ["node", "/app/llm-player.mjs"],
+  "bedrock_enabled": true,
+  "secret_env": ["PLAN_MODE=on"],
+  "verification_note": "The policy-version lookup surface is account-scoped before league submission and exposes no player_id. Active-player identity was independently rechecked before and after upload; no submission was made.",
+  "live_mutations": {
+    "upload": true,
+    "hosted_experience_request": false,
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false
+  }
+}
