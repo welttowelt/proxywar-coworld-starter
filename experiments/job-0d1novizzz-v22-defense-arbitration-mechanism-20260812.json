@@ -4,7 +4,7 @@
     "map_size": "Compact",
     "difficulty": "Easy",
     "num_agents": 4,
-    "max_decision_steps": 10,
+    "max_decision_steps": 40,
     "turns_per_decision_step": 50,
     "max_decision_ms": 15000,
     "replay_tail_turns": 0,
