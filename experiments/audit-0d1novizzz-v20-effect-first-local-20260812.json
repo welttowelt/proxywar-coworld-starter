@@ -9,6 +9,88 @@
   "parent_source_commit": "cda205b78f2f01a974f3a6ed8964da6b1f36a5ed",
   "candidate_image_id": "sha256:866917da2d7858e6b960ba507f52dc7b29bbc111458c4c50c4f16b3d513c4b3c",
   "parent_image_id": "sha256:94596cc2e62086dda1fc30dbd4ddc518e02abeb7ec20339af810cd6b3a242723",
+  "contract_sha256": "c2e90363fe241c40dd8b6feea170ec22fd3823fa8d016a57a8d48aae6f6803ae",
+  "required_coalition_roles": [
+    "katanasan"
+  ],
+  "differential_unit_proof": {
+    "schema_version": 2,
+    "arm": "effect-first-v20",
+    "same_fixture": true,
+    "verifier": {
+      "evaluator_commit": "097253aee81b8413702a3294e33ccfa95ced5852",
+      "path": "experiments/v20/verify-differential.mjs",
+      "sha256": "8c8a14ffb659addc2352302bfe4eb56fae3a60587ddcf38bd1e62b1ed7c96e85"
+    },
+    "fixture": {
+      "id": "v20-pressure-effect-vs-signal",
+      "path": "experiments/v20/differential-fixture.json",
+      "sha256": "35e8fb60f0ad60ce4c751222494006a75b33a67176d5d4d925a82ca47f3e3f31",
+      "legal_action_ids_sha256": "22a6480146c63f88d865a9c78ee9a6b28bfc2c43ee8ef001acca82704d99f0c5"
+    },
+    "parent": {
+      "source_commit": "cda205b78f2f01a974f3a6ed8964da6b1f36a5ed",
+      "selected_action_id": "target:target"
+    },
+    "candidate": {
+      "source_commit": "18fbf8897c5130e4970a2ac241a36583c7833568",
+      "selected_action_id": "expand:terra-nullius:35",
+      "marker": "ixprs"
+    },
+    "test_command": [
+      "node",
+      "experiments/v20/verify-differential.mjs",
+      ".",
+      "cda205b78f2f01a974f3a6ed8964da6b1f36a5ed",
+      "18fbf8897c5130e4970a2ac241a36583c7833568",
+      "experiments/v20/differential-fixture.json",
+      "experiments/v20/differential-proof-18fbf889.json"
+    ],
+    "test_exit_code": 0
+  },
+  "runs": [
+    {
+      "orientation": "A",
+      "run_id": "v20-effect-first-20260812T1700Z",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "directory": "/private/tmp/proxywar-v20-effect-first-20260812T1700Z",
+      "coalition_roles_present": [
+        "odin",
+        "katanasan"
+      ],
+      "replay_sha256": "dbefc6e3449ef79ab69c4218e537f621cefaba92d371f4f2ff268828712b54c9",
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image": "proxywar-agent-candidate:v20-effect-first",
+            "image_id": "sha256:866917da2d7858e6b960ba507f52dc7b29bbc111458c4c50c4f16b3d513c4b3c"
+          }
+        }
+      },
+      "candidate": {
+        "slot": 0,
+        "decision_count": 11,
+        "accepted": 11,
+        "score": 0.21801034536809655,
+        "tiles": 8345,
+        "alive": true,
+        "route_execution_count": 10,
+        "marker_counts": {
+          "ixprs": 10
+        },
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "unexplained_holds": [],
+        "harmful_k1z_actions": [],
+        "unresolved_harmful_targets": []
+      },
+      "orientation_advantage": null,
+      "violations": []
+    }
+  ],
   "fixture": {
     "map": "Pangaea",
     "seed": 2026081,
