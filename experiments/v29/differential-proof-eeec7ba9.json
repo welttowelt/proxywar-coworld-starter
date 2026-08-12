@@ -1,0 +1,50 @@
+{
+  "schema_version": 2,
+  "arm": "intent-only-v29",
+  "same_fixture": true,
+  "same_board_action_menu_and_planner_reply": true,
+  "verifier": {
+    "evaluator_commit": "42a9c571e5958bde069f39a84e4a8e030a833a94",
+    "path": "experiments/v29/verify-differential.mjs",
+    "sha256": "787f6782359ede0b8ec1057a81cbaffbc8e35746f3570882294d5905109f968b"
+  },
+  "fixture": {
+    "id": "v29-intent-only-convert-continuity",
+    "path": "experiments/v29/differential-fixture.json",
+    "sha256": "55aca28f7609c51e589f813890b4dd8b853895050032a21578b0c8d30b428a4b"
+  },
+  "parent": {
+    "source_commit": "0743674b02c472a4401ba1a8df897b850b8743d5",
+    "parsed_plan": null,
+    "selected_action_id": "expand:terra-nullius:35",
+    "marker": "ixexp"
+  },
+  "candidate": {
+    "source_commit": "eeec7ba9686dc00fac7ce2054ac9a60f81750757",
+    "parsed_plan": {
+      "intent": "convert",
+      "model": "fixture"
+    },
+    "selected_action_id": "attack:outsider-a:25",
+    "marker": "ixprs"
+  },
+  "continuity": {
+    "prior_executor_target": "outsider-a",
+    "selected_target": "outsider-a",
+    "model_target_field_present": false
+  },
+  "safety": {
+    "offered_k1z_harmful_action": "attack:mickey:40",
+    "any_selected_k1z_harm": false
+  },
+  "test_command": [
+    "node",
+    "experiments/v29/verify-differential.mjs",
+    ".",
+    "0743674b02c472a4401ba1a8df897b850b8743d5",
+    "eeec7ba9686dc00fac7ce2054ac9a60f81750757",
+    "experiments/v29/differential-fixture.json",
+    "experiments/v29/differential-proof-eeec7ba9.json"
+  ],
+  "test_exit_code": 0
+}
