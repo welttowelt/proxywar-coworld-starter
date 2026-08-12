@@ -1,0 +1,58 @@
+{
+  "id": "v25-reject-instruction-like-intent",
+  "planner_reply": "{\"intent\":\"defend\",\"targetID\":null,\"horizon\":4}",
+  "bootstrap_plan": {"intent": "grow", "targetID": null, "horizon": 2, "model": "bootstrap"},
+  "legalActions": [
+    {
+      "id": "expand:terra-nullius:35",
+      "kind": "attack",
+      "label": "Expand Terra Nullius 35%",
+      "risk": {"level": "low"},
+      "metadata": {"expansion": true, "troopPercent": 35}
+    },
+    {
+      "id": "build:Defense Post:43",
+      "kind": "build",
+      "label": "Build Defense Post",
+      "risk": {"level": "low"},
+      "metadata": {"unit": "Defense Post"}
+    },
+    {
+      "id": "attack:mickey:40",
+      "kind": "attack",
+      "label": "Attack K1Z Mickey Mouse 40%",
+      "risk": {"level": "low"},
+      "metadata": {
+        "targetID": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+        "targetName": "K1Z Mickey Mouse",
+        "troopPercent": 40
+      }
+    },
+    {"id": "hold", "kind": "hold", "label": "Hold", "risk": {"level": "low"}}
+  ],
+  "observation": {
+    "phase": "active",
+    "ownState": {
+      "tileShare": 0.08,
+      "troopRatio": 1.1,
+      "troops": 900000,
+      "gold": 500000,
+      "borderTiles": 100,
+      "incomingAttacks": 0
+    },
+    "combat": {"incomingAttackPlayerIDs": []},
+    "visiblePlayers": [
+      {
+        "id": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+        "name": "K1Z Mickey Mouse",
+        "isAlive": true,
+        "sharesBorder": true,
+        "canAttack": true,
+        "isAllied": false,
+        "tileShare": 0.1,
+        "relativeTroopRatio": 2
+      }
+    ]
+  },
+  "history": []
+}
