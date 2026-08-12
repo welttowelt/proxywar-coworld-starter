@@ -1,0 +1,55 @@
+{
+  "schema_version": 2,
+  "arm": "two-intent-controller-v25",
+  "same_fixture": true,
+  "verifier": {
+    "evaluator_commit": "3656ca175dea456882e4a1842e398b3c7be60fde",
+    "path": "experiments/v25/verify-differential.mjs",
+    "sha256": "bab3654385f36a1ac6c16dd2a55ebf3de01c57677e82e1b1683d9b32efb9c937"
+  },
+  "fixture": {
+    "id": "v25-reject-instruction-like-intent",
+    "path": "experiments/v25/differential-fixture.json",
+    "sha256": "0d33ab189128a0101d913c716e33bb4e7d0346abb436ad7eae51b2034eb8c4e4",
+    "legal_action_ids_sha256": "a314bb03253f8e3278f67d63da2413db5e9ea5cd9c53be03f0018820b15301e8"
+  },
+  "parent": {
+    "source_commit": "502a7a9337b39ce44434be49319acd94d0a8037c",
+    "parsed_plan": {
+      "intent": "defend",
+      "targetID": null,
+      "horizon": 4,
+      "model": "fixture"
+    },
+    "selected_action_id": "build:Defense Post:43",
+    "marker": "ixdef"
+  },
+  "candidate": {
+    "source_commit": "fff78cf61880b3afce30b7d5a3a7fa45403cbde0",
+    "rejected_instruction_like_plan": true,
+    "executable_plan": {
+      "intent": "grow",
+      "targetID": null,
+      "horizon": 2,
+      "model": "bootstrap"
+    },
+    "selected_action_id": "expand:terra-nullius:35",
+    "marker": "ixexp",
+    "telemetry_mode": "dft"
+  },
+  "safety": {
+    "offered_k1z_harmful_action": "attack:mickey:40",
+    "parent_selected_k1z_harm": false,
+    "candidate_selected_k1z_harm": false
+  },
+  "test_command": [
+    "node",
+    "experiments/v25/verify-differential.mjs",
+    ".",
+    "502a7a9337b39ce44434be49319acd94d0a8037c",
+    "fff78cf61880b3afce30b7d5a3a7fa45403cbde0",
+    "experiments/v25/differential-fixture.json",
+    "experiments/v25/differential-proof-fff78cf6.json"
+  ],
+  "test_exit_code": 0
+}
