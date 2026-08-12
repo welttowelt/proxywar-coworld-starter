@@ -1,0 +1,81 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T20:10:00Z",
+  "lane": "0d1novizzz",
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v23",
+    "policy_version_id": "dad9e47a-2b6a-4736-926c-1f90b8cac772",
+    "source_commit": "c595fd0f601e1fae1cf38e0229df432aa11c1c61",
+    "image_id": "sha256:eb791b1a994aceccc70a46bcefcd7cd79095c44dba6c9bd4410f39a7ed822b94"
+  },
+  "experience_request_id": "xreq_7cd9fe0b-56cd-45ae-abb4-c34d3bd6f9ce",
+  "gate": {
+    "required": "4/4 hosted wins with planner and ixdef reach and zero candidate fallbacks, degradation, holds, rejections, or K1Z harm",
+    "observed_when_stopped": "0/1 with three episodes still running",
+    "verdict": "FAIL_STOP_NO_SUBMIT",
+    "reason": "The first completed episode was a loss, making the preregistered 4/4 bar impossible."
+  },
+  "completed_episode_mined": {
+    "episode_request_id": "ereq_ff920060-39b7-4b37-a2b4-c0fe21f8a67f",
+    "episode_id": "b92b8dc1-3f74-4aa2-8d37-e3dc6ef00767",
+    "winner": "K1Z Mickey Mouse",
+    "candidate_score": 0,
+    "candidate_alive": true,
+    "candidate_final_tiles": 7569,
+    "candidate_peak": {"turn": 2400, "tiles": 77032},
+    "winner_final_tiles": 868073,
+    "replay_url": "https://softmax-public.s3.amazonaws.com/replays/24d5f11c-64f8-42d6-8c9a-4b6f9a53dc79.replay",
+    "replay_sha256": "c97199945866b60de08c3b432cf79902037a81df7dd6a60d85763520ff109bd1",
+    "candidate_game_record_action_counts": {
+      "attack": 28,
+      "boat": 29,
+      "build_unit": 8,
+      "cancel_attack": 6,
+      "embargo": 6,
+      "target_player": 9
+    },
+    "winner_game_record_action_counts": {
+      "attack": 77,
+      "boat": 1,
+      "build_unit": 8
+    },
+    "candidate_snapshot_decisions": 39,
+    "candidate_planner_decisions": 36,
+    "candidate_fallback_decisions": 2,
+    "candidate_ixdef_decisions": 12,
+    "candidate_holds": 0,
+    "candidate_rejections": 0,
+    "candidate_direct_k1z_harm": 0,
+    "collapse_window": {
+      "turns": [2400, 4000],
+      "tiles": [77032, 55],
+      "actions": {
+        "attack": 3,
+        "target_player": 6,
+        "build_city": 4,
+        "boat": 4
+      }
+    },
+    "planner_transport": {
+      "first_valid_plan_turn": 1500,
+      "post_first_plan_sampled_decisions": 36,
+      "post_first_plan_fallbacks": 0,
+      "bedrock_errors": "Intermittent 400 errors reported that the default Claude Sonnet 4.5 model did not support on-demand throughput; the retained valid plan continued to execute."
+    }
+  },
+  "diagnosis": {
+    "intent_persistence": "working",
+    "collapse_override": "working",
+    "failure_class": "intent_action_consistency",
+    "finding": "The controller preserved planner intent through refresh failures and reached defend repeatedly, but the defend scorer treated target markers as if they physically answered an attacker and treated any infrastructure or neutral boat as defense. During the decisive collapse, six target markers, four cities, and four boats consumed 14 of 17 actions.",
+    "consequence": "A correct high-level intent still produced actions that did not achieve its outcome. Odin fell from 77,032 tiles to 55 while the eventual winner converted 77 attacks into 868,073 final tiles.",
+    "next_hypothesis": "Give every intent a semantic action contract. In particular, defend should recognize only physical counterpressure against an attacker, retreat, or defensive infrastructure as direct defense; labels and generic activity cannot impersonate the outcome."
+  },
+  "safety": {
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false,
+    "active_champion": "xX_UwU_Senpai_420_Xx:v17",
+    "underpants_lane_mutation": false
+  }
+}

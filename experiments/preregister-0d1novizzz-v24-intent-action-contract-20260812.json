@@ -1,0 +1,50 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T20:10:00Z",
+  "lane": "0d1novizzz",
+  "arm": "intent-action-contract-v24",
+  "parent": {
+    "label": "xX_UwU_Senpai_420_Xx:v23",
+    "policy_version_id": "dad9e47a-2b6a-4736-926c-1f90b8cac772",
+    "source_commit": "c595fd0f601e1fae1cf38e0229df432aa11c1c61"
+  },
+  "single_conceptual_change": "An intent can rank an action highly only when that action directly serves the intent's semantic outcome. Defend no longer treats target labels, generic construction, or neutral movement as direct defense.",
+  "hypothesis": "If intent and action effect agree, a persistent defend state will spend collapse windows on physical counterpressure, retreat, or defensive structures instead of declarative labels and unrelated activity.",
+  "frozen": [
+    "planner prompt and intent vocabulary",
+    "intent persistence and refresh cadence",
+    "collapse detection and intent arbitration",
+    "opponent protection and K1Z no-harm contract",
+    "map, roster, target selection, commitment sizing, and all non-intent strategy modules"
+  ],
+  "local_gate": {
+    "same_fixture_parent_candidate_differential": true,
+    "required_candidate_marker": "ixdef",
+    "required_candidate_action_role": "physical defense",
+    "forbidden_candidate_action_roles_during_collapse": ["target label", "generic economy build", "neutral movement"],
+    "focused_tests_required": "all pass",
+    "candidate_related_full_suite_failures": 0,
+    "fallbacks": 0,
+    "holds": 0,
+    "rejections": 0,
+    "k1z_harm": 0
+  },
+  "hosted_gate": {
+    "episodes": 4,
+    "required_wins": 4,
+    "required_planner_reasons": true,
+    "required_ixdef_reach": true,
+    "fallbacks": 0,
+    "degradation": 0,
+    "holds": 0,
+    "rejections": 0,
+    "k1z_harm": 0,
+    "on_any_score_zero": "STOP_HOSTED_NO_SUBMIT"
+  },
+  "promotion_gate": {
+    "separate_regression_episodes": 20,
+    "required_regression_wins": 20,
+    "final_rci": true
+  },
+  "league_mutation_authorized": false
+}
