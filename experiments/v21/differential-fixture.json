@@ -1,0 +1,93 @@
+{
+  "id": "v21-reachable-pressure-vs-passive-stall",
+  "planner_reply": "Planner packet:\n```json\n{\"intent\":\"pressure\",\"targetID\":\"target\",\"horizon\":4}\n```",
+  "legalActions": [
+    {
+      "id": "attack:reachable:40",
+      "kind": "attack",
+      "label": "Attack reachable rival 40%",
+      "risk": { "level": "high" },
+      "metadata": {
+        "targetID": "reachable",
+        "targetName": "Reachable Rival",
+        "troopPercent": 40
+      }
+    },
+    {
+      "id": "build:Factory:42",
+      "kind": "build",
+      "label": "Build Factory",
+      "risk": { "level": "low" },
+      "metadata": { "unit": "Factory", "tile": 42 }
+    },
+    {
+      "id": "emoji:reachable:25",
+      "kind": "emoji",
+      "label": "Signal reachable rival",
+      "risk": { "level": "low" },
+      "metadata": { "recipientID": "reachable", "emoji": 25 }
+    },
+    {
+      "id": "attack:mickey:40",
+      "kind": "attack",
+      "label": "Attack K1Z Mickey Mouse",
+      "risk": { "level": "low" },
+      "metadata": {
+        "targetID": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+        "targetName": "K1Z Mickey Mouse",
+        "troopPercent": 40
+      }
+    },
+    {
+      "id": "hold",
+      "kind": "hold",
+      "label": "Hold",
+      "risk": { "level": "low" }
+    }
+  ],
+  "observation": {
+    "phase": "active",
+    "ownState": {
+      "tileShare": 0.2,
+      "troopRatio": 1.4,
+      "troops": 2000000,
+      "gold": 500000,
+      "borderTiles": 100,
+      "incomingAttacks": []
+    },
+    "combat": { "incomingAttackPlayerIDs": [] },
+    "visiblePlayers": [
+      {
+        "id": "target",
+        "name": "Named Unreachable Rival",
+        "isAlive": true,
+        "sharesBorder": false,
+        "canAttack": false,
+        "isAllied": false,
+        "tileShare": 0.3,
+        "relativeTroopRatio": 0.8
+      },
+      {
+        "id": "reachable",
+        "name": "Reachable Rival",
+        "isAlive": true,
+        "sharesBorder": true,
+        "canAttack": true,
+        "isAllied": false,
+        "tileShare": 0.1,
+        "relativeTroopRatio": 1.4
+      },
+      {
+        "id": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+        "name": "K1Z Mickey Mouse",
+        "isAlive": true,
+        "sharesBorder": true,
+        "canAttack": true,
+        "isAllied": false,
+        "tileShare": 0.1,
+        "relativeTroopRatio": 2
+      }
+    ]
+  },
+  "history": []
+}
