@@ -1,0 +1,89 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T18:18:37Z",
+  "lane": "0d1novizzz",
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v21",
+    "policy_version_id": "ebed7489-4e76-4338-b4f7-f9a47aa48491",
+    "source_commit": "0733a3904807163a10e135a7515ac8124e7ecf12",
+    "image_id": "sha256:70b77e1cf1de2946b0fb4c5b466182f2d4ead0e870fcedf805fab36ec3d7a024"
+  },
+  "experience_request_id": "xreq_65f034e8-5e1d-48f9-adb4-fd486d52c592",
+  "gate": {
+    "required": "4/4 hosted wins with planner and ixprs reach and zero candidate fallbacks, holds, rejections, or K1Z harm",
+    "observed_when_stopped": "0/1",
+    "verdict": "FAIL_STOP_NO_SUBMIT",
+    "reason": "The first completed episode was a loss, making the preregistered 4/4 bar impossible. Two of four candidate decisions retained in spectator snapshots also declared fallbackUsed=true."
+  },
+  "completed_episode": {
+    "episode_request_id": "ereq_e8d5d902-e0ed-4e19-aca2-43c61fad7ed2",
+    "episode_id": "0d929112-173a-4b33-a28d-f0a5e9345504",
+    "winner": "Andre von Houck",
+    "candidate_score": 0,
+    "candidate_alive": false,
+    "candidate_final_tiles": 0,
+    "winner_final_tiles": 163660,
+    "replay_url": "https://softmax-public.s3.amazonaws.com/replays/a70f9864-86dd-42e7-9efe-13f1dab8e9cd.replay",
+    "replay_sha256": "d754f4ceed42960d6e471a098ca59b62a7839c21e4eb2d5e891fae94de0b7602",
+    "candidate_game_record_action_counts": {
+      "attack": 22,
+      "boat": 50,
+      "build_unit": 11,
+      "upgrade_structure": 1,
+      "embargo_all": 9,
+      "target_player": 3,
+      "alliance_request": 1,
+      "cancel_attack": 2
+    },
+    "winner_game_record_action_counts": {
+      "attack": 88,
+      "boat": 60,
+      "build_unit": 6,
+      "upgrade_structure": 18,
+      "alliance_request": 3
+    },
+    "candidate_direct_attacks_on_winner": 10,
+    "winner_direct_attacks_on_candidate": 23,
+    "candidate_tile_samples": [
+      {"turn": 400, "tiles": 52},
+      {"turn": 6000, "tiles": 7433},
+      {"turn": 8400, "tiles": 3777},
+      {"turn": 10000, "tiles": 237},
+      {"turn": null, "tiles": 0, "point": "final"}
+    ],
+    "incoming_hostile_attacks": 43,
+    "distinct_hostile_attackers": 5,
+    "k1z_attacks_on_candidate": 11,
+    "candidate_direct_k1z_harm": 0,
+    "spectator_snapshot_decisions_retained": 4,
+    "spectator_snapshot_fallbacks": 2,
+    "sampled_collapse_decision": {
+      "turn": 8300,
+      "action": "embargo_all:start",
+      "reason": "pln:emb:ixexp",
+      "candidate_tiles_at_next_snapshot": 3777
+    }
+  },
+  "diagnosis": {
+    "reachable_pressure_mechanism": "working_but_not_sustained",
+    "evidence": "The candidate attacked the eventual winner on ten consecutive decisions from turns 1300 through 2200, then stopped direct attacks while the winner kept attacking.",
+    "failure_class": "intent_arbitration",
+    "finding": "A valid planner expand intent outranked the deterministic evidence that the nation was already under active attack. During collapse, expand selected neutral boats, infrastructure, and eventually embargo signals instead of answering current attackers through the existing defend intent.",
+    "consequence": "Odin converted too few decisions into force against the attackers compressing its territory. The winner used 88 attacks versus Odin's 22 and eliminated Odin.",
+    "next_hypothesis": "Active incoming attack pressure should resolve to the existing defend intent before any stale or non-defensive planner intent is executed. The planner still chooses among the five outcomes when no attack is active."
+  },
+  "safety": {
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false,
+    "active_champion": "xX_UwU_Senpai_420_Xx:v17",
+    "underpants_lane_mutation": false
+  },
+  "live_scoreboard_at_recording": {
+    "latest_completed_round": 1386,
+    "rank": 9,
+    "score": 8.842284183805592,
+    "leader": "daveey",
+    "leader_score": 17.212443599373646
+  }
+}
