@@ -70,12 +70,16 @@ function protectedHarm(action, state, history) {
   return rival ? rivalIsProtected(state, history, rival) : false;
 }
 
-function offeredMenu(actions, state, history) {
+function offeredMenu(actions, state, history, directive) {
   const legal = actions.filter((action) =>
     action && typeof action.id === "string" && action.id.length > 0 &&
     !protectedHarm(action, state, history)
   );
   const active = legal.filter((action) => action?.kind !== "hold");
+  // Pressure is the decision to convert available force into relative power.
+  // Do not erase offered combat merely because a passive action carries a
+  // lower generic risk label; the intent scorer still ranks every safe target.
+  if (directive.intent === "pressure" && active.length > 0) return active;
   const lowerRisk = active.filter((action) => action?.risk?.level !== "high");
   if (lowerRisk.length > 0) return lowerRisk;
   if (active.length > 0) return active;
@@ -176,11 +180,11 @@ function intentScore(action, directive, state) {
     return action.kind === "hold" ? -200 : 20;
   }
 
-  // Pressure is an outcome, not a declaration. Prefer actions that change
-  // territory or force over target/embargo toggles, even when the toggle is
-  // aimed at the requested rival.
+  // Pressure is an outcome, not a declaration. The named rival is a preferred
+  // destination for force, not a prerequisite for acting. If it is unreachable,
+  // taking power from another safe reachable rival still improves relative power.
   if (isPhysicalPressure(action) && exactTarget) return 300;
-  if (isPhysicalPressure(action)) return -120;
+  if (isPhysicalPressure(action)) return 240;
   if (infrastructure) return 180;
   if (neutralLand || neutralBoat) return 160;
   if (isPressureSignal(action) && exactTarget) return 40;
@@ -223,7 +227,7 @@ export function chooseIntentCoreAction(actions, state, plan = null, history = []
   if (spawn) return spawn;
 
   const directive = planIntent(plan, state);
-  const menu = offeredMenu(actions, state, history);
+  const menu = offeredMenu(actions, state, history, directive);
   if (menu.length === 0) {
     const hold = actions.find((action) => action?.kind === "hold");
     if (hold) return { ...hold, policyMarker: MARKERS[directive.intent] };

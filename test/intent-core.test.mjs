@@ -191,7 +191,7 @@ test("no intent can select a harmful action against K1Z Mickey Mouse", () => {
   assert.equal(selected.id, factory.id);
 });
 
-test("a targeted intent does not silently substitute another rival", () => {
+test("ally stays exact while pressure converts force against a reachable rival", () => {
   const otherAlliance = alliance("other", "Other");
   const otherAttack = action("attack:other:40", "attack", "Attack Other 40%", {
     targetID: "other", targetName: "Other", troopPercent: 40,
@@ -206,7 +206,27 @@ test("a targeted intent does not silently substitute another rival", () => {
   }, { rivals }).id, factory.id);
   assert.equal(decide([otherAttack, factory], {
     intent: "pressure", targetID: "target", horizon: 4,
-  }, { rivals }).id, factory.id);
+  }, { rivals }).id, otherAttack.id);
+});
+
+test("pressure considers high-risk physical force before passive low-risk actions", () => {
+  const reachable = {
+    ...action("attack:other:40", "attack", "Attack Other 40%", {
+      targetID: "other", targetName: "Other", troopPercent: 40,
+    }),
+    risk: { level: "high" },
+  };
+  const factory = action("build:Factory:42", "build", "Build Factory", { unit: "Factory" });
+  const selected = decide([reachable, factory], {
+    intent: "pressure", targetID: "unreachable", horizon: 4,
+  }, {
+    rivals: [
+      { id: "unreachable", name: "Unreachable", tileShare: 0.3, relativeTroopRatio: 0.8 },
+      { id: "other", name: "Other", tileShare: 0.1, relativeTroopRatio: 1.4 },
+    ],
+  });
+  assert.equal(selected.id, reachable.id);
+  assert.equal(selected.policyMarker, "ixprs");
 });
 
 test("an aligned high-risk action yields to a lower-risk legal action", () => {
