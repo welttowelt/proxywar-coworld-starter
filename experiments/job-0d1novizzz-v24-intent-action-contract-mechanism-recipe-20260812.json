@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "purpose": "Derive the v24 exact-image mechanism job without duplicating the immutable Coworld 0.1.39 manifest.",
+  "base_job": {
+    "path": "experiments/job-0d1novizzz-v22-defense-arbitration-mechanism-20260812.json",
+    "sha256": "2922a94e261f5ec9e59d8561713cdb1c804f789de55cec5f77f4b11667ac947b"
+  },
+  "replacements": {
+    ".players[0].image": "sha256:ace0a20ce81a156bbb7f839d53101b20600a0baf3250b9843e60af0cef88cae6",
+    ".game_config.players[0].name": "0d1novizzz v24 intent action"
+  },
+  "invariants": {
+    "manifest_byte_semantics_unchanged": true,
+    "all_other_player_images_unchanged": true,
+    "map": "Pangaea",
+    "seed": 2026081,
+    "max_decision_steps": 40,
+    "turns_per_decision_step": 50
+  },
+  "derived_job": {
+    "runtime_path": "/tmp/proxywar-v24-intent-action-contract-job.json",
+    "sha256": "a2798df4d136ea4703cbc4b4ca6589cfce8da0498151ebc8ee85df02ef70fa6a"
+  }
+}
