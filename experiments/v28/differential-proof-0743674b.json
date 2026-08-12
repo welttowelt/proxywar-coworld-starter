@@ -1,0 +1,45 @@
+{
+  "schema_version": 2,
+  "arm": "two-field-intents-v28",
+  "same_board_action_menu_and_planner_reply": true,
+  "verifier": {
+    "evaluator_commit": "8663edbc232250c681ce1eaa027191f7f39d9448",
+    "path": "experiments/v28/verify-differential.mjs",
+    "sha256": "6920704cfcf1390f4daf4e5fb0f583a0667552f6b333989698394b9bbcd6426c"
+  },
+  "fixture": {
+    "id": "v28-two-field-consolidate-packet",
+    "path": "experiments/v28/differential-fixture.json",
+    "sha256": "78e7b137f7a10868dd0a75229e0a0e0987382c379ed79e1f1f4754ab8532fcf9"
+  },
+  "parent": {
+    "source_commit": "76d1fa7602176ce42fd931dbdfba35d47afed474",
+    "parsed_plan": null,
+    "selected_action_id": "expand:terra-nullius:35",
+    "marker": "ixexp"
+  },
+  "candidate": {
+    "source_commit": "0743674b02c472a4401ba1a8df897b850b8743d5",
+    "parsed_plan": {
+      "intent": "consolidate",
+      "targetID": null,
+      "model": "fixture"
+    },
+    "selected_action_id": "build:Factory:43",
+    "marker": "ixcon"
+  },
+  "safety": {
+    "offered_k1z_harmful_action": "attack:mickey:40",
+    "any_selected_k1z_harm": false
+  },
+  "test_command": [
+    "node",
+    "experiments/v28/verify-differential.mjs",
+    ".",
+    "76d1fa7602176ce42fd931dbdfba35d47afed474",
+    "0743674b02c472a4401ba1a8df897b850b8743d5",
+    "experiments/v28/differential-fixture.json",
+    "experiments/v28/differential-proof-0743674b.json"
+  ],
+  "test_exit_code": 0
+}
