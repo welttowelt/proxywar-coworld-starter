@@ -1,0 +1,148 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T20:48:00Z",
+  "lane": "0d1novizzz",
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "candidate_source_commit": "fff78cf61880b3afce30b7d5a3a7fa45403cbde0",
+  "parent_source_commit": "502a7a9337b39ce44434be49319acd94d0a8037c",
+  "candidate_image_id": "sha256:9a9848271e81ce5c46e1c7cf66d03e519aa48baa4a948c05822c65a25c60aa55",
+  "parent_image_id": "sha256:ace0a20ce81a156bbb7f839d53101b20600a0baf3250b9843e60af0cef88cae6",
+  "contract_sha256": "eecb88f287786bc37df47951d7e1e878fb8bb0ffc069e7c100b29219a79a7364",
+  "image_contract": {
+    "architecture": "amd64",
+    "os": "linux",
+    "user": "node",
+    "cmd": ["node", "/app/llm-player.mjs"],
+    "policy_engine": "intent-core",
+    "policy_codename": "b0lverk-h0gg",
+    "file_sha256": {
+      "/app/llm-player.mjs": "2a52e579c5ca404abdf7872352b374a822de04f819c66d0d553cc448f16ee8b1",
+      "/app/intent-controller.mjs": "35234424355108b80f994dc5b2a4585ae37948f0771bc1e1fc9b171271437b1e",
+      "/app/intent-core.mjs": "9a94d6ce68699c2889110cda90999fd6483de3b653fcc5e91d4a81f1106c39b5",
+      "/app/strategy-engine.mjs": "4a5dc56a23371033b9c543e416397b1a18feb5b842d965ba1d23661f528d832a"
+    }
+  },
+  "required_coalition_roles": ["katanasan"],
+  "differential_unit_proof": {
+    "schema_version": 2,
+    "arm": "two-intent-controller-v25",
+    "same_fixture": true,
+    "verifier": {
+      "evaluator_commit": "3656ca175dea456882e4a1842e398b3c7be60fde",
+      "path": "experiments/v25/verify-differential.mjs",
+      "sha256": "bab3654385f36a1ac6c16dd2a55ebf3de01c57677e82e1b1683d9b32efb9c937"
+    },
+    "fixture": {
+      "id": "v25-reject-instruction-like-intent",
+      "path": "experiments/v25/differential-fixture.json",
+      "sha256": "0d33ab189128a0101d913c716e33bb4e7d0346abb436ad7eae51b2034eb8c4e4",
+      "legal_action_ids_sha256": "a314bb03253f8e3278f67d63da2413db5e9ea5cd9c53be03f0018820b15301e8"
+    },
+    "parent": {
+      "source_commit": "502a7a9337b39ce44434be49319acd94d0a8037c",
+      "parsed_plan": {"intent": "defend", "targetID": null, "horizon": 4, "model": "fixture"},
+      "selected_action_id": "build:Defense Post:43",
+      "marker": "ixdef"
+    },
+    "candidate": {
+      "source_commit": "fff78cf61880b3afce30b7d5a3a7fa45403cbde0",
+      "rejected_instruction_like_plan": true,
+      "executable_plan": {"intent": "grow", "targetID": null, "horizon": 2, "model": "bootstrap"},
+      "selected_action_id": "expand:terra-nullius:35",
+      "marker": "ixexp",
+      "telemetry_mode": "dft"
+    },
+    "safety": {
+      "offered_k1z_harmful_action": "attack:mickey:40",
+      "parent_selected_k1z_harm": false,
+      "candidate_selected_k1z_harm": false
+    },
+    "test_command": [
+      "node",
+      "experiments/v25/verify-differential.mjs",
+      ".",
+      "502a7a9337b39ce44434be49319acd94d0a8037c",
+      "fff78cf61880b3afce30b7d5a3a7fa45403cbde0",
+      "experiments/v25/differential-fixture.json",
+      "experiments/v25/differential-proof-fff78cf6.json"
+    ],
+    "test_exit_code": 0
+  },
+  "runs": [
+    {
+      "orientation": "A",
+      "run_id": "v25-two-intents-20260812T2042Z",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "directory": "/private/tmp/proxywar-v25-two-intent-controller-20260812T2042Z",
+      "coalition_roles_present": ["odin", "katanasan"],
+      "replay_sha256": "696a625dcf3fe01b720ade05daaeddb5b436b608e09752393e1e7388132c59b8",
+      "results_sha256": "22b293f3de3da0d2e9af1a141e7ace7179e7bed4f243eda6357f26edb489c13b",
+      "decisions_sha256": "7f0e608aa3be53e70f9d9d145cfa0a912812c704a931a42c05074c8fda78aeba",
+      "spectator_replay_sha256": "fa01391f05c5873d7f8f8aabd83eb683128c79c0cb765bd6cd5016a58187502e",
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image": "proxywar-agent-candidate:v25-two-intent-controller",
+            "image_id": "sha256:9a9848271e81ce5c46e1c7cf66d03e519aa48baa4a948c05822c65a25c60aa55"
+          }
+        }
+      },
+      "candidate": {
+        "slot": 0,
+        "decision_count": 41,
+        "accepted": 41,
+        "score": 0.29181707584611394,
+        "tiles": 29264,
+        "alive": true,
+        "route_execution_count": 40,
+        "marker_counts": {"ixexp": 32, "ixdef": 8},
+        "action_counts": {"attack": 31, "boat": 9, "spawn": 1},
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "unexplained_holds": [],
+        "harmful_k1z_actions": [],
+        "unresolved_harmful_targets": []
+      },
+      "intent_trace": {
+        "planner_decisions": 40,
+        "grow_marker_decisions": 32,
+        "collapse_override_decisions": 8,
+        "planner_fallbacks": 0,
+        "planner_degradations": 0,
+        "collapse_window_tiles": {"turn_1850": 29793, "turn_2350": 29264}
+      },
+      "matched_local_context": {
+        "v23_score": 0.13718605460784802,
+        "v24_score": 0.08448851462454532,
+        "v25_score": 0.29181707584611394,
+        "v25_minus_v23": 0.15463102123826592,
+        "v25_minus_v24": 0.20732856122156862,
+        "interpretation": "One identical-seed mechanism trace supports the hypothesis but is not promotion evidence."
+      },
+      "orientation_advantage": null,
+      "violations": []
+    }
+  ],
+  "focused_suite": {"tests": 38, "passed": 38, "failed": 0},
+  "full_suite": {
+    "tests": 473,
+    "passed": 467,
+    "failed": 6,
+    "candidate_related_failures": 0,
+    "persistent_unrelated_failures": 6,
+    "note": "The same four stale Mickey fanout and two stale RCI fixture failures remained."
+  },
+  "cleared_harness_failures": [
+    "The first launch stopped before containers because the optional Bedrock credential bridge required an absent aws binary.",
+    "The second launch stopped before containers because the episode request was passed as a manifest.",
+    "Both outputs were quarantined by the supervised runner. The successful invocation bound the extracted manifest and hash-locked episode request separately."
+  ],
+  "runner_lease_after": {"state": "free", "schema_version": 2},
+  "scope_boundary": "The exact image executed only the broad grow mission plus the internal collapse override, preserved K1Z safety, and more than doubled the best prior score on this one matched seed. Hosted play is still required to test competitive lift.",
+  "failures": []
+}

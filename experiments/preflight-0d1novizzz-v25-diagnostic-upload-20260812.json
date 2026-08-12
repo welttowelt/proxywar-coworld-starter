@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-candidate:v25-two-intent-controller",
+    "parent_ref": "proxywar-agent-candidate:v24-intent-action-contract",
+    "exact_deltas": [
+      "The planner chooses only grow or convert; bootstrap is grow, and live collapse remains an internal executor override."
+    ],
+    "source_commit": "fff78cf61880b3afce30b7d5a3a7fa45403cbde0",
+    "parent_commit": "502a7a9337b39ce44434be49319acd94d0a8037c",
+    "image_id": "sha256:9a9848271e81ce5c46e1c7cf66d03e519aa48baa4a948c05822c65a25c60aa55"
+  },
+  "hypothesis": "Reducing planning to grow or convert should keep the model at outcome level, reduce intent churn, and let the executor preserve territory without tactical micromanagement.",
+  "mechanism": {
+    "marker": "ixexp",
+    "prior_reachable_decisions": 32
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "contract_sha256": "eecb88f287786bc37df47951d7e1e878fb8bb0ffc069e7c100b29219a79a7364",
+    "audit_receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v25-two-intent-controller-local-20260812.json",
+      "sha256": "b8734d1498c4f024eaab55832bd07b477fc0e7348ef66f11255d397f3dbd0caa"
+    },
+    "differential_binding": {
+      "verifier_path": "experiments/v25/verify-differential.mjs",
+      "fixture_path": "experiments/v25/differential-fixture.json"
+    }
+  },
+  "preupload_rci": {
+    "receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v25-preupload-rci-20260812.json",
+      "sha256": "dbbd4bd3ea8f823f68bd500e5e1f2297753e064f8885bb92600f8292f08c02bc"
+    }
+  },
+  "matched_baseline": null,
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "max_k1z_harm": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  }
+}
