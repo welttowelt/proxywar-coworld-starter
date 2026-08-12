@@ -11,7 +11,7 @@
   "experience_request_id": "xreq_7cd9fe0b-56cd-45ae-abb4-c34d3bd6f9ce",
   "gate": {
     "required": "4/4 hosted wins with planner and ixdef reach and zero candidate fallbacks, degradation, holds, rejections, or K1Z harm",
-    "observed_when_stopped": "0/1 with three episodes still running",
+    "observed_when_stopped": "0/1 with three episodes still running; final request outcome was 0/4",
     "verdict": "FAIL_STOP_NO_SUBMIT",
     "reason": "The first completed episode was a loss, making the preregistered 4/4 bar impossible."
   },
@@ -63,6 +63,32 @@
       "bedrock_errors": "Intermittent 400 errors reported that the default Claude Sonnet 4.5 model did not support on-demand throughput; the retained valid plan continued to execute."
     }
   },
+  "additional_completed_episodes": [
+    {
+      "episode_request_id": "ereq_365d46ad-fb96-4a93-bd8a-a914f5a25c8b",
+      "episode_id": "b8b753b4-ae07-4125-9b14-63bfa959b0bc",
+      "winner": "SIAN VOIDCROWN",
+      "candidate_score": 0,
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/c2951587-02d2-4257-8c71-e649250b02ac.replay",
+      "replay_mined": false
+    },
+    {
+      "episode_request_id": "ereq_56421c84-d094-49c5-8fec-9c1af9e1c248",
+      "episode_id": "d04501b2-601b-4bd2-b6bf-e752b07c93fd",
+      "winner": "SIAN VOIDCROWN",
+      "candidate_score": 0,
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/e89755c5-687e-4409-b546-579d71bc7508.replay",
+      "replay_mined": false
+    },
+    {
+      "episode_request_id": "ereq_379eede3-c0af-4318-9ab2-98b49fae6463",
+      "episode_id": "a74b561c-daf7-4f6d-89e0-fa9c2020a349",
+      "winner": "SIAN VOIDCROWN",
+      "candidate_score": 0,
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/79d57347-57be-4bbe-9b82-bc986e2d9a25.replay",
+      "replay_mined": false
+    }
+  ],
   "diagnosis": {
     "intent_persistence": "working",
     "collapse_override": "working",

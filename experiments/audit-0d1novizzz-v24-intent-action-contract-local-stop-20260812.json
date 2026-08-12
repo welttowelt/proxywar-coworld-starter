@@ -1,0 +1,60 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T20:27:00Z",
+  "lane": "0d1novizzz",
+  "verdict": "FAIL_LOCAL_NO_UPLOAD",
+  "candidate_source_commit": "502a7a9337b39ce44434be49319acd94d0a8037c",
+  "parent_source_commit": "c595fd0f601e1fae1cf38e0229df432aa11c1c61",
+  "candidate_image_id": "sha256:ace0a20ce81a156bbb7f839d53101b20600a0baf3250b9843e60af0cef88cae6",
+  "contract_sha256": "a2798df4d136ea4703cbc4b4ca6589cfce8da0498151ebc8ee85df02ef70fa6a",
+  "mechanism": {
+    "status": "reached",
+    "differential_parent_action": "target:raider",
+    "differential_candidate_action": "build:Defense Post:43",
+    "runtime_ixdef_decisions": 10,
+    "runtime_defense_posts": 6,
+    "runtime_target_labels": 0,
+    "runtime_fallbacks": 0,
+    "runtime_degradations": 0,
+    "runtime_holds": 0,
+    "runtime_rejections": 0,
+    "runtime_k1z_harm": 0
+  },
+  "matched_local_outcome": {
+    "map": "Pangaea",
+    "seed": 2026081,
+    "candidate_score": 0.08448851462454532,
+    "candidate_final_tiles": 8478,
+    "parent_score": 0.13718605460784802,
+    "parent_final_tiles": 13792,
+    "score_delta": -0.0526975399833027,
+    "tile_delta": -5314,
+    "candidate_collapse": {"from_turn": 1850, "from_tiles": 29878, "to_turn": 2350, "to_tiles": 8478},
+    "parent_collapse": {"from_turn": 1850, "from_tiles": 29878, "to_turn": 2350, "to_tiles": 13792}
+  },
+  "candidate_artifacts": {
+    "results_sha256": "2425aee73fa91bb46899501486aff4b7e9ef21bb9523013105ce79322375fe7e",
+    "replay_sha256": "740bd0e28e4e691b09850f50e2f1bd616df97cac188415d902f2e967a65922b1",
+    "decisions_sha256": "539217ada16a830e08229ad70feb08b3a8c415b2da3c16508642e6455b7a2ea8",
+    "spectator_replay_sha256": "57ef5c67d0f759b2ffc626646d0b2a30c1187b7d8567a1ef3fd43c24cfd6897c"
+  },
+  "test_results": {
+    "focused": {"passed": 51, "failed": 0},
+    "full": {"passed": 466, "failed": 6, "candidate_related_failures": 0},
+    "unrelated_failures": "The same four Mickey fanout and two stale RCI fixture failures remained."
+  },
+  "diagnosis": {
+    "finding": "The intent-action contract removed declarative target actions and generic cities from defend, but static Defense Posts and later neutral boats did not arrest the collapse.",
+    "decision": "Kill before upload. Semantic cleanliness alone did not improve the matched outcome.",
+    "next_hypothesis": "Reduce the planner to two outcomes: grow available power or convert power into rival loss. Keep collapse handling as a live safety override rather than a planner vocabulary choice."
+  },
+  "runner_lease_after": {"state": "free", "schema_version": 2},
+  "safety": {
+    "diagnostic_upload": false,
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false,
+    "active_champion": "xX_UwU_Senpai_420_Xx:v17",
+    "underpants_lane_mutation": false
+  }
+}
