@@ -1,0 +1,76 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T23:45:22Z",
+  "lane": "0d1novizzz",
+  "arm": "v29-intent-only",
+  "parent": {
+    "arm": "v28-two-field-intents",
+    "source_commit": "0743674b02c472a4401ba1a8df897b850b8743d5",
+    "hosted_failure_audit": "experiments/audit-0d1novizzz-v28-hosted-stop-20260812.json",
+    "hosted_failure_audit_sha256": "d8011bb9334e083440e151d8d8946fdc998a04fea716d35f9ddfe0849ffc0ecf"
+  },
+  "single_change": "Move rival selection out of the planner. The planner emits exactly one field, intent, while the deterministic executor chooses and continues any tactical target.",
+  "hypothesis": "An intent-only planner will retain strategic adaptation without scattering physical force across model-selected rivals. Executor-owned target continuity should turn repeated convert decisions into one coherent campaign instead of opening multiple fronts.",
+  "planner_contract": {
+    "allowed_packets": [
+      {
+        "intent": "expand"
+      },
+      {
+        "intent": "consolidate"
+      },
+      {
+        "intent": "convert"
+      }
+    ],
+    "unknown_keys_rejected": true,
+    "target_fields_forbidden": true,
+    "tactical_fields_forbidden": true,
+    "timing_fields_forbidden": true
+  },
+  "executor_contract": {
+    "expand": "neutral land or neutral boat only",
+    "consolidate": "build or upgrade existing territory only",
+    "convert": "physical force only; choose a safe rival locally and continue that rival while a legal physical action remains",
+    "unavailable_outcome": "hold",
+    "implicit_intent_switch": false,
+    "k1z_harm": false
+  },
+  "local_gate": {
+    "exact_image_required": true,
+    "same_fixture_differential_required": true,
+    "all_three_intents_reachable": true,
+    "convert_target_continuity_required": true,
+    "accepted_rate_pct": 100,
+    "max_fallbacks": 0,
+    "max_degradations": 0,
+    "max_rejections": 0,
+    "max_symbolic_actions": 0,
+    "max_k1z_harm": 0,
+    "competitive_lift_claimed": false
+  },
+  "hosted_gate": {
+    "map": "Asia",
+    "episodes": 4,
+    "roster_source_round": 1392,
+    "only_odin_replaced": true,
+    "required_wins": 4,
+    "minimum_distinct_intent_markers_across_request": 2,
+    "planner_reason_prefix": "pln:",
+    "max_fallbacks": 0,
+    "max_degradations": 0,
+    "max_rejections": 0,
+    "max_parse_failures": 0,
+    "max_symbolic_actions": 0,
+    "max_k1z_harm": 0,
+    "stop_on_any_zero_score": true
+  },
+  "promotion_gate": {
+    "hosted_gate_passed": true,
+    "separate_regression_episodes": 20,
+    "required_regression_wins": 20,
+    "final_rci_required": true,
+    "league_change_allowed_before_all_gates": false
+  },
+  "authorized_next_action": "Implement, test, and locally qualify the intent-only planner contract. No upload, hosted request, submission, membership change, or champion change is authorized by this preregistration alone."
+}
