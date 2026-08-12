@@ -1,0 +1,59 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T16:54:36Z",
+  "lane": "0d1novizzz",
+  "arm": "intent-core-v19",
+  "status": "failed",
+  "verdict": "STOP_HOSTED_NO_SUBMIT",
+  "experience_request_id": "xreq_b9cd6a2b-df63-4c2f-8525-6d5b0040b09f",
+  "candidate_policy_version_id": "71c1fd93-c2a4-46df-8ff1-7fd316c52383",
+  "candidate_source_commit": "cda205b78f2f01a974f3a6ed8964da6b1f36a5ed",
+  "candidate_image_id": "sha256:94596cc2e62086dda1fc30dbd4ddc518e02abeb7ec20339af810cd6b3a242723",
+  "gate": {
+    "required": "4/4 hosted wins with intent reach, zero fallback, zero degradation, zero unexplained holds, zero rejects, and zero K1Z harm",
+    "result_at_stop": "0/1 completed",
+    "terminal_reason": "The first completed episode scored zero, making the preregistered 4/4 result impossible.",
+    "remaining_episode_changes_verdict": false
+  },
+  "first_completed_episode": {
+    "episode_request_id": "ereq_13ba825b-306e-4109-9ded-f09a5820872a",
+    "completed_at": "2026-08-12T16:51:29.305279Z",
+    "candidate_score": 0,
+    "winner": "daveey",
+    "candidate_final_tiles": 33751,
+    "candidate_alive": true,
+    "sampled_candidate_decisions": 25,
+    "sampled_post_spawn_decisions": 24,
+    "sampled_planner_reasons": 24,
+    "sampled_intent_markers": 24,
+    "sampled_fallbacks": 0,
+    "sampled_degraded": 0,
+    "sampled_holds": 0,
+    "sampled_rejects": 0,
+    "game_record_action_counts": {
+      "target_player": 23,
+      "embargo_toggle": 21,
+      "boat": 16,
+      "attack": 13,
+      "build": 13,
+      "alliance_request": 4
+    },
+    "candidate_direct_k1z_harm_or_signal": 0,
+    "replay_url": "https://softmax-public.s3.amazonaws.com/replays/a0bffdcd-64c8-4665-b0fe-a462ec51eedf.replay",
+    "replay_sha256": "f8e7a7a1251f3e265ab499e54d334507be43b0f1bca14628c060262aa435dbf9"
+  },
+  "mechanism_verdict": {
+    "intent_transport_and_execution_reached": true,
+    "safety_gate_passed_in_sample": true,
+    "competitive_lift_proven": false,
+    "failure": "Pressure was represented as signaling rather than physical effect: target and embargo toggles outnumbered attacks and boats 44 to 29, and the candidate built no silos or bombs.",
+    "bounded_next_change": "Keep the five intents and single executor; rank physical pressure and productive expansion above target or embargo signals."
+  },
+  "live_state": {
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false,
+    "preserved_champion_policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461"
+  },
+  "authorized_next_action": "Qualify one generic executor correction locally. No v19 submission, regression request, membership change, or champion change."
+}
