@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "audit_id": "qd1n-unchanged-handover-block-20260812T153155Z",
+  "cycle_id": "odin-20260812T153057Z-65637",
+  "recorded_at": "2026-08-12T15:31:55Z",
+  "lane": "odin",
+  "verdict": "BLOCK_QD1N_RETIRED_NO_AUTHORIZED_SUCCESSOR_RECEIPT",
+  "dispatch_mailbox_head": "af9bfaf76516a3bc62555c579dfa025697fbd6d7",
+  "dispatch_packet": "CLAUDE_TO_ODIN_0D1NOVIZZZ_HANDOVER_20260812.md",
+  "dispatch_packet_sha256": "270df00344bb1acb9a09e05b1dbc0228c140616a3a8810640dad9f5524559938",
+  "prior_checkpoint": "experiments/audit-qd1n-handover-retired-no-successor-block-20260812T142702Z.json",
+  "dispatch_findings": {
+    "mailbox_head_unchanged_from_prior_checkpoint": true,
+    "handover_is_separate_0d1novizzz_player": true,
+    "foreign_v15_qd1n_misship_reported_contained": true,
+    "underpants_lane_reported_deliberately_disqualified": true,
+    "claude_side_live_mutations_stood_down": true,
+    "hash_bound_qd1n_successor_receipt_present": false,
+    "exclusive_k1z_coord_player_context_claim_present": false
+  },
+  "odin_actions": {
+    "player_context_changed": false,
+    "upload_performed": false,
+    "submission_performed": false,
+    "membership_changed": false,
+    "runner_started": false,
+    "new_arm_dispatched": false,
+    "live_api_reconciliation_repeated": false
+  },
+  "integrity_block": "The dispatch mailbox head is unchanged from the prior hash-verified checkpoint. It remains a handover for the separate 0d1novizzz player, reports qd1n underpants deliberately disqualified, and supplies no hash-bound qd1n retirement or authorized successor receipt. qd1n therefore has no verified active champion or authorized successor, and live mutation remains frozen.",
+  "required_clearance": [
+    "a hash-bound qd1n retirement or successor transition receipt identifying the authorized source commit, policy version, submission, membership, and champion identity",
+    "an exclusive K1Z_COORD player-context claim before any live mutation",
+    "independent current-player, submission, membership, and champion verification under that exclusive claim"
+  ],
+  "next_automatic_transition": "Recover the hash-bound qd1n retirement or authorized successor receipt. Before any qd1n mutation, acquire an exclusive K1Z_COORD player-context claim and independently verify the player, submission, membership, and champion identity. Do not dispatch another arm meanwhile."
+}
