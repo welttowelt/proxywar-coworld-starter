@@ -1,0 +1,150 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T19:43:00Z",
+  "lane": "0d1novizzz",
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "candidate_source_commit": "c595fd0f601e1fae1cf38e0229df432aa11c1c61",
+  "parent_source_commit": "e9b91c01820474f6c27db33bad42adbb511e4de2",
+  "candidate_image_id": "sha256:eb791b1a994aceccc70a46bcefcd7cd79095c44dba6c9bd4410f39a7ed822b94",
+  "parent_image_id": "sha256:aa6cecb270a26b652af1a9ac28d883e48f439c8bc53ddd3e7e5febd1e1648f75",
+  "contract_sha256": "b0296e8cb770b0365a8e1a78df6c289b541af4548bbace0c1a5026d01cd2fea6",
+  "image_contract": {
+    "architecture": "amd64",
+    "os": "linux",
+    "user": "node",
+    "cmd": ["node", "/app/llm-player.mjs"],
+    "policy_engine": "intent-core",
+    "policy_codename": "b0lverk-h0gg",
+    "file_sha256": {
+      "/app/llm-player.mjs": "c26f2b599ed28a893fcf68d1acd176f8cf022a419235ee85962f7be5f079ae63",
+      "/app/intent-controller.mjs": "21e42a30796c3ee29c0c9336652ca734d7183ac41c35920b507e07777badcb2a",
+      "/app/intent-core.mjs": "169a5bc1331bde483e57bec09cbf4c97521988d0cf35562a1b119c6d8a3b65f6",
+      "/app/strategy-engine.mjs": "4a5dc56a23371033b9c543e416397b1a18feb5b842d965ba1d23661f528d832a"
+    }
+  },
+  "required_coalition_roles": ["katanasan"],
+  "differential_unit_proof": {
+    "schema_version": 2,
+    "arm": "persistent-intents-v23",
+    "same_fixture": true,
+    "verifier": {
+      "evaluator_commit": "47c710f00c89eeb02f324fb7e840f88aeaf86e6e",
+      "path": "experiments/v23/verify-differential.mjs",
+      "sha256": "1a1d325cb16f4b303f9a031b340b923ddf6be7c94ca7fa54eb3d9a02137497f8"
+    },
+    "fixture": {
+      "id": "v23-persistent-intent-under-collapse",
+      "path": "experiments/v23/differential-fixture.json",
+      "sha256": "10f3e4d6e8c74178b1a3a2695203663d49d4b005a1149f71a6e6b259f195e2ed",
+      "legal_action_ids_sha256": "59d23dd1025eedf87465f4b1f531fd0b20a241929cda88a68c90002ea3092fdc"
+    },
+    "refresh_failure": {
+      "plan_age": 9,
+      "planner_degraded": true
+    },
+    "parent": {
+      "source_commit": "e9b91c01820474f6c27db33bad42adbb511e4de2",
+      "selected_action_id": "expand:terra-nullius:35",
+      "marker": "ixexp",
+      "fallback_used": true
+    },
+    "candidate": {
+      "source_commit": "c595fd0f601e1fae1cf38e0229df432aa11c1c61",
+      "selected_action_id": "retreat:front",
+      "marker": "ixdef",
+      "fallback_used": false
+    },
+    "safety": {
+      "offered_k1z_harmful_action": "attack:mickey:40",
+      "parent_selected_k1z_harm": false,
+      "candidate_selected_k1z_harm": false
+    },
+    "test_command": [
+      "node",
+      "experiments/v23/verify-differential.mjs",
+      ".",
+      "e9b91c01820474f6c27db33bad42adbb511e4de2",
+      "c595fd0f601e1fae1cf38e0229df432aa11c1c61",
+      "experiments/v23/differential-fixture.json",
+      "experiments/v23/differential-proof-c595fd0f.json"
+    ],
+    "test_exit_code": 0
+  },
+  "runs": [
+    {
+      "orientation": "A",
+      "run_id": "v23-persistent-intents-20260812T1934Z",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "directory": "/private/tmp/proxywar-v23-persistent-intents-20260812T1934Z",
+      "coalition_roles_present": ["odin", "katanasan"],
+      "replay_sha256": "77497d35bb57a0d45e94a7458e6bfc5fbb15d5e2d56f453f462ac2345918ae26",
+      "results_sha256": "766747ff12ee0bc976a1637b17a95cf9d089c430ec981c142a93b2c33fb3faf3",
+      "decisions_sha256": "1993a6150846e49eef2a171dee558dbffaa4ddffa286da93ebe6aa2aca8102a3",
+      "spectator_replay_sha256": "cfb4a8156bcdc73329c0a0f9fd0d0700ba2674eeccf46ca645c915cc803b1461",
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image": "proxywar-agent-candidate:v23-persistent-intents",
+            "image_id": "sha256:eb791b1a994aceccc70a46bcefcd7cd79095c44dba6c9bd4410f39a7ed822b94"
+          }
+        }
+      },
+      "candidate": {
+        "slot": 0,
+        "decision_count": 41,
+        "accepted": 41,
+        "score": 0.13718605460784802,
+        "tiles": 13792,
+        "alive": true,
+        "route_execution_count": 40,
+        "marker_counts": {"ixexp": 30, "ixdef": 10},
+        "action_counts": {"attack": 26, "boat": 7, "build": 6, "target_player": 1, "spawn": 1},
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "unexplained_holds": [],
+        "harmful_k1z_actions": [],
+        "unresolved_harmful_targets": []
+      },
+      "intent_trace": {
+        "expand_decisions": 30,
+        "defend_decisions": 10,
+        "defend_turns": [1850, 1900, 1950, 2000, 2050, 2100, 2150, 2200, 2250, 2300],
+        "defend_trigger": "territory collapsed from 29878 to 13792 tiles",
+        "planner_fallbacks": 0,
+        "planner_degradations": 0
+      },
+      "orientation_advantage": null,
+      "violations": []
+    }
+  ],
+  "focused_suite": {
+    "tests": 36,
+    "passed": 36,
+    "failed": 0
+  },
+  "full_suite": {
+    "tests": 470,
+    "passed": 463,
+    "failed": 7,
+    "candidate_related_failures": 0,
+    "transient_failures": 1,
+    "persistent_unrelated_failures": 6,
+    "note": "The runner-lease signal race passed on immediate focused rerun. The six persistent failures are the pre-existing Mickey fanout and stale RCI fixture failures."
+  },
+  "cleared_harness_failures": [
+    "An initial image build omitted the required intent-core build argument. Inspection caught the legacy engine before any run or upload; the wrong image was never used.",
+    "An initial short job wrapper lacked the embedded manifest. The supervised runner rejected it before gameplay, quarantined that exact output, and released the lease.",
+    "The corrected job was deterministically derived from the immutable v22 manifest and matched it semantically apart from the candidate image and player label."
+  ],
+  "runner_lease_after": {
+    "state": "free",
+    "schema_version": 2
+  },
+  "scope_boundary": "The local trace proves that the exact image persists planner-derived intent, switches to defend during territorial collapse, and preserves K1Z safety. The committed differential isolates behavior through a failed refresh. Neither proves hosted competitive lift.",
+  "failures": []
+}

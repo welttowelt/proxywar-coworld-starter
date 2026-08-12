@@ -3,7 +3,7 @@
   "arm": "persistent-intents-v23",
   "same_fixture": true,
   "verifier": {
-    "evaluator_commit": "d5dd5d4c327bb24a579a82d4f2e9d4edd8100acc",
+    "evaluator_commit": "47c710f00c89eeb02f324fb7e840f88aeaf86e6e",
     "path": "experiments/v23/verify-differential.mjs",
     "sha256": "1a1d325cb16f4b303f9a031b340b923ddf6be7c94ca7fa54eb3d9a02137497f8"
   },
@@ -56,7 +56,7 @@
   "test_command": [
     "node",
     "experiments/v23/verify-differential.mjs",
-    "/Users/olifreuler/proxywar-coworld-starter",
+    ".",
     "e9b91c01820474f6c27db33bad42adbb511e4de2",
     "c595fd0f601e1fae1cf38e0229df432aa11c1c61",
     "experiments/v23/differential-fixture.json",
