@@ -1,0 +1,42 @@
+{
+  "schema_version": 2,
+  "arm": "planner-transport-v18",
+  "same_fixture": true,
+  "verifier": {
+    "evaluator_commit": "71836c69dd5997e2bb09385fdd2a75801dcf4491",
+    "path": "experiments/v18/verify-differential.mjs",
+    "sha256": "af4330bcb38c45a1395bc23e0285aa305914e74ac274c526d9d72d39611ec788"
+  },
+  "fixture": {
+    "id": "v18-framed-grow-k1z-vs-neutral",
+    "path": "experiments/v18/differential-fixture.json",
+    "sha256": "08c24f0b5cbe3ae45cf76118634347aa84158ff31f9759ab71279363e035eefd",
+    "legal_action_ids_sha256": "cdee6d7300d176b7fb6acac5d11b4d3141e16930cfa6ac0fbd3b6ba335364cd0"
+  },
+  "parent": {
+    "source_commit": "86630f6ca66e68133a4b0e2dc4908d63fa88cbe4",
+    "parsed_plan": null,
+    "selected_action_id": "alliance:kata"
+  },
+  "candidate": {
+    "source_commit": "4b1906142a93b5ac3980d08a4f8dff2a5ca269c6",
+    "parsed_plan": {
+      "intent": "grow",
+      "targetID": null,
+      "horizon": 4,
+      "model": "fixture"
+    },
+    "selected_action_id": "expand:terra-nullius:10",
+    "marker": "mm1g"
+  },
+  "test_command": [
+    "node",
+    "experiments/v18/verify-differential.mjs",
+    ".",
+    "86630f6ca66e68133a4b0e2dc4908d63fa88cbe4",
+    "4b1906142a93b5ac3980d08a4f8dff2a5ca269c6",
+    "experiments/v18/differential-fixture.json",
+    "experiments/v18/differential-proof-4b190614.json"
+  ],
+  "test_exit_code": 0
+}

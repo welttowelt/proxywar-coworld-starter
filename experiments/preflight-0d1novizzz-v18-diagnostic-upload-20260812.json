@@ -1,0 +1,65 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-12T15:27:00Z",
+  "lane": "0d1novizzz",
+  "mode": "diagnostic",
+  "candidate": {
+    "policy_name": "xX_UwU_Senpai_420_Xx",
+    "policy_ref": "proxywar-agent-candidate:v18-mechanism",
+    "source_commit": "4b1906142a93b5ac3980d08a4f8dff2a5ca269c6",
+    "parent_commit": "86630f6ca66e68133a4b0e2dc4908d63fa88cbe4",
+    "parent_policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "image_id": "sha256:2a913f7c02c5f03fce3ab10049bf80ae2a35635ada42ed456ef18caf87e06456",
+    "architecture": "amd64",
+    "user": "node",
+    "command": ["node", "/app/llm-player.mjs"],
+    "exact_delta": "Recover one transport-framed planner JSON packet while preserving the exact three-key semantic contract."
+  },
+  "identity": {
+    "expected_player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "expected_player_name": "0d1novizzz",
+    "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+    "division_id": "div_b54268ee-6b2f-4156-9c2a-8542645e31bc"
+  },
+  "local": {
+    "audit_receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v18-planner-transport-local-20260812.json",
+      "sha256": "0e56a3584c364af9a2f26ed90382be547927372968c43419d67bdf7cef786c38"
+    },
+    "preupload_rci": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v18-preupload-rci-20260812.json",
+      "sha256": "f0843a2698678f4937ee6fe697dd26af839eb94b0de57c4b714f9519327ee7d9"
+    }
+  },
+  "upload": {
+    "name": "xX_UwU_Senpai_420_Xx",
+    "use_bedrock": true,
+    "run": ["node", "/app/llm-player.mjs"],
+    "secret_env": ["PLAN_MODE=on"],
+    "tags": [
+      "goal=ffa-99",
+      "codename=b0lverk-h0gg",
+      "experiment=planner-transport-v18"
+    ]
+  },
+  "hosted_gate": {
+    "episodes": 4,
+    "required_wins": 4,
+    "required_marker_prefix": "pln:",
+    "minimum_mm1_executions": 1,
+    "maximum_fallbacks": 0,
+    "maximum_degradations": 0,
+    "maximum_holds": 0,
+    "maximum_rejections": 0,
+    "maximum_k1z_harm": 0,
+    "current_roster_required": true
+  },
+  "diagnostic_only": true,
+  "authorized_mutations": {
+    "upload": true,
+    "hosted_experience_request": true,
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false
+  }
+}

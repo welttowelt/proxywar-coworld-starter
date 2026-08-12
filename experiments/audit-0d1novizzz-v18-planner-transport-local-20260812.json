@@ -1,0 +1,137 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T15:24:00Z",
+  "lane": "0d1novizzz",
+  "arm": "planner-transport-v18",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "candidate_source_commit": "4b1906142a93b5ac3980d08a4f8dff2a5ca269c6",
+  "parent_source_commit": "86630f6ca66e68133a4b0e2dc4908d63fa88cbe4",
+  "candidate_image_id": "sha256:2a913f7c02c5f03fce3ab10049bf80ae2a35635ada42ed456ef18caf87e06456",
+  "parent_image_id": "sha256:37fb270f0e0019b09c72df75b4bc873ee49ed6052af442c074acd74dd86c7c49",
+  "contract_sha256": "dd2ea467747f46e114e1ec62d8f922c07a55f4d558b192c780a5e443bb6af730",
+  "required_coalition_roles": ["katanasan"],
+  "differential_unit_proof": {
+    "schema_version": 2,
+    "arm": "planner-transport-v18",
+    "same_fixture": true,
+    "verifier": {
+      "evaluator_commit": "71836c69dd5997e2bb09385fdd2a75801dcf4491",
+      "path": "experiments/v18/verify-differential.mjs",
+      "sha256": "af4330bcb38c45a1395bc23e0285aa305914e74ac274c526d9d72d39611ec788"
+    },
+    "fixture": {
+      "id": "v18-framed-grow-k1z-vs-neutral",
+      "path": "experiments/v18/differential-fixture.json",
+      "sha256": "08c24f0b5cbe3ae45cf76118634347aa84158ff31f9759ab71279363e035eefd",
+      "legal_action_ids_sha256": "cdee6d7300d176b7fb6acac5d11b4d3141e16930cfa6ac0fbd3b6ba335364cd0"
+    },
+    "parent": {
+      "source_commit": "86630f6ca66e68133a4b0e2dc4908d63fa88cbe4",
+      "parsed_plan": null,
+      "selected_action_id": "alliance:kata"
+    },
+    "candidate": {
+      "source_commit": "4b1906142a93b5ac3980d08a4f8dff2a5ca269c6",
+      "parsed_plan": {
+        "intent": "grow",
+        "targetID": null,
+        "horizon": 4,
+        "model": "fixture"
+      },
+      "selected_action_id": "expand:terra-nullius:10",
+      "marker": "mm1g"
+    },
+    "test_command": [
+      "node",
+      "experiments/v18/verify-differential.mjs",
+      ".",
+      "86630f6ca66e68133a4b0e2dc4908d63fa88cbe4",
+      "4b1906142a93b5ac3980d08a4f8dff2a5ca269c6",
+      "experiments/v18/differential-fixture.json",
+      "experiments/v18/differential-proof-4b190614.json"
+    ],
+    "test_exit_code": 0
+  },
+  "runs": [
+    {
+      "orientation": "A",
+      "run_id": "v18-mechanism-20260812T1522Z",
+      "game_id": "PWSELHEF",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "directory": "/private/tmp/proxywar-v18-mechanism-20260812T1522Z",
+      "coalition_roles_present": ["odin", "katanasan"],
+      "identity_map": {
+        "odin": {
+          "display_name": "0d1novizzz v18 candidate",
+          "match_player_id": "8jm74hky"
+        },
+        "katanasan": {
+          "display_name": "K1Z katanasan",
+          "match_player_id": "xfyjjkx9"
+        }
+      },
+      "job_sha256": "dd2ea467747f46e114e1ec62d8f922c07a55f4d558b192c780a5e443bb6af730",
+      "config_sha256": "d64c91df9572afdbaadee95fc4054e7555446dff56f6eeb57e4d0dd4b12e1639",
+      "results_sha256": "c1b68cee91e6fa6c7b1d944ad5bee9ba6ed344d2c15773542b38ebd9eb31be12",
+      "replay_sha256": "8dcda38f219d9b5b28df1e8185b31298964c55ffe591dad8c9e33e531db07f0f",
+      "decisions_sha256": "fdcbdf6709d27cda5e818220391ffa7cac6df4f9898c40d1be5c50132c587acb",
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image": "proxywar-agent-candidate:v18-mechanism",
+            "image_id": "sha256:2a913f7c02c5f03fce3ab10049bf80ae2a35635ada42ed456ef18caf87e06456"
+          },
+          "parent": {
+            "image": "proxywar-agent-v17:local",
+            "image_id": "sha256:37fb270f0e0019b09c72df75b4bc873ee49ed6052af442c074acd74dd86c7c49"
+          }
+        }
+      },
+      "candidate": {
+        "slot": 0,
+        "decision_count": 11,
+        "accepted": 11,
+        "score": 0.3104425349581884,
+        "tiles": 13476,
+        "alive": true,
+        "declared_win": false,
+        "route_execution_count": 10,
+        "marker_counts": { "mm1g": 10 },
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "unexplained_holds": [],
+        "harmful_k1z_actions": [],
+        "unresolved_harmful_targets": []
+      },
+      "parent": {
+        "slot": 2,
+        "decision_count": 11,
+        "accepted": 11,
+        "score": 0.2440738095786588,
+        "tiles": 10595,
+        "alive": true,
+        "runtime_excluded_from_verdict": true,
+        "reason": "the exact v17 parser intentionally rejects the framed fixture and degrades"
+      },
+      "orientation_advantage": null,
+      "violations": []
+    }
+  ],
+  "source_image_binding": {
+    "architecture": "amd64",
+    "user": "node",
+    "command": ["node", "/app/llm-player.mjs"],
+    "source_and_image_sha256": {
+      "llm-player.mjs": "55c045789842ab1c4eff9c22254d953e23399e1895c861f29eb7cd6939b020f3",
+      "intent-controller.mjs": "7a093f623a7124df55dfd50ed940eb37b6710564e1355e74326eea97604f4566",
+      "strategy-engine.mjs": "4a5dc56a23371033b9c543e416397b1a18feb5b842d965ba1d23661f528d832a"
+    }
+  },
+  "failures": [],
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "scope": "exact-image planner transport reach, accepted runtime decisions, differential action change, and K1Z safety; no local competitive-lift claim"
+}
