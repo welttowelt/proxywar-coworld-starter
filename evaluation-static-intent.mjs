@@ -3,6 +3,8 @@ import {
   intentRefreshInterval,
   normalizeIntentDirective,
 } from "./intent-controller.mjs";
+
+const LEGACY_EVALUATION_INTENTS = Object.freeze(["grow", "convert"]);
 import {
   clean,
   rivalIsProtected,
@@ -56,6 +58,7 @@ export function normalizeEvaluationDirective(value, state, arm) {
     value,
     state,
     `${EVALUATION_SURROGATE_SOURCE}:${arm}`,
+    LEGACY_EVALUATION_INTENTS,
   );
   if (!normalized) return null;
   return {
@@ -167,7 +170,7 @@ export function createStaticIntentScheduler(value) {
       }
 
       const planAge = currentPlan === null ? null : decisionsOnPlan;
-      const plan = executableIntentPlan(currentPlan, decisionsOnPlan, false);
+      const plan = executableIntentPlan(currentPlan, LEGACY_EVALUATION_INTENTS);
       if (plan !== null) decisionsOnPlan += 1;
       return { plan, planAge, refreshed };
     },

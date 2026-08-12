@@ -37,6 +37,9 @@ import { chooseChassisAction } from "./strategy-chassis.mjs";
 import { chooseDealMove, isDealActionKind } from "./deal-desk.mjs";
 
 const POLICY_ENGINE = process.env.POLICY_ENGINE || "legacy";
+const ACCEPTED_PLANNER_INTENTS = POLICY_ENGINE === "intent-core"
+  ? undefined
+  : ["grow", "convert"];
 const chooseAction = POLICY_ENGINE === "qd2n"
   ? chooseChassisAction
   : POLICY_ENGINE === "intent-core"
@@ -78,9 +81,9 @@ const TEST_INTENT_DIRECTIVE = process.env.NODE_ENV === "test"
 // available to existing policy images and tests.
 const INTENT_CORE_STRATEGY = [
   "You command an autonomous nation in ProxyWar. Win by finishing with the most territory.",
-  "Choose one outcome for the next few decisions: grow or convert.",
-  "grow = acquire territory and usable power; convert = turn power into one visible rival's loss.",
-  "For convert, use the exact visible rival ID. For grow, targetID is null.",
+  "Choose one outcome for the next few decisions: expand, consolidate, or convert.",
+  "expand = acquire neutral territory; consolidate = preserve strength and improve existing territory; convert = turn strength into one visible rival's loss.",
+  "For convert, use the exact visible rival ID. For expand or consolidate, targetID is null.",
   "Do not prescribe moves, action kinds, build orders, percentages, map scripts, or timing. The executor chooses among offered legal actions.",
 ].join(" ");
 const STRATEGY = POLICY_ENGINE === "intent-core"
@@ -112,7 +115,8 @@ async function askBedrock(state, signal) {
   if (!bedrock) throw new Error("bedrock client did not initialize");
   const directiveContract = POLICY_ENGINE === "intent-core"
     ? 'Reply with ONLY JSON and exactly these three keys. Use one shape: ' +
-      '{"intent":"grow","targetID":null,"horizon":4} or ' +
+      '{"intent":"expand","targetID":null,"horizon":4}, ' +
+      '{"intent":"consolidate","targetID":null,"horizon":4}, or ' +
       '{"intent":"convert","targetID":"<exact visible rival ID>","horizon":4}. '
     : 'Reply with ONLY JSON and exactly these three keys. Use one shape: ' +
       '{"intent":"grow","targetID":null,"horizon":4} or ' +
@@ -141,7 +145,7 @@ async function askBedrock(state, signal) {
 
 // -- the PLAN: written by the model in the background, executed instantly -----
 let plan = PLANNER_ENABLED && POLICY_ENGINE === "intent-core"
-  ? { intent: "grow", targetID: null, horizon: 2, model: "bootstrap" }
+  ? { intent: "expand", targetID: null, horizon: 2, model: "bootstrap" }
   : null;                 // { intent, targetID, horizon, model }
 let planDecisionAge = plan?.model === "bootstrap" ? plan.horizon : 0;
 let planRefreshInFlight = false;
@@ -156,7 +160,12 @@ function refreshPlanInBackground(state) {
   const controller = new AbortController();
   withTimeout(askBedrock(state, controller.signal), PLAN_TIMEOUT_MS, () => controller.abort())
     .then(({ text, model }) => {
-      const nextPlan = parseIntentDirective(text, state, model);
+      const nextPlan = parseIntentDirective(
+        text,
+        state,
+        model,
+        ACCEPTED_PLANNER_INTENTS,
+      );
       if (!nextPlan) throw new Error("plan reply had no valid intent");
       plan = nextPlan;
       planDecisionAge = 0;
@@ -275,6 +284,7 @@ function handleMessage(activeSocket, data) {
         TEST_INTENT_DIRECTIVE,
         state,
         "intent-test-fixture",
+        ACCEPTED_PLANNER_INTENTS,
       );
       if (fixturePlan) plan = fixturePlan;
     }
@@ -285,7 +295,7 @@ function handleMessage(activeSocket, data) {
   }
 
   const executionPlan = PLANNER_ENABLED
-    ? executableIntentPlan(plan)
+    ? executableIntentPlan(plan, ACCEPTED_PLANNER_INTENTS)
     : null;
   // A refresh error does not erase a valid intent. Degradation is reserved for
   // the state where no valid planner outcome exists at all.

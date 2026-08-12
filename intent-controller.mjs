@@ -2,7 +2,7 @@ import { clean } from "./strategy-engine.mjs";
 
 export const MIN_INTENT_HORIZON = 2;
 export const MAX_INTENT_HORIZON = 12;
-export const INTENTS = Object.freeze(["grow", "convert"]);
+export const INTENTS = Object.freeze(["expand", "consolidate", "convert"]);
 
 const TARGETED_INTENTS = new Set(["convert"]);
 
@@ -21,11 +21,16 @@ function eligibleTarget(state, targetID) {
 
 // Accept only a small mission-command packet. Unknown keys, coerced numbers,
 // target names, and tactical instructions are rejected instead of repaired.
-export function normalizeIntentDirective(value, state, model = "unknown") {
+export function normalizeIntentDirective(
+  value,
+  state,
+  model = "unknown",
+  allowedIntents = INTENTS,
+) {
   if (!value || typeof value !== "object" || Array.isArray(value) || !exactKeys(value)) {
     return null;
   }
-  if (typeof value.intent !== "string" || !INTENTS.includes(value.intent)) return null;
+  if (typeof value.intent !== "string" || !allowedIntents.includes(value.intent)) return null;
   const intent = value.intent;
   if (!Number.isInteger(value.horizon) ||
       value.horizon < MIN_INTENT_HORIZON ||
@@ -87,7 +92,12 @@ function singleJsonObjectPayload(text) {
 
 // The production planner response is a protocol packet, not prose. Strip only
 // transport framing, then retain the exact semantic validation below.
-export function parseIntentDirective(text, state, model = "unknown") {
+export function parseIntentDirective(
+  text,
+  state,
+  model = "unknown",
+  allowedIntents = INTENTS,
+) {
   if (typeof text !== "string") return null;
   const payload = singleJsonObjectPayload(text);
   if (payload === null) return null;
@@ -97,7 +107,7 @@ export function parseIntentDirective(text, state, model = "unknown") {
   } catch {
     return null;
   }
-  return normalizeIntentDirective(value, state, model);
+  return normalizeIntentDirective(value, state, model, allowedIntents);
 }
 
 export function intentRefreshInterval(plan, configuredMaximum = 8) {
@@ -106,12 +116,11 @@ export function intentRefreshInterval(plan, configuredMaximum = 8) {
   return Math.min(maximum, plan.horizon);
 }
 
-// Horizon schedules the next planner refresh. It does not turn an outcome into
-// a short-lived tactical instruction: the last valid intent stays in force
-// until a new valid packet replaces it, while the executor keeps reacting to
-// the live board.
-export function executableIntentPlan(plan) {
-  const validShape = plan && INTENTS.includes(plan.intent) &&
+// Horizon schedules the next planner refresh. The last valid outcome stays in
+// force until the planner replaces it; the executor never silently changes it.
+export function executableIntentPlan(plan, allowedIntents = INTENTS) {
+  const accepted = Array.isArray(allowedIntents) ? allowedIntents : INTENTS;
+  const validShape = plan && accepted.includes(plan.intent) &&
     Number.isInteger(plan.horizon) &&
     plan.horizon >= MIN_INTENT_HORIZON && plan.horizon <= MAX_INTENT_HORIZON &&
     (!TARGETED_INTENTS.has(plan.intent)

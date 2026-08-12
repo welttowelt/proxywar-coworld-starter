@@ -1,15 +1,13 @@
 import {
   actionPercent,
   clean,
-  incomingThreatCount,
   isNeutralBoat,
   isNeutralExpansion,
   rivalForAction,
   rivalIsProtected,
-  territoryCollapsing,
 } from "./strategy-engine.mjs";
 
-const INTENTS = new Set(["grow", "convert"]);
+const INTENTS = new Set(["expand", "consolidate", "convert"]);
 const HARMFUL_KINDS = new Set([
   "attack", "boat", "nuke", "target_player", "embargo", "embargo_all",
 ]);
@@ -18,7 +16,11 @@ const SYMBOLIC_KINDS = new Set([
   "target_player", "embargo", "embargo_all", "embargo_stop",
   "alliance_request", "alliance_extend", "break_alliance", "quick_chat", "emoji",
 ]);
-const MARKERS = Object.freeze({ grow: "ixexp", convert: "ixprs" });
+const MARKERS = Object.freeze({
+  expand: "ixexp",
+  consolidate: "ixcon",
+  convert: "ixprs",
+});
 
 function normalizedID(value) {
   return clean(value).toLowerCase();
@@ -69,54 +71,20 @@ function protectedHarm(action, state, history) {
   return rival ? rivalIsProtected(state, history, rival) : false;
 }
 
-function currentAttackerIDs(state) {
-  return new Set([
-    ...(state?.self?.incomingAttackerIDs || []),
-    ...(state?.self?.allProtocolAttackerIDs || []),
-  ].map(normalizedID).filter(Boolean));
-}
-
-function bestConversionTarget(state, history) {
-  const attackers = currentAttackerIDs(state);
-  const candidates = (state?.rivals || [])
-    .filter((rival) => !rivalIsProtected(state, history, rival))
-    .sort((left, right) => {
-      const leftAttacker = attackers.has(normalizedID(left.id)) ? 1 : 0;
-      const rightAttacker = attackers.has(normalizedID(right.id)) ? 1 : 0;
-      const leftReach = left.canAttack || left.sharesBorder ? 1 : 0;
-      const rightReach = right.canAttack || right.sharesBorder ? 1 : 0;
-      const leftRatio = Number.isFinite(left.relativeTroopRatio)
-        ? left.relativeTroopRatio : -1;
-      const rightRatio = Number.isFinite(right.relativeTroopRatio)
-        ? right.relativeTroopRatio : -1;
-      return rightAttacker - leftAttacker || rightReach - leftReach ||
-        rightRatio - leftRatio || right.tileShare - left.tileShare ||
-        normalizedID(left.id).localeCompare(normalizedID(right.id));
-    });
-  return normalizedID(candidates[0]?.id);
-}
-
-function mission(plan, state, history) {
-  const collapsing = territoryCollapsing(state, history);
-  const attacked = incomingThreatCount(state?.self?.incomingAttacks) > 0 ||
-    currentAttackerIDs(state).size > 0;
-  if (collapsing || attacked) {
-    return { intent: "convert", targetID: bestConversionTarget(state, history) };
-  }
+function mission(plan) {
   if (INTENTS.has(plan?.intent)) {
     return {
       intent: plan.intent,
       targetID: plan.intent === "convert" ? normalizedID(plan?.targetID) : null,
     };
   }
-  return { intent: "grow", targetID: null };
+  return { intent: "expand", targetID: null };
 }
 
 function actionIntent(action) {
   if (!action || action.kind === "hold" || isSymbolic(action)) return null;
-  if (isNeutralExpansion(action) || isNeutralBoat(action) || isInfrastructure(action)) {
-    return "grow";
-  }
+  if (isNeutralExpansion(action) || isNeutralBoat(action)) return "expand";
+  if (isInfrastructure(action)) return "consolidate";
   if (isPhysicalForce(action)) return "convert";
   return null;
 }
@@ -126,22 +94,11 @@ function offeredMenu(actions, state, history, requested) {
     action && typeof action.id === "string" && action.id.length > 0 &&
     !protectedHarm(action, state, history)
   );
-  const aligned = legal.filter((action) => actionIntent(action) === requested.intent);
+  const aligned = legal.filter((action) =>
+    actionIntent(action) === requested.intent &&
+    (requested.intent !== "convert" || sameTarget(action, requested.targetID, state))
+  );
   if (aligned.length > 0) return { directive: requested, actions: aligned };
-
-  const fallbackIntent = requested.intent === "grow" ? "convert" : "grow";
-  const fallback = legal.filter((action) => actionIntent(action) === fallbackIntent);
-  if (fallback.length > 0) {
-    return {
-      directive: {
-        intent: fallbackIntent,
-        targetID: fallbackIntent === "convert"
-          ? bestConversionTarget(state, history) : null,
-      },
-      actions: fallback,
-    };
-  }
-
   const hold = legal.find((action) => action.kind === "hold");
   return { directive: requested, actions: hold ? [hold] : [] };
 }
@@ -158,15 +115,18 @@ function missionScore(action, directive, state) {
   const exactTarget = directive.targetID
     ? sameTarget(action, directive.targetID, state) : false;
 
-  if (directive.intent === "grow") {
+  if (directive.intent === "expand") {
     if (neutralLand) return 300;
     if (neutralBoat) return 260;
-    if (infrastructure) return 220;
+    return action.kind === "hold" ? -200 : -1000;
+  }
+
+  if (directive.intent === "consolidate") {
+    if (infrastructure) return 300;
     return action.kind === "hold" ? -200 : -1000;
   }
 
   if (physical && exactTarget) return 340;
-  if (physical) return 280;
   return action.kind === "hold" ? -200 : -1000;
 }
 
@@ -185,7 +145,7 @@ function repetitionPenalty(action, history) {
 function commitmentTieBreak(action, directive, state) {
   const percent = actionPercent(action);
   if (!Number.isFinite(percent)) return 0;
-  if (directive.intent === "grow" && isNeutralExpansion(action)) return percent / 10;
+  if (directive.intent === "expand" && isNeutralExpansion(action)) return percent / 10;
   if (directive.intent === "convert" && isPhysicalForce(action)) {
     const rival = actionRival(action, state);
     const ratio = Number(rival?.relativeTroopRatio);
@@ -206,7 +166,7 @@ export function chooseIntentCoreAction(actions, state, plan = null, history = []
   const spawn = actions.find((action) => action?.kind === "spawn");
   if (spawn) return spawn;
 
-  const requested = mission(plan, state, history);
+  const requested = mission(plan);
   const { directive, actions: menu } = offeredMenu(
     actions, state, history, requested,
   );

@@ -34,7 +34,7 @@ const state = {
   recentKinds: ["attack", "build"],
 };
 
-test("accepts only exact grow or convert mission packets", () => {
+test("accepts only exact outcome packets", () => {
   assert.deepEqual(
     normalizeIntentDirective(
       { intent: "convert", targetID: "player-7", horizon: 5 },
@@ -44,21 +44,29 @@ test("accepts only exact grow or convert mission packets", () => {
     { intent: "convert", targetID: "player-7", horizon: 5, model: "planner-model" },
   );
   assert.deepEqual(
-    normalizeIntentDirective({ intent: "grow", targetID: null, horizon: 2 }, state),
-    { intent: "grow", targetID: null, horizon: 2, model: "unknown" },
+    normalizeIntentDirective({ intent: "expand", targetID: null, horizon: 2 }, state),
+    { intent: "expand", targetID: null, horizon: 2, model: "unknown" },
+  );
+  assert.deepEqual(
+    normalizeIntentDirective({ intent: "consolidate", targetID: null, horizon: 2 }, state),
+    { intent: "consolidate", targetID: null, horizon: 2, model: "unknown" },
   );
 });
 
-test("accepts only the two planner outcomes", () => {
+test("accepts only the three planner outcomes", () => {
   assert.deepEqual(
-    normalizeIntentDirective({ intent: "grow", targetID: null, horizon: 4 }, state),
-    { intent: "grow", targetID: null, horizon: 4, model: "unknown" },
+    normalizeIntentDirective({ intent: "expand", targetID: null, horizon: 4 }, state),
+    { intent: "expand", targetID: null, horizon: 4, model: "unknown" },
+  );
+  assert.deepEqual(
+    normalizeIntentDirective({ intent: "consolidate", targetID: null, horizon: 4 }, state),
+    { intent: "consolidate", targetID: null, horizon: 4, model: "unknown" },
   );
   assert.deepEqual(
     normalizeIntentDirective({ intent: "convert", targetID: "player-7", horizon: 4 }, state),
     { intent: "convert", targetID: "player-7", horizon: 4, model: "unknown" },
   );
-  for (const intent of ["expand", "fortify", "defend", "ally", "pressure"]) {
+  for (const intent of ["grow", "fortify", "defend", "ally", "pressure"]) {
     assert.equal(normalizeIntentDirective({
       intent,
       targetID: ["ally", "pressure"].includes(intent) ? "player-7" : null,
@@ -68,8 +76,8 @@ test("accepts only the two planner outcomes", () => {
 });
 
 test("parses exactly one transport-framed JSON mission packet", () => {
-  const packet = '{"intent":"grow","targetID":null,"horizon":4}';
-  const expected = { intent: "grow", targetID: null, horizon: 4, model: "planner-model" };
+  const packet = '{"intent":"expand","targetID":null,"horizon":4}';
+  const expected = { intent: "expand", targetID: null, horizon: 4, model: "planner-model" };
   assert.deepEqual(parseIntentDirective(packet, state, "planner-model"), expected);
   for (const framed of [
     `Here is the plan: ${packet}`,
@@ -83,7 +91,7 @@ test("parses exactly one transport-framed JSON mission packet", () => {
   for (const rejected of [
     `${packet}${packet}`,
     `${packet} and also {"intent":"convert"}`,
-    '{"intent":"grow","targetID":null,"horizon":4',
+    '{"intent":"expand","targetID":null,"horizon":4',
     `closing stray } before ${packet}`,
     "no packet at all",
     "",
@@ -108,13 +116,13 @@ test("rejects extra tactical keys and unknown intents", () => {
 
 test("rejects malformed horizons rather than coercing them", () => {
   for (const horizon of [-1, 1, 13, 2.5, "5", null]) {
-    assert.equal(normalizeIntentDirective({ intent: "grow", targetID: null, horizon }, state), null);
+    assert.equal(normalizeIntentDirective({ intent: "expand", targetID: null, horizon }, state), null);
   }
 });
 
-test("requires null grow target and an exact visible convert target ID", () => {
+test("requires null non-targeted outcomes and an exact visible convert target ID", () => {
   assert.equal(normalizeIntentDirective({
-    intent: "grow", targetID: "player-7", horizon: 3,
+    intent: "expand", targetID: "player-7", horizon: 3,
   }, state), null);
   assert.equal(normalizeIntentDirective({
     intent: "convert", targetID: "Visible Rival", horizon: 3,
@@ -129,7 +137,7 @@ test("requires null grow target and an exact visible convert target ID", () => {
     intent: "convert", targetID: " player-7 ", horizon: 3,
   }, state), null);
   assert.equal(normalizeIntentDirective({
-    intent: "Grow", targetID: null, horizon: 3,
+    intent: "Expand", targetID: null, horizon: 3,
   }, state), null);
 });
 
@@ -157,7 +165,7 @@ test("refresh interval honors a valid horizon and operator ceiling", () => {
 });
 
 test("valid intents persist across refresh age and transient refresh errors", () => {
-  const plan = { intent: "grow", targetID: null, horizon: 3, model: "test" };
+  const plan = { intent: "expand", targetID: null, horizon: 3, model: "test" };
   assert.equal(executableIntentPlan(plan, 3, false), plan);
   assert.equal(executableIntentPlan(plan, 4, false), plan);
   assert.equal(executableIntentPlan(plan, 1, true), plan);

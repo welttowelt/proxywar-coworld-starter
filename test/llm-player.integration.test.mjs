@@ -655,7 +655,7 @@ test("intent-core wiring executes the planner outcome without the legacy selecto
       PLAN_MODE: "on",
       POLICY_ENGINE: "intent-core",
       INTENT_TEST_DIRECTIVE: JSON.stringify({
-        intent: "grow",
+        intent: "expand",
         targetID: null,
         horizon: 4,
       }),
@@ -700,7 +700,7 @@ test("intent-core wiring executes the planner outcome without the legacy selecto
   assert.match(responses[1].reason, /^pln:atk:ixexp$/);
 });
 
-test("intent-core starts from an honest grow outcome while the planner is pending", async () => {
+test("intent-core starts from an honest expand outcome while the planner is pending", async () => {
   const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
   await new Promise((resolve) => server.once("listening", resolve));
   const { port } = server.address();
