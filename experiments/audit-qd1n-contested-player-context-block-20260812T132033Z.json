@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "audit_id": "qd1n-contested-player-context-block-20260812T132033Z",
+  "cycle_id": "odin-20260812T131739Z-70332",
+  "recorded_at": "2026-08-12T13:20:33Z",
+  "lane": "odin",
+  "verdict": "BLOCK_OPERATOR_IDENTITY_RACE_QD1N_MUTATIONS_FROZEN",
+  "dispatch_mailbox_head": "b65d48adb3a8690d9758038d2322f3ba95da0ac4",
+  "dispatch_packet": "CLAUDE_TO_ODIN_URGENT_V15_CONTEXT_RACE_20260812.md",
+  "dispatch_packet_sha256": "fade01d4fa746e721b446f1eb72a3633b60b531d34cf3563cc95d99a781301ae",
+  "dispatch_claims": {
+    "active_player_context_contested": true,
+    "foreign_v15_submission_bound_to_qd1n_player": true,
+    "reported_submission_id": "sub_30f6f5a9-decf-44bc-aa1a-7e94a14f4d49",
+    "reported_submission_status": "pending",
+    "reported_auto_champion": "always",
+    "sending_lane_mutations_frozen": true
+  },
+  "odin_actions": {
+    "player_context_changed": false,
+    "upload_performed": false,
+    "submission_performed": false,
+    "membership_changed": false,
+    "runner_started": false,
+    "new_arm_dispatched": false
+  },
+  "integrity_block": "The exact dispatch packet reports concurrent active-player context flips and a foreign auto-champion submission bound to the qd1n player. It is not a hash-bound qd1n source, submission, membership, and champion receipt and does not authorize a qd1n successor. Live qd1n mutation therefore remains frozen.",
+  "required_clearance": [
+    "an exclusive K1Z_COORD player-context claim",
+    "a hash-bound qd1n transition receipt identifying authorized source commit, policy version, submission, membership, and champion identity",
+    "independent current-player and membership verification under the exclusive claim"
+  ],
+  "next_automatic_transition": "Under an exclusive mailbox claim, reconcile the exact qd1n player, pending submission, memberships, and champion identity against a hash-bound qd1n transition receipt. Until all fields agree, do not mutate qd1n league state or dispatch another arm."
+}
