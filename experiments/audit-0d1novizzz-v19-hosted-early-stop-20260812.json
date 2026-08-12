@@ -12,7 +12,9 @@
   "gate": {
     "required": "4/4 hosted wins with intent reach, zero fallback, zero degradation, zero unexplained holds, zero rejects, and zero K1Z harm",
     "result_at_stop": "0/1 completed",
-    "terminal_reason": "The first completed episode scored zero, making the preregistered 4/4 result impossible.",
+    "final_result": "0/4",
+    "request_completed_at": "2026-08-12T16:55:12.916043Z",
+    "terminal_reason": "The first completed episode scored zero, making the preregistered 4/4 result impossible. The complete request finished with four losses; daveey won all four episodes.",
     "remaining_episode_changes_verdict": false
   },
   "first_completed_episode": {

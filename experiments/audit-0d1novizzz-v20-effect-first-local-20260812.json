@@ -1,0 +1,97 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T17:03:42Z",
+  "lane": "0d1novizzz",
+  "arm": "effect-first-v20",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "candidate_source_commit": "18fbf8897c5130e4970a2ac241a36583c7833568",
+  "parent_source_commit": "cda205b78f2f01a974f3a6ed8964da6b1f36a5ed",
+  "candidate_image_id": "sha256:866917da2d7858e6b960ba507f52dc7b29bbc111458c4c50c4f16b3d513c4b3c",
+  "parent_image_id": "sha256:94596cc2e62086dda1fc30dbd4ddc518e02abeb7ec20339af810cd6b3a242723",
+  "fixture": {
+    "map": "Pangaea",
+    "seed": 2026081,
+    "roster": [
+      "0d1novizzz v19 intent core",
+      "K1Z katanasan",
+      "v17 parent control",
+      "Outsider"
+    ],
+    "directive": {
+      "intent": "pressure",
+      "targetID": "nz5d4q27",
+      "horizon": 4
+    },
+    "target_name": "Outsider",
+    "matched_except_candidate_image": true,
+    "parent_job_sha256": "20d844954f7c390f7e185046f27bfecf387757139ff6e31182550459dbfbcf0c",
+    "candidate_job_sha256": "c2e90363fe241c40dd8b6feea170ec22fd3823fa8d016a57a8d48aae6f6803ae"
+  },
+  "parent_run": {
+    "run_id": "v19-pressure-control-20260812T1702Z",
+    "directory": "/private/tmp/proxywar-v19-pressure-control-20260812T1702Z",
+    "score": 0.10415107892137791,
+    "tiles": 3480,
+    "alive": true,
+    "decision_count": 11,
+    "confirmed": 11,
+    "planner_reach": 10,
+    "intent_marker_reach": 10,
+    "fallback": 0,
+    "degraded": 0,
+    "holds": 0,
+    "signal_actions": 4,
+    "exact_target_physical_actions": 2,
+    "productive_or_neutral_actions": 4,
+    "replay_sha256": "894fce21d20f514d4c1800cfb5630a39a874e0601a10b5aab75da789dc074e3c",
+    "decisions_sha256": "92e6e0d674d9d41962af67fabaca611a9eb568d3c43c0845e281b57c4fb6c2a8",
+    "results_sha256": "920b866e24d5f8f68343b295957ab8dfb8646e7b0b422b98b3681d57fe043783"
+  },
+  "candidate_run": {
+    "run_id": "v20-effect-first-20260812T1700Z",
+    "directory": "/private/tmp/proxywar-v20-effect-first-20260812T1700Z",
+    "score": 0.21801034536809655,
+    "tiles": 8345,
+    "alive": true,
+    "decision_count": 11,
+    "confirmed": 11,
+    "planner_reach": 10,
+    "intent_marker_reach": 10,
+    "fallback": 0,
+    "degraded": 0,
+    "holds": 0,
+    "rejects": 0,
+    "signal_actions": 0,
+    "exact_target_physical_actions": 3,
+    "productive_or_neutral_actions": 7,
+    "harmful_k1z_actions": 0,
+    "unresolved_harmful_targets": 0,
+    "replay_sha256": "dbefc6e3449ef79ab69c4218e537f621cefaba92d371f4f2ff268828712b54c9",
+    "decisions_sha256": "25908ed8d966f4a411979d49ac3eb4d880762736249a9b06ef5f7ceae6e0db53",
+    "results_sha256": "befab32fd26050f0ea4f04c2466a2441434ce586f744250e4ab8209398d0ed2c"
+  },
+  "source_image_binding": {
+    "architecture": "amd64",
+    "user": "node",
+    "command": [
+      "node",
+      "/app/llm-player.mjs"
+    ],
+    "source_and_image_sha256": {
+      "llm-player.mjs": "7cae915c9e0acd4b81ec4d97adaf7d1b18fb8092104f49cd6112a4278808ff02",
+      "intent-controller.mjs": "113e8719c392e7e7ba0d7c9e3f1c4d909101715bb970690c911f43097068511f",
+      "intent-core.mjs": "8d2430b777cdc5ae935dce17400f8d48120e000bfa030df17e3712b328f15cdd",
+      "strategy-engine.mjs": "4a5dc56a23371033b9c543e416397b1a18feb5b842d965ba1d23661f528d832a"
+    }
+  },
+  "tests": {
+    "focused": "45/45 pass",
+    "full_suite": "461/467 pass",
+    "new_candidate_failures": 0,
+    "preexisting_unrelated_failures": 6
+  },
+  "failures": [],
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "scope": "Exact-image pressure-intent reach, matched parent action delta, accepted runtime decisions, K1Z safety, and local territory-share signal. This does not prove hosted competitive lift."
+}
