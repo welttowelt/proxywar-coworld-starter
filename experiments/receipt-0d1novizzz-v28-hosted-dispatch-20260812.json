@@ -1,0 +1,37 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T23:17:39Z",
+  "lane": "0d1novizzz",
+  "mode": "hosted_diagnostic_dispatch",
+  "status": "submitted",
+  "candidate_source_commit": "0743674b02c472a4401ba1a8df897b850b8743d5",
+  "candidate_image_id": "sha256:c122f2333191efa9f2cb112c54d28d18ab809e3baf99505f304514831abe8d60",
+  "candidate_policy_version_id": "b21021db-42bd-4745-99a5-52d0aa1a8684",
+  "uploaded_label": "xX_UwU_Senpai_420_Xx:v26",
+  "source_round": {
+    "id": "round_2517bce7-ed15-46ae-83f4-b966b8f5e585",
+    "number": 1392,
+    "status": "completed"
+  },
+  "request_path": "experiments/request-0d1novizzz-v28-hosted-current16-asia-4x.json",
+  "request_sha256": "e17e07729ad995b852c0de98df84e3934b1913a318bf990c79845fff78c8f920",
+  "request_commit": "71619f29228a2f257e8ba21443acc1d3268c6e5f",
+  "experience_request_id": "xreq_a1921007-5786-46b1-9636-2fdc4ea89da2",
+  "episode_request_ids": [
+    "ereq_473fab48-2fde-4460-899b-2633bca3b0a6",
+    "ereq_18ae7bb3-f03f-4910-9349-461e9f10d73a",
+    "ereq_5bade1a9-c47f-488e-a2b7-373cad7478c6",
+    "ereq_6d3c4fdf-875c-4268-95cb-86d32d275cc7"
+  ],
+  "variant": "tournament-16p-asia",
+  "coworld_version": "0.1.39",
+  "episode_count": 4,
+  "candidate_slot": 0,
+  "only_odin_replaced": true,
+  "active_player_before_dispatch": "0d1novizzz",
+  "league_mutation": false,
+  "prior_champion_preserved": {
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  }
+}
