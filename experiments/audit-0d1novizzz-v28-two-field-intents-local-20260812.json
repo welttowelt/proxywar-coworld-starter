@@ -1,0 +1,139 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T23:05:57Z",
+  "lane": "0d1novizzz",
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "candidate_source_commit": "0743674b02c472a4401ba1a8df897b850b8743d5",
+  "candidate_evidence_commit": "7867a1aca7106e035da5cc8a2e74d392e046cb7b",
+  "parent_source_commit": "76d1fa7602176ce42fd931dbdfba35d47afed474",
+  "candidate_image_id": "sha256:c122f2333191efa9f2cb112c54d28d18ab809e3baf99505f304514831abe8d60",
+  "contract_sha256": "101f9aed242f83010fc9e853d4cc56736b35afb9b7e99cb9375c2ca8634de881",
+  "image_contract": {
+    "architecture": "amd64",
+    "os": "linux",
+    "user": "node",
+    "cmd": [
+      "node",
+      "/app/llm-player.mjs"
+    ],
+    "policy_engine": "intent-core",
+    "policy_codename": "b0lverk-h0gg",
+    "file_sha256": {
+      "/app/llm-player.mjs": "25caaca4ecfa7acbea58aaf3344f5617d5f0029ace255cdd0a81e034b8584cce",
+      "/app/intent-controller.mjs": "0f0d4830b3dbbcefef11c34fb49691370cc88545381febc26d5807fe7e0c6fa1",
+      "/app/intent-core.mjs": "0b19df99bf8f809a09a6ac09650c53d58fcc857907db11a7fbf4ff0f4351f3f6",
+      "/app/strategy-engine.mjs": "4a5dc56a23371033b9c543e416397b1a18feb5b842d965ba1d23661f528d832a"
+    }
+  },
+  "exact_image_outcome_harness": {
+    "expand": {
+      "packet": {
+        "intent": "expand",
+        "targetID": null
+      },
+      "selected_action_id": "expand:terra-nullius:35",
+      "marker": "ixexp"
+    },
+    "consolidate": {
+      "packet": {
+        "intent": "consolidate",
+        "targetID": null
+      },
+      "selected_action_id": "build:Factory:43",
+      "marker": "ixcon"
+    },
+    "convert": {
+      "packet": {
+        "intent": "convert",
+        "targetID": "outsider"
+      },
+      "selected_action_id": "attack:outsider:40",
+      "marker": "ixprs"
+    },
+    "offered_k1z_harmful_action": "attack:mickey:40",
+    "selected_k1z_harm": false
+  },
+  "differential_unit_proof": {
+    "path": "experiments/v28/differential-proof-0743674b.json",
+    "sha256": "534732003bc44f227791344293889f5ac77f33e48d47f18215fc8b32a609eb9d",
+    "same_board_action_menu_and_planner_reply": true,
+    "parent": {
+      "parsed_plan": null,
+      "selected_action_id": "expand:terra-nullius:35",
+      "marker": "ixexp"
+    },
+    "candidate": {
+      "parsed_plan": {
+        "intent": "consolidate",
+        "targetID": null,
+        "model": "fixture"
+      },
+      "selected_action_id": "build:Factory:43",
+      "marker": "ixcon"
+    },
+    "selected_k1z_harm": false
+  },
+  "runs": [
+    {
+      "run_id": "v28-two-field-intents-20260812T2257Z",
+      "coworld_run_id": "coworld-2026-08-12T23-05-15-711Z-4eb256d5",
+      "game_id": "PWSELHEF",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "directory": "/private/tmp/proxywar-v28-two-field-intents-20260812T2257Z",
+      "replay_sha256": "6e81c1b81192b09f4c1c0039146d0d4c425db04417b8e17692fde3121384bfdd",
+      "results_sha256": "ef4bd70554735aa86e29fd0648879c47317760f3f54bd8f9a444bbf17f97f03a",
+      "config_sha256": "ecd6255f931136708227716c169b2e7ea7d8d4e7fb5e9ed8380672a7811d4253",
+      "decisions_sha256": "03661877298296fd7bb1b5548f839204ae679e83072704f91cc62a22d29af8f0",
+      "spectator_replay_sha256": "1dd48631412ee59485b6d3736c11a672bda609c26bfbbb25c32b86c5dc32ac5b",
+      "candidate": {
+        "slot": 0,
+        "decision_count": 41,
+        "post_spawn_decisions": 40,
+        "accepted": 41,
+        "rejected": 0,
+        "score": 0.13799318847218625,
+        "final_tiles": 13857,
+        "final_troops": 605085,
+        "alive": true,
+        "planner_reason_count": 40,
+        "marker_counts": {
+          "ixexp": 40
+        },
+        "action_counts": {
+          "attack_neutral": 38,
+          "boat_neutral": 2,
+          "spawn": 1
+        },
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "rejection_turns": [],
+        "parser_failure_turns": [],
+        "symbolic_actions": 0,
+        "harmful_k1z_actions": []
+      },
+      "static_fixture_disclosure": "The local wrapper held expand for the episode because local Bedrock is unavailable. The score is identical to v27's static-expand run and is not competitive evidence."
+    }
+  ],
+  "focused_suite": {
+    "tests": 70,
+    "passed": 70,
+    "failed": 0
+  },
+  "full_suite": {
+    "tests": 469,
+    "passed": 463,
+    "failed": 6,
+    "candidate_related_failures": 0,
+    "persistent_unrelated_failures": 6,
+    "note": "The same four stale Mickey fanout and two stale RCI fixture failures remained."
+  },
+  "runner_lease_after": {
+    "state": "free",
+    "schema_version": 2
+  },
+  "scope_boundary": "The exact image proves the two-field packet, all three literal outcome lanes, runtime acceptance, and K1Z safety. Only a bounded hosted request can exercise live outcome replacement; no league change is authorized.",
+  "failures": []
+}
