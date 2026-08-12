@@ -1,0 +1,72 @@
+{
+  "id": "v20-pressure-effect-vs-signal",
+  "planner_reply": "Planner packet:\n```json\n{\"intent\":\"pressure\",\"targetID\":\"target\",\"horizon\":4}\n```",
+  "legalActions": [
+    {
+      "id": "target:target",
+      "kind": "target_player",
+      "label": "Target visible rival",
+      "risk": { "level": "low" },
+      "metadata": { "targetID": "target", "targetName": "Visible Rival" }
+    },
+    {
+      "id": "expand:terra-nullius:35",
+      "kind": "attack",
+      "label": "Expand into neutral land with 35% troops",
+      "risk": { "level": "low" },
+      "metadata": { "expansion": true, "troopPercent": 35 }
+    },
+    {
+      "id": "attack:mickey:40",
+      "kind": "attack",
+      "label": "Attack K1Z Mickey Mouse",
+      "risk": { "level": "low" },
+      "metadata": {
+        "targetID": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+        "targetName": "K1Z Mickey Mouse",
+        "troopPercent": 40
+      }
+    },
+    {
+      "id": "hold",
+      "kind": "hold",
+      "label": "Hold",
+      "risk": { "level": "low" }
+    }
+  ],
+  "observation": {
+    "phase": "active",
+    "ownState": {
+      "tileShare": 0.12,
+      "troopRatio": 1.1,
+      "troops": 1000000,
+      "gold": 500000,
+      "borderTiles": 100,
+      "incomingAttacks": []
+    },
+    "combat": { "incomingAttackPlayerIDs": [] },
+    "visiblePlayers": [
+      {
+        "id": "target",
+        "name": "Visible Rival",
+        "isAlive": true,
+        "sharesBorder": true,
+        "canAttack": true,
+        "isAllied": false,
+        "tileShare": 0.3,
+        "relativeTroopRatio": 1.5
+      },
+      {
+        "id": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+        "name": "K1Z Mickey Mouse",
+        "isAlive": true,
+        "sharesBorder": true,
+        "canAttack": true,
+        "isAllied": false,
+        "tileShare": 0.1,
+        "relativeTroopRatio": 2
+      }
+    ]
+  },
+  "history": []
+}
