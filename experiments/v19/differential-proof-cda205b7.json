@@ -1,0 +1,42 @@
+{
+  "schema_version": 2,
+  "arm": "intent-core-v19",
+  "same_fixture": true,
+  "verifier": {
+    "evaluator_commit": "34f91421a1c77bbb444db87c4d441542f1c84353",
+    "path": "experiments/v19/verify-differential.mjs",
+    "sha256": "e79573f126fc5906cb53a328815997e21f0623e7559daf17cb6f1f080608e8ea"
+  },
+  "fixture": {
+    "id": "v19-expand-intent-k1z-vs-neutral",
+    "path": "experiments/v19/differential-fixture.json",
+    "sha256": "650e142d2f12ad925e31baf08929ae7a7d9a3e2d44498b85773de1b5521b43db",
+    "legal_action_ids_sha256": "cdee6d7300d176b7fb6acac5d11b4d3141e16930cfa6ac0fbd3b6ba335364cd0"
+  },
+  "parent": {
+    "source_commit": "4b1906142a93b5ac3980d08a4f8dff2a5ca269c6",
+    "parsed_plan": null,
+    "selected_action_id": "alliance:kata"
+  },
+  "candidate": {
+    "source_commit": "cda205b78f2f01a974f3a6ed8964da6b1f36a5ed",
+    "parsed_plan": {
+      "intent": "expand",
+      "targetID": null,
+      "horizon": 4,
+      "model": "fixture"
+    },
+    "selected_action_id": "expand:terra-nullius:10",
+    "marker": "ixexp"
+  },
+  "test_command": [
+    "node",
+    "experiments/v19/verify-differential.mjs",
+    ".",
+    "4b1906142a93b5ac3980d08a4f8dff2a5ca269c6",
+    "cda205b78f2f01a974f3a6ed8964da6b1f36a5ed",
+    "experiments/v19/differential-fixture.json",
+    "experiments/v19/differential-proof-cda205b7.json"
+  ],
+  "test_exit_code": 0
+}
