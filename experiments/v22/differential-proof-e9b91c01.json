@@ -1,0 +1,53 @@
+{
+  "schema_version": 2,
+  "arm": "defense-arbitration-v22",
+  "same_fixture": true,
+  "verifier": {
+    "evaluator_commit": "bb15f2a62f41c2e0259688a8572721a9b2e7ce73",
+    "path": "experiments/v22/verify-differential.mjs",
+    "sha256": "b735abd06c131b5a2c4b33ec6ccd9f952f6e01e02783b32805c99d55933c80c1"
+  },
+  "fixture": {
+    "id": "v22-live-defense-over-stale-expand",
+    "path": "experiments/v22/differential-fixture.json",
+    "sha256": "76b7a2cfcfe75f2ab1b4a38226daff2f73c358a833269d7ffb04de2008b622c5",
+    "legal_action_ids_sha256": "29dc4b2c27cc8764d6ff255d17990416764578f26cc1fb968815291df8f5f126"
+  },
+  "parent": {
+    "source_commit": "0733a3904807163a10e135a7515ac8124e7ecf12",
+    "parsed_plan": {
+      "intent": "expand",
+      "targetID": null,
+      "horizon": 4,
+      "model": "fixture"
+    },
+    "selected_action_id": "expand:terra-nullius:35",
+    "marker": "ixexp"
+  },
+  "candidate": {
+    "source_commit": "e9b91c01820474f6c27db33bad42adbb511e4de2",
+    "parsed_plan": {
+      "intent": "expand",
+      "targetID": null,
+      "horizon": 4,
+      "model": "fixture"
+    },
+    "selected_action_id": "attack:raider:40",
+    "marker": "ixdef"
+  },
+  "safety": {
+    "offered_k1z_harmful_action": "attack:mickey:40",
+    "parent_selected_k1z_harm": false,
+    "candidate_selected_k1z_harm": false
+  },
+  "test_command": [
+    "node",
+    "experiments/v22/verify-differential.mjs",
+    "/Users/olifreuler/proxywar-coworld-starter",
+    "0733a3904807163a10e135a7515ac8124e7ecf12",
+    "e9b91c01820474f6c27db33bad42adbb511e4de2",
+    "experiments/v22/differential-fixture.json",
+    "experiments/v22/differential-proof-e9b91c01.json"
+  ],
+  "test_exit_code": 0
+}
