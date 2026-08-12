@@ -90,7 +90,10 @@ const STRATEGY = POLICY_ENGINE === "intent-core"
   ? INTENT_CORE_STRATEGY
   : CAPTAIN_UNDERPANTS_PRODUCTION_DOCTRINE;
 const PLANNER_ENABLED = process.env.PLAN_MODE === "on";
-const PLAN_EVERY = Math.max(1, Number(process.env.PLAN_EVERY) || 8);
+const PLAN_EVERY = Math.max(
+  1,
+  Number(process.env.PLAN_EVERY) || (POLICY_ENGINE === "intent-core" ? 4 : 8),
+);
 const PLAN_TIMEOUT_MS = Math.max(1000, Number(process.env.PLAN_TIMEOUT_MS) || 12000);
 const PLAN_FAILURE_COOLDOWN_MS = Math.max(
   1000,
@@ -114,15 +117,15 @@ async function askBedrock(state, signal) {
   }
   if (!bedrock) throw new Error("bedrock client did not initialize");
   const directiveContract = POLICY_ENGINE === "intent-core"
-    ? 'Reply with ONLY JSON and exactly these three keys. Use one shape: ' +
-      '{"intent":"expand","targetID":null,"horizon":4}, ' +
-      '{"intent":"consolidate","targetID":null,"horizon":4}, or ' +
-      '{"intent":"convert","targetID":"<exact visible rival ID>","horizon":4}. '
+    ? 'Reply with ONLY JSON and exactly these two keys. Use one shape: ' +
+      '{"intent":"expand","targetID":null}, ' +
+      '{"intent":"consolidate","targetID":null}, or ' +
+      '{"intent":"convert","targetID":"<exact visible rival ID>"}. '
     : 'Reply with ONLY JSON and exactly these three keys. Use one shape: ' +
       '{"intent":"grow","targetID":null,"horizon":4} or ' +
       '{"intent":"convert","targetID":"<exact visible rival ID>","horizon":4}. ';
   const prompt = STRATEGY + "\n" + SECURITY + "\n" + directiveContract +
-    'Horizon must be an integer from 2 through 12.\n' +
+    (POLICY_ENGINE === "intent-core" ? "" : 'Horizon must be an integer from 2 through 12.\n') +
     "GAME:\n" + JSON.stringify(buildIntentSnapshot(state));
   const candidates = [...new Set([lockedModel, ...MODELS].filter(Boolean))];
   let lastErr;
@@ -145,9 +148,9 @@ async function askBedrock(state, signal) {
 
 // -- the PLAN: written by the model in the background, executed instantly -----
 let plan = PLANNER_ENABLED && POLICY_ENGINE === "intent-core"
-  ? { intent: "expand", targetID: null, horizon: 2, model: "bootstrap" }
-  : null;                 // { intent, targetID, horizon, model }
-let planDecisionAge = plan?.model === "bootstrap" ? plan.horizon : 0;
+  ? { intent: "expand", targetID: null, model: "bootstrap" }
+  : null;                 // { intent, targetID, model } for intent-core
+let planDecisionAge = plan?.model === "bootstrap" ? PLAN_EVERY : 0;
 let planRefreshInFlight = false;
 let lastPlanError = null; // set when the most recent refresh failed (loud degradation)
 let lastPlanErrorClass = null;

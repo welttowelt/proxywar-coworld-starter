@@ -345,7 +345,7 @@ test("deployed player exposes gc1 beside the retained tactical marker", async ()
   assert.match(responses[1].reason, /:gc1:ia1$/);
 });
 
-test("planner contract asks only for intent, target ID, and horizon", async () => {
+test("intent-core planner asks only for outcome and optional target", async () => {
   const { readFile } = await import("node:fs/promises");
   const source = await readFile(playerPath, "utf8");
   const doctrine = await readFile(
@@ -360,6 +360,8 @@ test("planner contract asks only for intent, target ID, and horizon", async () =
   assert.match(source, /process\.env\.PLAN_MODE === "on"/);
   assert.match(source, /"intent":/);
   assert.match(source, /"targetID":/);
+  assert.match(source, /exactly these two keys/);
+  assert.match(source, /\{"intent":"expand","targetID":null\}/);
   assert.match(source, /"horizon":/);
   assert.match(source, /max_tokens: 300/);
   assert.match(source, /Array\.isArray\(r\?\.content\)/);
@@ -657,7 +659,6 @@ test("intent-core wiring executes the planner outcome without the legacy selecto
       INTENT_TEST_DIRECTIVE: JSON.stringify({
         intent: "expand",
         targetID: null,
-        horizon: 4,
       }),
       COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
       AWS_EC2_METADATA_DISABLED: "true",

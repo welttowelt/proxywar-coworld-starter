@@ -6,10 +6,15 @@ export const INTENTS = Object.freeze(["expand", "consolidate", "convert"]);
 
 const TARGETED_INTENTS = new Set(["convert"]);
 
-const DIRECTIVE_KEYS = Object.freeze(["horizon", "intent", "targetID"]);
+const OUTCOME_DIRECTIVE_KEYS = Object.freeze(["intent", "targetID"]);
+const LEGACY_DIRECTIVE_KEYS = Object.freeze(["horizon", "intent", "targetID"]);
 
-function exactKeys(value) {
-  return Object.keys(value).sort().join("\0") === DIRECTIVE_KEYS.join("\0");
+function exactKeys(value, expected) {
+  return Object.keys(value).sort().join("\0") === expected.join("\0");
+}
+
+function usesOutcomeContract(allowedIntents) {
+  return allowedIntents.includes("expand") || allowedIntents.includes("consolidate");
 }
 
 function eligibleTarget(state, targetID) {
@@ -27,14 +32,17 @@ export function normalizeIntentDirective(
   model = "unknown",
   allowedIntents = INTENTS,
 ) {
-  if (!value || typeof value !== "object" || Array.isArray(value) || !exactKeys(value)) {
+  const outcomeContract = usesOutcomeContract(allowedIntents);
+  const expectedKeys = outcomeContract ? OUTCOME_DIRECTIVE_KEYS : LEGACY_DIRECTIVE_KEYS;
+  if (!value || typeof value !== "object" || Array.isArray(value) ||
+      !exactKeys(value, expectedKeys)) {
     return null;
   }
   if (typeof value.intent !== "string" || !allowedIntents.includes(value.intent)) return null;
   const intent = value.intent;
-  if (!Number.isInteger(value.horizon) ||
+  if (!outcomeContract && (!Number.isInteger(value.horizon) ||
       value.horizon < MIN_INTENT_HORIZON ||
-      value.horizon > MAX_INTENT_HORIZON) {
+      value.horizon > MAX_INTENT_HORIZON)) {
     return null;
   }
 
@@ -44,12 +52,13 @@ export function normalizeIntentDirective(
     return null;
   }
 
-  return {
+  const directive = {
     intent,
     targetID: TARGETED_INTENTS.has(intent) ? value.targetID : null,
-    horizon: value.horizon,
     model: clean(model) || "unknown",
   };
+  if (!outcomeContract) directive.horizon = value.horizon;
+  return directive;
 }
 
 // Recover exactly one complete top-level JSON object from provider framing.
@@ -120,9 +129,10 @@ export function intentRefreshInterval(plan, configuredMaximum = 8) {
 // force until the planner replaces it; the executor never silently changes it.
 export function executableIntentPlan(plan, allowedIntents = INTENTS) {
   const accepted = Array.isArray(allowedIntents) ? allowedIntents : INTENTS;
+  const outcomeContract = usesOutcomeContract(accepted);
   const validShape = plan && accepted.includes(plan.intent) &&
-    Number.isInteger(plan.horizon) &&
-    plan.horizon >= MIN_INTENT_HORIZON && plan.horizon <= MAX_INTENT_HORIZON &&
+    (outcomeContract || (Number.isInteger(plan.horizon) &&
+      plan.horizon >= MIN_INTENT_HORIZON && plan.horizon <= MAX_INTENT_HORIZON)) &&
     (!TARGETED_INTENTS.has(plan.intent)
       ? plan.targetID === null
       : typeof plan.targetID === "string" && plan.targetID.length > 0 &&
