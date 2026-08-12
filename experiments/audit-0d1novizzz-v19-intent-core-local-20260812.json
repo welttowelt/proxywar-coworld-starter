@@ -1,0 +1,139 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T16:29:00Z",
+  "lane": "0d1novizzz",
+  "arm": "intent-core-v19",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "candidate_source_commit": "cda205b78f2f01a974f3a6ed8964da6b1f36a5ed",
+  "parent_source_commit": "4b1906142a93b5ac3980d08a4f8dff2a5ca269c6",
+  "candidate_image_id": "sha256:94596cc2e62086dda1fc30dbd4ddc518e02abeb7ec20339af810cd6b3a242723",
+  "parent_image_id": "sha256:2a913f7c02c5f03fce3ab10049bf80ae2a35635ada42ed456ef18caf87e06456",
+  "contract_sha256": "20d844954f7c390f7e185046f27bfecf387757139ff6e31182550459dbfbcf0c",
+  "required_coalition_roles": ["katanasan"],
+  "differential_unit_proof": {
+    "schema_version": 2,
+    "arm": "intent-core-v19",
+    "same_fixture": true,
+    "verifier": {
+      "evaluator_commit": "34f91421a1c77bbb444db87c4d441542f1c84353",
+      "path": "experiments/v19/verify-differential.mjs",
+      "sha256": "e79573f126fc5906cb53a328815997e21f0623e7559daf17cb6f1f080608e8ea"
+    },
+    "fixture": {
+      "id": "v19-expand-intent-k1z-vs-neutral",
+      "path": "experiments/v19/differential-fixture.json",
+      "sha256": "650e142d2f12ad925e31baf08929ae7a7d9a3e2d44498b85773de1b5521b43db",
+      "legal_action_ids_sha256": "cdee6d7300d176b7fb6acac5d11b4d3141e16930cfa6ac0fbd3b6ba335364cd0"
+    },
+    "parent": {
+      "source_commit": "4b1906142a93b5ac3980d08a4f8dff2a5ca269c6",
+      "parsed_plan": null,
+      "selected_action_id": "alliance:kata"
+    },
+    "candidate": {
+      "source_commit": "cda205b78f2f01a974f3a6ed8964da6b1f36a5ed",
+      "parsed_plan": {
+        "intent": "expand",
+        "targetID": null,
+        "horizon": 4,
+        "model": "fixture"
+      },
+      "selected_action_id": "expand:terra-nullius:10",
+      "marker": "ixexp"
+    },
+    "test_command": [
+      "node",
+      "experiments/v19/verify-differential.mjs",
+      ".",
+      "4b1906142a93b5ac3980d08a4f8dff2a5ca269c6",
+      "cda205b78f2f01a974f3a6ed8964da6b1f36a5ed",
+      "experiments/v19/differential-fixture.json",
+      "experiments/v19/differential-proof-cda205b7.json"
+    ],
+    "test_exit_code": 0
+  },
+  "runs": [
+    {
+      "orientation": "A",
+      "run_id": "v19-intent-core-20260812T1628Z",
+      "game_id": "PWSELHEF",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "directory": "/private/tmp/proxywar-v19-intent-core-20260812T1628Z",
+      "coalition_roles_present": ["odin", "katanasan"],
+      "identity_map": {
+        "odin": {
+          "display_name": "0d1novizzz v19 intent core",
+          "match_player_id": "8jm74hky"
+        },
+        "katanasan": {
+          "display_name": "K1Z katanasan",
+          "match_player_id": "xfyjjkx9"
+        }
+      },
+      "job_sha256": "20d844954f7c390f7e185046f27bfecf387757139ff6e31182550459dbfbcf0c",
+      "config_sha256": "421aed597fe6a8ca79a0de13abed1a7b269b4407569507ed1468a7342a58092b",
+      "results_sha256": "ad641e18784cec5fbf33c46f560bf570f531f3bf7b55501a943f256e6a23b641",
+      "replay_sha256": "c621700a1adeb2ecc2471b0ccc55f6cd6b0993425486670518a8200345cb6260",
+      "decisions_sha256": "d1ac7eb866abd6afbd58c849a1c006733c66a0dc8cd69a3270eb82c8ec9deb0e",
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image": "proxywar-agent-candidate:v19-intent-core",
+            "image_id": "sha256:94596cc2e62086dda1fc30dbd4ddc518e02abeb7ec20339af810cd6b3a242723"
+          },
+          "runtime_control": {
+            "image": "proxywar-agent-v17:local",
+            "image_id": "sha256:37fb270f0e0019b09c72df75b4bc873ee49ed6052af442c074acd74dd86c7c49"
+          }
+        }
+      },
+      "candidate": {
+        "slot": 0,
+        "decision_count": 11,
+        "accepted": 11,
+        "score": 0.33468916005423305,
+        "tiles": 15058,
+        "alive": true,
+        "declared_win": false,
+        "route_execution_count": 10,
+        "marker_counts": { "ixexp": 10 },
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "unexplained_holds": [],
+        "harmful_k1z_actions": [],
+        "unresolved_harmful_targets": [],
+        "structured_deal_actions": []
+      },
+      "runtime_control": {
+        "slot": 2,
+        "decision_count": 11,
+        "accepted": 11,
+        "score": 0.23549154275299505,
+        "tiles": 10595,
+        "alive": true,
+        "runtime_excluded_from_verdict": true,
+        "reason": "The runtime control is the preserved live v17 champion; the exact v18 parent comparison is hash-bound in the differential proof."
+      },
+      "orientation_advantage": null,
+      "violations": []
+    }
+  ],
+  "source_image_binding": {
+    "architecture": "amd64",
+    "user": "node",
+    "command": ["node", "/app/llm-player.mjs"],
+    "source_and_image_sha256": {
+      "llm-player.mjs": "7cae915c9e0acd4b81ec4d97adaf7d1b18fb8092104f49cd6112a4278808ff02",
+      "intent-controller.mjs": "113e8719c392e7e7ba0d7c9e3f1c4d909101715bb970690c911f43097068511f",
+      "intent-core.mjs": "a51667903aa2fbbd62129b251a689de406fcec104f16981d4f23cc33f54a6726",
+      "strategy-engine.mjs": "4a5dc56a23371033b9c543e416397b1a18feb5b842d965ba1d23661f528d832a"
+    }
+  },
+  "failures": [],
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "scope": "Exact-image intent reach, accepted runtime decisions, differential action change, one-surface execution, and K1Z safety; no local competitive-lift claim."
+}
