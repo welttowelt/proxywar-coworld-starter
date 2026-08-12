@@ -1,0 +1,25 @@
+{
+  "idempotency_key": "0d1novizzz-v20-hosted-4x-r1384-eastasia-20260812",
+  "coworld_id": "cow_e3b19156-63ca-47d2-9736-71b087b269a9",
+  "variant_id": "tournament-16p-eastasia",
+  "roster": [
+    { "slot": 0, "player": { "policy_ref": "a47ae1b2-c2d3-4fa5-847d-a410ee898ba6" } },
+    { "slot": 1, "player": { "policy_ref": "927ac801-d87a-414f-8a11-a8059811b2b5" } },
+    { "slot": 2, "player": { "policy_ref": "b04f8d18-0199-497f-8681-45adf3be73ba" } },
+    { "slot": 3, "player": { "policy_ref": "68a945d1-c15b-4e45-ad4b-9b9f08d2719e" } },
+    { "slot": 4, "player": { "policy_ref": "cea2bb5b-add0-4dd3-aa32-9442280142c5" } },
+    { "slot": 5, "player": { "policy_ref": "dffb6fb2-673e-4be5-9e35-ba69d6731754" } },
+    { "slot": 6, "player": { "policy_ref": "2b8cdf1f-7602-4340-ac38-3e6eba911ec7" } },
+    { "slot": 7, "player": { "policy_ref": "224af563-b5c8-4c51-956d-c666a022c085" } },
+    { "slot": 8, "player": { "policy_ref": "13cfba2f-2270-4b1f-97a2-d9cd3d391b21" } },
+    { "slot": 9, "player": { "policy_ref": "88e3860c-91f2-4219-ac7b-44b354788c09" } },
+    { "slot": 10, "player": { "policy_ref": "3ed5713d-7940-45f1-b347-76d596b90fe8" } },
+    { "slot": 11, "player": { "policy_ref": "7329eda7-b041-4853-9ee6-e05cc1a98ac2" } },
+    { "slot": 12, "player": { "policy_ref": "348b11ff-29b1-4743-b456-e735dbf1520d" } },
+    { "slot": 13, "player": { "policy_ref": "08a431c6-7b6d-48d2-ad08-5b7e3530528d" } },
+    { "slot": 14, "player": { "policy_ref": "7ba41bac-137d-4db2-99df-303ff29e2383" } },
+    { "slot": 15, "player": { "policy_ref": "33e14014-87b4-48f4-8aeb-c165f3a6c8f8" } }
+  ],
+  "num_episodes": 4,
+  "notes": "Diagnostic-only v20 effect-first intent executor gate on the latest completed competition roster. Replace only v19 at slot 0. Require 4/4 wins, planner plus pressure-intent reach, and zero fallback, degradation, holds, rejections, or K1Z harm. No league submission or champion change."
+}
