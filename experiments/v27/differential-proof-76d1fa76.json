@@ -1,0 +1,63 @@
+{
+  "schema_version": 2,
+  "arm": "strict-outcomes-v27",
+  "same_board_and_action_menu": true,
+  "verifier": {
+    "evaluator_commit": "6550540e385fb42cc05cb21cba5a4a29e7cf9591",
+    "path": "experiments/v27/verify-differential.mjs",
+    "sha256": "75af9c23afbea6d80664b2645cedf8a293ff7d8a270d5762d33bfd7f0a169f06"
+  },
+  "fixture": {
+    "id": "v27-literal-outcomes-no-hidden-switch",
+    "path": "experiments/v27/differential-fixture.json",
+    "sha256": "a358d9dfd59bb9c6894810da828c4975037fe1b41977d7091cd2901a56ca9de0"
+  },
+  "parent": {
+    "source_commit": "8447312cf0f64369d4113b9a4168d361cf33ff62",
+    "parsed_plan": {
+      "intent": "grow",
+      "targetID": null,
+      "horizon": 4,
+      "model": "fixture"
+    },
+    "selected_action_id": "attack:raider:40",
+    "marker": "ixprs"
+  },
+  "candidate": {
+    "source_commit": "76d1fa7602176ce42fd931dbdfba35d47afed474",
+    "consolidate": {
+      "parsed_plan": {
+        "intent": "consolidate",
+        "targetID": null,
+        "horizon": 4,
+        "model": "fixture"
+      },
+      "selected_action_id": "build:Factory:43",
+      "marker": "ixcon"
+    },
+    "unreachable_convert": {
+      "parsed_plan": {
+        "intent": "convert",
+        "targetID": "unreachable",
+        "horizon": 4,
+        "model": "fixture"
+      },
+      "selected_action_id": "hold",
+      "marker": "ixprs"
+    }
+  },
+  "safety": {
+    "offered_k1z_harmful_action": "attack:mickey:40",
+    "any_selected_k1z_harm": false
+  },
+  "test_command": [
+    "node",
+    "experiments/v27/verify-differential.mjs",
+    "/Users/olifreuler/proxywar-coworld-starter",
+    "8447312cf0f64369d4113b9a4168d361cf33ff62",
+    "76d1fa7602176ce42fd931dbdfba35d47afed474",
+    "experiments/v27/differential-fixture.json",
+    "experiments/v27/differential-proof-76d1fa76.json"
+  ],
+  "test_exit_code": 0
+}
