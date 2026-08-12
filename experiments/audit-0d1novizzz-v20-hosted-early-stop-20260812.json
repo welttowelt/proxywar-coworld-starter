@@ -1,0 +1,77 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T17:47:00Z",
+  "lane": "0d1novizzz",
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v20",
+    "policy_version_id": "a47ae1b2-c2d3-4fa5-847d-a410ee898ba6",
+    "source_commit": "18fbf8897c5130e4970a2ac241a36583c7833568",
+    "image_id": "sha256:866917da2d7858e6b960ba507f52dc7b29bbc111458c4c50c4f16b3d513c4b3c"
+  },
+  "experience_request_id": "xreq_8d648e76-f1a0-4c4a-a3ef-a947449fe922",
+  "gate": {
+    "required": "4/4 hosted wins with planner and ixprs reach and zero candidate fallbacks, holds, rejections, or K1Z harm",
+    "observed_when_stopped": "0/2",
+    "verdict": "FAIL_STOP_NO_SUBMIT",
+    "reason": "The first two completed episodes were losses. One loss was sufficient to fail the preregistered gate."
+  },
+  "completed_episodes": [
+    {
+      "episode_request_id": "ereq_3d59fc8c-aadf-4dd1-a8e5-39a6af154658",
+      "episode_id": "4a3f913d-96ec-485b-bae6-458e04c98a54",
+      "winner": "daveey",
+      "candidate_score": 0,
+      "candidate_alive": true,
+      "candidate_final_tiles": 2380,
+      "candidate_peak_tiles": 88169,
+      "candidate_decisions_sampled": 34,
+      "candidate_action_counts": {
+        "physical_attack_or_boat": 14,
+        "build": 2,
+        "social_or_diplomatic": 17,
+        "retreat": 1
+      },
+      "candidate_planner_failures": 0,
+      "candidate_rejections": 0,
+      "winner_physical_actions_sampled": 29,
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/77774085-c40e-4e31-9012-882b218b522d.replay",
+      "replay_sha256": "60ee1060c1317a0a9d0c0ee8a7aa5a2c85c8f45301d83cee812923d7e98f2ff8"
+    },
+    {
+      "episode_request_id": "ereq_9acf31dc-ba92-4a18-a263-0bec9cb9904d",
+      "episode_id": "2a5078bc-53d7-4d9f-9463-afb32b1262d9",
+      "winner": "Andre von Houck",
+      "candidate_score": 0,
+      "candidate_alive": false,
+      "candidate_peak_tiles": 68117,
+      "candidate_decisions_exposed_before_death": 3,
+      "candidate_last_exposed_pressure_actions": ["boat", "emoji"],
+      "candidate_planner_failures": 0,
+      "candidate_rejections": 0,
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/a48e5c7c-a63b-429d-9efd-bc9e25638469.replay",
+      "replay_sha256": "b6e6fdf5670713eb597267e240cb1436c2f776184a0ca91dbe27f25e1835b6d5"
+    }
+  ],
+  "diagnosis": {
+    "planner_transport": "working",
+    "intent_transport": "working",
+    "candidate_fallbacks": 0,
+    "failure_class": "intent_executor_semantics",
+    "finding": "Pressure treated the named target as a hard physical constraint. When that target was unreachable, reachable non-target attacks were ranked below infrastructure, neutral expansion, and social actions; high-risk physical actions were also removed whenever any lower-risk action existed.",
+    "consequence": "The candidate accumulated force without converting it into territorial control, then was compressed by agents that attacked reachable rivals continuously.",
+    "next_hypothesis": "Pressure should convert available force into relative power against any reachable unprotected rival, with the named target as a bonus rather than a prerequisite. Risk filtering should be intent-aware so pressure can consider physical actions."
+  },
+  "safety": {
+    "k1z_harm_observed": 0,
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false,
+    "active_champion": "xX_UwU_Senpai_420_Xx:v17"
+  },
+  "live_scoreboard_at_recording": {
+    "rank": 8,
+    "score": 9.104240468197201,
+    "leader": "daveey",
+    "leader_score": 16.53758335714663
+  }
+}
