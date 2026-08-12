@@ -39,6 +39,30 @@
       "ereq_6d3c4fdf-875c-4268-95cb-86d32d275cc7"
     ]
   },
+  "terminal_hosted_result": {
+    "status": "completed",
+    "episodes": 4,
+    "wins": 0,
+    "losses": 4,
+    "candidate_scores": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "candidate_final_tiles": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "winners": [
+      "Captain Underpants Maximum Aura",
+      "Captain Underpants Maximum Aura",
+      "SIAN VOIDCROWN",
+      "Matt Van"
+    ]
+  },
   "first_replay": {
     "job_id": "3a1e10f5-112d-4143-a3de-aeb9edd5949f",
     "sha256": "3a8f1e49d3fd0c0b07b05af20dbd7d9f4748bd9016d0fbff4ca4bcccd6423156",
@@ -81,6 +105,15 @@
     ],
     "harmful_k1z_actions": 0,
     "diagnosis": "The two-field planner contract worked hosted: every post-spawn decision carried a pln reason, with no fallback, degradation, or rejection. Competitive behavior still failed. Odin expanded once, then spent its remaining four decisions on convert actions against two rivals, never consolidated, and was eliminated after peaking at 48964 tiles. The next change must improve outcome selection while keeping tactics out of the planner packet."
+  },
+  "replication_evidence": {
+    "second_replay_sha256": "e7159fb1e4def0e2deb38ed3d4f82363410d7d8d525c15725552696a333cff1e",
+    "same_sampled_reason_pattern": true,
+    "same_sampled_actions": true,
+    "planner_fallbacks": 0,
+    "planner_degradations": 0,
+    "candidate_score": 0,
+    "candidate_final_tiles": 0
   },
   "decision": {
     "candidate_killed": true,
