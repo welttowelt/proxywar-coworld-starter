@@ -34,6 +34,45 @@
       "ereq_0025a0df-b889-4428-a216-b48d84e7f135"
     ]
   },
+  "terminal_hosted_result": {
+    "status": "completed",
+    "episodes": 4,
+    "wins": 0,
+    "losses": 4,
+    "candidate_scores": [0, 0, 0, 0],
+    "candidate_final_tiles": [0, 0, 0, 0],
+    "winners": [
+      "Matt Van",
+      "SIAN VOIDCROWN",
+      "Captain Underpants Maximum Aura",
+      "Captain Underpants Maximum Aura"
+    ]
+  },
+  "first_replay": {
+    "job_id": "7f9d5f68-6cf8-483b-98c1-002a4a986e9f",
+    "sha256": "73efd9df29d90f40d9aeba44344320b5ce7ee5ca5f4bbf541a9e9637c3c7f3d7",
+    "planner_reasons_observed": true,
+    "planner_degraded_on_candidate_decisions": false,
+    "candidate_peak": {
+      "turn": 3600,
+      "tiles": 47179,
+      "troops": 1262141
+    },
+    "candidate_collapse": {
+      "turn": 4400,
+      "tiles": 1206,
+      "troops": 102055
+    },
+    "eliminated_before_turn": 5200,
+    "candidate_action_counts": {
+      "attack": 35,
+      "boat": 6,
+      "spawn": 1
+    },
+    "candidate_last_action": "boat:451623:8",
+    "incoming_physical_attacks_observed": 13,
+    "diagnosis": "The planner was live and the two labels were enforced, but grow still combined expansion with infrastructure, collapse silently forced convert, missing actions silently switched intent, and convert could strike a different rival. The executor committed troops every turn and opened or sustained multiple fronts instead of preserving strength."
+  },
   "decision": {
     "candidate_killed": true,
     "league_submission": false,
