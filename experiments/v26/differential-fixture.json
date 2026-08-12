@@ -1,0 +1,100 @@
+{
+  "id": "v26-collapse-means-convert",
+  "planner_reply": "{\"intent\":\"grow\",\"targetID\":null,\"horizon\":4}",
+  "legalActions": [
+    {
+      "id": "attack:raider:40",
+      "kind": "attack",
+      "label": "Attack Raider 40%",
+      "risk": {"level": "low"},
+      "metadata": {"targetID": "raider", "targetName": "Raider", "troopPercent": 40}
+    },
+    {
+      "id": "build:Defense Post:43",
+      "kind": "build",
+      "label": "Build Defense Post",
+      "risk": {"level": "low"},
+      "metadata": {"unit": "Defense Post"}
+    },
+    {
+      "id": "retreat:front",
+      "kind": "retreat",
+      "label": "Retreat from the active front",
+      "risk": {"level": "low"},
+      "metadata": {}
+    },
+    {
+      "id": "target:raider",
+      "kind": "target_player",
+      "label": "Target Raider",
+      "risk": {"level": "low"},
+      "metadata": {"targetID": "raider", "targetName": "Raider"}
+    },
+    {
+      "id": "embargo:raider:start",
+      "kind": "embargo",
+      "label": "Embargo Raider",
+      "risk": {"level": "low"},
+      "metadata": {"targetID": "raider", "targetName": "Raider"}
+    },
+    {
+      "id": "alliance:raider",
+      "kind": "alliance_request",
+      "label": "Request alliance with Raider",
+      "risk": {"level": "low"},
+      "metadata": {"recipientID": "raider", "recipientName": "Raider"}
+    },
+    {
+      "id": "attack:mickey:40",
+      "kind": "attack",
+      "label": "Attack K1Z Mickey Mouse 40%",
+      "risk": {"level": "low"},
+      "metadata": {
+        "targetID": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+        "targetName": "K1Z Mickey Mouse",
+        "troopPercent": 40
+      }
+    },
+    {"id": "hold", "kind": "hold", "label": "Hold", "risk": {"level": "low"}}
+  ],
+  "observation": {
+    "phase": "active",
+    "ownState": {
+      "tileShare": 0.08,
+      "troopRatio": 1.1,
+      "troops": 900000,
+      "gold": 500000,
+      "borderTiles": 100,
+      "incomingAttacks": 0
+    },
+    "combat": {"incomingAttackPlayerIDs": []},
+    "visiblePlayers": [
+      {
+        "id": "raider",
+        "name": "Raider",
+        "isAlive": true,
+        "sharesBorder": true,
+        "canAttack": true,
+        "isAllied": false,
+        "tileShare": 0.3,
+        "relativeTroopRatio": 1.4
+      },
+      {
+        "id": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+        "name": "K1Z Mickey Mouse",
+        "isAlive": true,
+        "sharesBorder": true,
+        "canAttack": true,
+        "isAllied": false,
+        "tileShare": 0.1,
+        "relativeTroopRatio": 2
+      }
+    ]
+  },
+  "history": [
+    {"actionID": "prior:0", "kind": "build", "tileShare": 0.2, "incomingAttackerIDs": [], "allProtocolAttackerIDs": []},
+    {"actionID": "prior:1", "kind": "build", "tileShare": 0.19, "incomingAttackerIDs": [], "allProtocolAttackerIDs": []},
+    {"actionID": "prior:2", "kind": "build", "tileShare": 0.18, "incomingAttackerIDs": [], "allProtocolAttackerIDs": []},
+    {"actionID": "prior:3", "kind": "build", "tileShare": 0.16, "incomingAttackerIDs": [], "allProtocolAttackerIDs": []}
+  ]
+}
