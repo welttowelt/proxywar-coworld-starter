@@ -1,0 +1,25 @@
+{
+  "idempotency_key": "0d1novizzz-v21-hosted-4x-r1385-oceania-20260812",
+  "coworld_id": "cow_e3b19156-63ca-47d2-9736-71b087b269a9",
+  "variant_id": "tournament-16p-oceania",
+  "roster": [
+    { "slot": 0, "player": { "policy_ref": "ebed7489-4e76-4338-b4f7-f9a47aa48491" } },
+    { "slot": 1, "player": { "policy_ref": "927ac801-d87a-414f-8a11-a8059811b2b5" } },
+    { "slot": 2, "player": { "policy_ref": "68a945d1-c15b-4e45-ad4b-9b9f08d2719e" } },
+    { "slot": 3, "player": { "policy_ref": "cea2bb5b-add0-4dd3-aa32-9442280142c5" } },
+    { "slot": 4, "player": { "policy_ref": "dffb6fb2-673e-4be5-9e35-ba69d6731754" } },
+    { "slot": 5, "player": { "policy_ref": "2b8cdf1f-7602-4340-ac38-3e6eba911ec7" } },
+    { "slot": 6, "player": { "policy_ref": "13cfba2f-2270-4b1f-97a2-d9cd3d391b21" } },
+    { "slot": 7, "player": { "policy_ref": "88e3860c-91f2-4219-ac7b-44b354788c09" } },
+    { "slot": 8, "player": { "policy_ref": "3ed5713d-7940-45f1-b347-76d596b90fe8" } },
+    { "slot": 9, "player": { "policy_ref": "7329eda7-b041-4853-9ee6-e05cc1a98ac2" } },
+    { "slot": 10, "player": { "policy_ref": "348b11ff-29b1-4743-b456-e735dbf1520d" } },
+    { "slot": 11, "player": { "policy_ref": "08a431c6-7b6d-48d2-ad08-5b7e3530528d" } },
+    { "slot": 12, "player": { "policy_ref": "fbfeab4b-fefa-4da0-a670-b6a8f32d27c3" } },
+    { "slot": 13, "player": { "policy_ref": "7ba41bac-137d-4db2-99df-303ff29e2383" } },
+    { "slot": 14, "player": { "policy_ref": "33e14014-87b4-48f4-8aeb-c165f3a6c8f8" } },
+    { "slot": 15, "player": { "policy_ref": "b54b6ea0-75bc-43e3-9095-52dcf3151399" } }
+  ],
+  "num_episodes": 4,
+  "notes": "Diagnostic-only v21 reachable-pressure gate on the latest completed competition roster. Replace only Odin at slot 0. Require 4/4 wins, planner plus pressure-intent reach, and zero fallback, degradation, holds, rejections, or K1Z harm. No league submission or champion change."
+}
