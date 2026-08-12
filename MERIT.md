@@ -633,3 +633,28 @@ the subsequent leaderboard check. This closes no causal claim, but it rejects
 should isolate reduced upgrade allocation and planner-independent frontier
 conversion before adding commitment logic. No live policy or membership was
 changed from this evidence.
+
+## v18 planner transport proof and hosted rejection (2026-08-12)
+
+v18 repaired the last planner transport fault: exact-provider framing is now
+decoded without weakening the three-key semantic packet, and all sampled
+post-spawn decisions in the first three completed BlackSea-16P diagnostics used
+`pln:*` reasons with zero candidate fallback. The infrastructure diagnosis is
+closed.
+
+The competitive gate failed immediately and decisively. v18 scored zero in
+each of the first three completed episodes, so the required hosted `4/4` became
+impossible and the candidate is `STOP_HOSTED_NO_SUBMIT`. The fourth episode
+won with 971,920 tiles, making the final result `1/4`; that is useful signal,
+not a passed gate. One loss peaked near 227k tiles and ended at 692; another
+survived on 71,871 tiles after building four silos and 23 bombs; the third was
+eliminated. Those losses drew four to six distinct attackers while v18 spent
+18 to 30 actions requesting alliances that produced no durable cover. The win
+spent 11 alliance requests and sustained pressure through 116 attacks, 55
+boats, and 33 bombs. The 23-bomb loss rejects bomb volume alone as the next
+arm.
+
+v18 was never submitted. v17 remains the sole live champion. The next bounded
+arm removes the exception-heavy selector from the planner path and tests a
+small intent vocabulary with one generic legal-action scorer. Evidence:
+[`audit-0d1novizzz-v18-hosted-failure-20260812.json`](experiments/audit-0d1novizzz-v18-hosted-failure-20260812.json).
