@@ -591,6 +591,115 @@ test("an exact visible convert intent reaches the deployed MM1 selector", async 
   assert.match(responses[1].reason, /mm1c/);
 });
 
+test("intent-core wiring executes the planner outcome without the legacy selector", async () => {
+  const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
+  await new Promise((resolve) => server.once("listening", resolve));
+  const { port } = server.address();
+  const lowRisk = { level: "low" };
+  const mickeyID = "ply_e982e621-9ca3-47cd-8151-f57ee9d99421";
+  const baseOwnState = {
+    troops: 500000,
+    troopRatio: 0.8,
+    gold: 250000,
+    borderTiles: 100,
+    incomingAttacks: [],
+  };
+  const spawnRequest = request("intent-core-spawn", [
+    { id: "spawn:100", kind: "spawn", label: "Spawn 100", risk: lowRisk },
+    { id: "hold", kind: "hold", label: "Hold", risk: lowRisk },
+  ], {
+    phase: "spawn",
+    ownState: { ...baseOwnState, tileShare: 0 },
+    visiblePlayers: [],
+  });
+  const active = request("intent-core-expand", [
+    {
+      id: `alliance:${mickeyID}`,
+      kind: "alliance_request",
+      label: "Request alliance with K1Z Mickey Mouse",
+      risk: lowRisk,
+      metadata: {
+        recipientID: mickeyID,
+        recipientName: "K1Z Mickey Mouse",
+        relation: 2,
+      },
+    },
+    {
+      id: "expand:terra-nullius:35",
+      kind: "attack",
+      label: "Expand Terra Nullius 35%",
+      risk: lowRisk,
+      metadata: { expansion: true, troopPercent: 35 },
+    },
+  ], {
+    phase: "active",
+    ownState: { ...baseOwnState, tileShare: 0.05 },
+    visiblePlayers: [{
+      id: mickeyID,
+      name: "K1Z Mickey Mouse",
+      isAlive: true,
+      tileShare: 0.08,
+      relativeTroopRatio: 1.2,
+      sharesBorder: true,
+      canAttack: true,
+      isAllied: false,
+    }],
+  });
+
+  const responses = [];
+  let stderr = "";
+  const child = spawn(process.execPath, [playerPath], {
+    env: {
+      ...process.env,
+      NODE_ENV: "test",
+      PLAN_MODE: "on",
+      POLICY_ENGINE: "intent-core",
+      INTENT_TEST_DIRECTIVE: JSON.stringify({
+        intent: "expand",
+        targetID: null,
+        horizon: 4,
+      }),
+      COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
+      AWS_EC2_METADATA_DISABLED: "true",
+    },
+    stdio: ["ignore", "pipe", "pipe"],
+  });
+  child.stderr.on("data", (chunk) => { stderr += String(chunk); });
+
+  const completed = new Promise((resolve, reject) => {
+    const timeout = setTimeout(() => {
+      child.kill("SIGKILL");
+      reject(new Error(`intent-core wiring test timed out: ${stderr}`));
+    }, 8000);
+    server.once("connection", (socket) => {
+      socket.send(JSON.stringify(spawnRequest));
+      socket.on("message", (data) => {
+        responses.push(JSON.parse(String(data)));
+        if (responses.length === 1) socket.send(JSON.stringify(active));
+        else socket.send(JSON.stringify({ type: "final" }));
+      });
+    });
+    child.once("error", reject);
+    child.once("exit", (code) => {
+      clearTimeout(timeout);
+      if (code === 0) resolve();
+      else reject(new Error(`intent-core player exited ${code}: ${stderr}`));
+    });
+  });
+
+  try {
+    await completed;
+  } finally {
+    await new Promise((resolve) => server.close(resolve));
+  }
+
+  assert.equal(responses[0].selectedLegalActionId, "spawn:100");
+  assert.equal(responses[0].fallbackUsed, false);
+  assert.equal(responses[1].selectedLegalActionId, "expand:terra-nullius:35");
+  assert.equal(responses[1].fallbackUsed, false);
+  assert.match(responses[1].reason, /^pln:atk:ixexp$/);
+});
+
 test("a single transport-framed planner reply reaches the deployed player", async () => {
   const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
   await new Promise((resolve) => server.once("listening", resolve));

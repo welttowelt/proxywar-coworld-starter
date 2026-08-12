@@ -2,7 +2,12 @@ import { clean } from "./strategy-engine.mjs";
 
 export const MIN_INTENT_HORIZON = 2;
 export const MAX_INTENT_HORIZON = 12;
-export const INTENTS = Object.freeze(["grow", "convert"]);
+export const INTENTS = Object.freeze([
+  "grow", "convert",
+  "expand", "fortify", "defend", "ally", "pressure",
+]);
+
+const TARGETED_INTENTS = new Set(["convert", "ally", "pressure"]);
 
 const DIRECTIVE_KEYS = Object.freeze(["horizon", "intent", "targetID"]);
 
@@ -31,15 +36,15 @@ export function normalizeIntentDirective(value, state, model = "unknown") {
     return null;
   }
 
-  if (intent === "grow" && value.targetID !== null) return null;
-  if (intent === "convert" &&
+  if (!TARGETED_INTENTS.has(intent) && value.targetID !== null) return null;
+  if (TARGETED_INTENTS.has(intent) &&
       (typeof value.targetID !== "string" || !eligibleTarget(state, value.targetID))) {
     return null;
   }
 
   return {
     intent,
-    targetID: intent === "convert" ? value.targetID : null,
+    targetID: TARGETED_INTENTS.has(intent) ? value.targetID : null,
     horizon: value.horizon,
     model: clean(model) || "unknown",
   };
@@ -108,7 +113,7 @@ export function executableIntentPlan(plan, decisionAge, degraded = false) {
   const validShape = plan && INTENTS.includes(plan.intent) &&
     Number.isInteger(plan.horizon) &&
     plan.horizon >= MIN_INTENT_HORIZON && plan.horizon <= MAX_INTENT_HORIZON &&
-    (plan.intent === "grow"
+    (!TARGETED_INTENTS.has(plan.intent)
       ? plan.targetID === null
       : typeof plan.targetID === "string" && plan.targetID.length > 0 &&
         clean(plan.targetID) === plan.targetID);

@@ -32,11 +32,16 @@ import {
 import {
   CAPTAIN_UNDERPANTS_PRODUCTION_DOCTRINE,
 } from "./captain-underpants-production-doctrine.mjs";
+import { chooseIntentCoreAction } from "./intent-core.mjs";
 import { chooseChassisAction } from "./strategy-chassis.mjs";
 import { chooseDealMove, isDealActionKind } from "./deal-desk.mjs";
 
-const chooseAction =
-  process.env.POLICY_ENGINE === "qd2n" ? chooseChassisAction : chooseSelectorAction;
+const POLICY_ENGINE = process.env.POLICY_ENGINE || "legacy";
+const chooseAction = POLICY_ENGINE === "qd2n"
+  ? chooseChassisAction
+  : POLICY_ENGINE === "intent-core"
+    ? chooseIntentCoreAction
+    : chooseSelectorAction;
 import { classifyPlannerError, plannerCooldownMs } from "./planner-backoff.mjs";
 
 const url = process.env.COWORLD_PLAYER_WS_URL;
@@ -68,8 +73,19 @@ const TEST_INTENT_DIRECTIVE = process.env.NODE_ENV === "test"
   ? process.env.INTENT_TEST_DIRECTIVE
   : null;
 
-// -- YOUR STRATEGY -- final screen selection lives in one compile-time module -
-const STRATEGY = CAPTAIN_UNDERPANTS_PRODUCTION_DOCTRINE;
+// Intent-core gives the model mission command: choose the outcome and optional
+// rival, never a concrete move. The legacy doctrine remains byte-for-byte
+// available to existing policy images and tests.
+const INTENT_CORE_STRATEGY = [
+  "You command an autonomous nation in ProxyWar. Win by finishing with the most territory.",
+  "Choose one outcome for the next few decisions:",
+  "expand = gain unowned territory; fortify = strengthen our position; defend = preserve our position under pressure; ally = secure durable cooperation with one visible rival; pressure = reduce one visible rival's ability to win.",
+  "For ally or pressure, use the exact visible rival ID. For every other intent, targetID is null.",
+  "Do not prescribe moves, action kinds, build orders, percentages, map scripts, or timing. The executor chooses among offered legal actions.",
+].join(" ");
+const STRATEGY = POLICY_ENGINE === "intent-core"
+  ? INTENT_CORE_STRATEGY
+  : CAPTAIN_UNDERPANTS_PRODUCTION_DOCTRINE;
 const PLANNER_ENABLED = process.env.PLAN_MODE === "on";
 const PLAN_EVERY = Math.max(1, Number(process.env.PLAN_EVERY) || 8);
 const PLAN_TIMEOUT_MS = Math.max(1000, Number(process.env.PLAN_TIMEOUT_MS) || 12000);
@@ -94,11 +110,14 @@ async function askBedrock(state, signal) {
     return { text: TEST_INTENT_DIRECTIVE, model: "intent-test-fixture" };
   }
   if (!bedrock) throw new Error("bedrock client did not initialize");
-  const prompt =
-    STRATEGY + "\n" + SECURITY + "\n" +
-    'Reply with ONLY JSON and exactly these three keys. Use one shape: ' +
-    '{"intent":"grow","targetID":null,"horizon":4} or ' +
-    '{"intent":"convert","targetID":"<exact visible rival ID>","horizon":4}. ' +
+  const directiveContract = POLICY_ENGINE === "intent-core"
+    ? 'Reply with ONLY JSON and exactly these three keys. Use one shape: ' +
+      '{"intent":"expand|fortify|defend","targetID":null,"horizon":4} or ' +
+      '{"intent":"ally|pressure","targetID":"<exact visible rival ID>","horizon":4}. '
+    : 'Reply with ONLY JSON and exactly these three keys. Use one shape: ' +
+      '{"intent":"grow","targetID":null,"horizon":4} or ' +
+      '{"intent":"convert","targetID":"<exact visible rival ID>","horizon":4}. ';
+  const prompt = STRATEGY + "\n" + SECURITY + "\n" + directiveContract +
     'Horizon must be an integer from 2 through 12.\n' +
     "GAME:\n" + JSON.stringify(buildIntentSnapshot(state));
   const candidates = [...new Set([lockedModel, ...MODELS].filter(Boolean))];
