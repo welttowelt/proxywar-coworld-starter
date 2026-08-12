@@ -1,0 +1,125 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T19:23:00Z",
+  "lane": "0d1novizzz",
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v22",
+    "policy_version_id": "7930d29e-d32f-4b65-95f0-dc010b6120ad",
+    "source_commit": "e9b91c01820474f6c27db33bad42adbb511e4de2",
+    "image_id": "sha256:aa6cecb270a26b652af1a9ac28d883e48f439c8bc53ddd3e7e5febd1e1648f75"
+  },
+  "experience_request_id": "xreq_61bba3e8-f40a-4f6a-9d3e-c63bda4cd550",
+  "gate": {
+    "required": "4/4 hosted wins with planner and ixdef reach and zero candidate fallbacks, holds, rejections, or K1Z harm",
+    "observed_when_stopped": "0/3 with one episode still running",
+    "verdict": "FAIL_STOP_NO_SUBMIT",
+    "reason": "The first three completed episodes were losses. The first loss made the preregistered 4/4 bar impossible; the two mined replays also contained 25/34 and 21/32 degraded candidate decisions."
+  },
+  "completed_episodes_mined": [
+    {
+      "episode_request_id": "ereq_5b0b2b3d-547d-4ffe-9a27-7c0cac2ef44c",
+      "episode_id": "1ff735f7-560c-4815-8e8e-48337bba8b6c",
+      "winner": "Captain Underpants Maximum Aura",
+      "candidate_score": 0,
+      "candidate_alive": true,
+      "candidate_final_tiles": 17831,
+      "candidate_peak": {"turn": 6000, "tiles": 107390},
+      "winner_final_tiles": 864999,
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/55f79932-460b-4982-afc9-44bd13f6dadc.replay",
+      "replay_sha256": "de88f6e0cae6a22ed44c222ad89913e368017bc030957f4c95e8544d4b5f418e",
+      "candidate_game_record_action_counts": {
+        "attack": 35,
+        "boat": 38,
+        "build_unit": 10,
+        "upgrade_structure": 1,
+        "alliance_request": 2,
+        "target_player": 12,
+        "embargo_all": 4,
+        "cancel_attack": 3
+      },
+      "winner_game_record_action_counts": {
+        "attack": 90,
+        "boat": 1,
+        "build_unit": 14
+      },
+      "candidate_snapshot_decisions": 34,
+      "candidate_planner_decisions": 8,
+      "candidate_degraded_decisions": 25,
+      "candidate_ixdef_turns": [5500, 5900, 6300, 6700, 10800],
+      "candidate_tile_samples": [
+        {"turn": 6000, "tiles": 107390},
+        {"turn": 6800, "tiles": 42316},
+        {"turn": 7200, "tiles": 10001},
+        {"turn": 8200, "tiles": 6299},
+        {"turn": 10900, "tiles": 17831}
+      ],
+      "candidate_holds": 0,
+      "candidate_rejections": 0,
+      "candidate_direct_k1z_harm": 0
+    },
+    {
+      "episode_request_id": "ereq_5acf864d-6aa7-49ab-acbf-90911cb9fc56",
+      "episode_id": "af2e8403-81b8-4886-acb6-dc802751b0a0",
+      "winner": "Captain Underpants Maximum Aura",
+      "candidate_score": 0,
+      "candidate_alive": true,
+      "candidate_final_tiles": 9763,
+      "candidate_peak": {"turn": 6000, "tiles": 107451},
+      "winner_final_tiles": 900314,
+      "replay_url": "https://softmax-public.s3.amazonaws.com/replays/4e4dfe13-4537-4a2c-8f09-70c0895e2bf7.replay",
+      "replay_sha256": "65ed958a1396744d95bd951b6d878bc26cb3c932f42f1c44aad24fbe206e5a8f",
+      "candidate_game_record_action_counts": {
+        "attack": 50,
+        "boat": 25,
+        "build_unit": 8,
+        "alliance_request": 4,
+        "target_player": 7,
+        "embargo": 1,
+        "embargo_all": 5,
+        "cancel_attack": 3
+      },
+      "winner_game_record_action_counts": {
+        "attack": 91,
+        "boat": 1,
+        "build_unit": 11
+      },
+      "candidate_snapshot_decisions": 32,
+      "candidate_planner_decisions": 10,
+      "candidate_degraded_decisions": 21,
+      "candidate_ixdef_turns": [2700, 6300, 8300, 10300],
+      "candidate_tile_samples": [
+        {"turn": 6000, "tiles": 107451},
+        {"turn": 8200, "tiles": 94830},
+        {"turn": 8400, "tiles": 61970},
+        {"turn": 8600, "tiles": 5838},
+        {"turn": 10700, "tiles": 9763}
+      ],
+      "candidate_holds": 0,
+      "candidate_rejections": 0,
+      "candidate_direct_k1z_harm": 0
+    }
+  ],
+  "additional_completed_episode": {
+    "episode_request_id": "ereq_24e715a7-b32a-44a1-8b8d-eb370bddc62f",
+    "episode_id": "fe2b5133-9a11-4164-944d-9ecdc224abfd",
+    "winner": "daveey",
+    "candidate_score": 0,
+    "replay_url": "https://softmax-public.s3.amazonaws.com/replays/3cd1c584-e995-4851-8679-8d353d98abfa.replay",
+    "replay_mined": false
+  },
+  "diagnosis": {
+    "active_attack_arbitration": "working_but_tick_local",
+    "planner_transport": "intermittent",
+    "failure_class": "intent_persistence",
+    "finding": "v22 reached ixdef when an attack was visible, but returned to expand or other old intents between attack ticks while territory continued to collapse. Separately, each failed planner refresh discarded the last valid high-level intent and exposed the state-derived fallback instead of retaining the intent until a replacement arrived.",
+    "consequence": "Defense was a momentary reaction rather than a persistent outcome. In the two mined losses Odin fell from about 107k peak tiles to 17.8k and 9.8k while the winners converted 90 and 91 attacks into 865k and 900k tiles.",
+    "next_hypothesis": "Treat intents as persistent state: keep the last valid intent until a new valid intent replaces it, and let live territorial collapse supersede any non-defensive intent with defend until the position stabilizes."
+  },
+  "safety": {
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false,
+    "active_champion": "xX_UwU_Senpai_420_Xx:v17",
+    "underpants_lane_mutation": false
+  }
+}
