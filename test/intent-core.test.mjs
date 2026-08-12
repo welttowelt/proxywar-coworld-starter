@@ -95,6 +95,33 @@ test("defend intent answers the current attacker instead of proactive diplomacy"
   assert.equal(selected.policyMarker, "ixdef");
 });
 
+test("active attack pressure overrides an older expand plan with defend", () => {
+  const land = action("expand:terra-nullius:35", "attack", "Expand Terra Nullius 35%", {
+    expansion: true, troopPercent: 35,
+  });
+  const embargo = action("embargo:raider:start", "embargo", "Embargo Raider", {
+    targetID: "raider", targetName: "Raider",
+  });
+  const counter = action("attack:raider:40", "attack", "Counter Raider 40%", {
+    targetID: "raider", targetName: "Raider", troopPercent: 40,
+    incomingAttack: true,
+  });
+  const harmfulMickey = action("attack:mickey:40", "attack", "Attack K1Z Mickey Mouse 40%", {
+    targetID: MICKEY_ID, targetName: "K1Z Mickey Mouse", troopPercent: 40,
+  });
+  const selected = decide([land, embargo, counter, harmfulMickey], {
+    intent: "expand", targetID: null, horizon: 4,
+  }, {
+    incoming: ["raider"],
+    rivals: [
+      { id: "raider", name: "Raider", tileShare: 0.2, relativeTroopRatio: 1.4 },
+      { id: MICKEY_ID, name: "K1Z Mickey Mouse", tileShare: 0.1 },
+    ],
+  });
+  assert.equal(selected.id, counter.id);
+  assert.equal(selected.policyMarker, "ixdef");
+});
+
 test("ally intent binds to its exact visible target", () => {
   const mickey = alliance(MICKEY_ID, "K1Z Mickey Mouse");
   const sian = alliance(SIAN_ID, "K1Z katanasan");

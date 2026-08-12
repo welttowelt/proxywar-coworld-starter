@@ -94,6 +94,11 @@ function currentAttackerIDs(state) {
 }
 
 function planIntent(plan, state) {
+  const pressured = incomingThreatCount(state?.self?.incomingAttacks) > 0 ||
+    currentAttackerIDs(state).size > 0;
+  // Intent arbitration follows the live board. A plan written before an
+  // attack cannot keep expanding while the nation is being compressed.
+  if (pressured) return { intent: "defend", targetID: null };
   const legacy = plan?.intent === "grow"
     ? "expand"
     : plan?.intent === "convert"
@@ -105,9 +110,6 @@ function planIntent(plan, state) {
       targetID: TARGETED_INTENTS.has(legacy) ? normalizedID(plan?.targetID) : null,
     };
   }
-  const pressured = incomingThreatCount(state?.self?.incomingAttacks) > 0 ||
-    currentAttackerIDs(state).size > 0;
-  if (pressured) return { intent: "defend", targetID: null };
   if (Number(state?.self?.tileShare ?? 0) < 0.15) {
     return { intent: "expand", targetID: null };
   }
