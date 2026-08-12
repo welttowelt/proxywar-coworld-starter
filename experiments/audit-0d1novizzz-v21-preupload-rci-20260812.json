@@ -1,0 +1,32 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T17:53:00Z",
+  "lane": "0d1novizzz",
+  "status": "passed",
+  "verdict": "PASS_PREUPLOAD_RCI",
+  "candidate_source_commit": "0733a3904807163a10e135a7515ac8124e7ecf12",
+  "candidate_image_id": "sha256:70b77e1cf1de2946b0fb4c5b466182f2d4ead0e870fcedf805fab36ec3d7a024",
+  "checks": {
+    "single_intent_semantic_change": true,
+    "source_identity": true,
+    "image_identity": true,
+    "runtime_identity": true,
+    "differential_reach": true,
+    "planner_transport": true,
+    "k1z_safety": true,
+    "zero_candidate_fallback": true,
+    "zero_candidate_hold": true,
+    "zero_candidate_rejection": true,
+    "runner_released": true,
+    "diagnostic_only": true,
+    "league_mutation_forbidden": true
+  },
+  "open_gates": [
+    "diagnostic upload identity binding",
+    "current-roster hosted 4/4",
+    "separate map-and-seat regression 20/20",
+    "final promotion RCI"
+  ],
+  "unresolved_violations": 0,
+  "authorized_next_action": "diagnostic upload only; no league submission, membership change, or champion change"
+}

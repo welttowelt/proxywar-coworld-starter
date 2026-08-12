@@ -1,0 +1,102 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T17:53:00Z",
+  "lane": "0d1novizzz",
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "candidate_source_commit": "0733a3904807163a10e135a7515ac8124e7ecf12",
+  "parent_source_commit": "18fbf8897c5130e4970a2ac241a36583c7833568",
+  "candidate_image_id": "sha256:70b77e1cf1de2946b0fb4c5b466182f2d4ead0e870fcedf805fab36ec3d7a024",
+  "parent_image_id": "sha256:866917da2d7858e6b960ba507f52dc7b29bbc111458c4c50c4f16b3d513c4b3c",
+  "contract_sha256": "c73949fb99850e4b45af062c30c480bc5c2a1fe91ecd48866e9e7894a25cc398",
+  "required_coalition_roles": ["katanasan"],
+  "differential_unit_proof": {
+    "schema_version": 2,
+    "arm": "reachable-pressure-v21",
+    "same_fixture": true,
+    "verifier": {
+      "evaluator_commit": "35ae37dd6721300e3285474a16bf10241926dfc7",
+      "path": "experiments/v21/verify-differential.mjs",
+      "sha256": "8f6b19eebc07f8285ec9b9e80fb57f31f577da323b2ab24967e10a9f01948691"
+    },
+    "fixture": {
+      "id": "v21-reachable-pressure-vs-passive-stall",
+      "path": "experiments/v21/differential-fixture.json",
+      "sha256": "c425fe58bd0d0fde34886626dc5821ee4c9ba542e56c5cdaea25a8dd06ce23be",
+      "legal_action_ids_sha256": "5f98bdf2c8b0d1a7926985110bd38e3e2fe9bee2041dfb3d931e7165b65edc35"
+    },
+    "parent": {
+      "source_commit": "18fbf8897c5130e4970a2ac241a36583c7833568",
+      "selected_action_id": "build:Factory:42"
+    },
+    "candidate": {
+      "source_commit": "0733a3904807163a10e135a7515ac8124e7ecf12",
+      "selected_action_id": "attack:reachable:40",
+      "marker": "ixprs"
+    },
+    "safety": {
+      "offered_k1z_harmful_action": "attack:mickey:40",
+      "parent_selected_k1z_harm": false,
+      "candidate_selected_k1z_harm": false
+    },
+    "test_command": [
+      "node",
+      "experiments/v21/verify-differential.mjs",
+      ".",
+      "18fbf8897c5130e4970a2ac241a36583c7833568",
+      "0733a3904807163a10e135a7515ac8124e7ecf12",
+      "experiments/v21/differential-fixture.json",
+      "experiments/v21/differential-proof-0733a390.json"
+    ],
+    "test_exit_code": 0
+  },
+  "runs": [
+    {
+      "orientation": "A",
+      "run_id": "v21-reachable-pressure-20260812T1751Z",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "directory": "/private/tmp/proxywar-v21-reachable-pressure-20260812T1751Z",
+      "coalition_roles_present": ["odin", "katanasan"],
+      "replay_sha256": "7f96d65d11bbc95e0a3e0560c19ac3f1d6f1b96ad93ac49eb5d0cd317827fa7d",
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image": "proxywar-agent-candidate:v21-reachable-pressure",
+            "image_id": "sha256:70b77e1cf1de2946b0fb4c5b466182f2d4ead0e870fcedf805fab36ec3d7a024"
+          }
+        }
+      },
+      "candidate": {
+        "slot": 0,
+        "decision_count": 11,
+        "accepted": 11,
+        "score": 0.21801034536809655,
+        "tiles": 8345,
+        "alive": true,
+        "route_execution_count": 10,
+        "marker_counts": { "ixprs": 10 },
+        "action_counts": { "attack": 6, "boat": 3, "build": 1, "spawn": 1 },
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "unexplained_holds": [],
+        "harmful_k1z_actions": [],
+        "unresolved_harmful_targets": []
+      },
+      "orientation_advantage": null,
+      "violations": []
+    }
+  ],
+  "full_suite": {
+    "tests": 468,
+    "passed": 462,
+    "failed": 6,
+    "candidate_related_failures": 0,
+    "note": "The six failures are the same unrelated Mickey fanout and stale RCI fixture failures present before v21."
+  },
+  "scope_boundary": "The local trace proves exact-image intent reach and safety. The committed differential proves the reachable-rival semantic change. Neither proves hosted competitive lift.",
+  "failures": []
+}
