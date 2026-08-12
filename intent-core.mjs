@@ -9,23 +9,16 @@ import {
   territoryCollapsing,
 } from "./strategy-engine.mjs";
 
-const INTENTS = new Set(["expand", "fortify", "defend", "ally", "pressure"]);
-const TARGETED_INTENTS = new Set(["ally", "pressure"]);
+const INTENTS = new Set(["grow", "convert"]);
 const HARMFUL_KINDS = new Set([
   "attack", "boat", "nuke", "target_player", "embargo", "embargo_all",
 ]);
-const PHYSICAL_PRESSURE_KINDS = new Set(["attack", "boat", "nuke"]);
-const PRESSURE_SIGNAL_KINDS = new Set([
+const PHYSICAL_KINDS = new Set(["attack", "boat", "nuke"]);
+const SYMBOLIC_KINDS = new Set([
   "target_player", "embargo", "embargo_all", "embargo_stop",
+  "alliance_request", "alliance_extend", "break_alliance", "quick_chat", "emoji",
 ]);
-const DEFENSIVE_UNITS = new Set(["defense post", "sam launcher"]);
-const MARKERS = Object.freeze({
-  expand: "ixexp",
-  fortify: "ixfor",
-  defend: "ixdef",
-  ally: "ixaly",
-  pressure: "ixprs",
-});
+const MARKERS = Object.freeze({ grow: "ixexp", convert: "ixprs" });
 
 function normalizedID(value) {
   return clean(value).toLowerCase();
@@ -39,13 +32,17 @@ function isStrike(action) {
   return action?.kind === "nuke" || actionUnit(action) === "atom bomb";
 }
 
-function isPhysicalPressure(action) {
+function isPhysicalForce(action) {
   if (isNeutralExpansion(action) || isNeutralBoat(action)) return false;
-  return PHYSICAL_PRESSURE_KINDS.has(action?.kind) || isStrike(action);
+  return PHYSICAL_KINDS.has(action?.kind) || isStrike(action);
 }
 
-function isPressureSignal(action) {
-  return PRESSURE_SIGNAL_KINDS.has(action?.kind);
+function isInfrastructure(action) {
+  return action?.kind === "build" || action?.kind === "upgrade_structure";
+}
+
+function isSymbolic(action) {
+  return SYMBOLIC_KINDS.has(action?.kind);
 }
 
 function actionRival(action, state) {
@@ -72,22 +69,6 @@ function protectedHarm(action, state, history) {
   return rival ? rivalIsProtected(state, history, rival) : false;
 }
 
-function offeredMenu(actions, state, history, directive) {
-  const legal = actions.filter((action) =>
-    action && typeof action.id === "string" && action.id.length > 0 &&
-    !protectedHarm(action, state, history)
-  );
-  const active = legal.filter((action) => action?.kind !== "hold");
-  // Pressure is the decision to convert available force into relative power.
-  // Do not erase offered combat merely because a passive action carries a
-  // lower generic risk label; the intent scorer still ranks every safe target.
-  if (directive.intent === "pressure" && active.length > 0) return active;
-  const lowerRisk = active.filter((action) => action?.risk?.level !== "high");
-  if (lowerRisk.length > 0) return lowerRisk;
-  if (active.length > 0) return active;
-  return legal;
-}
-
 function currentAttackerIDs(state) {
   return new Set([
     ...(state?.self?.incomingAttackerIDs || []),
@@ -95,117 +76,98 @@ function currentAttackerIDs(state) {
   ].map(normalizedID).filter(Boolean));
 }
 
-function planIntent(plan, state, history) {
-  const pressured = incomingThreatCount(state?.self?.incomingAttacks) > 0 ||
-    currentAttackerIDs(state).size > 0 || territoryCollapsing(state, history);
-  // Intent arbitration follows the live board. A plan written before an
-  // attack cannot keep expanding while the nation is being compressed, even
-  // during a quiet protocol tick between attack waves.
-  if (pressured) return { intent: "defend", targetID: null };
-  const legacy = plan?.intent === "grow"
-    ? "expand"
-    : plan?.intent === "convert"
-      ? "pressure"
-      : plan?.intent;
-  if (INTENTS.has(legacy)) {
+function bestConversionTarget(state, history) {
+  const attackers = currentAttackerIDs(state);
+  const candidates = (state?.rivals || [])
+    .filter((rival) => !rivalIsProtected(state, history, rival))
+    .sort((left, right) => {
+      const leftAttacker = attackers.has(normalizedID(left.id)) ? 1 : 0;
+      const rightAttacker = attackers.has(normalizedID(right.id)) ? 1 : 0;
+      const leftReach = left.canAttack || left.sharesBorder ? 1 : 0;
+      const rightReach = right.canAttack || right.sharesBorder ? 1 : 0;
+      const leftRatio = Number.isFinite(left.relativeTroopRatio)
+        ? left.relativeTroopRatio : -1;
+      const rightRatio = Number.isFinite(right.relativeTroopRatio)
+        ? right.relativeTroopRatio : -1;
+      return rightAttacker - leftAttacker || rightReach - leftReach ||
+        rightRatio - leftRatio || right.tileShare - left.tileShare ||
+        normalizedID(left.id).localeCompare(normalizedID(right.id));
+    });
+  return normalizedID(candidates[0]?.id);
+}
+
+function mission(plan, state, history) {
+  const collapsing = territoryCollapsing(state, history);
+  const attacked = incomingThreatCount(state?.self?.incomingAttacks) > 0 ||
+    currentAttackerIDs(state).size > 0;
+  if (collapsing || attacked) {
+    return { intent: "convert", targetID: bestConversionTarget(state, history) };
+  }
+  if (INTENTS.has(plan?.intent)) {
     return {
-      intent: legacy,
-      targetID: TARGETED_INTENTS.has(legacy) ? normalizedID(plan?.targetID) : null,
+      intent: plan.intent,
+      targetID: plan.intent === "convert" ? normalizedID(plan?.targetID) : null,
     };
   }
-  if (Number(state?.self?.tileShare ?? 0) < 0.15) {
-    return { intent: "expand", targetID: null };
+  return { intent: "grow", targetID: null };
+}
+
+function actionIntent(action) {
+  if (!action || action.kind === "hold" || isSymbolic(action)) return null;
+  if (isNeutralExpansion(action) || isNeutralBoat(action) || isInfrastructure(action)) {
+    return "grow";
   }
-  return { intent: "fortify", targetID: null };
+  if (isPhysicalForce(action)) return "convert";
+  return null;
 }
 
-function isAllianceAction(action) {
-  return action?.kind === "alliance_request" || action?.kind === "alliance_extend";
-}
+function offeredMenu(actions, state, history, requested) {
+  const legal = actions.filter((action) =>
+    action && typeof action.id === "string" && action.id.length > 0 &&
+    !protectedHarm(action, state, history)
+  );
+  const aligned = legal.filter((action) => actionIntent(action) === requested.intent);
+  if (aligned.length > 0) return { directive: requested, actions: aligned };
 
-function isRetreat(action) {
-  return action?.kind === "retreat" || action?.kind === "boat_retreat";
-}
+  const fallbackIntent = requested.intent === "grow" ? "convert" : "grow";
+  const fallback = legal.filter((action) => actionIntent(action) === fallbackIntent);
+  if (fallback.length > 0) {
+    return {
+      directive: {
+        intent: fallbackIntent,
+        targetID: fallbackIntent === "convert"
+          ? bestConversionTarget(state, history) : null,
+      },
+      actions: fallback,
+    };
+  }
 
-function isInfrastructure(action) {
-  return action?.kind === "build" || action?.kind === "upgrade_structure" || isStrike(action);
-}
-
-function isDefensiveInfrastructure(action) {
-  return (action?.kind === "build" || action?.kind === "upgrade_structure") &&
-    DEFENSIVE_UNITS.has(actionUnit(action));
+  const hold = legal.find((action) => action.kind === "hold");
+  return { directive: requested, actions: hold ? [hold] : [] };
 }
 
 function sameTarget(action, targetID, state) {
   return targetID.length > 0 && actionTargetID(action, state) === targetID;
 }
 
-function intentScore(action, directive, state) {
-  const { intent, targetID } = directive;
+function missionScore(action, directive, state) {
   const neutralLand = isNeutralExpansion(action);
   const neutralBoat = isNeutralBoat(action);
-  const alliance = isAllianceAction(action);
-  const retreat = isRetreat(action);
   const infrastructure = isInfrastructure(action);
-  const harmful = isHarmful(action);
-  const exactTarget = targetID ? sameTarget(action, targetID, state) : false;
-  const attackers = currentAttackerIDs(state);
-  const answersAttacker = isPhysicalPressure(action) &&
-    attackers.has(actionTargetID(action, state));
+  const physical = isPhysicalForce(action);
+  const exactTarget = directive.targetID
+    ? sameTarget(action, directive.targetID, state) : false;
 
-  if (intent === "expand") {
-    if (neutralLand) return 240;
-    if (neutralBoat) return 220;
-    if (infrastructure) return 100;
-    if (retreat) return 70;
-    if (harmful) return 50;
-    if (alliance) return 20;
-    return action.kind === "hold" ? -200 : 10;
+  if (directive.intent === "grow") {
+    if (neutralLand) return 300;
+    if (neutralBoat) return 260;
+    if (infrastructure) return 220;
+    return action.kind === "hold" ? -200 : -1000;
   }
 
-  if (intent === "fortify") {
-    if (infrastructure) return isStrike(action) ? 230 : 240;
-    if (retreat) return 130;
-    if (neutralLand || neutralBoat) return 100;
-    if (harmful) return 60;
-    if (alliance) return 30;
-    return action.kind === "hold" ? -200 : 20;
-  }
-
-  if (intent === "defend") {
-    if (answersAttacker) return 300;
-    if (retreat) return 260;
-    if (isDefensiveInfrastructure(action)) return 240;
-    if (isPhysicalPressure(action)) return 100;
-    if (isPressureSignal(action)) return -120;
-    if (infrastructure) return 40;
-    if (neutralLand || neutralBoat) return 20;
-    if (alliance) return 10;
-    if (harmful) return -120;
-    return action.kind === "hold" ? -200 : 0;
-  }
-
-  if (intent === "ally") {
-    if (alliance && exactTarget) return 280;
-    if (alliance || harmful) return -120;
-    if (infrastructure) return 100;
-    if (neutralLand || neutralBoat) return 80;
-    if (retreat) return 70;
-    return action.kind === "hold" ? -200 : 20;
-  }
-
-  // Pressure is an outcome, not a declaration. The named rival is a preferred
-  // destination for force, not a prerequisite for acting. If it is unreachable,
-  // taking power from another safe reachable rival still improves relative power.
-  if (isPhysicalPressure(action) && exactTarget) return 300;
-  if (isPhysicalPressure(action)) return 240;
-  if (infrastructure) return 180;
-  if (neutralLand || neutralBoat) return 160;
-  if (isPressureSignal(action) && exactTarget) return 40;
-  if (isPressureSignal(action) || harmful) return -120;
-  if (alliance) return 20;
-  if (retreat) return 70;
-  return action.kind === "hold" ? -200 : 30;
+  if (physical && exactTarget) return 340;
+  if (physical) return 280;
+  return action.kind === "hold" ? -200 : -1000;
 }
 
 function repetitionPenalty(action, history) {
@@ -223,14 +185,18 @@ function repetitionPenalty(action, history) {
 function commitmentTieBreak(action, directive, state) {
   const percent = actionPercent(action);
   if (!Number.isFinite(percent)) return 0;
-  if (directive.intent === "expand" && isNeutralExpansion(action)) return percent / 10;
-  if ((directive.intent === "pressure" || directive.intent === "defend") &&
-      isHarmful(action)) {
+  if (directive.intent === "grow" && isNeutralExpansion(action)) return percent / 10;
+  if (directive.intent === "convert" && isPhysicalForce(action)) {
     const rival = actionRival(action, state);
     const ratio = Number(rival?.relativeTroopRatio);
     return Number.isFinite(ratio) && ratio >= 1.2 ? percent / 20 : -percent / 20;
   }
   return 0;
+}
+
+function riskPenalty(action, directive) {
+  if (action?.risk?.level !== "high") return 0;
+  return directive.intent === "convert" && isPhysicalForce(action) ? 40 : 120;
 }
 
 export function chooseIntentCoreAction(actions, state, plan = null, history = []) {
@@ -240,18 +206,16 @@ export function chooseIntentCoreAction(actions, state, plan = null, history = []
   const spawn = actions.find((action) => action?.kind === "spawn");
   if (spawn) return spawn;
 
-  const directive = planIntent(plan, state, history);
-  const menu = offeredMenu(actions, state, history, directive);
-  if (menu.length === 0) {
-    const hold = actions.find((action) => action?.kind === "hold");
-    if (hold) return { ...hold, policyMarker: MARKERS[directive.intent] };
-    throw new Error("intent core found no safe offered action");
-  }
+  const requested = mission(plan, state, history);
+  const { directive, actions: menu } = offeredMenu(
+    actions, state, history, requested,
+  );
+  if (menu.length === 0) throw new Error("intent core found no safe intent action");
 
   const ranked = menu.map((action) => ({
     action,
-    score: intentScore(action, directive, state) - repetitionPenalty(action, history) +
-      commitmentTieBreak(action, directive, state),
+    score: missionScore(action, directive, state) - repetitionPenalty(action, history) -
+      riskPenalty(action, directive) + commitmentTieBreak(action, directive, state),
   })).sort((left, right) =>
     right.score - left.score || left.action.id.localeCompare(right.action.id)
   );
