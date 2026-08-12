@@ -1,0 +1,36 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-12T20:54:00Z",
+  "lane": "0d1novizzz",
+  "status": "submitted",
+  "request_id": "xreq_c8c31f32-a584-48cf-9c3f-ada73f3627e4",
+  "request_path": "/Users/olifreuler/proxywar-coworld-starter/experiments/request-0d1novizzz-v25-hosted-current16-asia-4x.json",
+  "request_sha256": "181b8c199ff489aeded1c5ce3d93639a7afc4969d032289c5d0e981f0384bc19",
+  "candidate_source_commit": "fff78cf61880b3afce30b7d5a3a7fa45403cbde0",
+  "candidate_image_id": "sha256:9a9848271e81ce5c46e1c7cf66d03e519aa48baa4a948c05822c65a25c60aa55",
+  "candidate_policy_version_id": "774dfbb9-faa9-4982-8394-f2e3b49fb0d8",
+  "candidate_uploaded_label": "xX_UwU_Senpai_420_Xx:v24",
+  "coworld_id": "cow_e3b19156-63ca-47d2-9736-71b087b269a9",
+  "coworld_version": "0.1.39",
+  "variant_id": "tournament-16p-asia",
+  "source_round": 1390,
+  "episode_request_ids": [
+    "ereq_04a980b9-90f3-4afe-85eb-f306a54c1785",
+    "ereq_217d769a-d4c7-476e-b28f-9e40634abd7e",
+    "ereq_0ecd10d4-6a7c-45b5-81f9-66028eed0078",
+    "ereq_eb8b9e4c-b720-4d42-994c-c2b996fbc04a"
+  ],
+  "roster_binding": {
+    "episodes": 4,
+    "slots": 16,
+    "candidate_slot": 0,
+    "all_four_identical": true,
+    "only_odin_replaced_from_source_round": true
+  },
+  "live_mutations": {
+    "hosted_experience_request": true,
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false
+  }
+}
