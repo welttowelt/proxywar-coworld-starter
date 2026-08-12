@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "cycle_id": "odin-20260812T174122Z-49896",
+  "recorded_at": "2026-08-12T17:41:22Z",
+  "transition": "terminal_qd1n_retired_no_successor_block_refreshed",
+  "verdict": "BLOCK_QD1N_RETIRED_NO_AUTHORIZED_SUCCESSOR_RECEIPT",
+  "dispatch_mailbox_head": "af9bfaf76516a3bc62555c579dfa025697fbd6d7",
+  "dispatch_packet": "CLAUDE_TO_ODIN_0D1NOVIZZZ_HANDOVER_20260812.md",
+  "dispatch_packet_sha256": "270df00344bb1acb9a09e05b1dbc0228c140616a3a8810640dad9f5524559938",
+  "prior_checkpoint_audit": "experiments/audit-qd1n-unchanged-handover-block-20260812T163718Z.json",
+  "reconciliation": {
+    "canonical_active_arm_reopened": true,
+    "dispatch_mailbox_head_unchanged": true,
+    "dispatch_head_already_reconciled": true,
+    "dispatch_head_is_qd1n_transition_receipt": false,
+    "handover_is_separate_0d1novizzz_player": true,
+    "underpants_lane_reported_deliberately_disqualified": true,
+    "hash_bound_qd1n_retirement_or_successor_receipt_present": false,
+    "live_api_reconciliation_repeated": false
+  },
+  "actions": {
+    "source_change": false,
+    "runner_started": false,
+    "diagnostic_uploaded": false,
+    "league_mutation": false,
+    "new_arm_dispatched": false,
+    "handover_player_mutated": false
+  },
+  "next_automatic_transition": "Recover the hash-bound qd1n retirement or authorized successor receipt. Before any qd1n mutation, acquire an exclusive K1Z_COORD player-context claim and independently verify the player, submission, membership, and champion identity. Do not dispatch another arm meanwhile."
+}
