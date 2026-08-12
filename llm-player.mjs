@@ -51,8 +51,18 @@ const MODELS = [
   "anthropic.claude-sonnet-4-5-20250929-v1:0",
 ].filter(Boolean);
 
+// Hosted pods front Bedrock with a per-pod sidecar (since ~2026-07-30): calls
+// must go to AWS_ENDPOINT_URL_BEDROCK_RUNTIME or they 403 on placeholder
+// creds. Locally the env var is absent and the client talks to AWS directly.
+const BEDROCK_SIDECAR = (process.env.AWS_ENDPOINT_URL_BEDROCK_RUNTIME || "").trim();
 let bedrock = null;
-try { bedrock = new AnthropicBedrock({ awsRegion: REGION }); } catch (e) { bedrock = null; }
+try {
+  bedrock = new AnthropicBedrock(
+    BEDROCK_SIDECAR
+      ? { awsRegion: REGION, baseURL: BEDROCK_SIDECAR }
+      : { awsRegion: REGION },
+  );
+} catch (e) { bedrock = null; }
 let lockedModel = null;
 const TEST_INTENT_DIRECTIVE = process.env.NODE_ENV === "test"
   ? process.env.INTENT_TEST_DIRECTIVE
