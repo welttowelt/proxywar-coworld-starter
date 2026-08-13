@@ -1,0 +1,56 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T09:53:00Z",
+  "lane": "0d1novizzz",
+  "status": "passed",
+  "verdict": "PASS_PREUPLOAD_RCI",
+  "candidate_source_commit": "e8ceb516bcdaaaeb06b557228b1a6cf6b73e8c6f",
+  "candidate_docker_image_id": "sha256:9b411947b0bfdfb81f56ef01bcb161e9f2601b098ee10aa27231e9a8b2070f8d",
+  "candidate_coworld_client_hash": "sha256:42ff71fcf134374ea40dc8536d1bee2020d56797b6ce60d8f811cb690918e6c8",
+  "parent_source_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
+  "preregister_sha256": "3496fa1730ce7f25f643209aaf9008d8ad336998dccbbba5cbeede47e369de78",
+  "local_audit_sha256": "9797d857666d33d94fb2fe41c4cc7d715b75f57d3befa6f29894e4899143127e",
+  "differential_proof_sha256": "d6c92584c46d907cdbb3851d540d339a17df02b06fd6b04ed610caa5f53a0094",
+  "critique": {
+    "strongest_evidence": "The planner prompt, one-key schema, grow/finish vocabulary, refresh cadence, and finish executor are unchanged. The bounded same-state verifier changes exactly one reachable grow decision from Port maintenance to a new City, leaves a weak hostile cell unchanged, and leaves finish unchanged. Focused tests pass 32/32, the full-suite delta is zero outside the same six historical failures, and the exact-image planner-path trace completes 13/13 candidate decisions with twelve pln:*:ixgrw neutral expansions and zero fallback, degradation, rejection, hold, or harmful target.",
+    "adverse_evidence": "The exact-image trace ends before the late maintenance branch, so mechanism reach depends on the committed same-state verifier. v40 tied v17 at 0-0 across four matched BlackSea fields, and no evidence yet shows that suppressing maintenance when direct territory or new capacity is legal creates a win.",
+    "remaining_uncertainty": "The hosted action menu may offer no neutral territory or new build during the late upgrade loop, making v41 behaviorally identical to v40. A matched v17 comparison must show strict win advantage; otherwise v41 is killed. Any K1Z harm, planner parse failure, fallback, degradation, rejection, or unexplained hold also kills it."
+  },
+  "checks": {
+    "single_change": true,
+    "planner_unchanged": true,
+    "two_intent_vocabulary": true,
+    "planner_actions_forbidden": true,
+    "planner_targets_forbidden": true,
+    "planner_tactical_instructions_forbidden": true,
+    "finish_unchanged": true,
+    "weak_hostility_not_forced": true,
+    "k1z_boundary_unchanged": true,
+    "same_state_parent_upgrade": true,
+    "same_state_candidate_new_capacity": true,
+    "exact_image_planner_path_reach": true,
+    "zero_candidate_fallback": true,
+    "zero_candidate_degradation": true,
+    "zero_candidate_hold": true,
+    "zero_candidate_rejection": true,
+    "local_competitive_lift_not_claimed": true,
+    "runner_released": true,
+    "diagnostic_only": true,
+    "league_mutation_forbidden": true
+  },
+  "open_gates": [
+    "identity-bound diagnostic upload",
+    "matched candidate advantage over v17",
+    "hosted 4/4",
+    "separate map-and-seat regression 20/20",
+    "final promotion RCI"
+  ],
+  "stop_conditions": [
+    "candidate wins no more matched fields than v17",
+    "any K1Z harm or unresolved target identity",
+    "any planner fallback, degradation, rejection, or parse failure",
+    "any unexplained hold"
+  ],
+  "unresolved_violations": 0,
+  "authorized_next_action": "One diagnostic upload only, then a preregistered four-field matched v17 comparison. No unmatched automatic batch, league submission, membership change, or champion change."
+}
