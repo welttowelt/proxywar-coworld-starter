@@ -1,0 +1,66 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T03:02:00Z",
+  "lane": "0d1novizzz",
+  "status": "passed",
+  "verdict": "PASS_PREUPLOAD_RCI",
+  "candidate_source_commit": "b0a6b669e1b5877d5b1367f3166714a7b48f9779",
+  "candidate_image_id": "sha256:0b8253b4db53777c1d9d671036c46443c65d89653ac33133153e41df2a12398e",
+  "preregister_sha256": "9a09683ea794816fb41f4acac950f06ab9c303e006d55d6ae0e0ef1a7a388d77",
+  "local_audit_sha256": "be0a90197bcb98b92f706495d4f95a8cdcd75b3ea4393a20f1641e2b2857ee52",
+  "differential_proof_sha256": "a52916b4c3ddcab889bd2153c6e044bb8db2298211de52dcf067c7b411563cd0",
+  "live_baseline": {
+    "policy": "v17",
+    "rank": 13,
+    "score": 6.054144897190902,
+    "round": 1401,
+    "latest_round_rank": 6,
+    "latest_round_score": 0,
+    "preserved_policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "preserved_membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  },
+  "critique": {
+    "strongest_evidence": "The hash-bound same-board differential isolates the semantic change: v32 holds under grow and secure when only a safe boat remains, while v33 takes the boat under either intent. The protected-only menu still holds. The exact image then completed 40 constant-grow decisions with 41/41 accepted, zero holds, zero fallback, zero rejection, and 40 planner markers.",
+    "adverse_evidence": "The completed local game follows the same neutral-growth trace and produces the same 0.1095 score as v31, so it demonstrates execution integrity but no competitive lift. Parent v31 scored 0/10 in hosted Oceania and sometimes ran finish for twenty consecutive decisions. Preference fallback removes 45 observed holds but does not directly correct weak intent selection or boat overuse.",
+    "remaining_uncertainty": "Only the live Bedrock planner in the current 16-player roster can show whether the one-field intents switch usefully and whether removing allowlists converts former holds into valuable actions rather than a different low-value loop."
+  },
+  "checks": {
+    "single_semantic_change": true,
+    "one_field_contract": true,
+    "planner_actions_forbidden": true,
+    "planner_targets_forbidden": true,
+    "intent_is_preference": true,
+    "hold_only_without_safe_productive_action": true,
+    "source_identity": true,
+    "image_identity": true,
+    "runtime_identity": true,
+    "differential_reach": true,
+    "exact_image_all_intents": true,
+    "zero_candidate_fallback": true,
+    "zero_candidate_degradation": true,
+    "zero_candidate_hold": true,
+    "zero_candidate_rejection": true,
+    "k1z_safety": true,
+    "competitive_lift_not_claimed": true,
+    "runner_released": true,
+    "active_player_is_0d1novizzz": true,
+    "diagnostic_only": true,
+    "league_mutation_forbidden": true
+  },
+  "open_gates": [
+    "diagnostic upload identity binding",
+    "matched-current-roster hosted 4/4",
+    "separate map-and-seat regression 20/20",
+    "final promotion RCI"
+  ],
+  "stop_conditions": [
+    "any hosted score of zero",
+    "planner reasons absent from any replay",
+    "any fallback, degradation, rejection, or parse failure",
+    "any hold while a safe productive action is offered",
+    "any forbidden symbolic action or K1Z harm",
+    "failure to observe at least two distinct intents across the four-episode request"
+  ],
+  "unresolved_violations": 0,
+  "authorized_next_action": "One diagnostic upload and one four-episode hosted request using the current v31 roster and variant; no league submission, membership change, or champion change."
+}
