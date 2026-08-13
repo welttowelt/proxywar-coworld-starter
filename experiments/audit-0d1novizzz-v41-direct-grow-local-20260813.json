@@ -1,0 +1,140 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T09:51:00Z",
+  "lane": "0d1novizzz",
+  "arm": "v41-direct-grow",
+  "status": "passed_local_mechanism_and_runtime",
+  "source": {
+    "commit": "e8ceb516bcdaaaeb06b557228b1a6cf6b73e8c6f",
+    "parent_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
+    "single_change": "When grow has a safe neutral-territory or new-build action, exclude maintenance upgrades before invoking the unchanged mature selector.",
+    "planner_changed": false,
+    "planner_intents": [
+      "grow",
+      "finish"
+    ]
+  },
+  "image": {
+    "tag": "proxywar-agent-candidate:v41-direct-grow",
+    "docker_linux_amd64_id": "sha256:9b411947b0bfdfb81f56ef01bcb161e9f2601b098ee10aa27231e9a8b2070f8d",
+    "architecture": "linux/amd64",
+    "provenance": false,
+    "run": [
+      "node",
+      "/app/llm-player.mjs"
+    ],
+    "env": {
+      "POLICY_ENGINE": "intent-core",
+      "POLICY_CODENAME": "ib2"
+    },
+    "file_sha256": {
+      "llm-player.mjs": "15fd5c07f2fd8bfeb9a238662a5c22b558d7cecfc66926f7a976b0a788273322",
+      "intent-core.mjs": "8be773eb561a979c81887802894b55b53b63b20b94bd4fb39aaab38d70a82b84",
+      "strategy-engine.mjs": "292b50f9f17f6d1e240733eabab388c788527d7334f2e163fda29cae9f7304"
+    }
+  },
+  "differential": {
+    "proof": "experiments/v41/direct-grow-proof-e8ceb516.json",
+    "fixture": "experiments/v41/direct-grow-fixture.json",
+    "verifier": "experiments/v41/verify-direct-grow-differential.mjs",
+    "cases": 3,
+    "changed_cases": 1,
+    "parent_changed_action": "upgrade:Port:95",
+    "candidate_changed_action": "build:City",
+    "weak_hostile_changed": false,
+    "finish_changed": false
+  },
+  "tests": {
+    "focused": {
+      "total": 32,
+      "passed": 32,
+      "failed": 0
+    },
+    "full": {
+      "total": 479,
+      "passed": 473,
+      "failed": 6,
+      "new_failures": 0,
+      "historical_failures": "four inactive Mickey activation/reaper fixtures and two inactive RCI-report fixtures"
+    }
+  },
+  "local_runs": {
+    "r1": {
+      "run_id": "v41-direct-grow-12-r1-20260813T093440Z",
+      "status": "runtime_clean_but_planner_path_not_exercised",
+      "output_directory": "/private/tmp/proxywar-v41-direct-grow-12-r1-20260813T093440Z",
+      "reason_prefix": "rul:",
+      "decisions": 13,
+      "accepted": 13,
+      "neutral_expansions": 12,
+      "fallbacks": 0,
+      "degradations": 0,
+      "rejections": 0,
+      "holds": 0,
+      "gate_counted": false,
+      "reason": "The harness omitted PLAN_MODE. The clean trace proves default executor reach only."
+    },
+    "r2_precreate_attempt": {
+      "status": "blocked_before_docker_creation",
+      "reason": "The temporary orchestrator still accepted only the r1 output prefix.",
+      "lease_released": true,
+      "output_quarantined": true,
+      "game_created": false,
+      "policy_created": false
+    },
+    "r2": {
+      "run_id": "v41-direct-grow-12-r2-20260813T094300Z",
+      "job": "experiments/job-0d1novizzz-v41-direct-grow-local-r2-20260813.json",
+      "output_directory": "/private/tmp/proxywar-v41-direct-grow-12-r2-20260813T094300Z",
+      "orchestrator_sha256": "c6f8ed70f07e09d1e4cd93f46bf23548ad96306046fd13e89f24d0047e43f490",
+      "engine_version": "0.1.39",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "candidate_slot": 0,
+      "control_slots": 15,
+      "max_decision_steps": 12,
+      "match_id": "PWSELHEF",
+      "turn_count": 950,
+      "global_decisions": 208,
+      "global_accepted": 208,
+      "global_fallbacks": 0,
+      "global_degradations": 0,
+      "candidate": {
+        "decisions": 13,
+        "accepted": 13,
+        "spawn": 1,
+        "neutral_expansions": 12,
+        "planner_marked": 12,
+        "grow_marked": 12,
+        "finish_marked": 0,
+        "fallbacks": 0,
+        "degradations": 0,
+        "rejections": 0,
+        "holds": 0,
+        "harmful_actions": 0,
+        "unresolved_harmful_targets": 0,
+        "final_tiles": 19198,
+        "alive": true
+      },
+      "deterministic_packet": {
+        "intent": "grow",
+        "scope": "Execution-path reach only; this is not evidence about model selection quality."
+      },
+      "artifact_sha256": {
+        "replay": "f7d99ac2845b4f46dc174776f830c5379f1aa00b0b02ab289cde880ba9390049",
+        "results": "c90d955c335b57ab5f520c9a569f4fa2ba084057a115320a64fa53dfa7f78f9e",
+        "resolved_images": "a1888ab73ef7b18cf5f147a90937880b5bdba2c990bed395a9589eca6cbeb7b9",
+        "runner_result": "b7efc3175aa6f4ab9fc438b5604e50fa9b01ea84abb213813abb6d5b92385459",
+        "candidate_log": "8cd88599b526f3d83ce166603901c2db690f7d8e3b9fc77ff1c808ca164a12e0"
+      }
+    }
+  },
+  "interpretation": {
+    "proved": "The exact image runs the two-intent planner path cleanly, preserves the K1Z boundary, and the bounded same-state verifier reaches exactly the intended upgrade-to-new-capacity delta.",
+    "not_proved": "The short constant-grow trace does not reach the late maintenance branch and proves no competitive lift.",
+    "next_gate": "One identity-bound diagnostic upload followed by a four-field matched comparison with v17. No automatic unmatched batch and no league mutation."
+  },
+  "runner_released": true,
+  "named_containers_remaining": 0,
+  "promotion_ready": false
+}
