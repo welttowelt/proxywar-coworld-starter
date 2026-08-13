@@ -1,0 +1,47 @@
+{
+  "schema_version": 2,
+  "arm": "intent-preferences-v33",
+  "same_fixture": true,
+  "equivalent_goal": "continue safe productive play when the preferred action class is unavailable",
+  "verifier": {
+    "evaluator_commit": "fdd2858aaff7c71674d4abd3c137519919ad6b63",
+    "path": "experiments/v33/verify-differential.mjs",
+    "sha256": "de3af24658d5ad26e54f863b3d7a211e11df8e2bac23f0e9b527f124410368be"
+  },
+  "fixture": {
+    "id": "v33-intent-preference-beats-avoidable-hold",
+    "path": "experiments/v33/differential-fixture.json",
+    "sha256": "655304f804ba6f1409c5be9b35af47f821b1c2703747024bd5bcef040b52a55d"
+  },
+  "parent": {
+    "source_commit": "30959d0cf079fb667382e9ad307b03fe451bf7b6",
+    "selected_action_id": "hold",
+    "marker": "ixgrw",
+    "interpretation": "intent is an action allowlist"
+  },
+  "candidate": {
+    "source_commit": "b0a6b669e1b5877d5b1367f3166714a7b48f9779",
+    "selected_action_id": "boat:485204:45",
+    "marker": "ixgrw",
+    "interpretation": "intent ranks safe productive actions"
+  },
+  "secure_boundary": {
+    "parent_selected_action_id": "hold",
+    "candidate_selected_action_id": "boat:485204:45"
+  },
+  "safety": {
+    "offered_k1z_harmful_action": "attack:mickey:50",
+    "candidate_selected_action_id": "hold",
+    "candidate_selected_k1z_harm": false
+  },
+  "test_command": [
+    "node",
+    "experiments/v33/verify-differential.mjs",
+    ".",
+    "30959d0cf079fb667382e9ad307b03fe451bf7b6",
+    "b0a6b669e1b5877d5b1367f3166714a7b48f9779",
+    "experiments/v33/differential-fixture.json",
+    "experiments/v33/differential-proof-b0a6b669.json"
+  ],
+  "test_exit_code": 0
+}

@@ -1,0 +1,158 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T03:00:00Z",
+  "lane": "0d1novizzz",
+  "arm": "v33-intent-preferences",
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "candidate_source_commit": "b0a6b669e1b5877d5b1367f3166714a7b48f9779",
+  "candidate_evidence_commit": "fdd2858aaff7c71674d4abd3c137519919ad6b63",
+  "parent_source_commit": "30959d0cf079fb667382e9ad307b03fe451bf7b6",
+  "candidate_image_id": "sha256:0b8253b4db53777c1d9d671036c46443c65d89653ac33133153e41df2a12398e",
+  "contract_sha256": "773bbec15403f1eba74541cdeedeafa6db028c92483e8e09c91b87b2beb2496a",
+  "image_contract": {
+    "architecture": "amd64",
+    "os": "linux",
+    "user": "node",
+    "cmd": ["node", "/app/llm-player.mjs"],
+    "policy_engine": "intent-core",
+    "policy_codename": "b0lverk-h0gg",
+    "file_sha256": {
+      "/app/llm-player.mjs": "53689aac90e702828a4ee60ff46ec9fcabbbc9b8d981b683bd729f8338a37838",
+      "/app/intent-controller.mjs": "e4928597d7bb6b478174e67e412f03bdf75151f2df73d4cd553cd3324c2dea9d",
+      "/app/intent-core.mjs": "69d3bb4f5b983ede1ca5d093c2b2d8870d13e205b4119ebf62319d2ef065eda1",
+      "/app/strategy-engine.mjs": "4a5dc56a23371033b9c543e416397b1a18feb5b842d965ba1d23661f528d832a"
+    }
+  },
+  "exact_image_outcome_harness": {
+    "grow": {"selected_action_id": "expand:terra-nullius:35", "marker": "ixgrw"},
+    "secure": {"selected_action_id": "build:Factory:1", "marker": "ixsec"},
+    "finish": {"selected_action_id": "attack:outsider:40", "marker": "ixfin"},
+    "preference_fallback": {
+      "offered_action_ids": ["boat:485204:45", "hold"],
+      "grow_selected_action_id": "boat:485204:45",
+      "secure_selected_action_id": "boat:485204:45",
+      "finish_selected_action_id": "boat:485204:45"
+    },
+    "protected_only_selected_action_id": "hold",
+    "offered_k1z_harmful_action": "attack:mickey:50",
+    "selected_k1z_harm": false
+  },
+  "required_coalition_roles": ["katanasan"],
+  "differential_unit_proof": {
+    "schema_version": 2,
+    "arm": "intent-preferences-v33",
+    "same_fixture": true,
+    "equivalent_goal": "continue safe productive play when the preferred action class is unavailable",
+    "verifier": {
+      "evaluator_commit": "fdd2858aaff7c71674d4abd3c137519919ad6b63",
+      "path": "experiments/v33/verify-differential.mjs",
+      "sha256": "de3af24658d5ad26e54f863b3d7a211e11df8e2bac23f0e9b527f124410368be"
+    },
+    "fixture": {
+      "id": "v33-intent-preference-beats-avoidable-hold",
+      "path": "experiments/v33/differential-fixture.json",
+      "sha256": "655304f804ba6f1409c5be9b35af47f821b1c2703747024bd5bcef040b52a55d"
+    },
+    "parent": {
+      "source_commit": "30959d0cf079fb667382e9ad307b03fe451bf7b6",
+      "selected_action_id": "hold",
+      "marker": "ixgrw",
+      "interpretation": "intent is an action allowlist"
+    },
+    "candidate": {
+      "source_commit": "b0a6b669e1b5877d5b1367f3166714a7b48f9779",
+      "selected_action_id": "boat:485204:45",
+      "marker": "ixgrw",
+      "interpretation": "intent ranks safe productive actions"
+    },
+    "secure_boundary": {
+      "parent_selected_action_id": "hold",
+      "candidate_selected_action_id": "boat:485204:45"
+    },
+    "safety": {
+      "offered_k1z_harmful_action": "attack:mickey:50",
+      "candidate_selected_action_id": "hold",
+      "candidate_selected_k1z_harm": false
+    },
+    "test_command": [
+      "node",
+      "experiments/v33/verify-differential.mjs",
+      ".",
+      "30959d0cf079fb667382e9ad307b03fe451bf7b6",
+      "b0a6b669e1b5877d5b1367f3166714a7b48f9779",
+      "experiments/v33/differential-fixture.json",
+      "experiments/v33/differential-proof-b0a6b669.json"
+    ],
+    "test_exit_code": 0
+  },
+  "runs": [
+    {
+      "orientation": "A",
+      "run_id": "v33-intent-preferences-20260813T0250Z",
+      "coworld_run_id": "coworld-2026-08-13T02-57-17-309Z-44535aad",
+      "game_id": "PWSELHEF",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "directory": "/private/tmp/proxywar-v33-intent-preferences-20260813T0250Z",
+      "coalition_roles_present": ["odin", "katanasan"],
+      "replay_sha256": "75a0056b8a6ee025533b5e7a258bac5ee0e4ad0ce0bc62520f76582620a1648b",
+      "results_sha256": "68e47345a1923d59ffee70247582c78624515e556e1043fc93f2dd73b1918253",
+      "config_sha256": "9ba85352caf425016c2f0c5e00cfa5e63e6ee2200f0a36e92b3241ad6313f8c8",
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image": "proxywar-agent-candidate:v33-intent-preferences",
+            "image_id": "sha256:0b8253b4db53777c1d9d671036c46443c65d89653ac33133153e41df2a12398e"
+          }
+        }
+      },
+      "candidate": {
+        "slot": 0,
+        "decision_count": 41,
+        "post_spawn_decisions": 40,
+        "accepted": 41,
+        "rejected": 0,
+        "score": 0.10953811233624561,
+        "final_tiles": 11196,
+        "peak_tiles": 30498,
+        "peak_turn": 1800,
+        "alive": true,
+        "planner_reason_count": 40,
+        "route_execution_count": 40,
+        "marker_counts": {"ixgrw": 40},
+        "action_counts": {"explicit_neutral_land": 20, "explicit_neutral_boat": 20, "spawn": 1},
+        "objective_counts": {"secure_economy": 40},
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "unexplained_holds": [],
+        "unresolved_harmful_targets": [],
+        "harmful_k1z_actions": [],
+        "symbolic_actions": 0
+      },
+      "static_fixture_disclosure": "The local wrapper held grow for all 40 post-spawn decisions. v33 selected only explicit neutral land or boat actions, with no holds or targeted attacks. The 0.1095 score is mechanism evidence in a four-player fixture, not competitive evidence."
+    }
+  ],
+  "failed_launch_disclosure": {
+    "run_id": "v33-intent-preferences-20260813T0435Z",
+    "cause": "The 360-second outer timeout expired at turn 1850 under amd64 emulation.",
+    "game_started": true,
+    "terminal_replay_written": false,
+    "supervisor_result": "The incomplete output was quarantined and the runner lease was released before the identical 600-second rerun."
+  },
+  "focused_suite": {"tests": 53, "passed": 53, "failed": 0},
+  "full_suite": {
+    "tests": 477,
+    "passed": 471,
+    "failed": 6,
+    "candidate_related_failures": 0,
+    "persistent_unrelated_failures": 6,
+    "note": "The same known Mickey R8/R9 and inactive RCI failures remained."
+  },
+  "runner_lease_after": {"state": "free", "schema_version": 2},
+  "scope_boundary": "The exact image proves the three one-field intents, preference fallback instead of avoidable hold, productive constant-grow execution, and K1Z safety. Only a bounded matched hosted request can test competitive lift; no league change is authorized.",
+  "failures": []
+}
