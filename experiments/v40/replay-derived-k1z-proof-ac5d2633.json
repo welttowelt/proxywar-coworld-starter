@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "arm": "v40-k1z-runtime-alias-lock",
+  "same_input_per_commit": true,
+  "planner_changed": false,
+  "planner_intent": "grow",
+  "replay_derived_cases": 12,
+  "verifier": {
+    "evaluator_commit": "100769e1f86d1956d09a4f586913a43174d0f36b",
+    "path": "experiments/v40/verify-replay-derived-k1z-differential.mjs",
+    "sha256": "fa820552eb2de4b624c51545ab4ddb22e28357b7b8ac66440c614e721c5f9454"
+  },
+  "fixture": {
+    "id": "v40-k1z-runtime-alias-lock",
+    "path": "experiments/v40/replay-derived-k1z-fixture.json",
+    "sha256": "fbeed7c8791291feba26246e7cbd1b131aa314ea010d55bcca2ace5f7f724fbd"
+  },
+  "parent": {
+    "source_commit": "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
+    "harmful_selections": 12
+  },
+  "candidate": {
+    "source_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
+    "harmful_selections": 0,
+    "safe_redirects": 12
+  },
+  "results": [
+    {
+      "id": "slot-8-seq-261",
+      "slot": 8,
+      "episode_id": "ece82f88-cfbe-438f-9d37-29923232facd",
+      "turn": 1900,
+      "target_name": "SIAN VOIDCROWN",
+      "parent_selected_action_id": "attack:coa4silw:40",
+      "candidate_selected_action_id": "hold"
+    },
+    {
+      "id": "slot-8-seq-556",
+      "slot": 8,
+      "episode_id": "ece82f88-cfbe-438f-9d37-29923232facd",
+      "turn": 4300,
+      "target_name": "SIAN VOIDCROWN",
+      "parent_selected_action_id": "attack:coa4silw:10",
+      "candidate_selected_action_id": "hold"
+    },
+    {
+      "id": "slot-8-seq-732",
+      "slot": 8,
+      "episode_id": "ece82f88-cfbe-438f-9d37-29923232facd",
+      "turn": 5900,
+      "target_name": "CYAN HELLSTAR",
+      "parent_selected_action_id": "attack:8ldrrcwy:10",
+      "candidate_selected_action_id": "hold"
+    },
+    {
+      "id": "slot-8-seq-870",
+      "slot": 8,
+      "episode_id": "ece82f88-cfbe-438f-9d37-29923232facd",
+      "turn": 7500,
+      "target_name": "CYAN HELLSTAR",
+      "parent_selected_action_id": "attack:8ldrrcwy:10",
+      "candidate_selected_action_id": "hold"
+    },
+    {
+      "id": "slot-8-seq-985",
+      "slot": 8,
+      "episode_id": "ece82f88-cfbe-438f-9d37-29923232facd",
+      "turn": 9300,
+      "target_name": "CYAN HELLSTAR",
+      "parent_selected_action_id": "attack:8ldrrcwy:10",
+      "candidate_selected_action_id": "hold"
+    },
+    {
+      "id": "slot-9-seq-262",
+      "slot": 9,
+      "episode_id": "114dc9fb-1bce-4176-92e3-281fbae72d36",
+      "turn": 1900,
+      "target_name": "SIAN VOIDCROWN",
+      "parent_selected_action_id": "attack:ewsxq4jp:40",
+      "candidate_selected_action_id": "hold"
+    },
+    {
+      "id": "slot-9-seq-476",
+      "slot": 9,
+      "episode_id": "114dc9fb-1bce-4176-92e3-281fbae72d36",
+      "turn": 3500,
+      "target_name": "SIAN VOIDCROWN",
+      "parent_selected_action_id": "attack:ewsxq4jp:10",
+      "candidate_selected_action_id": "hold"
+    },
+    {
+      "id": "slot-9-seq-959",
+      "slot": 9,
+      "episode_id": "114dc9fb-1bce-4176-92e3-281fbae72d36",
+      "turn": 8900,
+      "target_name": "CYAN HELLSTAR",
+      "parent_selected_action_id": "attack:l7boknjb:10",
+      "candidate_selected_action_id": "hold"
+    },
+    {
+      "id": "slot-9-seq-1007",
+      "slot": 9,
+      "episode_id": "114dc9fb-1bce-4176-92e3-281fbae72d36",
+      "turn": 9700,
+      "target_name": "CYAN HELLSTAR",
+      "parent_selected_action_id": "attack:l7boknjb:10",
+      "candidate_selected_action_id": "hold"
+    },
+    {
+      "id": "slot-10-seq-261",
+      "slot": 10,
+      "episode_id": "ff1b8901-47c8-43c6-a2c9-0ea0bdb997f7",
+      "turn": 1900,
+      "target_name": "SIAN VOIDCROWN",
+      "parent_selected_action_id": "attack:pykh9wfi:40",
+      "candidate_selected_action_id": "hold"
+    },
+    {
+      "id": "slot-10-seq-620",
+      "slot": 10,
+      "episode_id": "ff1b8901-47c8-43c6-a2c9-0ea0bdb997f7",
+      "turn": 5100,
+      "target_name": "CYAN HELLSTAR",
+      "parent_selected_action_id": "attack:ubjsfmvd:10",
+      "candidate_selected_action_id": "hold"
+    },
+    {
+      "id": "slot-11-seq-262",
+      "slot": 11,
+      "episode_id": "1162b3cb-0b12-438d-8f36-53cb1603d8f5",
+      "turn": 1900,
+      "target_name": "SIAN VOIDCROWN",
+      "parent_selected_action_id": "attack:oyrni3hk:40",
+      "candidate_selected_action_id": "hold"
+    }
+  ],
+  "verdict": "candidate redirects all twelve replay-derived K1Z attacks without changing planner intent",
+  "test_command": [
+    "node",
+    "experiments/v40/verify-replay-derived-k1z-differential.mjs",
+    "/Users/olifreuler/proxywar-coworld-starter",
+    "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
+    "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
+    "experiments/v40/replay-derived-k1z-fixture.json",
+    "experiments/v40/replay-derived-k1z-proof-ac5d2633.json"
+  ],
+  "test_exit_code": 0
+}
