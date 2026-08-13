@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-candidate:v34-intent-steered-baseline",
+    "parent_ref": "proxywar-agent-candidate:v33-intent-preferences",
+    "exact_deltas": [
+      "Delete the standalone intent action taxonomy and route the unchanged one-field grow, secure, or finish intent as a soft preference inside the mature full-menu selector; unavailable intent falls through to the mature baseline and cannot create a hold."
+    ],
+    "source_commit": "b71b0d4c857240b56f1aa47df1c76b3a05c28079",
+    "parent_commit": "b0a6b669e1b5877d5b1367f3166714a7b48f9779",
+    "image_id": "sha256:649daeb8f7a3c5c374f3ebc96693bef0e652d7892e7a6daf1870e47a8fd438c4"
+  },
+  "hypothesis": "Intent can improve macro timing without discarding the proven policy's diplomacy, defense, economy, weapons, targeting, and fallback behavior.",
+  "mechanism": {
+    "marker": "ixgrw",
+    "prior_reachable_decisions": 40
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "contract_sha256": "4bea3f0fe64402dba8091ec9f992f5e73399281a446d4a4ad2cf8b50dacee9c8",
+    "audit_receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v34-intent-steered-baseline-local-20260813.json",
+      "sha256": "29f7c89a0835457703038cdf3649e103fe0c5fdd85a0618dcd5109205f61e39b"
+    },
+    "differential_binding": {
+      "verifier_path": "experiments/v34/verify-differential.mjs",
+      "fixture_path": "experiments/v34/differential-fixture.json"
+    }
+  },
+  "preupload_rci": {
+    "receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v34-preupload-rci-20260813.json",
+      "sha256": "f0d9be11ede54debec7bb618362bfaef6593932e04996a7b89b202b1c415adb0"
+    }
+  },
+  "matched_baseline": {
+    "request_id": "xreq_351c9109-55af-4dd0-9b91-0ab2d7a15a04",
+    "policy_ref": "xX_UwU_Senpai_420_Xx:v30",
+    "policy_version_id": "b1ea4648-1b1f-429b-a2b4-5ced6b0be541",
+    "same_roster": false,
+    "same_variant": false,
+    "episodes": 10,
+    "wins": 0
+  },
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_fallbacks": 0,
+      "max_degradations": 0,
+      "max_rejections": 0,
+      "max_k1z_harm": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  }
+}
