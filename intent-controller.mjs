@@ -2,7 +2,7 @@ import { clean } from "./strategy-engine.mjs";
 
 export const MIN_INTENT_HORIZON = 2;
 export const MAX_INTENT_HORIZON = 12;
-export const INTENTS = Object.freeze(["expand", "consolidate", "convert"]);
+export const INTENTS = Object.freeze(["grow", "secure", "finish"]);
 
 const TARGETED_INTENTS = new Set(["convert"]);
 
@@ -14,7 +14,7 @@ function exactKeys(value, expected) {
 }
 
 function usesOutcomeContract(allowedIntents) {
-  return allowedIntents.includes("expand") || allowedIntents.includes("consolidate");
+  return allowedIntents.includes("secure") || allowedIntents.includes("finish");
 }
 
 function eligibleTarget(state, targetID) {

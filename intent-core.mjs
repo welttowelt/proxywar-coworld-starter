@@ -1,13 +1,11 @@
 import {
   actionPercent,
   clean,
-  isNeutralBoat,
-  isNeutralExpansion,
   rivalForAction,
   rivalIsProtected,
 } from "./strategy-engine.mjs";
 
-const INTENTS = new Set(["expand", "consolidate", "convert"]);
+const INTENTS = new Set(["grow", "secure", "finish"]);
 const HARMFUL_KINDS = new Set([
   "attack", "boat", "nuke", "target_player", "embargo", "embargo_all",
 ]);
@@ -17,9 +15,9 @@ const SYMBOLIC_KINDS = new Set([
   "alliance_request", "alliance_extend", "break_alliance", "quick_chat", "emoji",
 ]);
 const MARKERS = Object.freeze({
-  expand: "ixexp",
-  consolidate: "ixcon",
-  convert: "ixprs",
+  grow: "ixgrw",
+  secure: "ixsec",
+  finish: "ixfin",
 });
 
 function normalizedID(value) {
@@ -34,8 +32,20 @@ function isStrike(action) {
   return action?.kind === "nuke" || actionUnit(action) === "atom bomb";
 }
 
-function isPhysicalForce(action) {
-  if (isNeutralExpansion(action) || isNeutralBoat(action)) return false;
+function isExplicitNeutralGain(action, state) {
+  if (action?.kind !== "attack" && action?.kind !== "boat") return false;
+  if (actionRival(action, state)) return false;
+  const targetID = normalizedID(
+    action?.metadata?.targetID ?? action?.targetID ?? "",
+  );
+  if (targetID) return false;
+  const targetName = clean(action?.metadata?.targetName ?? "").toLowerCase();
+  const text = `${action?.id ?? ""} ${action?.label ?? ""}`.toLowerCase();
+  return targetName === "terra nullius" || text.includes("terra nullius");
+}
+
+function isPhysicalForce(action, state) {
+  if (isExplicitNeutralGain(action, state)) return false;
   return PHYSICAL_KINDS.has(action?.kind) || isStrike(action);
 }
 
@@ -60,13 +70,13 @@ function actionTargetID(action, state) {
   return normalizedID(actionRival(action, state)?.id);
 }
 
-function isHarmful(action) {
-  if (isNeutralExpansion(action) || isNeutralBoat(action)) return false;
+function isHarmful(action, state) {
+  if (isExplicitNeutralGain(action, state)) return false;
   return HARMFUL_KINDS.has(action?.kind) || isStrike(action);
 }
 
 function protectedHarm(action, state, history) {
-  if (!isHarmful(action)) return false;
+  if (!isHarmful(action, state)) return false;
   const rival = actionRival(action, state);
   return rival ? rivalIsProtected(state, history, rival) : false;
 }
@@ -75,14 +85,14 @@ function mission(plan) {
   if (INTENTS.has(plan?.intent)) {
     return { intent: plan.intent };
   }
-  return { intent: "expand" };
+  return { intent: "grow" };
 }
 
-function actionIntent(action) {
+function actionIntent(action, state) {
   if (!action || action.kind === "hold" || isSymbolic(action)) return null;
-  if (isNeutralExpansion(action) || isNeutralBoat(action)) return "expand";
-  if (isInfrastructure(action)) return "consolidate";
-  if (isPhysicalForce(action)) return "convert";
+  if (isExplicitNeutralGain(action, state)) return "grow";
+  if (isInfrastructure(action)) return "secure";
+  if (isPhysicalForce(action, state)) return "finish";
   return null;
 }
 
@@ -91,21 +101,21 @@ function offeredMenu(actions, state, history, requested) {
     action && typeof action.id === "string" && action.id.length > 0 &&
     !protectedHarm(action, state, history)
   );
-  const actionable = legal.filter((action) => actionIntent(action) !== null);
-  if (requested.intent === "convert") {
+  const actionable = legal.filter((action) => actionIntent(action, state) !== null);
+  if (requested.intent === "finish") {
     const previousTarget = [...history].reverse().find((entry) =>
-      entry?.policyMarker === MARKERS.convert && typeof entry?.targetID === "string"
+      entry?.policyMarker === MARKERS.finish && typeof entry?.targetID === "string"
     )?.targetID;
     if (previousTarget) {
       const continued = actionable.filter((action) =>
-        actionIntent(action) === "convert" && sameTarget(action, previousTarget, state)
+        actionIntent(action, state) === "finish" && sameTarget(action, previousTarget, state)
       );
       if (continued.length > 0) {
         return {
           directive: requested,
           actions: [
             ...continued,
-            ...actionable.filter((action) => actionIntent(action) !== "convert"),
+            ...actionable.filter((action) => actionIntent(action, state) !== "finish"),
           ],
         };
       }
@@ -122,11 +132,11 @@ function sameTarget(action, targetID, state) {
 
 function missionScore(action, directive, state) {
   if (action.kind === "hold") return -200;
-  const outcome = actionIntent(action);
+  const outcome = actionIntent(action, state);
   const preferences = {
-    expand: { expand: 300, consolidate: 180, convert: 80 },
-    consolidate: { consolidate: 300, expand: 240, convert: 80 },
-    convert: { convert: 340, expand: 180, consolidate: 140 },
+    grow: { grow: 300, secure: 180, finish: 80 },
+    secure: { secure: 300, grow: 240, finish: 80 },
+    finish: { finish: 340, grow: 180, secure: 140 },
   };
   return preferences[directive.intent]?.[outcome] ?? -1000;
 }
@@ -146,8 +156,8 @@ function repetitionPenalty(action, history) {
 function commitmentTieBreak(action, directive, state) {
   const percent = actionPercent(action);
   if (!Number.isFinite(percent)) return 0;
-  if (directive.intent === "expand" && isNeutralExpansion(action)) return percent / 10;
-  if (directive.intent === "convert" && isPhysicalForce(action)) {
+  if (directive.intent === "grow" && isExplicitNeutralGain(action, state)) return percent / 10;
+  if (directive.intent === "finish" && isPhysicalForce(action, state)) {
     const rival = actionRival(action, state);
     const ratio = Number(rival?.relativeTroopRatio);
     return Number.isFinite(ratio) && ratio >= 1.2 ? percent / 20 : -percent / 20;
@@ -155,9 +165,9 @@ function commitmentTieBreak(action, directive, state) {
   return 0;
 }
 
-function riskPenalty(action, directive) {
+function riskPenalty(action, directive, state) {
   if (action?.risk?.level !== "high") return 0;
-  return directive.intent === "convert" && isPhysicalForce(action) ? 40 : 120;
+  return directive.intent === "finish" && isPhysicalForce(action, state) ? 40 : 120;
 }
 
 export function chooseIntentCoreAction(actions, state, plan = null, history = []) {
@@ -176,7 +186,7 @@ export function chooseIntentCoreAction(actions, state, plan = null, history = []
   const ranked = menu.map((action) => ({
     action,
     score: missionScore(action, directive, state) - repetitionPenalty(action, history) -
-      riskPenalty(action, directive) + commitmentTieBreak(action, directive, state),
+      riskPenalty(action, directive, state) + commitmentTieBreak(action, directive, state),
   })).sort((left, right) =>
     right.score - left.score || left.action.id.localeCompare(right.action.id)
   );

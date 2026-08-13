@@ -81,10 +81,10 @@ const TEST_INTENT_DIRECTIVE = process.env.NODE_ENV === "test"
 // available to existing policy images and tests.
 const INTENT_CORE_STRATEGY = [
   "You command an autonomous nation in ProxyWar. Win by finishing with the most territory.",
-  "Choose one outcome for the next few decisions: expand, consolidate, or convert.",
-  "expand = acquire neutral territory; consolidate = preserve strength and improve existing territory; convert = turn strength into one visible rival's loss.",
-  "Choose only the outcome. The executor chooses every move and any rival.",
-  "Do not prescribe moves, action kinds, build orders, percentages, map scripts, or timing. The executor chooses among offered legal actions.",
+  "Choose one goal for the next few decisions: grow, secure, or finish.",
+  "grow = increase territory or economy without harming a rival; secure = preserve strength and improve what you hold; finish = turn a clear advantage into a rival's loss.",
+  "Choose only the goal. The executor chooses every move and any rival.",
+  "Do not prescribe actions, targets, percentages, build orders, map scripts, or timing.",
 ].join(" ");
 const STRATEGY = POLICY_ENGINE === "intent-core"
   ? INTENT_CORE_STRATEGY
@@ -118,7 +118,7 @@ async function askBedrock(state, signal) {
   if (!bedrock) throw new Error("bedrock client did not initialize");
   const directiveContract = POLICY_ENGINE === "intent-core"
     ? 'Reply with ONLY JSON and exactly one key. Use one shape: ' +
-      '{"intent":"expand"}, {"intent":"consolidate"}, or {"intent":"convert"}. '
+      '{"intent":"grow"}, {"intent":"secure"}, or {"intent":"finish"}. '
     : 'Reply with ONLY JSON and exactly these three keys. Use one shape: ' +
       '{"intent":"grow","targetID":null,"horizon":4} or ' +
       '{"intent":"convert","targetID":"<exact visible rival ID>","horizon":4}. ';
@@ -149,7 +149,7 @@ async function askBedrock(state, signal) {
 
 // -- the PLAN: written by the model in the background, executed instantly -----
 let plan = PLANNER_ENABLED && POLICY_ENGINE === "intent-core"
-  ? { intent: "expand", model: "bootstrap" }
+  ? { intent: "grow", model: "bootstrap" }
   : null;                 // { intent, model } for intent-core
 let planDecisionAge = plan?.model === "bootstrap" ? PLAN_EVERY : 0;
 let planRefreshInFlight = false;

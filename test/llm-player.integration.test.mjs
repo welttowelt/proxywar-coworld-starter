@@ -360,7 +360,7 @@ test("intent-core planner asks only for one outcome", async () => {
   assert.match(source, /process\.env\.PLAN_MODE === "on"/);
   assert.match(source, /"intent":/);
   assert.match(source, /exactly one key/);
-  assert.match(source, /\{"intent":"expand"\}/);
+  assert.match(source, /\{"intent":"grow"\}/);
   assert.match(source, /The executor chooses every move and any rival/);
   assert.match(source, /"horizon":/);
   assert.match(source, /max_tokens: 300/);
@@ -614,7 +614,7 @@ test("intent-core wiring executes the planner outcome without the legacy selecto
     ownState: { ...baseOwnState, tileShare: 0 },
     visiblePlayers: [],
   });
-  const active = request("intent-core-expand", [
+  const active = request("intent-core-grow", [
     {
       id: `alliance:${mickeyID}`,
       kind: "alliance_request",
@@ -657,7 +657,7 @@ test("intent-core wiring executes the planner outcome without the legacy selecto
       PLAN_MODE: "on",
       POLICY_ENGINE: "intent-core",
       INTENT_TEST_DIRECTIVE: JSON.stringify({
-        intent: "expand",
+        intent: "grow",
       }),
       COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
       AWS_EC2_METADATA_DISABLED: "true",
@@ -697,10 +697,10 @@ test("intent-core wiring executes the planner outcome without the legacy selecto
   assert.equal(responses[0].fallbackUsed, false);
   assert.equal(responses[1].selectedLegalActionId, "expand:terra-nullius:35");
   assert.equal(responses[1].fallbackUsed, false);
-  assert.match(responses[1].reason, /^pln:atk:ixexp$/);
+  assert.match(responses[1].reason, /^pln:atk:ixgrw$/);
 });
 
-test("intent-only convert leaves target choice and continuity to the executor", async () => {
+test("intent-only finish leaves target choice and continuity to the executor", async () => {
   const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
   await new Promise((resolve) => server.once("listening", resolve));
   const { port } = server.address();
@@ -743,7 +743,7 @@ test("intent-only convert leaves target choice and continuity to the executor", 
       NODE_ENV: "test",
       PLAN_MODE: "on",
       POLICY_ENGINE: "intent-core",
-      INTENT_TEST_DIRECTIVE: JSON.stringify({ intent: "convert" }),
+      INTENT_TEST_DIRECTIVE: JSON.stringify({ intent: "finish" }),
       COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
       AWS_EC2_METADATA_DISABLED: "true",
     },
@@ -754,14 +754,14 @@ test("intent-only convert leaves target choice and continuity to the executor", 
   const completed = new Promise((resolve, reject) => {
     const timeout = setTimeout(() => {
       child.kill("SIGKILL");
-      reject(new Error(`intent-only convert test timed out: ${stderr}`));
+      reject(new Error(`intent-only finish test timed out: ${stderr}`));
     }, 8000);
     server.once("connection", (socket) => {
-      socket.send(JSON.stringify(request("intent-only-convert-1", legalActions, obs)));
+      socket.send(JSON.stringify(request("intent-only-finish-1", legalActions, obs)));
       socket.on("message", (data) => {
         responses.push(JSON.parse(String(data)));
         if (responses.length === 1) {
-          socket.send(JSON.stringify(request("intent-only-convert-2", legalActions, obs)));
+          socket.send(JSON.stringify(request("intent-only-finish-2", legalActions, obs)));
         } else {
           socket.send(JSON.stringify({ type: "final" }));
         }
@@ -771,7 +771,7 @@ test("intent-only convert leaves target choice and continuity to the executor", 
     child.once("exit", (code) => {
       clearTimeout(timeout);
       if (code === 0) resolve();
-      else reject(new Error(`intent-only convert player exited ${code}: ${stderr}`));
+      else reject(new Error(`intent-only finish player exited ${code}: ${stderr}`));
     });
   });
 
@@ -785,11 +785,11 @@ test("intent-only convert leaves target choice and continuity to the executor", 
     responses.map((response) => response.selectedLegalActionId),
     ["attack:decoy:40", "attack:decoy:40"],
   );
-  assert.ok(responses.every((response) => response.reason === "pln:atk:ixprs"));
+  assert.ok(responses.every((response) => response.reason === "pln:atk:ixfin"));
   assert.ok(responses.every((response) => response.fallbackUsed === false));
 });
 
-test("intent-core starts from an honest expand outcome while the planner is pending", async () => {
+test("intent-core starts from an honest grow outcome while the planner is pending", async () => {
   const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
   await new Promise((resolve) => server.once("listening", resolve));
   const { port } = server.address();
@@ -858,7 +858,7 @@ test("intent-core starts from an honest expand outcome while the planner is pend
   assert.equal(response.selectedLegalActionId, "expand:terra-nullius:35");
   assert.equal(response.fallbackUsed, false);
   assert.equal(response.llmPlannerDegraded, false);
-  assert.match(response.reason, /^dft:atk:ixexp$/);
+  assert.match(response.reason, /^dft:atk:ixgrw$/);
 });
 
 test("a single transport-framed planner reply reaches the deployed player", async () => {

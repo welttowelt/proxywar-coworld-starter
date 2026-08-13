@@ -37,43 +37,43 @@ const state = {
 test("accepts only exact outcome packets", () => {
   assert.deepEqual(
     normalizeIntentDirective(
-      { intent: "convert" },
+      { intent: "finish" },
       state,
       "planner-model",
     ),
-    { intent: "convert", model: "planner-model" },
+    { intent: "finish", model: "planner-model" },
   );
   assert.deepEqual(
-    normalizeIntentDirective({ intent: "expand" }, state),
-    { intent: "expand", model: "unknown" },
+    normalizeIntentDirective({ intent: "grow" }, state),
+    { intent: "grow", model: "unknown" },
   );
   assert.deepEqual(
-    normalizeIntentDirective({ intent: "consolidate" }, state),
-    { intent: "consolidate", model: "unknown" },
+    normalizeIntentDirective({ intent: "secure" }, state),
+    { intent: "secure", model: "unknown" },
   );
 });
 
 test("accepts only the three planner outcomes", () => {
   assert.deepEqual(
-    normalizeIntentDirective({ intent: "expand" }, state),
-    { intent: "expand", model: "unknown" },
+    normalizeIntentDirective({ intent: "grow" }, state),
+    { intent: "grow", model: "unknown" },
   );
   assert.deepEqual(
-    normalizeIntentDirective({ intent: "consolidate" }, state),
-    { intent: "consolidate", model: "unknown" },
+    normalizeIntentDirective({ intent: "secure" }, state),
+    { intent: "secure", model: "unknown" },
   );
   assert.deepEqual(
-    normalizeIntentDirective({ intent: "convert" }, state),
-    { intent: "convert", model: "unknown" },
+    normalizeIntentDirective({ intent: "finish" }, state),
+    { intent: "finish", model: "unknown" },
   );
-  for (const intent of ["grow", "fortify", "defend", "ally", "pressure"]) {
+  for (const intent of ["expand", "consolidate", "convert", "defend", "ally", "pressure"]) {
     assert.equal(normalizeIntentDirective({ intent }, state), null);
   }
 });
 
 test("parses exactly one transport-framed JSON mission packet", () => {
-  const packet = '{"intent":"expand"}';
-  const expected = { intent: "expand", model: "planner-model" };
+  const packet = '{"intent":"grow"}';
+  const expected = { intent: "grow", model: "planner-model" };
   assert.deepEqual(parseIntentDirective(packet, state, "planner-model"), expected);
   for (const framed of [
     `Here is the plan: ${packet}`,
@@ -86,8 +86,8 @@ test("parses exactly one transport-framed JSON mission packet", () => {
   }
   for (const rejected of [
     `${packet}${packet}`,
-    `${packet} and also {"intent":"convert"}`,
-    '{"intent":"expand"',
+    `${packet} and also {"intent":"finish"}`,
+    '{"intent":"grow"',
     `closing stray } before ${packet}`,
     "no packet at all",
     "",
@@ -98,29 +98,29 @@ test("parses exactly one transport-framed JSON mission packet", () => {
 
 test("rejects extra tactical keys and unknown intents", () => {
   assert.equal(normalizeIntentDirective({
-    intent: "convert",
+    intent: "finish",
     actionID: "attack:player-7:100",
   }, state), null);
   assert.equal(normalizeIntentDirective({
-    intent: "finish",
+    intent: "convert",
   }, state), null);
 });
 
 test("rejects planner timing and other extra instruction keys", () => {
   assert.equal(normalizeIntentDirective({
-    intent: "expand", horizon: 4,
+    intent: "grow", horizon: 4,
   }, state), null);
 });
 
 test("rejects every planner target field", () => {
   assert.equal(normalizeIntentDirective({
-    intent: "expand", targetID: "player-7",
+    intent: "grow", targetID: "player-7",
   }, state), null);
   assert.equal(normalizeIntentDirective({
-    intent: "convert", targetID: "player-7",
+    intent: "finish", targetID: "player-7",
   }, state), null);
   assert.equal(normalizeIntentDirective({
-    intent: "consolidate", targetID: null,
+    intent: "secure", targetID: null,
   }, state), null);
 });
 
@@ -153,19 +153,19 @@ test("intent-only snapshots leave rival identity to the executor", () => {
 });
 
 test("outcome plans use the operator refresh cadence", () => {
-  assert.equal(intentRefreshInterval({ intent: "expand" }, 8), 8);
+  assert.equal(intentRefreshInterval({ intent: "grow" }, 8), 8);
   assert.equal(intentRefreshInterval({ horizon: 12 }, 8), 8);
   assert.equal(intentRefreshInterval(null, 6), 6);
 });
 
 test("valid intents persist across refresh age and transient refresh errors", () => {
-  const plan = { intent: "expand", model: "test" };
+  const plan = { intent: "grow", model: "test" };
   assert.equal(executableIntentPlan(plan, 3, false), plan);
   assert.equal(executableIntentPlan(plan, 4, false), plan);
   assert.equal(executableIntentPlan(plan, 1, true), plan);
   assert.equal(executableIntentPlan(null, 1, false), null);
   assert.equal(executableIntentPlan({
-    intent: "finish", model: "test",
+    intent: "expand", model: "test",
   }, 1, false), null);
   assert.equal(executableIntentPlan({
     intent: "convert", targetID: "player-7", model: "test",
