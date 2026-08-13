@@ -1,0 +1,65 @@
+{
+  "id": "v33-intent-preference-beats-avoidable-hold",
+  "legalActions": [
+    {
+      "id": "boat:485204:45",
+      "kind": "boat",
+      "label": "Boat 45%",
+      "risk": {"level": "low"},
+      "metadata": {"expansion": true, "troopPercent": 45}
+    },
+    {
+      "id": "hold",
+      "kind": "hold",
+      "label": "Hold",
+      "risk": {"level": "low"},
+      "metadata": {}
+    }
+  ],
+  "protectedActions": [
+    {
+      "id": "attack:mickey:50",
+      "kind": "attack",
+      "label": "Attack K1Z Mickey Mouse 50%",
+      "risk": {"level": "low"},
+      "metadata": {
+        "expansion": true,
+        "targetID": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+        "targetName": "K1Z Mickey Mouse",
+        "troopPercent": 50
+      }
+    },
+    {
+      "id": "hold",
+      "kind": "hold",
+      "label": "Hold",
+      "risk": {"level": "low"},
+      "metadata": {}
+    }
+  ],
+  "observation": {
+    "phase": "active",
+    "ownState": {
+      "tileShare": 0.12,
+      "troopRatio": 1.1,
+      "troops": 900000,
+      "gold": 500000,
+      "borderTiles": 100,
+      "incomingAttacks": []
+    },
+    "combat": {"incomingAttackPlayerIDs": []},
+    "visiblePlayers": [
+      {
+        "id": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+        "name": "K1Z Mickey Mouse",
+        "isAlive": true,
+        "sharesBorder": true,
+        "canAttack": true,
+        "isAllied": false,
+        "tileShare": 0.1,
+        "relativeTroopRatio": 2
+      }
+    ]
+  },
+  "history": []
+}
