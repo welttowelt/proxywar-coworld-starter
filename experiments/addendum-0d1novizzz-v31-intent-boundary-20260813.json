@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T02:00:00Z",
+  "lane": "0d1novizzz",
+  "arm": "v31-outcome-intents",
+  "status": "PREHOSTED_NARROWING",
+  "parent_preregistration": "experiments/preregister-0d1novizzz-v31-outcome-intents-20260813.json",
+  "observation": "The first exact-image local trace selected only explicit neutral growth, including 20 boats whose replay objective telemetry was secure_economy. A static boundary review nevertheless found that grow and secure could fall back to rival force if no neutral or infrastructure action existed.",
+  "semantic_correction": "Grow and secure may choose only neutral gain or infrastructure. If neither safe family is offered, hold. Finish remains the only intent that may choose rival-directed or ambiguous force.",
+  "reason": "An intent is an outcome boundary, not merely a ranking hint. A grow or secure packet must never authorize a war as a fallback.",
+  "unchanged": [
+    "one-field planner packet",
+    "grow, secure, finish vocabulary",
+    "no planner target, action, percentage, or timing fields",
+    "finish target continuity",
+    "K1Z no-harm invariant",
+    "matched hosted and promotion gates"
+  ],
+  "required_reverification": {
+    "focused_tests": true,
+    "full_suite": true,
+    "differential_proof": true,
+    "exact_image_harness": true,
+    "full_40_decision_local_trace": true
+  },
+  "authority": "This addendum authorizes the semantic narrowing and local reverification only. It does not authorize upload, hosted execution, submission, membership change, or promotion."
+}
