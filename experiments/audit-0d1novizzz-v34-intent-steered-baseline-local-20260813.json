@@ -1,0 +1,127 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T03:34:00Z",
+  "lane": "0d1novizzz",
+  "arm": "v34-intent-steered-baseline",
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "candidate_source_commit": "b71b0d4c857240b56f1aa47df1c76b3a05c28079",
+  "preregister_commit": "61bc07a5",
+  "preregister_sha256": "4bea3f0fe64402dba8091ec9f992f5e73399281a446d4a4ad2cf8b50dacee9c8",
+  "candidate_image_id": "sha256:649daeb8f7a3c5c374f3ebc96693bef0e652d7892e7a6daf1870e47a8fd438c4",
+  "image_contract": {
+    "architecture": "amd64",
+    "os": "linux",
+    "user": "node",
+    "cmd": [
+      "node",
+      "/app/llm-player.mjs"
+    ],
+    "policy_engine": "intent-core",
+    "policy_codename": "b0lverk-h0gg",
+    "file_sha256": {
+      "/app/llm-player.mjs": "53689aac90e702828a4ee60ff46ec9fcabbbc9b8d981b683bd729f8338a37838",
+      "/app/intent-controller.mjs": "e4928597d7bb6b478174e67e412f03bdf75151f2df73d4cd553cd3324c2dea9d",
+      "/app/intent-core.mjs": "19a3edfa27c8e94c7513a4babe1bd36ee118dc934a522ba04e480f6e6cef7d95",
+      "/app/strategy-engine.mjs": "b1d519fe675a4a98d1537e5bb1e5946ab67a784e9280d835e4c02e3f3d8acd97"
+    }
+  },
+  "architecture_delta": {
+    "deleted": "standalone action classification, hard productive menu, intent scoring table, repetition scoring, risk scoring, and target continuity from intent-core",
+    "retained": "one-field grow, secure, or finish planner contract and K1Z no-harm filter",
+    "delegated_to_mature_selector": [
+      "exact action",
+      "exact target",
+      "diplomacy",
+      "pressure response",
+      "anti-collapse",
+      "economy cadence",
+      "nuclear economy",
+      "conversion recovery",
+      "hold fallback"
+    ],
+    "intent_behavior": "soft preference at an already-safe strategic choice point; otherwise exact mature baseline"
+  },
+  "focused_suite": {
+    "tests": 182,
+    "passed": 182,
+    "failed": 0,
+    "command": "node --test test/intent-core.test.mjs test/intent-delegation.test.mjs test/llm-player.integration.test.mjs test/strategy-engine.test.mjs"
+  },
+  "full_suite": {
+    "tests": 469,
+    "passed": 463,
+    "failed": 6,
+    "candidate_related_failures": 0,
+    "persistent_unrelated_failures": 6,
+    "note": "The same known Mickey R8/R9 and inactive RCI failures remained; the eight-test count reduction comes from replacing the deleted standalone taxonomy tests with the smaller baseline-delegation contract."
+  },
+  "run": {
+    "run_id": "v34-intent-steered-baseline-20260813T0336Z",
+    "coworld_run_id": "coworld-2026-08-13T03-32-47-763Z-3085dde6",
+    "game_id": "PWSELHEF",
+    "map": "Pangaea",
+    "seed": 2026081,
+    "directory": "/private/tmp/proxywar-v34-intent-steered-baseline-20260813T0336Z",
+    "config_sha256": "301564246035b4c28fde2753331b1a9b9f4f164f4a3b9a6a5b774d5fd5dc7416",
+    "results_sha256": "62d7a241fc406c4f0a1b87581160ae4f1bf24f8642b6a8746b507dc09f7dfdd5",
+    "replay_sha256": "3dee32d5c655a6d3c28d23582676a842b550745010999061a9c8745341ed4d55",
+    "candidate": {
+      "slot": 0,
+      "score": 0.29617755120328976,
+      "final_tiles": 29746,
+      "alive": true,
+      "decision_count": 41,
+      "accepted": 41,
+      "rejected": 0,
+      "fallbacks": 0,
+      "planner_degradations": 0,
+      "holds": 0,
+      "planner_reason_count": 40,
+      "intent_marker_count": 40,
+      "mature_policy_markers": {
+        "kp2": 1,
+        "ah1": 1,
+        "is1g": 22,
+        "pd2": 2,
+        "cv1": 1
+      },
+      "action_counts": {
+        "spawn": 1,
+        "alliance_request": 2,
+        "attack": 26,
+        "boat": 10,
+        "build": 2
+      },
+      "harmful_k1z_actions": 0
+    },
+    "comparison_boundary": "The candidate finished ahead of two of three v17-image opponents but behind K1Z katanasan. This four-player constant-grow fixture proves execution reach only and is not a matched competitive comparison."
+  },
+  "failed_launch_disclosure": {
+    "run_id": "v34-intent-steered-baseline-20260813T0335Z",
+    "cause": "The launch wrapper referenced GNU timeout, which is absent on this macOS host, so no game or policy container started.",
+    "supervisor_result": "The empty output was quarantined and the lease was released before the identical image reran under Coworld's built-in 540-second timeout."
+  },
+  "checks": {
+    "one_field_contract": true,
+    "planner_actions_forbidden": true,
+    "planner_targets_forbidden": true,
+    "mature_selector_retained": true,
+    "intent_cannot_create_hold": true,
+    "symbolic_actions_reachable": true,
+    "nuclear_economy_priority_tested": true,
+    "pressure_priority_tested": true,
+    "k1z_safety": true,
+    "exact_image_zero_fallback": true,
+    "exact_image_zero_degradation": true,
+    "exact_image_zero_hold": true,
+    "competitive_lift_not_claimed": true,
+    "league_mutation_forbidden": true
+  },
+  "runner_lease_after": {
+    "state": "free",
+    "schema_version": 2
+  },
+  "scope_boundary": "v34 is locally qualified as the simplified intent architecture. It is not uploaded, submitted, promoted, or proven competitively."
+}
