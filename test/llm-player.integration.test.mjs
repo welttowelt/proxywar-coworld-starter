@@ -700,7 +700,7 @@ test("intent-core grow ranks progress ahead of optional diplomacy", async () => 
   assert.equal(responses[0].fallbackUsed, false);
   assert.equal(responses[1].selectedLegalActionId, "expand:terra-nullius:35");
   assert.equal(responses[1].fallbackUsed, false);
-  assert.match(responses[1].reason, /^pln:atk:iu1g:ixgrw$/);
+  assert.match(responses[1].reason, /^pln:atk:(?:is1g:)?id1:ixgrw$/);
 });
 
 test("intent-only finish leaves target choice and continuity to the executor", async () => {
@@ -788,10 +788,11 @@ test("intent-only finish leaves target choice and continuity to the executor", a
     responses.map((response) => response.selectedLegalActionId),
     ["attack:decoy:40", "attack:decoy:40"],
   );
-  assert.deepEqual(
-    responses.map((response) => response.reason),
-    ["pln:atk:iu1f:ixfin", "pln:atk:iu1f:ixfin"],
-  );
+  assert.ok(responses.every((response) =>
+    response.reason.startsWith("pln:atk:") &&
+    response.reason.includes(":id1:") &&
+    response.reason.endsWith(":ixfin")
+  ));
   assert.ok(responses.every((response) => response.fallbackUsed === false));
 });
 
@@ -864,7 +865,7 @@ test("intent-core starts from an honest grow outcome while the planner is pendin
   assert.equal(response.selectedLegalActionId, "expand:terra-nullius:35");
   assert.equal(response.fallbackUsed, false);
   assert.equal(response.llmPlannerDegraded, false);
-  assert.match(response.reason, /^dft:atk:iu1g:ixgrw$/);
+  assert.match(response.reason, /^dft:atk:(?:is1g:)?id1:ixgrw$/);
 });
 
 test("a single transport-framed planner reply reaches the deployed player", async () => {

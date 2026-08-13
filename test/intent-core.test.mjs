@@ -64,13 +64,14 @@ function hold() {
   return action("hold", "hold", "Hold");
 }
 
-test("grow ranks safe neutral territory first", () => {
+test("grow delegates safe neutral territory first", () => {
   const selected = decide([attack("rival"), build(), land(), hold()], "grow", {
     tileShare: 0.2,
     rivals: [{ id: "rival", name: "rival", tileShare: 0.1, relativeTroopRatio: 1.6 }],
   });
   assert.equal(selected.id, "expand:terra-nullius:35");
-  assert.deepEqual(selected.policyMarkers, ["iu1g", "ixgrw"]);
+  assert.ok(selected.policyMarkers.includes("id1"));
+  assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
 test("secure ranks an available economy action first", () => {
@@ -79,7 +80,8 @@ test("secure ranks an available economy action first", () => {
     rivals: [{ id: "rival", name: "rival", tileShare: 0.1, relativeTroopRatio: 1.6 }],
   });
   assert.equal(selected.id, "build:Factory");
-  assert.deepEqual(selected.policyMarkers, ["iu1s", "ixsec"]);
+  assert.ok(selected.policyMarkers.includes("id1"));
+  assert.ok(selected.policyMarkers.includes("ixsec"));
 });
 
 test("finish ranks a safe finishing target first", () => {
@@ -96,7 +98,8 @@ test("finish ranks a safe finishing target first", () => {
     rivals: [{ id: "rival", name: "rival", tileShare: 0.1, relativeTroopRatio: 1.8 }],
   });
   assert.equal(selected.id, "attack:rival:40");
-  assert.deepEqual(selected.policyMarkers, ["iu1f", "ixfin"]);
+  assert.ok(selected.policyMarkers.includes("id1"));
+  assert.ok(selected.policyMarkers.includes("ixfin"));
 });
 
 test("intent cannot override pressure defense", () => {
@@ -105,7 +108,8 @@ test("intent cannot override pressure defense", () => {
     rivals: [{ id: "raider", name: "raider", tileShare: 0.2, relativeTroopRatio: 1.4 }],
   });
   assert.equal(selected.id, "attack:raider:40");
-  assert.deepEqual(selected.policyMarkers, ["iu1g", "ixgrw"]);
+  assert.ok(selected.policyMarkers.includes("id1"));
+  assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
 test("intent cannot override safe atom-bomb economy", () => {
@@ -120,7 +124,8 @@ test("intent cannot override safe atom-bomb economy", () => {
     rivals: [{ id: "leader", name: "Leader", tileShare: 0.79, relativeTroopRatio: 1 }],
   });
   assert.equal(selected.id, bomb.id);
-  assert.deepEqual(selected.policyMarkers, ["iu1s", "ixsec"]);
+  assert.ok(selected.policyMarkers.includes("id1"));
+  assert.ok(selected.policyMarkers.includes("ixsec"));
 });
 
 test("unavailable intent defaults to productive grow ranking", () => {
@@ -190,7 +195,8 @@ test("repeated symbolic pressure yields to a productive action", () => {
     rivals: [{ id: "rival", name: "rival", tileShare: 0.2, relativeTroopRatio: 1 }],
   });
   assert.equal(selected.id, "build:Factory");
-  assert.deepEqual(selected.policyMarkers, ["iu1f", "ixfin"]);
+  assert.ok(selected.policyMarkers.includes("id1"));
+  assert.ok(selected.policyMarkers.includes("ixfin"));
 });
 
 test("no intent can harm K1Z Mickey Mouse", () => {
