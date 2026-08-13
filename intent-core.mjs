@@ -16,13 +16,6 @@ const MARKERS = Object.freeze({
   finish: "ixfin",
 });
 const EXECUTOR_MARKER = "ib2";
-const STRIKE_MASS_DISPLACED_KINDS = new Set([
-  "boat",
-  "build",
-  "upgrade_structure",
-  "target_player",
-  "alliance_request",
-]);
 
 function isNeutral(action) {
   const targetID = clean(action?.metadata?.targetID ?? action?.targetID ?? "");
@@ -78,35 +71,28 @@ function withPolicyMarkers(action, ...markers) {
   };
 }
 
-function strikeMassAction(actions, state, executorPlan, history) {
+function directGrowAction(actions, state, executorPlan, history) {
   const incoming = incomingThreatCount(state?.self?.incomingAttacks) +
     (state?.self?.incomingAttackerIDs ?? []).length +
     (state?.self?.allProtocolAttackerIDs ?? []).length;
-  if (incoming > 0 || territoryCollapsing(state, history) ||
-      !Number.isFinite(state?.self?.troopRatio) || state.self.troopRatio < 0.8) {
-    return null;
-  }
-  const strikes = actions.filter((action) => {
-    if (action?.kind !== "attack" || isNeutral(action) || action.risk?.level === "high") {
-      return false;
-    }
-    const rival = rivalForAction(action, state);
-    return rival && !rivalIsProtected(state, history, rival) &&
-      Number.isFinite(rival.relativeTroopRatio) && rival.relativeTroopRatio >= 0.9;
+  if (incoming > 0 || territoryCollapsing(state, history)) return null;
+  const direct = actions.filter((action) => {
+    if (action?.kind === "hold" || isNeutral(action)) return true;
+    return action?.kind === "attack" && action?.risk?.level !== "high";
   });
-  if (strikes.length === 0) return null;
-  const strike = chooseCaptainUnderpantsRuntimeAction(
-    strikes,
+  if (!direct.some((action) => action.kind === "attack")) return null;
+  const selected = chooseCaptainUnderpantsRuntimeAction(
+    direct,
     state,
     executorPlan,
     history,
   );
-  return strike?.kind === "attack" ? strike : null;
+  return selected?.kind === "attack" ? selected : null;
 }
 
-// The planner chooses one outcome: grow or finish. The complete safe legal
-// menu is delegated to the mature executor, which owns how to express that
-// intent and selects every exact action and target.
+// The planner chooses one outcome: grow or finish. The mature executor first
+// sees the complete safe legal menu and always owns exact actions and targets;
+// grow may then ask it to re-evaluate only direct territory conversion.
 export function chooseIntentCoreAction(actions, state, plan = null, history = []) {
   if (!Array.isArray(actions) || actions.length === 0) {
     throw new Error("decision request had no legal actions");
@@ -143,19 +129,19 @@ export function chooseIntentCoreAction(actions, state, plan = null, history = []
       }
     }
   }
-  // sm1 is an executor allocation rule, not a planner instruction. When the
-  // seat is healthy and unpressured, a bounded near-parity strike outranks
-  // another routine movement, maintenance, target call, or outgoing request.
-  // The mature executor still chooses the exact offered attack and target.
-  if (STRIKE_MASS_DISPLACED_KINDS.has(selected.kind) &&
+  // Grow is one outcome preference: when direct territory conversion is safe
+  // and available, ask the same mature executor to choose it. Hold remains in
+  // the reduced menu as the executor's veto. Pressure, collapse, real inbound
+  // handshakes, exact actions, and exact targets stay outside the intent layer.
+  if (intent === "grow" &&
       !(selected.kind === "alliance_request" && isPendingInboundAlliance(safe, selected))) {
-    const strike = strikeMassAction(safe, state, executorPlan, history);
-    if (strike && strike.id !== selected.id) {
+    const direct = directGrowAction(safe, state, executorPlan, history);
+    if (direct && direct.id !== selected.id) {
       selected = withPolicyMarkers(
-        strike,
+        direct,
         ...(Array.isArray(selected.policyMarkers) ? selected.policyMarkers : []),
         selected.policyMarker,
-        "sm1",
+        "ig1",
       );
     }
   }

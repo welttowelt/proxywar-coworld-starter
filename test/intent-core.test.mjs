@@ -156,7 +156,7 @@ test("an unknown intent defaults to grow without filtering executor capabilities
   assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
-test("grow delegates the complete safe menu instead of defining an action family", () => {
+test("grow asks the mature executor for direct conversion before stockpiling", () => {
   const bomb = build("Atom Bomb", {
     targetID: "leader",
     targetName: "Leader",
@@ -177,7 +177,9 @@ test("grow delegates the complete safe menu instead of defining an action family
     null,
     history,
   );
-  assert.equal(selected.id, delegated.id);
+  assert.equal(delegated.id, bomb.id);
+  assert.equal(selected.id, "expand:terra-nullius:35");
+  assert.ok(selected.policyMarkers.includes("ig1"));
   assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
@@ -187,8 +189,8 @@ test("grow preserves an upgrade when no direct grow action exists", () => {
   assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
-test("grow does not force a weak hostile action past maintenance", () => {
-  const selected = decide([upgrade(), attack("rival"), hold()], "grow", {
+test("grow does not force a high-risk hostile action past maintenance", () => {
+  const selected = decide([upgrade(), attack("rival", 40, "high"), hold()], "grow", {
     tileShare: 0.01,
     rivals: [{ id: "rival", name: "rival", tileShare: 0.1, relativeTroopRatio: 0.2 }],
   });
@@ -312,7 +314,7 @@ test("grow keeps a proactive alliance when no productive alternative exists", ()
   assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
-test("grow concentrates a healthy near-parity strike before routine maintenance", () => {
+test("grow prefers direct territory conversion through the mature executor", () => {
   const selected = decide([
     attack("rival", 10),
     attack("rival", 25),
@@ -323,11 +325,11 @@ test("grow concentrates a healthy near-parity strike before routine maintenance"
     rivals: [{ id: "rival", name: "rival", tileShare: 0.15, relativeTroopRatio: 0.95 }],
   });
   assert.equal(selected.id, "attack:rival:10");
-  assert.ok(selected.policyMarkers.includes("sm1"));
+  assert.ok(selected.policyMarkers.includes("ig1"));
   assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
-test("strike mass preserves immediate pressure defense", () => {
+test("the grow preference preserves immediate pressure defense", () => {
   const selected = decide([
     attack("raider", 10),
     build("City"),
@@ -338,10 +340,10 @@ test("strike mass preserves immediate pressure defense", () => {
     rivals: [{ id: "raider", name: "raider", tileShare: 0.15, relativeTroopRatio: 0.95 }],
   });
   assert.equal(selected.id, "build:City");
-  assert.ok(!selected.policyMarkers.includes("sm1"));
+  assert.ok(!selected.policyMarkers.includes("ig1"));
 });
 
-test("strike mass preserves a real inbound handshake over an available strike", () => {
+test("the grow preference preserves a real inbound handshake over direct conversion", () => {
   const reject = action("alliance_reject:ally", "alliance_reject", "Reject Ally", {
     recipientID: "ally",
     recipientName: "Ally",
@@ -364,7 +366,7 @@ test("strike mass preserves a real inbound handshake over an available strike", 
     ],
   });
   assert.equal(selected.id, alliance.id);
-  assert.ok(!selected.policyMarkers.includes("sm1"));
+  assert.ok(!selected.policyMarkers.includes("ig1"));
 });
 
 test("repeated symbolic pressure yields to a productive action", () => {
