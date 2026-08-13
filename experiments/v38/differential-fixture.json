@@ -1,0 +1,65 @@
+{
+  "id": "v38-intent-boundary",
+  "actions": [
+    {
+      "id": "build:Atom Bomb",
+      "kind": "build",
+      "label": "Build Atom Bomb",
+      "risk": {"level": "low"},
+      "metadata": {
+        "unit": "Atom Bomb",
+        "targetID": "leader",
+        "targetName": "Leader",
+        "targetTileShare": 0.79,
+        "targetSamCoverage": 0,
+        "nuclearTargetPriority": 267
+      }
+    },
+    {
+      "id": "expand:terra-nullius:35",
+      "kind": "attack",
+      "label": "Expand Terra Nullius 35%",
+      "risk": {"level": "low"},
+      "metadata": {"expansion": true, "troopPercent": 35}
+    },
+    {
+      "id": "build:City",
+      "kind": "build",
+      "label": "Build City",
+      "risk": {"level": "low"},
+      "metadata": {"unit": "City"}
+    },
+    {
+      "id": "hold",
+      "kind": "hold",
+      "label": "Hold",
+      "risk": {"level": "low"},
+      "metadata": {}
+    }
+  ],
+  "observation": {
+    "phase": "active",
+    "ownState": {
+      "tileShare": 0.12,
+      "troopRatio": 1,
+      "troops": 1000000,
+      "gold": 500000,
+      "borderTiles": 100,
+      "incomingAttacks": []
+    },
+    "combat": {"incomingAttackPlayerIDs": []},
+    "visiblePlayers": [
+      {
+        "id": "leader",
+        "name": "Leader",
+        "isAlive": true,
+        "sharesBorder": true,
+        "canAttack": true,
+        "isAllied": false,
+        "tileShare": 0.79,
+        "relativeTroopRatio": 1
+      }
+    ]
+  },
+  "history": []
+}
