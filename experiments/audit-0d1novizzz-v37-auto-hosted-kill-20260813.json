@@ -1,0 +1,96 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T05:58:00Z",
+  "player": "0d1novizzz",
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v34",
+    "policy_version_id": "fd03e1d6-cbe0-4912-a12b-406d388efbf2",
+    "source_commit": "f46a9ca241ccbe530457c247ea6fc3e652b75a87",
+    "engine": "intent-core",
+    "experiment": "intent-delegated-material-v37"
+  },
+  "experience_request": {
+    "id": "xreq_803265bf-52ed-4e74-bdb5-de9f73c4b68a",
+    "origin": "platform-generated automatic diagnostic",
+    "coworld_version": "0.1.41",
+    "status": "completed",
+    "episodes": 10,
+    "failed_count": 0,
+    "maps": {
+      "Pangaea": 5,
+      "Oceania": 4,
+      "EastAsia": 1
+    }
+  },
+  "preregistered_kill_bar": "any hosted score of zero kills v37",
+  "result": {
+    "verdict": "kill",
+    "trigger": "the first completed hosted episodes scored zero; the final batch was 0/10",
+    "wins": 0,
+    "episodes_completed": 10,
+    "final_tiles": [
+      0,
+      0,
+      4612,
+      0,
+      0,
+      1878,
+      2228,
+      0,
+      1483,
+      8232
+    ],
+    "mean_final_tiles": 1843.3,
+    "decisions": 192,
+    "planner_marked_decisions": 182,
+    "bootstrap_or_unmarked_decisions": 10,
+    "intent_counts": {
+      "grow": 168,
+      "secure": 14,
+      "finish": 0
+    },
+    "action_counts": {
+      "attack": 56,
+      "boat": 74,
+      "nuke": 16,
+      "build": 14,
+      "upgrade": 6,
+      "retreat": 3,
+      "hold": 13
+    },
+    "rejected": 0,
+    "fallbacks": 0,
+    "planner_degraded_decisions": 0
+  },
+  "replay_audit": {
+    "path": "/private/tmp/v37-auto-complete-audit.json",
+    "passed": false,
+    "replay_sha256": [
+      "9edafef6c9a6585549e1714d68a357c69ff2e93f102fdcf32c43903d9d0d1605",
+      "b40f2bc08608453117f31b6796d1e5bcd308765aee853b9c2ed7d50a0d5f32a6",
+      "338283664b7b3534b0c05425eeccedb0b1d4149fb64d2f8f338f99f458da08f9",
+      "23146d6464e348be760829c0c3e195bd372f1264366d4e9e0cdf86287da75716",
+      "612f88623a0ea3a40ddd90db339a1c3f109708e00624ec87e9f30ae0bed8e245",
+      "0d68e233dc8b4d71ce02a51fe540e6d6adb1c8ad67f31439f246deff66361f6f",
+      "010e7da7e3b1c4764ac1c1149cff7711f7913089cde9f3acd816088556ff5975",
+      "118a54d073575641b47006cb2e9f056a239a8c02d741c0151b7c086f596d198a",
+      "6aa26261b6415232affb0c755c28b97397025c7b05d2fb4477fc5b5587d7f9df",
+      "acc068a06cc1142f13adf8a9e5a1cd9728e7e1c5583c08600023bb631a5c2d88"
+    ]
+  },
+  "diagnosis": {
+    "architecture": "the requested simplification is real: the planner emitted only grow, secure, or finish, and the mature selector chose exact actions and targets",
+    "planner_transport": "worked in the replay evidence: 182 planner-marked decisions, zero fallbacks, and zero planner-degraded decisions",
+    "intent_switching": "insufficient: grow occupied 168 of 182 planner-marked decisions, secure 14, and finish never appeared",
+    "execution": "the delegated selector converted those intents into 74 boats, 16 nukes, and 13 holds across 192 decisions; clean transport did not create competitive outcomes",
+    "conclusion": "simplicity removed an infrastructure and duplication confound, but grow-secure-finish plus the mature executor is not a winning policy on the current 16-player field",
+    "next_change": "do not add tactical instructions back to the planner; replace the weak intent-to-behavior mapping or intent vocabulary only after replay-backed winner comparison"
+  },
+  "league_mutation": false,
+  "champion_preserved": {
+    "label": "xX_UwU_Senpai_420_Xx:v17",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  },
+  "promotion_eligible": false
+}
