@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "preregistered_at": "2026-08-13T14:16:00Z",
+  "experiment": "v46-v43-matched-counterfactual",
+  "player": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz"
+  },
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v46",
+    "policy_version_id": "625ac8a0-6eb8-4f9b-ab31-43f04b3ba293",
+    "source_commit": "25e30bdd70852dac4cd168e7cf139900f3d908c4",
+    "hosted_image_id": "img_87aa647e-45cb-484a-9538-0d1b9e30c35a"
+  },
+  "baseline": {
+    "label": "xX_UwU_Senpai_420_Xx:v43",
+    "policy_version_id": "b9e5ccdc-8dc4-4017-90ad-8f7908413109",
+    "membership_id": "lpm_fe4dde2e-4a20-4bd0-a865-9d0493f7f1b6",
+    "champion_verified": true
+  },
+  "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "matched_fields": 4,
+  "idempotency_key": "0d1-v46-v43-4f-20260813-1416",
+  "hypothesis": "V46 converts the stale proactive-alliance opportunities that caused three v45 fallback holds into productive executor actions without weakening the bare grow or finish contract or K1Z safety.",
+  "promotion_gate": {
+    "candidate_wins_required": "strictly greater than baseline wins",
+    "fallback_holds_allowed": 0,
+    "rejected_candidate_decisions_allowed": 0,
+    "k1z_harm_allowed": 0,
+    "planner_requirement": "at least one accepted non-bootstrap pln decision",
+    "mechanism_requirement": "at least one iax decision if a proactive-alliance opportunity occurs",
+    "tie_policy": "reject",
+    "loss_policy": "reject"
+  },
+  "audit_requirements": [
+    "download all candidate and baseline episode artifacts",
+    "count candidate and baseline wins",
+    "count pln, dgd, rul, fallback, hold, reject, iax, grow, and finish reasons",
+    "audit every resolvable K1Z-targeted action",
+    "report unresolved transport destinations separately"
+  ],
+  "league_mutation_authorized": false,
+  "authorized_next_action": "After same-shell active-player, candidate, image-binding, and baseline-champion verification, create this one four-field counterfactual. No submission, membership change, or champion change is authorized."
+}

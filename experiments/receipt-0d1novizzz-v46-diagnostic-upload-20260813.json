@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T14:15:00Z",
+  "lane": "0d1novizzz",
+  "mode": "diagnostic_upload_only",
+  "status": "uploaded_identity_verified_unseated",
+  "active_player_before_and_after": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz",
+    "sole_active": true
+  },
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v46",
+    "policy_version_id": "625ac8a0-6eb8-4f9b-ab31-43f04b3ba293",
+    "policy_id": "d2ab8f5b-66ff-4252-990c-71179fc8dc0f",
+    "created_at": "2026-08-13T14:11:31.079776Z",
+    "source_commit": "25e30bdd70852dac4cd168e7cf139900f3d908c4",
+    "evidence_commit": "8d2a0b2a",
+    "run": ["node", "/app/llm-player.mjs"],
+    "bedrock_enabled": true,
+    "secret_env_keys": ["PLAN_MODE"],
+    "secret_env_values_recorded": false,
+    "tags": {
+      "goal": "ffa-99",
+      "codename": "bare-intent-alliance-escape",
+      "experiment": "v46"
+    }
+  },
+  "image_binding": {
+    "local_image_id": "sha256:e8ee11904f167ef674f06046f0ba12030280bc0b4fd6d6d8de03806af3748f52",
+    "hosted_image_id": "img_87aa647e-45cb-484a-9538-0d1b9e30c35a",
+    "hosted_image_version": 27,
+    "hosted_client_hash": "sha256:e8ee11904f167ef674f06046f0ba12030280bc0b4fd6d6d8de03806af3748f52",
+    "hosted_status": "ready",
+    "hosted_image_digest": "sha256:19eca520c1ebe540b5287af58721e2ba31e68b7934716e2c9d49f71e44a683be"
+  },
+  "exposure": {
+    "hosted_experience_request_created": false,
+    "league_submissions": 0,
+    "league_memberships": 0,
+    "champion_change": false
+  },
+  "preserved_champion": {
+    "membership_id": "lpm_fe4dde2e-4a20-4bd0-a865-9d0493f7f1b6",
+    "policy_version_id": "b9e5ccdc-8dc4-4017-90ad-8f7908413109",
+    "label": "xX_UwU_Senpai_420_Xx:v43",
+    "is_champion": true,
+    "status": "competing",
+    "substatus": "active"
+  },
+  "promotion_ready": false,
+  "authorized_next_action": "Create exactly one preregistered four-field counterfactual against v43, then audit all resulting replays. Do not submit or change league membership."
+}
