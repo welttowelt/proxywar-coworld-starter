@@ -1,0 +1,170 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T01:01:00Z",
+  "lane": "0d1novizzz",
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "candidate_source_commit": "35de53ff4cda639a04c6d38e49db18a869b215a5",
+  "candidate_evidence_commit": "f0554c261d565b8e0b41fcd7e124f67f1511f24a",
+  "parent_source_commit": "eeec7ba9686dc00fac7ce2054ac9a60f81750757",
+  "candidate_image_id": "sha256:1dc9c0774512a1556a7b803370fd770d59f4e4449127bbad095316c3a4b2fddc",
+  "parent_image_id": "sha256:c66b5553f159e512e091389ac8e9df6472811eaaab13aed7ddfc7252769f48ef",
+  "contract_sha256": "0fe1a49078ef79de0a5098386d72bdce37b109939d37a44a4c9c2771d872e96d",
+  "image_contract": {
+    "architecture": "amd64",
+    "os": "linux",
+    "user": "node",
+    "cmd": ["node", "/app/llm-player.mjs"],
+    "policy_engine": "intent-core",
+    "policy_codename": "b0lverk-h0gg",
+    "file_sha256": {
+      "/app/llm-player.mjs": "ce36f0be901f33cb1b6d85bee63de971460fb24231f5f5f5a6eae5e3ec7c5eed",
+      "/app/intent-controller.mjs": "c881715ad5c1af797668d17670f31147b398104591a1c401c7d91ceb0e0835ef",
+      "/app/intent-core.mjs": "44b0f776b0c2ed6e5e8d959c5fc88ed38766a0cf976fd5cc728675318b571152",
+      "/app/strategy-engine.mjs": "4a5dc56a23371033b9c543e416397b1a18feb5b842d965ba1d23661f528d832a"
+    }
+  },
+  "exact_image_outcome_harness": {
+    "expand": {
+      "packet": {"intent": "expand"},
+      "selected_action_id": "expand:terra-nullius:35",
+      "marker": "ixexp"
+    },
+    "consolidate_without_infrastructure": {
+      "packet": {"intent": "consolidate"},
+      "selected_action_id": "expand:terra-nullius:35",
+      "marker": "ixcon"
+    },
+    "convert": {
+      "packet": {"intent": "convert"},
+      "selected_action_id": "attack:outsider:40",
+      "marker": "ixprs"
+    },
+    "convert_without_physical_force": {
+      "packet": {"intent": "convert"},
+      "selected_action_id": "expand:terra-nullius:35",
+      "marker": "ixprs"
+    },
+    "protected_only_selected_action_id": "hold",
+    "offered_k1z_harmful_action": "attack:mickey:40",
+    "selected_k1z_harm": false
+  },
+  "required_coalition_roles": ["katanasan"],
+  "differential_unit_proof": {
+    "schema_version": 2,
+    "arm": "intent-preferences-v30",
+    "same_fixture": true,
+    "same_board_action_menu_and_planner_reply": true,
+    "verifier": {
+      "evaluator_commit": "52a3442665133fd5a0fed28e09d0ad8d66064c54",
+      "path": "experiments/v30/verify-differential.mjs",
+      "sha256": "017ef550a4070324549c1639a20acff694b2303815cc1aaf38661b1f25b77f16"
+    },
+    "fixture": {
+      "id": "v30-consolidate-preference-without-infrastructure",
+      "path": "experiments/v30/differential-fixture.json",
+      "sha256": "02a5c8ee665c330d3775b9ed7cf2dff52a7e244c2ab7559222f2b0e334d46537"
+    },
+    "parent": {
+      "source_commit": "eeec7ba9686dc00fac7ce2054ac9a60f81750757",
+      "parsed_plan": {"intent": "consolidate", "model": "fixture"},
+      "selected_action_id": "hold",
+      "marker": "ixcon"
+    },
+    "candidate": {
+      "source_commit": "35de53ff4cda639a04c6d38e49db18a869b215a5",
+      "parsed_plan": {"intent": "consolidate", "model": "fixture"},
+      "selected_action_id": "expand:terra-nullius:35",
+      "marker": "ixcon"
+    },
+    "intent_semantics": {
+      "intent": "consolidate",
+      "preferred_action_available": false,
+      "parent_interpretation": "exact instruction",
+      "candidate_interpretation": "safe preference"
+    },
+    "safety": {
+      "offered_k1z_harmful_action": "attack:mickey:40",
+      "any_selected_k1z_harm": false
+    },
+    "test_command": [
+      "node",
+      "experiments/v30/verify-differential.mjs",
+      ".",
+      "eeec7ba9686dc00fac7ce2054ac9a60f81750757",
+      "35de53ff4cda639a04c6d38e49db18a869b215a5",
+      "experiments/v30/differential-fixture.json",
+      "experiments/v30/differential-proof-35de53ff.json"
+    ],
+    "test_exit_code": 0
+  },
+  "runs": [
+    {
+      "orientation": "A",
+      "run_id": "v30-intent-preferences-20260813T0052Z",
+      "coworld_run_id": "coworld-2026-08-13T00-58-45-511Z-4bc1a9e0",
+      "game_id": "PWSELHEF",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "directory": "/private/tmp/proxywar-v30-intent-preferences-20260813T0052Z",
+      "coalition_roles_present": ["odin", "katanasan"],
+      "replay_sha256": "92c3cbc61db9a292d8f1666103846984c6d10c8f5c26ed0cd5ed876c5e0f1c3e",
+      "results_sha256": "e85056002949c91bc876ca6311fbdbc643f923db945c596d75a1c843f9a476dd",
+      "config_sha256": "d512a9cbabec431de26ca46e6c31cb9a867cc2dca60077ebfbfccb1f14cf403e",
+      "decisions_sha256": "ad594f5059c265580a4ae48a35ac5d2dbc8bf9656d943d6506d06ea2a38c4732",
+      "spectator_replay_sha256": "a4568cf42dcd29805312c910d090d7256fecf83300d41cc499d40650c32c9ca8",
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image": "proxywar-agent-candidate:v30-intent-preferences",
+            "image_id": "sha256:1dc9c0774512a1556a7b803370fd770d59f4e4449127bbad095316c3a4b2fddc"
+          }
+        }
+      },
+      "candidate": {
+        "slot": 0,
+        "decision_count": 41,
+        "post_spawn_decisions": 40,
+        "accepted": 41,
+        "rejected": 0,
+        "score": 0.30831319525295714,
+        "final_tiles": 31513,
+        "alive": true,
+        "planner_reason_count": 40,
+        "route_execution_count": 40,
+        "marker_counts": {"ixcon": 40},
+        "action_counts": {
+          "neutral_land": 16,
+          "neutral_boat": 19,
+          "infrastructure": 4,
+          "physical_force": 1,
+          "spawn": 1
+        },
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "unexplained_holds": [],
+        "unresolved_harmful_targets": [],
+        "rejection_turns": [],
+        "parser_failure_turns": [],
+        "symbolic_actions": 0,
+        "harmful_k1z_actions": []
+      },
+      "static_fixture_disclosure": "The local wrapper held consolidate for all 40 post-spawn decisions. v30 interpreted that outcome as a preference: it built when infrastructure was offered, otherwise kept taking safe productive actions. The 0.308 score is mechanism evidence in a four-player fixture, not competitive evidence."
+    }
+  ],
+  "focused_suite": {"tests": 36, "passed": 36, "failed": 0},
+  "full_suite": {
+    "tests": 472,
+    "passed": 466,
+    "failed": 6,
+    "candidate_related_failures": 0,
+    "persistent_unrelated_failures": 6,
+    "note": "The same known Mickey R8/R9 and inactive RCI failures remained."
+  },
+  "runner_lease_after": {"state": "free", "schema_version": 2},
+  "scope_boundary": "The exact image proves intent preferences eliminate v29's unavailable-consolidate hold loop while preserving the one-field planner packet, target continuity, and K1Z safety. Only a bounded matched hosted request can test competitive lift; no league change is authorized.",
+  "failures": []
+}
