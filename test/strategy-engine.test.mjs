@@ -331,6 +331,7 @@ test("hosted K1Z aliases and stable IDs are protected at the core boundary", () 
   for (const rival of [
     { id: "episode-scoped-id", name: "CYAN HELLSTAR", isAllied: false },
     { id: "another-episode-id", name: "SIAN VOIDCROWN", isAllied: false },
+    { id: "j2wxj0cp", name: "Captain Underpants Maximum", isAllied: false },
     { id: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335", name: "unknown", isAllied: false },
     { id: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba", name: "unknown", isAllied: false },
   ]) {

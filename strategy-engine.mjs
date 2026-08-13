@@ -38,6 +38,8 @@ const ABSOLUTE_NO_HARM_RIVALS = new Set([
   ...RECIPROCAL_RIVALS,
   "cyan hellstar",
   "sian voidcrown",
+  // Hosted 16P observations truncate "Captain Underpants Maximum Aura".
+  "captain underpants maximum",
 ].map(normalizedRivalName));
 const ABSOLUTE_NO_HARM_RIVAL_IDS = new Set(RECIPROCAL_RIVAL_IDS);
 const MIN_DESPERATE_INVASION_RATIO = 0.5;
