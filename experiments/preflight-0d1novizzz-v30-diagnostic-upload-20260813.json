@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-candidate:v30-intent-preferences",
+    "parent_ref": "proxywar-agent-candidate:v29-intent-only",
+    "exact_deltas": [
+      "The unchanged one-field planner intent becomes a ranked preference over all safe executable outcomes; hold is permitted only when no territorial, infrastructure, or physical action is safe."
+    ],
+    "source_commit": "35de53ff4cda639a04c6d38e49db18a869b215a5",
+    "parent_commit": "eeec7ba9686dc00fac7ce2054ac9a60f81750757",
+    "image_id": "sha256:1dc9c0774512a1556a7b803370fd770d59f4e4449127bbad095316c3a4b2fddc"
+  },
+  "hypothesis": "Intent preferences preserve strategic choice without freezing when the ideal action is unavailable; consolidate should strengthen when possible and otherwise continue safe productive growth.",
+  "mechanism": {
+    "marker": "ixcon",
+    "prior_reachable_decisions": 40
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "contract_sha256": "0fe1a49078ef79de0a5098386d72bdce37b109939d37a44a4c9c2771d872e96d",
+    "audit_receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v30-intent-preferences-local-20260813.json",
+      "sha256": "e394032e01f80636f35cf9dad9e0c5b2d0ff8e424cde997f35eb7879fcb69b56"
+    },
+    "differential_binding": {
+      "verifier_path": "experiments/v30/verify-differential.mjs",
+      "fixture_path": "experiments/v30/differential-fixture.json"
+    }
+  },
+  "preupload_rci": {
+    "receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v30-preupload-rci-20260813.json",
+      "sha256": "e78a8b170b68046fe9a1055219e151293fd8cf9dec9ddf79afe6d9bbaa8f0b2a"
+    }
+  },
+  "matched_baseline": {
+    "request_id": "xreq_2f0d3c2a-e996-45d0-beab-b20910d2a14b",
+    "policy_ref": "xX_UwU_Senpai_420_Xx:v27",
+    "policy_version_id": "c71f0e35-f001-4bf5-b2e0-7cb9bd879d79",
+    "same_roster": true,
+    "same_variant": true,
+    "episodes": 4,
+    "wins": 0
+  },
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "max_k1z_harm": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  }
+}

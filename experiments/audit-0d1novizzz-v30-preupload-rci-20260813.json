@@ -1,0 +1,65 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T01:01:04Z",
+  "lane": "0d1novizzz",
+  "status": "passed",
+  "verdict": "PASS_PREUPLOAD_RCI",
+  "candidate_source_commit": "35de53ff4cda639a04c6d38e49db18a869b215a5",
+  "candidate_image_id": "sha256:1dc9c0774512a1556a7b803370fd770d59f4e4449127bbad095316c3a4b2fddc",
+  "preregister_sha256": "2a9e145c7da87bc65a949f83bf3a32cb6983252cd6315aaf2c78536e115568d9",
+  "local_audit_sha256": "e394032e01f80636f35cf9dad9e0c5b2d0ff8e424cde997f35eb7879fcb69b56",
+  "differential_proof_sha256": "f97f89da20de21a68947a424f3069be96716174b798ee19951a83be54d641c27",
+  "live_baseline": {
+    "policy": "v17",
+    "rank": 11,
+    "score": 7.002651178430014,
+    "round": 1396,
+    "latest_round_score": 0,
+    "active_policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "active_membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  },
+  "critique": {
+    "strongest_evidence": "The same failure fixture holds the planner packet and legal menu constant: v29 treats consolidate as an exact instruction and holds, while v30 treats it as a safe preference and expands. The exact image then executed 40 consecutive consolidate intents with 41 of 41 accepted decisions, zero holds, zero fallback, four infrastructure actions, 35 neutral-growth actions, no K1Z harm, and a terminal 0.308 score while alive.",
+    "adverse_evidence": "The local result is a four-player static fixture and cannot establish 16-player competitive lift. v29's matched hosted arm scored zero in all four episodes. v30's constant-consolidate executor used one safe physical action after territorial and infrastructure options were exhausted, showing that a lower-ranked preference can still activate late.",
+    "remaining_uncertainty": "Only the hosted one-field planner can show whether dynamic intent preferences eliminate v29's 11 holds without producing a new low-value loop against the matched 16-player Asia roster."
+  },
+  "checks": {
+    "single_executor_semantics_change": true,
+    "planner_contract_unchanged": true,
+    "one_field_contract": true,
+    "model_target_identity_removed": true,
+    "executor_target_continuity": true,
+    "source_identity": true,
+    "image_identity": true,
+    "runtime_identity": true,
+    "differential_reach": true,
+    "unavailable_consolidate_hold_reversed": true,
+    "all_primary_preferences_exact_image": true,
+    "zero_candidate_fallback": true,
+    "zero_candidate_degradation": true,
+    "zero_candidate_hold": true,
+    "zero_candidate_rejection": true,
+    "symbolic_actions_excluded": true,
+    "k1z_safety": true,
+    "competitive_lift_not_claimed": true,
+    "runner_released": true,
+    "diagnostic_only": true,
+    "league_mutation_forbidden": true
+  },
+  "open_gates": [
+    "diagnostic upload identity binding",
+    "matched-roster hosted 4/4",
+    "separate map-and-seat regression 20/20",
+    "final promotion RCI"
+  ],
+  "stop_conditions": [
+    "any hosted score of zero",
+    "planner reasons absent from any replay",
+    "any fallback, degradation, rejection, or parse failure",
+    "any hold",
+    "any forbidden symbolic action or K1Z harm",
+    "failure to observe at least two distinct intents across the four-episode request"
+  ],
+  "unresolved_violations": 0,
+  "authorized_next_action": "One diagnostic upload and one four-episode hosted request matched to v29 only; no league submission, membership change, or champion change."
+}
