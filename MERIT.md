@@ -742,3 +742,27 @@ membership, or champion change. v43 remains the live champion. The next arm
 must isolate one winner-derived economy or strike-mass lever while leaving the
 bare intent boundary frozen. Evidence:
 [`audit-0d1novizzz-v46-v43-bare-intent-alliance-escape-20260813.json`](experiments/audit-0d1novizzz-v46-v43-bare-intent-alliance-escape-20260813.json).
+
+## v47 strike-mass threshold rejection (2026-08-13)
+
+v47 left the planner at the bare `grow` or `finish` boundary and tested one
+executor hypothesis: replace selected maintenance actions with a safe hostile
+strike when the seat was unpressured, stable, troop-rich, and near parity with
+a rival. Local tests and an exact-container probe proved the implementation,
+but the live mechanism did not reach.
+
+Against live v43, all four matched BlackSea-16P pairs were neutral at zero.
+The candidate made 39 accepted post-spawn planner decisions with zero
+fallbacks or rejections: 17 attacks, seven boats, six builds, four retreats,
+and five upgrades. Every decision carried the bare `grow` intent, but `sm1`
+fired zero times. Three seats were eliminated; the survivor finished with
+14,494 tiles. All hostile player targets resolved to outsiders, and all seven
+boat destinations were unowned in their decision snapshots, producing zero
+verified K1Z harm.
+
+The candidate failed both the strict-win and mechanism gates. v47 is rejected
+without the 20-field stage, submission, membership, or champion change. v43
+remains live. The next arm should express a single generic preference inside
+the `grow` executor and prove reach locally, instead of adding another
+thresholded exception. Evidence:
+[`audit-0d1novizzz-v47-v43-stage1-counterfactual-20260813.json`](experiments/audit-0d1novizzz-v47-v43-stage1-counterfactual-20260813.json).
