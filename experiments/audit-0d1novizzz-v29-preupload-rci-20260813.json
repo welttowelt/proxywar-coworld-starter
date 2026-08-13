@@ -1,0 +1,66 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T00:18:00Z",
+  "lane": "0d1novizzz",
+  "status": "passed",
+  "verdict": "PASS_PREUPLOAD_RCI",
+  "candidate_source_commit": "eeec7ba9686dc00fac7ce2054ac9a60f81750757",
+  "candidate_image_id": "sha256:c66b5553f159e512e091389ac8e9df6472811eaaab13aed7ddfc7252769f48ef",
+  "preregister_sha256": "49c741403fedd824c0e941cc3b93dde6d501cc2cb4ee418334d4bb85c026af44",
+  "local_audit_sha256": "5cccc5a5a8d45e43a9d5dd5106ed066a6462fa57c806c9d9890658b8cd6cf9f6",
+  "differential_proof_sha256": "7d2574eedc50f79aca2a0f6d57b54db71708dc10ac8fbe762d1e7181af614b9c",
+  "live_baseline": {
+    "policy": "v17",
+    "rank": 10,
+    "score": 7.422794754900143,
+    "round": 1394,
+    "latest_round_score": 0,
+    "active_policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "active_membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  },
+  "critique": {
+    "strongest_evidence": "The planner now emits exactly one field: intent. A same-fixture differential shows v28 rejects that packet while v29 accepts convert, and deterministic execution preserves the prior outsider target without seeing any model-supplied target identity. The exact image independently exercised expand, consolidate, convert, repeated-target continuity, and K1Z safety.",
+    "adverse_evidence": "The static local convert episode produced 33 explained holds, zero score, and elimination because no outsider conversion action was legal. It proves safe intent handling, not competitive lift. Hosted v28 scored zero in all four episodes after over-converting, and live v17 has now recorded another zero round, decaying to rank 10 at 7.422794754900143.",
+    "remaining_uncertainty": "Only the hosted planner can switch dynamically among expand, consolidate, and convert. The bounded request must show that live intent choice avoids v28's repeated conversions and the static fixture's unavailable-convert holds."
+  },
+  "checks": {
+    "single_intent_level_change": true,
+    "one_field_contract": true,
+    "model_target_identity_removed": true,
+    "executor_target_continuity": true,
+    "source_identity": true,
+    "image_identity": true,
+    "runtime_identity": true,
+    "differential_reach": true,
+    "all_outcome_lanes_exact_image": true,
+    "no_tactical_planner_fields": true,
+    "no_timing_planner_fields": true,
+    "zero_candidate_fallback": true,
+    "zero_candidate_degradation": true,
+    "zero_candidate_rejection": true,
+    "static_holds_explained": true,
+    "symbolic_actions_excluded": true,
+    "k1z_safety": true,
+    "negative_local_outcome_disclosed": true,
+    "competitive_lift_not_claimed": true,
+    "runner_released": true,
+    "diagnostic_only": true,
+    "league_mutation_forbidden": true
+  },
+  "open_gates": [
+    "diagnostic upload identity binding",
+    "current-roster hosted 4/4",
+    "separate map-and-seat regression 20/20",
+    "final promotion RCI"
+  ],
+  "stop_conditions": [
+    "any hosted score of zero",
+    "planner reasons absent from any replay",
+    "any fallback, degradation, rejection, or parse failure",
+    "any unexplained hold or repeated unavailable-intent hold",
+    "any forbidden symbolic action or K1Z harm",
+    "failure to observe at least two distinct intents across the four-episode request"
+  ],
+  "unresolved_violations": 0,
+  "authorized_next_action": "One diagnostic upload and one four-episode current-roster Asia hosted request only; no league submission, membership change, or champion change."
+}

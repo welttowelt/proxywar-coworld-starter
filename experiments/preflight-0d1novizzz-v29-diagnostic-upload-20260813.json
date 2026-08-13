@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-candidate:v29-intent-only",
+    "parent_ref": "proxywar-agent-candidate:v28-two-field-intents",
+    "exact_deltas": [
+      "The planner reply contains only intent, restricted to expand, consolidate, or convert; deterministic execution owns target identity, target continuity, action selection, amounts, and refresh timing."
+    ],
+    "source_commit": "eeec7ba9686dc00fac7ce2054ac9a60f81750757",
+    "parent_commit": "0743674b02c472a4401ba1a8df897b850b8743d5",
+    "image_id": "sha256:c66b5553f159e512e091389ac8e9df6472811eaaab13aed7ddfc7252769f48ef"
+  },
+  "hypothesis": "Reducing planner output to one intent preserves strategic adaptation while preventing the model from scattering attacks across named rivals; deterministic execution supplies target continuity and safety.",
+  "mechanism": {
+    "marker": "ixprs",
+    "prior_reachable_decisions": 33
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "contract_sha256": "ddc2b56cca064232b678f6e5202afcd0f90a38f032c60fe341928bcca7247ee2",
+    "audit_receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v29-intent-only-local-20260813.json",
+      "sha256": "5cccc5a5a8d45e43a9d5dd5106ed066a6462fa57c806c9d9890658b8cd6cf9f6"
+    },
+    "differential_binding": {
+      "verifier_path": "experiments/v29/verify-differential.mjs",
+      "fixture_path": "experiments/v29/differential-fixture.json"
+    }
+  },
+  "preupload_rci": {
+    "receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v29-preupload-rci-20260813.json",
+      "sha256": "bb31aa2bd901be7104eafe55cfe9e1991ecc5e65ffc250a2ea2c49a7b1c5a25d"
+    }
+  },
+  "matched_baseline": null,
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_rejections": 0,
+      "max_k1z_harm": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  }
+}
