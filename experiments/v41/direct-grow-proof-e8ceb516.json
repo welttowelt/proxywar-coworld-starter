@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T09:32:00Z",
+  "arm": "v41-direct-grow",
+  "passed": true,
+  "source_commit": "e8ceb516bcdaaaeb06b557228b1a6cf6b73e8c6f",
+  "planner_changed": false,
+  "source_hashes": {
+    "intent_core_sha256": "8be773eb561a979c81887802894b55b53b63b20b94bd4fb39aaab38d70a82b84",
+    "llm_player_sha256": "15fd5c07f2fd8bfeb9a238662a5c22b558d7cecfc66926f7a976b0a788273322",
+    "strategy_engine_sha256": "292b50f9f17f6c7d1e240733eabab388c788527d7334f2e163fda29cae9f7304"
+  },
+  "fixture": {
+    "path": "experiments/v41/direct-grow-fixture.json",
+    "sha256": "92b0bdc98fec53361a6437e0c098749e809aaa4e4695c9d914c2b2614ce38149"
+  },
+  "verifier": {
+    "path": "experiments/v41/verify-direct-grow-differential.mjs",
+    "sha256": "1d8964637ec80e024473923cded4fd93dcd1ba3645f22c2c39815206c7a57d4f",
+    "command": "node experiments/v41/verify-direct-grow-differential.mjs"
+  },
+  "cases": [
+    {
+      "id": "grow-prefers-new-capacity",
+      "intent": "grow",
+      "parent_action_id": "upgrade:Port:95",
+      "candidate_action_id": "build:City",
+      "changed": true
+    },
+    {
+      "id": "grow-does-not-force-weak-hostility",
+      "intent": "grow",
+      "parent_action_id": "upgrade:Port:95",
+      "candidate_action_id": "upgrade:Port:95",
+      "changed": false
+    },
+    {
+      "id": "finish-unchanged",
+      "intent": "finish",
+      "parent_action_id": "upgrade:Port:95",
+      "candidate_action_id": "upgrade:Port:95",
+      "changed": false
+    }
+  ],
+  "tests": {
+    "focused_total": 32,
+    "focused_passed": 32,
+    "full_total": 479,
+    "full_passed": 473,
+    "full_failed": 6,
+    "new_failures": 0,
+    "historical_failures": [
+      "four inactive Mickey activation and reaper contract fixtures",
+      "two inactive RCI report fixtures"
+    ]
+  },
+  "conclusion": "Exactly one grow case changes: maintenance upgrade becomes a new City. Weak-hostile grow and finish remain unchanged."
+}
