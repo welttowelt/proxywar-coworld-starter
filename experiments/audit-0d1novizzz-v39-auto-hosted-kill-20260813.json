@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T07:53:00Z",
+  "player": "0d1novizzz",
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v36",
+    "policy_version_id": "7e6a4065-4918-4831-a81f-7217d400e5bf",
+    "source_commit": "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
+    "engine": "intent-core",
+    "experiment": "two-intents-v39"
+  },
+  "experience_request": {
+    "id": "xreq_02d7cc6c-53e4-4a47-a295-4023a96bcc4b",
+    "origin": "platform-generated automatic diagnostic",
+    "status": "completed",
+    "coworld_version": "0.1.41",
+    "episodes": 10,
+    "failed_episodes": 0,
+    "maps": {
+      "Oceania": 3,
+      "EastAsia": 6,
+      "BlackSea": 1
+    }
+  },
+  "preregistered_kill_bar": [
+    "any hosted score of zero",
+    "fewer than two wins in the automatic ten-episode diagnostic"
+  ],
+  "result": {
+    "verdict": "kill",
+    "trigger": "the first three completions all scored zero; the final batch was 1/10",
+    "wins": 1,
+    "episodes_completed": 10,
+    "score_vector": [0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    "final_tiles": [0, 13590, 6335, 0, 0, 0, 0, 0, 0, 1026511],
+    "mean_final_tiles": 104643.6,
+    "decisions": 144,
+    "planner_marked_decisions": 132,
+    "bootstrap_or_unmarked_decisions": 12,
+    "intent_counts": {
+      "grow": 107,
+      "finish": 25
+    },
+    "action_counts": {
+      "attack": 62,
+      "boat": 36,
+      "build": 8,
+      "hold": 5,
+      "nuke": 3,
+      "spawn": 10,
+      "upgrade_structure": 18
+    },
+    "rejected": 0,
+    "fallbacks": 0,
+    "planner_degraded_decisions": 0
+  },
+  "map_split": {
+    "Oceania": {
+      "wins": 0,
+      "episodes": 3,
+      "final_tiles": [0, 13590, 6335]
+    },
+    "EastAsia": {
+      "wins": 0,
+      "episodes": 6,
+      "final_tiles": [0, 0, 0, 0, 0, 0],
+      "note": "four seats died after only the deterministic spawn decision; one died after two total decisions and one after eight"
+    },
+    "BlackSea": {
+      "wins": 1,
+      "episodes": 1,
+      "final_tiles": [1026511]
+    }
+  },
+  "winner_contrast": {
+    "match_id": "PWSFJDAH",
+    "map": "BlackSea",
+    "final_tiles": 1026511,
+    "decisions": 42,
+    "planner_marked_decisions": 41,
+    "grow": 23,
+    "finish": 18,
+    "actions": {
+      "attack": 25,
+      "boat": 12,
+      "build": 4,
+      "spawn": 1
+    },
+    "holds": 0,
+    "interpretation": "the only winner supplied 18 of the batch's 25 finish decisions; the two-intent executor can win when the planner actually transitions into finish"
+  },
+  "replay_audit": {
+    "path": "/private/tmp/v39-auto-complete-audit.json",
+    "passed": false,
+    "replay_sha256": [
+      "e99bb78db974806bed42e9a8f55caeff4105127b8af0a23b7efc01e3d9580b0a",
+      "f6798d051bbb706133045a8b0ffc1a116a81ee112f6eb4a5bb28a1b2b3922c78",
+      "ffae065e5a12dbf638ef7d0e09f60d77565dd7d196116a94b0f154664431ebcc",
+      "c078698717bb3161db3b40b42231cffd22eaab29fa4f63fa27c3db9c083b6c7c",
+      "fdbb29c55e60221ec7f5081077774955754295c1650d5305605de87a2a021bf8",
+      "80a701bb3244878402c7e520e3629c0e7ecafcda20af1c6091ab97a85dbea006",
+      "ccd4280b326c897cb5a32b45ec28e386959118a4a44fd96e592a9755ef351849",
+      "3a1a0726a2751ba32865d3b77ff5ae3665bb939bcc14156a8cf96a60d225bbfe",
+      "9143bded068168b8bc8deac2cc7c3fb6de03e50c49e606a57a86303225100a07",
+      "4ef8cfffb98d964063798ebc23e5a7998cd2795316c69514d94163e3b578e282"
+    ]
+  },
+  "diagnosis": {
+    "architecture": "the requested simplification is real: the planner emitted only grow or finish, while the executor owned exact actions and targets",
+    "planner_transport": "clean: 132 planner-marked decisions and zero fallback, degradation, rejection, or parse failure",
+    "intent_selection": "too passive in the losing traces: 107 of 132 planner decisions were grow; the sole winner used 18 of the batch's 25 finish decisions",
+    "map_and_seat_exposure": "six EastAsia seats went 0/6 and mostly died before the planner could affect play, while the only BlackSea seat won",
+    "conclusion": "the two-intent architecture is simpler and operational, but this diagnostic does not show a universal competitive lift",
+    "next_change": "do not add tactical instructions; preserve the grow-or-finish contract and isolate whether intent timing or hostile map-seat exposure explains the remaining failure"
+  },
+  "official_scoreboard_snapshot": {
+    "source": "official observatory division leaderboard",
+    "latest_round": 1411,
+    "rank": 12,
+    "score": 5.672412473059356,
+    "latest_round_rank": 4,
+    "latest_round_score": 0.125,
+    "note": "this is v17 league evidence and is separate from the v39 diagnostic"
+  },
+  "league_mutation": false,
+  "regression_20_not_run": true,
+  "champion_preserved": {
+    "label": "xX_UwU_Senpai_420_Xx:v17",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461"
+  }
+}

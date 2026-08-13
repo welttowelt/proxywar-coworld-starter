@@ -3,7 +3,7 @@
   "recorded_at": "2026-08-13T07:32:12Z",
   "lane": "0d1novizzz",
   "mode": "diagnostic",
-  "status": "pending",
+  "status": "completed_killed",
   "active_player_before": {
     "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
     "name": "0d1novizzz"
@@ -47,7 +47,7 @@
   "verification_note": "Authenticated lookup verified v36, exact source and image tags, and run argv. The exact hosted image is ready. Every automatic episode contains v36 exactly once. Policy-scoped league submissions returned zero, the active player stayed 0d1novizzz, and v17 stayed the sole champion.",
   "automatic_hosted_request": {
     "id": "xreq_02d7cc6c-53e4-4a47-a295-4023a96bcc4b",
-    "status_at_receipt": "pending",
+    "status_at_receipt": "completed",
     "episodes": 10,
     "nominal_variant": "tournament-16p-oceania",
     "actual_maps": {
@@ -69,7 +69,13 @@
     ],
     "coworld_version": "0.1.41",
     "requested": null,
-    "candidate_policy_version_id": "7e6a4065-4918-4831-a81f-7217d400e5bf"
+    "candidate_policy_version_id": "7e6a4065-4918-4831-a81f-7217d400e5bf",
+    "result": {
+      "wins": 1,
+      "episodes": 10,
+      "verdict": "kill",
+      "audit": "experiments/audit-0d1novizzz-v39-auto-hosted-kill-20260813.json"
+    }
   },
   "live_mutations": {
     "upload": true,
