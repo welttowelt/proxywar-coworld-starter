@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "preregistered_at": "2026-08-13T12:35:00Z",
+  "player": "0d1novizzz",
+  "candidate": "v17-safety-hotfix",
+  "parent": {
+    "label": "xX_UwU_Senpai_420_Xx:v17",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "source_commit": "86630f6ca66e68133a4b0e2dc4908d63fa88cbe4"
+  },
+  "candidate_source_commit": "435ecdcdc588d26f3f0329d69814c205461a6922",
+  "single_change": "Make verified K1Z identities and replay-proven hosted aliases absolute no-harm, including Captain Underpants Maximum, while leaving the live v17 planner, executor, sidecar routing, and image command unchanged.",
+  "incident": {
+    "round": 1419,
+    "episode_request_id": "ereq_ab88ec52-fdc4-482b-a7b0-bdd8fd5fe724",
+    "match_id": "PWSNIDOX",
+    "turn": 10700,
+    "selected_action_id": "attack:8bjj82t6:10",
+    "target": "Captain Underpants Maximum",
+    "accepted": true
+  },
+  "promotion_gate": {
+    "matched_fields": 4,
+    "required_outcome": "candidate wins at least as many fields as v17",
+    "required_k1z_harm": 0,
+    "required_new_runtime_failures": 0,
+    "tie_policy": "A matched tie may promote because the candidate is an otherwise unchanged safety hotfix for a replay-confirmed live violation.",
+    "loss_policy": "Do not promote on fewer wins than v17."
+  },
+  "planner_changes_forbidden": true,
+  "executor_ranking_changes_forbidden": true,
+  "underpants_policy_mutation_forbidden": true,
+  "authorized_next_action": "Upload one identity-bound diagnostic version, then run one four-field matched comparison against v17."
+}

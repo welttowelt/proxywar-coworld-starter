@@ -1,0 +1,44 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T12:36:00Z",
+  "player": "0d1novizzz",
+  "arm": "v17-safety-hotfix",
+  "status": "passed_local_safety_screen",
+  "parent_source_commit": "86630f6ca66e68133a4b0e2dc4908d63fa88cbe4",
+  "candidate_source_commit": "435ecdcdc588d26f3f0329d69814c205461a6922",
+  "candidate_image_id": "sha256:667a861e7424d1d712b86c8f20435a2c3abdecbbb82115c2423390d42e5dd99b",
+  "image": {
+    "tag": "proxywar-agent-candidate:v17-safety-underpants",
+    "architecture": "linux/amd64",
+    "user": "node",
+    "run": ["node", "/app/llm-player.mjs"],
+    "policy_codename": "b0lverk-h0gg",
+    "policy_engine": "",
+    "parent_equal_files": {
+      "llm-player.mjs": "3ea5970a91e4ea7bd2a1b3e918dd4a5a0061b775d2c178570611d396a97acbef",
+      "intent-controller.mjs": "98c991b05d9b76e5780119a04d8be01a11d5a5a2c602909f5c3a57b2dd51caa6"
+    },
+    "candidate_strategy_engine_sha256": "87e228740d32a694b8ef5f25c7f706c57c8b94cccee6756e8591634415cf62f5"
+  },
+  "exact_image_check": {
+    "target": "Captain Underpants Maximum",
+    "protected": true,
+    "exit_code": 0
+  },
+  "tests": {
+    "files": [
+      "test/mickey-coalition-safety.test.mjs",
+      "test/strategy-engine.test.mjs",
+      "test/llm-player.integration.test.mjs"
+    ],
+    "total": 160,
+    "passed": 160,
+    "failed": 0
+  },
+  "planner_changed": false,
+  "executor_ranking_changed": false,
+  "sidecar_routing_changed": false,
+  "underpants_policy_changed": false,
+  "competitive_lift_claimed": false,
+  "promotion_ready": false
+}
