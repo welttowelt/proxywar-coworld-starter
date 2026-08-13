@@ -105,12 +105,14 @@ const proof = {
   },
   parent: {
     source_commit: parentCommit,
+    selected_action_id: parentSymbolic.id,
     symbolic_only_selected_action_id: parentSymbolic.id,
     material_selected_action_id: parentMaterial.id,
     interpretation: "complete-menu utility permits symbolic filler",
   },
   candidate: {
     source_commit: candidateCommit,
+    selected_action_id: candidateSymbolic.id,
     symbolic_only_selected_action_id: candidateSymbolic.id,
     material_selected_action_id: candidateMaterial.id,
     markers: candidateMaterial.policyMarkers,
