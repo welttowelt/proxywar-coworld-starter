@@ -1,0 +1,190 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T09:25:14Z",
+  "player": "0d1novizzz",
+  "counterfactual_eval_id": "cfeval_5581cc3e-b6af-453c-8150-67dc6a4a5a27",
+  "status": "completed_rejected",
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v38",
+    "policy_version_id": "a4d99911-6027-4862-a080-b3eb9b65b5e2",
+    "source_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
+    "planner_contract": [
+      "grow",
+      "finish"
+    ]
+  },
+  "baseline": {
+    "label": "xX_UwU_Senpai_420_Xx:v17",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  },
+  "matched_design": {
+    "source": "platform tournament counterfactual",
+    "variant": "tournament-16p-blacksea",
+    "pairs": 4,
+    "probe_slots_zero_indexed": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "seeds": [
+      1848936,
+      10975942,
+      6948712,
+      8043697
+    ],
+    "controlled": [
+      "roster",
+      "map",
+      "seat",
+      "seed",
+      "engine field"
+    ]
+  },
+  "outcome": {
+    "verdict": "reject",
+    "candidate_wins": 0,
+    "baseline_wins": 0,
+    "neutrals": 4,
+    "net_score": 0.0,
+    "mean_score_delta": 0.0,
+    "candidate_scores": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "baseline_scores": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "success_bar_passed": false,
+    "failure_triggers": [
+      "candidate won no more matched fields than baseline",
+      "one candidate log recorded two planner parse failures",
+      "one candidate replay contained five unexplained holds"
+    ]
+  },
+  "candidate_runtime": {
+    "final_tiles_by_slot": {
+      "0": 132540,
+      "1": 0,
+      "2": 0,
+      "3": 461
+    },
+    "alive_by_slot": {
+      "0": true,
+      "1": false,
+      "2": false,
+      "3": true
+    },
+    "decisions": 62,
+    "accepted_decisions": 62,
+    "planner_marked_decisions": 58,
+    "intent_counts": {
+      "grow": 58,
+      "finish": 0
+    },
+    "action_counts": {
+      "attack": 16,
+      "boat": 15,
+      "build": 6,
+      "upgrade_structure": 15,
+      "hold": 5,
+      "retreat": 1,
+      "spawn": 4,
+      "nuke": 0
+    },
+    "fallbacks": 0,
+    "rejected_decisions": 0,
+    "planner_degraded_markers": 0,
+    "planner_parse_failures": 2,
+    "planner_parse_failure_slot": 2,
+    "holds": 5,
+    "hold_slot": 3,
+    "interpretation": "The planner surface stayed at two intents, but every successful refresh selected grow. The executor then spent 15 actions on structure upgrades and five on holds while producing no nuke and only six new builds."
+  },
+  "k1z_safety": {
+    "passed": true,
+    "verified_partner_attacks": 0,
+    "verified_partner_targeted_harm": 0,
+    "observed_protected_runtime_names": [
+      "CYAN HELLSTAR",
+      "SIAN VOIDCROWN",
+      "K1Z Mickey Mouse"
+    ],
+    "boundary": "The identity-only v40 delta fixed the twelve attacks found in v39's matched replay cell. This safety result does not override the outcome kill."
+  },
+  "winner_comparison": {
+    "winner_names": [
+      "Jordan",
+      "Andre von Houck",
+      "Calc",
+      "Ari Sklar"
+    ],
+    "winner_final_tiles": [
+      952763,
+      954614,
+      936264,
+      944886
+    ],
+    "aggregate_action_counts": {
+      "attack": 64,
+      "boat": 21,
+      "build": 18,
+      "upgrade_structure": 11,
+      "nuke": 4,
+      "hold": 3,
+      "alliance_request": 2,
+      "spawn": 4
+    },
+    "candidate_vs_winners": "Winners used four times as many attacks, three times as many new builds, and four nukes. Candidate spent more actions upgrading structures than all four winners combined and never created a strike. This is descriptive evidence from four exact fields, not a universal causal claim."
+  },
+  "replays": [
+    {
+      "slot": 0,
+      "episode_request_id": "ereq_d89b7a80-dd31-4ae2-a5d5-1d46a9fb7ac1",
+      "episode_id": "6c4dc6f9-5791-4deb-9017-e6591c44b8dd",
+      "match_id": "PWSEBFCY",
+      "sha256": "41377464fd18d1c860048f051c79e7b8952d3f8948226e2e17d73d226b2499d5"
+    },
+    {
+      "slot": 1,
+      "episode_request_id": "ereq_1428921e-a5d1-4399-9caa-079d8a5442cc",
+      "episode_id": "62a50c85-c979-496a-93e0-0a672d5e7a57",
+      "match_id": "PWSYAMPQ",
+      "sha256": "bd3129c4d2e51447c5f3a0ee2ca95174dbbdd56d37fe02f75e1fe0ada3f15fbe"
+    },
+    {
+      "slot": 2,
+      "episode_request_id": "ereq_4f4c15b0-5c55-443d-b51a-9a481e62457e",
+      "episode_id": "6bb46e84-da78-4977-ab3b-ac961c3861fe",
+      "match_id": "PWSPFJEE",
+      "sha256": "904719de006d2ec34e363b8e53dfe9e8a0298aa9ac0812e44281f8b348a40d93"
+    },
+    {
+      "slot": 3,
+      "episode_request_id": "ereq_c4cff3d2-a26e-46df-94e0-2ab26caf67a1",
+      "episode_id": "ded59561-7628-4a91-9925-722577f8daae",
+      "match_id": "PWSRPQYZ",
+      "sha256": "aab417ae8ea6b6100c4057e252d08849c420995e1e2c5b5b6c00db0b0685c843"
+    }
+  ],
+  "diagnosis": {
+    "planner": "Keep the planner as exactly grow or finish. Do not add actions, targets, tactics, or a third intent.",
+    "safety": "The K1Z identity boundary passed its first hosted matched replay cell.",
+    "outcome": "The broad grow executor does not reliably express growth. It permitted repeated Port upgrades, speculative boats, hostile attacks, and holds under the same grow marker while the four winners concentrated new capacity and territorial strikes.",
+    "next_arm": "Change only the grow executor's outcome ranking so direct territory and productive capacity outrank maintenance. Keep the planner prompt, schema, two intents, finish mapping, K1Z boundary, and all other selector behavior unchanged."
+  },
+  "live_mutations": {
+    "counterfactual_request": true,
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false
+  },
+  "champion_preserved": true,
+  "promotion_ready": false
+}
