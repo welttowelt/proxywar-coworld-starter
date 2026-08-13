@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T03:24:00Z",
+  "lane": "0d1novizzz",
+  "candidate": "v34-intent-steered-baseline",
+  "hypothesis": "A one-field macro intent can improve strategic timing without replacing the mature full-menu selector. The selector keeps ownership of exact actions, safety, diplomacy, retaliation, economy, and weapons; intent only prefers grow, secure, or finish when the corresponding safe option already exists.",
+  "single_change": "Delete the standalone intent action taxonomy and route intent through the mature selector as a soft macro preference. If a preferred action is unavailable or unsafe, execute the unchanged mature baseline; intent may never create a hold.",
+  "planner_contract": {
+    "fields": [
+      "intent"
+    ],
+    "allowed_intents": [
+      "grow",
+      "secure",
+      "finish"
+    ],
+    "forbidden_outputs": [
+      "action",
+      "action_kind",
+      "target",
+      "target_id",
+      "percentage",
+      "horizon"
+    ]
+  },
+  "executor_contract": {
+    "baseline": "chooseCaptainUnderpantsRuntimeAction",
+    "intent_role": "soft preference at an existing safe choice point",
+    "baseline_fallback": "mandatory",
+    "intent_can_create_hold": false,
+    "k1z_no_harm": "unchanged hard invariant"
+  },
+  "local_acceptance": [
+    "planner packet remains exactly one field",
+    "each intent can steer a representative safe choice",
+    "mature priority paths for defense, diplomacy, atom-bomb economy, and anti-collapse remain ahead of intent",
+    "unsupported, unavailable, risky, or protected preference returns the mature baseline",
+    "when any safe productive baseline exists no intent selects hold",
+    "K1Z no-harm passes",
+    "focused tests pass",
+    "full-suite delta is zero outside known historical failures",
+    "exact-image local run has zero fallback, rejection, and planner degradation"
+  ],
+  "hosted_stop_conditions": [
+    "any score of zero",
+    "planner reasons absent from any replay",
+    "any fallback, degradation, rejection, or parse failure",
+    "any intent-caused hold while the mature baseline is productive",
+    "any K1Z harm"
+  ],
+  "promotion_forbidden_until": [
+    "matched hosted 4/4",
+    "separate 20/20 regression",
+    "final promotion RCI"
+  ],
+  "live_policy_remains": {
+    "version": 17,
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  }
+}
