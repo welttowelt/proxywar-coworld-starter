@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T04:08:00Z",
+  "lane": "0d1novizzz",
+  "candidate": "v35-intent-utility-ranker",
+  "parent": "v34-intent-steered-baseline",
+  "hypothesis": "The verified one-field planner contract is sufficient if execution is a compact ranking of every safe legal action by contribution to grow, secure, or finish. Removing the legacy branch cascade should prevent symbolic and transport loops while retaining strategic options that the narrow v33 taxonomy lost.",
+  "single_change": "Replace chooseCaptainUnderpantsRuntimeAction beneath intent-core with one utility ranking. Each legal action receives progress, safety, closure, and friction features; the current intent supplies the weights. Exact actions and targets remain executor-owned.",
+  "planner_contract": {
+    "fields": [
+      "intent"
+    ],
+    "allowed_intents": [
+      "grow",
+      "secure",
+      "finish"
+    ],
+    "forbidden_outputs": [
+      "action",
+      "action_kind",
+      "target",
+      "target_id",
+      "percentage",
+      "horizon"
+    ]
+  },
+  "executor_contract": {
+    "shape": "one utility function plus deterministic tie-break",
+    "features": [
+      "progress",
+      "safety",
+      "closure",
+      "friction"
+    ],
+    "hard_invariants": [
+      "select only an exact server-offered legal action ID",
+      "never harm K1Z Mickey Mouse, including disguised weapon builds",
+      "current incoming attacks raise defensive utility",
+      "hold ranks last whenever a productive safe action exists"
+    ],
+    "anti_loop": "repetition contributes friction independent of intent"
+  },
+  "replay_acceptance": [
+    "first v34 hosted loss no longer spends 15 decisions repeating target_player under grow",
+    "sole v34 hosted win retains a finish-dominant attack path",
+    "all three intents change ranking on representative full menus",
+    "symbolic actions remain available but cannot dominate a productive action through repetition",
+    "K1Z no-harm passes"
+  ],
+  "local_acceptance": [
+    "focused utility-ranker tests pass",
+    "full-suite delta is zero outside known historical failures",
+    "exact-image local 16-player run has planner markers and zero rejection or degradation",
+    "no target_player, alliance, boat, or hold loop exceeds its generic repetition bound"
+  ],
+  "hosted_stop_conditions": [
+    "any score of zero",
+    "planner reasons absent from any replay",
+    "any unexplained fallback, degradation, rejection, or parse failure",
+    "any repeated symbolic-action loop while a productive safe action exists",
+    "any K1Z harm"
+  ],
+  "promotion_forbidden_until": [
+    "matched hosted 4/4",
+    "separate 20/20 regression",
+    "final promotion RCI"
+  ],
+  "live_policy_remains": {
+    "version": 17,
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  }
+}
