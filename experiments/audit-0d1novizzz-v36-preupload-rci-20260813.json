@@ -8,8 +8,8 @@
   "candidate_image_id": "sha256:b89f5fe3f30035c886f33e3939ad06cf0216ac4da6d3bf454527f50ea3174c32",
   "parent_source_commit": "a5e150c326bd28121ab3cf180015e16595411602",
   "preregister_sha256": "175be61f717758c2e8add135afd52a574eacd5fcfd748ef439dcafca4c0ff505",
-  "local_audit_sha256": "99f750d34f527904e99511a1ccb5161b505883c6b0564e26a96d61c9ac83dc3e",
-  "differential_proof_sha256": "4baa9dda8d73ee92b86c1b86901d5ed183557486e9e70f52b841f2094164e143",
+  "local_audit_sha256": "3699e6feb8731000a534024cc23003fd82b1cccd2cf796a35fef467faf6aa1b6",
+  "differential_proof_sha256": "97d2c11de20ff76a94227628389ff1bab6d062c3fe66bcb5d1958de3f0e17b2f",
   "critique": {
     "strongest_evidence": "The hosted v35 replay isolated a symbolic-alliance loop beneath healthy planner transport. The same-fixture differential proves v36 removes that substitution: v35 selects alliance when only symbolic activity and hold remain, while v36 holds; both retain a productive Factory build when available. Focused tests pass 186/186, and the exact-image 16-player trace accepted 13/13 decisions with 12/12 planner reasons and zero symbolic action, hold, fallback, degradation, or rejection.",
     "adverse_evidence": "v35 lost its first three hosted completions, so the parent architecture is weak. The v36 local trace is short, constant-grow, and near-uniform; it proves mechanism reach only and says nothing about live intent quality or competitive lift.",

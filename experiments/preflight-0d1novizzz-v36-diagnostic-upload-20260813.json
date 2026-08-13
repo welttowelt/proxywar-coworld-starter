@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-candidate:v36-intent-material-gate",
+    "parent_ref": "proxywar-agent-candidate:v35-intent-utility-ranker",
+    "exact_deltas": [
+      "Keep the exact one-field grow, secure, or finish planner contract and the v35 utility weights, but restrict normal ranking to material action kinds; when none exists, prefer hold over symbolic activity."
+    ],
+    "source_commit": "1d63cf7f61873071823d63f3e9de0e4a8d1ae86e",
+    "parent_commit": "a5e150c326bd28121ab3cf180015e16595411602",
+    "image_id": "sha256:b89f5fe3f30035c886f33e3939ad06cf0216ac4da6d3bf454527f50ea3174c32"
+  },
+  "hypothesis": "The intent-only architecture fails because symbolic actions can outscore material execution late in a game. A material gate should preserve planner transport while eliminating the hosted alliance loop.",
+  "mechanism": {
+    "marker": "iu1g",
+    "prior_reachable_decisions": 12
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "contract_sha256": "175be61f717758c2e8add135afd52a574eacd5fcfd748ef439dcafca4c0ff505",
+    "audit_receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v36-intent-material-gate-local-20260813.json",
+      "sha256": "3699e6feb8731000a534024cc23003fd82b1cccd2cf796a35fef467faf6aa1b6"
+    },
+    "differential_binding": {
+      "verifier_path": "experiments/v36/verify-differential.mjs",
+      "fixture_path": "experiments/v36/differential-fixture.json"
+    }
+  },
+  "preupload_rci": {
+    "receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v36-preupload-rci-20260813.json",
+      "sha256": "132951710fa15348d7242e391c191084284d81752dd18ce4f7b395fc43fd95e8"
+    }
+  },
+  "matched_baseline": {
+    "request_id": "xreq_274bc0c8-3349-4ebd-a098-9813e375cba7",
+    "policy_ref": "xX_UwU_Senpai_420_Xx:v32",
+    "policy_version_id": "c01de697-9208-44b1-9fed-5951f1ffbb90",
+    "same_roster": false,
+    "same_variant": false,
+    "episodes": 10,
+    "wins": 0
+  },
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_fallbacks": 0,
+      "max_degradations": 0,
+      "max_rejections": 0,
+      "max_k1z_harm": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  }
+}
