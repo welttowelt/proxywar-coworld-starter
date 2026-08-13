@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "preregistered_at": "2026-08-13T15:09:04Z",
+  "experiment": "v48-v43-stage1-matched-counterfactual",
+  "player": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz"
+  },
+  "candidate": {
+    "expected_label": "xX_UwU_Senpai_420_Xx:v48",
+    "policy_version_id": null,
+    "source_commit": "160453cc34b252b5c3b97b01579b5f3587281e61",
+    "local_image_id": "sha256:f7513f29ef2fab43bf471f7dc6745afd99c279c6666b1684ccc6561950fa6c7e"
+  },
+  "baseline": {
+    "label": "xX_UwU_Senpai_420_Xx:v43",
+    "policy_version_id": "b9e5ccdc-8dc4-4017-90ad-8f7908413109",
+    "membership_id": "lpm_fe4dde2e-4a20-4bd0-a865-9d0493f7f1b6"
+  },
+  "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "hypothesis": "A bare grow outcome that generically prefers safe direct territory conversion will exercise ig1 and win more matched fields than v43 without planner complexity, fallback, rejection, or K1Z harm.",
+  "stage_1": {
+    "matched_fields": 4,
+    "idempotency_key_after_upload": "0d1-v48-v43-stage1-4f-20260813",
+    "candidate_wins_required": "strictly greater than baseline wins",
+    "fallbacks_allowed": 0,
+    "rejections_allowed": 0,
+    "verified_k1z_harm_allowed": 0,
+    "mechanism_requirement": "at least one ig1 decision",
+    "planner_requirement": "at least one accepted post-spawn pln decision",
+    "tie_policy": "reject",
+    "loss_policy": "reject"
+  },
+  "stage_2_if_passed": {
+    "matched_fields": 20,
+    "baseline": "v43 live champion",
+    "requires_separate_preregistration": true,
+    "submission_before_pass": false
+  },
+  "league_mutation_authorized": false,
+  "authorized_next_action": "Upload the exact local image as an unseated diagnostic after same-shell binding checks, fill in the hosted IDs in a receipt, then create exactly one four-field stage-1 counterfactual."
+}
