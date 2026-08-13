@@ -1,0 +1,70 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T13:14:00Z",
+  "player": "0d1novizzz",
+  "candidate": "bare-two-intents",
+  "status": "passed_local_screen_not_uploaded",
+  "source_commit": "d98391da45267900ad84d0da48a1c33f8d7a7bb3",
+  "evidence_commit_parent": "7fc093d8",
+  "image": {
+    "tag": "proxywar-agent-candidate:bare-two-intents",
+    "id": "sha256:209c11b82f48829e2940260c4dcda9585cbf4f716aa02c2e7ff2b5f34a024c50",
+    "architecture": "linux/amd64",
+    "user": "node",
+    "cmd": ["node", "/app/llm-player.mjs"],
+    "source_label": "d98391da45267900ad84d0da48a1c33f8d7a7bb3",
+    "policy_engine_env": "",
+    "empty_policy_engine_resolves_to": "intent-core"
+  },
+  "planner_interface": {
+    "values": ["grow", "finish"],
+    "wire_format": "bare word",
+    "bare_grow_accepted": true,
+    "json_wrapped_grow_rejected": true,
+    "caller_injected_third_intent_rejected": true,
+    "target_fields_rejected": true,
+    "timing_fields_rejected": true
+  },
+  "executor_seam": {
+    "planner_owns": ["intent"],
+    "executor_owns": ["action", "target", "tactic", "timing"]
+  },
+  "safety": {
+    "k1z_absolute_no_harm_tests_passed": true,
+    "hosted_underpants_alias_present_in_image": true,
+    "underpants_policy_changed": false
+  },
+  "verification": {
+    "focused_tests": {
+      "total": 46,
+      "passed": 46,
+      "failed": 0,
+      "files": [
+        "test/intent-controller.test.mjs",
+        "test/intent-core.test.mjs",
+        "test/llm-player.integration.test.mjs",
+        "test/mickey-coalition-safety.test.mjs"
+      ]
+    },
+    "full_suite_observation": {
+      "total": 479,
+      "passed": 469,
+      "failed": 10,
+      "candidate_touched_test_failures": 0,
+      "note": "The failures are in unrelated live-state and pre-existing fanout, mutation-wrapper, and cached RCI fixtures; they are not counted as a clean full-suite pass."
+    },
+    "review": {
+      "standards_violations_after_fix": 0,
+      "spec_leaks_found": 2,
+      "spec_leaks_fixed": 2,
+      "fixed": [
+        "intent-core is the default rather than opt-in",
+        "the outcome contract cannot be widened beyond grow and finish"
+      ]
+    }
+  },
+  "hosted_policy_version_id": null,
+  "submission_id": null,
+  "league_membership_id": null,
+  "promotion_ready": false
+}
