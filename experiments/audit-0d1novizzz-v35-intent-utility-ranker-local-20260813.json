@@ -1,0 +1,151 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T04:39:00Z",
+  "lane": "0d1novizzz",
+  "arm": "v35-intent-utility-ranker",
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "candidate_source_commit": "a5e150c3",
+  "preregister_commit": "e34fc24b",
+  "candidate_image": {
+    "tag": "proxywar-agent-candidate:v35-intent-utility-ranker",
+    "image_id": "sha256:c1a07ac20773cf9344f5cbfc985901fa561352c0d2a0aee81e2af073bcd8eecc",
+    "architecture": "amd64",
+    "os": "linux",
+    "user": "node",
+    "cmd": [
+      "node",
+      "/app/llm-player.mjs"
+    ],
+    "policy_engine": "intent-core",
+    "policy_codename": "iu1",
+    "file_sha256": {
+      "/app/llm-player.mjs": "53689aac90e702828a4ee60ff46ec9fcabbbc9b8d981b683bd729f8338a37838",
+      "/app/intent-controller.mjs": "e4928597d7bb6b478174e67e412f03bdf75151f2df73d4cd553cd3324c2dea9d",
+      "/app/intent-core.mjs": "d5f84fef59e5f4492be2644e71c6883ec633c87c4af3483573f5ee9b33bf453e",
+      "/app/strategy-engine.mjs": "b1d519fe675a4a98d1537e5bb1e5946ab67a784e9280d835e4c02e3f3d8acd97"
+    }
+  },
+  "planner_contract": {
+    "fields": [
+      "intent"
+    ],
+    "allowed_intents": [
+      "grow",
+      "secure",
+      "finish"
+    ],
+    "exact_actions_and_targets_owned_by": "executor"
+  },
+  "focused_suite": {
+    "tests": 184,
+    "passed": 184,
+    "failed": 0,
+    "command": "node --test test/intent-core.test.mjs test/intent-delegation.test.mjs test/llm-player.integration.test.mjs test/strategy-engine.test.mjs"
+  },
+  "full_suite": {
+    "tests": 470,
+    "passed": 464,
+    "failed": 6,
+    "candidate_related_failures": 0,
+    "persistent_unrelated_failures": 6,
+    "note": "The same four historical Mickey R8-R9 activation failures and two inactive RCI fixture failures remained. v35 added one test and introduced no new failure."
+  },
+  "runs": [
+    {
+      "run_id": "v35-intent-utility-ranker-12-20260813T0424Z",
+      "mode": "16-player opening mechanism",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "decision_cap_per_agent": 12,
+      "directory": "/private/tmp/proxywar-v35-intent-utility-ranker-12-20260813T0424Z",
+      "job_sha256": "ca1979422e1ce6b03eb69eb23556e3948a8cb581ff76cacbb674cdf549d41f19",
+      "config_sha256": "b00b0f653383e6d1f57873eb1d335684109bc6e040d7f64998a917da8c0837e9",
+      "results_sha256": "6bcd9935bd69343894508a7f2a9d7869c03fb4227886ea2ee1d143625581309c",
+      "replay_sha256": "99506d7cde9f1e661cc02976fcbffb374057c0598f56bda412c49c63c4b56f2d",
+      "candidate": {
+        "slot": 0,
+        "score": 0.060187352128389424,
+        "final_tiles": 18774,
+        "alive": true,
+        "decisions": 13,
+        "accepted": 13,
+        "rejected": 0,
+        "fallbacks": 0,
+        "planner_degradations": 0,
+        "holds": 0,
+        "planner_reason_count": 12,
+        "action_counts": {
+          "spawn": 1,
+          "attack": 12
+        }
+      },
+      "scope_boundary": "The early-stop score is near-uniform and carries no competitive interpretation."
+    },
+    {
+      "run_id": "v35-intent-utility-ranker-4p40-20260813T0430Z",
+      "mode": "four-player extended mechanism",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "decision_cap_per_agent": 40,
+      "directory": "/private/tmp/proxywar-v35-intent-utility-ranker-4p40-20260813T0430Z",
+      "job_sha256": "fc170ccab18c96715bcdb70ef80ba1c5cc3ae274a63d7998e3357cc03e0baa00",
+      "config_sha256": "33a4158478779693b1ec5b9df8cf9c0469fa52c5b1b3c03544639dbb68a71281",
+      "results_sha256": "fa87333d1a769a8e86b6945c0c7563e2ccc0c0abbcc57c2fc6d9b0b8c26e3099",
+      "replay_sha256": "00341d664318cf0cef7151053e4cbcdc274df86065bdf5a82fc12e0aa61c85ec",
+      "candidate": {
+        "slot": 0,
+        "score": 0.2896684023020005,
+        "decisions": 41,
+        "accepted": 41,
+        "rejected": 0,
+        "fallbacks": 0,
+        "planner_degradations": 0,
+        "holds": 0,
+        "planner_reason_count": 40,
+        "action_counts": {
+          "spawn": 1,
+          "attack": 29,
+          "boat": 7,
+          "build": 4
+        },
+        "symbolic_action_count": 0
+      },
+      "scope_boundary": "The constant-grow fixture proves ranker reach and absence of the v34 target-player loop; it is not a planner-quality or competitive comparison."
+    }
+  ],
+  "failed_launch_disclosure": {
+    "run_id": "v35-intent-utility-ranker-20260813T0415Z",
+    "cause": "The initial 16-player 40-decision run reached Coworld's 540-second local emulation timeout near turn 1050.",
+    "evidence_status": "incomplete and excluded from passing evidence",
+    "supervisor_result": "The exact output was quarantined, containers were verified absent, and the lease released before the bounded 12-decision rerun."
+  },
+  "checks": {
+    "one_field_contract": true,
+    "planner_actions_forbidden": true,
+    "planner_targets_forbidden": true,
+    "compact_utility_ranker_reached": true,
+    "pressure_defense_tested": true,
+    "atom_bomb_economy_tested": true,
+    "symbolic_loop_tested": true,
+    "k1z_safety": true,
+    "exact_image_zero_rejection": true,
+    "exact_image_zero_fallback": true,
+    "exact_image_zero_degradation": true,
+    "exact_image_zero_hold": true,
+    "competitive_lift_not_claimed": true,
+    "league_mutation_forbidden": true
+  },
+  "runner_lease_after": {
+    "state": "free",
+    "schema_version": 2
+  },
+  "league_state": {
+    "candidate_uploaded": false,
+    "candidate_submitted": false,
+    "candidate_membership_created": false,
+    "candidate_promoted": false,
+    "v17_champion_preserved": true
+  }
+}
