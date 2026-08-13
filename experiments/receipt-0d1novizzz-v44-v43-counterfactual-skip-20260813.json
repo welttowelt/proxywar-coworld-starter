@@ -1,0 +1,31 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T13:31:00Z",
+  "player": "0d1novizzz",
+  "candidate": {
+    "policy_version_id": "36954141-a621-4d4e-8e61-5e406989012f",
+    "label": "xX_UwU_Senpai_420_Xx:v44"
+  },
+  "baseline": {
+    "policy_version_id": "b9e5ccdc-8dc4-4017-90ad-8f7908413109",
+    "label": "xX_UwU_Senpai_420_Xx:v43"
+  },
+  "counterfactual_eval": {
+    "id": "cfeval_8bf63cc9-69ff-47ed-b604-8eff2c9f356b",
+    "candidate_player_name": "0d1novizzz",
+    "baseline_player_name": "0d1novizzz",
+    "requested_pairs": 4,
+    "completed_pairs": 0,
+    "status": "skipped",
+    "skip_reason": "insufficient_history",
+    "experience_request_id": null
+  },
+  "interpretation": {
+    "outcome_evidence": false,
+    "promotion_evidence": false,
+    "candidate_wins": null,
+    "baseline_wins": null,
+    "cause": "The newly promoted v43 safety champion has not completed an official round and therefore lacks the tournament history required to seed the matched evaluation."
+  },
+  "next_action": "Run one diagnostic-only four-field comparison against history-rich v17 to test v44 health and planner reach. Re-run the preregistered v44-v43 live-parent gate only after v43 completes an official round."
+}
