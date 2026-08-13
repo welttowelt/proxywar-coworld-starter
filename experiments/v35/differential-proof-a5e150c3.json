@@ -1,0 +1,47 @@
+{
+  "schema_version": 2,
+  "arm": "intent-utility-ranker-v35",
+  "same_fixture": true,
+  "equivalent_goal": "let one macro intent rank the complete safe legal menu",
+  "verifier": {
+    "evaluator_commit": "0d0545c8babc01f622234f5d67f1c24de1230402",
+    "path": "experiments/v35/verify-differential.mjs",
+    "sha256": "588b5a55069306d6c92dd43ce7a56d596dd156a5da2579f22f4942d038a34be0"
+  },
+  "fixture": {
+    "id": "v35-intent-utility-ranking",
+    "path": "experiments/v35/differential-fixture.json",
+    "sha256": "7d806a59cdb3557c226f790e849b91189bb8070e5a043c2046b28088202294ef"
+  },
+  "parent": {
+    "source_commit": "b71b0d4c857240b56f1aa47df1c76b3a05c28079",
+    "selected_action_id": "alliance:mickey",
+    "repeated_symbolic_selected_action_id": "build:Factory:1",
+    "interpretation": "branch-heavy mature selector beneath soft intent"
+  },
+  "candidate": {
+    "source_commit": "a5e150c326bd28121ab3cf180015e16595411602",
+    "selected_action_id": "expand:terra-nullius:20",
+    "repeated_symbolic_selected_action_id": "build:Factory:1",
+    "markers": [
+      "iu1g",
+      "ixgrw"
+    ],
+    "interpretation": "one weighted utility ranking over the complete safe menu"
+  },
+  "safety": {
+    "offered_k1z_harmful_action": "build:Atom Bomb:mickey",
+    "candidate_selected_action_id": "hold",
+    "candidate_selected_k1z_harm": false
+  },
+  "test_command": [
+    "node",
+    "experiments/v35/verify-differential.mjs",
+    ".",
+    "b71b0d4c857240b56f1aa47df1c76b3a05c28079",
+    "a5e150c326bd28121ab3cf180015e16595411602",
+    "experiments/v35/differential-fixture.json",
+    "experiments/v35/differential-proof-a5e150c3.json"
+  ],
+  "test_exit_code": 0
+}
