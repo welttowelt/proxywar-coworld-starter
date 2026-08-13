@@ -1,0 +1,79 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T14:02:02Z",
+  "player": "0d1novizzz",
+  "status": "completed_rejected",
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v45",
+    "policy_version_id": "07561c99-bd3b-4223-abab-8f6e0493d11b",
+    "source_commit": "d98391da45267900ad84d0da48a1c33f8d7a7bb3",
+    "local_image_id": "sha256:209c11b82f48829e2940260c4dcda9585cbf4f716aa02c2e7ff2b5f34a024c50",
+    "hosted_image_id": "img_83eaf298-b909-4c2b-8c27-e75f64a302f9",
+    "hosted_image_digest": "sha256:e6d785f2023e18c62cb9c323b9a1b25c7af64fe1d31909b134dbeb3d74224edb",
+    "secret_env_keys": ["PLAN_MODE"]
+  },
+  "baseline": {
+    "label": "xX_UwU_Senpai_420_Xx:v17",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461"
+  },
+  "counterfactual": {
+    "id": "cfeval_fefa41c2-cfa6-4dd3-af25-fbac469d7ebc",
+    "experience_request_id": "8ef44e27-34c6-433b-9f61-a36c919cee53",
+    "idempotency_key": "odin-v45-v17-bare-intents-config-corrected-20260813-r1",
+    "requested_fields": 4,
+    "completed_fields": 4,
+    "candidate_wins": 0,
+    "baseline_wins": 0,
+    "neutral_fields": 4,
+    "net_score": 0,
+    "mean_score_delta": 0,
+    "completed_at": "2026-08-13T13:54:28.035515Z"
+  },
+  "replay_audit": {
+    "episode_request_ids": [
+      "ereq_60a6aedc-da3d-4524-ad2d-9a141c875977",
+      "ereq_d5736b48-72c8-42af-8608-cf24f873fd53",
+      "ereq_957b2443-0172-412c-a2f2-a7a9be9ab594",
+      "ereq_6d12f35d-e6e4-4c6e-9d44-ceb04a3be3f0"
+    ],
+    "episode_ids": [
+      "f1f66da7-9b39-4193-ac4b-fccb690ea47d",
+      "c34055dd-4d50-4e5f-9430-1a309665ff83",
+      "eb2d2a5d-7aa7-493e-a739-35068146e20e",
+      "42b01d91-3bf8-41ab-9816-1d83aa76ffef"
+    ],
+    "replay_sha256": [
+      "3d601e82ac8a7d76cf745b0f78f00cb2de610c30c3ada6fd89594f551f2baf4f",
+      "34d2d8c58365e8dd90bf476e4fb41956beba18c3cd78b43e362b05667c3c6d66",
+      "9361b311e5bf21479244abaad0cd5a4f894a0b6b3cdd13a967584ce08eeabc0c",
+      "c9ca9c214827318eb040549982d5989eb11a50caa889544eddb116bea86c896a"
+    ],
+    "post_spawn_decisions": 48,
+    "planner_marked_decisions": 48,
+    "grow_markers": 48,
+    "finish_markers": 0,
+    "planner_degraded_decisions": 0,
+    "rejected_decisions": 0,
+    "fallback_holds": 3,
+    "fallback_hold_reason": "A proactive alliance request became an unknown action ID before application.",
+    "verified_harmful_k1z_actions": 0,
+    "verified_hostile_targets": ["Larslllllll", "Ron SWGY", "Sefirot"]
+  },
+  "gate": {
+    "planner_mechanism_reached": true,
+    "planner_transport_clean": true,
+    "candidate_field_advantage": false,
+    "zero_holds": false,
+    "zero_rejections": true,
+    "zero_verified_k1z_harm": true,
+    "passed": false
+  },
+  "verdict": "REJECT_NO_ADVANTAGE_AND_HOLDS",
+  "league_mutation": {
+    "candidate_submissions": 0,
+    "candidate_memberships": 0,
+    "champion_changed": false,
+    "preserved_champion_policy_version_id": "b9e5ccdc-8dc4-4017-90ad-8f7908413109"
+  },
+  "next_arm": "Keep the exact grow-or-finish planner boundary and remove proactive alliance requests when a material action is legal, preserving reverse handshakes and K1Z protection."
+}

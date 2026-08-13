@@ -1,0 +1,43 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T14:02:02Z",
+  "player": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz"
+  },
+  "policy": {
+    "label": "xX_UwU_Senpai_420_Xx:v43",
+    "policy_version_id": "b9e5ccdc-8dc4-4017-90ad-8f7908413109",
+    "source_commit": "435ecdcdc588d26f3f0329d69814c205461a6922",
+    "image_id": "sha256:667a861e7424d1d712b86c8f20435a2c3abdecbbb82115c2423390d42e5dd99b",
+    "hosted_image_id": "img_8a03b5c3-7c8f-47f7-8f35-a358c14d6cf9",
+    "run": ["node", "/app/llm-player.mjs"]
+  },
+  "safety_gate": {
+    "counterfactual_eval_id": "cfeval_ecaff642-2613-4eb1-ac2c-37a22c2dc663",
+    "paired_fields": 4,
+    "candidate_wins": 0,
+    "baseline_wins": 0,
+    "candidate_k1z_harmful_actions": 0,
+    "baseline_k1z_harmful_actions": 2,
+    "tie_promotion_rule": "Allowed only because source is otherwise v17-equivalent and fixes replay-confirmed K1Z harm."
+  },
+  "submission": {
+    "id": "sub_aeadce5c-11ae-48fc-be7c-77188c24c9c4",
+    "status": "placed"
+  },
+  "membership": {
+    "id": "lpm_fe4dde2e-4a20-4bd0-a865-9d0493f7f1b6",
+    "status": "competing",
+    "substatus": "champion",
+    "is_champion": true
+  },
+  "binding_checks": {
+    "player_exact": true,
+    "policy_version_exact": true,
+    "image_exact": true,
+    "submission_exact": true,
+    "membership_exact": true
+  },
+  "competitive_lift_claimed": false
+}
