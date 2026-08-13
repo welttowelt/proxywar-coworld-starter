@@ -1,0 +1,90 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T03:40:00Z",
+  "lane": "0d1novizzz",
+  "arm": "v33-intent-preferences",
+  "verdict": "KILL",
+  "request": {
+    "id": "xreq_351c9109-55af-4dd0-9b91-0ab2d7a15a04",
+    "provenance": "Platform-side request appeared after the diagnostic upload; requested was null and no repository request artifact dispatched it.",
+    "status": "completed",
+    "coworld_version": "0.1.41",
+    "episodes": 10,
+    "maps": {
+      "Pangaea": 2,
+      "Oceania": 8
+    },
+    "failed_episodes": 0,
+    "policy_version_id": "b1ea4648-1b1f-429b-a2b4-5ced6b0be541"
+  },
+  "outcomes": {
+    "wins": 0,
+    "win_rate_pct": 0,
+    "scores": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "final_tiles": [
+      9435,
+      3297,
+      0,
+      0,
+      9593,
+      24949,
+      0,
+      0,
+      0,
+      0
+    ],
+    "dead_episodes": 6,
+    "holds": 15,
+    "rejected_decisions": 0,
+    "fallbacks": 1,
+    "planner_degraded_decisions": 1
+  },
+  "gate": {
+    "passed": false,
+    "failed_checks": [
+      "perfect episode wins",
+      "zero holds"
+    ],
+    "stop_condition_triggered": "any hosted score of zero",
+    "trigger_episode": 1
+  },
+  "diagnosis": {
+    "proved": [
+      "the one-field planner transport produced observable pln intent reasons",
+      "preference fallback eliminated holds in some episodes",
+      "K1Z no-harm remained intact"
+    ],
+    "falsified": [
+      "eliminating the hard allowlist would be sufficient for competitive wins",
+      "zero holds alone predicts positive outcome",
+      "the standalone physical-action taxonomy preserves enough of the mature strategy"
+    ],
+    "observed_failure_mode": "The planner strongly favored grow while the standalone executor overused boats and excluded diplomacy and other symbolic strategy. One zero-score episode had zero holds and 24949 final tiles, proving the loss was broader than hold behavior.",
+    "successor": "v34 removes the standalone taxonomy and uses intent only as a soft preference inside the mature full-menu selector."
+  },
+  "audit_source": {
+    "generated_path": "/private/tmp/v33-auto-final-audit.json",
+    "command": "node scripts/audit-xp-gate.mjs xreq_351c9109-55af-4dd0-9b91-0ab2d7a15a04 --player 0d1novizzz --min-episodes 10 --mechanism opening-alliance --output /private/tmp/v33-auto-final-audit.json",
+    "replay_count": 10
+  },
+  "league_state": {
+    "candidate_uploaded": true,
+    "candidate_submitted": false,
+    "candidate_membership_created": false,
+    "candidate_promoted": false,
+    "v17_champion_preserved": true,
+    "v17_policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "v17_membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  }
+}
