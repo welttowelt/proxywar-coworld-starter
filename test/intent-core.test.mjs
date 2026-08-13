@@ -126,6 +126,16 @@ test("ambiguous boat force cannot masquerade as grow through expansion metadata"
   assert.equal(decide([ambiguous, factory, hold()], { intent: "finish" }).id, ambiguous.id);
 });
 
+test("grow and secure hold instead of falling back to ambiguous force", () => {
+  const ambiguous = action("boat:485204:16", "boat", "Boat 16%", {
+    expansion: true,
+    troopPercent: 16,
+  });
+  assert.equal(decide([ambiguous, hold()], { intent: "grow" }).id, "hold");
+  assert.equal(decide([ambiguous, hold()], { intent: "secure" }).id, "hold");
+  assert.equal(decide([ambiguous, hold()], { intent: "finish" }).id, ambiguous.id);
+});
+
 test("secure chooses infrastructure and never grows or attacks", () => {
   const factory = build();
   const selected = decide([land(), attack("rival"), factory, hold()], {

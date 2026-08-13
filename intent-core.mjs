@@ -102,12 +102,18 @@ function offeredMenu(actions, state, history, requested) {
     !protectedHarm(action, state, history)
   );
   const actionable = legal.filter((action) => actionIntent(action, state) !== null);
+  const allowedOutcomes = requested.intent === "finish"
+    ? new Set(["finish", "grow", "secure"])
+    : new Set(["grow", "secure"]);
+  const aligned = actionable.filter((action) =>
+    allowedOutcomes.has(actionIntent(action, state))
+  );
   if (requested.intent === "finish") {
     const previousTarget = [...history].reverse().find((entry) =>
       entry?.policyMarker === MARKERS.finish && typeof entry?.targetID === "string"
     )?.targetID;
     if (previousTarget) {
-      const continued = actionable.filter((action) =>
+      const continued = aligned.filter((action) =>
         actionIntent(action, state) === "finish" && sameTarget(action, previousTarget, state)
       );
       if (continued.length > 0) {
@@ -115,13 +121,13 @@ function offeredMenu(actions, state, history, requested) {
           directive: requested,
           actions: [
             ...continued,
-            ...actionable.filter((action) => actionIntent(action, state) !== "finish"),
+            ...aligned.filter((action) => actionIntent(action, state) !== "finish"),
           ],
         };
       }
     }
   }
-  if (actionable.length > 0) return { directive: requested, actions: actionable };
+  if (aligned.length > 0) return { directive: requested, actions: aligned };
   const hold = legal.find((action) => action.kind === "hold");
   return { directive: requested, actions: hold ? [hold] : [] };
 }
