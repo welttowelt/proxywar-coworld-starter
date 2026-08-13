@@ -1,0 +1,149 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T12:24:00Z",
+  "player": "0d1novizzz",
+  "status": "completed_rejected",
+  "counterfactual_eval_id": "cfeval_b8cf9e06-3bab-4528-9600-9a8158ff78e0",
+  "matched_design": {
+    "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+    "variant": "tournament-16p-blacksea",
+    "fields": 4,
+    "same_roster": true,
+    "same_seed": true,
+    "same_probe_slot": true,
+    "idempotency_key": "odin-v43-v17-matched-20260813-r1"
+  },
+  "candidate": {
+    "arm": "v43-unforced-grow",
+    "hosted_label": "xX_UwU_Senpai_420_Xx:v41",
+    "policy_version_id": "82dbaecc-8ea6-4918-86c1-dcdc3c5b634a",
+    "source_commit": "e308b71a6083f1000a28946738ab5850269407ec"
+  },
+  "baseline": {
+    "label": "xX_UwU_Senpai_420_Xx:v17",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  },
+  "outcome": {
+    "verdict": "reject",
+    "candidate_wins": 0,
+    "baseline_wins": 0,
+    "neutrals": 4,
+    "net_score": 0.0,
+    "mean_score_delta": 0.0,
+    "candidate_scores": [0.0, 0.0, 0.0, 0.0],
+    "baseline_scores": [0.0, 0.0, 0.0, 0.0],
+    "success_bar_passed": false,
+    "failure_triggers": [
+      "candidate won no more matched fields than v17",
+      "candidate attacked a protected K1Z partner once"
+    ]
+  },
+  "candidate_runtime": {
+    "decisions": 24,
+    "planner_marked_decisions": 20,
+    "intent_counts": {"grow": 20, "finish": 0},
+    "action_counts": {
+      "spawn": 4,
+      "attack": 12,
+      "alliance_request": 3,
+      "boat": 2,
+      "build": 1,
+      "retreat": 1,
+      "upgrade_structure": 1,
+      "hold": 0
+    },
+    "target_mix": {
+      "neutral_attacks": 5,
+      "rival_attacks": 7
+    },
+    "fallbacks": 0,
+    "planner_parse_failures": 0,
+    "planner_degraded_markers": 0,
+    "rejected_decisions": 0,
+    "holds": 0,
+    "k1z_harm": [
+      {
+        "episode_request_id": "ereq_5762a2cb-e0dd-4963-8511-5ebee470f5cf",
+        "match_id": "PWSYNKFD",
+        "turn": 6700,
+        "action_id": "attack:j2wxj0cp:10",
+        "target_episode_player_id": "j2wxj0cp",
+        "target_replay_name": "Captain Underpants Maximum",
+        "target_public_player": "Captain Underpants Maximum Aura",
+        "reason": "pln:atk:ib2:ixgrw",
+        "accepted": true
+      }
+    ]
+  },
+  "candidate_replays": [
+    {
+      "episode_request_id": "ereq_cadd5da6-44fc-44a0-86f1-41ced520ee28",
+      "episode_id": "abde35b2-ebda-4f04-bd3e-5ef55a5a1de3",
+      "match_id": "PWSLEHKB",
+      "seed": 5102033,
+      "probe_slot": 1,
+      "decisions": 5,
+      "last_observed_tiles": 4960,
+      "winner": "Calc",
+      "replay_sha256": "cafc3cb55846dbf7f4ac8b63f38f1b477b54bddaae4029821953128fcd2abcb9"
+    },
+    {
+      "episode_request_id": "ereq_92a9df2f-09b3-40cc-a3f2-0dfe19796a9b",
+      "episode_id": "16e11763-38c4-45c0-8853-84a9e44f0106",
+      "match_id": "PWSCSXQY",
+      "seed": 1246308,
+      "probe_slot": 2,
+      "decisions": 6,
+      "last_observed_tiles": 314,
+      "winner": "docxology",
+      "replay_sha256": "834758128954ff32e9b4f90d821108684f495fb82a62280213bace2edc1f5468"
+    },
+    {
+      "episode_request_id": "ereq_5762a2cb-e0dd-4963-8511-5ebee470f5cf",
+      "episode_id": "098b1082-d541-4237-8bbc-a334a1650be8",
+      "match_id": "PWSYNKFD",
+      "seed": 11202805,
+      "probe_slot": 3,
+      "decisions": 11,
+      "last_observed_tiles": 202,
+      "winner": "Captain Underpants Maximum Aura",
+      "replay_sha256": "39462b6c47be62e74b6969cf1376e9a808b3c732bd9a4ae0f5389a829ce69aa1"
+    },
+    {
+      "episode_request_id": "ereq_d59e59f3-d830-4f20-a152-886706e8cc43",
+      "episode_id": "568e73a7-6495-46ca-a1b5-4061fcfa8f78",
+      "match_id": "PWSVURTA",
+      "seed": 9960002,
+      "probe_slot": 4,
+      "decisions": 2,
+      "last_observed_tiles": 83538,
+      "winner": "Captain Underpants Maximum Aura",
+      "replay_sha256": "2edcb9bfc8544b81a18068471306ecd427e210e3647dc3f10fb522fbf7c059b8"
+    }
+  ],
+  "mechanism_read": {
+    "planner": "The simplified two-intent planner path worked: all twenty post-spawn decisions were grow, with zero parse, fallback, degradation, rejection, or hold.",
+    "executor": "Removing grow's neutral preference increased rival-directed attacks in reached decisions, but all four fields still scored zero.",
+    "safety_root_cause": "The hosted engine truncates the public name to Captain Underpants Maximum. That canonical alias is absent from ABSOLUTE_NO_HARM_RIVALS, so the episode-scoped target ID was not recognized as protected.",
+    "competitive_result": "Architecture cleanliness did not produce a matched outcome advantage."
+  },
+  "promotion_decision": {
+    "decision": "kill",
+    "reason": "The candidate tied v17 at zero and violated the K1Z no-harm boundary.",
+    "regression_run": false,
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false,
+    "preserved_champion": "xX_UwU_Senpai_420_Xx:v17"
+  },
+  "live_scoreboard_postcheck": {
+    "through_round": 1418,
+    "round_1419_status": "running",
+    "rank": 15,
+    "score": 5.11039063582641,
+    "last_round_score": 0.0,
+    "leader": "daveey",
+    "leader_score": 18.74938822646511
+  }
+}
