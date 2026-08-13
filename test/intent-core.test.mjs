@@ -97,11 +97,11 @@ test("expand can use a neutral boat", () => {
   }).id, neutralBoat.id);
 });
 
-test("expand waits when neutral territory is unavailable", () => {
+test("expand strengthens infrastructure when neutral territory is unavailable", () => {
   const selected = decide([attack("rival"), build(), hold()], {
     intent: "expand",
   });
-  assert.equal(selected.id, "hold");
+  assert.equal(selected.id, "build:Factory");
   assert.equal(selected.policyMarker, "ixexp");
 });
 
@@ -114,12 +114,20 @@ test("consolidate chooses infrastructure and never expands or attacks", () => {
   assert.equal(selected.policyMarker, "ixcon");
 });
 
-test("consolidate waits when infrastructure is unavailable", () => {
+test("consolidate continues safe territorial growth when infrastructure is unavailable", () => {
   const selected = decide([land(), attack("rival"), hold()], {
     intent: "consolidate",
   });
-  assert.equal(selected.id, "hold");
+  assert.equal(selected.id, "expand:terra-nullius:35");
   assert.equal(selected.policyMarker, "ixcon");
+});
+
+test("convert continues safe territorial growth when physical force is unavailable", () => {
+  const selected = decide([land(), build(), hold()], {
+    intent: "convert",
+  });
+  assert.equal(selected.id, "expand:terra-nullius:35");
+  assert.equal(selected.policyMarker, "ixprs");
 });
 
 test("convert continues the executor-owned physical target", () => {

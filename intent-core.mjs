@@ -91,19 +91,27 @@ function offeredMenu(actions, state, history, requested) {
     action && typeof action.id === "string" && action.id.length > 0 &&
     !protectedHarm(action, state, history)
   );
-  const aligned = legal.filter((action) => actionIntent(action) === requested.intent);
-  if (aligned.length > 0) {
-    if (requested.intent === "convert") {
-      const previousTarget = [...history].reverse().find((entry) =>
-        entry?.policyMarker === MARKERS.convert && typeof entry?.targetID === "string"
-      )?.targetID;
-      if (previousTarget) {
-        const continued = aligned.filter((action) => sameTarget(action, previousTarget, state));
-        if (continued.length > 0) return { directive: requested, actions: continued };
+  const actionable = legal.filter((action) => actionIntent(action) !== null);
+  if (requested.intent === "convert") {
+    const previousTarget = [...history].reverse().find((entry) =>
+      entry?.policyMarker === MARKERS.convert && typeof entry?.targetID === "string"
+    )?.targetID;
+    if (previousTarget) {
+      const continued = actionable.filter((action) =>
+        actionIntent(action) === "convert" && sameTarget(action, previousTarget, state)
+      );
+      if (continued.length > 0) {
+        return {
+          directive: requested,
+          actions: [
+            ...continued,
+            ...actionable.filter((action) => actionIntent(action) !== "convert"),
+          ],
+        };
       }
     }
-    return { directive: requested, actions: aligned };
   }
+  if (actionable.length > 0) return { directive: requested, actions: actionable };
   const hold = legal.find((action) => action.kind === "hold");
   return { directive: requested, actions: hold ? [hold] : [] };
 }
@@ -113,23 +121,14 @@ function sameTarget(action, targetID, state) {
 }
 
 function missionScore(action, directive, state) {
-  const neutralLand = isNeutralExpansion(action);
-  const neutralBoat = isNeutralBoat(action);
-  const infrastructure = isInfrastructure(action);
-  const physical = isPhysicalForce(action);
-  if (directive.intent === "expand") {
-    if (neutralLand) return 300;
-    if (neutralBoat) return 260;
-    return action.kind === "hold" ? -200 : -1000;
-  }
-
-  if (directive.intent === "consolidate") {
-    if (infrastructure) return 300;
-    return action.kind === "hold" ? -200 : -1000;
-  }
-
-  if (physical) return 340;
-  return action.kind === "hold" ? -200 : -1000;
+  if (action.kind === "hold") return -200;
+  const outcome = actionIntent(action);
+  const preferences = {
+    expand: { expand: 300, consolidate: 180, convert: 80 },
+    consolidate: { consolidate: 300, expand: 240, convert: 80 },
+    convert: { convert: 340, expand: 180, consolidate: 140 },
+  };
+  return preferences[directive.intent]?.[outcome] ?? -1000;
 }
 
 function repetitionPenalty(action, history) {
