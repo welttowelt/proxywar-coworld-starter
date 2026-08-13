@@ -1,0 +1,192 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T00:12:00Z",
+  "lane": "0d1novizzz",
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "candidate_source_commit": "eeec7ba9686dc00fac7ce2054ac9a60f81750757",
+  "candidate_evidence_commit": "5fab955eb39d90addfedb5776778b4f75ba6293b",
+  "parent_source_commit": "0743674b02c472a4401ba1a8df897b850b8743d5",
+  "candidate_image_id": "sha256:c66b5553f159e512e091389ac8e9df6472811eaaab13aed7ddfc7252769f48ef",
+  "parent_image_id": "sha256:c122f2333191efa9f2cb112c54d28d18ab809e3baf99505f304514831abe8d60",
+  "contract_sha256": "ddc2b56cca064232b678f6e5202afcd0f90a38f032c60fe341928bcca7247ee2",
+  "image_contract": {
+    "architecture": "amd64",
+    "os": "linux",
+    "user": "node",
+    "cmd": [
+      "node",
+      "/app/llm-player.mjs"
+    ],
+    "policy_engine": "intent-core",
+    "policy_codename": "b0lverk-h0gg",
+    "file_sha256": {
+      "/app/llm-player.mjs": "ce36f0be901f33cb1b6d85bee63de971460fb24231f5f5a6eae5e3ec7c5eed",
+      "/app/intent-controller.mjs": "c881715ad5c1af797668d17670f31147b398104591a1c401c7d91ceb0e0835ef",
+      "/app/intent-core.mjs": "69f600ec2412d410e04ef19d2c206925b9b98f3f0889e363ba0e898acb2d59ab",
+      "/app/strategy-engine.mjs": "4a5dc56a23371033b9c543e416397b1a18feb5b842d965ba1d23661f528d832a"
+    }
+  },
+  "exact_image_outcome_harness": {
+    "expand": {
+      "packet": {
+        "intent": "expand"
+      },
+      "selected_action_id": "expand:terra-nullius:35",
+      "marker": "ixexp"
+    },
+    "consolidate": {
+      "packet": {
+        "intent": "consolidate"
+      },
+      "selected_action_id": "build:Factory:43",
+      "marker": "ixcon"
+    },
+    "convert": {
+      "packet": {
+        "intent": "convert"
+      },
+      "selected_action_id": "attack:outsider-b:40",
+      "repeated_selected_action_id": "attack:outsider-b:40",
+      "marker": "ixprs"
+    },
+    "planner_target_field_present": false,
+    "offered_k1z_harmful_action": "attack:mickey:40",
+    "selected_k1z_harm": false
+  },
+  "required_coalition_roles": [
+    "katanasan"
+  ],
+  "differential_unit_proof": {
+    "schema_version": 2,
+    "arm": "intent-only-v29",
+    "same_fixture": true,
+    "same_board_action_menu_and_planner_reply": true,
+    "verifier": {
+      "evaluator_commit": "42a9c571e5958bde069f39a84e4a8e030a833a94",
+      "path": "experiments/v29/verify-differential.mjs",
+      "sha256": "787f6782359ede0b8ec1057a81cbaffbc8e35746f3570882294d5905109f968b"
+    },
+    "fixture": {
+      "id": "v29-intent-only-convert-continuity",
+      "path": "experiments/v29/differential-fixture.json",
+      "sha256": "55aca28f7609c51e589f813890b4dd8b853895050032a21578b0c8d30b428a4b"
+    },
+    "parent": {
+      "source_commit": "0743674b02c472a4401ba1a8df897b850b8743d5",
+      "parsed_plan": null,
+      "selected_action_id": "expand:terra-nullius:35",
+      "marker": "ixexp"
+    },
+    "candidate": {
+      "source_commit": "eeec7ba9686dc00fac7ce2054ac9a60f81750757",
+      "parsed_plan": {
+        "intent": "convert",
+        "model": "fixture"
+      },
+      "selected_action_id": "attack:outsider-a:25",
+      "marker": "ixprs"
+    },
+    "continuity": {
+      "prior_executor_target": "outsider-a",
+      "selected_target": "outsider-a",
+      "model_target_field_present": false
+    },
+    "safety": {
+      "offered_k1z_harmful_action": "attack:mickey:40",
+      "any_selected_k1z_harm": false
+    },
+    "test_command": [
+      "node",
+      "experiments/v29/verify-differential.mjs",
+      ".",
+      "0743674b02c472a4401ba1a8df897b850b8743d5",
+      "eeec7ba9686dc00fac7ce2054ac9a60f81750757",
+      "experiments/v29/differential-fixture.json",
+      "experiments/v29/differential-proof-eeec7ba9.json"
+    ],
+    "test_exit_code": 0
+  },
+  "runs": [
+    {
+      "orientation": "A",
+      "run_id": "v29-intent-only-20260812T2356Z",
+      "coworld_run_id": "coworld-2026-08-13T00-02-15-373Z-8ca21a06",
+      "game_id": "PWSELHEF",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "directory": "/private/tmp/proxywar-v29-intent-only-20260812T2356Z",
+      "coalition_roles_present": [
+        "odin",
+        "katanasan"
+      ],
+      "replay_sha256": "4f98bf1873e76a9aefa1b86862b3d84c7038752e5d14d111fe16963cd947dc59",
+      "results_sha256": "1ae6fede4af119862dfc003a8766a585322014399902eb9082482d554f9c04e2",
+      "config_sha256": "ee772db1f809beb693e61984d7ad2fda8c6f2a6ba84f3d0ba30f358892e59d2a",
+      "decisions_sha256": "4500915d1f1368703a56c921157231fba4be2b1dbb5478296d50ab284a279ccc",
+      "spectator_replay_sha256": "63311f44072ec075b15560214614a5b8e7779fd9f0bcde009901ee2c181799ea",
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image": "proxywar-agent-candidate:v29-intent-only",
+            "image_id": "sha256:c66b5553f159e512e091389ac8e9df6472811eaaab13aed7ddfc7252769f48ef"
+          }
+        }
+      },
+      "candidate": {
+        "slot": 0,
+        "decision_count": 34,
+        "post_spawn_decisions": 33,
+        "accepted": 34,
+        "rejected": 0,
+        "score": 0,
+        "final_tiles": 0,
+        "alive": false,
+        "planner_reason_count": 33,
+        "route_execution_count": 33,
+        "marker_counts": {
+          "ixprs": 33
+        },
+        "action_counts": {
+          "hold": 33,
+          "spawn": 1
+        },
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "unexplained_holds": [],
+        "explained_holds": {
+          "count": 33,
+          "reason": "The fixed convert fixture had no eligible outsider action; the executor safely held and preserved ixprs on every post-spawn decision."
+        },
+        "unresolved_harmful_targets": [],
+        "rejection_turns": [],
+        "parser_failure_turns": [],
+        "symbolic_actions": 0,
+        "harmful_k1z_actions": []
+      },
+      "static_fixture_disclosure": "The local wrapper held convert for the episode. With no eligible outsider action, Odin safely held 33 times, scored zero, and was eliminated. This is adverse competitive evidence from an intentionally static fixture, not a prediction of the hosted adaptive planner."
+    }
+  ],
+  "focused_suite": {
+    "tests": 36,
+    "passed": 36,
+    "failed": 0
+  },
+  "full_suite": {
+    "tests": 471,
+    "passed": 465,
+    "failed": 6,
+    "candidate_related_failures": 0,
+    "persistent_unrelated_failures": 6,
+    "note": "The same known Mickey R8/R9 and inactive RCI failures remained."
+  },
+  "runner_lease_after": {
+    "state": "free",
+    "schema_version": 2
+  },
+  "scope_boundary": "The exact image proves a one-field intent packet, all three outcome lanes, executor-owned target continuity, and K1Z safety. The static convert episode proves safe handling when an intent is unavailable but supplies no competitive lift. Only a bounded hosted request can exercise live intent switching; no league change is authorized.",
+  "failures": []
+}
