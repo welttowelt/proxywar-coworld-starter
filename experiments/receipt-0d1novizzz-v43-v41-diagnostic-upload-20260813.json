@@ -1,0 +1,46 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T12:07:00Z",
+  "player": "0d1novizzz",
+  "active_player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+  "operation": "diagnostic_upload_only",
+  "status": "verified",
+  "candidate_source_commit": "e308b71a6083f1000a28946738ab5850269407ec",
+  "candidate_image_id": "sha256:96d14f9b275fbfa343e13c8f22b66b2c75944a270a7a2b79b964cd92cb66d0b8",
+  "candidate_coworld_client_hash": "sha256:96d14f9b275fbfa343e13c8f22b66b2c75944a270a7a2b79b964cd92cb66d0b8",
+  "hosted": {
+    "label": "xX_UwU_Senpai_420_Xx:v41",
+    "policy_version_id": "82dbaecc-8ea6-4918-86c1-dcdc3c5b634a",
+    "policy_id": "d2ab8f5b-66ff-4252-990c-71179fc8dc0f",
+    "version_before": 40,
+    "version_after": 41,
+    "run": ["node", "/app/llm-player.mjs"],
+    "bedrock_enabled": true,
+    "secret_keys": ["PLAN_MODE"],
+    "image": {
+      "id": "img_e69caffb-9c40-485f-93d8-9f9df7c99de1",
+      "version": 24,
+      "client_hash": "sha256:96d14f9b275fbfa343e13c8f22b66b2c75944a270a7a2b79b964cd92cb66d0b8",
+      "status": "ready",
+      "image_digest": "sha256:51b8e7ead2c83b7d68b2aad91df8360ee4fb3b51a4f9121567d42bf22a47c496"
+    }
+  },
+  "binding_checks": {
+    "active_player_exact": true,
+    "source_tag_exact": true,
+    "local_image_exact": true,
+    "client_hash_exact": true,
+    "hosted_image_ready": true,
+    "run_argv_exact": true
+  },
+  "league_mutation": false,
+  "submission_created": false,
+  "membership_changed": false,
+  "champion_changed": false,
+  "preserved_champion": {
+    "label": "xX_UwU_Senpai_420_Xx:v17",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  },
+  "authorized_next_action": "One four-field matched counterfactual against v17."
+}
