@@ -1,0 +1,44 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T14:43:00Z",
+  "lane": "0d1novizzz",
+  "mode": "diagnostic_upload_only",
+  "status": "uploaded_identity_verified_unseated",
+  "active_player_before_and_after": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz",
+    "sole_active": true
+  },
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v47",
+    "policy_version_id": "079e5bce-8ad3-4bc6-84af-0f0a83cf291e",
+    "policy_id": "d2ab8f5b-66ff-4252-990c-71179fc8dc0f",
+    "created_at": "2026-08-13T14:40:50.859519Z",
+    "source_commit": "d2638a47495651b65e5e091b2bbe9fef835314e5",
+    "run": ["node", "/app/llm-player.mjs"],
+    "bedrock_enabled": true,
+    "secret_env_keys": ["PLAN_MODE"],
+    "secret_env_values_recorded": false
+  },
+  "image_binding": {
+    "local_image_id": "sha256:598dc2f146ba2e57acb557fdc9130a4dba6a6a5c2e7e8ea25ffd8078e7162d5e",
+    "hosted_image_id": "img_f47d270a-caed-4f8a-9e62-efdbb40cea9e",
+    "hosted_image_version": 28,
+    "hosted_client_hash": "sha256:598dc2f146ba2e57acb557fdc9130a4dba6a6a5c2e7e8ea25ffd8078e7162d5e",
+    "hosted_status": "ready",
+    "hosted_image_digest": "sha256:8579a7cd5f65de40435edb044957063e718368de6d580664cf6bf0018ba73815"
+  },
+  "exposure": {
+    "hosted_experience_request_created": false,
+    "league_submissions": 0,
+    "league_memberships": 0,
+    "champion_change": false
+  },
+  "preserved_champion": {
+    "membership_id": "lpm_fe4dde2e-4a20-4bd0-a865-9d0493f7f1b6",
+    "policy_version_id": "b9e5ccdc-8dc4-4017-90ad-8f7908413109",
+    "label": "xX_UwU_Senpai_420_Xx:v43"
+  },
+  "promotion_ready": false,
+  "authorized_next_action": "Create exactly one four-field causal counterfactual against v46, then audit every replay. No league mutation is authorized."
+}

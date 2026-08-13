@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "preregistered_at": "2026-08-13T14:43:30Z",
+  "experiment": "v47-v46-matched-counterfactual",
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v47",
+    "policy_version_id": "079e5bce-8ad3-4bc6-84af-0f0a83cf291e",
+    "source_commit": "d2638a47495651b65e5e091b2bbe9fef835314e5",
+    "hosted_image_id": "img_f47d270a-caed-4f8a-9e62-efdbb40cea9e"
+  },
+  "baseline": {
+    "label": "xX_UwU_Senpai_420_Xx:v46",
+    "policy_version_id": "625ac8a0-6eb8-4f9b-ab31-43f04b3ba293"
+  },
+  "live_champion_preserved": {
+    "label": "xX_UwU_Senpai_420_Xx:v43",
+    "policy_version_id": "b9e5ccdc-8dc4-4017-90ad-8f7908413109",
+    "membership_id": "lpm_fe4dde2e-4a20-4bd0-a865-9d0493f7f1b6"
+  },
+  "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "matched_fields": 4,
+  "idempotency_key": "0d1-v47-v46-strike-mass-4f-20260813-1443",
+  "hypothesis": "The sm1 strike-mass rule converts safe near-parity maintenance opportunities into accepted hostile strikes and wins more matched fields than its exact v46 parent.",
+  "gate": {
+    "candidate_wins_required": "strictly greater than baseline wins",
+    "fallbacks_allowed": 0,
+    "rejections_allowed": 0,
+    "verified_k1z_harm_allowed": 0,
+    "mechanism_requirement": "at least one sm1 decision",
+    "planner_requirement": "at least one accepted post-spawn pln decision",
+    "tie_policy": "reject",
+    "loss_policy": "reject"
+  },
+  "stage_2_if_passed": "Run the preregistered 20-field gate against v43. Do not submit before that gate passes.",
+  "league_mutation_authorized": false,
+  "authorized_next_action": "After same-shell player, candidate image, baseline, and v43 champion checks, create this one four-field counterfactual and audit every candidate replay."
+}
