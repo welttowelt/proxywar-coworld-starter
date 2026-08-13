@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "preregistered_at": "2026-08-13T08:07:00Z",
+  "player": "0d1novizzz",
+  "experiment": "v39-v17-matched-counterfactual",
+  "question": "Does the two-intent candidate outperform the live v17 champion when roster, map, seat, and field conditions are matched?",
+  "evidence_basis": {
+    "v39_automatic_result": "1/10",
+    "v39_map_split": {
+      "Oceania": "0/3",
+      "EastAsia": "0/6",
+      "BlackSea": "1/1"
+    },
+    "v17_round_1411_result": "1/8",
+    "v17_round_1411_map": "Pangaea",
+    "v17_round_1411_winning_seat_zero_indexed": 15,
+    "interpretation": "Both policies show concentrated wins under different exposure, so unmatched batches cannot isolate policy quality."
+  },
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v36",
+    "policy_version_id": "7e6a4065-4918-4831-a81f-7217d400e5bf",
+    "source_commit": "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
+    "contract": ["grow", "finish"]
+  },
+  "baseline": {
+    "label": "xX_UwU_Senpai_420_Xx:v17",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  },
+  "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "matched_fields": 4,
+  "single_change": "Replace v17 with v39 on platform-generated matched league fields; no source, prompt, executor, roster, map, seat, or champion mutation.",
+  "success_bar": [
+    "all four matched fields complete for both candidate and baseline",
+    "candidate has strictly more wins than baseline",
+    "candidate has no fallback, degradation, rejection, unexplained hold, or K1Z harm",
+    "candidate replays contain only grow or finish intent markers"
+  ],
+  "failure_bar": [
+    "candidate wins no more fields than baseline",
+    "any identity mismatch or unmatched field",
+    "any candidate infrastructure or safety failure"
+  ],
+  "interpretation_boundary": {
+    "candidate_advantage": "Exposure explains part of the automatic-batch gap, but v39 remains killed because it already failed the absolute hosted gate.",
+    "tie_or_baseline_advantage": "The two-intent candidate is not a better response than v17 on the current matched field; freeze it and mine the strongest opponent and seat failure instead.",
+    "no_promotion_claim": true
+  },
+  "live_mutations_forbidden": [
+    "league submission",
+    "membership change",
+    "champion change",
+    "retirement"
+  ],
+  "authorized_next_action": "After same-shell active-player and exact-policy verification, create one four-field platform counterfactual and audit every resulting replay."
+}
