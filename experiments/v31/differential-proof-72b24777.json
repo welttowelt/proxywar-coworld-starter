@@ -1,0 +1,62 @@
+{
+  "schema_version": 2,
+  "arm": "outcome-intents-v31",
+  "same_fixture": true,
+  "equivalent_goal": "increase territory without harming a rival",
+  "verifier": {
+    "evaluator_commit": "febc2cc9ad782391f4171d2225f3b15ec8313dbf",
+    "path": "experiments/v31/verify-differential.mjs",
+    "sha256": "08af9d2d3e535b091cd822af6b24b33e4bd9dd8cf16e50a78dc85f104e2114c6"
+  },
+  "fixture": {
+    "id": "v31-rival-force-cannot-masquerade-as-growth",
+    "path": "experiments/v31/differential-fixture.json",
+    "sha256": "f6e5f2d26f0cf94abf9ad9ac164f11cf2dc2a7d6b9cb34ecdc7a99fb8c008832"
+  },
+  "parent": {
+    "source_commit": "35de53ff4cda639a04c6d38e49db18a869b215a5",
+    "parsed_plan": {
+      "intent": "expand",
+      "model": "fixture"
+    },
+    "selected_action_id": "attack:mickey:50",
+    "marker": "ixexp",
+    "interpretation": "expansion metadata overrides rival identity"
+  },
+  "candidate": {
+    "source_commit": "72b247776b85ec9cc9f62cef9d574baa7e009af1",
+    "parsed_plan": {
+      "intent": "grow",
+      "model": "fixture"
+    },
+    "selected_action_id": "expand:terra-nullius:35",
+    "marker": "ixgrw",
+    "interpretation": "explicit neutral outcome outranks rival-directed and ambiguous force"
+  },
+  "safety": {
+    "offered_k1z_harmful_action": "attack:mickey:50",
+    "candidate_selected_k1z_harm": false
+  },
+  "outcome_boundary": {
+    "offered_actions": [
+      "boat:485204:45",
+      "hold"
+    ],
+    "selected_by_intent": {
+      "grow": "hold",
+      "secure": "hold",
+      "finish": "boat:485204:45"
+    },
+    "only_finish_authorizes_ambiguous_force": true
+  },
+  "test_command": [
+    "node",
+    "experiments/v31/verify-differential.mjs",
+    ".",
+    "35de53ff4cda639a04c6d38e49db18a869b215a5",
+    "72b247776b85ec9cc9f62cef9d574baa7e009af1",
+    "experiments/v31/differential-fixture.json",
+    "experiments/v31/differential-proof-72b24777.json"
+  ],
+  "test_exit_code": 0
+}
