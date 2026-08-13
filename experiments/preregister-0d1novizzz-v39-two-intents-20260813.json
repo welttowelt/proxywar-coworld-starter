@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "preregistered_at": "2026-08-13T07:09:27Z",
+  "player": "0d1novizzz",
+  "candidate": "v39-two-intents",
+  "parent": "v38-intent-boundary",
+  "hypothesis": "v38 showed that the planner transport and intent boundary work, but secure absorbed 76 of 177 planner-marked decisions and produced 55 upgrades. Removing secure will leave the model with only the two board-level outcomes that directly separate accumulation from conversion: grow and finish.",
+  "planner_contract": {
+    "keys": [
+      "intent"
+    ],
+    "values": [
+      "grow",
+      "finish"
+    ],
+    "changed_from_parent": true
+  },
+  "single_variable": {
+    "changed": "Remove secure from the planner vocabulary and executor boundary.",
+    "boundaries": {
+      "grow": "accumulate territory or productive infrastructure",
+      "finish": "convert an existing position into rival territory"
+    },
+    "safety_override": "When the observation reports incoming pressure, the mature executor receives the full safe material menu.",
+    "unchanged": [
+      "one-field planner response schema",
+      "intent-only state snapshot",
+      "exact target delegation",
+      "material action gate",
+      "hold preference when no material action exists",
+      "mature executor",
+      "K1Z no-harm filter",
+      "Bedrock transport",
+      "league champion"
+    ]
+  },
+  "local_acceptance": [
+    "focused intent and integration suites pass",
+    "secure is rejected by the parser and cannot reach execution",
+    "planner prompt exposes only grow and finish",
+    "grow and finish retain their v38 action-family boundaries",
+    "incoming pressure retains the full safe material defense menu",
+    "symbolic-only menu selects hold",
+    "K1Z no-harm tests remain green",
+    "same-fixture differential proves the removed secure state executes as grow rather than an upgrade-only lane"
+  ],
+  "hosted_kill_bar": [
+    "any hosted score of zero",
+    "fewer than 2 wins in the automatic 10-episode diagnostic",
+    "any unexplained fallback, degradation, rejection, or parse failure",
+    "any repeated symbolic-action loop",
+    "any K1Z harm"
+  ],
+  "promotion_bar": {
+    "automatic_diagnostic_is_sufficient": false,
+    "matched_hosted": "4/4",
+    "separate_validation": "20/20",
+    "final_rci_required": true
+  },
+  "league_mutation_authorized": false
+}
