@@ -113,6 +113,7 @@ const proof = {
   },
   parent: {
     source_commit: parentCommit,
+    selected_action_id: parentSymbolic.id,
     diplomacy_selected_action_id: parentDiplomacy.id,
     symbolic_only_selected_action_id: parentSymbolic.id,
     nuclear_selected_action_id: parentNuclear.id,
@@ -120,6 +121,7 @@ const proof = {
   },
   candidate: {
     source_commit: candidateCommit,
+    selected_action_id: candidateSymbolic.id,
     diplomacy_selected_action_id: candidateDiplomacy.id,
     symbolic_only_selected_action_id: candidateSymbolic.id,
     nuclear_selected_action_id: candidateNuclear.id,
