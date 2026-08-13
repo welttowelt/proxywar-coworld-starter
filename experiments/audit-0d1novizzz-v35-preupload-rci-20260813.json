@@ -1,0 +1,51 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T04:43:00Z",
+  "lane": "0d1novizzz",
+  "status": "passed",
+  "verdict": "PASS_PREUPLOAD_RCI",
+  "candidate_source_commit": "a5e150c326bd28121ab3cf180015e16595411602",
+  "candidate_image_id": "sha256:c1a07ac20773cf9344f5cbfc985901fa561352c0d2a0aee81e2af073bcd8eecc",
+  "parent_source_commit": "b71b0d4c857240b56f1aa47df1c76b3a05c28079",
+  "preregister_sha256": "ff0adfc2a2b683364442f31cc89ae9fe693f177deea43cd9ed5a903a306e6a9c",
+  "local_audit_sha256": "6ff2a861b70ca756caf933fa1309a1a7bad38be6793da56a12905659551b8268",
+  "differential_proof_sha256": "14cb190911da0242b3cfe574533b0c53b7da603ba0e6145b7e3f22c7883d8704",
+  "critique": {
+    "strongest_evidence": "The same-fixture differential proves v35 changes the executor rather than the one-field planner: v34 spends grow on optional diplomacy while v35 ranks productive neutral growth first. Focused tests pass 184/184. Exact-image 16-player and extended four-player traces accepted every decision with planner markers and zero hold, fallback, degradation, rejection, or symbolic loop.",
+    "adverse_evidence": "Neither local run is competitive evidence. The 16-player run stopped after 12 decisions and its score is near-uniform; the extended run used only four players and constant grow, finished second, and repeated neutral expansion because that was the declared intent.",
+    "remaining_uncertainty": "Hosted play must show whether live switching among grow, secure, and finish creates a competitive trajectory. v34 reached one win in ten after transport repair; any zero score still kills v35 and forbids league mutation."
+  },
+  "checks": {
+    "single_architectural_change": true,
+    "one_field_contract": true,
+    "planner_actions_forbidden": true,
+    "planner_targets_forbidden": true,
+    "utility_ranker_reached": true,
+    "differential_reach": true,
+    "exact_image_reach": true,
+    "zero_candidate_fallback": true,
+    "zero_candidate_degradation": true,
+    "zero_candidate_hold": true,
+    "zero_candidate_rejection": true,
+    "k1z_safety": true,
+    "competitive_lift_not_claimed": true,
+    "runner_released": true,
+    "diagnostic_only": true,
+    "league_mutation_forbidden": true
+  },
+  "open_gates": [
+    "diagnostic upload identity binding",
+    "matched-current-roster hosted 4/4",
+    "separate map-and-seat regression 20/20",
+    "final promotion RCI"
+  ],
+  "stop_conditions": [
+    "any hosted score of zero",
+    "planner reasons absent from any replay",
+    "any unexplained fallback, degradation, rejection, or parse failure",
+    "any repeated symbolic-action loop while a productive safe action exists",
+    "any K1Z harm"
+  ],
+  "unresolved_violations": 0,
+  "authorized_next_action": "One diagnostic upload only. A platform-generated diagnostic request may run, but no league submission, membership change, or champion change is authorized."
+}
