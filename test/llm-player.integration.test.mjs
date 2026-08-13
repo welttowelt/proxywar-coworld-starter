@@ -361,6 +361,8 @@ test("intent-core planner asks only for one outcome", async () => {
   assert.match(source, /"intent":/);
   assert.match(source, /exactly one key/);
   assert.match(source, /\{"intent":"grow"\}/);
+  assert.match(source, /\{"intent":"finish"\}/);
+  assert.doesNotMatch(source, /\{"intent":"secure"\}/);
   assert.match(source, /Return only the intent\. Execution is delegated\./);
   assert.doesNotMatch(source, /increase territory or economy without harming a rival/);
   assert.doesNotMatch(source, /preserve strength and improve what you hold/);
@@ -700,7 +702,7 @@ test("intent-core grow ranks progress ahead of optional diplomacy", async () => 
   assert.equal(responses[0].fallbackUsed, false);
   assert.equal(responses[1].selectedLegalActionId, "expand:terra-nullius:35");
   assert.equal(responses[1].fallbackUsed, false);
-  assert.match(responses[1].reason, /^pln:atk:(?:is1g:)?ib1:ixgrw$/);
+  assert.match(responses[1].reason, /^pln:atk:(?:is1g:)?ib2:ixgrw$/);
 });
 
 test("intent-only finish leaves target choice and continuity to the executor", async () => {
@@ -790,7 +792,7 @@ test("intent-only finish leaves target choice and continuity to the executor", a
   );
   assert.ok(responses.every((response) =>
     response.reason.startsWith("pln:atk:") &&
-    response.reason.includes(":ib1:") &&
+    response.reason.includes(":ib2:") &&
     response.reason.endsWith(":ixfin")
   ));
   assert.ok(responses.every((response) => response.fallbackUsed === false));
@@ -865,7 +867,7 @@ test("intent-core starts from an honest grow outcome while the planner is pendin
   assert.equal(response.selectedLegalActionId, "expand:terra-nullius:35");
   assert.equal(response.fallbackUsed, false);
   assert.equal(response.llmPlannerDegraded, false);
-  assert.match(response.reason, /^dft:atk:(?:is1g:)?ib1:ixgrw$/);
+  assert.match(response.reason, /^dft:atk:(?:is1g:)?ib2:ixgrw$/);
 });
 
 test("a single transport-framed planner reply reaches the deployed player", async () => {

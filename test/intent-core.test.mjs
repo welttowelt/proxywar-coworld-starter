@@ -70,18 +70,18 @@ test("grow delegates safe neutral territory first", () => {
     rivals: [{ id: "rival", name: "rival", tileShare: 0.1, relativeTroopRatio: 1.6 }],
   });
   assert.equal(selected.id, "expand:terra-nullius:35");
-  assert.ok(selected.policyMarkers.includes("ib1"));
+  assert.ok(selected.policyMarkers.includes("ib2"));
   assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
-test("secure ranks an available economy action first", () => {
+test("a removed secure intent falls back to grow", () => {
   const selected = decide([attack("rival"), build(), land(), hold()], "secure", {
     tileShare: 0.2,
     rivals: [{ id: "rival", name: "rival", tileShare: 0.1, relativeTroopRatio: 1.6 }],
   });
-  assert.equal(selected.id, "build:Factory");
-  assert.ok(selected.policyMarkers.includes("ib1"));
-  assert.ok(selected.policyMarkers.includes("ixsec"));
+  assert.equal(selected.id, "expand:terra-nullius:35");
+  assert.ok(selected.policyMarkers.includes("ib2"));
+  assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
 test("finish ranks a safe finishing target first", () => {
@@ -98,7 +98,7 @@ test("finish ranks a safe finishing target first", () => {
     rivals: [{ id: "rival", name: "rival", tileShare: 0.1, relativeTroopRatio: 1.8 }],
   });
   assert.equal(selected.id, "attack:rival:40");
-  assert.ok(selected.policyMarkers.includes("ib1"));
+  assert.ok(selected.policyMarkers.includes("ib2"));
   assert.ok(selected.policyMarkers.includes("ixfin"));
 });
 
@@ -108,11 +108,11 @@ test("intent cannot override pressure defense", () => {
     rivals: [{ id: "raider", name: "raider", tileShare: 0.2, relativeTroopRatio: 1.4 }],
   });
   assert.equal(selected.id, "attack:raider:40");
-  assert.ok(selected.policyMarkers.includes("ib1"));
+  assert.ok(selected.policyMarkers.includes("ib2"));
   assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
-test("secure keeps a strike outside its action family", () => {
+test("a removed secure intent cannot restore the upgrade-only family", () => {
   const bomb = build("Atom Bomb", {
     targetID: "leader",
     targetName: "Leader",
@@ -125,8 +125,8 @@ test("secure keeps a strike outside its action family", () => {
     rivals: [{ id: "leader", name: "Leader", tileShare: 0.79, relativeTroopRatio: 1 }],
   });
   assert.equal(selected.id, city.id);
-  assert.ok(selected.policyMarkers.includes("ib1"));
-  assert.ok(selected.policyMarkers.includes("ixsec"));
+  assert.ok(selected.policyMarkers.includes("ib2"));
+  assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
 test("grow keeps a strike outside its action family", () => {
@@ -158,7 +158,7 @@ test("a symbolic-only menu yields to hold", () => {
     recipientID: "rival",
     recipientName: "rival",
   });
-  const selected = decide([alliance, hold()], "secure", {
+  const selected = decide([alliance, hold()], "grow", {
     incoming: ["raider"],
     rivals: [
       { id: "rival", name: "rival", tileShare: 0.2, relativeTroopRatio: 0.9 },
@@ -179,12 +179,12 @@ test("grow cannot substitute alliance activity for material progress", () => {
   assert.equal(selected.id, "build:Factory");
 });
 
-test("secure cannot substitute alliance activity for immediate defense", () => {
+test("grow cannot substitute alliance activity for immediate defense", () => {
   const alliance = action("alliance:rival", "alliance_request", "Ally rival", {
     recipientID: "rival",
     recipientName: "rival",
   });
-  const selected = decide([alliance, attack("raider"), hold()], "secure", {
+  const selected = decide([alliance, attack("raider"), hold()], "grow", {
     incoming: ["raider"],
     rivals: [
       { id: "rival", name: "rival", tileShare: 0.2, relativeTroopRatio: 0.9 },
@@ -211,7 +211,7 @@ test("repeated symbolic pressure yields to a productive action", () => {
     rivals: [{ id: "rival", name: "rival", tileShare: 0.2, relativeTroopRatio: 1 }],
   });
   assert.equal(selected.id, "build:Factory");
-  assert.ok(selected.policyMarkers.includes("ib1"));
+  assert.ok(selected.policyMarkers.includes("ib2"));
   assert.ok(selected.policyMarkers.includes("ixfin"));
 });
 
@@ -228,7 +228,7 @@ test("no intent can harm K1Z Mickey Mouse", () => {
   assert.ok(selected.policyMarkers.includes("ixfin"));
 });
 
-test("secure cannot disguise a K1Z strike as infrastructure", () => {
+test("grow cannot disguise a K1Z strike as infrastructure", () => {
   const bomb = build("Atom Bomb", {
     targetID: MICKEY_ID,
     targetName: "K1Z Mickey Mouse",
@@ -236,7 +236,7 @@ test("secure cannot disguise a K1Z strike as infrastructure", () => {
     targetSamCoverage: 0,
     nuclearTargetPriority: 267,
   });
-  const selected = decide([bomb, hold()], "secure", {
+  const selected = decide([bomb, hold()], "grow", {
     rivals: [{
       id: MICKEY_ID,
       name: "K1Z Mickey Mouse",
@@ -245,7 +245,7 @@ test("secure cannot disguise a K1Z strike as infrastructure", () => {
     }],
   });
   assert.equal(selected.id, "hold");
-  assert.ok(selected.policyMarkers.includes("ixsec"));
+  assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
 test("a missing or stale plan uses the grow preference", () => {

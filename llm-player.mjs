@@ -80,7 +80,7 @@ const TEST_INTENT_DIRECTIVE = process.env.NODE_ENV === "test"
 // byte-for-byte available to existing policy images and tests.
 const INTENT_CORE_STRATEGY = [
   "You command an autonomous nation in ProxyWar. Win by finishing with the most territory.",
-  "Choose the intent that best fits the current position: grow, secure, or finish.",
+  "Choose the intent that best fits the current position: grow or finish.",
   "Return only the intent. Execution is delegated.",
 ].join(" ");
 const STRATEGY = POLICY_ENGINE === "intent-core"
@@ -115,7 +115,7 @@ async function askBedrock(state, signal) {
   if (!bedrock) throw new Error("bedrock client did not initialize");
   const directiveContract = POLICY_ENGINE === "intent-core"
     ? 'Reply with ONLY JSON and exactly one key. Use one shape: ' +
-      '{"intent":"grow"}, {"intent":"secure"}, or {"intent":"finish"}. '
+      '{"intent":"grow"} or {"intent":"finish"}. '
     : 'Reply with ONLY JSON and exactly these three keys. Use one shape: ' +
       '{"intent":"grow","targetID":null,"horizon":4} or ' +
       '{"intent":"convert","targetID":"<exact visible rival ID>","horizon":4}. ';

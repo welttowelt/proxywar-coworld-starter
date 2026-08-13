@@ -47,26 +47,18 @@ test("accepts only exact outcome packets", () => {
     normalizeIntentDirective({ intent: "grow" }, state),
     { intent: "grow", model: "unknown" },
   );
-  assert.deepEqual(
-    normalizeIntentDirective({ intent: "secure" }, state),
-    { intent: "secure", model: "unknown" },
-  );
 });
 
-test("accepts only the three planner outcomes", () => {
+test("accepts only the two planner outcomes", () => {
   assert.deepEqual(
     normalizeIntentDirective({ intent: "grow" }, state),
     { intent: "grow", model: "unknown" },
   );
   assert.deepEqual(
-    normalizeIntentDirective({ intent: "secure" }, state),
-    { intent: "secure", model: "unknown" },
-  );
-  assert.deepEqual(
     normalizeIntentDirective({ intent: "finish" }, state),
     { intent: "finish", model: "unknown" },
   );
-  for (const intent of ["expand", "consolidate", "convert", "defend", "ally", "pressure"]) {
+  for (const intent of ["secure", "expand", "consolidate", "convert", "defend", "ally", "pressure"]) {
     assert.equal(normalizeIntentDirective({ intent }, state), null);
   }
 });

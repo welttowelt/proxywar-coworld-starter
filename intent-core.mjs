@@ -5,7 +5,7 @@ import {
   rivalIsProtected,
 } from "./strategy-engine.mjs";
 
-const INTENTS = new Set(["grow", "secure", "finish"]);
+const INTENTS = new Set(["grow", "finish"]);
 const HARMFUL_KINDS = new Set([
   "attack", "boat", "nuke", "target_player", "embargo", "embargo_all",
 ]);
@@ -15,10 +15,9 @@ const MATERIAL_KINDS = new Set([
 ]);
 const MARKERS = Object.freeze({
   grow: "ixgrw",
-  secure: "ixsec",
   finish: "ixfin",
 });
-const EXECUTOR_MARKER = "ib1";
+const EXECUTOR_MARKER = "ib2";
 
 function isNeutral(action) {
   const targetID = clean(action?.metadata?.targetID ?? action?.targetID ?? "");
@@ -68,10 +67,6 @@ function intentMenu(actions, intent, state) {
       return ((action.kind === "attack" || action.kind === "boat") && !isStrike(action)) ||
         ((action.kind === "build" || action.kind === "upgrade_structure") && !isStrike(action));
     }
-    if (intent === "secure") {
-      return ["build", "upgrade_structure", "retreat", "boat_retreat"].includes(action.kind) &&
-        !isStrike(action);
-    }
     return !isNeutral(action) && (
       isStrike(action) ||
       ["attack", "boat", "nuke", "warship", "move_warship"].includes(action.kind)
@@ -80,7 +75,7 @@ function intentMenu(actions, intent, state) {
   return matching.length > 0 ? matching : actions;
 }
 
-// The planner chooses one outcome: grow, secure, or finish. That intent defines
+// The planner chooses one outcome: grow or finish. That intent defines
 // only the eligible action family; the mature executor still owns the exact
 // action and target. Incoming pressure reopens the full safe material menu.
 // When the requested family is absent, execution stays productive instead of
