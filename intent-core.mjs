@@ -11,6 +11,10 @@ const INTENTS = new Set(["grow", "secure", "finish"]);
 const HARMFUL_KINDS = new Set([
   "attack", "boat", "nuke", "target_player", "embargo", "embargo_all",
 ]);
+const MATERIAL_KINDS = new Set([
+  "spawn", "attack", "nuke", "build", "upgrade_structure", "boat",
+  "boat_retreat", "retreat", "warship", "move_warship",
+]);
 const MARKERS = Object.freeze({
   grow: "ixgrw",
   secure: "ixsec",
@@ -193,10 +197,18 @@ function chooseIntentUtilityAction(actions, state, intent, history) {
     )[0].action;
 }
 
+function materialIntentMenu(actions) {
+  const material = actions.filter((action) => MATERIAL_KINDS.has(action.kind));
+  if (material.length > 0) return material;
+  const holds = actions.filter((action) => action.kind === "hold");
+  return holds.length > 0 ? holds : actions;
+}
+
 // The planner owns one decision only: grow, secure, or finish. A single
-// utility function ranks the complete safe legal menu through four reusable
-// features: progress, safety, closure, and repetition friction. Safety and
-// legal-ID checks are invariants outside the planner contract.
+// utility function ranks material legal actions through four reusable
+// features: progress, safety, closure, and repetition friction. Diplomacy and
+// chat cannot substitute for execution; when no material move exists, hold is
+// preferred. Safety and legal-ID checks stay outside the planner contract.
 export function chooseIntentCoreAction(actions, state, plan = null, history = []) {
   if (!Array.isArray(actions) || actions.length === 0) {
     throw new Error("decision request had no legal actions");
@@ -208,7 +220,7 @@ export function chooseIntentCoreAction(actions, state, plan = null, history = []
   );
   if (safe.length === 0) throw new Error("intent selector found no safe legal action");
 
-  const selected = chooseIntentUtilityAction(safe, state, intent, history);
+  const selected = chooseIntentUtilityAction(materialIntentMenu(safe), state, intent, history);
   const policyMarkers = [...new Set([
     ...(Array.isArray(selected.policyMarkers) ? selected.policyMarkers : []),
     selected.policyMarker,

@@ -132,7 +132,7 @@ test("unavailable intent defaults to productive grow ranking", () => {
   assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
-test("symbolic strategy remains available instead of becoming an intent hold", () => {
+test("a symbolic-only menu yields to hold", () => {
   const alliance = action("alliance:rival", "alliance_request", "Ally rival", {
     recipientID: "rival",
     recipientName: "rival",
@@ -144,8 +144,33 @@ test("symbolic strategy remains available instead of becoming an intent hold", (
       { id: "raider", name: "raider", tileShare: 0.3, relativeTroopRatio: 1.1 },
     ],
   });
-  assert.equal(selected.id, alliance.id);
-  assert.notEqual(selected.kind, "hold");
+  assert.equal(selected.id, "hold");
+});
+
+test("grow cannot substitute alliance activity for material progress", () => {
+  const alliance = action("alliance:rival", "alliance_request", "Ally rival", {
+    recipientID: "rival",
+    recipientName: "rival",
+  });
+  const selected = decide([alliance, build(), hold()], "grow", {
+    rivals: [{ id: "rival", name: "rival", tileShare: 0.2, relativeTroopRatio: 1 }],
+  });
+  assert.equal(selected.id, "build:Factory");
+});
+
+test("secure cannot substitute alliance activity for immediate defense", () => {
+  const alliance = action("alliance:rival", "alliance_request", "Ally rival", {
+    recipientID: "rival",
+    recipientName: "rival",
+  });
+  const selected = decide([alliance, attack("raider"), hold()], "secure", {
+    incoming: ["raider"],
+    rivals: [
+      { id: "rival", name: "rival", tileShare: 0.2, relativeTroopRatio: 0.9 },
+      { id: "raider", name: "raider", tileShare: 0.3, relativeTroopRatio: 1.1 },
+    ],
+  });
+  assert.equal(selected.id, "attack:raider:40");
 });
 
 test("repeated symbolic pressure yields to a productive action", () => {
