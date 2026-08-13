@@ -80,7 +80,8 @@ const TEST_INTENT_DIRECTIVE = process.env.NODE_ENV === "test"
 // byte-for-byte available to existing policy images and tests.
 const INTENT_CORE_STRATEGY = [
   "You command an autonomous nation in ProxyWar. Win by finishing with the most territory.",
-  "Choose the intent that best fits the current position: grow or finish.",
+  "Choose one desired outcome.",
+  "grow means improve the chance of winning later; finish means win from the current position.",
   "Return only the intent. Execution is delegated.",
 ].join(" ");
 const STRATEGY = POLICY_ENGINE === "intent-core"
@@ -114,8 +115,7 @@ async function askBedrock(state, signal) {
   }
   if (!bedrock) throw new Error("bedrock client did not initialize");
   const directiveContract = POLICY_ENGINE === "intent-core"
-    ? 'Reply with ONLY JSON and exactly one key. Use one shape: ' +
-      '{"intent":"grow"} or {"intent":"finish"}. '
+    ? "Reply with exactly one word: grow or finish. "
     : 'Reply with ONLY JSON and exactly these three keys. Use one shape: ' +
       '{"intent":"grow","targetID":null,"horizon":4} or ' +
       '{"intent":"convert","targetID":"<exact visible rival ID>","horizon":4}. ';
@@ -131,7 +131,8 @@ async function askBedrock(state, signal) {
   for (const model of candidates) {
     try {
       const r = await bedrock.messages.create(
-        { model, max_tokens: 64, messages: [{ role: "user", content: prompt }] },
+        { model, max_tokens: POLICY_ENGINE === "intent-core" ? 8 : 64,
+          messages: [{ role: "user", content: prompt }] },
         { signal, timeout: Math.min(8000, PLAN_TIMEOUT_MS), maxRetries: 0 },
       );
       lockedModel = model;

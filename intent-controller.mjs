@@ -6,7 +6,6 @@ export const INTENTS = Object.freeze(["grow", "finish"]);
 
 const TARGETED_INTENTS = new Set(["convert"]);
 
-const OUTCOME_DIRECTIVE_KEYS = Object.freeze(["intent"]);
 const LEGACY_DIRECTIVE_KEYS = Object.freeze(["horizon", "intent", "targetID"]);
 
 function exactKeys(value, expected) {
@@ -33,11 +32,13 @@ export function normalizeIntentDirective(
   allowedIntents = INTENTS,
 ) {
   const outcomeContract = usesOutcomeContract(allowedIntents);
-  const expectedKeys = outcomeContract ? OUTCOME_DIRECTIVE_KEYS : LEGACY_DIRECTIVE_KEYS;
-  if (!value || typeof value !== "object" || Array.isArray(value) ||
-      !exactKeys(value, expectedKeys)) {
-    return null;
+  if (outcomeContract) {
+    if (typeof value !== "string" || !allowedIntents.includes(value)) return null;
+    return { intent: value, model: clean(model) || "unknown" };
   }
+
+  if (!value || typeof value !== "object" || Array.isArray(value) ||
+      !exactKeys(value, LEGACY_DIRECTIVE_KEYS)) return null;
   if (typeof value.intent !== "string" || !allowedIntents.includes(value.intent)) return null;
   const intent = value.intent;
   if (!outcomeContract && (!Number.isInteger(value.horizon) ||
@@ -54,12 +55,12 @@ export function normalizeIntentDirective(
     }
   }
 
-  const directive = { intent, model: clean(model) || "unknown" };
-  if (!outcomeContract) {
-    directive.targetID = TARGETED_INTENTS.has(intent) ? value.targetID : null;
-    directive.horizon = value.horizon;
-  }
-  return directive;
+  return {
+    intent,
+    targetID: TARGETED_INTENTS.has(intent) ? value.targetID : null,
+    horizon: value.horizon,
+    model: clean(model) || "unknown",
+  };
 }
 
 // Recover exactly one complete top-level JSON object from provider framing.
@@ -109,6 +110,9 @@ export function parseIntentDirective(
   allowedIntents = INTENTS,
 ) {
   if (typeof text !== "string") return null;
+  if (usesOutcomeContract(allowedIntents)) {
+    return normalizeIntentDirective(text.trim(), state, model, allowedIntents);
+  }
   const payload = singleJsonObjectPayload(text);
   if (payload === null) return null;
   let value;

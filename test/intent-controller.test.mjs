@@ -34,54 +34,50 @@ const state = {
   recentKinds: ["attack", "build"],
 };
 
-test("accepts only exact outcome packets", () => {
+test("accepts only exact outcome intents", () => {
   assert.deepEqual(
     normalizeIntentDirective(
-      { intent: "finish" },
+      "finish",
       state,
       "planner-model",
     ),
     { intent: "finish", model: "planner-model" },
   );
   assert.deepEqual(
-    normalizeIntentDirective({ intent: "grow" }, state),
+    normalizeIntentDirective("grow", state),
     { intent: "grow", model: "unknown" },
   );
 });
 
 test("accepts only the two planner outcomes", () => {
   assert.deepEqual(
-    normalizeIntentDirective({ intent: "grow" }, state),
+    normalizeIntentDirective("grow", state),
     { intent: "grow", model: "unknown" },
   );
   assert.deepEqual(
-    normalizeIntentDirective({ intent: "finish" }, state),
+    normalizeIntentDirective("finish", state),
     { intent: "finish", model: "unknown" },
   );
   for (const intent of ["secure", "expand", "consolidate", "convert", "defend", "ally", "pressure"]) {
-    assert.equal(normalizeIntentDirective({ intent }, state), null);
+    assert.equal(normalizeIntentDirective(intent, state), null);
   }
 });
 
-test("parses exactly one transport-framed JSON mission packet", () => {
-  const packet = '{"intent":"grow"}';
+test("parses exactly one bare intent", () => {
+  const packet = "grow";
   const expected = { intent: "grow", model: "planner-model" };
   assert.deepEqual(parseIntentDirective(packet, state, "planner-model"), expected);
-  for (const framed of [
-    `Here is the plan: ${packet}`,
-    `${packet}\nDone.`,
-    "```json\n" + packet + "\n```",
-    "```\n" + packet + "\n```",
-    `My mission:\n\n${packet}\n\nGood luck.`,
+  for (const whitespace of [
+    ` ${packet} `,
+    `\n${packet}\n`,
   ]) {
-    assert.deepEqual(parseIntentDirective(framed, state, "planner-model"), expected);
+    assert.deepEqual(parseIntentDirective(whitespace, state, "planner-model"), expected);
   }
   for (const rejected of [
-    `${packet}${packet}`,
-    `${packet} and also {"intent":"finish"}`,
-    '{"intent":"grow"',
-    `closing stray } before ${packet}`,
-    "no packet at all",
+    '{"intent":"grow"}',
+    "grow finish",
+    "Here is the intent: grow",
+    "```grow```",
     "",
   ]) {
     assert.equal(parseIntentDirective(rejected, state), null);

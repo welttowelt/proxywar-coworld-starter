@@ -358,17 +358,15 @@ test("intent-core planner asks only for one outcome", async () => {
   assert.match(doctrine, /FREEDOM:/);
   assert.match(doctrine, /CAPTAIN_UNDERPANTS_PRODUCTION_DOCTRINE/);
   assert.match(source, /process\.env\.PLAN_MODE === "on"/);
-  assert.match(source, /"intent":/);
-  assert.match(source, /exactly one key/);
-  assert.match(source, /\{"intent":"grow"\}/);
-  assert.match(source, /\{"intent":"finish"\}/);
+  assert.match(source, /Reply with exactly one word: grow or finish\./);
+  assert.doesNotMatch(source, /exactly one key/);
   assert.doesNotMatch(source, /\{"intent":"secure"\}/);
   assert.match(source, /Return only the intent\. Execution is delegated\./);
   assert.doesNotMatch(source, /increase territory or economy without harming a rival/);
   assert.doesNotMatch(source, /preserve strength and improve what you hold/);
   assert.doesNotMatch(source, /turn a clear advantage into a rival's loss/);
   assert.match(source, /"horizon":/);
-  assert.match(source, /max_tokens: 64/);
+  assert.match(source, /max_tokens: POLICY_ENGINE === "intent-core" \? 8 : 64/);
   assert.match(source, /Array\.isArray\(r\?\.content\)/);
   assert.match(source, /\.join\("\\n"\)/);
   assert.doesNotMatch(source, /"focus":/);
@@ -661,9 +659,7 @@ test("intent-core grow delegates optional diplomacy to the mature executor", asy
       NODE_ENV: "test",
       PLAN_MODE: "on",
       POLICY_ENGINE: "intent-core",
-      INTENT_TEST_DIRECTIVE: JSON.stringify({
-        intent: "grow",
-      }),
+      INTENT_TEST_DIRECTIVE: "grow",
       COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
       AWS_EC2_METADATA_DISABLED: "true",
     },
@@ -748,7 +744,7 @@ test("intent-only finish leaves target choice and continuity to the executor", a
       NODE_ENV: "test",
       PLAN_MODE: "on",
       POLICY_ENGINE: "intent-core",
-      INTENT_TEST_DIRECTIVE: JSON.stringify({ intent: "finish" }),
+      INTENT_TEST_DIRECTIVE: "finish",
       COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
       AWS_EC2_METADATA_DISABLED: "true",
     },
