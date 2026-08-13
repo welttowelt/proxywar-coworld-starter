@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-candidate:v43-unforced-grow",
+    "parent_ref": "xX_UwU_Senpai_420_Xx:v40",
+    "exact_deltas": [
+      "For grow, pass no strategic mode to the unchanged mature executor. Keep finish unchanged."
+    ],
+    "source_commit": "e308b71a6083f1000a28946738ab5850269407ec",
+    "parent_commit": "7cdca3128c32593bace1955fa7c26f3726ef3d5a",
+    "image_id": "sha256:96d14f9b275fbfa343e13c8f22b66b2c75944a270a7a2b79b964cd92cb66d0b8",
+    "image_identity": {
+      "docker_linux_amd64_id": "sha256:96d14f9b275fbfa343e13c8f22b66b2c75944a270a7a2b79b964cd92cb66d0b8",
+      "coworld_client_hash": "sha256:96d14f9b275fbfa343e13c8f22b66b2c75944a270a7a2b79b964cd92cb66d0b8",
+      "contract": "Coworld 0.1.38 uses the content-addressed Docker image ID as its local client hash. The upload must return this image binding before the policy version is accepted."
+    }
+  },
+  "hypothesis": "Grow is an outcome, not a neutral-expansion instruction. Removing the adapter's hidden grow preference lets the unchanged mature executor select actions and targets while the planner remains limited to grow or finish.",
+  "mechanism": {
+    "marker": "ib2",
+    "prior_reachable_decisions": 1
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "contract_sha256": "fff8de144492f2d77d08b318eb55184ed13521615a8e2cb9c45ac42ebc51a030",
+    "audit_receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v43-unforced-grow-local-20260813.json",
+      "sha256": "15e7b68414786b679ee256e9f1cccefb6c7151955799758df86f4661cd70d0d2"
+    },
+    "differential_binding": {
+      "verifier_path": "experiments/v43/verify-unforced-grow-differential.mjs",
+      "fixture_path": "experiments/v43/unforced-grow-fixture.json"
+    }
+  },
+  "preupload_rci": {
+    "receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v43-preupload-rci-20260813.json",
+      "sha256": "0aec6e4c5dda20c0391fe2e7b5542caa746629d3bb0c8f042c7e27071afb09e3"
+    }
+  },
+  "matched_baseline": {
+    "request_id": "cfeval_032046f8-6989-49ce-a7c4-61c86cec7ad5",
+    "policy_ref": "xX_UwU_Senpai_420_Xx:v40",
+    "policy_version_id": "5d95113e-3fc8-4bde-bdc9-5a76eeeb4a8f",
+    "same_roster": true,
+    "same_variant": true,
+    "episodes": 4,
+    "wins": 0,
+    "scope": "Parent evidence only; it cannot establish v43 lift or support promotion."
+  },
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_fallbacks": 0,
+      "max_degradations": 0,
+      "max_rejections": 0,
+      "max_k1z_harm": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  }
+}

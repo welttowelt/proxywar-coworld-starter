@@ -1,0 +1,46 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T12:06:00Z",
+  "lane": "0d1novizzz",
+  "status": "passed",
+  "verdict": "PASS_PREUPLOAD_RCI",
+  "candidate_source_commit": "e308b71a6083f1000a28946738ab5850269407ec",
+  "candidate_image_id": "sha256:96d14f9b275fbfa343e13c8f22b66b2c75944a270a7a2b79b964cd92cb66d0b8",
+  "candidate_docker_image_id": "sha256:96d14f9b275fbfa343e13c8f22b66b2c75944a270a7a2b79b964cd92cb66d0b8",
+  "candidate_coworld_client_hash": "sha256:96d14f9b275fbfa343e13c8f22b66b2c75944a270a7a2b79b964cd92cb66d0b8",
+  "parent_source_commit": "7cdca3128c32593bace1955fa7c26f3726ef3d5a",
+  "preregister_sha256": "fff8de144492f2d77d08b318eb55184ed13521615a8e2cb9c45ac42ebc51a030",
+  "local_audit_sha256": "15e7b68414786b679ee256e9f1cccefb6c7151955799758df86f4661cd70d0d2",
+  "differential_proof_sha256": "60647fb3f4d4fc968b30e3a61516f25984fa633a96f732f95f8fb077b90b54a9",
+  "critique": {
+    "strongest_evidence": "The candidate changes one adapter decision: grow no longer passes a neutral-action preference. A same-state differential changes only grow from neutral expansion to the mature executor's rival attack; finish, pressure defense, and K1Z no-harm remain unchanged. The exact image completes 13 of 13 candidate decisions with twelve planner-marked grow packets and zero candidate fallback, degradation, rejection, hold, or K1Z harm.",
+    "adverse_evidence": "The parent was clean but tied v17 at zero wins across four matched fields. The valid local trace ends before rival contact and therefore does not exercise the changed choice. Four earlier local launches were tooling errors and are quarantined. The full repository suite still has existing unrelated mutable-fixture failures.",
+    "remaining_uncertainty": "Only hosted matched fields can show whether removing grow's hidden action preference improves outcomes. A clean runtime without a strict matched win advantage is insufficient."
+  },
+  "checks": {
+    "single_change": true,
+    "planner_unchanged": true,
+    "two_intent_vocabulary": true,
+    "actions_targets_tactics_timing_forbidden": true,
+    "third_intent_forbidden": true,
+    "mature_executor_unchanged": true,
+    "k1z_boundary_unchanged": true,
+    "same_state_grow_changed": true,
+    "finish_unchanged": true,
+    "pressure_defense_unchanged": true,
+    "k1z_no_harm_unchanged": true,
+    "exact_image_planner_path_reach": true,
+    "zero_candidate_runtime_violations": true,
+    "local_competitive_lift_not_claimed": true,
+    "runner_released": true,
+    "diagnostic_only": true,
+    "league_mutation_forbidden": true
+  },
+  "stop_conditions": [
+    "candidate wins no more matched fields than v17",
+    "any K1Z harm or unresolved target identity",
+    "any planner parse failure, fallback, degradation, rejection, or avoidable hold"
+  ],
+  "unresolved_violations": 0,
+  "authorized_next_action": "One identity-bound diagnostic upload, then exactly one preregistered four-field matched comparison against v17. No league mutation."
+}

@@ -1,0 +1,190 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T12:04:00Z",
+  "lane": "0d1novizzz",
+  "arm": "v43-unforced-grow",
+  "status": "passed_local_mechanism_and_runtime",
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "failures": [],
+  "candidate_source_commit": "e308b71a6083f1000a28946738ab5850269407ec",
+  "candidate_image_id": "sha256:96d14f9b275fbfa343e13c8f22b66b2c75944a270a7a2b79b964cd92cb66d0b8",
+  "candidate_coworld_client_hash": "sha256:96d14f9b275fbfa343e13c8f22b66b2c75944a270a7a2b79b964cd92cb66d0b8",
+  "parent_source_commit": "7cdca3128c32593bace1955fa7c26f3726ef3d5a",
+  "contract_sha256": "fff8de144492f2d77d08b318eb55184ed13521615a8e2cb9c45ac42ebc51a030",
+  "required_coalition_roles": ["odin", "v17-control"],
+  "source": {
+    "single_change": "Grow passes no strategic mode to the unchanged mature executor; finish remains unchanged.",
+    "planner_changed": false,
+    "planner_intents": ["grow", "finish"],
+    "executor_changed": false,
+    "k1z_boundary_changed": false
+  },
+  "image": {
+    "tag": "proxywar-agent-candidate:v43-unforced-grow",
+    "docker_linux_amd64_id": "sha256:96d14f9b275fbfa343e13c8f22b66b2c75944a270a7a2b79b964cd92cb66d0b8",
+    "coworld_0_1_38_client_hash": "sha256:96d14f9b275fbfa343e13c8f22b66b2c75944a270a7a2b79b964cd92cb66d0b8",
+    "architecture": "linux/amd64",
+    "run": ["node", "/app/llm-player.mjs"],
+    "user": "node",
+    "env": {
+      "POLICY_ENGINE": "intent-core",
+      "POLICY_CODENAME": "ib3"
+    },
+    "file_sha256": {
+      "llm-player.mjs": "15fd5c07f2fd8bfeb9a238662a5c22b558d7cecfc66926f7a976b0a788273322",
+      "intent-core.mjs": "050c985f28bf02c9f9892a8dd2c2133863daea24876feb50df84b6041a15fe48",
+      "strategy-engine.mjs": "292b50f9f17f6d1e240733eabab388c788527d7334f2e163fda29cae9f7304"
+    }
+  },
+  "differential": {
+    "proof": "experiments/v43/differential-proof-e308b71a.json",
+    "proof_sha256": "60647fb3f4d4fc968b30e3a61516f25984fa633a96f732f95f8fb077b90b54a9",
+    "fixture": "experiments/v43/unforced-grow-fixture.json",
+    "fixture_sha256": "f46064e23aad0884d63d8d2df04e70eda8b3079007acb4f68194af4c91ba4f8f",
+    "verifier": "experiments/v43/verify-unforced-grow-differential.mjs",
+    "verifier_sha256": "35a1df5e8b224b75452782ca7a0bd24339d33e27c88c1c40d70b1aaff37ae8f9",
+    "cases": 4,
+    "changed_cases": 1,
+    "grow": {
+      "parent_action": "expand:terra-nullius:35",
+      "candidate_action": "attack:rival:40"
+    },
+    "finish_unchanged": true,
+    "pressure_defense_unchanged": true,
+    "k1z_no_harm_unchanged": true
+  },
+  "tests": {
+    "focused": {
+      "total": 41,
+      "passed": 41,
+      "failed": 0,
+      "files": [
+        "test/intent-core.test.mjs",
+        "test/intent-controller.test.mjs",
+        "test/llm-player.integration.test.mjs"
+      ]
+    },
+    "full": {
+      "new_candidate_failures": 0,
+      "clean": false,
+      "note": "The existing suite still reports unrelated mutable Mickey activation and reaper fixture failures. No intent-core candidate failure appeared."
+    }
+  },
+  "local_runs": {
+    "quarantined": [
+      {"attempt": "r1", "reason": "CLI run argument quoting"},
+      {"attempt": "r2", "reason": "mixed config and positional image"},
+      {"attempt": "r3", "reason": "Coworld 0.1.28 manifest schema skew"},
+      {"attempt": "r4", "reason": "minimal job omitted the manifest required by Coworld 0.1.38"}
+    ],
+    "valid": {
+      "run_id": "v43-unforced-grow-12-r5-20260813T115300Z",
+      "output_directory": "/private/tmp/proxywar-v43-unforced-grow-12-r5-20260813T115300Z",
+      "engine_version": "0.1.39",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "candidate_slot": 0,
+      "control_slots": 15,
+      "max_decision_steps": 12,
+      "candidate": {
+        "decisions": 13,
+        "accepted": 13,
+        "spawn": 1,
+        "attacks": 12,
+        "neutral_attacks": 12,
+        "planner_marked_grow": 12,
+        "fallbacks": 0,
+        "degradations": 0,
+        "rejections": 0,
+        "holds": 0,
+        "k1z_harm": 0,
+        "final_tiles": 19198,
+        "score": 0.06146192165349793,
+        "alive": true
+      },
+      "control_caveat": "All 180 global fallback and degradation markers came from the fifteen controls receiving an invalid local test directive; the candidate had zero.",
+      "artifact_sha256": {
+        "config": "a606725b64da16fef9e6116eff465ed7eaab060a223cbd6b7cf4d930edd63224",
+        "replay": "f436c2ff3b18810d1345ffe968574a68c751d61875ddc73bbccbbd235c0548f7",
+        "results": "d8d34edfb26447f69a9d27e351ebe8934e1b3ee8bef9d58021b4c6c5989437a8",
+        "candidate_log": "6c6cb5c5c61f4635dc5a1cfd963ef319b6aae3a0d372a23f7b064dd5d07eebc9"
+      }
+    }
+  },
+  "runs": [
+    {
+      "run_id": "v43-unforced-grow-12-r5-20260813T115300Z",
+      "orientation": "A",
+      "mode": "16-player planner-path mechanism",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "decision_cap_per_agent": 12,
+      "directory": "/private/tmp/proxywar-v43-unforced-grow-12-r5-20260813T115300Z",
+      "replay_sha256": "f436c2ff3b18810d1345ffe968574a68c751d61875ddc73bbccbbd235c0548f7",
+      "coalition_roles_present": ["odin", "v17-control"],
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image_id": "sha256:96d14f9b275fbfa343e13c8f22b66b2c75944a270a7a2b79b964cd92cb66d0b8"
+          }
+        }
+      },
+      "candidate": {
+        "decision_count": 13,
+        "accepted": 13,
+        "route_execution_count": 12,
+        "marker_counts": {"ib2": 12, "ixgrw": 12},
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "unexplained_holds": [],
+        "harmful_k1z_actions": [],
+        "unresolved_harmful_targets": []
+      }
+    }
+  ],
+  "differential_unit_proof": {
+    "schema_version": 1,
+    "arm": "v43-unforced-grow",
+    "same_fixture": true,
+    "verifier": {
+      "evaluator_commit": "0d6319420953432e4054e04f46aa1f45580aac95",
+      "path": "experiments/v43/verify-unforced-grow-differential.mjs",
+      "sha256": "35a1df5e8b224b75452782ca7a0bd24339d33e27c88c1c40d70b1aaff37ae8f9"
+    },
+    "fixture": {
+      "id": "v43-unforced-grow",
+      "path": "experiments/v43/unforced-grow-fixture.json",
+      "sha256": "f46064e23aad0884d63d8d2df04e70eda8b3079007acb4f68194af4c91ba4f8f"
+    },
+    "parent": {
+      "source_commit": "7cdca3128c32593bace1955fa7c26f3726ef3d5a",
+      "selected_action_id": "expand:terra-nullius:35"
+    },
+    "candidate": {
+      "source_commit": "e308b71a6083f1000a28946738ab5850269407ec",
+      "selected_action_id": "attack:rival:40"
+    },
+    "test_command": [
+      "node",
+      "experiments/v43/verify-unforced-grow-differential.mjs",
+      ".",
+      "7cdca3128c32593bace1955fa7c26f3726ef3d5a",
+      "e308b71a6083f1000a28946738ab5850269407ec",
+      "experiments/v43/unforced-grow-fixture.json",
+      "experiments/v43/differential-proof-e308b71a.json"
+    ],
+    "test_exit_code": 0
+  },
+  "interpretation": {
+    "proved": "The exact image reaches the unchanged two-intent planner path cleanly, and the same-state proof removes grow's hidden neutral-action preference while preserving finish, defense, and K1Z safety.",
+    "not_proved": "The short runtime ends before rival contact, so it does not exercise the changed rival-versus-neutral choice and provides no competitive evidence.",
+    "next_gate": "One diagnostic upload followed by one four-field matched comparison against v17."
+  },
+  "runner_released": true,
+  "named_containers_remaining": 0,
+  "promotion_ready": false
+}

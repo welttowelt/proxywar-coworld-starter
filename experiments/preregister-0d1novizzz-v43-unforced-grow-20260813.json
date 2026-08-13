@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "preregistered_at": "2026-08-13T12:02:00Z",
+  "player": "0d1novizzz",
+  "candidate": "v43-unforced-grow",
+  "parent": "v42-intent-delegation",
+  "hypothesis": "Grow is an outcome, not an instruction to prefer neutral expansion. Removing that hidden preference lets the unchanged mature executor choose the action and target while the planner remains limited to grow or finish.",
+  "single_change": "For grow, pass no strategic mode to the mature executor. Keep finish as the only explicit strategic mode.",
+  "frozen_contract": {
+    "intents": ["grow", "finish"],
+    "planner_prompt_unchanged": true,
+    "planner_schema_unchanged": true,
+    "actions_forbidden": true,
+    "targets_forbidden": true,
+    "tactics_forbidden": true,
+    "timing_forbidden": true,
+    "third_intent_forbidden": true,
+    "mature_executor_unchanged": true,
+    "k1z_no_harm_unchanged": true
+  },
+  "evidence_basis": {
+    "parent_matched_eval": "cfeval_032046f8-6989-49ce-a7c4-61c86cec7ad5",
+    "parent_candidate_wins": 0,
+    "v17_wins": 0,
+    "neutral_fields": 4,
+    "parent_rival_attacks": 45,
+    "parent_neutral_expansions": 32,
+    "winner_rival_attacks": 107,
+    "diagnosis": "intent-core passed strategicIntent grow to strategy-engine, which encoded a neutral-attack preference. The adapter therefore still translated an intent into an action family."
+  },
+  "local_success_bar": [
+    "same-state grow changes from neutral expansion to the mature executor's unforced rival attack",
+    "finish, pressure defense, and K1Z no-harm are unchanged",
+    "the exact image reaches planner-marked grow decisions with zero candidate fallback, degradation, rejection, hold, or K1Z harm",
+    "focused intent and integration tests pass"
+  ],
+  "hosted_gate": {
+    "diagnostic_only_first": true,
+    "matched_fields": 4,
+    "baseline": "xX_UwU_Senpai_420_Xx:v17",
+    "required_candidate_advantage": "strictly more matched wins than v17",
+    "max_fallbacks": 0,
+    "max_degradations": 0,
+    "max_rejections": 0,
+    "max_avoidable_holds": 0,
+    "max_k1z_harm": 0,
+    "promotion_authorized": false
+  },
+  "kill_bar": "Kill on a tie, loss, any runtime violation, or any K1Z harm.",
+  "authorized_next_action": "Complete local evidence and one identity-bound diagnostic upload, then run exactly one four-field matched comparison against v17. No league mutation is authorized."
+}
