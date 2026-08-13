@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "preregistered_at": "2026-08-13T05:38:00Z",
+  "player": "0d1novizzz",
+  "candidate": "v37-intent-delegated-material",
+  "parent": "v36-intent-material-gate",
+  "hypothesis": "The planner should choose only grow, secure, or finish, while one proven executor owns tactics. Delegating the material safe menu to the mature selector will remove v36's duplicate tactical ranking without restoring v35's symbolic loop.",
+  "planner_contract": {
+    "keys": [
+      "intent"
+    ],
+    "values": [
+      "grow",
+      "secure",
+      "finish"
+    ],
+    "changed_from_parent": false
+  },
+  "single_variable": {
+    "changed": "Replace the compact utility ranker with the mature runtime selector over the already-filtered safe material menu.",
+    "unchanged": [
+      "one-field planner prompt and response schema",
+      "material action gate",
+      "hold preference when no material action exists",
+      "K1Z no-harm filter",
+      "Bedrock transport",
+      "league champion"
+    ]
+  },
+  "local_acceptance": [
+    "focused intent and integration suites pass",
+    "grow delegates a material menu to the mature selector",
+    "symbolic-only menu selects hold",
+    "K1Z no-harm tests remain green",
+    "same-fixture differential proves removal of v36 utility-ranking behavior",
+    "exact-image bounded 16-player trace has no rejection, fallback, degradation, or symbolic action"
+  ],
+  "hosted_kill_bar": [
+    "any hosted score of zero",
+    "any unexplained fallback, degradation, rejection, or parse failure",
+    "any repeated symbolic-action loop",
+    "any K1Z harm"
+  ],
+  "promotion_bar": {
+    "automatic_diagnostic_is_sufficient": false,
+    "matched_hosted": "4/4",
+    "separate_validation": "20/20",
+    "final_rci_required": true
+  },
+  "league_mutation_authorized": false
+}
