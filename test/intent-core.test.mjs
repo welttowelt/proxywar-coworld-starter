@@ -51,6 +51,13 @@ function build(unit = "Factory", metadata = {}) {
   return action(`build:${unit}`, "build", `Build ${unit}`, { unit, ...metadata });
 }
 
+function upgrade(unit = "Port", unitId = 95) {
+  return action(`upgrade:${unit}:${unitId}`, "upgrade_structure", `Upgrade ${unit}`, {
+    unit,
+    unitId,
+  });
+}
+
 function attack(targetID, percent = 40, risk = "low") {
   return {
     ...action(`attack:${targetID}:${percent}`, "attack", `Attack ${targetID}`, {
@@ -144,6 +151,24 @@ test("grow keeps a strike outside its action family", () => {
   });
   assert.equal(selected.id, "expand:terra-nullius:35");
   assert.ok(selected.policyMarkers.includes("ixgrw"));
+});
+
+test("grow ranks direct capacity ahead of maintenance upgrades", () => {
+  const selected = decide([upgrade(), build("City"), hold()], "grow");
+  assert.equal(selected.id, "build:City");
+  assert.ok(selected.policyMarkers.includes("ixgrw"));
+});
+
+test("grow preserves an upgrade when no direct grow action exists", () => {
+  const selected = decide([upgrade(), hold()], "grow");
+  assert.equal(selected.id, "upgrade:Port:95");
+  assert.ok(selected.policyMarkers.includes("ixgrw"));
+});
+
+test("direct-grow filtering does not alter the finish menu", () => {
+  const selected = decide([upgrade(), hold()], "finish");
+  assert.equal(selected.id, "upgrade:Port:95");
+  assert.ok(selected.policyMarkers.includes("ixfin"));
 });
 
 test("unavailable intent defaults to productive grow ranking", () => {

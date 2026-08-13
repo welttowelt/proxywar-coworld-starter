@@ -72,6 +72,10 @@ function intentMenu(actions, intent, state) {
       ["attack", "boat", "nuke", "warship", "move_warship"].includes(action.kind)
     );
   });
+  if (intent === "grow") {
+    const direct = matching.filter((action) => action.kind !== "upgrade_structure");
+    if (direct.length > 0) return direct;
+  }
   return matching.length > 0 ? matching : actions;
 }
 
