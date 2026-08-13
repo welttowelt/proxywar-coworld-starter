@@ -1,0 +1,178 @@
+{
+  "schema_version": 1,
+  "id": "v42-intent-delegation",
+  "description": "Bounded same-state cases isolate deletion of the v41 action routers while preserving intent packets and K1Z safety.",
+  "cases": [
+    {
+      "id": "restore-inbound-alliance",
+      "intent": "grow",
+      "actions": [
+        {
+          "id": "alliance_reject:rival",
+          "kind": "alliance_reject",
+          "label": "Reject Rival",
+          "risk": { "level": "low" },
+          "metadata": { "recipientID": "rival", "recipientName": "Rival" }
+        },
+        {
+          "id": "alliance:rival",
+          "kind": "alliance_request",
+          "label": "Ally with Rival",
+          "risk": { "level": "low" },
+          "metadata": { "recipientID": "rival", "recipientName": "Rival" }
+        },
+        {
+          "id": "hold",
+          "kind": "hold",
+          "label": "Hold",
+          "risk": { "level": "low" },
+          "metadata": {}
+        }
+      ],
+      "observation": {
+        "phase": "active",
+        "ownState": {
+          "tileShare": 0.08,
+          "troopRatio": 1,
+          "troops": 500000,
+          "gold": 250000,
+          "borderTiles": 100,
+          "incomingAttacks": 0
+        },
+        "visiblePlayers": [
+          {
+            "id": "rival",
+            "name": "Rival",
+            "isAlive": true,
+            "tileShare": 0.2,
+            "relativeTroopRatio": 0.7,
+            "sharesBorder": true,
+            "canAttack": true,
+            "isAllied": false
+          }
+        ]
+      },
+      "history": [],
+      "expected_parent_action_id": "hold",
+      "expected_candidate_action_id": "alliance:rival"
+    },
+    {
+      "id": "pressure-defense-unchanged",
+      "intent": "grow",
+      "actions": [
+        {
+          "id": "attack:raider:40",
+          "kind": "attack",
+          "label": "Attack Raider 40%",
+          "risk": { "level": "low" },
+          "metadata": {
+            "targetID": "raider",
+            "targetName": "Raider",
+            "troopPercent": 40
+          }
+        },
+        {
+          "id": "alliance:rival",
+          "kind": "alliance_request",
+          "label": "Ally with Rival",
+          "risk": { "level": "low" },
+          "metadata": { "recipientID": "rival", "recipientName": "Rival" }
+        },
+        {
+          "id": "hold",
+          "kind": "hold",
+          "label": "Hold",
+          "risk": { "level": "low" },
+          "metadata": {}
+        }
+      ],
+      "observation": {
+        "phase": "active",
+        "ownState": {
+          "tileShare": 0.08,
+          "troopRatio": 1,
+          "troops": 500000,
+          "gold": 250000,
+          "borderTiles": 100,
+          "incomingAttacks": 1
+        },
+        "combat": { "incomingAttackPlayerIDs": ["raider"] },
+        "visiblePlayers": [
+          {
+            "id": "raider",
+            "name": "Raider",
+            "isAlive": true,
+            "tileShare": 0.2,
+            "relativeTroopRatio": 1.2,
+            "sharesBorder": true,
+            "canAttack": true,
+            "isAllied": false
+          },
+          {
+            "id": "rival",
+            "name": "Rival",
+            "isAlive": true,
+            "tileShare": 0.15,
+            "relativeTroopRatio": 0.9,
+            "sharesBorder": true,
+            "canAttack": true,
+            "isAllied": false
+          }
+        ]
+      },
+      "history": [],
+      "expected_parent_action_id": "attack:raider:40",
+      "expected_candidate_action_id": "attack:raider:40"
+    },
+    {
+      "id": "k1z-no-harm-unchanged",
+      "intent": "finish",
+      "actions": [
+        {
+          "id": "attack:ply_e982e621-9ca3-47cd-8151-f57ee9d99421:40",
+          "kind": "attack",
+          "label": "Attack K1Z Mickey Mouse 40%",
+          "risk": { "level": "low" },
+          "metadata": {
+            "targetID": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+            "targetName": "K1Z Mickey Mouse",
+            "troopPercent": 40
+          }
+        },
+        {
+          "id": "hold",
+          "kind": "hold",
+          "label": "Hold",
+          "risk": { "level": "low" },
+          "metadata": {}
+        }
+      ],
+      "observation": {
+        "phase": "active",
+        "ownState": {
+          "tileShare": 0.6,
+          "troopRatio": 1,
+          "troops": 500000,
+          "gold": 250000,
+          "borderTiles": 100,
+          "incomingAttacks": 0
+        },
+        "visiblePlayers": [
+          {
+            "id": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+            "name": "K1Z Mickey Mouse",
+            "isAlive": true,
+            "tileShare": 0.2,
+            "relativeTroopRatio": 2,
+            "sharesBorder": true,
+            "canAttack": true,
+            "isAllied": false
+          }
+        ]
+      },
+      "history": [],
+      "expected_parent_action_id": "hold",
+      "expected_candidate_action_id": "hold"
+    }
+  ]
+}

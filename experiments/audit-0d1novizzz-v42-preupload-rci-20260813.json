@@ -1,0 +1,62 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T11:02:00Z",
+  "lane": "0d1novizzz",
+  "status": "passed",
+  "verdict": "PASS_PREUPLOAD_RCI",
+  "candidate_source_commit": "7cdca3128c32593bace1955fa7c26f3726ef3d5a",
+  "candidate_image_id": "sha256:320f991e833912f9e9295d5597dd6ece88dfc759d19998ec3d4bb03e2b1348a0",
+  "candidate_docker_image_id": "sha256:320f991e833912f9e9295d5597dd6ece88dfc759d19998ec3d4bb03e2b1348a0",
+  "candidate_coworld_client_hash": "sha256:84eb96e3c7f20634b5f158fb3315b6abbc9aa0278aa6d86e8ffee01dc4b20521",
+  "parent_source_commit": "e8ceb516bcdaaaeb06b557228b1a6cf6b73e8c6f",
+  "preregister_sha256": "b7f079ec825f25eb3ec6e286e36e49605f8694fc326f155be7cab59bfc73f0ce",
+  "local_audit_sha256": "4abce79403011d91137fb96669e32300818d98bbd0cd5a841ce89e1429517966",
+  "differential_proof_sha256": "8a74ff9f99325d730bd913512d9975364fd1e5a2931b9eee4c518cbe479de725",
+  "critique": {
+    "strongest_evidence": "v42 deletes 49 and adds four lines in intent-core: the planner prompt, one-key schema, grow/finish vocabulary, refresh cadence, mature executor, and K1Z boundary stay unchanged while both action routers disappear. The same-state verifier changes exactly one case from hold to accepting a safe inbound alliance, preserves pressure defense and K1Z no-harm, focused tests pass 42/42, and the corrected exact-image trace completes 13/13 candidate decisions with twelve pln:*:ixgrw decisions and zero fallback, degradation, rejection, hold, or harmful target.",
+    "adverse_evidence": "The first local image was misbuilt without intent-core arguments and produced twelve degraded decisions. It was caught before upload, quarantined, and superseded by an exact corrected image. The corrected short trace does not reach the restored diplomacy case. v41 tied v17 at 0-0 across four matched fields, so structural simplification still has no competitive outcome evidence.",
+    "remaining_uncertainty": "Hosted fields must show that restoring the mature executor's full safe capability set creates a strict matched advantage rather than restoring unproductive alliance churn. The planner may still choose grow exclusively. Any K1Z harm, planner parse failure, fallback, degradation, rejection, or avoidable hold kills the candidate."
+  },
+  "checks": {
+    "single_change": true,
+    "net_code_deletion": true,
+    "planner_unchanged": true,
+    "two_intent_vocabulary": true,
+    "planner_actions_forbidden": true,
+    "planner_targets_forbidden": true,
+    "planner_tactical_instructions_forbidden": true,
+    "planner_timing_forbidden": true,
+    "third_intent_forbidden": true,
+    "mature_executor_unchanged": true,
+    "k1z_boundary_unchanged": true,
+    "same_state_parent_hold": true,
+    "same_state_candidate_inbound_alliance": true,
+    "pressure_defense_unchanged": true,
+    "k1z_no_harm_unchanged": true,
+    "exact_image_planner_path_reach": true,
+    "zero_candidate_fallback": true,
+    "zero_candidate_degradation": true,
+    "zero_candidate_hold": true,
+    "zero_candidate_rejection": true,
+    "mistraced_image_quarantined": true,
+    "local_competitive_lift_not_claimed": true,
+    "runner_released": true,
+    "diagnostic_only": true,
+    "league_mutation_forbidden": true
+  },
+  "open_gates": [
+    "identity-bound diagnostic upload",
+    "matched candidate advantage over v17",
+    "hosted 4/4",
+    "separate map-and-seat regression 20/20",
+    "final promotion RCI"
+  ],
+  "stop_conditions": [
+    "candidate wins no more matched fields than v17",
+    "any K1Z harm or unresolved target identity",
+    "any planner fallback, degradation, rejection, or parse failure",
+    "any avoidable hold"
+  ],
+  "unresolved_violations": 0,
+  "authorized_next_action": "One diagnostic upload only, then a preregistered four-field matched v17 comparison. No unmatched automatic batch, league submission, membership change, or champion change."
+}

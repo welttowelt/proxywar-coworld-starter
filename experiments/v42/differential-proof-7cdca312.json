@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "arm": "v42-intent-delegation",
+  "passed": true,
+  "same_fixture": true,
+  "parent_source_commit": "e8ceb516bcdaaaeb06b557228b1a6cf6b73e8c6f",
+  "candidate_source_commit": "7cdca3128c32593bace1955fa7c26f3726ef3d5a",
+  "fixture": "experiments/v42/intent-delegation-fixture.json",
+  "cases": [
+    {
+      "id": "restore-inbound-alliance",
+      "intent": "grow",
+      "parent_action_id": "hold",
+      "candidate_action_id": "alliance:rival",
+      "changed": true
+    },
+    {
+      "id": "pressure-defense-unchanged",
+      "intent": "grow",
+      "parent_action_id": "attack:raider:40",
+      "candidate_action_id": "attack:raider:40",
+      "changed": false
+    },
+    {
+      "id": "k1z-no-harm-unchanged",
+      "intent": "finish",
+      "parent_action_id": "hold",
+      "candidate_action_id": "hold",
+      "changed": false
+    }
+  ]
+}
