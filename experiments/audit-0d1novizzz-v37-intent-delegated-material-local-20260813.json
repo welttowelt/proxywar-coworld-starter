@@ -1,0 +1,164 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T05:49:00Z",
+  "lane": "0d1novizzz",
+  "arm": "v37-intent-delegated-material",
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "candidate_source_commit": "f46a9ca241ccbe530457c247ea6fc3e652b75a87",
+  "candidate_image_id": "sha256:4cf80f36ee26b5961efb2d663a7002bff16b0c2c9a82b8668bedbc09245ef6f1",
+  "parent_source_commit": "1d63cf7f61873071823d63f3e9de0e4a8d1ae86e",
+  "contract_sha256": "c26760319cc5c579d01e2bc5efd389daf60671e39ba24f480e60f23585cffd4c",
+  "failures": [],
+  "required_coalition_roles": [
+    "odin",
+    "v17-control"
+  ],
+  "candidate_image": {
+    "tag": "proxywar-agent-candidate:v37-intent-delegated-material",
+    "image_id": "sha256:4cf80f36ee26b5961efb2d663a7002bff16b0c2c9a82b8668bedbc09245ef6f1",
+    "architecture": "amd64",
+    "os": "linux",
+    "user": "node",
+    "cmd": [
+      "node",
+      "/app/llm-player.mjs"
+    ],
+    "policy_engine": "intent-core",
+    "policy_codename": "id1",
+    "file_sha256": {
+      "/app/llm-player.mjs": "53689aac90e702828a4ee60ff46ec9fcabbbc9b8d981b683bd729f8338a37838",
+      "/app/intent-controller.mjs": "e4928597d7bb6b478174e67e412f03bdf75151f2df73d4cd553cd3324c2dea9d",
+      "/app/intent-core.mjs": "2af33d5ccc73328ca80dcc4a065d6b350efbfaf78aefd67bc89a49fdaa981ba1",
+      "/app/strategy-engine.mjs": "b1d519fe675a4a98d1537e5bb1e5946ab67a784e9280d835e4c02e3f3d8acd97"
+    }
+  },
+  "focused_suite": {
+    "tests": 186,
+    "passed": 186,
+    "failed": 0
+  },
+  "full_suite": {
+    "tests": 472,
+    "passed": 466,
+    "failed": 6,
+    "candidate_related_failures": 0,
+    "persistent_unrelated_failures": 6
+  },
+  "runs": [
+    {
+      "run_id": "v37-intent-delegated-material-12-20260813T0543Z",
+      "orientation": "A",
+      "mode": "16-player opening mechanism",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "decision_cap_per_agent": 12,
+      "directory": "/private/tmp/proxywar-v37-intent-delegated-material-12-20260813T0543Z",
+      "job_sha256": "dfc19c2220fbacec7a9773d6e9067720d0668b89ec28acc881affded60d0e586",
+      "config_sha256": "86414796e28f29cd54ebd138fdb70286ee1ba87db221877cafd1534cccf02823",
+      "results_sha256": "07a8edb21b9c14e2641ee2396457b0ab848bddeaf0c4d97b03845060f7815980",
+      "replay_sha256": "0c6239d3dee454c293d951df864f71197002e596ba126fda359e746032044ba8",
+      "coalition_roles_present": [
+        "odin",
+        "v17-control"
+      ],
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image_id": "sha256:4cf80f36ee26b5961efb2d663a7002bff16b0c2c9a82b8668bedbc09245ef6f1"
+          }
+        }
+      },
+      "candidate": {
+        "slot": 0,
+        "score": 0.06146192165349793,
+        "final_tiles": 19198,
+        "alive": true,
+        "decision_count": 13,
+        "accepted": 13,
+        "route_execution_count": 12,
+        "marker_counts": {
+          "id1": 12
+        },
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "unexplained_holds": [],
+        "harmful_k1z_actions": [],
+        "unresolved_harmful_targets": [],
+        "symbolic_action_count": 0,
+        "action_counts": {
+          "spawn": 1,
+          "attack": 12
+        }
+      },
+      "scope_boundary": "Constant-grow early-stop mechanism evidence only; no competitive lift is claimed."
+    }
+  ],
+  "checks": {
+    "one_field_contract": true,
+    "delegated_executor_reached": true,
+    "material_gate_reached": true,
+    "symbolic_actions_excluded": true,
+    "k1z_safety": true,
+    "competitive_lift_not_claimed": true,
+    "league_mutation_forbidden": true
+  },
+  "runner_lease_after": {
+    "state": "free",
+    "schema_version": 2
+  },
+  "league_state": {
+    "candidate_uploaded": false,
+    "candidate_submitted": false,
+    "candidate_membership_created": false,
+    "candidate_promoted": false,
+    "v17_champion_preserved": true
+  },
+  "differential_unit_proof": {
+    "schema_version": 2,
+    "arm": "intent-delegated-material-v37",
+    "same_fixture": true,
+    "equivalent_goal": "execute grow through one proven tactical system",
+    "verifier": {
+      "evaluator_commit": "28a2ba88cc7a5a79c7ad3d5ec8b460a83cc1ea3f",
+      "path": "experiments/v37/verify-differential.mjs",
+      "sha256": "a83e6c4fb5991af0575128f694a0bebad2a0d9c7fd02180a318b2c47875dda8a"
+    },
+    "fixture": {
+      "id": "v37-intent-delegated-material",
+      "path": "experiments/v37/differential-fixture.json",
+      "sha256": "b163f52409e0237ae494bfe160dddecd2f3f0fba1e724c45b03698bcee25206b"
+    },
+    "parent": {
+      "source_commit": "1d63cf7f61873071823d63f3e9de0e4a8d1ae86e",
+      "selected_action_id": "build:Defense Post:1",
+      "interpretation": "duplicate utility scorer chooses defensive construction"
+    },
+    "candidate": {
+      "source_commit": "f46a9ca241ccbe530457c247ea6fc3e652b75a87",
+      "selected_action_id": "attack:rival:10",
+      "markers": [
+        "id1",
+        "ixgrw"
+      ],
+      "interpretation": "mature executor chooses favorable material conversion"
+    },
+    "safety": {
+      "offered_symbolic_action": "alliance:rival",
+      "candidate_selected_symbolic_action": false
+    },
+    "test_command": [
+      "node",
+      "experiments/v37/verify-differential.mjs",
+      ".",
+      "1d63cf7f61873071823d63f3e9de0e4a8d1ae86e",
+      "f46a9ca241ccbe530457c247ea6fc3e652b75a87",
+      "experiments/v37/differential-fixture.json",
+      "experiments/v37/differential-proof-f46a9ca2.json"
+    ],
+    "test_exit_code": 0
+  }
+}
