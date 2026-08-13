@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "preregistered_at": "2026-08-13T06:02:00Z",
+  "player": "0d1novizzz",
+  "candidate": "v38-intent-boundary",
+  "parent": "v37-intent-delegated-material",
+  "hypothesis": "The one-field planner is sound, but v37 treated intent as a hint and allowed grow to become nukes and an unrestricted boat stream. Constraining the mature executor to action families that match the current intent will make the simple planner causally control behavior without adding tactical instructions.",
+  "planner_contract": {
+    "keys": [
+      "intent"
+    ],
+    "values": [
+      "grow",
+      "secure",
+      "finish"
+    ],
+    "changed_from_parent": false
+  },
+  "single_variable": {
+    "changed": "Treat intent as an action-family boundary before delegating exact action and target selection to the mature executor.",
+    "boundaries": {
+      "grow": "territory-taking attacks or boats, then non-strike infrastructure",
+      "secure": "build, upgrade, retreat, or boat retreat",
+      "finish": "non-neutral attack, boat, nuke, or warship action"
+    },
+    "safety_override": "When the observation reports incoming pressure, the mature executor receives the full safe material menu.",
+    "unchanged": [
+      "three-value one-field planner prompt and response schema",
+      "material action gate",
+      "hold preference when no material action exists",
+      "mature executor",
+      "K1Z no-harm filter",
+      "Bedrock transport",
+      "league champion"
+    ]
+  },
+  "local_acceptance": [
+    "focused intent and integration suites pass",
+    "grow cannot choose a nuke while territory or infrastructure growth is legal",
+    "secure cannot choose an offensive strike while a secure action is legal",
+    "finish cannot choose neutral growth while a rival conversion action is legal",
+    "incoming pressure retains the full safe material defense menu",
+    "symbolic-only menu selects hold",
+    "K1Z no-harm tests remain green",
+    "same-fixture differential proves v37 and v38 choose different action families"
+  ],
+  "hosted_kill_bar": [
+    "any hosted score of zero",
+    "any unexplained fallback, degradation, rejection, or parse failure",
+    "any repeated symbolic-action loop",
+    "any K1Z harm"
+  ],
+  "promotion_bar": {
+    "automatic_diagnostic_is_sufficient": false,
+    "matched_hosted": "4/4",
+    "separate_validation": "20/20",
+    "final_rci_required": true
+  },
+  "league_mutation_authorized": false
+}
