@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-candidate:v41-direct-grow",
+    "parent_ref": "proxywar-agent-candidate:v40-k1z-runtime-alias-lock",
+    "exact_deltas": [
+      "Under grow only, when a safe neutral-territory or new-build action exists, remove maintenance upgrades before invoking the unchanged mature selector."
+    ],
+    "source_commit": "e8ceb516bcdaaaeb06b557228b1a6cf6b73e8c6f",
+    "parent_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
+    "image_id": "sha256:9b411947b0bfdfb81f56ef01bcb161e9f2601b098ee10aa27231e9a8b2070f8d",
+    "image_identity": {
+      "docker_linux_amd64_id": "sha256:9b411947b0bfdfb81f56ef01bcb161e9f2601b098ee10aa27231e9a8b2070f8d",
+      "coworld_client_hash": "sha256:42ff71fcf134374ea40dc8536d1bee2020d56797b6ce60d8f811cb690918e6c8",
+      "contract": "Coworld 0.1.28 hashes the linux/amd64 Docker config and ordered layer contents. Upload-policy must return the image row for this client hash before the policy is accepted as bound."
+    }
+  },
+  "hypothesis": "The planner is already simple. Making direct territory or new capacity outrank maintenance upgrades will express grow more faithfully without adding planner instructions or forcing weak hostility.",
+  "mechanism": {
+    "marker": "ib2",
+    "prior_reachable_decisions": 1
+  },
+  "local": {
+    "runs": 2,
+    "independent_traces": 1,
+    "contract_sha256": "3496fa1730ce7f25f643209aaf9008d8ad336998dccbbba5cbeede47e369de78",
+    "audit_receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v41-direct-grow-local-20260813.json",
+      "sha256": "9797d857666d33d94fb2fe41c4cc7d715b75f57d3befa6f29894e4899143127e"
+    },
+    "differential_binding": {
+      "verifier_path": "experiments/v41/verify-direct-grow-differential.mjs",
+      "fixture_path": "experiments/v41/direct-grow-fixture.json"
+    }
+  },
+  "preupload_rci": {
+    "receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v41-preupload-rci-20260813.json",
+      "sha256": "1720e89101beb6916f1b24bf2fd9e6ef0223f5740e235e1bfc0cee16afd1d1fe"
+    }
+  },
+  "matched_baseline": {
+    "request_id": "cfeval_5581cc3e-b6af-453c-8150-67dc6a4a5a27",
+    "policy_ref": "xX_UwU_Senpai_420_Xx:v38",
+    "policy_version_id": "a4d99911-6027-4862-a080-b3eb9b65b5e2",
+    "same_roster": true,
+    "same_variant": true,
+    "episodes": 4,
+    "wins": 0,
+    "scope": "Parent v40 matched evidence only. It cannot establish v41 lift or support promotion."
+  },
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_fallbacks": 0,
+      "max_degradations": 0,
+      "max_rejections": 0,
+      "max_k1z_harm": 0,
+      "planner_degradation_rule": "no_parse_failure_or_transport_regression",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  }
+}
