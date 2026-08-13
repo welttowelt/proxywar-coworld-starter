@@ -8,7 +8,7 @@
   "screen_mode": "mechanism",
   "competitive_evidence": false,
   "candidate_source_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
-  "candidate_image_id": "sha256:e8cf821ee92ba0a85ec9dc1a994f79a869d8a1addeb9eaa2dad9539bfe80bb96",
+  "candidate_image_id": "sha256:23556ca3bae366a2ada4857132802c95413b86df7cd3a1a394372deb699acac9",
   "parent_source_commit": "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
   "contract_sha256": "8d0dd9aaf663a59b43ad2076360c8a9e5b95f1f747262a16ad0ed49541fb7726",
   "failures": [],
@@ -63,7 +63,7 @@
   },
   "candidate_image": {
     "tag": "proxywar-agent-candidate:v40-k1z-runtime-alias-lock",
-    "image_id": "sha256:e8cf821ee92ba0a85ec9dc1a994f79a869d8a1addeb9eaa2dad9539bfe80bb96",
+    "image_id": "sha256:23556ca3bae366a2ada4857132802c95413b86df7cd3a1a394372deb699acac9",
     "architecture": "amd64",
     "os": "linux",
     "user": "node",
@@ -74,6 +74,14 @@
     "policy_engine": "intent-core",
     "policy_codename": "ib2",
     "byte_identical": true,
+    "platform_binding": {
+      "original_build_reference": "sha256:e8cf821ee92ba0a85ec9dc1a994f79a869d8a1addeb9eaa2dad9539bfe80bb96",
+      "reference_kind": "attested multi-platform manifest list",
+      "linux_amd64_runtime_manifest": "sha256:23556ca3bae366a2ada4857132802c95413b86df7cd3a1a394372deb699acac9",
+      "rebuild_command_change": "--provenance=false only",
+      "source_and_file_bytes_changed": false,
+      "interpretation": "The local run selected the linux/amd64 child from the original manifest list. The corrected diagnostic image pins that same child directly."
+    },
     "file_sha256": {
       "/app/llm-player.mjs": "15fd5c07f2fd8bfeb9a238662a5c22b558d7cecfc66926f7a976b0a788273322",
       "/app/intent-controller.mjs": "410de99715885baf2ff8f1467fc3768f1cacafb77323c85bb92618f6375c4574",
@@ -144,7 +152,7 @@
       "resolved_images": {
         "images": {
           "candidate": {
-            "image_id": "sha256:e8cf821ee92ba0a85ec9dc1a994f79a869d8a1addeb9eaa2dad9539bfe80bb96"
+            "image_id": "sha256:23556ca3bae366a2ada4857132802c95413b86df7cd3a1a394372deb699acac9"
           },
           "control": {
             "image_id": "sha256:37fb270f0e0019b09c72df75b4bc873ee49ed6052af442c074acd74dd86c7c49"

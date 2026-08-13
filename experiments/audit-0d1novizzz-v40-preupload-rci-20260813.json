@@ -5,10 +5,10 @@
   "status": "passed",
   "verdict": "PASS_PREUPLOAD_RCI",
   "candidate_source_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
-  "candidate_image_id": "sha256:e8cf821ee92ba0a85ec9dc1a994f79a869d8a1addeb9eaa2dad9539bfe80bb96",
+  "candidate_image_id": "sha256:23556ca3bae366a2ada4857132802c95413b86df7cd3a1a394372deb699acac9",
   "parent_source_commit": "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
   "preregister_sha256": "8d0dd9aaf663a59b43ad2076360c8a9e5b95f1f747262a16ad0ed49541fb7726",
-  "local_audit_sha256": "fed8a8deb34efc89893a077cb8c5585a66461c24a7e14b0f508d35162b52a4fa",
+  "local_audit_sha256": "864cd7ff10a05d63bd98c45b2d5562c9cc51409b90187c457a91fbfca6bdcee9",
   "differential_proof_sha256": "26b2d0bc3cc7251f74bf6c5c4ed5d260a23f0c5f416610caedfe90d401ae7309",
   "critique": {
     "strongest_evidence": "v40 changes no planner prompt, schema, intent, action family, or executor ordering. The same grow packet and twelve replay-derived Gravity/Katana decisions select twelve attacks in v39 and zero in v40. Focused tests pass 179/179, the full-suite delta is zero outside six historical failures, and the exact-image local run completed 13/13 candidate decisions without fallback, degradation, rejection, hold, harmful action, or unresolved target.",
