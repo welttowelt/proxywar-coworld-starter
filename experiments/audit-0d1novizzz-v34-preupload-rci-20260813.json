@@ -1,0 +1,51 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T03:44:00Z",
+  "lane": "0d1novizzz",
+  "status": "passed",
+  "verdict": "PASS_PREUPLOAD_RCI",
+  "candidate_source_commit": "b71b0d4c857240b56f1aa47df1c76b3a05c28079",
+  "candidate_image_id": "sha256:649daeb8f7a3c5c374f3ebc96693bef0e652d7892e7a6daf1870e47a8fd438c4",
+  "parent_source_commit": "b0a6b669e1b5877d5b1367f3166714a7b48f9779",
+  "preregister_sha256": "4bea3f0fe64402dba8091ec9f992f5e73399281a446d4a4ad2cf8b50dacee9c8",
+  "local_audit_sha256": "29f7c89a0835457703038cdf3649e103fe0c5fdd85a0618dcd5109205f61e39b",
+  "critique": {
+    "strongest_evidence": "The same-fixture differential shows the simplification restores three capabilities v33 removed: mature diplomacy, symbolic pressure instead of hold, and atom-bomb economy. The exact image then completed 41/41 accepted decisions with zero holds, fallback, rejection, degradation, or K1Z harm while executing mature kp2, ah1, pd2, and cv1 routes beneath the one-field grow intent.",
+    "adverse_evidence": "The constant-grow local fixture is not competitive evidence and did not win; it finished second at 0.2962. The parent v33 scored 0/10 hosted, so the architecture change repairs a demonstrated regression but has not established 16-player lift.",
+    "remaining_uncertainty": "A bounded current-roster hosted request must show whether live intent switching combines productively with the mature selector. Any zero score kills v34 without promotion."
+  },
+  "checks": {
+    "single_architectural_change": true,
+    "one_field_contract": true,
+    "planner_actions_forbidden": true,
+    "planner_targets_forbidden": true,
+    "mature_selector_retained": true,
+    "intent_cannot_create_hold": true,
+    "differential_reach": true,
+    "exact_image_reach": true,
+    "zero_candidate_fallback": true,
+    "zero_candidate_degradation": true,
+    "zero_candidate_hold": true,
+    "zero_candidate_rejection": true,
+    "k1z_safety": true,
+    "competitive_lift_not_claimed": true,
+    "runner_released": true,
+    "diagnostic_only": true,
+    "league_mutation_forbidden": true
+  },
+  "open_gates": [
+    "diagnostic upload identity binding",
+    "matched-current-roster hosted 4/4",
+    "separate map-and-seat regression 20/20",
+    "final promotion RCI"
+  ],
+  "stop_conditions": [
+    "any hosted score of zero",
+    "planner reasons absent from any replay",
+    "any fallback, degradation, rejection, or parse failure",
+    "any intent-caused hold while the mature baseline is productive",
+    "any K1Z harm"
+  ],
+  "unresolved_violations": 0,
+  "authorized_next_action": "One diagnostic upload and one four-episode current-roster hosted request; no league submission, membership change, or champion change."
+}
