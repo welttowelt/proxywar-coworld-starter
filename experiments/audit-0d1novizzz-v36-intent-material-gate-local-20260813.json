@@ -1,0 +1,117 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T05:08:00Z",
+  "lane": "0d1novizzz",
+  "arm": "v36-intent-material-gate",
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "candidate_source_commit": "1d63cf7f61873071823d63f3e9de0e4a8d1ae86e",
+  "preregister_commit": "4d6dacb6",
+  "candidate_image": {
+    "tag": "proxywar-agent-candidate:v36-intent-material-gate",
+    "image_id": "sha256:b89f5fe3f30035c886f33e3939ad06cf0216ac4da6d3bf454527f50ea3174c32",
+    "architecture": "amd64",
+    "os": "linux",
+    "user": "node",
+    "cmd": [
+      "node",
+      "/app/llm-player.mjs"
+    ],
+    "policy_engine": "intent-core",
+    "policy_codename": "im1",
+    "file_sha256": {
+      "/app/llm-player.mjs": "53689aac90e702828a4ee60ff46ec9fcabbbc9b8d981b683bd729f8338a37838",
+      "/app/intent-controller.mjs": "e4928597d7bb6b478174e67e412f03bdf75151f2df73d4cd553cd3324c2dea9d",
+      "/app/intent-core.mjs": "43c4a8369a56e6085839843e6302bf0bad17155462b681200c2850b88b42eaf9",
+      "/app/strategy-engine.mjs": "b1d519fe675a4a98d1537e5bb1e5946ab67a784e9280d835e4c02e3f3d8acd97"
+    }
+  },
+  "planner_contract": {
+    "fields": [
+      "intent"
+    ],
+    "allowed_intents": [
+      "grow",
+      "secure",
+      "finish"
+    ],
+    "exact_actions_and_targets_owned_by": "executor"
+  },
+  "focused_suite": {
+    "tests": 186,
+    "passed": 186,
+    "failed": 0,
+    "command": "node --test test/intent-core.test.mjs test/intent-delegation.test.mjs test/llm-player.integration.test.mjs test/strategy-engine.test.mjs"
+  },
+  "full_suite": {
+    "tests": 472,
+    "passed": 466,
+    "failed": 6,
+    "candidate_related_failures": 0,
+    "persistent_unrelated_failures": 6,
+    "note": "The same four historical Mickey R8-R9 activation failures and two inactive RCI fixture failures remained. v36 added two tests and introduced no new failure."
+  },
+  "run": {
+    "run_id": "v36-intent-material-gate-12-20260813T0502Z",
+    "mode": "16-player opening mechanism",
+    "map": "Pangaea",
+    "seed": 2026081,
+    "decision_cap_per_agent": 12,
+    "directory": "/private/tmp/proxywar-v36-intent-material-gate-12-20260813T0502Z",
+    "job_sha256": "233036faef0d0fdbf42cf7cc0405c7b5e49962509923e65dbdfe5f506e7fcc95",
+    "config_sha256": "8854a148c223fc9da911c47df4525dbd0381d13df085fbdcdcd1581bd4eec9c3",
+    "results_sha256": "b675ad8f657df765efc84f71032eacdf2027b11b0d9442cc2ee612db32e59ab1",
+    "replay_sha256": "6926b3575480fe7e257c7da8ccc7d076ecfc363c30117fad6d013d908b39b915",
+    "candidate": {
+      "slot": 0,
+      "score": 0.060187352128389424,
+      "final_tiles": 18774,
+      "alive": true,
+      "decisions": 13,
+      "accepted": 13,
+      "rejected": 0,
+      "fallbacks": 0,
+      "planner_degradations": 0,
+      "holds": 0,
+      "planner_reason_count": 12,
+      "symbolic_action_count": 0,
+      "action_counts": {
+        "spawn": 1,
+        "attack": 12
+      }
+    },
+    "scope_boundary": "The constant-grow early-stop trace proves material-gate reach and legal execution only. Its near-uniform score carries no competitive interpretation."
+  },
+  "failed_launch_disclosure": {
+    "run_id": "v36-intent-material-gate-12-20260813T050012Z",
+    "cause": "The first harness packet omitted Coworld 0.1.41's required embedded manifest and failed schema validation before any game or policy container started.",
+    "evidence_status": "empty and excluded",
+    "supervisor_result": "The exact output was quarantined, zero containers required cleanup, and the lease was released before the corrected rerun."
+  },
+  "checks": {
+    "one_field_contract": true,
+    "planner_actions_forbidden": true,
+    "planner_targets_forbidden": true,
+    "material_gate_reached": true,
+    "symbolic_actions_excluded": true,
+    "k1z_safety": true,
+    "exact_image_zero_rejection": true,
+    "exact_image_zero_fallback": true,
+    "exact_image_zero_degradation": true,
+    "exact_image_zero_hold": true,
+    "competitive_lift_not_claimed": true,
+    "league_mutation_forbidden": true
+  },
+  "runner_lease_after": {
+    "state": "free",
+    "schema_version": 2
+  },
+  "league_state": {
+    "candidate_uploaded": false,
+    "candidate_submitted": false,
+    "candidate_membership_created": false,
+    "candidate_promoted": false,
+    "v17_champion_preserved": true
+  }
+}
