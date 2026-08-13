@@ -1,0 +1,52 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T05:10:00Z",
+  "lane": "0d1novizzz",
+  "status": "passed",
+  "verdict": "PASS_PREUPLOAD_RCI",
+  "candidate_source_commit": "1d63cf7f61873071823d63f3e9de0e4a8d1ae86e",
+  "candidate_image_id": "sha256:b89f5fe3f30035c886f33e3939ad06cf0216ac4da6d3bf454527f50ea3174c32",
+  "parent_source_commit": "a5e150c326bd28121ab3cf180015e16595411602",
+  "preregister_sha256": "175be61f717758c2e8add135afd52a574eacd5fcfd748ef439dcafca4c0ff505",
+  "local_audit_sha256": "99f750d34f527904e99511a1ccb5161b505883c6b0564e26a96d61c9ac83dc3e",
+  "differential_proof_sha256": "4baa9dda8d73ee92b86c1b86901d5ed183557486e9e70f52b841f2094164e143",
+  "critique": {
+    "strongest_evidence": "The hosted v35 replay isolated a symbolic-alliance loop beneath healthy planner transport. The same-fixture differential proves v36 removes that substitution: v35 selects alliance when only symbolic activity and hold remain, while v36 holds; both retain a productive Factory build when available. Focused tests pass 186/186, and the exact-image 16-player trace accepted 13/13 decisions with 12/12 planner reasons and zero symbolic action, hold, fallback, degradation, or rejection.",
+    "adverse_evidence": "v35 lost its first three hosted completions, so the parent architecture is weak. The v36 local trace is short, constant-grow, and near-uniform; it proves mechanism reach only and says nothing about live intent quality or competitive lift.",
+    "remaining_uncertainty": "Hosted play must show whether live grow, secure, and finish switching survives after symbolic actions are gated. Any zero score still kills v36 and forbids league mutation."
+  },
+  "checks": {
+    "single_architectural_change": true,
+    "one_field_contract": true,
+    "planner_actions_forbidden": true,
+    "planner_targets_forbidden": true,
+    "material_gate_reached": true,
+    "differential_reach": true,
+    "exact_image_reach": true,
+    "zero_candidate_symbolic_action": true,
+    "zero_candidate_fallback": true,
+    "zero_candidate_degradation": true,
+    "zero_candidate_hold": true,
+    "zero_candidate_rejection": true,
+    "k1z_safety": true,
+    "competitive_lift_not_claimed": true,
+    "runner_released": true,
+    "diagnostic_only": true,
+    "league_mutation_forbidden": true
+  },
+  "open_gates": [
+    "diagnostic upload identity binding",
+    "matched-current-roster hosted 4/4",
+    "separate map-and-seat regression 20/20",
+    "final promotion RCI"
+  ],
+  "stop_conditions": [
+    "any hosted score of zero",
+    "planner reasons absent from any replay",
+    "any unexplained fallback, degradation, rejection, or parse failure",
+    "any repeated symbolic-action loop",
+    "any K1Z harm"
+  ],
+  "unresolved_violations": 0,
+  "authorized_next_action": "One diagnostic upload only. A platform-generated diagnostic request may run, but no league submission, membership change, or champion change is authorized."
+}
