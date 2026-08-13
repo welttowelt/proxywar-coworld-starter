@@ -1,0 +1,72 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T02:14:00Z",
+  "lane": "0d1novizzz",
+  "status": "passed",
+  "verdict": "PASS_PREUPLOAD_RCI",
+  "candidate_source_commit": "72b247776b85ec9cc9f62cef9d574baa7e009af1",
+  "candidate_image_id": "sha256:18a4e269591f4e955188a7234afdf232cab7fa085f3a6a270de45322c2f9c34e",
+  "preregister_sha256": "bd3c23868f8d3590dc2ab39b0ec52e587b6e822d93640398b3dcf4c49727da79",
+  "prehosted_addendum_sha256": "8dee0151c3b3323ca513c9197e82b61219d4dfd7bb579f599e2b243e2551c9ce",
+  "local_audit_sha256": "e2f34022a2775b70a29a23df83f1b29a6afffe818e1ee6c1d0e03211155ed762",
+  "differential_proof_sha256": "b32955f21ec28d4c558527112d4b66da1546133e53050df733534b70d9b5758f",
+  "live_baseline": {
+    "policy": "v17",
+    "rank": 13,
+    "score": 6.416941539065266,
+    "round": 1399,
+    "latest_round_score": 0,
+    "preserved_policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "preserved_membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  },
+  "critique": {
+    "strongest_evidence": "The hash-bound differential gives the parent and candidate the same board and equivalent growth goal. v30 selects a K1Z attack whose expansion metadata disguises the rival target; v31 selects explicit Terra Nullius. A separate boundary cell offers only an ambiguous boat and hold: grow and secure hold, while finish alone selects the boat. The narrowed exact image then completed 40 constant-grow decisions with 41/41 accepted, zero holds, zero fallbacks, zero targeted attacks, and secure_economy telemetry on every active decision.",
+    "adverse_evidence": "The local result scored only 0.1095 in a four-player static-grow fixture, so it proves semantics and safety but no competitive lift. The parent v30 arm scored 0/4 in matched Asia, and the official v17 score has decayed to rank 13 at 6.4169 after another zero round.",
+    "remaining_uncertainty": "Only the hosted Bedrock planner can show whether grow, secure, and finish form a useful dynamic sequence in the 16-player Asia roster. It may over-select grow or secure, or create justified but competitively costly holds when no goal-aligned safe action exists."
+  },
+  "checks": {
+    "single_semantic_change": true,
+    "one_field_contract": true,
+    "goal_shaped_intents": true,
+    "planner_targets_forbidden": true,
+    "planner_actions_forbidden": true,
+    "planner_percentages_forbidden": true,
+    "planner_timing_forbidden": true,
+    "grow_never_authorizes_rival_force": true,
+    "secure_never_authorizes_rival_force": true,
+    "finish_is_only_force_intent": true,
+    "source_identity": true,
+    "image_identity": true,
+    "runtime_identity": true,
+    "differential_reach": true,
+    "exact_image_all_intents": true,
+    "exact_image_boundary_reach": true,
+    "zero_candidate_fallback": true,
+    "zero_candidate_degradation": true,
+    "zero_candidate_rejection": true,
+    "symbolic_actions_excluded": true,
+    "k1z_safety": true,
+    "competitive_lift_not_claimed": true,
+    "runner_released": true,
+    "active_player_is_0d1novizzz": true,
+    "diagnostic_only": true,
+    "league_mutation_forbidden": true
+  },
+  "open_gates": [
+    "diagnostic upload identity binding",
+    "matched-roster hosted 4/4",
+    "separate map-and-seat regression 20/20",
+    "final promotion RCI"
+  ],
+  "stop_conditions": [
+    "any hosted score of zero",
+    "planner reasons absent from any replay",
+    "any fallback, degradation, rejection, or parse failure",
+    "any targeted or ambiguous force under grow or secure",
+    "any avoidable hold while a goal-aligned safe action is offered",
+    "any forbidden symbolic action or K1Z harm",
+    "failure to observe at least two distinct intents across the four-episode request"
+  ],
+  "unresolved_violations": 0,
+  "authorized_next_action": "One diagnostic upload and one four-episode hosted request matched to v30 only; no league submission, membership change, or champion change."
+}
