@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-candidate:v40-k1z-runtime-alias-lock",
+    "parent_ref": "proxywar-agent-candidate:v39-two-intents",
+    "exact_deltas": [
+      "Make all verified K1Z canonical identities and stable IDs, including the replay-verified Gravity and Katana runtime aliases CYAN HELLSTAR and SIAN VOIDCROWN, absolute no-harm."
+    ],
+    "source_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
+    "parent_commit": "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
+    "image_id": "sha256:e8cf821ee92ba0a85ec9dc1a994f79a869d8a1addeb9eaa2dad9539bfe80bb96"
+  },
+  "hypothesis": "Hosted observations use episode-scoped IDs and public runtime names. An absolute identity boundary will preserve the simple grow-or-finish planner while preventing every observed coalition attack.",
+  "mechanism": {
+    "marker": "ib2",
+    "prior_reachable_decisions": 12
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "contract_sha256": "8d0dd9aaf663a59b43ad2076360c8a9e5b95f1f747262a16ad0ed49541fb7726",
+    "audit_receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v40-k1z-runtime-alias-lock-local-20260813.json",
+      "sha256": "fed8a8deb34efc89893a077cb8c5585a66461c24a7e14b0f508d35162b52a4fa"
+    },
+    "differential_binding": {
+      "verifier_path": "experiments/v40/verify-replay-derived-k1z-differential.mjs",
+      "fixture_path": "experiments/v40/replay-derived-k1z-fixture.json"
+    }
+  },
+  "preupload_rci": {
+    "receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v40-preupload-rci-20260813.json",
+      "sha256": "1e9a823d84637ab6da0030395b6b91ac01bd7a36203abbfe1a94feea314347f0"
+    }
+  },
+  "matched_baseline": {
+    "request_id": "xreq_02d7cc6c-53e4-4a47-a295-4023a96bcc4b",
+    "policy_ref": "xX_UwU_Senpai_420_Xx:v36",
+    "policy_version_id": "7e6a4065-4918-4831-a81f-7217d400e5bf",
+    "same_roster": false,
+    "same_variant": true,
+    "episodes": 10,
+    "wins": 1
+  },
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_fallbacks": 0,
+      "max_degradations": 0,
+      "max_rejections": 0,
+      "max_k1z_harm": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  }
+}
