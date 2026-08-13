@@ -308,6 +308,21 @@ test("Gravity and Katana identities stay absolute no-harm under pressure", () =>
   }
 });
 
+test("the hosted Captain Underpants truncation stays absolute no-harm", () => {
+  const hostedID = "j2wxj0cp";
+  const selected = decide([attack(hostedID), hold()], "grow", {
+    tileShare: 0.01,
+    rivals: [{
+      id: hostedID,
+      name: "Captain Underpants Maximum",
+      tileShare: 0.8,
+      relativeTroopRatio: 2,
+    }],
+  });
+  assert.equal(selected.id, "hold");
+  assert.ok(selected.policyMarkers.includes("ixgrw"));
+});
+
 test("grow cannot disguise a K1Z strike as infrastructure", () => {
   const bomb = build("Atom Bomb", {
     targetID: MICKEY_ID,
