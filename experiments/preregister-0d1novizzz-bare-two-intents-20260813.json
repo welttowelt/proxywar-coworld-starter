@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "preregistered_at": "2026-08-13T13:11:44Z",
+  "player": "0d1novizzz",
+  "candidate": "bare-two-intents",
+  "live_parent": {
+    "label": "xX_UwU_Senpai_420_Xx:v43",
+    "policy_version_id": "b9e5ccdc-8dc4-4017-90ad-8f7908413109",
+    "membership_id": "lpm_fe4dde2e-4a20-4bd0-a865-9d0493f7f1b6",
+    "role": "K1Z-safe v17-equivalent champion"
+  },
+  "candidate_source_commit": "d98391da45267900ad84d0da48a1c33f8d7a7bb3",
+  "hypothesis": "A planner whose complete interface is the bare intent grow or finish will produce more valid planner decisions and better outcomes than the instruction-shaped legacy planner while leaving action, target, tactic, and timing to the mature executor.",
+  "planner_interface": {
+    "values": ["grow", "finish"],
+    "wire_format": "one bare word",
+    "forbidden": ["action", "target", "tactic", "timing", "third intent", "extra response field"]
+  },
+  "promotion_gate": {
+    "matched_fields": 4,
+    "required_outcome": "candidate wins more fields than the live parent",
+    "required_k1z_harm": 0,
+    "required_new_runtime_failures": 0,
+    "required_planner_evidence": "at least one accepted non-bootstrap pln decision and no invalid third intent",
+    "tie_policy": "Do not promote a performance candidate on a tie.",
+    "loss_policy": "Do not promote on fewer wins than the live parent."
+  },
+  "underpants_policy_mutation_forbidden": true,
+  "league_mutation_authorized": false,
+  "authorized_next_action": "Build and inspect the local candidate image. A separate explicit execution step is required before any hosted upload or counterfactual."
+}
