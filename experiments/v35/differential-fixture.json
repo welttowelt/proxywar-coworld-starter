@@ -1,0 +1,116 @@
+{
+  "id": "v35-intent-utility-ranking",
+  "growActions": [
+    {
+      "id": "alliance:mickey",
+      "kind": "alliance_request",
+      "label": "Request alliance with K1Z Mickey Mouse",
+      "risk": { "level": "low" },
+      "metadata": {
+        "recipientID": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+        "recipientName": "K1Z Mickey Mouse",
+        "relation": 2
+      }
+    },
+    {
+      "id": "expand:terra-nullius:20",
+      "kind": "attack",
+      "label": "Expand Terra Nullius 20%",
+      "risk": { "level": "low" },
+      "metadata": { "expansion": true, "troopPercent": 20 }
+    },
+    {
+      "id": "hold",
+      "kind": "hold",
+      "label": "Hold",
+      "risk": { "level": "low" },
+      "metadata": {}
+    }
+  ],
+  "repeatActions": [
+    {
+      "id": "target:outsider",
+      "kind": "target_player",
+      "label": "Target Outsider",
+      "risk": { "level": "low" },
+      "metadata": { "targetID": "outsider", "targetName": "Outsider" }
+    },
+    {
+      "id": "build:Factory:1",
+      "kind": "build",
+      "label": "Build Factory",
+      "risk": { "level": "low" },
+      "metadata": { "unit": "Factory" }
+    },
+    {
+      "id": "hold",
+      "kind": "hold",
+      "label": "Hold",
+      "risk": { "level": "low" },
+      "metadata": {}
+    }
+  ],
+  "protectedActions": [
+    {
+      "id": "build:Atom Bomb:mickey",
+      "kind": "build",
+      "label": "Build Atom Bomb",
+      "risk": { "level": "low" },
+      "metadata": {
+        "unit": "Atom Bomb",
+        "targetID": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+        "targetName": "K1Z Mickey Mouse",
+        "targetTileShare": 0.8,
+        "targetSamCoverage": 0,
+        "nuclearTargetPriority": 267
+      }
+    },
+    {
+      "id": "hold",
+      "kind": "hold",
+      "label": "Hold",
+      "risk": { "level": "low" },
+      "metadata": {}
+    }
+  ],
+  "observation": {
+    "phase": "active",
+    "ownState": {
+      "tileShare": 0.2,
+      "troopRatio": 1,
+      "troops": 900000,
+      "gold": 500000,
+      "borderTiles": 100,
+      "incomingAttacks": []
+    },
+    "combat": { "incomingAttackPlayerIDs": [] },
+    "visiblePlayers": [
+      {
+        "id": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+        "name": "K1Z Mickey Mouse",
+        "isAlive": true,
+        "sharesBorder": true,
+        "canAttack": true,
+        "isAllied": false,
+        "tileShare": 0.1,
+        "relativeTroopRatio": 1.2
+      },
+      {
+        "id": "outsider",
+        "name": "Outsider",
+        "isAlive": true,
+        "sharesBorder": true,
+        "canAttack": true,
+        "isAllied": false,
+        "tileShare": 0.2,
+        "relativeTroopRatio": 1
+      }
+    ]
+  },
+  "emptyHistory": [],
+  "repeatedTargetHistory": [
+    { "actionID": "target:outsider", "kind": "target_player", "targetID": "outsider", "targetName": "Outsider", "tileShare": 0.2 },
+    { "actionID": "target:outsider", "kind": "target_player", "targetID": "outsider", "targetName": "Outsider", "tileShare": 0.2 },
+    { "actionID": "target:outsider", "kind": "target_player", "targetID": "outsider", "targetName": "Outsider", "tileShare": 0.2 }
+  ]
+}
