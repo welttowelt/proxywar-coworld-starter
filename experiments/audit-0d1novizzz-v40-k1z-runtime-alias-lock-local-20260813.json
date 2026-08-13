@@ -1,0 +1,139 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T08:43:00Z",
+  "lane": "0d1novizzz",
+  "arm": "v40-k1z-runtime-alias-lock",
+  "verdict": "PASS_LOCAL_SAFETY_AND_RUNTIME",
+  "competitive_evidence": false,
+  "planner": {
+    "changed_from_v39": false,
+    "vocabulary": [
+      "grow",
+      "finish"
+    ],
+    "responsibility": "choose one board-level outcome only; the executor owns the action and target"
+  },
+  "source": {
+    "parent_commit": "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
+    "candidate_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
+    "single_change": "Make verified K1Z canonical identities, stable player IDs, and the replay-verified Gravity/Katana runtime aliases absolute no-harm identities.",
+    "ambiguous_alias_excluded": "Calc"
+  },
+  "tests": {
+    "focused": {
+      "command": "node --test test/mickey-coalition-safety.test.mjs test/intent-core.test.mjs test/strategy-engine.test.mjs test/llm-player.integration.test.mjs",
+      "tests": 179,
+      "passed": 179,
+      "failed": 0
+    },
+    "full": {
+      "command": "npm test",
+      "tests": 475,
+      "passed": 469,
+      "failed": 6,
+      "candidate_related_failures": 0,
+      "persistent_unrelated_failures": 6,
+      "failure_classes": [
+        "four historical Mickey activation/reaper fixtures",
+        "two historical inactive-RCI fixtures"
+      ]
+    }
+  },
+  "same_state_differential": {
+    "proof_path": "experiments/v40/replay-derived-k1z-proof-ac5d2633.json",
+    "proof_sha256": "26b2d0bc3cc7251f74bf6c5c4ed5d260a23f0c5f416610caedfe90d401ae7309",
+    "cases": 12,
+    "parent_harmful_selections": 12,
+    "candidate_harmful_selections": 0,
+    "candidate_safe_redirects": 12,
+    "planner_changed": false,
+    "planner_intent": "grow",
+    "interpretation": "The identity invariant alone redirects every replay-derived Gravity/Katana attack selected by v39."
+  },
+  "candidate_image": {
+    "tag": "proxywar-agent-candidate:v40-k1z-runtime-alias-lock",
+    "image_id": "sha256:e8cf821ee92ba0a85ec9dc1a994f79a869d8a1addeb9eaa2dad9539bfe80bb96",
+    "architecture": "amd64",
+    "os": "linux",
+    "user": "node",
+    "cmd": [
+      "node",
+      "/app/llm-player.mjs"
+    ],
+    "policy_engine": "intent-core",
+    "policy_codename": "ib2",
+    "byte_identical": true,
+    "file_sha256": {
+      "/app/llm-player.mjs": "15fd5c07f2fd8bfeb9a238662a5c22b558d7cecfc66926f7a976b0a788273322",
+      "/app/intent-controller.mjs": "410de99715885baf2ff8f1467fc3768f1cacafb77323c85bb92618f6375c4574",
+      "/app/intent-core.mjs": "0159437eba8c6e287b30a867ef03fd032c2566933f481c502ecc32d269c1e56a",
+      "/app/strategy-engine.mjs": "292b50f9f17f6c7d1e240733eabab388c788527d7334f2e163fda29cae9f7304"
+    }
+  },
+  "local_run": {
+    "run_id": "v40-k1z-alias-12-r1-20260813T082838Z",
+    "job_path": "experiments/job-0d1novizzz-v40-k1z-runtime-alias-lock-local-20260813.json",
+    "job_sha256": "11bb739a7fc1b707a372cd0d39190b30495affea063e5f71f1799fd006e6ab99",
+    "directory": "/private/tmp/proxywar-v40-k1z-alias-12-r1-20260813T082838Z",
+    "map": "Pangaea",
+    "seed": 2026081,
+    "decision_cap_per_agent": 12,
+    "candidate_slot": 0,
+    "control_slots": "1-15 exact v17 local image",
+    "game_id": "PWSELHEF",
+    "turn": 950,
+    "global_decisions": 208,
+    "global_accepted": 208,
+    "global_fallbacks": 0,
+    "global_degradations": 0,
+    "candidate": {
+      "score": 0.06146192165349793,
+      "final_tiles": 19198,
+      "alive": true,
+      "decisions": 13,
+      "accepted": 13,
+      "post_spawn_decisions": 12,
+      "ib2": 12,
+      "ixgrw": 12,
+      "fallbacks": 0,
+      "degradations": 0,
+      "rejections": 0,
+      "holds": 0,
+      "harmful_actions": 0,
+      "unresolved_harmful_targets": 0,
+      "action_trace": "spawn once, then twelve neutral land expansions"
+    },
+    "artifact_sha256": {
+      "config.json": "46bf0c6771af76beefea35177d843fd14dd16fa24d790b1f780cbe3769690506",
+      "results.json": "a4419ba956c2495895593735db1c8992ce8921bc7cdff24a872e33877c3f2f9f",
+      "replay": "93a8d9bd22e9b60ca91415ffafa94b0b602ee3682c8b5a7a9e19951f004187aa",
+      "resolved-images.json": "fe770aa916a47205bf680c2c024f864699c9345fa02eaed690ef5bae8b3f942c",
+      "runner-result.json": "ebcc075e4adc2ce690581a4310a3f26fa07ee697baea49add71acb897dc48b0f"
+    },
+    "orchestrator": {
+      "path": "/private/tmp/run-v40-local-coworld.mjs",
+      "sha256": "9c018d44a765a76a14c05bcb3a229260793a66273fc6ba1e01acf59af9d3a681",
+      "note": "The episode finished normally. A retained timeout timer delayed process exit and lease release until 08:41:37Z; no container or output mutation occurred during that delay. Do not reuse this temporary orchestrator without cancelling the settled timeout."
+    }
+  },
+  "safety_scope": {
+    "local_field_contains_k1z_aliases": false,
+    "claim": "The local run proves exact-image runtime health and no new harmful or unresolved actions. Alias-specific safety comes from the committed twelve-case same-state differential, not this v17-control field.",
+    "absolute_no_harm_preserved": true
+  },
+  "runner_lease_after": {
+    "state": "free",
+    "schema_version": 2,
+    "claim_marker_removed": true,
+    "named_containers_remaining": 0
+  },
+  "league_state": {
+    "diagnostic_uploaded": false,
+    "hosted_passed": false,
+    "submitted": false,
+    "placed": false,
+    "champion_verified": false,
+    "v17_champion_preserved": true
+  },
+  "next_gate": "Run a preupload RCI, then upload v40 only as a diagnostic and require matched candidate advantage over v17 before any 4/4 or 20/20 gate."
+}
