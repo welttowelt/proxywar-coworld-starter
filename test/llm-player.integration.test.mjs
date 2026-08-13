@@ -598,7 +598,7 @@ test("an exact visible convert intent reaches the deployed MM1 selector", async 
   assert.match(responses[1].reason, /mm1c/);
 });
 
-test("intent-core grow ranks progress ahead of optional diplomacy", async () => {
+test("intent-core grow delegates optional diplomacy to the mature executor", async () => {
   const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
   await new Promise((resolve) => server.once("listening", resolve));
   const { port } = server.address();
@@ -700,9 +700,9 @@ test("intent-core grow ranks progress ahead of optional diplomacy", async () => 
 
   assert.equal(responses[0].selectedLegalActionId, "spawn:100");
   assert.equal(responses[0].fallbackUsed, false);
-  assert.equal(responses[1].selectedLegalActionId, "expand:terra-nullius:35");
+  assert.equal(responses[1].selectedLegalActionId, `alliance:${mickeyID}`);
   assert.equal(responses[1].fallbackUsed, false);
-  assert.match(responses[1].reason, /^pln:atk:(?:is1g:)?ib2:ixgrw$/);
+  assert.match(responses[1].reason, /^pln:4ly:kp2:ib2:ixgrw$/);
 });
 
 test("intent-only finish leaves target choice and continuity to the executor", async () => {

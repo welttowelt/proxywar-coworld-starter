@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "preregistered_at": "2026-08-13T10:37:00Z",
+  "player": "0d1novizzz",
+  "candidate": "v42-intent-delegation",
+  "parent": "v41-direct-grow",
+  "hypothesis": "The planner is simple but the adapter is not: it translates grow and finish into hard-coded action families and removes safe capabilities before delegation. Passing the full safe legal menu to the unchanged mature executor will make the policy genuinely intent-based while restoring executor-owned diplomacy, defense, economy, and conversion choices.",
+  "single_change": "Delete the material-action and intent-action menu filters. After the unchanged K1Z no-harm filter, pass the complete safe legal-action menu to the unchanged mature executor with only strategicIntent set to grow or finish.",
+  "planner_frozen": {
+    "prompt_unchanged": true,
+    "schema_unchanged": true,
+    "intents": [
+      "grow",
+      "finish"
+    ],
+    "actions_forbidden": true,
+    "targets_forbidden": true,
+    "tactical_instructions_forbidden": true,
+    "timing_forbidden": true,
+    "third_intent_forbidden": true
+  },
+  "evidence_basis": {
+    "matched_counterfactual": "cfeval_9f478c00-4fb5-49aa-89c8-ba341f762020",
+    "candidate_wins": 0,
+    "baseline_wins": 0,
+    "candidate_decisions": 111,
+    "candidate_holds": 23,
+    "candidate_alliance_requests": 0,
+    "baseline_alliance_requests": 12,
+    "winner_alliance_requests": 4,
+    "source_diagnosis": "materialIntentMenu and intentMenu remain action-specific routers despite the intent-only planner contract"
+  },
+  "local_success_bar": [
+    "a safe pending inbound alliance can reach and be selected by the unchanged mature executor",
+    "grow and finish remain the only accepted planner packets",
+    "the adapter contains no material-action allowlist or intent-specific action-family router",
+    "the unchanged mature executor still owns exact action and target selection",
+    "all verified K1Z identities remain absolute no-harm",
+    "focused tests and the full suite pass"
+  ],
+  "local_kill_bar": [
+    "planner prompt, schema, or vocabulary changes",
+    "the adapter adds an action, target, tactic, timing rule, or third intent",
+    "exact action selection moves into the planner",
+    "any verified K1Z harm",
+    "any new test failure or runtime rejection"
+  ],
+  "hosted_gate": {
+    "diagnostic_only_first": true,
+    "matched_fields": 4,
+    "required_candidate_advantage": "strictly more wins than v17",
+    "required_k1z_harm": 0,
+    "required_planner_intents": [
+      "grow",
+      "finish"
+    ],
+    "promotion_authorized": false
+  },
+  "authorized_next_action": "Write the red delegation test, implement only the adapter deletion, and run local verification. No upload, hosted request, submission, membership change, or champion change is authorized by this preregistration."
+}

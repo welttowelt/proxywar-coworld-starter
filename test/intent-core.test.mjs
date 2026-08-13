@@ -2,7 +2,10 @@ import assert from "node:assert/strict";
 import test from "node:test";
 
 import { chooseIntentCoreAction } from "../intent-core.mjs";
-import { buildState } from "../strategy-engine.mjs";
+import {
+  buildState,
+  chooseCaptainUnderpantsRuntimeAction,
+} from "../strategy-engine.mjs";
 
 const MICKEY_ID = "ply_e982e621-9ca3-47cd-8151-f57ee9d99421";
 const GRAVITY_ID = "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335";
@@ -121,7 +124,7 @@ test("intent cannot override pressure defense", () => {
   assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
-test("a removed secure intent cannot restore the upgrade-only family", () => {
+test("an unknown intent defaults to grow without filtering executor capabilities", () => {
   const bomb = build("Atom Bomb", {
     targetID: "leader",
     targetName: "Leader",
@@ -130,15 +133,25 @@ test("a removed secure intent cannot restore the upgrade-only family", () => {
     nuclearTargetPriority: 267,
   });
   const city = build("City");
-  const selected = decide([bomb, city, hold()], "secure", {
+  const actions = [bomb, city, hold()];
+  const options = {
     rivals: [{ id: "leader", name: "Leader", tileShare: 0.79, relativeTroopRatio: 1 }],
-  });
-  assert.equal(selected.id, city.id);
+  };
+  const history = [];
+  const state = buildState(observation(options), actions, history);
+  const selected = chooseIntentCoreAction(actions, state, { intent: "secure" }, history);
+  const delegated = chooseCaptainUnderpantsRuntimeAction(
+    actions,
+    state,
+    { strategicIntent: "grow" },
+    history,
+  );
+  assert.equal(selected.id, delegated.id);
   assert.ok(selected.policyMarkers.includes("ib2"));
   assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
-test("grow keeps a strike outside its action family", () => {
+test("grow delegates the complete safe menu instead of defining an action family", () => {
   const bomb = build("Atom Bomb", {
     targetID: "leader",
     targetName: "Leader",
@@ -146,18 +159,20 @@ test("grow keeps a strike outside its action family", () => {
     targetSamCoverage: 0,
     nuclearTargetPriority: 267,
   });
-  const selected = decide([bomb, land(), hold()], "grow", {
+  const actions = [bomb, land(), hold()];
+  const options = {
     rivals: [{ id: "leader", name: "Leader", tileShare: 0.79, relativeTroopRatio: 1 }],
-  });
-  assert.equal(selected.id, "expand:terra-nullius:35");
-  assert.ok(selected.policyMarkers.includes("ixgrw"));
-});
-
-test("grow ranks direct capacity ahead of maintenance upgrades", () => {
-  const selected = decide([upgrade(), build("City"), hold()], "grow", {
-    history: [{ actionID: "build:Factory", kind: "build", tileShare: 0.12 }],
-  });
-  assert.equal(selected.id, "build:City");
+  };
+  const history = [];
+  const state = buildState(observation(options), actions, history);
+  const selected = chooseIntentCoreAction(actions, state, { intent: "grow" }, history);
+  const delegated = chooseCaptainUnderpantsRuntimeAction(
+    actions,
+    state,
+    { strategicIntent: "grow" },
+    history,
+  );
+  assert.equal(selected.id, delegated.id);
   assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
@@ -176,7 +191,7 @@ test("grow does not force a weak hostile action past maintenance", () => {
   assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
-test("direct-grow filtering does not alter the finish menu", () => {
+test("finish delegates an upgrade-only menu", () => {
   const selected = decide([upgrade(), hold()], "finish");
   assert.equal(selected.id, "upgrade:Port:95");
   assert.ok(selected.policyMarkers.includes("ixfin"));
@@ -191,19 +206,22 @@ test("unavailable intent defaults to productive grow ranking", () => {
   assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
-test("a symbolic-only menu yields to hold", () => {
+test("intent delegates a safe pending inbound alliance to the mature executor", () => {
+  const reject = action("alliance_reject:rival", "alliance_reject", "Reject rival", {
+    recipientID: "rival",
+    recipientName: "rival",
+  });
   const alliance = action("alliance:rival", "alliance_request", "Ally rival", {
     recipientID: "rival",
     recipientName: "rival",
   });
-  const selected = decide([alliance, hold()], "grow", {
-    incoming: ["raider"],
-    rivals: [
-      { id: "rival", name: "rival", tileShare: 0.2, relativeTroopRatio: 0.9 },
-      { id: "raider", name: "raider", tileShare: 0.3, relativeTroopRatio: 1.1 },
-    ],
+  const selected = decide([reject, alliance, hold()], "grow", {
+    tileShare: 0.08,
+    rivals: [{ id: "rival", name: "rival", tileShare: 0.2, relativeTroopRatio: 0.7 }],
   });
-  assert.equal(selected.id, "hold");
+  assert.equal(selected.id, alliance.id);
+  assert.equal(selected.allianceDirection, "inbound");
+  assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
 test("grow cannot substitute alliance activity for material progress", () => {
