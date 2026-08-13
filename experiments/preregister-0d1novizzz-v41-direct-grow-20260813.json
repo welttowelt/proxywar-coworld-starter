@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "preregistered_at": "2026-08-13T09:27:00Z",
+  "player": "0d1novizzz",
+  "candidate": "v41-direct-grow",
+  "parent": "v40-k1z-runtime-alias-lock",
+  "hypothesis": "The two-intent planner is already simple enough. v40 failed because the executor treated maintenance upgrades as equivalent to direct growth. If a safe direct grow action is available, excluding structure upgrades from that decision menu will turn the same grow intent into territory or new capacity without teaching the planner tactics.",
+  "single_change": "Under grow, when at least one safe non-upgrade grow action is available, remove upgrade_structure actions before calling the unchanged mature selector. If no such action exists, preserve the original menu. Incoming-pressure behavior, finish behavior, K1Z protection, scoring, cadence, targets, and planner transport stay unchanged.",
+  "planner_frozen": {
+    "prompt_unchanged": true,
+    "schema_unchanged": true,
+    "intents": [
+      "grow",
+      "finish"
+    ],
+    "actions_forbidden": true,
+    "targets_forbidden": true,
+    "tactical_instructions_forbidden": true
+  },
+  "evidence_basis": {
+    "matched_counterfactual": "cfeval_5581cc3e-b6af-453c-8150-67dc6a4a5a27",
+    "candidate_wins": 0,
+    "baseline_wins": 0,
+    "candidate_grow_decisions": 58,
+    "candidate_finish_decisions": 0,
+    "candidate_upgrades": 15,
+    "candidate_new_builds": 6,
+    "candidate_attacks": 16,
+    "candidate_nukes": 0,
+    "winner_upgrades": 11,
+    "winner_new_builds": 18,
+    "winner_attacks": 64,
+    "winner_nukes": 4
+  },
+  "local_success_bar": [
+    "same-state differential replaces a parent-selected upgrade with a safe direct grow action",
+    "when only upgrades are productive, parent behavior is preserved",
+    "finish behavior is byte-for-byte equivalent",
+    "all verified K1Z identities remain absolute no-harm",
+    "focused tests pass with zero regression",
+    "exact-image 16-player trace has zero fallback, degradation, rejection, unresolved target, and K1Z harm"
+  ],
+  "local_kill_bar": [
+    "planner prompt, schema, or vocabulary changes",
+    "candidate chooses maintenance when a safe direct grow action exists",
+    "finish action changes",
+    "any verified K1Z harm",
+    "any new test failure or runtime rejection"
+  ],
+  "hosted_gate": {
+    "matched_fields": 4,
+    "required_candidate_advantage": "strictly more wins than v17",
+    "required_k1z_harm": 0,
+    "required_planner_intents": [
+      "grow",
+      "finish"
+    ],
+    "promotion_authorized": false
+  },
+  "authorized_next_action": "Implement and test the one executor-menu change locally. No upload, hosted request, submission, membership change, or champion change is authorized by this preregistration."
+}
