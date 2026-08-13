@@ -18,7 +18,7 @@ const MARKERS = Object.freeze({
   secure: "ixsec",
   finish: "ixfin",
 });
-const EXECUTOR_MARKER = "id1";
+const EXECUTOR_MARKER = "ib1";
 
 function isNeutral(action) {
   const targetID = clean(action?.metadata?.targetID ?? action?.targetID ?? "");
@@ -51,10 +51,40 @@ function materialIntentMenu(actions) {
   return holds.length > 0 ? holds : actions;
 }
 
-// The planner chooses one outcome: grow, secure, or finish. The mature
-// executor owns every action and target inside the safe material menu. This
-// keeps one tactical system and prevents diplomacy or chat from impersonating
-// execution; when no material action exists, hold is preferred.
+function hasIncomingPressure(state) {
+  const attackers = state?.self?.allProtocolAttackerIDs;
+  if (Array.isArray(attackers) && attackers.length > 0) return true;
+  const incoming = state?.self?.incomingAttacks;
+  return Array.isArray(incoming) ? incoming.length > 0 : Number(incoming) > 0;
+}
+
+function intentMenu(actions, intent, state) {
+  const spawn = actions.filter((action) => action.kind === "spawn");
+  if (spawn.length > 0) return spawn;
+  if (hasIncomingPressure(state)) return actions;
+
+  const matching = actions.filter((action) => {
+    if (intent === "grow") {
+      return ((action.kind === "attack" || action.kind === "boat") && !isStrike(action)) ||
+        ((action.kind === "build" || action.kind === "upgrade_structure") && !isStrike(action));
+    }
+    if (intent === "secure") {
+      return ["build", "upgrade_structure", "retreat", "boat_retreat"].includes(action.kind) &&
+        !isStrike(action);
+    }
+    return !isNeutral(action) && (
+      isStrike(action) ||
+      ["attack", "boat", "nuke", "warship", "move_warship"].includes(action.kind)
+    );
+  });
+  return matching.length > 0 ? matching : actions;
+}
+
+// The planner chooses one outcome: grow, secure, or finish. That intent defines
+// only the eligible action family; the mature executor still owns the exact
+// action and target. Incoming pressure reopens the full safe material menu.
+// When the requested family is absent, execution stays productive instead of
+// stalling, and when no material action exists, hold is preferred.
 export function chooseIntentCoreAction(actions, state, plan = null, history = []) {
   if (!Array.isArray(actions) || actions.length === 0) {
     throw new Error("decision request had no legal actions");
@@ -66,8 +96,9 @@ export function chooseIntentCoreAction(actions, state, plan = null, history = []
   );
   if (safe.length === 0) throw new Error("intent selector found no safe legal action");
 
+  const material = materialIntentMenu(safe);
   const selected = chooseCaptainUnderpantsRuntimeAction(
-    materialIntentMenu(safe),
+    intentMenu(material, intent, state),
     state,
     { strategicIntent: intent },
     history,

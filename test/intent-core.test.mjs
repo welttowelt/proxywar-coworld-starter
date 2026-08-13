@@ -70,7 +70,7 @@ test("grow delegates safe neutral territory first", () => {
     rivals: [{ id: "rival", name: "rival", tileShare: 0.1, relativeTroopRatio: 1.6 }],
   });
   assert.equal(selected.id, "expand:terra-nullius:35");
-  assert.ok(selected.policyMarkers.includes("id1"));
+  assert.ok(selected.policyMarkers.includes("ib1"));
   assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
@@ -80,7 +80,7 @@ test("secure ranks an available economy action first", () => {
     rivals: [{ id: "rival", name: "rival", tileShare: 0.1, relativeTroopRatio: 1.6 }],
   });
   assert.equal(selected.id, "build:Factory");
-  assert.ok(selected.policyMarkers.includes("id1"));
+  assert.ok(selected.policyMarkers.includes("ib1"));
   assert.ok(selected.policyMarkers.includes("ixsec"));
 });
 
@@ -98,7 +98,7 @@ test("finish ranks a safe finishing target first", () => {
     rivals: [{ id: "rival", name: "rival", tileShare: 0.1, relativeTroopRatio: 1.8 }],
   });
   assert.equal(selected.id, "attack:rival:40");
-  assert.ok(selected.policyMarkers.includes("id1"));
+  assert.ok(selected.policyMarkers.includes("ib1"));
   assert.ok(selected.policyMarkers.includes("ixfin"));
 });
 
@@ -108,11 +108,11 @@ test("intent cannot override pressure defense", () => {
     rivals: [{ id: "raider", name: "raider", tileShare: 0.2, relativeTroopRatio: 1.4 }],
   });
   assert.equal(selected.id, "attack:raider:40");
-  assert.ok(selected.policyMarkers.includes("id1"));
+  assert.ok(selected.policyMarkers.includes("ib1"));
   assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
-test("intent cannot override safe atom-bomb economy", () => {
+test("secure keeps a strike outside its action family", () => {
   const bomb = build("Atom Bomb", {
     targetID: "leader",
     targetName: "Leader",
@@ -120,12 +120,28 @@ test("intent cannot override safe atom-bomb economy", () => {
     targetSamCoverage: 0,
     nuclearTargetPriority: 267,
   });
-  const selected = decide([bomb, build("City"), hold()], "secure", {
+  const city = build("City");
+  const selected = decide([bomb, city, hold()], "secure", {
     rivals: [{ id: "leader", name: "Leader", tileShare: 0.79, relativeTroopRatio: 1 }],
   });
-  assert.equal(selected.id, bomb.id);
-  assert.ok(selected.policyMarkers.includes("id1"));
+  assert.equal(selected.id, city.id);
+  assert.ok(selected.policyMarkers.includes("ib1"));
   assert.ok(selected.policyMarkers.includes("ixsec"));
+});
+
+test("grow keeps a strike outside its action family", () => {
+  const bomb = build("Atom Bomb", {
+    targetID: "leader",
+    targetName: "Leader",
+    targetTileShare: 0.79,
+    targetSamCoverage: 0,
+    nuclearTargetPriority: 267,
+  });
+  const selected = decide([bomb, land(), hold()], "grow", {
+    rivals: [{ id: "leader", name: "Leader", tileShare: 0.79, relativeTroopRatio: 1 }],
+  });
+  assert.equal(selected.id, "expand:terra-nullius:35");
+  assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
 test("unavailable intent defaults to productive grow ranking", () => {
@@ -195,7 +211,7 @@ test("repeated symbolic pressure yields to a productive action", () => {
     rivals: [{ id: "rival", name: "rival", tileShare: 0.2, relativeTroopRatio: 1 }],
   });
   assert.equal(selected.id, "build:Factory");
-  assert.ok(selected.policyMarkers.includes("id1"));
+  assert.ok(selected.policyMarkers.includes("ib1"));
   assert.ok(selected.policyMarkers.includes("ixfin"));
 });
 
