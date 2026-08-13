@@ -50,6 +50,7 @@ let parentPlan;
 let candidatePlan;
 let parentAction;
 let candidateAction;
+let candidateBoundary;
 try {
   const parentController = await moduleAt(parentRoot, "intent-controller.mjs");
   const candidateController = await moduleAt(candidateRoot, "intent-controller.mjs");
@@ -85,6 +86,26 @@ try {
   assert.notEqual(candidateAction.id, "attack:outsider:40");
   assert.notEqual(candidateAction.id, "boat:485204:45");
   assert.notEqual(candidateAction.id, "attack:mickey:50");
+
+  const boundaryActions = fixture.legalActions.filter((action) =>
+    action.id === "boat:485204:45" || action.id === "hold"
+  );
+  const boundaryState = candidateEngine.buildState(
+    fixture.observation, boundaryActions, fixture.history,
+  );
+  candidateBoundary = Object.fromEntries(
+    ["grow", "secure", "finish"].map((intent) => [
+      intent,
+      candidateCore.chooseIntentCoreAction(
+        boundaryActions, boundaryState, { intent, model: "fixture" }, fixture.history,
+      ).id,
+    ]),
+  );
+  assert.deepEqual(candidateBoundary, {
+    grow: "hold",
+    secure: "hold",
+    finish: "boat:485204:45",
+  });
 } finally {
   rmSync(scratch, { recursive: true, force: true });
 }
@@ -131,6 +152,11 @@ const proof = {
   safety: {
     offered_k1z_harmful_action: "attack:mickey:50",
     candidate_selected_k1z_harm: false,
+  },
+  outcome_boundary: {
+    offered_actions: ["boat:485204:45", "hold"],
+    selected_by_intent: candidateBoundary,
+    only_finish_authorizes_ambiguous_force: true,
   },
   test_command: [
     "node", verifierRelativePath, repositoryPath, parentCommit, candidateCommit,
