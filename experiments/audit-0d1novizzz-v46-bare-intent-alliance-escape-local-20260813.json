@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T14:12:00Z",
+  "player": "0d1novizzz",
+  "candidate": "bare-intent-alliance-escape",
+  "status": "passed_local_screen_not_uploaded",
+  "source_commit": "25e30bdd70852dac4cd168e7cf139900f3d908c4",
+  "preregistration_commit": "aa01590a",
+  "image": {
+    "tag": "proxywar-agent-candidate:bare-intent-alliance-escape",
+    "id": "sha256:e8ee11904f167ef674f06046f0ba12030280bc0b4fd6d6d8de03806af3748f52",
+    "architecture": "linux/amd64",
+    "user": "node",
+    "cmd": ["node", "/app/llm-player.mjs"],
+    "policy_codename": "xX_UwU_Senpai_420_Xx:v46",
+    "intent_core_sha256": "bc8be5cf99f8e77dc428413454a30f8d0344c2a1d334281f351cdead79c30846",
+    "llm_player_sha256": "f7a1c7f0b0d7deb86a698d2f9b0e7fc6e230a86dfbb82ab3b323bb07ff40c8ea"
+  },
+  "planner_interface": {
+    "values": ["grow", "finish"],
+    "wire_format": "one bare word",
+    "new_instruction_or_target_fields": 0
+  },
+  "mechanism_probe": {
+    "productive_alternative": {
+      "selected": "build:Factory",
+      "markers": ["iax", "ib2", "ixgrw"]
+    },
+    "pending_inbound_handshake": {
+      "selected": "alliance:ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+      "markers": ["kp2", "ib2", "ixgrw"]
+    },
+    "no_productive_alternative": {
+      "selected": "alliance:ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
+      "markers": ["kp2", "ib2", "ixgrw"]
+    },
+    "initial_probe_note": "The first ad hoc container probe supplied a raw observation where a built strategy state was required and failed before selection. The corrected probe used buildState and is the evidence recorded above."
+  },
+  "verification": {
+    "focused_tests": {
+      "total": 49,
+      "passed": 49,
+      "failed": 0,
+      "files": [
+        "test/intent-controller.test.mjs",
+        "test/intent-core.test.mjs",
+        "test/llm-player.integration.test.mjs",
+        "test/mickey-coalition-safety.test.mjs"
+      ]
+    },
+    "diff_check_passed": true,
+    "image_mechanism_probe_passed": true,
+    "k1z_absolute_no_harm_tests_passed": true,
+    "underpants_policy_changed": false
+  },
+  "competitive_claim": "None. The local screen proves interface, mechanism, and tested safety only.",
+  "hosted_policy_version_id": null,
+  "submission_id": null,
+  "league_membership_id": null,
+  "promotion_ready": false,
+  "authorized_next_action": "After a fresh same-shell identity and champion-binding check, upload this exact image as a diagnostic policy with PLAN_MODE=on. Do not submit it to the league."
+}
