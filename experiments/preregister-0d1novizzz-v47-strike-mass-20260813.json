@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "preregistered_at": "2026-08-13T14:36:30Z",
+  "player": "0d1novizzz",
+  "candidate": "bare-intent-strike-mass",
+  "source_parent_commit": "b50b1705",
+  "causal_parent": {
+    "label": "xX_UwU_Senpai_420_Xx:v46",
+    "policy_version_id": "625ac8a0-6eb8-4f9b-ab31-43f04b3ba293"
+  },
+  "live_champion": {
+    "label": "xX_UwU_Senpai_420_Xx:v43",
+    "policy_version_id": "b9e5ccdc-8dc4-4017-90ad-8f7908413109",
+    "membership_id": "lpm_fe4dde2e-4a20-4bd0-a865-9d0493f7f1b6"
+  },
+  "planner_interface": {
+    "values": ["grow", "finish"],
+    "wire_format": "one bare word",
+    "new_fields": 0
+  },
+  "hypothesis": "When healthy and unpressured, a bounded 10 percent hostile strike should outrank another boat, routine build, upgrade, target call, or outgoing alliance against a non-protected rival at near parity. This will move action allocation toward the same-field winners without adding planner instructions or weakening K1Z safety.",
+  "executor_rule": {
+    "marker": "sm1",
+    "minimum_relative_troop_ratio": 0.9,
+    "minimum_self_troop_ratio": 0.8,
+    "attack_percent": 10,
+    "eligible_displaced_kinds": [
+      "boat",
+      "build",
+      "upgrade_structure",
+      "target_player",
+      "alliance_request"
+    ],
+    "preserve": [
+      "spawn",
+      "current pressure response",
+      "retreat",
+      "atom bomb",
+      "real inbound alliance handshake",
+      "absolute K1Z no-harm"
+    ]
+  },
+  "local_gate": {
+    "red_first_required": true,
+    "focused_failures_allowed_after_fix": 0,
+    "required_mechanism_cases": [
+      "near-parity hostile strike displaces a routine non-strike action",
+      "pressure defense remains unchanged",
+      "inbound handshake remains unchanged",
+      "K1Z no-harm remains absolute"
+    ]
+  },
+  "hosted_gate_stage_1": {
+    "baseline": "v46 causal parent",
+    "matched_fields": 4,
+    "required_outcome": "candidate wins more fields than v46",
+    "required_fallbacks": 0,
+    "required_rejections": 0,
+    "required_verified_k1z_harm": 0,
+    "required_mechanism_reach": "at least one sm1 decision",
+    "tie_policy": "reject"
+  },
+  "promotion_gate_stage_2": {
+    "baseline": "v43 live champion",
+    "matched_fields": 20,
+    "required_outcome": "candidate wins more fields than v43",
+    "required_fallbacks": 0,
+    "required_rejections": 0,
+    "required_verified_k1z_harm": 0,
+    "tie_policy": "reject"
+  },
+  "league_mutation_authorized": false,
+  "authorized_next_action": "Implement and locally verify the single sm1 executor rule. No upload, hosted request, submission, membership change, or champion change is authorized by this record."
+}

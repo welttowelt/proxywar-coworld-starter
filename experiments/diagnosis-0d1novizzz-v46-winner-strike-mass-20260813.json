@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T14:36:00Z",
+  "source": "The four candidate-side replays from counterfactual cfeval_46b59192-2344-4da6-aa24-f68c4724ee4e.",
+  "candidate": {
+    "post_spawn_decisions": 82,
+    "attacks": 39,
+    "attack_share": 0.47560975609756095,
+    "boats": 27,
+    "builds": 8,
+    "social_or_target_actions": 7,
+    "wins": 0
+  },
+  "same_field_winners": {
+    "post_spawn_decisions": 154,
+    "attacks": 115,
+    "attack_share": 0.7467532467532467,
+    "per_field": [
+      {"winner": "relh", "attacks": 10, "decisions": 30, "fallbacks": 28},
+      {"winner": "daveey", "attacks": 33, "decisions": 46, "fallbacks": 0},
+      {"winner": "docxology", "attacks": 29, "decisions": 33, "fallbacks": 0},
+      {"winner": "docxology", "attacks": 43, "decisions": 45, "fallbacks": 0}
+    ],
+    "clean_three_field_attack_share": 0.8467741935483871
+  },
+  "nuclear_observation": {
+    "winner_nukes": 1,
+    "winner_fields_with_any_nuke": 1,
+    "verdict": "The matched winners do not support a nuke-volume arm."
+  },
+  "diagnosis": "Planner transport and action acceptance are clean. The remaining same-field separation is strike allocation: the three clean winners devoted 105 of 124 post-spawn decisions to attacks, while v46 diverted 42 decisions into boats, builds, alliances, and target calls.",
+  "causal_limit": "Action allocation is observational. It motivates one bounded executor arm but does not prove that forcing more attacks will win."
+}
