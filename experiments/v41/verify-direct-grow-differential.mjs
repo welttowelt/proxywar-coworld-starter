@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { readFile } from "node:fs/promises";
+import { readFile, writeFile } from "node:fs/promises";
+import path from "node:path";
 
 import { chooseIntentCoreAction } from "../../intent-core.mjs";
 import {
@@ -7,7 +8,22 @@ import {
   chooseCaptainUnderpantsRuntimeAction,
 } from "../../strategy-engine.mjs";
 
-const fixturePath = new URL("./direct-grow-fixture.json", import.meta.url);
+const [repositoryArg, parentCommitArg, candidateCommitArg, fixtureArg, outputArg] =
+  process.argv.slice(2);
+const expectedParentCommit = "ac5d26330ca066a73265f94d0f4f42b80a02f5a2";
+const expectedCandidateCommit = "e8ceb516bcdaaaeb06b557228b1a6cf6b73e8c6f";
+const expectedFixture = "experiments/v41/direct-grow-fixture.json";
+if (repositoryArg !== undefined) {
+  assert.equal(path.resolve(repositoryArg), path.resolve("."), "repository");
+  assert.equal(parentCommitArg, expectedParentCommit, "parent commit");
+  assert.equal(candidateCommitArg, expectedCandidateCommit, "candidate commit");
+  assert.equal(fixtureArg, expectedFixture, "fixture path");
+  assert.ok(outputArg, "output path");
+}
+
+const fixturePath = fixtureArg
+  ? path.resolve(repositoryArg, fixtureArg)
+  : new URL("./direct-grow-fixture.json", import.meta.url);
 const fixture = JSON.parse(await readFile(fixturePath, "utf8"));
 
 function isNeutral(action) {
@@ -77,10 +93,16 @@ for (const testCase of fixture.cases) {
 assert.equal(results.filter((result) => result.changed).length, 1);
 assert.equal(results.find((result) => result.id === "finish-unchanged")?.changed, false);
 
-process.stdout.write(`${JSON.stringify({
+const report = {
   schema_version: 1,
   arm: "v41-direct-grow",
   passed: true,
-  fixture: "experiments/v41/direct-grow-fixture.json",
+  same_fixture: true,
+  parent_source_commit: expectedParentCommit,
+  candidate_source_commit: expectedCandidateCommit,
+  fixture: expectedFixture,
   cases: results,
-}, null, 2)}\n`);
+};
+const encoded = `${JSON.stringify(report, null, 2)}\n`;
+if (outputArg) await writeFile(path.resolve(repositoryArg, outputArg), encoded, "utf8");
+process.stdout.write(encoded);
