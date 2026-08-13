@@ -5,6 +5,8 @@ import { chooseIntentCoreAction } from "../intent-core.mjs";
 import { buildState } from "../strategy-engine.mjs";
 
 const MICKEY_ID = "ply_e982e621-9ca3-47cd-8151-f57ee9d99421";
+const GRAVITY_ID = "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335";
+const KATANA_ID = "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba";
 
 function action(id, kind, label = id, metadata = {}) {
   return { id, kind, label, metadata, risk: { level: "low" } };
@@ -226,6 +228,30 @@ test("no intent can harm K1Z Mickey Mouse", () => {
   });
   assert.equal(selected.id, "hold");
   assert.ok(selected.policyMarkers.includes("ixfin"));
+});
+
+test("Gravity and Katana identities stay absolute no-harm under pressure", () => {
+  for (const [id, name] of [
+    ["gravity-canonical", "K1Z Gravity"],
+    ["gravity-runtime", "CYAN HELLSTAR"],
+    ["katana-canonical", "K1Z katanasan"],
+    ["katana-runtime", "SIAN VOIDCROWN"],
+    [GRAVITY_ID, "unrecognized gravity alias"],
+    [KATANA_ID, "unrecognized katana alias"],
+  ]) {
+    const selected = decide([attack(id), hold()], "finish", {
+      tileShare: 0.6,
+      incoming: [id],
+      rivals: [{
+        id,
+        name,
+        tileShare: 0.2,
+        relativeTroopRatio: 2,
+      }],
+    });
+    assert.equal(selected.id, "hold", name);
+    assert.ok(selected.policyMarkers.includes("ixfin"));
+  }
 });
 
 test("grow cannot disguise a K1Z strike as infrastructure", () => {

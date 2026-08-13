@@ -280,7 +280,7 @@ test("naval pressure rotates away from an overused rival", () => {
   assert.equal(choose([alphaBoat, betaBoat], obs, null, history).id, betaBoat.id);
 });
 
-test("reciprocal neutrality protects katanasan before the finishing phase", () => {
+test("K1Z no-harm protects katanasan before the finishing phase", () => {
   const katanasanAttack = action("attack:kata:10", "attack", "Attack katanasan 10%");
   const aggressorAttack = action("attack:aggressor:10", "attack", "Attack Aggressor 10%");
   const obs = observation({
@@ -293,8 +293,9 @@ test("reciprocal neutrality protects katanasan before the finishing phase", () =
   assert.equal(choose([katanasanAttack, aggressorAttack], obs).id, aggressorAttack.id);
 });
 
-test("betrayal revokes reciprocal neutrality immediately", () => {
+test("incoming pressure cannot revoke K1Z no-harm", () => {
   const katanasanAttack = action("attack:kata:10", "attack", "Attack katanasan 10%");
+  const hold = action("hold", "hold", "Hold");
   const history = [{
     actionID: "build:city:1",
     kind: "build",
@@ -306,16 +307,40 @@ test("betrayal revokes reciprocal neutrality immediately", () => {
     tileShare: 0.2,
     rivals: [{ id: "kata", name: "katanasan", tileShare: 0.18, relativeTroopRatio: 1.2 }],
   });
-  assert.equal(choose([katanasanAttack], obs, null, history).id, katanasanAttack.id);
+  assert.equal(choose([katanasanAttack, hold], obs, null, history).id, hold.id);
 });
 
-test("late dominance permits a reciprocal-rival finish", () => {
+test("late dominance cannot revoke K1Z no-harm", () => {
   const katanasanAttack = action("attack:kata:10", "attack", "Attack katanasan 10%");
+  const hold = action("hold", "hold", "Hold");
   const obs = observation({
     tileShare: 0.36,
     rivals: [{ id: "kata", name: "katanasan", tileShare: 0.1, relativeTroopRatio: 1.2 }],
   });
-  assert.equal(choose([katanasanAttack], obs).id, katanasanAttack.id);
+  assert.equal(choose([katanasanAttack, hold], obs).id, hold.id);
+});
+
+test("hosted K1Z aliases and stable IDs are protected at the core boundary", () => {
+  const state = {
+    self: {
+      tileShare: 0.6,
+      dealNoAttackIDs: [],
+      incomingAttackerIDs: ["episode-scoped-id"],
+    },
+  };
+  for (const rival of [
+    { id: "episode-scoped-id", name: "CYAN HELLSTAR", isAllied: false },
+    { id: "another-episode-id", name: "SIAN VOIDCROWN", isAllied: false },
+    { id: "ply_c0dfb76c-62ca-4ec5-82e0-9d5a5baf7335", name: "unknown", isAllied: false },
+    { id: "ply_8b6cec26-0484-434d-9400-2ca3bbceb7ba", name: "unknown", isAllied: false },
+  ]) {
+    assert.equal(strategyEngine.rivalIsProtected(state, [], rival), true, rival.name);
+  }
+  assert.equal(strategyEngine.rivalIsProtected(
+    state,
+    [],
+    { id: "episode-scoped-id", name: "Outside Aggressor", isAllied: false },
+  ), false);
 });
 
 test("recent aggressor pressure outranks a slightly softer bystander", () => {
