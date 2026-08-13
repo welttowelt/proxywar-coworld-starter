@@ -1,0 +1,53 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T06:41:00Z",
+  "lane": "0d1novizzz",
+  "status": "passed",
+  "verdict": "PASS_PREUPLOAD_RCI",
+  "candidate_source_commit": "6cb3b4ae8fb6f5c88e6d60e22d5d050dc4ba8cfb",
+  "candidate_image_id": "sha256:2f6f38287b13d3c4c752a4f1ea6eab1d48935b50fbba666777b3b898ba9c67af",
+  "parent_source_commit": "f46a9ca241ccbe530457c247ea6fc3e652b75a87",
+  "preregister_sha256": "f4f0cab4b23b3f4d4e658f3e69560ceb564602b02f03d3f8143887170c127e94",
+  "local_audit_sha256": "597b7d11f00655d85df632657142b9ef1a903d4da6b82351b9b555f1cb314409",
+  "differential_proof_sha256": "e62bdbdd12077470b10806ad62c9a0598b4befda9e8c68061f2242a37b0aeeac",
+  "critique": {
+    "strongest_evidence": "v38 keeps the planner at one field and three values, then adds only an intent-family boundary. The same-state proof changes v37's Atom Bomb under grow to neutral expansion without choosing a target in the planner. Focused tests pass 49/49, the full candidate-related suite is green, and the exact-image 16-player trace has 13/13 accepted candidate decisions, 12/12 ib1 executions, and zero holds, symbolic actions, fallback, degradation, rejection, or K1Z harm.",
+    "adverse_evidence": "v37 had equally clean planner transport and still finished 0/10. The v38 local trace is short, constant-grow, and chose the same twelve opening attacks as v37; only the hash-bound differential fixture proves the new boundary changes an action where v37 violated grow semantics.",
+    "remaining_uncertainty": "A hosted diagnostic must show whether live intent variation changes the v37 distribution of 74 boats, 16 nukes, and 13 holds. Any zero score kills v38, and no league mutation is authorized."
+  },
+  "checks": {
+    "single_architectural_change": true,
+    "one_field_contract": true,
+    "planner_actions_forbidden": true,
+    "planner_targets_forbidden": true,
+    "intent_family_boundary_reached": true,
+    "delegated_executor_reached": true,
+    "material_gate_reached": true,
+    "differential_reach": true,
+    "exact_image_reach": true,
+    "zero_candidate_symbolic_action": true,
+    "zero_candidate_fallback": true,
+    "zero_candidate_degradation": true,
+    "zero_candidate_hold": true,
+    "zero_candidate_rejection": true,
+    "k1z_safety": true,
+    "competitive_lift_not_claimed": true,
+    "runner_released": true,
+    "diagnostic_only": true,
+    "league_mutation_forbidden": true
+  },
+  "open_gates": [
+    "diagnostic upload identity binding",
+    "matched-current-roster hosted 4/4",
+    "separate map-and-seat regression 20/20",
+    "final promotion RCI"
+  ],
+  "stop_conditions": [
+    "any hosted score of zero",
+    "any unexplained fallback, degradation, rejection, or parse failure",
+    "any repeated symbolic-action loop",
+    "any K1Z harm"
+  ],
+  "unresolved_violations": 0,
+  "authorized_next_action": "One diagnostic upload only. No league submission, membership change, or champion change is authorized."
+}
