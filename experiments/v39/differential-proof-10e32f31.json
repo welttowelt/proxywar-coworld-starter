@@ -1,0 +1,47 @@
+{
+  "schema_version": 2,
+  "arm": "two-intents-v39",
+  "same_fixture": true,
+  "equivalent_goal": "select a board-level outcome without tactical planner instructions",
+  "verifier": {
+    "evaluator_commit": "0765e5e7f92a985f908e2f48303ff919a38339b0",
+    "path": "experiments/v39/verify-differential.mjs",
+    "sha256": "f8e8672ca854f7531bf796445e3d86578cc0cdde452ab4938425c5a0ad9ca225"
+  },
+  "fixture": {
+    "id": "v39-two-intents",
+    "path": "experiments/v39/differential-fixture.json",
+    "sha256": "d32a265751d75f004d4747a806414b0282c03e3168e70f09927123c1dee8863b"
+  },
+  "parent": {
+    "source_commit": "6cb3b4ae8fb6f5c88e6d60e22d5d050dc4ba8cfb",
+    "secure_packet_accepted": true,
+    "selected_action_id": "build:City",
+    "interpretation": "the three-intent parent preserves a separate upgrade-only lane"
+  },
+  "candidate": {
+    "source_commit": "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
+    "secure_packet_accepted": false,
+    "selected_action_id": "expand:terra-nullius:35",
+    "markers": [
+      "is1g",
+      "ib2",
+      "ixgrw"
+    ],
+    "interpretation": "the two-intent candidate rejects secure and resolves the same state through grow"
+  },
+  "safety": {
+    "offered_k1z_target": false,
+    "candidate_selected_harmful_action": false
+  },
+  "test_command": [
+    "node",
+    "experiments/v39/verify-differential.mjs",
+    ".",
+    "6cb3b4ae8fb6f5c88e6d60e22d5d050dc4ba8cfb",
+    "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
+    "experiments/v39/differential-fixture.json",
+    "experiments/v39/differential-proof-10e32f31.json"
+  ],
+  "test_exit_code": 0
+}
