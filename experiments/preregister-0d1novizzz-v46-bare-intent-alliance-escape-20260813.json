@@ -1,0 +1,54 @@
+{
+  "schema_version": 1,
+  "preregistered_at": "2026-08-13T14:09:00Z",
+  "player": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz"
+  },
+  "candidate": {
+    "arm": "bare-intent-alliance-escape",
+    "source_commit": "25e30bdd70852dac4cd168e7cf139900f3d908c4",
+    "image_tag": "proxywar-agent-candidate:bare-intent-alliance-escape",
+    "planner_interface": {
+      "values": ["grow", "finish"],
+      "wire_format": "one bare word",
+      "forbidden": ["action", "target", "tactic", "timing", "third intent", "extra response field"]
+    }
+  },
+  "live_parent": {
+    "label": "xX_UwU_Senpai_420_Xx:v43",
+    "policy_version_id": "b9e5ccdc-8dc4-4017-90ad-8f7908413109",
+    "membership_id": "lpm_fe4dde2e-4a20-4bd0-a865-9d0493f7f1b6"
+  },
+  "hypothesis": "The bare grow or finish planner becomes operationally reliable when the executor yields a proactive alliance request to an already-legal productive action, while preserving real inbound handshakes and alliance requests that have no productive alternative.",
+  "causal_marker": "iax",
+  "prior_reach": {
+    "source": "v45 versus v17 hosted counterfactual cfeval_fefa41c2-cfa6-4dd3-af25-fbac469d7ebc",
+    "opportunities": 3,
+    "observed_failure": "Three proactive K1Z alliance selections became unknown action IDs and fallback holds."
+  },
+  "local_gate": {
+    "focused_tests_required": 49,
+    "focused_failures_allowed": 0,
+    "required_cases": [
+      "productive alternative replaces proactive alliance",
+      "pending inbound handshake remains immediate",
+      "proactive alliance remains when the only alternative is hold",
+      "absolute K1Z no-harm remains green"
+    ]
+  },
+  "hosted_gate": {
+    "matched_fields": 4,
+    "required_outcome": "candidate wins more fields than v43",
+    "required_fallback_holds": 0,
+    "required_rejected_decisions": 0,
+    "required_k1z_harm": 0,
+    "required_planner_evidence": "at least one accepted non-bootstrap pln decision",
+    "required_mechanism_evidence": "at least one iax execution when an opportunity exists",
+    "tie_policy": "Reject a performance candidate on a tie.",
+    "loss_policy": "Reject on fewer wins than v43."
+  },
+  "underpants_policy_mutation_forbidden": true,
+  "league_mutation_authorized": false,
+  "authorized_next_action": "Build and inspect the exact linux/amd64 candidate image, then record the local audit. No hosted upload, submission, membership change, or champion change is authorized by this record."
+}
