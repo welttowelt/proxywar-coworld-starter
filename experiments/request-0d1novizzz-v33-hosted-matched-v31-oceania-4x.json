@@ -1,0 +1,25 @@
+{
+  "idempotency_key": "0d1novizzz-v33-hosted-4x-matched-v31-oceania-20260813",
+  "coworld_id": "cow_6de96a89-d621-4daf-b0bd-1478df893227",
+  "variant_id": "tournament-16p-oceania",
+  "roster": [
+    {"slot": 0, "player": {"policy_ref": "7329eda7-b041-4853-9ee6-e05cc1a98ac2"}},
+    {"slot": 1, "player": {"policy_ref": "b04f8d18-0199-497f-8681-45adf3be73ba"}},
+    {"slot": 2, "player": {"policy_ref": "dffb6fb2-673e-4be5-9e35-ba69d6731754"}},
+    {"slot": 3, "player": {"policy_ref": "c797aac1-bcb7-4f1b-816b-91fdfc326cda"}},
+    {"slot": 4, "player": {"policy_ref": "33e14014-87b4-48f4-8aeb-c165f3a6c8f8"}},
+    {"slot": 5, "player": {"policy_ref": "0b309403-4049-457b-9f8b-d232994e0aaa"}},
+    {"slot": 6, "player": {"policy_ref": "2b8cdf1f-7602-4340-ac38-3e6eba911ec7"}},
+    {"slot": 7, "player": {"policy_ref": "b11c6e62-04f2-4ed6-8599-7ba652e439e2"}},
+    {"slot": 8, "player": {"policy_ref": "fbfeab4b-fefa-4da0-a670-b6a8f32d27c3"}},
+    {"slot": 9, "player": {"policy_ref": "ca13c341-98c5-44c8-8c59-1da7412d263b"}},
+    {"slot": 10, "player": {"policy_ref": "b54b6ea0-75bc-43e3-9095-52dcf3151399"}},
+    {"slot": 11, "player": {"policy_ref": "37619ef8-adaa-46fa-b2f6-3586c7491278"}},
+    {"slot": 12, "player": {"policy_ref": "b1ea4648-1b1f-429b-a2b4-5ced6b0be541"}},
+    {"slot": 13, "player": {"policy_ref": "d9f07511-b1c6-4a4c-ba13-6d9cb3a5e8de"}},
+    {"slot": 14, "player": {"policy_ref": "cea2bb5b-add0-4dd3-aa32-9442280142c5"}},
+    {"slot": 15, "player": {"policy_ref": "9e57be13-811a-42a1-a20b-ec85c8a367e7"}}
+  ],
+  "num_episodes": 4,
+  "notes": "Diagnostic-only v33 intent-preference gate matched to v31 request xreq_5769cf8e-0fec-414a-ab4c-b1f42f98b34a episode ereq_5f9d8ae2-2f17-437d-bb32-ff585c94ef77. Same Coworld 0.1.41 Oceania roster and slots; replace only Odin at slot 12. Require 4/4 wins, pln:* reasons, at least two distinct intents, and zero holds, fallbacks, degradations, rejections, parse failures, or K1Z harm. Stop on any zero score. No league submission or champion change."
+}
