@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T14:40:00Z",
+  "player": "0d1novizzz",
+  "candidate": "bare-intent-strike-mass",
+  "status": "passed_local_screen_not_uploaded",
+  "source_commit": "d2638a47495651b65e5e091b2bbe9fef835314e5",
+  "preregistration_commit": "214d8100",
+  "image": {
+    "tag": "proxywar-agent-candidate:bare-intent-strike-mass",
+    "id": "sha256:598dc2f146ba2e57acb557fdc9130a4dba6a6a5c2e7e8ea25ffd8078e7162d5e",
+    "architecture": "linux/amd64",
+    "user": "node",
+    "cmd": ["node", "/app/llm-player.mjs"],
+    "policy_codename": "xX_UwU_Senpai_420_Xx:v47",
+    "intent_core_sha256": "85be10c60179357380402a7bff91b525144fe624b445ff6f6febc62e5819816b",
+    "llm_player_sha256": "f7a1c7f0b0d7deb86a698d2f9b0e7fc6e230a86dfbb82ab3b323bb07ff40c8ea"
+  },
+  "planner_interface": {
+    "values": ["grow", "finish"],
+    "wire_format": "one bare word",
+    "new_planner_fields": 0
+  },
+  "mechanism_probe": {
+    "state": "healthy, unpressured, near-parity outsider",
+    "displaced_action": "build:Factory",
+    "selected": "attack:rival:10",
+    "markers": ["sm1", "ib2", "ixgrw"]
+  },
+  "verification": {
+    "red_first": {
+      "observed": true,
+      "before_fix_selected": "build:Factory",
+      "expected": "attack:rival:10"
+    },
+    "focused_tests": {
+      "total": 52,
+      "passed": 52,
+      "failed": 0,
+      "files": [
+        "test/intent-controller.test.mjs",
+        "test/intent-core.test.mjs",
+        "test/llm-player.integration.test.mjs",
+        "test/mickey-coalition-safety.test.mjs"
+      ]
+    },
+    "pressure_defense_preserved": true,
+    "inbound_handshake_preserved": true,
+    "k1z_absolute_no_harm_tests_passed": true,
+    "underpants_policy_changed": false,
+    "diff_check_passed": true,
+    "image_mechanism_probe_passed": true
+  },
+  "competitive_claim": "None. The local screen proves only the preregistered mechanism and tested invariants.",
+  "hosted_policy_version_id": null,
+  "submission_id": null,
+  "league_membership_id": null,
+  "promotion_ready": false,
+  "authorized_next_action": "After a fresh same-shell identity and champion-binding check, upload this exact image as an unseated diagnostic with PLAN_MODE=on. Do not submit it to the league."
+}
