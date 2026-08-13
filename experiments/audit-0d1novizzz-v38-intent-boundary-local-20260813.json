@@ -133,15 +133,48 @@
     "v17_champion_preserved": true
   },
   "differential_unit_proof": {
-    "path": "experiments/v38/differential-proof-6cb3b4ae.json",
-    "sha256": "e62bdbdd12077470b10806ad62c9a0598b4befda9e8c68061f2242a37b0aeeac",
+    "schema_version": 2,
+    "arm": "intent-boundary-v38",
     "same_fixture": true,
-    "parent_selected_action_id": "build:Atom Bomb",
-    "candidate_selected_action_id": "expand:terra-nullius:35",
-    "candidate_markers": [
-      "is1g",
-      "ib1",
-      "ixgrw"
-    ]
+    "equivalent_goal": "execute grow without tactical planner instructions",
+    "verifier": {
+      "evaluator_commit": "2eb80aeaea4c2d2922ddfca7520f7a723a4d9347",
+      "path": "experiments/v38/verify-differential.mjs",
+      "sha256": "77a5f99157007c573e5d03314983a3a68c3d3771a1ab8c30299631e607d671b4"
+    },
+    "fixture": {
+      "id": "v38-intent-boundary",
+      "path": "experiments/v38/differential-fixture.json",
+      "sha256": "388ba66a349c28de0316f8e11dec83533de733388af8f97000dd76b1153cb6d8"
+    },
+    "parent": {
+      "source_commit": "f46a9ca241ccbe530457c247ea6fc3e652b75a87",
+      "selected_action_id": "build:Atom Bomb",
+      "interpretation": "unbounded grow intent permits the legacy nuclear-economy priority"
+    },
+    "candidate": {
+      "source_commit": "6cb3b4ae8fb6f5c88e6d60e22d5d050dc4ba8cfb",
+      "selected_action_id": "expand:terra-nullius:35",
+      "markers": [
+        "is1g",
+        "ib1",
+        "ixgrw"
+      ],
+      "interpretation": "grow boundary excludes the strike while leaving exact growth selection to the executor"
+    },
+    "safety": {
+      "offered_k1z_target": false,
+      "candidate_selected_strike": false
+    },
+    "test_command": [
+      "node",
+      "experiments/v38/verify-differential.mjs",
+      ".",
+      "f46a9ca241ccbe530457c247ea6fc3e652b75a87",
+      "6cb3b4ae8fb6f5c88e6d60e22d5d050dc4ba8cfb",
+      "experiments/v38/differential-fixture.json",
+      "experiments/v38/differential-proof-6cb3b4ae.json"
+    ],
+    "test_exit_code": 0
   }
 }

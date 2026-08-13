@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-candidate:v38-intent-boundary",
+    "parent_ref": "proxywar-agent-candidate:v37-intent-delegated-material",
+    "exact_deltas": [
+      "Keep the one-field grow, secure, or finish contract, material gate, and mature executor, but restrict the executor to the action family named by the current intent when that family is legal."
+    ],
+    "source_commit": "6cb3b4ae8fb6f5c88e6d60e22d5d050dc4ba8cfb",
+    "parent_commit": "f46a9ca241ccbe530457c247ea6fc3e652b75a87",
+    "image_id": "sha256:2f6f38287b13d3c4c752a4f1ea6eab1d48935b50fbba666777b3b898ba9c67af"
+  },
+  "hypothesis": "A macro intent should constrain the eligible action family instead of merely annotating the legacy rule stack; this prevents grow and secure from becoming strikes without adding tactical planner instructions.",
+  "mechanism": {
+    "marker": "ib1",
+    "prior_reachable_decisions": 12
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "contract_sha256": "f4f0cab4b23b3f4d4e658f3e69560ceb564602b02f03d3f8143887170c127e94",
+    "audit_receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v38-intent-boundary-local-20260813.json",
+      "sha256": "ad79df4bed3fc5bc4056eb663bfa899a6f68f972f764aefe34c501cec991ac57"
+    },
+    "differential_binding": {
+      "verifier_path": "experiments/v38/verify-differential.mjs",
+      "fixture_path": "experiments/v38/differential-fixture.json"
+    }
+  },
+  "preupload_rci": {
+    "receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v38-preupload-rci-20260813.json",
+      "sha256": "62272f5cadca4050754e2d85925ee10aeac615f6d2d26ab8fb7eebabe0ce3424"
+    }
+  },
+  "matched_baseline": {
+    "request_id": "xreq_803265bf-52ed-4e74-bdb5-de9f73c4b68a",
+    "policy_ref": "xX_UwU_Senpai_420_Xx:v34",
+    "policy_version_id": "fd03e1d6-cbe0-4912-a12b-406d388efbf2",
+    "same_roster": false,
+    "same_variant": true,
+    "episodes": 10,
+    "wins": 0
+  },
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_fallbacks": 0,
+      "max_degradations": 0,
+      "max_rejections": 0,
+      "max_k1z_harm": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  }
+}

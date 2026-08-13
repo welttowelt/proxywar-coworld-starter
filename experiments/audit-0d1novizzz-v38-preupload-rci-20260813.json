@@ -8,7 +8,7 @@
   "candidate_image_id": "sha256:2f6f38287b13d3c4c752a4f1ea6eab1d48935b50fbba666777b3b898ba9c67af",
   "parent_source_commit": "f46a9ca241ccbe530457c247ea6fc3e652b75a87",
   "preregister_sha256": "f4f0cab4b23b3f4d4e658f3e69560ceb564602b02f03d3f8143887170c127e94",
-  "local_audit_sha256": "597b7d11f00655d85df632657142b9ef1a903d4da6b82351b9b555f1cb314409",
+  "local_audit_sha256": "ad79df4bed3fc5bc4056eb663bfa899a6f68f972f764aefe34c501cec991ac57",
   "differential_proof_sha256": "e62bdbdd12077470b10806ad62c9a0598b4befda9e8c68061f2242a37b0aeeac",
   "critique": {
     "strongest_evidence": "v38 keeps the planner at one field and three values, then adds only an intent-family boundary. The same-state proof changes v37's Atom Bomb under grow to neutral expansion without choosing a target in the planner. Focused tests pass 49/49, the full candidate-related suite is green, and the exact-image 16-player trace has 13/13 accepted candidate decisions, 12/12 ib1 executions, and zero holds, symbolic actions, fallback, degradation, rejection, or K1Z harm.",
