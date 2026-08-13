@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T07:06:00Z",
+  "player": "0d1novizzz",
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v35",
+    "policy_version_id": "18af4b65-b1a6-4fb5-8ed4-72c3c1d5721f",
+    "source_commit": "6cb3b4ae8fb6f5c88e6d60e22d5d050dc4ba8cfb",
+    "engine": "intent-core",
+    "experiment": "intent-boundary-v38"
+  },
+  "experience_request": {
+    "id": "xreq_ed6a2514-17ac-4b0e-9ea6-001f651b6193",
+    "origin": "platform-generated automatic diagnostic",
+    "coworld_version": "0.1.41",
+    "status": "completed",
+    "episodes": 10,
+    "failed_count": 0,
+    "maps": {
+      "EastAsia": 5,
+      "BlackSea": 5
+    }
+  },
+  "preregistered_kill_bar": "any hosted score of zero kills v38",
+  "result": {
+    "verdict": "kill",
+    "trigger": "four of the first five completions scored zero; the final batch was 1/10",
+    "wins": 1,
+    "episodes_completed": 10,
+    "map_wins": {
+      "EastAsia": "0/5",
+      "BlackSea": "1/5"
+    },
+    "final_tiles": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      190602,
+      206833,
+      0,
+      926468,
+      328721
+    ],
+    "mean_final_tiles": 165262.4,
+    "decisions": 187,
+    "planner_marked_decisions": 177,
+    "bootstrap_or_unmarked_decisions": 10,
+    "intent_counts": {
+      "grow": 79,
+      "secure": 76,
+      "finish": 22
+    },
+    "action_counts": {
+      "attack": 63,
+      "boat": 32,
+      "nuke": 6,
+      "build": 12,
+      "upgrade": 55,
+      "retreat": 6,
+      "hold": 3
+    },
+    "rejected": 0,
+    "fallbacks": 0,
+    "planner_degraded_decisions": 0,
+    "symbolic_actions": 0
+  },
+  "replay_audit": {
+    "path": "/private/tmp/v38-auto-complete-audit.json",
+    "passed": false,
+    "replay_sha256": [
+      "683a65a9907aeddd857bc210b42e06866099ce0541990565277a73c0a615931e",
+      "e37f63ad910d0d7c62088d19987ff831351c9540ea2782a3e01c2b7e25e8435a",
+      "8556b244ec25d9436fa0835563bd645742f0fdd5ebd1935c9263e6731bbfc960",
+      "fc5a69d6c1522a08b289d6995a8e546c9b9e1c87fd60d8d5cef7efe602fd1e37",
+      "cd1da35cb1ba2e079a67c35800c1c20492a49aac6099111f5edc48cb1cee3de3",
+      "6f025165c0f448bc29447bd082b288f6dd0a77f4ec9e7fc3b0dbc5e750c10f31",
+      "38aa43cb088a07ccf91349f0db58e5cdee1a1f35032c015b50fe6f45d02ce5d1",
+      "7344711d603ea0b71b7bd74670608c0a4f1c9b4af18d540be7fbb0b41545eb14",
+      "de08d234a73bfaa4856c4b068a38d636bb52288de3cc64a3c05921f1b52d606f",
+      "eafdaff97bbb27d66ed78814209d2e3438212582b6195db1b88430fc8395cdb7"
+    ]
+  },
+  "diagnosis": {
+    "intent_boundary": "worked directionally: versus v37, grow fell from 168 of 182 planner decisions to 79 of 177, boats fell from 74 to 32, nukes fell from 16 to 6, and one Black Sea episode won",
+    "planner_transport": "clean: zero fallback, degradation, rejection, or parse failure",
+    "remaining_failure": "secure occupied 76 planner decisions and produced 55 upgrades; the one winner used 20 of the batch's 22 finish decisions, while the long non-winning Black Sea seats were dominated by grow or secure",
+    "map_split": "all five East Asia seats lost and four of five Black Sea seats lost, so the single win is insufficient and not a universal policy lift",
+    "pressure_exception": "incoming pressure intentionally reopens the full safe material menu, so three grow-labeled nuclear actions remained possible in one loss",
+    "conclusion": "the simpler intent architecture improved behavioral coherence but did not clear the absolute hosted outcome gate",
+    "next_change": "do not add tactical instructions; obtain external Kimi review and test whether the intent vocabulary itself should be reduced before another source mutation"
+  },
+  "league_mutation": false,
+  "champion_preserved": {
+    "label": "xX_UwU_Senpai_420_Xx:v17",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  },
+  "promotion_eligible": false
+}
