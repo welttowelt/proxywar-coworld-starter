@@ -668,3 +668,28 @@ v18 was never submitted. v17 remains the sole live champion. The next bounded
 arm removes the exception-heavy selector from the planner path and tests a
 small intent vocabulary with one generic legal-action scorer. Evidence:
 [`audit-0d1novizzz-v18-hosted-failure-20260812.json`](experiments/audit-0d1novizzz-v18-hosted-failure-20260812.json).
+
+## v41 direct-grow matched rejection (2026-08-13)
+
+v41 kept the planner at exactly two outcomes, `grow` and `finish`, and changed
+only the grow executor: safe direct territory or a new build outranked a
+maintenance upgrade. The mechanism reached in four matched EastAsia-16P
+fields. Compared with exact v17 baselines, v41 reduced upgrades from 15 to two,
+raised new builds from eight to 21, raised attacks from six to 25, and improved
+planner transport from four marked decisions and 27 invalid replies to 107
+marked decisions and one invalid reply.
+
+The competitive result was still a terminal tie: zero candidate wins, zero
+baseline wins, four neutral pairs, and zero score for both arms in every field.
+v41 also selected 23 holds, above the preregistered maximum of zero. Those
+holds are not evidence of voluntary inactivity: the deployed selector excludes
+hold whenever any safe material action exists, while the portable replay omits
+the original legal-action menus. They are therefore recorded as no-safe-
+material fallbacks unless stronger menu evidence appears.
+
+v41 is rejected without the 20-episode regression, submission, membership, or
+champion change. It caused zero verified K1Z-targeted harmful actions across
+111 decisions. The planner stays frozen at `grow` / `finish`; no actions,
+targets, tactics, timing, or third intent are added. v17 remains the sole live
+champion. Evidence:
+[`audit-0d1novizzz-v41-v17-matched-counterfactual-20260813.json`](experiments/audit-0d1novizzz-v41-v17-matched-counterfactual-20260813.json).

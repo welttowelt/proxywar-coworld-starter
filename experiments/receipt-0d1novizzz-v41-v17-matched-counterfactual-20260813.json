@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T10:31:11Z",
+  "player": "0d1novizzz",
+  "status": "completed_rejected",
+  "counterfactual_eval_id": "cfeval_9f478c00-4fb5-49aa-89c8-ba341f762020",
+  "candidate": {
+    "arm": "v41-direct-grow",
+    "hosted_label": "xX_UwU_Senpai_420_Xx:v39",
+    "policy_version_id": "af95225e-edcb-46bf-ae98-99dfc9943ec3",
+    "source_commit": "e8ceb516bcdaaaeb06b557228b1a6cf6b73e8c6f"
+  },
+  "baseline": {
+    "label": "xX_UwU_Senpai_420_Xx:v17",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  },
+  "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "n_requested": 4,
+  "n_paired": 4,
+  "idempotency_key": "odin-v41-v17-matched-20260813-r1",
+  "experience_request_id": "2f34d2a2-ded5-4607-ac8b-bc8576570583",
+  "created_at": null,
+  "started_at": null,
+  "completed_at": "2026-08-13T10:23:34.709928Z",
+  "identity_checks": {
+    "active_player_exact": true,
+    "candidate_policy_exact": true,
+    "candidate_docker_image_exact": true,
+    "candidate_coworld_client_hash_exact": true,
+    "baseline_champion_exact": true
+  },
+  "result": {
+    "candidate_wins": 0,
+    "baseline_wins": 0,
+    "neutrals": 4,
+    "net_score": 0.0,
+    "mean_score_delta": 0.0,
+    "verdict": "reject",
+    "success_bar_passed": false,
+    "kill_trigger": "candidate won no more matched fields than baseline"
+  },
+  "runtime_gate": {
+    "planner_parse_failures": 1,
+    "holds": 23,
+    "hold_classification": "no_safe_material_action",
+    "max_holds": 0,
+    "passed": false
+  },
+  "safety": {
+    "verified_k1z_harmful_actions": 0,
+    "passed": true
+  },
+  "live_mutations": {
+    "counterfactual_request": true,
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false
+  },
+  "postcheck": {
+    "candidate_submissions": 0,
+    "candidate_memberships": 0,
+    "preserved_champion_policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461"
+  },
+  "audit": "experiments/audit-0d1novizzz-v41-v17-matched-counterfactual-20260813.json"
+}

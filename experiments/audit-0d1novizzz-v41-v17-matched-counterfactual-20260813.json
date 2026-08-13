@@ -1,0 +1,291 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T10:31:11Z",
+  "player": "0d1novizzz",
+  "counterfactual_eval_id": "cfeval_9f478c00-4fb5-49aa-89c8-ba341f762020",
+  "status": "completed_rejected",
+  "candidate": {
+    "arm": "v41-direct-grow",
+    "hosted_label": "xX_UwU_Senpai_420_Xx:v39",
+    "policy_version_id": "af95225e-edcb-46bf-ae98-99dfc9943ec3",
+    "source_commit": "e8ceb516bcdaaaeb06b557228b1a6cf6b73e8c6f",
+    "docker_image_id": "sha256:9b411947b0bfdfb81f56ef01bcb161e9f2601b098ee10aa27231e9a8b2070f8d",
+    "coworld_client_hash": "sha256:42ff71fcf134374ea40dc8536d1bee2020d56797b6ce60d8f811cb690918e6c8",
+    "planner_contract": [
+      "grow",
+      "finish"
+    ]
+  },
+  "baseline": {
+    "label": "xX_UwU_Senpai_420_Xx:v17",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  },
+  "matched_design": {
+    "source": "platform tournament counterfactual",
+    "variant": "tournament-16p-eastasia",
+    "coworld_version": "0.1.41",
+    "pairs": 4,
+    "probe_slots_zero_indexed": [
+      0,
+      1,
+      2,
+      3
+    ],
+    "seeds": [
+      7998000,
+      3389731,
+      6560177,
+      3951525
+    ],
+    "controlled": [
+      "roster",
+      "map",
+      "seat",
+      "seed",
+      "engine field"
+    ],
+    "idempotency_key": "odin-v41-v17-matched-20260813-r1",
+    "experience_request_id": "2f34d2a2-ded5-4607-ac8b-bc8576570583"
+  },
+  "outcome": {
+    "verdict": "reject",
+    "candidate_wins": 0,
+    "baseline_wins": 0,
+    "neutrals": 4,
+    "net_score": 0.0,
+    "mean_score_delta": 0.0,
+    "candidate_scores": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "baseline_scores": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "success_bar_passed": false,
+    "failure_triggers": [
+      "candidate won no more matched fields than baseline",
+      "one candidate planner refresh returned no valid intent",
+      "candidate selected 23 no-safe-material fallbacks, exceeding the preregistered maximum of zero holds"
+    ]
+  },
+  "candidate_runtime": {
+    "decisions": 111,
+    "planner_marked_decisions": 107,
+    "intent_counts": {
+      "grow": 107,
+      "finish": 0
+    },
+    "action_counts": {
+      "spawn": 4,
+      "boat": 35,
+      "attack": 25,
+      "build": 21,
+      "hold": 23,
+      "retreat": 1,
+      "upgrade_structure": 2
+    },
+    "fallbacks": 0,
+    "rejected_decisions": 0,
+    "planner_degraded_markers": 0,
+    "planner_parse_failures": 1,
+    "planner_parse_failure_slot": 1,
+    "holds": 23,
+    "hold_classification": {
+      "classification": "no_safe_material_action",
+      "basis": "The deployed materialIntentMenu excludes hold whenever any safe material action exists. Replay snapshots omit the original legal-action menus, so this is a source-structural classification rather than a menu reconstruction.",
+      "correction": "Do not describe these holds as voluntary or avoidable without legal-menu evidence."
+    },
+    "per_slot": [
+      {
+        "slot": 0,
+        "match_id": "PWSRNBJK",
+        "turn": 15300,
+        "decisions": 12,
+        "final_tiles": 0,
+        "alive": false,
+        "actions": {
+          "spawn": 1,
+          "boat": 4,
+          "attack": 5,
+          "build": 1,
+          "hold": 1
+        }
+      },
+      {
+        "slot": 1,
+        "match_id": "PWSHKWKH",
+        "turn": 13900,
+        "decisions": 40,
+        "final_tiles": 1204,
+        "alive": true,
+        "actions": {
+          "spawn": 1,
+          "boat": 10,
+          "build": 5,
+          "attack": 8,
+          "retreat": 1,
+          "hold": 15
+        }
+      },
+      {
+        "slot": 2,
+        "match_id": "PWSOJGKN",
+        "turn": 27300,
+        "decisions": 15,
+        "final_tiles": 0,
+        "alive": false,
+        "actions": {
+          "spawn": 1,
+          "build": 5,
+          "upgrade_structure": 2,
+          "boat": 1,
+          "hold": 5,
+          "attack": 1
+        }
+      },
+      {
+        "slot": 3,
+        "match_id": "PWSIQVLT",
+        "turn": 14300,
+        "decisions": 44,
+        "final_tiles": 25820,
+        "alive": true,
+        "actions": {
+          "spawn": 1,
+          "attack": 11,
+          "boat": 20,
+          "build": 10,
+          "hold": 2
+        }
+      }
+    ]
+  },
+  "baseline_runtime": {
+    "decisions": 58,
+    "planner_marked_decisions": 4,
+    "planner_degraded_or_fallback_decisions": 50,
+    "planner_parse_failures": 27,
+    "action_counts": {
+      "spawn": 4,
+      "target_player": 1,
+      "alliance_request": 12,
+      "attack": 6,
+      "boat": 12,
+      "build": 8,
+      "upgrade_structure": 15,
+      "hold": 0
+    }
+  },
+  "mechanism_read": {
+    "planner_transport": "v41 substantially improved transport reliability: one invalid reply versus 27 across the exact matched v17 baselines, with 107 planner-marked decisions versus four.",
+    "direct_growth_expression": "The executor delta reduced upgrades from 15 to two and increased new builds from eight to 21 and attacks from six to 25.",
+    "competitive_result": "The mechanical change reached and changed behavior, but produced no matched score or win advantage. Mechanism success is not promotion evidence."
+  },
+  "k1z_safety": {
+    "passed": true,
+    "verified_partner_harmful_actions": 0,
+    "verified_decisions": 111,
+    "boundary": "Zero verified K1Z-targeted harm in all four candidate replays. This safety pass does not override the outcome kill."
+  },
+  "winner_comparison": {
+    "aggregate_action_counts": {
+      "decisions": 144,
+      "spawn": 4,
+      "attack": 65,
+      "build": 12,
+      "upgrade_structure": 14,
+      "boat": 40,
+      "hold": 4,
+      "alliance_request": 4,
+      "embargo": 1
+    },
+    "boundary": "This four-field action mix is descriptive. It does not authorize tactical planner instructions or establish a causal next edit."
+  },
+  "candidate_replays": [
+    {
+      "slot": 0,
+      "episode_request_id": "ereq_c2b2993a-5ca4-41d0-be84-c85beca9a43f",
+      "episode_id": "d7af7d28-2ee2-4efd-aa9a-0102f2a83352",
+      "match_id": "PWSRNBJK",
+      "sha256": "cd19872948e2ed04d500d99f5cc1155b1da48ec4200b646773f5552f6edd4934"
+    },
+    {
+      "slot": 1,
+      "episode_request_id": "ereq_6d942623-1a07-480c-87af-ab2b19202259",
+      "episode_id": "f189fc63-7377-44ac-9e38-13915e864f70",
+      "match_id": "PWSHKWKH",
+      "sha256": "cb77f4160c91f3debb44d09a6b1ca82cc7451dcba4434404aae3c49ed3594a8e"
+    },
+    {
+      "slot": 2,
+      "episode_request_id": "ereq_4f444164-9cd8-4566-8820-5ca4b927eda6",
+      "episode_id": "76d8f516-5bde-4b78-8eaa-27ff1101f995",
+      "match_id": "PWSOJGKN",
+      "sha256": "3a6ccba60184175866502ebb66999ddcd4b400804e63e2e86b511fab272258de"
+    },
+    {
+      "slot": 3,
+      "episode_request_id": "ereq_ff905890-0a48-4b04-bcc0-2483d163a69e",
+      "episode_id": "96a39d3e-1045-4f9e-9843-2d4cf3ff7d53",
+      "match_id": "PWSIQVLT",
+      "sha256": "64bb4ac9a5a91381a1f7559e212ba3703792a9d1c6f6b97a71b015c7624623fe"
+    }
+  ],
+  "baseline_replays": [
+    {
+      "slot": 0,
+      "episode_request_id": "ereq_9f117ed1-a1cf-4a19-8238-349339f88b6d",
+      "episode_id": "1bab5321-3830-4c21-a721-98a73f3e58e4",
+      "match_id": "PWSRNBJK",
+      "sha256": "d428ebf7e56c01ff6024cf0b20863288ba00558ea18f1975708a6c30847eca70"
+    },
+    {
+      "slot": 1,
+      "episode_request_id": "ereq_a0ce6412-117c-412e-8cf3-a39cf3f58216",
+      "episode_id": "0473de5b-1f28-4884-bb75-bac5e9db1d76",
+      "match_id": "PWSHKWKH",
+      "sha256": "f59ceff3a4dd31f503e43fe215eaaaae9f0b28ef86c6efb9b9086081c7e38881"
+    },
+    {
+      "slot": 2,
+      "episode_request_id": "ereq_37af746e-8937-4417-b760-a0c141bd9468",
+      "episode_id": "f1801fe3-a458-44a7-9d82-f0295b86a7fe",
+      "match_id": "PWSOJGKN",
+      "sha256": "edecfdf1db598da25ec28e7459f9b7a706b992ee04af94ffd3316f4ad276bbba"
+    },
+    {
+      "slot": 3,
+      "episode_request_id": "ereq_447f2d70-e4e7-4538-83e2-a774910d5a4c",
+      "episode_id": "27362301-c446-44ad-83a7-209d0099fa7e",
+      "match_id": "PWSIQVLT",
+      "sha256": "e91481f1981a4b33fbf9a15f67a9010abe600b0de82fd1187b6abedf9e0c0399"
+    }
+  ],
+  "decision": {
+    "planner": "Keep exactly grow and finish. Do not add actions, targets, tactics, timing, or a third intent.",
+    "candidate": "Kill v41. Do not run the 20-episode regression, submit it, seat it, or replace v17.",
+    "next_diagnosis": "Explain why the simple grow intent still yields zero outcomes before proposing another executor change. Do not infer that no-safe-material holds are voluntary inactivity."
+  },
+  "live_mutations": {
+    "counterfactual_request": true,
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false
+  },
+  "postcheck": {
+    "candidate_submissions": 0,
+    "candidate_memberships": 0,
+    "preserved_champion_policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "official_scoreboard_round": 1414,
+    "official_rank": 14,
+    "official_score": 5.739365435532998
+  },
+  "champion_preserved": true,
+  "promotion_ready": false
+}
