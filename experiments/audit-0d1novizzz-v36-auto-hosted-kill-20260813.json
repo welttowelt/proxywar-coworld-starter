@@ -1,0 +1,112 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T05:35:00Z",
+  "player": "0d1novizzz",
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v33",
+    "policy_version_id": "27f8c31b-2108-4b20-a404-2f122e67acf8",
+    "source_commit": "1d63cf7f61873071823d63f3e9de0e4a8d1ae86e",
+    "engine": "intent-core",
+    "experiment": "intent-material-gate-v36"
+  },
+  "experience_request": {
+    "id": "xreq_c0e9078a-f855-4ecc-8edf-a8c6cfaaec6f",
+    "origin": "platform-generated automatic diagnostic",
+    "coworld_version": "0.1.41",
+    "status_at_kill": "running",
+    "running_count": 6,
+    "completed_count": 4,
+    "failed_count": 0
+  },
+  "preregistered_kill_bar": "any hosted score of zero kills v36",
+  "result": {
+    "verdict": "kill",
+    "trigger": "the first four completed hosted episodes all scored zero",
+    "wins": 0,
+    "episodes_completed_at_kill": 4,
+    "post_spawn_decisions": 58,
+    "planner_marked_post_spawn_decisions": 56,
+    "bootstrap_post_spawn_decisions": 2,
+    "intent_counts": {
+      "grow": 58,
+      "secure": 0,
+      "finish": 0
+    },
+    "action_counts": {
+      "attack": 26,
+      "build": 12,
+      "boat": 13,
+      "retreat": 2,
+      "upgrade": 1,
+      "hold": 4,
+      "symbolic": 0
+    },
+    "rejected": 0,
+    "fallbacks": 0,
+    "planner_degraded_decisions": 0
+  },
+  "episodes": [
+    {
+      "episode_request_id": "ereq_469626d0-e78b-4eb5-92da-c1472ee5f5e0",
+      "episode_id": "f663f0e7-283d-45b0-a750-df93afbdac61",
+      "map": "Oceania",
+      "seat": 13,
+      "score": 0,
+      "final_tiles": 520,
+      "alive": true,
+      "decisions": 26,
+      "holds": 4,
+      "replay_sha256": "7e2ef38e7de471e833edb31f3f2679e336999d3291e6246fff9868a96ecd24d9"
+    },
+    {
+      "episode_request_id": "ereq_4250c97b-f929-43a2-9b91-1f524f9794a3",
+      "episode_id": "80d0eed7-a08b-4239-b3bf-ab5370621c29",
+      "map": "Oceania",
+      "seat": 14,
+      "score": 0,
+      "final_tiles": 0,
+      "alive": false,
+      "decisions": 4,
+      "holds": 0,
+      "replay_sha256": "cc938713278fe5805c37eee4d145e2cf0f8e8f0001c6d9acfed67a7dcb07a688"
+    },
+    {
+      "episode_request_id": "ereq_75536807-d80c-4e8b-aef6-7ec6b31436f5",
+      "episode_id": "03d252b9-f052-48b7-bf79-e5b5973ce6e3",
+      "map": "Oceania",
+      "seat": 15,
+      "score": 0,
+      "final_tiles": 0,
+      "alive": false,
+      "decisions": 13,
+      "holds": 0,
+      "replay_sha256": "f2f24a478fb261c35e7509ae6cc3c878866f1fd2f4bf354a9d92d3e7b2ad5271"
+    },
+    {
+      "episode_request_id": "ereq_aae45563-c1ec-4127-af2d-1d1d0710e368",
+      "episode_id": "63bfe623-0255-4b9a-9fe0-b99b98b91da8",
+      "map": "Oceania",
+      "seat": 16,
+      "score": 0,
+      "final_tiles": 0,
+      "alive": false,
+      "decisions": 19,
+      "holds": 0,
+      "replay_sha256": "28b85bf947828dc6cf7fb2ac6998ad7bd35986d08c8d34a9e14e59abc64aafd1"
+    }
+  ],
+  "diagnosis": {
+    "material_gate": "worked; symbolic action count fell from v35's 33 alliance selections to zero",
+    "planner_transport": "intermittent; every inspected pod log contains repeated model-refresh failures ending on an unsupported on-demand Sonnet model",
+    "intent_switching": "failed; every post-spawn decision remained grow despite changing objectives and pressure",
+    "executor": "failed; the compact utility ranker opened three seats with builds, spent twelve decisions on builds, and reached four holds while the winning Oceania trajectory continually converted rivals and territory",
+    "next_change": "retain the one-field intent interface and material gate, but delegate exact execution back to the mature selector instead of maintaining a second tactical ranking system"
+  },
+  "league_mutation": false,
+  "champion_preserved": {
+    "label": "xX_UwU_Senpai_420_Xx:v17",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  },
+  "promotion_eligible": false
+}
