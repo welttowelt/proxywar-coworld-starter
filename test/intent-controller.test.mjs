@@ -145,11 +145,14 @@ test("intent snapshot excludes legal action IDs and labels", () => {
   assert.equal(snapshot.rivals[0].id, "player-7");
 });
 
-test("intent-only snapshots leave rival identity to the executor", () => {
+test("intent-only snapshots contain state, not execution affordances", () => {
   const snapshot = buildIntentSnapshot(state, false);
   assert.equal(snapshot.rivals[0].id, undefined);
   assert.equal(snapshot.rivals[0].name, undefined);
+  assert.equal(snapshot.rivals[0].canAttack, undefined);
   assert.equal(snapshot.rivals[0].tileShare, 0.1);
+  assert.equal(snapshot.legalActionKinds, undefined);
+  assert.equal(snapshot.recentKinds, undefined);
 });
 
 test("outcome plans use the operator refresh cadence", () => {

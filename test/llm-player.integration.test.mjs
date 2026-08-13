@@ -361,9 +361,12 @@ test("intent-core planner asks only for one outcome", async () => {
   assert.match(source, /"intent":/);
   assert.match(source, /exactly one key/);
   assert.match(source, /\{"intent":"grow"\}/);
-  assert.match(source, /The executor chooses every move and any rival/);
+  assert.match(source, /Return only the intent\. Execution is delegated\./);
+  assert.doesNotMatch(source, /increase territory or economy without harming a rival/);
+  assert.doesNotMatch(source, /preserve strength and improve what you hold/);
+  assert.doesNotMatch(source, /turn a clear advantage into a rival's loss/);
   assert.match(source, /"horizon":/);
-  assert.match(source, /max_tokens: 300/);
+  assert.match(source, /max_tokens: 64/);
   assert.match(source, /Array\.isArray\(r\?\.content\)/);
   assert.match(source, /\.join\("\\n"\)/);
   assert.doesNotMatch(source, /"focus":/);

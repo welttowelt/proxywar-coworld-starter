@@ -76,15 +76,12 @@ const TEST_INTENT_DIRECTIVE = process.env.NODE_ENV === "test"
   ? process.env.INTENT_TEST_DIRECTIVE
   : null;
 
-// Intent-core gives the model mission command: choose the outcome and optional
-// rival, never a concrete move. The legacy doctrine remains byte-for-byte
-// available to existing policy images and tests.
+// Intent-core gives the model only mission command. The legacy doctrine remains
+// byte-for-byte available to existing policy images and tests.
 const INTENT_CORE_STRATEGY = [
   "You command an autonomous nation in ProxyWar. Win by finishing with the most territory.",
-  "Choose one goal for the next few decisions: grow, secure, or finish.",
-  "grow = increase territory or economy without harming a rival; secure = preserve strength and improve what you hold; finish = turn a clear advantage into a rival's loss.",
-  "Choose only the goal. The executor chooses every move and any rival.",
-  "Do not prescribe actions, targets, percentages, build orders, map scripts, or timing.",
+  "Choose the intent that best fits the current position: grow, secure, or finish.",
+  "Return only the intent. Execution is delegated.",
 ].join(" ");
 const STRATEGY = POLICY_ENGINE === "intent-core"
   ? INTENT_CORE_STRATEGY
@@ -122,7 +119,8 @@ async function askBedrock(state, signal) {
     : 'Reply with ONLY JSON and exactly these three keys. Use one shape: ' +
       '{"intent":"grow","targetID":null,"horizon":4} or ' +
       '{"intent":"convert","targetID":"<exact visible rival ID>","horizon":4}. ';
-  const prompt = STRATEGY + "\n" + SECURITY + "\n" + directiveContract +
+  const prompt = STRATEGY + "\n" +
+    (POLICY_ENGINE === "intent-core" ? "" : SECURITY + "\n") + directiveContract +
     (POLICY_ENGINE === "intent-core" ? "" : 'Horizon must be an integer from 2 through 12.\n') +
     "GAME:\n" + JSON.stringify(buildIntentSnapshot(
       state,
@@ -133,7 +131,7 @@ async function askBedrock(state, signal) {
   for (const model of candidates) {
     try {
       const r = await bedrock.messages.create(
-        { model, max_tokens: 300, messages: [{ role: "user", content: prompt }] },
+        { model, max_tokens: 64, messages: [{ role: "user", content: prompt }] },
         { signal, timeout: Math.min(8000, PLAN_TIMEOUT_MS), maxRetries: 0 },
       );
       lockedModel = model;

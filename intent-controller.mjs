@@ -165,9 +165,11 @@ export function buildIntentSnapshot(state, includeTargetIdentity = true) {
       relativeTroopRatio: rival.relativeTroopRatio,
       sharesBorder: rival.sharesBorder,
       isAllied: rival.isAllied,
-      canAttack: rival.canAttack,
+      ...(includeTargetIdentity ? { canAttack: rival.canAttack } : {}),
     })),
-    legalActionKinds: [...new Set((state?.legalActions || []).map((action) => action.kind))],
-    recentKinds: state?.recentKinds || [],
+    ...(includeTargetIdentity ? {
+      legalActionKinds: [...new Set((state?.legalActions || []).map((action) => action.kind))],
+      recentKinds: state?.recentKinds || [],
+    } : {}),
   };
 }
