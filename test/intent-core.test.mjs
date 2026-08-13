@@ -64,25 +64,25 @@ function hold() {
   return action("hold", "hold", "Hold");
 }
 
-test("grow softly prefers safe neutral territory", () => {
+test("grow ranks safe neutral territory first", () => {
   const selected = decide([attack("rival"), build(), land(), hold()], "grow", {
     tileShare: 0.2,
     rivals: [{ id: "rival", name: "rival", tileShare: 0.1, relativeTroopRatio: 1.6 }],
   });
   assert.equal(selected.id, "expand:terra-nullius:35");
-  assert.deepEqual(selected.policyMarkers, ["is1g", "ixgrw"]);
+  assert.deepEqual(selected.policyMarkers, ["iu1g", "ixgrw"]);
 });
 
-test("secure softly prefers an available economy action", () => {
+test("secure ranks an available economy action first", () => {
   const selected = decide([attack("rival"), build(), land(), hold()], "secure", {
     tileShare: 0.2,
     rivals: [{ id: "rival", name: "rival", tileShare: 0.1, relativeTroopRatio: 1.6 }],
   });
   assert.equal(selected.id, "build:Factory");
-  assert.deepEqual(selected.policyMarkers, ["is1s", "ixsec"]);
+  assert.deepEqual(selected.policyMarkers, ["iu1s", "ixsec"]);
 });
 
-test("finish softly prefers a safe mature finishing target", () => {
+test("finish ranks a safe finishing target first", () => {
   const history = [{
     actionID: "attack:rival:10",
     kind: "attack",
@@ -96,7 +96,7 @@ test("finish softly prefers a safe mature finishing target", () => {
     rivals: [{ id: "rival", name: "rival", tileShare: 0.1, relativeTroopRatio: 1.8 }],
   });
   assert.equal(selected.id, "attack:rival:40");
-  assert.deepEqual(selected.policyMarkers, ["is1f", "ixfin"]);
+  assert.deepEqual(selected.policyMarkers, ["iu1f", "ixfin"]);
 });
 
 test("intent cannot override pressure defense", () => {
@@ -105,7 +105,7 @@ test("intent cannot override pressure defense", () => {
     rivals: [{ id: "raider", name: "raider", tileShare: 0.2, relativeTroopRatio: 1.4 }],
   });
   assert.equal(selected.id, "attack:raider:40");
-  assert.deepEqual(selected.policyMarkers, ["ixgrw"]);
+  assert.deepEqual(selected.policyMarkers, ["iu1g", "ixgrw"]);
 });
 
 test("intent cannot override safe atom-bomb economy", () => {
@@ -120,10 +120,10 @@ test("intent cannot override safe atom-bomb economy", () => {
     rivals: [{ id: "leader", name: "Leader", tileShare: 0.79, relativeTroopRatio: 1 }],
   });
   assert.equal(selected.id, bomb.id);
-  assert.deepEqual(selected.policyMarkers, ["nk1", "ixsec"]);
+  assert.deepEqual(selected.policyMarkers, ["iu1s", "ixsec"]);
 });
 
-test("unavailable intent falls through to the productive mature baseline", () => {
+test("unavailable intent defaults to productive grow ranking", () => {
   const selected = decide([attack("rival"), hold()], "grow", {
     rivals: [{ id: "rival", name: "rival", tileShare: 0.1, relativeTroopRatio: 1.4 }],
   });
@@ -146,6 +146,26 @@ test("symbolic strategy remains available instead of becoming an intent hold", (
   });
   assert.equal(selected.id, alliance.id);
   assert.notEqual(selected.kind, "hold");
+});
+
+test("repeated symbolic pressure yields to a productive action", () => {
+  const target = action("target:rival", "target_player", "Target rival", {
+    targetID: "rival",
+    targetName: "rival",
+  });
+  const history = Array.from({ length: 3 }, () => ({
+    actionID: target.id,
+    kind: target.kind,
+    targetID: "rival",
+    targetName: "rival",
+    tileShare: 0.12,
+  }));
+  const selected = decide([target, build(), hold()], "finish", {
+    history,
+    rivals: [{ id: "rival", name: "rival", tileShare: 0.2, relativeTroopRatio: 1 }],
+  });
+  assert.equal(selected.id, "build:Factory");
+  assert.deepEqual(selected.policyMarkers, ["iu1f", "ixfin"]);
 });
 
 test("no intent can harm K1Z Mickey Mouse", () => {
@@ -194,7 +214,7 @@ test("a missing or stale plan uses the grow preference", () => {
     "expand:terra-nullius:35");
 });
 
-test("spawn remains owned by the mature selector", () => {
+test("spawn remains the ranker's absolute first action", () => {
   const spawn = action("spawn:1", "spawn", "Spawn");
   assert.equal(decide([land(), spawn], "finish").id, spawn.id);
 });

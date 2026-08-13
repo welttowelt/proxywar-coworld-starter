@@ -596,7 +596,7 @@ test("an exact visible convert intent reaches the deployed MM1 selector", async 
   assert.match(responses[1].reason, /mm1c/);
 });
 
-test("intent-core wiring preserves mature diplomacy ahead of a grow preference", async () => {
+test("intent-core grow ranks progress ahead of optional diplomacy", async () => {
   const server = new WebSocketServer({ host: "127.0.0.1", port: 0 });
   await new Promise((resolve) => server.once("listening", resolve));
   const { port } = server.address();
@@ -698,9 +698,9 @@ test("intent-core wiring preserves mature diplomacy ahead of a grow preference",
 
   assert.equal(responses[0].selectedLegalActionId, "spawn:100");
   assert.equal(responses[0].fallbackUsed, false);
-  assert.equal(responses[1].selectedLegalActionId, `alliance:${mickeyID}`);
+  assert.equal(responses[1].selectedLegalActionId, "expand:terra-nullius:35");
   assert.equal(responses[1].fallbackUsed, false);
-  assert.match(responses[1].reason, /^pln:4ly:kp2:ixgrw$/);
+  assert.match(responses[1].reason, /^pln:atk:iu1g:ixgrw$/);
 });
 
 test("intent-only finish leaves target choice and continuity to the executor", async () => {
@@ -790,7 +790,7 @@ test("intent-only finish leaves target choice and continuity to the executor", a
   );
   assert.deepEqual(
     responses.map((response) => response.reason),
-    ["pln:atk:ixfin", "pln:atk:is1f:ixfin"],
+    ["pln:atk:iu1f:ixfin", "pln:atk:iu1f:ixfin"],
   );
   assert.ok(responses.every((response) => response.fallbackUsed === false));
 });
@@ -864,7 +864,7 @@ test("intent-core starts from an honest grow outcome while the planner is pendin
   assert.equal(response.selectedLegalActionId, "expand:terra-nullius:35");
   assert.equal(response.fallbackUsed, false);
   assert.equal(response.llmPlannerDegraded, false);
-  assert.match(response.reason, /^dft:atk:is1g:ixgrw$/);
+  assert.match(response.reason, /^dft:atk:iu1g:ixgrw$/);
 });
 
 test("a single transport-framed planner reply reaches the deployed player", async () => {
