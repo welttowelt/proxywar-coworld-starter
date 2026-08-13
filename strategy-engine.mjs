@@ -1039,6 +1039,25 @@ function chooseParentAction(actions, state, plan = null, history = []) {
     if (build) return withDiscipline(withPeace(build));
   }
 
+  // is1: intent steers the proven selector only at an already-safe strategic
+  // choice point. Defense, anti-collapse, diplomacy, conversion recovery, and
+  // atom-bomb economy stay ahead of it. If the requested outcome is not
+  // available, normal baseline ordering continues unchanged.
+  const strategicIntent = ["grow", "secure", "finish"].includes(plan?.strategicIntent)
+    ? plan.strategicIntent
+    : null;
+  if (!hasCurrentPressure(state) && !collapsing) {
+    if (strategicIntent === "finish" && finishingTarget && disciplinedAttack) {
+      return withGc1({ ...disciplinedAttack, policyMarker: "is1f" });
+    }
+    if (strategicIntent === "secure" && build && sinceBuild >= 3 && !finishingTarget) {
+      return withDiscipline(withPeace({ ...build, policyMarker: "is1s" }));
+    }
+    if (strategicIntent === "grow" && neutralAttack) {
+      return withGc1({ ...neutralAttack, policyMarker: "is1g" });
+    }
+  }
+
   if (cadenceBuild && !finishingTarget) return withDiscipline(withPeace(build));
   if (state.self.tileShare < 0.12 && neutralAttack && threatCount === 0 && !collapsing) {
     return withGc1(neutralAttack);
@@ -1235,7 +1254,10 @@ function intentTargetActions(actions, state, target) {
 // server-offered action. Invalid, pressured, stale, protected, or unavailable
 // intent always returns to the full-menu baseline.
 export function chooseAction(actions, state, plan = null, history = []) {
-  const baseline = chooseParentAction(actions, state, null, history);
+  const parentPlan = ["grow", "secure", "finish"].includes(plan?.strategicIntent)
+    ? { strategicIntent: plan.strategicIntent }
+    : null;
+  const baseline = chooseParentAction(actions, state, parentPlan, history);
   if (!validIntentPlan(plan) || baseline.kind === "spawn" || hasCurrentPressure(state) ||
       territoryCollapsing(state, history)) return baseline;
 
