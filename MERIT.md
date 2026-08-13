@@ -718,3 +718,27 @@ architecture is therefore retained as evidence, not promoted as champion.
 v42 is killed without regression, submission, membership, or champion change;
 v17 remains the sole live champion. Evidence:
 [`audit-0d1novizzz-v42-v17-matched-counterfactual-20260813.json`](experiments/audit-0d1novizzz-v42-v17-matched-counterfactual-20260813.json).
+
+## v46 alliance-escape mechanism pass and competitive rejection (2026-08-13)
+
+v46 kept the planner interface at exactly one bare outcome: `grow` or
+`finish`. It changed only the executor seam exposed by v45: when an outgoing
+alliance request competes with an already-legal productive move, the executor
+chooses the productive move. A real inbound handshake stays immediate, and an
+outgoing request remains legal when the only alternative is hold.
+
+The fix worked. Across four matched 16-player fields, all 82 post-spawn
+decisions were accepted `pln:*` decisions. The `iax` mechanism fired 42 times,
+with zero degraded decisions, fallbacks, rejected actions, or holds. Resolved
+hostile actions targeted only outsiders; one K1Z action was an accepted
+alliance request. Twenty-two of 27 transport destinations were unowned or
+unresolved in their sampled snapshot, so full transport safety is not claimed.
+
+The competitive gate failed: v46 won zero fields, v43 won zero, all four pairs
+were neutral, and both arms scored zero in every field. Two v46 seats were
+eliminated; the survivors finished with 3,513 and 4,169 tiles. The mechanism is
+retained as executor evidence but v46 is rejected without submission,
+membership, or champion change. v43 remains the live champion. The next arm
+must isolate one winner-derived economy or strike-mass lever while leaving the
+bare intent boundary frozen. Evidence:
+[`audit-0d1novizzz-v46-v43-bare-intent-alliance-escape-20260813.json`](experiments/audit-0d1novizzz-v46-v43-bare-intent-alliance-escape-20260813.json).

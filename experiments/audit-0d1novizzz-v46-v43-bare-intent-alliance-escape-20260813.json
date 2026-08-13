@@ -1,0 +1,132 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T14:31:00Z",
+  "player": "0d1novizzz",
+  "status": "completed_rejected",
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v46",
+    "policy_version_id": "625ac8a0-6eb8-4f9b-ab31-43f04b3ba293",
+    "source_commit": "25e30bdd70852dac4cd168e7cf139900f3d908c4",
+    "local_image_id": "sha256:e8ee11904f167ef674f06046f0ba12030280bc0b4fd6d6d8de03806af3748f52",
+    "hosted_image_id": "img_87aa647e-45cb-484a-9538-0d1b9e30c35a"
+  },
+  "baseline": {
+    "label": "xX_UwU_Senpai_420_Xx:v43",
+    "policy_version_id": "b9e5ccdc-8dc4-4017-90ad-8f7908413109",
+    "membership_id": "lpm_fe4dde2e-4a20-4bd0-a865-9d0493f7f1b6"
+  },
+  "counterfactual": {
+    "id": "cfeval_46b59192-2344-4da6-aa24-f68c4724ee4e",
+    "experience_request_id": "7d1e4467-7db5-4c64-b7cb-9f3b2503c1b0",
+    "idempotency_key": "0d1-v46-v43-4f-20260813-1416",
+    "requested_fields": 4,
+    "completed_fields": 4,
+    "candidate_wins": 0,
+    "baseline_wins": 0,
+    "neutral_fields": 4,
+    "net_score": 0.0,
+    "mean_score_delta": 0.0,
+    "completed_at": "2026-08-13T14:27:36.878342Z"
+  },
+  "episodes": [
+    {
+      "episode_request_id": "ereq_9b3fd18d-7b6a-42c7-858c-b390aa6b35b3",
+      "episode_id": "c2d7f178-53ce-47ae-b507-fcc78e5a7e68",
+      "variant": "tournament-16p-blacksea",
+      "seed": 8200254,
+      "slot": 13,
+      "score": 0.0,
+      "alive": false,
+      "final_tiles": 0,
+      "replay_sha256": "766865b5cd645aa087e487b4b19aefa75e9698a56bea0425fb7c78a06a253928"
+    },
+    {
+      "episode_request_id": "ereq_9abf50af-0c4f-4cbf-9555-e0df1c5e783b",
+      "episode_id": "aefb3d36-3447-4e2a-a3b1-d2465c2c573b",
+      "variant": "tournament-16p-blacksea",
+      "seed": 3107454,
+      "slot": 15,
+      "score": 0.0,
+      "alive": false,
+      "final_tiles": 0,
+      "replay_sha256": "8f681100e46d5c3d530460c3a3aba52b388a84927522e3acdd32c3f68a4428cc"
+    },
+    {
+      "episode_request_id": "ereq_21e3955f-38c1-4b5c-b3d4-16e135e36799",
+      "episode_id": "9a3b9962-393c-4074-b938-5f9ebd0ce6b4",
+      "variant": "tournament-16p-asia",
+      "seed": 4411265,
+      "slot": 0,
+      "score": 0.0,
+      "alive": true,
+      "final_tiles": 3513,
+      "replay_sha256": "aa429811fd19bfd10ae9fc3eb0a24a658bf17d398779b6996f7bb25097fa7485"
+    },
+    {
+      "episode_request_id": "ereq_e7be099b-c3fb-4575-9342-d259990eccd7",
+      "episode_id": "cca30dc0-31d5-4c3e-a5f7-ea3fab6b6d74",
+      "variant": "tournament-16p-asia",
+      "seed": 11572005,
+      "slot": 1,
+      "score": 0.0,
+      "alive": true,
+      "final_tiles": 4169,
+      "replay_sha256": "1e1e36ea8ffcad7b6c442d454f45b0c1c763aa6e9c25bfdf49c2b88c8ac8dae8"
+    }
+  ],
+  "replay_audit": {
+    "post_spawn_decisions": 82,
+    "planner_marked_decisions": 82,
+    "planner_degraded_decisions": 0,
+    "rule_fallback_decisions": 0,
+    "grow_markers": 74,
+    "finish_markers": 8,
+    "alliance_escape_markers": 42,
+    "fallbacks": 0,
+    "holds": 0,
+    "rejected_decisions": 0,
+    "action_kinds": {
+      "attack": 39,
+      "boat": 27,
+      "build": 8,
+      "alliance_request": 3,
+      "target_player": 4,
+      "retreat": 1
+    },
+    "verified_harmful_k1z_actions": 0,
+    "verified_hostile_targets": [
+      "Auri",
+      "Ari Sklar",
+      "Calc",
+      "Larslllllll",
+      "Matt Van",
+      "docxology",
+      "richard"
+    ],
+    "k1z_social_actions": ["one accepted alliance request to K1Z Mickey Mouse"],
+    "transport_destination_boundary": {
+      "total_boats": 27,
+      "snapshot_owned_by_self": 5,
+      "unowned_or_unresolved_in_sampled_snapshot": 22,
+      "verified_k1z_destinations": 0,
+      "full_transport_safety_claimed": false
+    }
+  },
+  "gate": {
+    "planner_transport_clean": true,
+    "alliance_escape_mechanism_reached": true,
+    "zero_holds": true,
+    "zero_rejections": true,
+    "zero_verified_k1z_harm": true,
+    "candidate_field_advantage": false,
+    "passed": false
+  },
+  "verdict": "REJECT_SAFE_MECHANISM_NO_COMPETITIVE_LIFT",
+  "league_mutation": {
+    "candidate_submissions": 0,
+    "candidate_memberships": 0,
+    "champion_changed": false,
+    "preserved_champion_policy_version_id": "b9e5ccdc-8dc4-4017-90ad-8f7908413109"
+  },
+  "next_arm": "Freeze the planner at bare grow or finish. Mine the matched winner replays for a single executor-side economy or strike-mass lever; do not add planner instructions."
+}
