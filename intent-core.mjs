@@ -53,12 +53,10 @@ export function chooseIntentCoreAction(actions, state, plan = null, history = []
   );
   if (safe.length === 0) throw new Error("intent selector found no safe legal action");
 
-  const selected = chooseCaptainUnderpantsRuntimeAction(
-    safe,
-    state,
-    { strategicIntent: intent },
-    history,
-  );
+  // Grow describes the outcome, not a preferred action family. The mature
+  // executor already owns growth; only finish changes its strategic mode.
+  const executorPlan = intent === "finish" ? { strategicIntent: "finish" } : null;
+  const selected = chooseCaptainUnderpantsRuntimeAction(safe, state, executorPlan, history);
   const policyMarkers = [...new Set([
     ...(Array.isArray(selected.policyMarkers) ? selected.policyMarkers : []),
     selected.policyMarker,

@@ -76,12 +76,12 @@ function hold() {
   return action("hold", "hold", "Hold");
 }
 
-test("grow delegates safe neutral territory first", () => {
+test("grow is an outcome rather than a neutral-action instruction", () => {
   const selected = decide([attack("rival"), build(), land(), hold()], "grow", {
     tileShare: 0.2,
     rivals: [{ id: "rival", name: "rival", tileShare: 0.1, relativeTroopRatio: 1.6 }],
   });
-  assert.equal(selected.id, "expand:terra-nullius:35");
+  assert.equal(selected.id, "attack:rival:40");
   assert.ok(selected.policyMarkers.includes("ib2"));
   assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
@@ -91,7 +91,7 @@ test("a removed secure intent falls back to grow", () => {
     tileShare: 0.2,
     rivals: [{ id: "rival", name: "rival", tileShare: 0.1, relativeTroopRatio: 1.6 }],
   });
-  assert.equal(selected.id, "expand:terra-nullius:35");
+  assert.equal(selected.id, "attack:rival:40");
   assert.ok(selected.policyMarkers.includes("ib2"));
   assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
@@ -169,7 +169,7 @@ test("grow delegates the complete safe menu instead of defining an action family
   const delegated = chooseCaptainUnderpantsRuntimeAction(
     actions,
     state,
-    { strategicIntent: "grow" },
+    null,
     history,
   );
   assert.equal(selected.id, delegated.id);
@@ -328,17 +328,17 @@ test("grow cannot disguise a K1Z strike as infrastructure", () => {
   assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
-test("a missing or stale plan uses the grow preference", () => {
+test("a missing or stale plan uses the untargeted grow outcome", () => {
   const menu = [land(), attack("rival"), hold()];
   const options = {
     tileShare: 0.2,
     rivals: [{ id: "rival", name: "rival", tileShare: 0.1, relativeTroopRatio: 1.4 }],
   };
-  assert.equal(decide(menu, null, options).id, "expand:terra-nullius:35");
+  assert.equal(decide(menu, null, options).id, "attack:rival:40");
   const history = [];
   const state = buildState(observation(options), menu, history);
   assert.equal(chooseIntentCoreAction(menu, state, { intent: "defend" }, history).id,
-    "expand:terra-nullius:35");
+    "attack:rival:40");
 });
 
 test("spawn remains the ranker's absolute first action", () => {
