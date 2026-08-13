@@ -1,0 +1,134 @@
+{
+  "schema_version": 1,
+  "id": "v43-unforced-grow",
+  "description": "Same-state cases isolate removal of grow's hidden neutral-action preference while preserving finish, pressure defense, and K1Z no-harm.",
+  "cases": [
+    {
+      "id": "grow-is-outcome",
+      "intent": "grow",
+      "actions": [
+        {
+          "id": "expand:terra-nullius:35",
+          "kind": "attack",
+          "label": "Expand Terra Nullius 35%",
+          "risk": { "level": "low" },
+          "metadata": { "expansion": true, "troopPercent": 35 }
+        },
+        {
+          "id": "attack:rival:40",
+          "kind": "attack",
+          "label": "Attack Rival 40%",
+          "risk": { "level": "low" },
+          "metadata": { "targetID": "rival", "targetName": "Rival", "troopPercent": 40 }
+        },
+        {
+          "id": "build:Factory",
+          "kind": "build",
+          "label": "Build Factory",
+          "risk": { "level": "low" },
+          "metadata": { "unit": "Factory" }
+        },
+        { "id": "hold", "kind": "hold", "label": "Hold", "risk": { "level": "low" }, "metadata": {} }
+      ],
+      "observation": {
+        "phase": "active",
+        "ownState": { "tileShare": 0.2, "troopRatio": 1, "troops": 1000000, "gold": 500000, "borderTiles": 100, "incomingAttacks": 0 },
+        "visiblePlayers": [
+          { "id": "rival", "name": "Rival", "isAlive": true, "tileShare": 0.1, "relativeTroopRatio": 1.6, "sharesBorder": true, "canAttack": true, "isAllied": false }
+        ]
+      },
+      "history": [],
+      "expected_parent_action_id": "expand:terra-nullius:35",
+      "expected_candidate_action_id": "attack:rival:40"
+    },
+    {
+      "id": "finish-unchanged",
+      "intent": "finish",
+      "actions": [
+        {
+          "id": "expand:terra-nullius:35",
+          "kind": "attack",
+          "label": "Expand Terra Nullius 35%",
+          "risk": { "level": "low" },
+          "metadata": { "expansion": true, "troopPercent": 35 }
+        },
+        {
+          "id": "attack:rival:40",
+          "kind": "attack",
+          "label": "Attack Rival 40%",
+          "risk": { "level": "low" },
+          "metadata": { "targetID": "rival", "targetName": "Rival", "troopPercent": 40 }
+        },
+        { "id": "hold", "kind": "hold", "label": "Hold", "risk": { "level": "low" }, "metadata": {} }
+      ],
+      "observation": {
+        "phase": "active",
+        "ownState": { "tileShare": 0.2, "troopRatio": 1, "troops": 1000000, "gold": 500000, "borderTiles": 100, "incomingAttacks": 0 },
+        "visiblePlayers": [
+          { "id": "rival", "name": "Rival", "isAlive": true, "tileShare": 0.1, "relativeTroopRatio": 1.8, "sharesBorder": true, "canAttack": true, "isAllied": false }
+        ]
+      },
+      "history": [
+        { "actionID": "attack:rival:10", "kind": "attack", "targetID": "rival", "targetName": "Rival", "tileShare": 0.2 }
+      ],
+      "expected_parent_action_id": "attack:rival:40",
+      "expected_candidate_action_id": "attack:rival:40"
+    },
+    {
+      "id": "pressure-defense-unchanged",
+      "intent": "grow",
+      "actions": [
+        {
+          "id": "attack:raider:40",
+          "kind": "attack",
+          "label": "Attack Raider 40%",
+          "risk": { "level": "low" },
+          "metadata": { "targetID": "raider", "targetName": "Raider", "troopPercent": 40 }
+        },
+        {
+          "id": "expand:terra-nullius:35",
+          "kind": "attack",
+          "label": "Expand Terra Nullius 35%",
+          "risk": { "level": "low" },
+          "metadata": { "expansion": true, "troopPercent": 35 }
+        },
+        { "id": "hold", "kind": "hold", "label": "Hold", "risk": { "level": "low" }, "metadata": {} }
+      ],
+      "observation": {
+        "phase": "active",
+        "ownState": { "tileShare": 0.08, "troopRatio": 1, "troops": 500000, "gold": 250000, "borderTiles": 100, "incomingAttacks": 1 },
+        "combat": { "incomingAttackPlayerIDs": ["raider"] },
+        "visiblePlayers": [
+          { "id": "raider", "name": "Raider", "isAlive": true, "tileShare": 0.2, "relativeTroopRatio": 1.4, "sharesBorder": true, "canAttack": true, "isAllied": false }
+        ]
+      },
+      "history": [],
+      "expected_parent_action_id": "attack:raider:40",
+      "expected_candidate_action_id": "attack:raider:40"
+    },
+    {
+      "id": "k1z-no-harm-unchanged",
+      "intent": "finish",
+      "actions": [
+        {
+          "id": "attack:ply_e982e621-9ca3-47cd-8151-f57ee9d99421:40",
+          "kind": "attack",
+          "label": "Attack K1Z Mickey Mouse 40%",
+          "risk": { "level": "low" },
+          "metadata": { "targetID": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421", "targetName": "K1Z Mickey Mouse", "troopPercent": 40 }
+        },
+        { "id": "hold", "kind": "hold", "label": "Hold", "risk": { "level": "low" }, "metadata": {} }
+      ],
+      "observation": {
+        "phase": "active",
+        "ownState": { "tileShare": 0.6, "troopRatio": 1, "troops": 500000, "gold": 250000, "borderTiles": 100, "incomingAttacks": 0 },
+        "visiblePlayers": [
+          { "id": "ply_e982e621-9ca3-47cd-8151-f57ee9d99421", "name": "K1Z Mickey Mouse", "isAlive": true, "tileShare": 0.2, "relativeTroopRatio": 2, "sharesBorder": true, "canAttack": true, "isAllied": false }
+        ]
+      },
+      "history": [],
+      "expected_parent_action_id": "hold",
+      "expected_candidate_action_id": "hold"
+    }
+  ]
+}
