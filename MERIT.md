@@ -693,3 +693,25 @@ champion change. It caused zero verified K1Z-targeted harmful actions across
 targets, tactics, timing, or third intent are added. v17 remains the sole live
 champion. Evidence:
 [`audit-0d1novizzz-v41-v17-matched-counterfactual-20260813.json`](experiments/audit-0d1novizzz-v41-v17-matched-counterfactual-20260813.json).
+
+## v42 intent-delegation matched rejection (2026-08-13)
+
+v42 completed the simplification. The planner still chose only `grow` or
+`finish`; after the unchanged K1Z no-harm filter, the established executor
+received the complete safe legal menu and chose every action and target. The
+hidden action-family routers were deleted rather than replaced.
+
+The mechanism worked exactly as designed. All 136 post-spawn candidate
+decisions carried `grow`; the executor selected 77 attacks, 31 boats, 16
+builds, ten alliance requests, one retreat, and one upgrade. There were zero
+planner parse failures, fallbacks, degraded decisions, rejections, or holds.
+All player targets resolved, and none of the 140 candidate decisions harmed a
+protected K1Z identity.
+
+The outcome gate still failed: v42 won zero matched fields, v17 won zero, all
+four pairs were neutral, and both arms scored zero in every field. Three v42
+agents survived, but two ended below 5,000 tiles and none scored. The cleaner
+architecture is therefore retained as evidence, not promoted as champion.
+v42 is killed without regression, submission, membership, or champion change;
+v17 remains the sole live champion. Evidence:
+[`audit-0d1novizzz-v42-v17-matched-counterfactual-20260813.json`](experiments/audit-0d1novizzz-v42-v17-matched-counterfactual-20260813.json).

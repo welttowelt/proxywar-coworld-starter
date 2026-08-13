@@ -1,0 +1,284 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T11:30:59Z",
+  "player": "0d1novizzz",
+  "counterfactual_eval_id": "cfeval_032046f8-6989-49ce-a7c4-61c86cec7ad5",
+  "status": "completed_rejected",
+  "candidate": {
+    "arm": "v42-intent-delegation",
+    "hosted_label": "xX_UwU_Senpai_420_Xx:v40",
+    "policy_version_id": "5d95113e-3fc8-4bde-bdc9-5a76eeeb4a8f",
+    "source_commit": "7cdca3128c32593bace1955fa7c26f3726ef3d5a",
+    "docker_image_id": "sha256:320f991e833912f9e9295d5597dd6ece88dfc759d19998ec3d4bb03e2b1348a0",
+    "coworld_client_hash": "sha256:84eb96e3c7f20634b5f158fb3315b6abbc9aa0278aa6d86e8ffee01dc4b20521",
+    "planner_contract": [
+      "grow",
+      "finish"
+    ]
+  },
+  "baseline": {
+    "label": "xX_UwU_Senpai_420_Xx:v17",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  },
+  "matched_design": {
+    "source": "platform tournament counterfactual",
+    "pairs": 4,
+    "fields": [
+      {
+        "variant": "tournament-16p-asia",
+        "coworld_version": "0.1.42",
+        "seed": 2179779,
+        "probe_slot": 0
+      },
+      {
+        "variant": "tournament-16p-asia",
+        "coworld_version": "0.1.42",
+        "seed": 403350,
+        "probe_slot": 1
+      },
+      {
+        "variant": "tournament-16p-asia",
+        "coworld_version": "0.1.42",
+        "seed": 8480038,
+        "probe_slot": 2
+      },
+      {
+        "variant": "tournament-16p-pangaea",
+        "coworld_version": "0.1.41",
+        "seed": 2157106,
+        "probe_slot": 0
+      }
+    ],
+    "controlled_within_each_pair": [
+      "roster",
+      "map",
+      "seat",
+      "seed",
+      "engine version"
+    ],
+    "idempotency_key": "odin-v42-v17-matched-20260813-r1",
+    "experience_request_id": "6c5e1081-1b71-4f4e-ac85-a40e5ae59e8b"
+  },
+  "outcome": {
+    "verdict": "reject",
+    "candidate_wins": 0,
+    "baseline_wins": 0,
+    "neutrals": 4,
+    "net_score": 0.0,
+    "mean_score_delta": 0.0,
+    "candidate_scores": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "baseline_scores": [
+      0.0,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "success_bar_passed": false,
+    "failure_triggers": [
+      "candidate won no more matched fields than baseline"
+    ]
+  },
+  "candidate_runtime": {
+    "decisions": 140,
+    "planner_marked_decisions": 136,
+    "intent_counts": {
+      "grow": 136,
+      "finish": 0
+    },
+    "action_counts": {
+      "spawn": 4,
+      "attack": 77,
+      "boat": 31,
+      "build": 16,
+      "alliance_request": 10,
+      "retreat": 1,
+      "upgrade_structure": 1,
+      "hold": 0
+    },
+    "fallbacks": 0,
+    "rejected_decisions": 0,
+    "planner_degraded_markers": 0,
+    "planner_parse_failures": 0,
+    "holds": 0,
+    "per_slot": [
+      {
+        "slot": 0,
+        "match_id": "PWSEUANR",
+        "turn": 11000,
+        "decisions": 25,
+        "final_tiles": 0,
+        "alive": false,
+        "actions": {
+          "spawn": 1,
+          "attack": 17,
+          "boat": 4,
+          "build": 3
+        }
+      },
+      {
+        "slot": 1,
+        "match_id": "PWSAWYRM",
+        "turn": 12300,
+        "decisions": 48,
+        "final_tiles": 57268,
+        "alive": true,
+        "actions": {
+          "spawn": 1,
+          "attack": 33,
+          "boat": 9,
+          "build": 4,
+          "retreat": 1
+        }
+      },
+      {
+        "slot": 2,
+        "match_id": "PWSSOMLI",
+        "turn": 9100,
+        "decisions": 40,
+        "final_tiles": 4756,
+        "alive": true,
+        "actions": {
+          "spawn": 1,
+          "attack": 24,
+          "boat": 9,
+          "build": 6
+        }
+      },
+      {
+        "slot": 0,
+        "match_id": "PWSESSZQ",
+        "turn": 10200,
+        "decisions": 27,
+        "final_tiles": 98,
+        "alive": true,
+        "actions": {
+          "spawn": 1,
+          "alliance_request": 10,
+          "attack": 3,
+          "boat": 9,
+          "build": 3,
+          "upgrade_structure": 1
+        }
+      }
+    ]
+  },
+  "baseline_runtime": {
+    "decisions": 127,
+    "planner_marked_decisions": 39,
+    "planner_degraded_decisions": 84,
+    "planner_parse_failures": 84,
+    "fallbacks": 85,
+    "rejected_decisions": 0,
+    "holds": 1,
+    "action_counts": {
+      "spawn": 4,
+      "alliance_request": 19,
+      "attack": 51,
+      "boat": 41,
+      "build": 7,
+      "target_player": 3,
+      "upgrade_structure": 1,
+      "hold": 1
+    },
+    "fallback_note": "One planner-marked alliance action was unknown and fell back to hold; the other 84 fallbacks carried degraded error reasons."
+  },
+  "mechanism_read": {
+    "architecture": "v42 removes the hidden action-family routers. After the unchanged K1Z no-harm filter, the mature executor receives the complete safe legal menu plus only grow or finish.",
+    "runtime": "All 136 candidate post-spawn decisions carried a grow intent marker. The executor expressed that intent through attacks, boats, builds, retreat, upgrades, and ten alliance requests with zero fallback, degradation, rejection, or hold.",
+    "competitive_result": "The simpler intent delegation reached and behaved cleanly, but it produced no matched win or score advantage. Architecture success is not promotion evidence."
+  },
+  "k1z_safety": {
+    "passed": true,
+    "verified_partner_harmful_actions": 0,
+    "unresolved_harmful_target_identities": 0,
+    "verified_decisions": 140,
+    "targeted_attacks": 45,
+    "neutral_expansions": 32,
+    "boats_without_player_target": 31,
+    "boundary": "Every player-targeted candidate attack resolved to a replay identity. None targeted a protected K1Z identity. This safety pass does not override the outcome kill."
+  },
+  "candidate_replays": [
+    {
+      "slot": 0,
+      "episode_request_id": "ereq_7351463e-3fa8-4619-a425-feb90960b2f2",
+      "episode_id": "2583c885-2c8a-4fa9-b8a6-bc61fd25cf0b",
+      "match_id": "PWSEUANR",
+      "sha256": "0691a6acd7bb7e556bc71bbab309e3d943a1cadf32bce979a17b44859286885e"
+    },
+    {
+      "slot": 1,
+      "episode_request_id": "ereq_1891f275-abe2-41b9-80e0-d2603eaa4fe7",
+      "episode_id": "ff3119b2-4ca1-4222-adc0-1634fc2660db",
+      "match_id": "PWSAWYRM",
+      "sha256": "d6fb1c202286f7cf0e9a792be28c9968133cfacf7da8ff250a4e1bb2e4eac66a"
+    },
+    {
+      "slot": 2,
+      "episode_request_id": "ereq_9f79ed98-ce4f-433f-a1a0-7476bd817481",
+      "episode_id": "94788e25-ae0e-418b-bc05-18dcd08f67d3",
+      "match_id": "PWSSOMLI",
+      "sha256": "2c249826407ff86d437893db272d6cdecdf30a045f79bcea66728e2ebf0eb59b"
+    },
+    {
+      "slot": 0,
+      "episode_request_id": "ereq_e92c9058-b1fe-4da4-aa15-37d97a7b42e9",
+      "episode_id": "3d16bdd0-ba10-4f9b-892e-0fb008d17073",
+      "match_id": "PWSESSZQ",
+      "sha256": "7f676be786ec1a4acc0b66216cfc81286022b43cf51bc45e6a9df8992665da60"
+    }
+  ],
+  "baseline_replays": [
+    {
+      "slot": 0,
+      "episode_request_id": "ereq_248965cb-af8a-4157-98aa-0215adc15f7a",
+      "episode_id": "0e853fa3-447a-4bd4-b60c-a9036ace62a7",
+      "match_id": "PWSEUANR",
+      "sha256": "2b79607d709b2d0b5ad4cb156ae6c60743a07ccb6ecb04f1adb138e8da5c1a27"
+    },
+    {
+      "slot": 1,
+      "episode_request_id": "ereq_ad94ba07-e313-441a-af87-bd0fd1010fbb",
+      "episode_id": "900ffbb9-6a68-45a2-8bb9-920beb617763",
+      "match_id": "PWSAWYRM",
+      "sha256": "af3537f0de3c2ea1737644fc24be4edfda59c02c3c7b9caa973c917b6d66db84"
+    },
+    {
+      "slot": 2,
+      "episode_request_id": "ereq_13d8b6b4-a292-4ddb-ab0a-e4dc2b58acb6",
+      "episode_id": "23cc622c-4717-4dce-918a-fb0b9f12e641",
+      "match_id": "PWSSOMLI",
+      "sha256": "98c997b1db4dc3de4cb5c7f7dba6d5ce1b32ff13419d22f10f4abb8eda59aa0c"
+    },
+    {
+      "slot": 0,
+      "episode_request_id": "ereq_f75fa6ba-0a55-4413-9736-ab23181eab31",
+      "episode_id": "4b3535d3-b3d6-4bac-99af-9ff79fdbdab2",
+      "match_id": "PWSESSZQ",
+      "sha256": "c2b83f8d1c26b2940a0da2b28e8951eee8c75573fb333b280ecca5f01d31088b"
+    }
+  ],
+  "promotion_decision": {
+    "decision": "kill",
+    "reason": "The candidate did not beat v17 in any matched field.",
+    "regression_run": false,
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false,
+    "preserved_champion": "xX_UwU_Senpai_420_Xx:v17"
+  },
+  "live_scoreboard_postcheck": {
+    "checked_at": "2026-08-13T11:30:03.892867Z",
+    "latest_completed_round": 1417,
+    "round_score": 0.0,
+    "player_rank": 15,
+    "player_score": 5.260826486880392,
+    "leader": "Andre von Houck",
+    "leader_score": 18.464903161001182
+  }
+}
