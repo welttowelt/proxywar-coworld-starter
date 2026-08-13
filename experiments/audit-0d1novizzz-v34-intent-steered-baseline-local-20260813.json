@@ -43,6 +43,34 @@
     ],
     "intent_behavior": "soft preference at an already-safe strategic choice point; otherwise exact mature baseline"
   },
+  "differential_proof": {
+    "evaluator_commit": "071762f891bc1d396519e85b8fb6c3f4a6530df5",
+    "parent_source_commit": "b0a6b669e1b5877d5b1367f3166714a7b48f9779",
+    "candidate_source_commit": "b71b0d4c857240b56f1aa47df1c76b3a05c28079",
+    "verifier_path": "experiments/v34/verify-differential.mjs",
+    "verifier_sha256": "41e627a8400b3757a4f88552d889fdfedc93f842ef96fdb02b05596323d5ddf0",
+    "fixture_path": "experiments/v34/differential-fixture.json",
+    "fixture_sha256": "88d98bf53516e74b62b211a3b3d483c975a2c20c5e82d69cc4290b8f0eab2d6a",
+    "proof_path": "experiments/v34/differential-proof-b71b0d4c.json",
+    "proof_sha256": "be9391625e7a844a6273f3f5a9b79dda2898715e65fe4e42d6aa9d8d03a498b8",
+    "same_fixture_results": {
+      "diplomacy": {
+        "v33": "expand:terra-nullius:35",
+        "v34": "alliance:mickey"
+      },
+      "symbolic_only": {
+        "v33": "hold",
+        "v34": "target:outsider"
+      },
+      "nuclear_finish": {
+        "v33": "attack:leader:40",
+        "v34": "build:Atom Bomb:1"
+      },
+      "k1z_nuclear_safety": {
+        "v34": "hold"
+      }
+    }
+  },
   "focused_suite": {
     "tests": 182,
     "passed": 182,
