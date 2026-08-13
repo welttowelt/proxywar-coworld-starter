@@ -155,6 +155,10 @@
         "decision_count": 13,
         "accepted": 13,
         "route_execution_count": 12,
+        "marker_counts": {
+          "ib2": 12,
+          "ixgrw": 12
+        },
         "illegal_turns": [],
         "rejected_turns": [],
         "fallback_turns": [],
@@ -165,6 +169,42 @@
       }
     }
   ],
+  "differential_unit_proof": {
+    "schema_version": 1,
+    "arm": "v40-k1z-runtime-alias-lock",
+    "same_fixture": true,
+    "verifier": {
+      "evaluator_commit": "100769e1f86d1956d09a4f586913a43174d0f36b",
+      "path": "experiments/v40/verify-replay-derived-k1z-differential.mjs",
+      "sha256": "fa820552eb2de4b624c51545ab4ddb22e28357b7b8ac66440c614e721c5f9454"
+    },
+    "fixture": {
+      "id": "v40-k1z-runtime-alias-lock",
+      "path": "experiments/v40/replay-derived-k1z-fixture.json",
+      "sha256": "fbeed7c8791291feba26246e7cbd1b131aa314ea010d55bcca2ace5f7f724fbd"
+    },
+    "parent": {
+      "source_commit": "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
+      "selected_action_id": "attack:coa4silw:40",
+      "harmful_selections": 12
+    },
+    "candidate": {
+      "source_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
+      "selected_action_id": "hold",
+      "harmful_selections": 0,
+      "safe_redirects": 12
+    },
+    "test_command": [
+      "node",
+      "experiments/v40/verify-replay-derived-k1z-differential.mjs",
+      ".",
+      "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
+      "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
+      "experiments/v40/replay-derived-k1z-fixture.json",
+      "experiments/v40/differential-proof-ac5d2633.json"
+    ],
+    "test_exit_code": 0
+  },
   "safety_scope": {
     "local_field_contains_k1z_aliases": false,
     "claim": "The local run proves exact-image runtime health and no new harmful or unresolved actions. Alias-specific safety comes from the committed twelve-case same-state differential, not this v17-control field.",
