@@ -1,0 +1,135 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T04:04:00Z",
+  "lane": "0d1novizzz",
+  "arm": "v34-intent-steered-baseline",
+  "verdict": "KILL",
+  "request": {
+    "id": "xreq_05b97fd6-d1f8-4d4c-8f09-b02c126abef7",
+    "provenance": "Platform-side request appeared after the diagnostic upload; requested was null and no repository request artifact dispatched it.",
+    "status": "completed",
+    "coworld_version": "0.1.41",
+    "episodes": 10,
+    "maps": {
+      "Asia": 4,
+      "Pangaea": 2,
+      "Oceania": 4
+    },
+    "failed_episodes": 0,
+    "policy_version_id": "4303f43e-8bb4-44b9-a89f-d7ce413bf685"
+  },
+  "outcomes": {
+    "wins": 1,
+    "win_rate_pct": 10,
+    "scores": [
+      0,
+      0,
+      0,
+      0,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "final_tiles": [
+      2791,
+      0,
+      0,
+      5774,
+      342431,
+      50311,
+      0,
+      0,
+      453,
+      0
+    ],
+    "dead_episodes": 5,
+    "holds": 5,
+    "rejected_decisions": 0,
+    "fallbacks": 1,
+    "planner_degraded_decisions": 1
+  },
+  "intent_evidence": {
+    "transport_verified": true,
+    "first_loss": {
+      "episode_request_id": "ereq_2a5872d8-6933-404f-be2e-22723681ba94",
+      "replay_sha256": "32ad5f131ada6b99b29d27f54cac8746215c5f882f626e4b045f87b3cdbecad1",
+      "decisions": 36,
+      "planner_marked_non_spawn_decisions": 35,
+      "intent_counts": {
+        "grow": 28,
+        "secure": 3,
+        "finish": 4
+      },
+      "action_counts": {
+        "attack": 7,
+        "boat": 6,
+        "build": 1,
+        "alliance_request": 2,
+        "target_player": 15,
+        "hold": 4
+      },
+      "final_tiles": 2791,
+      "alive": true
+    },
+    "sole_win": {
+      "episode_request_id": "ereq_d6397b6e-8245-4ec6-a4ba-2c96d3b6d787",
+      "replay_sha256": "3467779915ac11d6acf7eb7a2b4c8c86ed4e0b1a7379115561dc3342d158a9b4",
+      "decisions": 45,
+      "planner_marked_non_spawn_decisions": 44,
+      "intent_counts": {
+        "grow": 7,
+        "secure": 3,
+        "finish": 34
+      },
+      "action_counts": {
+        "attack": 24,
+        "boat": 11,
+        "build": 6,
+        "alliance_request": 2,
+        "hold": 1
+      },
+      "final_tiles": 342431,
+      "alive": true
+    }
+  },
+  "gate": {
+    "passed": false,
+    "failed_checks": [
+      "perfect episode wins",
+      "zero holds"
+    ],
+    "stop_condition_triggered": "any hosted score of zero",
+    "trigger_episode": 1
+  },
+  "diagnosis": {
+    "proved": [
+      "the one-field grow-secure-finish planner contract parses in hosted Coworld 0.1.41",
+      "planner intent reaches the mature executor as observable pln and ix reason markers",
+      "a finish-dominant intent path can win a 16-player episode"
+    ],
+    "falsified": [
+      "repairing planner transport plus soft intent bias is sufficient for the hosted promotion gate",
+      "the mature full-menu selector is a competitive executor when merely annotated with macro intent",
+      "the zero-hold target is achieved by intent steering alone"
+    ],
+    "observed_failure_mode": "The planner interface is healthy, but the legacy executor still owns too much behavior. In the first loss, grow intent persisted while the selector spent 15 decisions repeating target_player and finished with 2791 tiles. Other losses died after 1-8 decisions or remained tiny despite zero rejected actions.",
+    "successor_constraint": "Keep the exact one-field intent contract. Replace branch accumulation with one compact intent-to-utility ranking over the full safe legal menu; preserve defense, K1Z no-harm, and unknown-action fail-closed checks as invariants rather than planner instructions. Preregister and prove the ranking on these hosted loss replays before any further upload."
+  },
+  "audit_source": {
+    "generated_path": "/private/tmp/v34-auto-final-audit.json",
+    "command": "node scripts/audit-xp-gate.mjs xreq_05b97fd6-d1f8-4d4c-8f09-b02c126abef7 --player 0d1novizzz --output /private/tmp/v34-auto-final-audit.json",
+    "replay_count": 10
+  },
+  "league_state": {
+    "candidate_uploaded": true,
+    "candidate_submitted": false,
+    "candidate_membership_created": false,
+    "candidate_promoted": false,
+    "v17_champion_preserved": true,
+    "v17_policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "v17_membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  }
+}
