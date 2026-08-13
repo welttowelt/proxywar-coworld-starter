@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T08:12:00Z",
+  "player": "0d1novizzz",
+  "counterfactual_eval_id": "cfeval_423b2528-5c7f-46cf-acaa-51dda04ffd5b",
+  "status": "completed",
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v36",
+    "policy_version_id": "7e6a4065-4918-4831-a81f-7217d400e5bf",
+    "source_commit": "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399"
+  },
+  "baseline": {
+    "label": "xX_UwU_Senpai_420_Xx:v17",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  },
+  "matched_design": {
+    "source": "platform tournament counterfactual",
+    "variant": "tournament-16p-pangaea",
+    "pairs": 4,
+    "probe_slots_zero_indexed": [8, 9, 10, 11],
+    "seeds": [3708840, 10421876, 3179935, 8488653],
+    "controlled": ["roster", "map", "seat", "seed", "engine field"]
+  },
+  "outcome": {
+    "verdict": "reject",
+    "candidate_wins": 0,
+    "baseline_wins": 0,
+    "neutrals": 4,
+    "net_score": 0.0,
+    "mean_score_delta": 0.0,
+    "candidate_scores": [0, 0, 0, 0],
+    "baseline_scores": [0, 0, 0, 0],
+    "success_bar_passed": false,
+    "failure_trigger": "candidate won no more matched fields than baseline and selected harmful actions against verified K1Z policy slots"
+  },
+  "candidate_runtime": {
+    "final_tiles_by_slot": {
+      "8": 4558,
+      "9": 22266,
+      "10": 0,
+      "11": 0
+    },
+    "alive_by_slot": {
+      "8": true,
+      "9": true,
+      "10": false,
+      "11": false
+    },
+    "decisions": 109,
+    "accepted_decisions": 109,
+    "planner_marked_decisions": 105,
+    "intent_counts": {
+      "grow": 84,
+      "finish": 21
+    },
+    "action_counts": {
+      "attack": 60,
+      "boat": 23,
+      "build": 18,
+      "nuke": 2,
+      "hold": 1,
+      "retreat": 1,
+      "spawn": 4
+    },
+    "fallbacks": 0,
+    "rejected_decisions": 0,
+    "planner_degraded_decisions": 0,
+    "policy_logs": "all four candidate logs contain only the connection line and no planner error"
+  },
+  "baseline_runtime": {
+    "final_tiles_by_slot": {
+      "8": 0,
+      "9": 0,
+      "10": 0,
+      "11": 0
+    },
+    "planner_transport": "failed in all four matched baseline logs",
+    "exact_error": "plan refresh failed: plan reply had no valid intent",
+    "replay_marker_pattern": "initial pln marker at most once, followed by dgd:err fallbacks",
+    "interpretation": "v39 repaired planner transport and improved survival in two seats, but that did not produce a matched win"
+  },
+  "k1z_safety": {
+    "passed": false,
+    "harmful_land_attacks": 12,
+    "affected_policy_slots": [
+      {
+        "policy": "sian-cyan7-gravity:v1",
+        "policy_version_id": "33e14014-87b4-48f4-8aeb-c165f3a6c8f8",
+        "runtime_name": "CYAN HELLSTAR"
+      },
+      {
+        "policy": "sian-cyan7-katana:v1",
+        "policy_version_id": "7ba41bac-137d-4db2-99df-303ff29e2383",
+        "runtime_name": "SIAN VOIDCROWN"
+      }
+    ],
+    "per_slot_attack_counts": {
+      "8": 5,
+      "9": 4,
+      "10": 2,
+      "11": 1
+    },
+    "root_cause": "The selector recognizes canonical K1Z names and stable Softmax player IDs, but hosted observations expose episode-scoped IDs and current public runtime names. The current aliases were not classified as protected.",
+    "boundary": "The candidate is safety-invalid. Do not submit, place, or promote it even if later outcome evidence improves."
+  },
+  "replays": [
+    {
+      "slot": 8,
+      "episode_request_id": "ereq_274bfc55-f740-4bcb-ae47-cca45d58a672",
+      "episode_id": "ece82f88-cfbe-438f-9d37-29923232facd",
+      "match_id": "PWSIDALS",
+      "sha256": "64598c71cd9dfe8c5ff3305e83798ed74be7064feb0904bd8af18f0673e96bc9"
+    },
+    {
+      "slot": 9,
+      "episode_request_id": "ereq_8dcc4537-70b9-4b12-b089-57d1fc66dec8",
+      "episode_id": "114dc9fb-1bce-4176-92e3-281fbae72d36",
+      "match_id": "PWSWUYZK",
+      "sha256": "34541d95fabf42578199ed5374d2975a29b20ce558cdce4860c47ab93515cd1a"
+    },
+    {
+      "slot": 10,
+      "episode_request_id": "ereq_957eed84-d007-4ee2-9cc2-1a47e97a0022",
+      "episode_id": "ff1b8901-47c8-43c6-a2c9-0ea0bdb997f7",
+      "match_id": "PWSGYYBF",
+      "sha256": "780e5c35ee3e8121cc3186ced919bcc728b5a2647e13a81aa05788bb6ae3119a"
+    },
+    {
+      "slot": 11,
+      "episode_request_id": "ereq_5d854c40-cf09-46ce-a3e0-89c42754dfc3",
+      "episode_id": "1162b3cb-0b12-438d-8f36-53cb1603d8f5",
+      "match_id": "PWSSOZER",
+      "sha256": "521b001c28f0f592a46ad840c2956d681382b6098f7f91fa2cb0e76b2ea00625"
+    }
+  ],
+  "diagnosis": {
+    "planner": "The simple grow-or-finish contract is operational and materially cleaner than v17 transport.",
+    "outcome": "Planner cleanliness alone does not solve the current Pangaea bad-seat cell.",
+    "safety": "The first required fix is authoritative coalition identity resolution; tuning competitiveness on top of false no-harm telemetry is forbidden.",
+    "next_arm": "Keep the two-intent contract unchanged. Add verified current Gravity and Katana runtime aliases to the coalition identity boundary, prove red-green protection on same-state hosted-derived fixtures, then measure the early-survival cell separately."
+  },
+  "live_mutations": {
+    "counterfactual_request": true,
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false
+  },
+  "champion_preserved": true
+}
