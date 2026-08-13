@@ -1,0 +1,56 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T07:27:00Z",
+  "lane": "0d1novizzz",
+  "status": "passed",
+  "verdict": "PASS_PREUPLOAD_RCI",
+  "candidate_source_commit": "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
+  "candidate_image_id": "sha256:88984e7088b427cb280db7d5217e87423dfb9ac7bb82cb7fc000eec1d6fc959d",
+  "parent_source_commit": "6cb3b4ae8fb6f5c88e6d60e22d5d050dc4ba8cfb",
+  "preregister_sha256": "e2c6778ef83f6831d5d30139fd5d9403f18ed77a86f61d120e67ea2933469313",
+  "local_audit_sha256": "1b2c437c90a1554e544f7d7fd5effd1889493cce5c4a8dcebfa8339fb894838b",
+  "differential_proof_sha256": "15904f6f9dfb514f350319ac89b62f174338cbfe3eadddbc527810ae82ac7e98",
+  "critique": {
+    "strongest_evidence": "v39 removes one planner value and no tactical capability. The parser exposes only grow or finish, the same-state proof rejects the former secure packet and changes the identical board from City construction to neutral growth, focused tests pass 37/37, and the exact-image 16-player trace has 13/13 accepted candidate decisions, 12/12 ib2 executions, and zero holds, symbolic actions, fallback, degradation, rejection, or K1Z harm.",
+    "adverse_evidence": "The short local trace is constant-grow and exactly reproduces v38's opening score, so it establishes reach and safety only. v38 won only 1/10 hosted episodes, and removing secure has not yet shown a live planner distribution or outcome lift.",
+    "remaining_uncertainty": "A hosted diagnostic must show at least 2/10 wins, no zero-score execution fault, and clean grow or finish planner transport. Any hosted score of zero kills v39, and no league mutation is authorized."
+  },
+  "checks": {
+    "single_architectural_change": true,
+    "one_field_contract": true,
+    "two_intent_vocabulary": true,
+    "planner_actions_forbidden": true,
+    "planner_targets_forbidden": true,
+    "secure_rejected": true,
+    "delegated_executor_reached": true,
+    "material_gate_reached": true,
+    "differential_reach": true,
+    "exact_image_reach": true,
+    "zero_candidate_symbolic_action": true,
+    "zero_candidate_fallback": true,
+    "zero_candidate_degradation": true,
+    "zero_candidate_hold": true,
+    "zero_candidate_rejection": true,
+    "k1z_safety": true,
+    "competitive_lift_not_claimed": true,
+    "runner_released": true,
+    "diagnostic_only": true,
+    "league_mutation_forbidden": true
+  },
+  "open_gates": [
+    "diagnostic upload identity binding",
+    "automatic hosted outcome bar",
+    "matched-current-roster hosted 4/4",
+    "separate map-and-seat regression 20/20",
+    "final promotion RCI"
+  ],
+  "stop_conditions": [
+    "any hosted score of zero",
+    "fewer than 2 wins in the automatic 10-episode diagnostic",
+    "any unexplained fallback, degradation, rejection, or parse failure",
+    "any repeated symbolic-action loop",
+    "any K1Z harm"
+  ],
+  "unresolved_violations": 0,
+  "authorized_next_action": "One diagnostic upload only. No league submission, membership change, or champion change is authorized."
+}

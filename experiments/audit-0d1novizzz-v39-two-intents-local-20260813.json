@@ -1,0 +1,174 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T07:26:00Z",
+  "lane": "0d1novizzz",
+  "arm": "v39-two-intents",
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "candidate_source_commit": "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
+  "candidate_image_id": "sha256:88984e7088b427cb280db7d5217e87423dfb9ac7bb82cb7fc000eec1d6fc959d",
+  "parent_source_commit": "6cb3b4ae8fb6f5c88e6d60e22d5d050dc4ba8cfb",
+  "contract_sha256": "e2c6778ef83f6831d5d30139fd5d9403f18ed77a86f61d120e67ea2933469313",
+  "failures": [],
+  "required_coalition_roles": [
+    "odin",
+    "v17-control"
+  ],
+  "candidate_image": {
+    "tag": "proxywar-agent-candidate:v39-two-intents",
+    "image_id": "sha256:88984e7088b427cb280db7d5217e87423dfb9ac7bb82cb7fc000eec1d6fc959d",
+    "architecture": "amd64",
+    "os": "linux",
+    "user": "node",
+    "cmd": [
+      "node",
+      "/app/llm-player.mjs"
+    ],
+    "policy_engine": "intent-core",
+    "policy_codename": "ib2",
+    "file_sha256": {
+      "/app/llm-player.mjs": "15fd5c07f2fd8bfeb9a238662a5c22b558d7cecfc66926f7a976b0a788273322",
+      "/app/intent-controller.mjs": "410de99715885baf2ff8f1467fc3768f1cacafb77323c85bb92618f6375c4574",
+      "/app/intent-core.mjs": "0159437eba8c6e287b30a867ef03fd032c2566933f481c502ecc32d269c1e56a",
+      "/app/strategy-engine.mjs": "b1d519fe675a4a98d1537e5bb1e5946ab67a784e9280d835e4c02e3f3d8acd97"
+    }
+  },
+  "focused_suite": {
+    "tests": 37,
+    "passed": 37,
+    "failed": 0
+  },
+  "full_suite": {
+    "tests": 473,
+    "passed": 467,
+    "failed": 6,
+    "candidate_related_failures": 0,
+    "persistent_unrelated_failures": 6
+  },
+  "runs": [
+    {
+      "run_id": "v39-two-intents-12-r1-20260813T0717Z",
+      "orientation": "A",
+      "mode": "16-player opening mechanism",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "decision_cap_per_agent": 12,
+      "directory": "/private/tmp/proxywar-v39-two-intents-12-r1-20260813T0717Z",
+      "manifest_sha256": "44a9e77adcf84d48edf06fd9aaa78b54f2e956ecd866ec7fa9e6d4f84f63291b",
+      "job_sha256": "f78b90ee029135ff41343058bda6e0608d1f4c0165d5b698730407f8604cef27",
+      "config_sha256": "f7c7139683b83075376f93dca357a9b3feb5f0afe9482328bf98894b89341d0f",
+      "results_sha256": "d259471823cfaf38ed4342f6fac3682a72001ecf9a47c7f8bf0a4bb72c0bb3b5",
+      "replay_sha256": "92ea7606a6797d2ffa5deb924432b48b3a1035564d8757df578d9109bf41e630",
+      "coalition_roles_present": [
+        "odin",
+        "v17-control"
+      ],
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image_id": "sha256:88984e7088b427cb280db7d5217e87423dfb9ac7bb82cb7fc000eec1d6fc959d"
+          },
+          "control": {
+            "image_id": "sha256:37fb270f0e0019b09c72df75b4bc873ee49ed6052af442c074acd74dd86c7c49"
+          }
+        }
+      },
+      "candidate": {
+        "slot": 0,
+        "score": 0.06146192165349793,
+        "final_tiles": 19198,
+        "alive": true,
+        "decision_count": 13,
+        "accepted": 13,
+        "route_execution_count": 12,
+        "marker_counts": {
+          "ib2": 12,
+          "ixgrw": 12
+        },
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "unexplained_holds": [],
+        "harmful_k1z_actions": [],
+        "unresolved_harmful_targets": [],
+        "symbolic_action_count": 0,
+        "action_counts": {
+          "spawn": 1,
+          "attack": 12
+        }
+      },
+      "scope_boundary": "Constant-grow early-stop mechanism evidence only; the identical v38 opening score is not a competitive lift claim."
+    }
+  ],
+  "checks": {
+    "one_field_contract": true,
+    "two_intent_vocabulary": true,
+    "secure_rejected": true,
+    "delegated_executor_reached": true,
+    "material_gate_reached": true,
+    "symbolic_actions_excluded": true,
+    "k1z_safety": true,
+    "competitive_lift_not_claimed": true,
+    "league_mutation_forbidden": true
+  },
+  "runner_lease_after": {
+    "state": "free",
+    "schema_version": 2
+  },
+  "league_state": {
+    "candidate_uploaded": false,
+    "candidate_submitted": false,
+    "candidate_membership_created": false,
+    "candidate_promoted": false,
+    "v17_champion_preserved": true
+  },
+  "differential_unit_proof": {
+    "schema_version": 2,
+    "arm": "two-intents-v39",
+    "same_fixture": true,
+    "equivalent_goal": "select a board-level outcome without tactical planner instructions",
+    "verifier": {
+      "evaluator_commit": "0765e5e7f92a985f908e2f48303ff919a38339b0",
+      "path": "experiments/v39/verify-differential.mjs",
+      "sha256": "f8e8672ca854f7531bf796445e3d86578cc0cdde452ab4938425c5a0ad9ca225"
+    },
+    "fixture": {
+      "id": "v39-two-intents",
+      "path": "experiments/v39/differential-fixture.json",
+      "sha256": "d32a265751d75f004d4747a806414b0282c03e3168e70f09927123c1dee8863b"
+    },
+    "parent": {
+      "source_commit": "6cb3b4ae8fb6f5c88e6d60e22d5d050dc4ba8cfb",
+      "secure_packet_accepted": true,
+      "selected_action_id": "build:City",
+      "interpretation": "the three-intent parent preserves a separate upgrade-only lane"
+    },
+    "candidate": {
+      "source_commit": "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
+      "secure_packet_accepted": false,
+      "selected_action_id": "expand:terra-nullius:35",
+      "markers": [
+        "is1g",
+        "ib2",
+        "ixgrw"
+      ],
+      "interpretation": "the two-intent candidate rejects secure and resolves the same state through grow"
+    },
+    "safety": {
+      "offered_k1z_target": false,
+      "candidate_selected_harmful_action": false
+    },
+    "test_command": [
+      "node",
+      "experiments/v39/verify-differential.mjs",
+      ".",
+      "6cb3b4ae8fb6f5c88e6d60e22d5d050dc4ba8cfb",
+      "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
+      "experiments/v39/differential-fixture.json",
+      "experiments/v39/differential-proof-10e32f31.json"
+    ],
+    "test_exit_code": 0
+  }
+}

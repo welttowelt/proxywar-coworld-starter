@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-candidate:v39-two-intents",
+    "parent_ref": "proxywar-agent-candidate:v38-intent-boundary",
+    "exact_deltas": [
+      "Remove secure from the one-field planner vocabulary and executor boundary, leaving only grow or finish."
+    ],
+    "source_commit": "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
+    "parent_commit": "6cb3b4ae8fb6f5c88e6d60e22d5d050dc4ba8cfb",
+    "image_id": "sha256:88984e7088b427cb280db7d5217e87423dfb9ac7bb82cb7fc000eec1d6fc959d"
+  },
+  "hypothesis": "The secure outcome became an upgrade-only sink in v38. A planner that chooses only accumulation or conversion will preserve high-level control while allowing the mature executor to handle defense and exact moves.",
+  "mechanism": {
+    "marker": "ib2",
+    "prior_reachable_decisions": 12
+  },
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "contract_sha256": "e2c6778ef83f6831d5d30139fd5d9403f18ed77a86f61d120e67ea2933469313",
+    "audit_receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v39-two-intents-local-20260813.json",
+      "sha256": "1b2c437c90a1554e544f7d7fd5effd1889493cce5c4a8dcebfa8339fb894838b"
+    },
+    "differential_binding": {
+      "verifier_path": "experiments/v39/verify-differential.mjs",
+      "fixture_path": "experiments/v39/differential-fixture.json"
+    }
+  },
+  "preupload_rci": {
+    "receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v39-preupload-rci-20260813.json",
+      "sha256": "0150d6b938771f7ffae334bffd83f5fa3d9a586b8ee1f39fabe8e468320bfbd7"
+    }
+  },
+  "matched_baseline": {
+    "request_id": "xreq_ed6a2514-17ac-4b0e-9ea6-001f651b6193",
+    "policy_ref": "xX_UwU_Senpai_420_Xx:v35",
+    "policy_version_id": "18af4b65-b1a6-4fb5-8ed4-72c3c1d5721f",
+    "same_roster": false,
+    "same_variant": true,
+    "episodes": 10,
+    "wins": 1
+  },
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_fallbacks": 0,
+      "max_degradations": 0,
+      "max_rejections": 0,
+      "max_k1z_harm": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {
+    "regression_episodes": 20,
+    "league_change_allowed": false
+  }
+}
