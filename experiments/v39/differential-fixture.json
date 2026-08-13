@@ -1,0 +1,56 @@
+{
+  "id": "v39-two-intents",
+  "planner_packet": {
+    "intent": "secure"
+  },
+  "actions": [
+    {
+      "id": "expand:terra-nullius:35",
+      "kind": "attack",
+      "label": "Expand Terra Nullius 35%",
+      "risk": {
+        "level": "low"
+      },
+      "metadata": {
+        "expansion": true,
+        "troopPercent": 35
+      }
+    },
+    {
+      "id": "build:City",
+      "kind": "build",
+      "label": "Build City",
+      "risk": {
+        "level": "low"
+      },
+      "metadata": {
+        "unit": "City"
+      }
+    },
+    {
+      "id": "hold",
+      "kind": "hold",
+      "label": "Hold",
+      "risk": {
+        "level": "low"
+      },
+      "metadata": {}
+    }
+  ],
+  "observation": {
+    "phase": "active",
+    "ownState": {
+      "tileShare": 0.12,
+      "troopRatio": 1,
+      "troops": 1000000,
+      "gold": 500000,
+      "borderTiles": 100,
+      "incomingAttacks": []
+    },
+    "combat": {
+      "incomingAttackPlayerIDs": []
+    },
+    "visiblePlayers": []
+  },
+  "history": []
+}
