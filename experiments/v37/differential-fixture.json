@@ -1,0 +1,58 @@
+{
+  "id": "v37-intent-delegated-material",
+  "actions": [
+    {
+      "id": "build:Defense Post:1",
+      "kind": "build",
+      "label": "Build Defense Post",
+      "risk": {"level": "low"},
+      "metadata": {"unit": "Defense Post"}
+    },
+    {
+      "id": "attack:rival:10",
+      "kind": "attack",
+      "label": "Attack Rival 10%",
+      "risk": {"level": "low"},
+      "metadata": {"targetID": "rival", "targetName": "Rival", "troopPercent": 10}
+    },
+    {
+      "id": "alliance:rival",
+      "kind": "alliance_request",
+      "label": "Request alliance with Rival",
+      "risk": {"level": "low"},
+      "metadata": {"recipientID": "rival", "recipientName": "Rival"}
+    },
+    {
+      "id": "hold",
+      "kind": "hold",
+      "label": "Hold",
+      "risk": {"level": "low"},
+      "metadata": {}
+    }
+  ],
+  "observation": {
+    "phase": "active",
+    "ownState": {
+      "tileShare": 0.12,
+      "troopRatio": 1,
+      "troops": 1000000,
+      "gold": 500000,
+      "borderTiles": 100,
+      "incomingAttacks": []
+    },
+    "combat": {"incomingAttackPlayerIDs": []},
+    "visiblePlayers": [
+      {
+        "id": "rival",
+        "name": "Rival",
+        "isAlive": true,
+        "sharesBorder": true,
+        "canAttack": true,
+        "isAllied": false,
+        "tileShare": 0.1,
+        "relativeTroopRatio": 1.5
+      }
+    ]
+  },
+  "history": []
+}
