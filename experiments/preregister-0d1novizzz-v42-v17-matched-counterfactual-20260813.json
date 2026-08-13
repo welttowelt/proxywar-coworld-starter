@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "preregistered_at": "2026-08-13T11:11:00Z",
+  "player": "0d1novizzz",
+  "candidate": {
+    "arm": "v42-intent-delegation",
+    "hosted_label": "xX_UwU_Senpai_420_Xx:v40",
+    "policy_version_id": "5d95113e-3fc8-4bde-bdc9-5a76eeeb4a8f",
+    "source_commit": "7cdca3128c32593bace1955fa7c26f3726ef3d5a",
+    "docker_image_id": "sha256:320f991e833912f9e9295d5597dd6ece88dfc759d19998ec3d4bb03e2b1348a0",
+    "coworld_client_hash": "sha256:84eb96e3c7f20634b5f158fb3315b6abbc9aa0278aa6d86e8ffee01dc4b20521"
+  },
+  "baseline": {
+    "label": "xX_UwU_Senpai_420_Xx:v17",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  },
+  "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "matched_fields": 4,
+  "idempotency_key": "odin-v42-v17-matched-20260813-r1",
+  "hypothesis": "Removing the hidden action routers while keeping the planner at exactly grow or finish will let the unchanged mature executor express those intents with its complete safe capabilities and win more matched fields than v17.",
+  "planner_frozen": {
+    "intents": [
+      "grow",
+      "finish"
+    ],
+    "actions_forbidden": true,
+    "targets_forbidden": true,
+    "tactical_instructions_forbidden": true,
+    "timing_forbidden": true,
+    "third_intent_forbidden": true
+  },
+  "success_bar": {
+    "candidate_advantage": "strictly more matched-field wins than v17",
+    "candidate_wins_minimum": 1,
+    "baseline_wins_maximum": 0,
+    "planner_parse_failures": 0,
+    "fallbacks": 0,
+    "degradations": 0,
+    "rejections": 0,
+    "avoidable_holds": 0,
+    "verified_k1z_harmful_actions": 0
+  },
+  "kill_bar": [
+    "candidate wins no more matched fields than v17",
+    "any verified K1Z harm or unresolved harmful target identity",
+    "any planner parse failure, fallback, degradation, or rejection",
+    "any avoidable hold"
+  ],
+  "interpretation_boundary": "Planner transport, mechanism reach, action mix, survival, and safety are diagnostic surfaces. Only a strict matched outcome advantage passes this gate.",
+  "authorized_next_action": "Create exactly one four-field counterfactual evaluation with the pinned candidate, baseline, league, and idempotency key. Audit all candidate and baseline replays. No league submission, membership change, or champion change is authorized."
+}
