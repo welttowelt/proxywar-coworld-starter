@@ -1,0 +1,55 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T08:47:00Z",
+  "lane": "0d1novizzz",
+  "status": "passed",
+  "verdict": "PASS_PREUPLOAD_RCI",
+  "candidate_source_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
+  "candidate_image_id": "sha256:e8cf821ee92ba0a85ec9dc1a994f79a869d8a1addeb9eaa2dad9539bfe80bb96",
+  "parent_source_commit": "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
+  "preregister_sha256": "8d0dd9aaf663a59b43ad2076360c8a9e5b95f1f747262a16ad0ed49541fb7726",
+  "local_audit_sha256": "0d5e0873ff5315ec3e3ac5e95e4d55b81ba2b4f4d154b38d52c5e2e57305b182",
+  "differential_proof_sha256": "26b2d0bc3cc7251f74bf6c5c4ed5d260a23f0c5f416610caedfe90d401ae7309",
+  "critique": {
+    "strongest_evidence": "v40 changes no planner prompt, schema, intent, action family, or executor ordering. The same grow packet and twelve replay-derived Gravity/Katana decisions select twelve attacks in v39 and zero in v40. Focused tests pass 179/179, the full-suite delta is zero outside six historical failures, and the exact-image local run completed 13/13 candidate decisions without fallback, degradation, rejection, hold, harmful action, or unresolved target.",
+    "adverse_evidence": "The local field contained only v17 controls, so it did not exercise the hosted aliases. It reproduced v39's opening score exactly and supplies no competitive lift. The prior matched comparison tied 0-0, so planner cleanliness and two-seat survival still have not produced a win.",
+    "remaining_uncertainty": "Hosted observations must preserve the current alias names and show zero K1Z harm. More importantly, v40 must win more matched fields than v17; otherwise it is a safety-correct base, not a promotable arm. The automatic diagnostic batch cannot authorize promotion regardless of its headline score."
+  },
+  "checks": {
+    "single_change": true,
+    "planner_unchanged": true,
+    "two_intent_vocabulary": true,
+    "planner_actions_forbidden": true,
+    "planner_targets_forbidden": true,
+    "absolute_k1z_identity_boundary": true,
+    "ambiguous_alias_excluded": true,
+    "same_state_parent_harm_12": true,
+    "same_state_candidate_harm_0": true,
+    "exact_image_reach": true,
+    "zero_candidate_fallback": true,
+    "zero_candidate_degradation": true,
+    "zero_candidate_hold": true,
+    "zero_candidate_rejection": true,
+    "local_competitive_lift_not_claimed": true,
+    "runner_released": true,
+    "diagnostic_only": true,
+    "league_mutation_forbidden": true
+  },
+  "open_gates": [
+    "diagnostic upload identity binding",
+    "hosted alias and zero-harm verification",
+    "matched candidate advantage over v17",
+    "hosted 4/4",
+    "separate map-and-seat regression 20/20",
+    "final promotion RCI"
+  ],
+  "stop_conditions": [
+    "any K1Z harm",
+    "any unresolved target identity",
+    "any planner fallback, degradation, rejection, or parse failure",
+    "any unexplained hold",
+    "candidate wins no more matched fields than v17"
+  ],
+  "unresolved_violations": 0,
+  "authorized_next_action": "One diagnostic upload only, followed by hosted identity verification and matched v17 comparison. No league submission, membership change, or champion change is authorized."
+}
