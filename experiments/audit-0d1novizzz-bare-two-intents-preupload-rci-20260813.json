@@ -1,0 +1,54 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T13:29:00Z",
+  "player": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz"
+  },
+  "candidate": {
+    "arm": "bare-two-intents",
+    "source_commit": "d98391da45267900ad84d0da48a1c33f8d7a7bb3",
+    "image_tag": "proxywar-agent-candidate:bare-two-intents",
+    "image_id": "sha256:209c11b82f48829e2940260c4dcda9585cbf4f716aa02c2e7ff2b5f34a024c50",
+    "architecture": "linux/amd64",
+    "user": "node",
+    "cmd": ["node", "/app/llm-player.mjs"]
+  },
+  "live_parent": {
+    "policy_version_id": "b9e5ccdc-8dc4-4017-90ad-8f7908413109",
+    "label": "xX_UwU_Senpai_420_Xx:v43",
+    "membership_id": "lpm_fe4dde2e-4a20-4bd0-a865-9d0493f7f1b6",
+    "champion_verified": true
+  },
+  "critique": {
+    "failed_prior_arm": "The previous unforced-grow arm tied v17 at 0-0 and harmed Captain Underpants Maximum, so it was rejected.",
+    "remaining_complexity": "The planner protocol still encoded its one decision as a JSON object and intent-core was not the default.",
+    "smallest_fix": "Make the default planner emit only the bare closed enum grow or finish; keep action, target, tactic, and timing in the K1Z-safe executor."
+  },
+  "verification": {
+    "focused_tests": {"passed": 46, "failed": 0},
+    "image_interface_check": true,
+    "caller_widening_rejected": true,
+    "k1z_safety_preserved": true,
+    "standards_review_findings_open": 0,
+    "spec_review_findings_open": 0
+  },
+  "live_checkpoint": {
+    "division_rank": 16,
+    "division_score": 5.359021546703859,
+    "leader": "Andre von Houck",
+    "leader_score": 19.161366141993106,
+    "latest_completed_round": 1421,
+    "latest_round_policy": "xX_UwU_Senpai_420_Xx:v17",
+    "latest_round_rank": 6,
+    "latest_round_score": 0.0,
+    "v43_official_rounds_completed": 0
+  },
+  "authorization": {
+    "diagnostic_upload": true,
+    "hosted_counterfactual": true,
+    "league_submission": false,
+    "basis": "User resumed the number-one campaign; repository standing authority permits diagnostic uploads and hosted requests. Submission remains gated."
+  },
+  "next_gate": "Upload under an atomically reasserted 0d1 identity, verify the returned policy-version binding, then run the preregistered four-field counterfactual against v43."
+}
