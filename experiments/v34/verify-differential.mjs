@@ -76,7 +76,7 @@ try {
   assert.ok(candidateDiplomacy.policyMarkers.includes("kp2"));
   assert.ok(candidateDiplomacy.policyMarkers.includes("ixgrw"));
   assert.equal(parentSymbolic.id, "hold");
-  assert.equal(candidateSymbolic.id, "alliance:outsider");
+  assert.equal(candidateSymbolic.id, "target:outsider");
   assert.equal(parentNuclear.id, "attack:leader:40");
   assert.equal(candidateNuclear.id, "build:Atom Bomb:1");
   assert.ok(candidateNuclear.policyMarkers.includes("nk1"));

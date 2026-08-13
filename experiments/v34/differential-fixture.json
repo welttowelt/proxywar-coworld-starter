@@ -29,14 +29,13 @@
   ],
   "symbolicOnlyActions": [
     {
-      "id": "alliance:outsider",
-      "kind": "alliance_request",
-      "label": "Request alliance with Outsider",
+      "id": "target:outsider",
+      "kind": "target_player",
+      "label": "Target Outsider",
       "risk": { "level": "low" },
       "metadata": {
-        "recipientID": "outsider",
-        "recipientName": "Outsider",
-        "relation": 2
+        "targetID": "outsider",
+        "targetName": "Outsider"
       }
     },
     {
