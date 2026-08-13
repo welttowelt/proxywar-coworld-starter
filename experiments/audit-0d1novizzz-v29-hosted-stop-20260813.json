@@ -1,0 +1,152 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T00:43:29Z",
+  "lane": "0d1novizzz",
+  "verdict": "FAIL_HOSTED_NO_SUBMIT",
+  "request_id": "xreq_2f0d3c2a-e996-45d0-beab-b20910d2a14b",
+  "matched_baseline_request_id": "xreq_a1921007-5786-46b1-9636-2fdc4ea89da2",
+  "candidate_source_commit": "eeec7ba9686dc00fac7ce2054ac9a60f81750757",
+  "candidate_image_id": "sha256:c66b5553f159e512e091389ac8e9df6472811eaaab13aed7ddfc7252769f48ef",
+  "candidate_policy_version_id": "c71f0e35-f001-4bf5-b2e0-7cb9bd879d79",
+  "candidate_uploaded_label": "xX_UwU_Senpai_420_Xx:v27",
+  "stop_rule": "Any hosted Odin score of zero stops the gate with no league submission.",
+  "terminal_hosted_result": {
+    "status": "completed",
+    "episodes": 4,
+    "wins": 0,
+    "losses": 4,
+    "candidate_scores": [0, 0, 0, 0],
+    "candidate_final_tiles": [0, 0, 0, 0],
+    "winners": [
+      "Matt Van",
+      "SIAN VOIDCROWN",
+      "richard",
+      "SIAN VOIDCROWN"
+    ]
+  },
+  "episodes": [
+    {
+      "episode_request_id": "ereq_3b169420-2bf4-4f1c-a066-a58a8cad9174",
+      "episode_id": "b4fc1790-48cb-45fa-a1aa-9a0e45b3bbd9",
+      "job_id": "589e156e-58d5-459c-9559-df1fcd787131",
+      "replay_sha256": "b207d8c8aa526e3eef50e99f7e9ecd05d5cc014298166aeb6aeb3cbb1c54d32f",
+      "candidate_score": 0,
+      "candidate_final_tiles": 0,
+      "candidate_alive": false,
+      "winner": "Matt Van",
+      "planner_reasons": [
+        "pln:atk:ixexp",
+        "pln:h0d:ixcon",
+        "pln:h0d:ixcon",
+        "pln:atk:ixexp",
+        "pln:b0t:ixprs"
+      ],
+      "holds": 2,
+      "peak": {"turn": 3600, "tiles": 41735, "troops": 1533942}
+    },
+    {
+      "episode_request_id": "ereq_28ae0f9a-e7ba-41f0-aca9-2880257966ab",
+      "episode_id": "146ed5ca-5034-40fc-9a11-2882965422f1",
+      "job_id": "d2bfc668-0746-40bc-b9ac-f7d7c8209cdb",
+      "replay_sha256": "fc23516fa04b8da39b61d7a1b827ea6a41e2d95f5b8a4ced3ae9e116bec50061",
+      "candidate_score": 0,
+      "candidate_final_tiles": 0,
+      "candidate_alive": false,
+      "winner": "SIAN VOIDCROWN",
+      "planner_reasons": [
+        "pln:atk:ixexp",
+        "pln:h0d:ixcon",
+        "pln:h0d:ixcon",
+        "pln:h0d:ixcon",
+        "pln:b0t:ixprs"
+      ],
+      "holds": 3,
+      "peak": {"turn": 2800, "tiles": 40280, "troops": 1508319}
+    },
+    {
+      "episode_request_id": "ereq_ef9332e3-59e8-431c-a366-a96cf19d4811",
+      "episode_id": "78ef89fe-849e-4ccf-a486-009ca53368df",
+      "job_id": "e52df093-4da8-47e2-9033-6bd29ad7f8ff",
+      "replay_sha256": "bbe0b9ba7d882e005b14a14404a4e780db9a595dfaccdfc545af35ef4dd3d741",
+      "candidate_score": 0,
+      "candidate_final_tiles": 0,
+      "candidate_alive": false,
+      "winner": "richard",
+      "planner_reasons": [
+        "pln:atk:ixexp",
+        "pln:h0d:ixcon",
+        "pln:h0d:ixcon",
+        "pln:h0d:ixcon",
+        "pln:atk:ixprs"
+      ],
+      "holds": 3,
+      "peak": {"turn": 3600, "tiles": 46460, "troops": 1612445}
+    },
+    {
+      "episode_request_id": "ereq_8d00dcc2-6944-435b-a68e-b7bd141a6375",
+      "episode_id": "048de9ee-6d17-4185-b2b9-89d7b2fb97be",
+      "job_id": "3ec55cf8-1290-4aaf-9aa5-cdc510ef46e4",
+      "replay_sha256": "10b303c10a8fb4b726215735f306df04dabc95bee6cdb6e4a627aa9907fe92c4",
+      "candidate_score": 0,
+      "candidate_final_tiles": 0,
+      "candidate_alive": false,
+      "winner": "SIAN VOIDCROWN",
+      "planner_reasons": [
+        "pln:atk:ixexp",
+        "pln:h0d:ixcon",
+        "pln:h0d:ixcon",
+        "pln:h0d:ixcon",
+        "pln:b0t:ixprs"
+      ],
+      "holds": 3,
+      "peak": {"turn": 2800, "tiles": 40280, "troops": 1508319}
+    }
+  ],
+  "aggregate_mechanism_evidence": {
+    "candidate_decisions": 24,
+    "candidate_post_spawn_decisions": 20,
+    "candidate_accepted_decisions": 24,
+    "planner_fallbacks": 0,
+    "planner_degradations": 0,
+    "planner_rejections": 0,
+    "intent_markers_reached": ["ixexp", "ixcon", "ixprs"],
+    "intent_sequence_stable": true,
+    "total_holds": 11,
+    "harmful_k1z_actions": 0,
+    "diagnosis": "The one-field intent transport worked in every replay and reached all three intents without fallback, degradation, rejection, or K1Z harm. The executor still treated consolidate as an exact build-or-upgrade instruction. Because no infrastructure action was offered at the sampled decisions, it held for two or three consecutive decisions in every episode, lost growth, then made one late convert action and was eliminated. Intent execution must rank safe legal moves by outcome preference instead of requiring an exact action category."
+  },
+  "matched_v28_comparison": {
+    "same_roster": true,
+    "same_variant": true,
+    "same_candidate_slot": true,
+    "v28_wins": 0,
+    "v29_wins": 0,
+    "v28_total_sampled_holds": 0,
+    "v29_total_sampled_holds": 11,
+    "verdict": "Removing model-supplied targets fixed strategic scattering but exposed an executor interpretation defect; it did not improve competitive outcomes."
+  },
+  "decision": {
+    "candidate_killed": true,
+    "league_submission": false,
+    "regression_gate_started": false,
+    "promotion": false,
+    "reason": "The candidate scored zero in all four matched hosted episodes and violated the zero-hold gate."
+  },
+  "live_state_after": {
+    "candidate_submissions": 0,
+    "candidate_memberships": 0,
+    "active_champion_policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "active_champion_label": "xX_UwU_Senpai_420_Xx:v17",
+    "active_membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c",
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false,
+    "underpants_lane_mutation": false
+  },
+  "official_scoreboard_snapshot": {
+    "latest_completed_round": 1396,
+    "rank": 11,
+    "score": 7.002651178430014,
+    "latest_round_score": 0
+  }
+}
