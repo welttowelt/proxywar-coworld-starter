@@ -3,8 +3,19 @@
   "recorded_at": "2026-08-13T08:43:00Z",
   "lane": "0d1novizzz",
   "arm": "v40-k1z-runtime-alias-lock",
-  "verdict": "PASS_LOCAL_SAFETY_AND_RUNTIME",
+  "status": "passed",
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "screen_mode": "mechanism",
   "competitive_evidence": false,
+  "candidate_source_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
+  "candidate_image_id": "sha256:e8cf821ee92ba0a85ec9dc1a994f79a869d8a1addeb9eaa2dad9539bfe80bb96",
+  "parent_source_commit": "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
+  "contract_sha256": "8d0dd9aaf663a59b43ad2076360c8a9e5b95f1f747262a16ad0ed49541fb7726",
+  "failures": [],
+  "required_coalition_roles": [
+    "odin",
+    "v17-control"
+  ],
   "planner": {
     "changed_from_v39": false,
     "vocabulary": [
@@ -116,6 +127,44 @@
       "note": "The episode finished normally. A retained timeout timer delayed process exit and lease release until 08:41:37Z; no container or output mutation occurred during that delay. Do not reuse this temporary orchestrator without cancelling the settled timeout."
     }
   },
+  "runs": [
+    {
+      "run_id": "v40-k1z-alias-12-r1-20260813T082838Z",
+      "orientation": "A",
+      "mode": "16-player opening mechanism",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "decision_cap_per_agent": 12,
+      "directory": "/private/tmp/proxywar-v40-k1z-alias-12-r1-20260813T082838Z",
+      "replay_sha256": "93a8d9bd22e9b60ca91415ffafa94b0b602ee3682c8b5a7a9e19951f004187aa",
+      "coalition_roles_present": [
+        "odin",
+        "v17-control"
+      ],
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image_id": "sha256:e8cf821ee92ba0a85ec9dc1a994f79a869d8a1addeb9eaa2dad9539bfe80bb96"
+          },
+          "control": {
+            "image_id": "sha256:37fb270f0e0019b09c72df75b4bc873ee49ed6052af442c074acd74dd86c7c49"
+          }
+        }
+      },
+      "candidate": {
+        "decision_count": 13,
+        "accepted": 13,
+        "route_execution_count": 12,
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "unexplained_holds": [],
+        "harmful_k1z_actions": [],
+        "unresolved_harmful_targets": []
+      }
+    }
+  ],
   "safety_scope": {
     "local_field_contains_k1z_aliases": false,
     "claim": "The local run proves exact-image runtime health and no new harmful or unresolved actions. Alias-specific safety comes from the committed twelve-case same-state differential, not this v17-control field.",
