@@ -4,6 +4,18 @@
   "lane": "0d1novizzz",
   "arm": "v41-direct-grow",
   "status": "passed_local_mechanism_and_runtime",
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "failures": [],
+  "candidate_source_commit": "e8ceb516bcdaaaeb06b557228b1a6cf6b73e8c6f",
+  "candidate_image_id": "sha256:9b411947b0bfdfb81f56ef01bcb161e9f2601b098ee10aa27231e9a8b2070f8d",
+  "parent_source_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
+  "contract_sha256": "3496fa1730ce7f25f643209aaf9008d8ad336998dccbbba5cbeede47e369de78",
+  "required_coalition_roles": [
+    "odin",
+    "v17-control"
+  ],
   "source": {
     "commit": "e8ceb516bcdaaaeb06b557228b1a6cf6b73e8c6f",
     "parent_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
@@ -128,6 +140,81 @@
         "candidate_log": "8cd88599b526f3d83ce166603901c2db690f7d8e3b9fc77ff1c808ca164a12e0"
       }
     }
+  },
+  "runs": [
+    {
+      "run_id": "v41-direct-grow-12-r2-20260813T094300Z",
+      "orientation": "A",
+      "mode": "16-player planner-path mechanism",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "decision_cap_per_agent": 12,
+      "directory": "/private/tmp/proxywar-v41-direct-grow-12-r2-20260813T094300Z",
+      "replay_sha256": "f7d99ac2845b4f46dc174776f830c5379f1aa00b0b02ab289cde880ba9390049",
+      "coalition_roles_present": [
+        "odin",
+        "v17-control"
+      ],
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image_id": "sha256:9b411947b0bfdfb81f56ef01bcb161e9f2601b098ee10aa27231e9a8b2070f8d"
+          },
+          "control": {
+            "image_id": "sha256:37fb270f0e0019b09c72df75b4bc873ee49ed6052af442c074acd74dd86c7c49"
+          }
+        }
+      },
+      "candidate": {
+        "decision_count": 13,
+        "accepted": 13,
+        "route_execution_count": 12,
+        "marker_counts": {
+          "ib2": 12,
+          "ixgrw": 12
+        },
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "unexplained_holds": [],
+        "harmful_k1z_actions": [],
+        "unresolved_harmful_targets": []
+      }
+    }
+  ],
+  "differential_unit_proof": {
+    "schema_version": 1,
+    "arm": "v41-direct-grow",
+    "same_fixture": true,
+    "verifier": {
+      "evaluator_commit": "db7d854e9a16a950a172d29b0562a9cb490cb96f",
+      "path": "experiments/v41/verify-direct-grow-differential.mjs",
+      "sha256": "921b71b86225b2568ff6ba0f425267773a41d22fb715983565dd39b8d7f129b8"
+    },
+    "fixture": {
+      "id": "v41-direct-grow",
+      "path": "experiments/v41/direct-grow-fixture.json",
+      "sha256": "92b0bdc98fec53361a6437e0c098749e809aaa4e4695c9d914c2b2614ce38149"
+    },
+    "parent": {
+      "source_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
+      "selected_action_id": "upgrade:Port:95"
+    },
+    "candidate": {
+      "source_commit": "e8ceb516bcdaaaeb06b557228b1a6cf6b73e8c6f",
+      "selected_action_id": "build:City"
+    },
+    "test_command": [
+      "node",
+      "experiments/v41/verify-direct-grow-differential.mjs",
+      ".",
+      "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
+      "e8ceb516bcdaaaeb06b557228b1a6cf6b73e8c6f",
+      "experiments/v41/direct-grow-fixture.json",
+      "experiments/v41/differential-proof-e8ceb516.json"
+    ],
+    "test_exit_code": 0
   },
   "interpretation": {
     "proved": "The exact image runs the two-intent planner path cleanly, preserves the K1Z boundary, and the bounded same-state verifier reaches exactly the intended upgrade-to-new-capacity delta.",

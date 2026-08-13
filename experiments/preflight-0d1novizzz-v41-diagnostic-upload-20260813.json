@@ -26,7 +26,7 @@
     "contract_sha256": "3496fa1730ce7f25f643209aaf9008d8ad336998dccbbba5cbeede47e369de78",
     "audit_receipt": {
       "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v41-direct-grow-local-20260813.json",
-      "sha256": "9797d857666d33d94fb2fe41c4cc7d715b75f57d3befa6f29894e4899143127e"
+      "sha256": "73e5740049789781fff00372612d06f6fd8ba4c61451cc9474dbdbbaeadf3e31"
     },
     "differential_binding": {
       "verifier_path": "experiments/v41/verify-direct-grow-differential.mjs",
@@ -36,7 +36,7 @@
   "preupload_rci": {
     "receipt": {
       "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v41-preupload-rci-20260813.json",
-      "sha256": "1720e89101beb6916f1b24bf2fd9e6ef0223f5740e235e1bfc0cee16afd1d1fe"
+      "sha256": "0c6e62ac3a75fc1d1db1630a5b4a802f99dc712f8745f19773b2cde71bb05bea"
     }
   },
   "matched_baseline": {
@@ -58,7 +58,7 @@
       "max_degradations": 0,
       "max_rejections": 0,
       "max_k1z_harm": 0,
-      "planner_degradation_rule": "no_parse_failure_or_transport_regression",
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
       "min_mechanism_executions": 1
     }
   },

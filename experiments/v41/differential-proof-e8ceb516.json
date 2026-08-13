@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "arm": "v41-direct-grow",
+  "passed": true,
+  "same_fixture": true,
+  "parent_source_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
+  "candidate_source_commit": "e8ceb516bcdaaaeb06b557228b1a6cf6b73e8c6f",
+  "fixture": "experiments/v41/direct-grow-fixture.json",
+  "cases": [
+    {
+      "id": "grow-prefers-new-capacity",
+      "intent": "grow",
+      "parent_action_id": "upgrade:Port:95",
+      "candidate_action_id": "build:City",
+      "changed": true
+    },
+    {
+      "id": "grow-does-not-force-weak-hostility",
+      "intent": "grow",
+      "parent_action_id": "upgrade:Port:95",
+      "candidate_action_id": "upgrade:Port:95",
+      "changed": false
+    },
+    {
+      "id": "finish-unchanged",
+      "intent": "finish",
+      "parent_action_id": "upgrade:Port:95",
+      "candidate_action_id": "upgrade:Port:95",
+      "changed": false
+    }
+  ]
+}

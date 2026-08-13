@@ -5,6 +5,7 @@
   "status": "passed",
   "verdict": "PASS_PREUPLOAD_RCI",
   "candidate_source_commit": "e8ceb516bcdaaaeb06b557228b1a6cf6b73e8c6f",
+  "candidate_image_id": "sha256:9b411947b0bfdfb81f56ef01bcb161e9f2601b098ee10aa27231e9a8b2070f8d",
   "candidate_docker_image_id": "sha256:9b411947b0bfdfb81f56ef01bcb161e9f2601b098ee10aa27231e9a8b2070f8d",
   "candidate_coworld_client_hash": "sha256:42ff71fcf134374ea40dc8536d1bee2020d56797b6ce60d8f811cb690918e6c8",
   "parent_source_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
