@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "preregistered_at": "2026-08-13T14:45:06Z",
+  "experiment": "v47-v43-stage1-matched-counterfactual",
+  "player": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz"
+  },
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v47",
+    "policy_version_id": "079e5bce-8ad3-4bc6-84af-0f0a83cf291e",
+    "source_commit": "d2638a47495651b65e5e091b2bbe9fef835314e5",
+    "hosted_image_id": "img_f47d270a-caed-4f8a-9e62-efdbb40cea9e"
+  },
+  "baseline": {
+    "label": "xX_UwU_Senpai_420_Xx:v43",
+    "policy_version_id": "b9e5ccdc-8dc4-4017-90ad-8f7908413109",
+    "membership_id": "lpm_fe4dde2e-4a20-4bd0-a865-9d0493f7f1b6",
+    "champion_verified": true
+  },
+  "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "matched_fields": 4,
+  "idempotency_key": "0d1-v47-v43-stage1-4f-20260813-1445",
+  "hypothesis": "The bare grow-or-finish planner plus the sm1 strike-mass executor wins more matched fields than live v43 without fallbacks, rejections, or verified K1Z harm.",
+  "gate": {
+    "candidate_wins_required": "strictly greater than baseline wins",
+    "fallbacks_allowed": 0,
+    "rejections_allowed": 0,
+    "verified_k1z_harm_allowed": 0,
+    "mechanism_requirement": "at least one sm1 decision",
+    "planner_requirement": "at least one accepted post-spawn pln decision",
+    "tie_policy": "reject",
+    "loss_policy": "reject"
+  },
+  "stage_2_if_passed": "Run a separately preregistered 20-field gate against v43. Do not submit before that gate passes.",
+  "league_mutation_authorized": false,
+  "authorized_next_action": "After same-shell active-player, exact candidate-image, and baseline-champion checks, create this one four-field counterfactual and audit every candidate replay."
+}

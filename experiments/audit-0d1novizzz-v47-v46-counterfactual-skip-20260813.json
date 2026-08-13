@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T14:45:06Z",
+  "experiment": "v47-v46-matched-counterfactual",
+  "counterfactual_eval_id": "cfeval_88cf9155-b03a-40a7-aeee-1baf8511fb86",
+  "candidate_policy_version_id": "079e5bce-8ad3-4bc6-84af-0f0a83cf291e",
+  "baseline_policy_version_id": "625ac8a0-6eb8-4f9b-ab31-43f04b3ba293",
+  "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "n_requested": 4,
+  "n_paired": 0,
+  "status": "skipped",
+  "skip_reason": "insufficient_history",
+  "error": null,
+  "experience_request_id": null,
+  "wins": 0,
+  "losses": 0,
+  "neutrals": 0,
+  "interpretation": "Invalid comparison. The platform produced no fields and no causal evidence for or against v47.",
+  "league_mutation": false,
+  "champion_preserved": {
+    "membership_id": "lpm_fe4dde2e-4a20-4bd0-a865-9d0493f7f1b6",
+    "policy_version_id": "b9e5ccdc-8dc4-4017-90ad-8f7908413109",
+    "label": "xX_UwU_Senpai_420_Xx:v43"
+  },
+  "next_action": "Run one preregistered four-field diagnostic counterfactual of v47 against the live v43 champion. Do not submit or change membership."
+}
