@@ -1,0 +1,52 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T05:52:00Z",
+  "lane": "0d1novizzz",
+  "status": "passed",
+  "verdict": "PASS_PREUPLOAD_RCI",
+  "candidate_source_commit": "f46a9ca241ccbe530457c247ea6fc3e652b75a87",
+  "candidate_image_id": "sha256:4cf80f36ee26b5961efb2d663a7002bff16b0c2c9a82b8668bedbc09245ef6f1",
+  "parent_source_commit": "1d63cf7f61873071823d63f3e9de0e4a8d1ae86e",
+  "preregister_sha256": "c26760319cc5c579d01e2bc5efd389daf60671e39ba24f480e60f23585cffd4c",
+  "local_audit_sha256": "22b5c47b2541698ccd2b9abd80773f723e39a93e10fbf489ea78a8223b0ab5b8",
+  "differential_proof_sha256": "0a6b28f86ccbf871ddddeedd65d13fede366fbe3d7bcc1e6f384f3f328832d4f",
+  "critique": {
+    "strongest_evidence": "v37 deletes the duplicate tactical scorer while retaining the one-field intent contract and material gate. The same-state proof changes v36's Defense Post to a mature-executor rival attack. Focused tests pass 186/186, and the exact-image 16P trace has 13/13 accepted decisions, 12/12 id1 executions, and zero holds, symbolic actions, fallback, degradation, rejection, or K1Z harm.",
+    "adverse_evidence": "v35 and v36 both failed hosted diagnostics, and v36 exposed intermittent planner refresh failures plus an all-grow lock. The v37 local trace is short and constant-grow, so it proves the delegated path only; it does not prove live intent switching or competitive lift.",
+    "remaining_uncertainty": "A hosted diagnostic must show whether the mature executor survives the current roster under live planner transport. Any zero score kills v37 and no league mutation is authorized."
+  },
+  "checks": {
+    "single_architectural_change": true,
+    "one_field_contract": true,
+    "planner_actions_forbidden": true,
+    "planner_targets_forbidden": true,
+    "delegated_executor_reached": true,
+    "material_gate_reached": true,
+    "differential_reach": true,
+    "exact_image_reach": true,
+    "zero_candidate_symbolic_action": true,
+    "zero_candidate_fallback": true,
+    "zero_candidate_degradation": true,
+    "zero_candidate_hold": true,
+    "zero_candidate_rejection": true,
+    "k1z_safety": true,
+    "competitive_lift_not_claimed": true,
+    "runner_released": true,
+    "diagnostic_only": true,
+    "league_mutation_forbidden": true
+  },
+  "open_gates": [
+    "diagnostic upload identity binding",
+    "matched-current-roster hosted 4/4",
+    "separate map-and-seat regression 20/20",
+    "final promotion RCI"
+  ],
+  "stop_conditions": [
+    "any hosted score of zero",
+    "any unexplained fallback, degradation, rejection, or parse failure",
+    "any repeated symbolic-action loop",
+    "any K1Z harm"
+  ],
+  "unresolved_violations": 0,
+  "authorized_next_action": "One diagnostic upload only. No league submission, membership change, or champion change is authorized."
+}
