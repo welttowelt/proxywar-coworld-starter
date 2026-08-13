@@ -1,0 +1,183 @@
+{
+  "schema_version": 1,
+  "id": "v41-direct-grow",
+  "description": "Three bounded same-state cases isolate v41's executor-menu change: one reachable upgrade-to-new-capacity delta, one weak-hostile non-delta, and one finish non-delta.",
+  "cases": [
+    {
+      "id": "grow-prefers-new-capacity",
+      "intent": "grow",
+      "observation": {
+        "phase": "active",
+        "ownState": {
+          "tileShare": 0.01,
+          "troopRatio": 0.2,
+          "troops": 1000000,
+          "gold": 500000,
+          "borderTiles": 100,
+          "incomingAttacks": 0
+        },
+        "combat": {
+          "incomingAttackPlayerIDs": []
+        },
+        "visiblePlayers": []
+      },
+      "actions": [
+        {
+          "id": "upgrade:Port:95",
+          "kind": "upgrade_structure",
+          "label": "Upgrade Port",
+          "metadata": {
+            "unit": "Port",
+            "unitId": 95
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "build:City",
+          "kind": "build",
+          "label": "Build City",
+          "metadata": {
+            "unit": "City"
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "hold",
+          "kind": "hold",
+          "label": "Hold",
+          "metadata": {},
+          "risk": {
+            "level": "low"
+          }
+        }
+      ],
+      "history": [
+        {
+          "actionID": "build:Factory",
+          "kind": "build",
+          "tileShare": 0.01
+        }
+      ],
+      "expected_parent_action_id": "upgrade:Port:95",
+      "expected_candidate_action_id": "build:City"
+    },
+    {
+      "id": "grow-does-not-force-weak-hostility",
+      "intent": "grow",
+      "observation": {
+        "phase": "active",
+        "ownState": {
+          "tileShare": 0.01,
+          "troopRatio": 0.2,
+          "troops": 1000000,
+          "gold": 500000,
+          "borderTiles": 100,
+          "incomingAttacks": 0
+        },
+        "combat": {
+          "incomingAttackPlayerIDs": []
+        },
+        "visiblePlayers": [
+          {
+            "id": "rival",
+            "name": "rival",
+            "isAlive": true,
+            "sharesBorder": true,
+            "canAttack": true,
+            "isAllied": false,
+            "tileShare": 0.1,
+            "relativeTroopRatio": 0.2
+          }
+        ]
+      },
+      "actions": [
+        {
+          "id": "upgrade:Port:95",
+          "kind": "upgrade_structure",
+          "label": "Upgrade Port",
+          "metadata": {
+            "unit": "Port",
+            "unitId": 95
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "attack:rival:40",
+          "kind": "attack",
+          "label": "Attack rival",
+          "metadata": {
+            "targetID": "rival",
+            "targetName": "rival",
+            "troopPercent": 40
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "hold",
+          "kind": "hold",
+          "label": "Hold",
+          "metadata": {},
+          "risk": {
+            "level": "low"
+          }
+        }
+      ],
+      "history": [],
+      "expected_parent_action_id": "upgrade:Port:95",
+      "expected_candidate_action_id": "upgrade:Port:95"
+    },
+    {
+      "id": "finish-unchanged",
+      "intent": "finish",
+      "observation": {
+        "phase": "active",
+        "ownState": {
+          "tileShare": 0.12,
+          "troopRatio": 1,
+          "troops": 1000000,
+          "gold": 500000,
+          "borderTiles": 100,
+          "incomingAttacks": 0
+        },
+        "combat": {
+          "incomingAttackPlayerIDs": []
+        },
+        "visiblePlayers": []
+      },
+      "actions": [
+        {
+          "id": "upgrade:Port:95",
+          "kind": "upgrade_structure",
+          "label": "Upgrade Port",
+          "metadata": {
+            "unit": "Port",
+            "unitId": 95
+          },
+          "risk": {
+            "level": "low"
+          }
+        },
+        {
+          "id": "hold",
+          "kind": "hold",
+          "label": "Hold",
+          "metadata": {},
+          "risk": {
+            "level": "low"
+          }
+        }
+      ],
+      "history": [],
+      "expected_parent_action_id": "upgrade:Port:95",
+      "expected_candidate_action_id": "upgrade:Port:95"
+    }
+  ]
+}
