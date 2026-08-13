@@ -1,0 +1,47 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T02:35:00Z",
+  "lane": "0d1novizzz",
+  "arm": "v32-pure-intent",
+  "status": "stopped_before_upload",
+  "verdict": "STOP_STRUCTURAL_MISMATCH",
+  "candidate_source_commit": "30959d0cf079fb667382e9ad307b03fe451bf7b6",
+  "preregister_commit": "286ea001",
+  "candidate_image": {
+    "ref": "proxywar-agent-candidate:v32-pure-intent",
+    "id": "sha256:3fc3e7d92b534aec7b8518a48d63c096a7611953df5123cd7a8c4e4aa3124a81",
+    "architecture": "amd64",
+    "os": "linux",
+    "user": "node",
+    "cmd": ["node", "/app/llm-player.mjs"],
+    "file_sha256": {
+      "/app/llm-player.mjs": "53689aac90e702828a4ee60ff46ec9fcabbbc9b8d981b683bd729f8338a37838",
+      "/app/intent-controller.mjs": "e4928597d7bb6b478174e67e412f03bdf75151f2df73d4cd553cd3324c2dea9d",
+      "/app/intent-core.mjs": "4d2cc4b9e779c0272080f52381724bff1d241d5d2b8cb7603f0b347c5e4d7cdf",
+      "/app/strategy-engine.mjs": "4a5dc56a23371033b9c543e416397b1a18feb5b842d965ba1d23661f528d832a"
+    }
+  },
+  "checks": {
+    "pure_intent_prompt": true,
+    "execution_affordances_hidden_from_planner": true,
+    "focused_tests": "52/52",
+    "full_suite": "470/476 with the same six unrelated failures",
+    "exact_image_three_intents": true,
+    "exact_image_k1z_guard": true,
+    "competitive_lift_claimed": false
+  },
+  "critique": {
+    "finding": "The planner can no longer see which outcome families are executable, while the inherited executor treats grow and secure as hard allowlists. V31 then produced 45 holds in ten hosted losses. V32 would ask a strategically cleaner question but could still translate a valid intent into HOLD whenever that family was unavailable.",
+    "smallest_fix": "Treat intent as preference order across all safe productive actions. Preserve only target safety as a hard boundary.",
+    "why_no_hosted_run": "The parent replays directly expose the inherited structural contradiction. Uploading the unchanged executor would spend a diagnostic on a known failure mode."
+  },
+  "live_mutations": {
+    "image_upload": false,
+    "policy_upload": false,
+    "hosted_request": false,
+    "submission": false,
+    "membership": false,
+    "league": false
+  },
+  "authorized_next_action": "Preregister and implement one executor-only preference correction on top of the pure-intent planner."
+}

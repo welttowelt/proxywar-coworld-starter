@@ -1,0 +1,72 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T02:35:00Z",
+  "lane": "0d1novizzz",
+  "arm": "v31-outcome-intents",
+  "verdict": "KILL",
+  "request_id": "xreq_5769cf8e-0fec-414a-ab4c-b1f42f98b34a",
+  "request_provenance": "The request was created under the user's Coworld account while this Codex session was not dispatching. No matching repository request or dispatch receipt was found. It is accepted as hosted outcome evidence but not as a preflight-compliant promotion gate.",
+  "candidate_source_commit": "72b247776b85ec9cc9f62cef9d574baa7e009af1",
+  "candidate_policy_version_id": "001b1e0b-0ce1-45f5-9a69-1ae4bf0f5896",
+  "uploaded_label": "xX_UwU_Senpai_420_Xx:v29",
+  "coworld_version": "0.1.41",
+  "requested_variant": "tournament-16p-oceania",
+  "request_status": "completed",
+  "episodes_completed": 10,
+  "wins": 0,
+  "scores": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  "final_tiles": [0, 0, 0, 0, 0, 29007, 0, 30801, 2544, 0],
+  "replay_maps": {"Oceania": 8, "EastAsia": 2},
+  "aggregate_replay_evidence": {
+    "post_spawn_decisions": 193,
+    "intent_markers": {"ixgrw": 74, "ixsec": 74, "ixfin": 45},
+    "action_counts": {"build": 18, "boat": 107, "attack": 23, "hold": 45},
+    "holds": 45,
+    "fallbacks": 1,
+    "rejections": 0,
+    "planner_transport_present": true,
+    "interpretation": "All three intents reached the executor, but grow and secure were hard allowlists. Once their preferred outcome families disappeared, the policy held even while other safe productive actions existed. One episode also stayed on finish for twenty consecutive decisions and mostly launched boats."
+  },
+  "replays": [
+    {"episode_request_id":"ereq_bf3f5677-25f4-4442-8dec-4634f813fb1b","sha256":"6352aea0f760705bcb50f35205107566a8c8b4b6c5c1076ecd2c47506e8a4e1f","score":0,"final_tiles":0,"holds":0},
+    {"episode_request_id":"ereq_729ebd56-5950-4c30-97cf-5c52ca798a62","sha256":"275471769bf9da3bf804e3ce12109683743b9b3fc8821a4ff278a96255ae3df3","score":0,"final_tiles":0,"holds":1},
+    {"episode_request_id":"ereq_30ee6a6b-a566-4286-9933-f3f29db511f4","sha256":"8beec4f4cb6c141335985dc14102c96b0ac210faa61f4ed49cce0990b20da0d9","score":0,"final_tiles":0,"holds":13},
+    {"episode_request_id":"ereq_32734cd7-41d4-412f-908b-f8975b5f87f7","sha256":"c6608a415e51d7dc319da009cfb30be7a8a511fb293a00e0135c6058d583396b","score":0,"final_tiles":0,"holds":0},
+    {"episode_request_id":"ereq_ff9cfef5-bfa8-4d90-a4f0-2a1cf0799750","sha256":"6e64f919b1ef080f2213887a6ada55c7a23d6bee813fb8495840c67881c50677","score":0,"final_tiles":0,"holds":4},
+    {"episode_request_id":"ereq_e7fd183c-6533-42bc-b5fb-3222b9184a06","sha256":"1d0bb5c6341101e0ae131348adc715f35791cd51b2d51029984d40ac15d8faf2","score":0,"final_tiles":29007,"holds":2},
+    {"episode_request_id":"ereq_5f9d8ae2-2f17-437d-bb32-ff585c94ef77","sha256":"d9f41c999812e15f94e8f3a905023d2b57eecd6ba2494fa1882abd8703c49fc7","score":0,"final_tiles":0,"holds":13},
+    {"episode_request_id":"ereq_94979002-522a-40f1-9bd7-543862854663","sha256":"2f0f62869beeb576d36083e5e037879cf55bb3062ba92dd986f9c38f707871e9","score":0,"final_tiles":30801,"holds":0},
+    {"episode_request_id":"ereq_7a412fd7-69d1-4570-8f53-7248992e01f4","sha256":"7733dc05a828c090ec084193ad0c43036a394a8c7b5d761be0544195327c2457","score":0,"final_tiles":2544,"holds":11},
+    {"episode_request_id":"ereq_8da07067-e403-402c-a13d-51e37deb78b6","sha256":"dd0b9f0e19d06829e00ac5b1c4722104da9659ca37fef5ff4024b0c191540cf8","score":0,"final_tiles":0,"holds":1}
+  ],
+  "kill_rule": {
+    "rule": "stop on any zero score",
+    "triggered": true,
+    "final_result": "0/10"
+  },
+  "diagnosis": {
+    "transport": "proved",
+    "planner_vocabulary": "proved",
+    "executor_semantics": "failed because intent was enforced as a hard allowlist rather than a preference",
+    "competitive_result": "failed 0/10",
+    "next_change_boundary": "Keep the one-field pure-intent planner and actual-outcome classification. Let intent rank every safe productive action instead of forbidding other outcome families."
+  },
+  "league_mutation": false,
+  "submission_created": false,
+  "membership_created": false,
+  "preserved_league_policy": {
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c",
+    "version": 17
+  },
+  "official_scoreboard_snapshot": {
+    "latest_completed_round": 1400,
+    "rank": 13,
+    "score": 6.232884351218862,
+    "latest_round_rank": 9,
+    "latest_round_score": 0,
+    "leader": "daveey",
+    "leader_score": 16.785923136501015
+  },
+  "authority": "v31 is killed and may not be submitted or promoted. The evidence authorizes one intent-preference correction only."
+}

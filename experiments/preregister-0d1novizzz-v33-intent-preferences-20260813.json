@@ -1,0 +1,57 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T02:35:00Z",
+  "lane": "0d1novizzz",
+  "arm": "v33-intent-preferences",
+  "parent": {
+    "arm": "v32-pure-intent",
+    "source_commit": "30959d0cf079fb667382e9ad307b03fe451bf7b6",
+    "preupload_stop": "experiments/audit-0d1novizzz-v32-pure-intent-preupload-stop-20260813.json"
+  },
+  "single_change": "Intent becomes a preference ordering over every safe productive action, not an action allowlist. The pure one-field planner, actual-outcome classifier, scoring weights, target continuity, and safety filters are unchanged.",
+  "hypothesis": "A preference-based executor will preserve the strategic signal while eliminating avoidable holds when the preferred outcome family is absent.",
+  "intent_semantics": {
+    "grow": ["prefer neutral gain", "then infrastructure", "then safe force"],
+    "secure": ["prefer infrastructure", "then neutral gain", "then safe force"],
+    "finish": ["prefer safe force", "then neutral gain", "then infrastructure"],
+    "hard_boundary": "never select harmful action against a protected K1Z partner",
+    "hold_rule": "hold only when no safe productive action exists"
+  },
+  "same_fixture_differential": {
+    "menu": ["ambiguous boat", "hold"],
+    "v32_grow": "hold",
+    "v33_grow": "boat",
+    "v32_secure": "hold",
+    "v33_secure": "boat",
+    "finish": "boat under both",
+    "protected_only_menu": "hold under both"
+  },
+  "local_gate": {
+    "focused_tests_pass": true,
+    "full_suite_has_no_candidate_related_regression": true,
+    "exact_linux_amd64_image_required": true,
+    "preferred_outcome_wins_when_available": true,
+    "productive_safe_fallback_beats_hold": true,
+    "protected_harm_never_beats_hold": true,
+    "competitive_lift_claimed": false
+  },
+  "hosted_gate": {
+    "episodes": 4,
+    "matched_current_roster_required": true,
+    "required_wins": 4,
+    "max_holds": 0,
+    "max_fallbacks": 0,
+    "max_degradations": 0,
+    "max_rejections": 0,
+    "max_k1z_harm": 0,
+    "planner_reasons_required": true,
+    "stop_on_any_zero_score": true
+  },
+  "promotion_gate": {
+    "separate_regression_episodes": 20,
+    "required_regression_wins": 20,
+    "final_rci_required": true,
+    "league_change_allowed_before_all_gates": false
+  },
+  "authorized_next_action": "Implement, test, build, and locally qualify this one preference correction. One diagnostic upload and one four-episode hosted request are allowed only after pre-upload RCI passes. No submission, membership, or champion change is allowed before every promotion gate passes."
+}

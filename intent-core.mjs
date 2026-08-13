@@ -102,12 +102,9 @@ function offeredMenu(actions, state, history, requested) {
     !protectedHarm(action, state, history)
   );
   const actionable = legal.filter((action) => actionIntent(action, state) !== null);
-  const allowedOutcomes = requested.intent === "finish"
-    ? new Set(["finish", "grow", "secure"])
-    : new Set(["grow", "secure"]);
-  const aligned = actionable.filter((action) =>
-    allowedOutcomes.has(actionIntent(action, state))
-  );
+  // Intent orders safe outcomes; it does not turn the action menu into a hard
+  // script. The score below decides among every productive safe option.
+  const aligned = actionable;
   if (requested.intent === "finish") {
     const previousTarget = [...history].reverse().find((entry) =>
       entry?.policyMarker === MARKERS.finish && typeof entry?.targetID === "string"

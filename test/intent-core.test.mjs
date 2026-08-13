@@ -126,17 +126,26 @@ test("ambiguous boat force cannot masquerade as grow through expansion metadata"
   assert.equal(decide([ambiguous, factory, hold()], { intent: "finish" }).id, ambiguous.id);
 });
 
-test("grow and secure hold instead of falling back to ambiguous force", () => {
+test("grow and secure use safe force only when preferred outcomes are unavailable", () => {
   const ambiguous = action("boat:485204:16", "boat", "Boat 16%", {
     expansion: true,
     troopPercent: 16,
   });
-  assert.equal(decide([ambiguous, hold()], { intent: "grow" }).id, "hold");
-  assert.equal(decide([ambiguous, hold()], { intent: "secure" }).id, "hold");
+  assert.equal(decide([ambiguous, hold()], { intent: "grow" }).id, ambiguous.id);
+  assert.equal(decide([ambiguous, hold()], { intent: "secure" }).id, ambiguous.id);
   assert.equal(decide([ambiguous, hold()], { intent: "finish" }).id, ambiguous.id);
 });
 
-test("secure chooses infrastructure and never grows or attacks", () => {
+test("grow and secure remain preferences when only rival force is productive", () => {
+  const rivalAttack = attack("rival");
+  const options = {
+    rivals: [{ id: "rival", name: "rival", tileShare: 0.2, relativeTroopRatio: 1.2 }],
+  };
+  assert.equal(decide([rivalAttack, hold()], { intent: "grow" }, options).id, rivalAttack.id);
+  assert.equal(decide([rivalAttack, hold()], { intent: "secure" }, options).id, rivalAttack.id);
+});
+
+test("secure chooses infrastructure ahead of growth or force", () => {
   const factory = build();
   const selected = decide([land(), attack("rival"), factory, hold()], {
     intent: "secure",
