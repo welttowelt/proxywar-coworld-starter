@@ -1,0 +1,86 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T06:46:00Z",
+  "lane": "0d1novizzz",
+  "mode": "diagnostic",
+  "status": "pending",
+  "active_player_before": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz"
+  },
+  "active_player_after": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz"
+  },
+  "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "preflight_path": "/Users/olifreuler/proxywar-coworld-starter/experiments/preflight-0d1novizzz-v38-diagnostic-upload-20260813.json",
+  "preflight_sha256": "748d61fd3699a7353f5a69ac0ce0a4ea02810465f61f0945ee527d69304c586b",
+  "candidate_source_commit": "6cb3b4ae8fb6f5c88e6d60e22d5d050dc4ba8cfb",
+  "candidate_evidence_commit": "fdca2ef60d1138e49c785ccca2e8cb307468810b",
+  "candidate_image_id": "sha256:2f6f38287b13d3c4c752a4f1ea6eab1d48935b50fbba666777b3b898ba9c67af",
+  "candidate_policy_ref": "proxywar-agent-candidate:v38-intent-boundary",
+  "uploaded_label": "xX_UwU_Senpai_420_Xx:v35",
+  "policy_version_id": "18af4b65-b1a6-4fb5-8ed4-72c3c1d5721f",
+  "policy_id": "d2ab8f5b-66ff-4252-990c-71179fc8dc0f",
+  "created_at": "2026-08-13T06:44:51.996544Z",
+  "hosted_image": {
+    "id": "img_f1cd5eca-1765-41f1-a440-8a7ad6ca3b66",
+    "client_hash": "sha256:2f6f38287b13d3c4c752a4f1ea6eab1d48935b50fbba666777b3b898ba9c67af",
+    "status": "ready",
+    "image_digest": "sha256:2d456b9b4453fda73b35e0d2b030e741f5a16db1de50d1aa97fef54a352ee0b4"
+  },
+  "uploaded_tags": {
+    "goal": "ffa-99",
+    "codename": "ib1",
+    "experiment": "intent-boundary-v38",
+    "source_commit": "6cb3b4ae8fb6f5c88e6d60e22d5d050dc4ba8cfb",
+    "image_id": "2f6f38287b13d3c4c752a4f1ea6eab1d48935b50fbba666777b3b898ba9c67af"
+  },
+  "run": [
+    "node",
+    "/app/llm-player.mjs"
+  ],
+  "bedrock_enabled": true,
+  "secret_env": [
+    "PLAN_MODE=on"
+  ],
+  "verification_note": "Authenticated lookup verified v35, exact source and image tags, and run argv. The exact hosted image is ready. Every automatic episode contains v35 exactly once. Policy-scoped league submissions returned zero, the active player stayed 0d1novizzz, and v17 stayed the sole champion.",
+  "automatic_hosted_request": {
+    "id": "xreq_ed6a2514-17ac-4b0e-9ea6-001f651b6193",
+    "status_at_receipt": "pending",
+    "episodes": 10,
+    "nominal_variant": "tournament-16p-eastasia",
+    "actual_maps": {
+      "EastAsia": 5,
+      "BlackSea": 5
+    },
+    "candidate_seats_zero_indexed": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "coworld_version": "0.1.41",
+    "requested": null,
+    "candidate_policy_version_id": "18af4b65-b1a6-4fb5-8ed4-72c3c1d5721f"
+  },
+  "live_mutations": {
+    "upload": true,
+    "automatic_hosted_experience_request": true,
+    "repository_hosted_request_dispatched": false,
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false
+  },
+  "preserved_champion": {
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "label": "xX_UwU_Senpai_420_Xx:v17"
+  }
+}
