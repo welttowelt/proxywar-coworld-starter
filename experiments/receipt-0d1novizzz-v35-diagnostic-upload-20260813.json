@@ -1,0 +1,76 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T04:45:00Z",
+  "lane": "0d1novizzz",
+  "mode": "diagnostic",
+  "status": "completed",
+  "active_player_before": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz"
+  },
+  "active_player_after": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz"
+  },
+  "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "preflight_path": "/Users/olifreuler/proxywar-coworld-starter/experiments/preflight-0d1novizzz-v35-diagnostic-upload-20260813.json",
+  "preflight_sha256": "c31b0c96d0b4c3f25092b8a522c02513fe2ecef763aa943f5fb311d306d0d9ae",
+  "candidate_source_commit": "a5e150c326bd28121ab3cf180015e16595411602",
+  "candidate_evidence_commit": "b4714f07",
+  "candidate_image_id": "sha256:c1a07ac20773cf9344f5cbfc985901fa561352c0d2a0aee81e2af073bcd8eecc",
+  "candidate_policy_ref": "proxywar-agent-candidate:v35-intent-utility-ranker",
+  "uploaded_label": "xX_UwU_Senpai_420_Xx:v32",
+  "policy_version_id": "c01de697-9208-44b1-9fed-5951f1ffbb90",
+  "policy_id": "d2ab8f5b-66ff-4252-990c-71179fc8dc0f",
+  "created_at": "2026-08-13T04:42:18.606546Z",
+  "hosted_image": {
+    "id": "img_1d1edf0e-db77-4b05-910c-571d37ab4b7e",
+    "client_hash": "sha256:c1a07ac20773cf9344f5cbfc985901fa561352c0d2a0aee81e2af073bcd8eecc",
+    "status": "ready",
+    "image_digest": "sha256:a8e13c35a6c7334b1a5b7b2afcda8cef535e09e7d2b9a453cd71bc9fee39db4b"
+  },
+  "uploaded_tags": {
+    "goal": "ffa-99",
+    "codename": "iu1",
+    "experiment": "intent-utility-ranker-v35",
+    "source_commit": "a5e150c326bd28121ab3cf180015e16595411602",
+    "image_id": "c1a07ac20773cf9344f5cbfc985901fa561352c0d2a0aee81e2af073bcd8eecc"
+  },
+  "run": [
+    "node",
+    "/app/llm-player.mjs"
+  ],
+  "bedrock_enabled": true,
+  "secret_env": [
+    "PLAN_MODE=on"
+  ],
+  "verification_note": "Authenticated policy-version lookup verified v32, exact source and image tags, and run argv. Image lookup verified the exact client hash is ready. Policy-scoped memberships and league submissions returned zero. The active player stayed 0d1novizzz and v17 stayed the sole champion.",
+  "automatic_hosted_request": {
+    "id": "xreq_274bc0c8-3349-4ebd-a098-9813e375cba7",
+    "status_at_receipt": "pending",
+    "episodes": 10,
+    "nominal_variant": "tournament-16p-eastasia",
+    "actual_maps": {
+      "EastAsia": 2,
+      "BlackSea": 3,
+      "Asia": 4,
+      "Pangaea": 1
+    },
+    "coworld_version": "0.1.41",
+    "requested": null,
+    "candidate_policy_version_id": "c01de697-9208-44b1-9fed-5951f1ffbb90"
+  },
+  "live_mutations": {
+    "upload": true,
+    "automatic_hosted_experience_request": true,
+    "repository_hosted_request_dispatched": false,
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false
+  },
+  "preserved_champion": {
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "label": "xX_UwU_Senpai_420_Xx:v17"
+  }
+}
