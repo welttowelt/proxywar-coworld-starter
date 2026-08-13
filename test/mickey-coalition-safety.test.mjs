@@ -108,10 +108,10 @@ test("exact metadata IDs defeat adversarial rival-name collisions", () => {
   }
 });
 
-test("observed betrayal revokes protection and permits deterministic defense", () => {
+test("incoming pressure does not revoke coalition no-harm", () => {
   const [id, name] = protectedPlayers[0];
   const menu = actions(id, name);
   const state = buildState(observation(id, name, true), menu, []);
   const selected = chooseAction(menu, state, null, []);
-  assert.equal(selected.id, `attack:${id}:40`);
+  assert.equal(selected.id, "expand:terra-nullius:10");
 });

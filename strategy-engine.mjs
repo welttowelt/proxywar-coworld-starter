@@ -4,10 +4,7 @@ const SOCIAL_KINDS = new Set([
   "quick_chat", "emoji",
 ]);
 
-// Publicly declared reciprocal partner. Neutrality is conditional: any observed
-// incoming attack revokes it, and late dominance still permits a clean finish.
-//
-// Canonical coalition identity, shared with katanasan v38 / santai-juryoku:v2:
+// Canonical K1Z identity, shared with katanasan v38 / santai-juryoku:v2:
 // NFKC, hyphen/underscore/dot runs become spaces, whitespace collapses, one
 // optional leading [K1Z]/K1Z tag is removed, then lowercase. The game itself
 // also rewrites display names (e.g. "juryoku-koku" -> "juryoku koku"), so every
@@ -33,10 +30,16 @@ const RECIPROCAL_RIVAL_IDS = new Set([
   "ply_ad3816d3-f9d7-4430-9dd7-1c6afd49757c",
   "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
 ]);
-const ABSOLUTE_NO_HARM_RIVALS = new Set(["mickey mouse"].map(normalizedRivalName));
-const ABSOLUTE_NO_HARM_RIVAL_IDS = new Set([
-  "ply_e982e621-9ca3-47cd-8151-f57ee9d99421",
-]);
+// K1Z no-harm is absolute. Hosted policy observations expose episode-scoped
+// IDs and public player names rather than policy labels, so retain the stable
+// identities and the current replay-verified Gravity/Katana aliases. Do not
+// add ambiguous public names (for example, "Calc") to this boundary.
+const ABSOLUTE_NO_HARM_RIVALS = new Set([
+  ...RECIPROCAL_RIVALS,
+  "cyan hellstar",
+  "sian voidcrown",
+].map(normalizedRivalName));
+const ABSOLUTE_NO_HARM_RIVAL_IDS = new Set(RECIPROCAL_RIVAL_IDS);
 const MIN_DESPERATE_INVASION_RATIO = 0.5;
 const MIN_CONVERSION_TILE_SHARE = 0.002;
 const MAP_SPAWN_TILES = new Map([
@@ -376,14 +379,14 @@ function recentDistinctAttackerCount(state, history, window = 12) {
   return ids.size;
 }
 
-function isReciprocalRival(rival) {
-  return RECIPROCAL_RIVALS.has(normalizedRivalName(rival?.name)) ||
-    RECIPROCAL_RIVAL_IDS.has(String(rival?.id ?? "").toLowerCase());
-}
-
 function isAbsoluteNoHarmRival(rival) {
   return ABSOLUTE_NO_HARM_RIVALS.has(normalizedRivalName(rival?.name)) ||
     ABSOLUTE_NO_HARM_RIVAL_IDS.has(String(rival?.id ?? "").toLowerCase());
+}
+
+function isReciprocalRival(rival) {
+  return RECIPROCAL_RIVALS.has(normalizedRivalName(rival?.name)) ||
+    RECIPROCAL_RIVAL_IDS.has(String(rival?.id ?? "").toLowerCase());
 }
 
 function reciprocalTrustIntact(state, history, rival) {
@@ -401,7 +404,6 @@ export function rivalIsProtected(state, history, rival) {
       !(state.self.incomingAttackerIDs || []).includes(rivalID)) {
     return true;
   }
-  if (reciprocalTrustIntact(state, history, rival)) return true;
   if (state.self.tileShare >= 0.35) return false;
   if ((state.self.incomingAttackerIDs || []).includes(rival.id.toLowerCase())) return false;
 
