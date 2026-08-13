@@ -1,0 +1,94 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T13:45:22Z",
+  "player": "0d1novizzz",
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v44",
+    "policy_version_id": "36954141-a621-4d4e-8e61-5e406989012f",
+    "source_commit": "d98391da45267900ad84d0da48a1c33f8d7a7bb3",
+    "local_image_id": "sha256:209c11b82f48829e2940260c4dcda9585cbf4f716aa02c2e7ff2b5f34a024c50"
+  },
+  "diagnostic": {
+    "counterfactual_eval_id": "cfeval_8a67e287-c0ab-4062-bc83-5692cb2d81e5",
+    "experience_request_id": "ddcbe478-12ef-4f33-af22-c672693ba581",
+    "baseline_label": "xX_UwU_Senpai_420_Xx:v17",
+    "baseline_policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "requested_fields": 4,
+    "completed_fields": 4,
+    "candidate_wins": 0,
+    "baseline_wins": 0,
+    "neutral_fields": 4,
+    "mean_score_delta": 0,
+    "outcome_verdict": "neutral"
+  },
+  "candidate_replay_audit": {
+    "episodes": [
+      {
+        "episode_request_id": "ereq_d2d7276d-fbe1-4d01-a093-306ba4b7fb60",
+        "episode_id": "74a9e955-e376-4fae-9e55-4366e465fe33",
+        "seed": 4827048,
+        "slot": 5,
+        "score": 0,
+        "post_spawn_decisions": 0,
+        "replay_sha256": "21055c220e659fc77318d8d8639f671e60f50b243f0c0dc10adab4d75c3629a5"
+      },
+      {
+        "episode_request_id": "ereq_4d761e45-458c-46f0-a81d-a4a1b69e8dc7",
+        "episode_id": "97f928a6-c347-4058-befb-d3f00cc55ed2",
+        "seed": 10829407,
+        "slot": 6,
+        "score": 0,
+        "post_spawn_decisions": 7,
+        "replay_sha256": "3b7f908391ab46849f79fcc2329af4aab4ae294303451054c7ace3dda0afe9f6"
+      },
+      {
+        "episode_request_id": "ereq_35734537-b48e-4380-b660-32167bb716e1",
+        "episode_id": "8aeac638-e44d-43dd-a69f-8ae4686ef112",
+        "seed": 4499057,
+        "slot": 7,
+        "score": 0,
+        "post_spawn_decisions": 3,
+        "replay_sha256": "884db09922a8f268dc7d7cd8eea2e1d68aec7ad211bc01d0b4a3098d1956f25c"
+      },
+      {
+        "episode_request_id": "ereq_2cbe281e-37fe-40dc-a9d1-974ef2eaa215",
+        "episode_id": "f3938855-e771-4db0-9d3f-28454b431e80",
+        "seed": 7569733,
+        "slot": 8,
+        "score": 0,
+        "post_spawn_decisions": 14,
+        "replay_sha256": "4217a14b77a53e4b849af95ebae2e2987c25fb8cb3b7e1b00388f9f90e4b5786"
+      }
+    ],
+    "accepted_post_spawn_decisions": 24,
+    "holds": 0,
+    "rejections": 0,
+    "fallbacks": 0,
+    "k1z_harmful_actions": 0,
+    "reason_modes": {
+      "rul": 24,
+      "dft": 0,
+      "pln": 0,
+      "dgd": 0
+    },
+    "intent_markers": {
+      "ixgrw": 24,
+      "ixfin": 0
+    }
+  },
+  "root_cause": {
+    "classification": "deployment_configuration_failure",
+    "finding": "The v44 policy version omitted the PLAN_MODE secret environment key. Every post-spawn decision used rul mode, so the planner was disabled and no bare-intent response was requested or executed.",
+    "code_boundary": "For intent-core, PLAN_MODE=on initializes a valid grow bootstrap; its decision reason must therefore begin dft, pln, or dgd. A rul prefix proves PLANNER_ENABLED was false for this runtime.",
+    "source_regression": false,
+    "planner_mechanism_reached": false
+  },
+  "verdict": {
+    "promotion": "blocked",
+    "strategic_result": "invalid_unexercised_arm",
+    "reason": "The outcome tied and the preregistered planner-evidence gate was not reached.",
+    "preserve_live_champion": true,
+    "live_champion_policy_version_id": "b9e5ccdc-8dc4-4017-90ad-8f7908413109"
+  },
+  "authorized_next_action": "Upload the exact same source and image as a new unseated diagnostic policy version with PLAN_MODE=on, then run one four-field matched diagnostic against v17. Do not submit it to the league."
+}

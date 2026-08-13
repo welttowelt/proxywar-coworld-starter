@@ -1,0 +1,48 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T13:45:22Z",
+  "player": "0d1novizzz",
+  "active_player_id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+  "operation": "diagnostic_upload_only",
+  "candidate": {
+    "name": "xX_UwU_Senpai_420_Xx",
+    "expected_next_version": 45,
+    "source_commit": "d98391da45267900ad84d0da48a1c33f8d7a7bb3",
+    "image_ref": "proxywar-agent-candidate:bare-two-intents",
+    "image_id": "sha256:209c11b82f48829e2940260c4dcda9585cbf4f716aa02c2e7ff2b5f34a024c50",
+    "architecture": "amd64",
+    "run": ["node", "/app/llm-player.mjs"],
+    "use_bedrock": true,
+    "secret_env_keys": ["PLAN_MODE"],
+    "secret_env_values_recorded": false,
+    "tags": {
+      "source_commit": "d98391da45267900ad84d0da48a1c33f8d7a7bb3",
+      "image_id": "209c11b82f48829e2940260c4dcda9585cbf4f716aa02c2e7ff2b5f34a024c50",
+      "arm": "bare-two-intents-config-corrected"
+    }
+  },
+  "only_change_from_v44": "Add PLAN_MODE=on to the hosted policy secret environment. Source, image bytes, command, Bedrock access, and planner contract remain unchanged.",
+  "live_champion": {
+    "label": "xX_UwU_Senpai_420_Xx:v43",
+    "policy_version_id": "b9e5ccdc-8dc4-4017-90ad-8f7908413109",
+    "membership_id": "lpm_fe4dde2e-4a20-4bd0-a865-9d0493f7f1b6"
+  },
+  "gates": {
+    "upload_requires_exact_active_player": true,
+    "upload_requires_exact_local_image": true,
+    "counterfactual_requires_4_completed_fields": true,
+    "planner_mechanism_requires_accepted_pln_decision": true,
+    "k1z_harmful_actions_must_equal": 0,
+    "holds_must_equal": 0,
+    "rejections_must_equal": 0,
+    "promotion_requires_candidate_field_advantage": true,
+    "tie_cannot_promote": true
+  },
+  "forbidden": [
+    "league submission",
+    "membership mutation",
+    "champion mutation",
+    "Underpants lane mutation"
+  ],
+  "authorized_next_action": "Create one unseated v45 policy version from the exact local image with PLAN_MODE=on and verify its identity before requesting one four-field diagnostic."
+}
