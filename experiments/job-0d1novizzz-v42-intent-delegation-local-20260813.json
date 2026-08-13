@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "run_id": "v42-intent-delegation-12-20260813T104200Z",
+  "output_directory": "/private/tmp/proxywar-v42-intent-delegation-12-20260813T104200Z",
+  "purpose": "Exact-image 16-player planner-path, full-menu delegation, and runtime-safety screen for v42.",
+  "source": {
+    "commit": "7cdca3128c32593bace1955fa7c26f3726ef3d5a",
+    "planner_intents": [
+      "grow",
+      "finish"
+    ],
+    "planner_changed_from_v41": false,
+    "single_change": "Delete the material and intent action routers; delegate the complete safe legal menu to the unchanged mature executor."
+  },
+  "engine": {
+    "version": "0.1.39",
+    "manifest_path": "coworld/cow_e3b19156-63ca-47d2-9736-71b087b269a9/coworld_manifest.json",
+    "manifest_sha256": "de0db82bc0d3093b522bc9bbe1b9e3667a6a183ad3b43ab7bc3b336a80012d38",
+    "game_image": "coworld/cow_e3b19156-63ca-47d2-9736-71b087b269a9/proxywar-0.1.39-1:downloaded"
+  },
+  "game_config": {
+    "map": "Pangaea",
+    "map_size": "Normal",
+    "difficulty": "Easy",
+    "num_agents": 16,
+    "max_decision_steps": 12,
+    "turns_per_decision_step": 50,
+    "max_decision_ms": 15000,
+    "replay_tail_turns": 0,
+    "episode_timeout_seconds": 540,
+    "player_connect_timeout_seconds": 120,
+    "seed": 2026081
+  },
+  "candidate": {
+    "slot": 0,
+    "name": "0d1novizzz v42 intent delegation",
+    "tag": "proxywar-agent-candidate:v42-intent-delegation",
+    "image_id": "sha256:dd04ba4d7cd86489fae0c282fddeb989baca012a6f097f86147526dc9bd6864e",
+    "coworld_client_hash": "sha256:9fd346d47d1f63824e2c8dcfc4402cd9d78f462989d53594e2174b55d690ca60",
+    "run": [
+      "node",
+      "/app/llm-player.mjs"
+    ],
+    "env": {
+      "PLAN_MODE": "on",
+      "NODE_ENV": "test",
+      "INTENT_TEST_DIRECTIVE": "{\"intent\":\"grow\"}"
+    },
+    "policy_engine": "intent-core",
+    "policy_codename": "ib2"
+  },
+  "control": {
+    "slots": [
+      1, 2, 3, 4, 5, 6, 7, 8,
+      9, 10, 11, 12, 13, 14, 15
+    ],
+    "name_prefix": "v17 control",
+    "tag": "proxywar-agent-v17:local",
+    "image_id": "sha256:37fb270f0e0019b09c72df75b4bc873ee49ed6052af442c074acd74dd86c7c49",
+    "run": [
+      "node",
+      "/app/llm-player.mjs"
+    ]
+  },
+  "acceptance": {
+    "candidate_decisions_accepted": true,
+    "planner_reasons_visible": true,
+    "planner_reason_prefix": "pln:",
+    "planner_intent_marker": "ixgrw",
+    "fallbacks": 0,
+    "degradations": 0,
+    "rejections": 0,
+    "harmful_k1z_actions": 0,
+    "unresolved_harmful_targets": 0
+  },
+  "scope": "Local planner-path, delegation, and safety evidence only. The deterministic packet proves execution reach, not model quality or competitive lift. No upload, submission, membership, or champion claim."
+}
