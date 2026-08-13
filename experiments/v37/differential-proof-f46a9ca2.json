@@ -1,0 +1,44 @@
+{
+  "schema_version": 2,
+  "arm": "intent-delegated-material-v37",
+  "same_fixture": true,
+  "equivalent_goal": "execute grow through one proven tactical system",
+  "verifier": {
+    "evaluator_commit": "28a2ba88cc7a5a79c7ad3d5ec8b460a83cc1ea3f",
+    "path": "experiments/v37/verify-differential.mjs",
+    "sha256": "a83e6c4fb5991af0575128f694a0bebad2a0d9c7fd02180a318b2c47875dda8a"
+  },
+  "fixture": {
+    "id": "v37-intent-delegated-material",
+    "path": "experiments/v37/differential-fixture.json",
+    "sha256": "b163f52409e0237ae494bfe160dddecd2f3f0fba1e724c45b03698bcee25206b"
+  },
+  "parent": {
+    "source_commit": "1d63cf7f61873071823d63f3e9de0e4a8d1ae86e",
+    "selected_action_id": "build:Defense Post:1",
+    "interpretation": "duplicate utility scorer chooses defensive construction"
+  },
+  "candidate": {
+    "source_commit": "f46a9ca241ccbe530457c247ea6fc3e652b75a87",
+    "selected_action_id": "attack:rival:10",
+    "markers": [
+      "id1",
+      "ixgrw"
+    ],
+    "interpretation": "mature executor chooses favorable material conversion"
+  },
+  "safety": {
+    "offered_symbolic_action": "alliance:rival",
+    "candidate_selected_symbolic_action": false
+  },
+  "test_command": [
+    "node",
+    "experiments/v37/verify-differential.mjs",
+    ".",
+    "1d63cf7f61873071823d63f3e9de0e4a8d1ae86e",
+    "f46a9ca241ccbe530457c247ea6fc3e652b75a87",
+    "experiments/v37/differential-fixture.json",
+    "experiments/v37/differential-proof-f46a9ca2.json"
+  ],
+  "test_exit_code": 0
+}
