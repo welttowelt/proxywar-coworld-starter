@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "preregistered_at": "2026-08-13T12:09:00Z",
+  "player": "0d1novizzz",
+  "candidate": {
+    "arm": "v43-unforced-grow",
+    "hosted_label": "xX_UwU_Senpai_420_Xx:v41",
+    "policy_version_id": "82dbaecc-8ea6-4918-86c1-dcdc3c5b634a",
+    "source_commit": "e308b71a6083f1000a28946738ab5850269407ec"
+  },
+  "baseline": {
+    "label": "xX_UwU_Senpai_420_Xx:v17",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  },
+  "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "matched_fields": 4,
+  "hypothesis": "Removing grow's hidden neutral-expansion preference produces more matched wins than v17 while preserving the two-intent planner and K1Z safety.",
+  "success_bar": {
+    "candidate_wins": "strictly greater than baseline wins",
+    "fallbacks": 0,
+    "planner_parse_failures": 0,
+    "degradations": 0,
+    "rejections": 0,
+    "avoidable_holds": 0,
+    "k1z_harm": 0
+  },
+  "kill_bar": "Kill on a tie, loss, runtime violation, or K1Z harm.",
+  "promotion_authorized": false,
+  "authorized_next_action": "Create exactly one four-field counterfactual evaluation for candidate v41 against baseline v17, then audit every replay."
+}
