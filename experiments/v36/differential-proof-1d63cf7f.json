@@ -4,9 +4,9 @@
   "same_fixture": true,
   "equivalent_goal": "execute one macro intent without substituting symbolic activity for material action",
   "verifier": {
-    "evaluator_commit": "87b3723ab1802e4b944206a7a2c26f051d18dea4",
+    "evaluator_commit": "89a3c6dbdca9c06d01f2a3b859cf1f66ba53b6db",
     "path": "experiments/v36/verify-differential.mjs",
-    "sha256": "e20cd71f9192213c595d32bf118794efe1262114dc496bb4127ef9643ee6d80c"
+    "sha256": "73bda4d876dbaaa43111dbd811c134b7e2a5eef3aef9b0fe31f024656fbfed40"
   },
   "fixture": {
     "id": "v36-intent-material-gate",
@@ -15,12 +15,14 @@
   },
   "parent": {
     "source_commit": "a5e150c326bd28121ab3cf180015e16595411602",
+    "selected_action_id": "alliance:alpha",
     "symbolic_only_selected_action_id": "alliance:alpha",
     "material_selected_action_id": "build:Factory:1",
     "interpretation": "complete-menu utility permits symbolic filler"
   },
   "candidate": {
     "source_commit": "1d63cf7f61873071823d63f3e9de0e4a8d1ae86e",
+    "selected_action_id": "hold",
     "symbolic_only_selected_action_id": "hold",
     "material_selected_action_id": "build:Factory:1",
     "markers": [
