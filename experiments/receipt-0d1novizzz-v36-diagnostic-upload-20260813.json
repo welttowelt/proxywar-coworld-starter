@@ -1,0 +1,88 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T05:17:00Z",
+  "lane": "0d1novizzz",
+  "mode": "diagnostic",
+  "status": "completed",
+  "active_player_before": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz"
+  },
+  "active_player_after": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz"
+  },
+  "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "preflight_path": "/Users/olifreuler/proxywar-coworld-starter/experiments/preflight-0d1novizzz-v36-diagnostic-upload-20260813.json",
+  "preflight_sha256": "397fe1d4a148135c763b62e3347ec25160f0ae5893f87a1e4463366aa1210ac9",
+  "candidate_source_commit": "1d63cf7f61873071823d63f3e9de0e4a8d1ae86e",
+  "candidate_evidence_commit": "0581780fb365269267381b64b72b7fe9ff8c771e",
+  "candidate_image_id": "sha256:b89f5fe3f30035c886f33e3939ad06cf0216ac4da6d3bf454527f50ea3174c32",
+  "candidate_policy_ref": "proxywar-agent-candidate:v36-intent-material-gate",
+  "uploaded_label": "xX_UwU_Senpai_420_Xx:v33",
+  "policy_version_id": "27f8c31b-2108-4b20-a404-2f122e67acf8",
+  "policy_id": "d2ab8f5b-66ff-4252-990c-71179fc8dc0f",
+  "created_at": "2026-08-13T05:14:36.744810Z",
+  "hosted_image": {
+    "id": "img_793be7e8-b52b-41d5-aac5-a7c691375146",
+    "client_hash": "sha256:b89f5fe3f30035c886f33e3939ad06cf0216ac4da6d3bf454527f50ea3174c32",
+    "status": "ready",
+    "image_digest": "sha256:799fce4459a2d4151ab7c5037ef83de7469760b917492bfabb7e3ceded29b0f5"
+  },
+  "uploaded_tags": {
+    "goal": "ffa-99",
+    "codename": "im1",
+    "experiment": "intent-material-gate-v36",
+    "source_commit": "1d63cf7f61873071823d63f3e9de0e4a8d1ae86e",
+    "image_id": "b89f5fe3f30035c886f33e3939ad06cf0216ac4da6d3bf454527f50ea3174c32"
+  },
+  "run": [
+    "node",
+    "/app/llm-player.mjs"
+  ],
+  "bedrock_enabled": true,
+  "secret_env": [
+    "PLAN_MODE=on"
+  ],
+  "verification_note": "Authenticated policy lookup verified v33, exact source and image tags, and run argv. Image lookup verified the exact client hash is ready. Every automatic episode contains v33 exactly once. Policy-scoped league submissions returned zero, the active player stayed 0d1novizzz, and v17 stayed the sole champion.",
+  "automatic_hosted_request": {
+    "id": "xreq_c0e9078a-f855-4ecc-8edf-a8c6cfaaec6f",
+    "status_at_receipt": "pending",
+    "episodes": 10,
+    "nominal_variant": "tournament-16p-oceania",
+    "actual_maps": {
+      "Oceania": 4,
+      "EastAsia": 2,
+      "BlackSea": 3,
+      "Asia": 1
+    },
+    "candidate_seats_zero_indexed": [
+      12,
+      13,
+      14,
+      15,
+      0,
+      1,
+      13,
+      14,
+      15,
+      0
+    ],
+    "coworld_version": "0.1.41",
+    "requested": null,
+    "candidate_policy_version_id": "27f8c31b-2108-4b20-a404-2f122e67acf8"
+  },
+  "live_mutations": {
+    "upload": true,
+    "automatic_hosted_experience_request": true,
+    "repository_hosted_request_dispatched": false,
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false
+  },
+  "preserved_champion": {
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "label": "xX_UwU_Senpai_420_Xx:v17"
+  }
+}
