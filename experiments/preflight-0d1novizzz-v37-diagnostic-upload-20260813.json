@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "candidate": {
+    "policy_ref": "proxywar-agent-candidate:v37-intent-delegated-material",
+    "parent_ref": "proxywar-agent-candidate:v36-intent-material-gate",
+    "exact_deltas": [
+      "Keep the one-field grow, secure, or finish contract and material gate, but delete the duplicate utility scorer and delegate exact action and target choice to the mature runtime selector."
+    ],
+    "source_commit": "f46a9ca241ccbe530457c247ea6fc3e652b75a87",
+    "parent_commit": "1d63cf7f61873071823d63f3e9de0e4a8d1ae86e",
+    "image_id": "sha256:4cf80f36ee26b5961efb2d663a7002bff16b0c2c9a82b8668bedbc09245ef6f1"
+  },
+  "hypothesis": "One macro intent should steer one proven tactical executor; removing the duplicate scorer should preserve the verified intent interface without v36's weak tactical ranking.",
+  "mechanism": {"marker": "id1", "prior_reachable_decisions": 12},
+  "local": {
+    "runs": 1,
+    "independent_traces": 1,
+    "contract_sha256": "c26760319cc5c579d01e2bc5efd389daf60671e39ba24f480e60f23585cffd4c",
+    "audit_receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v37-intent-delegated-material-local-20260813.json",
+      "sha256": "22b5c47b2541698ccd2b9abd80773f723e39a93e10fbf489ea78a8223b0ab5b8"
+    },
+    "differential_binding": {
+      "verifier_path": "experiments/v37/verify-differential.mjs",
+      "fixture_path": "experiments/v37/differential-fixture.json"
+    }
+  },
+  "preupload_rci": {
+    "receipt": {
+      "path": "/Users/olifreuler/proxywar-coworld-starter/experiments/audit-0d1novizzz-v37-preupload-rci-20260813.json",
+      "sha256": "49edc1a15e8ad7f33e60dfbb6d8e85d51d2e1245804638ad46f030bfcf937fee"
+    }
+  },
+  "matched_baseline": {
+    "request_id": "xreq_c0e9078a-f855-4ecc-8edf-a8c6cfaaec6f",
+    "policy_ref": "xX_UwU_Senpai_420_Xx:v33",
+    "policy_version_id": "27f8c31b-2108-4b20-a404-2f122e67acf8",
+    "same_roster": false,
+    "same_variant": false,
+    "episodes": 10,
+    "wins": 0
+  },
+  "diagnostic_only": true,
+  "hosted": {
+    "criteria": {
+      "win_rate_pct": 100,
+      "max_holds": 0,
+      "max_fallbacks": 0,
+      "max_degradations": 0,
+      "max_rejections": 0,
+      "max_k1z_harm": 0,
+      "planner_degradation_rule": "no_unexplained_regression_vs_parent",
+      "min_mechanism_executions": 1
+    }
+  },
+  "promotion": {"regression_episodes": 20, "league_change_allowed": false}
+}
