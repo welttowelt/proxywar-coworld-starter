@@ -1,0 +1,54 @@
+{
+  "schema_version": 2,
+  "arm": "intent-preferences-v30",
+  "same_fixture": true,
+  "same_board_action_menu_and_planner_reply": true,
+  "verifier": {
+    "evaluator_commit": "52a3442665133fd5a0fed28e09d0ad8d66064c54",
+    "path": "experiments/v30/verify-differential.mjs",
+    "sha256": "017ef550a4070324549c1639a20acff694b2303815cc1aaf38661b1f25b77f16"
+  },
+  "fixture": {
+    "id": "v30-consolidate-preference-without-infrastructure",
+    "path": "experiments/v30/differential-fixture.json",
+    "sha256": "02a5c8ee665c330d3775b9ed7cf2dff52a7e244c2ab7559222f2b0e334d46537"
+  },
+  "parent": {
+    "source_commit": "eeec7ba9686dc00fac7ce2054ac9a60f81750757",
+    "parsed_plan": {
+      "intent": "consolidate",
+      "model": "fixture"
+    },
+    "selected_action_id": "hold",
+    "marker": "ixcon"
+  },
+  "candidate": {
+    "source_commit": "35de53ff4cda639a04c6d38e49db18a869b215a5",
+    "parsed_plan": {
+      "intent": "consolidate",
+      "model": "fixture"
+    },
+    "selected_action_id": "expand:terra-nullius:35",
+    "marker": "ixcon"
+  },
+  "intent_semantics": {
+    "intent": "consolidate",
+    "preferred_action_available": false,
+    "parent_interpretation": "exact instruction",
+    "candidate_interpretation": "safe preference"
+  },
+  "safety": {
+    "offered_k1z_harmful_action": "attack:mickey:40",
+    "any_selected_k1z_harm": false
+  },
+  "test_command": [
+    "node",
+    "experiments/v30/verify-differential.mjs",
+    ".",
+    "eeec7ba9686dc00fac7ce2054ac9a60f81750757",
+    "35de53ff4cda639a04c6d38e49db18a869b215a5",
+    "experiments/v30/differential-fixture.json",
+    "experiments/v30/differential-proof-35de53ff.json"
+  ],
+  "test_exit_code": 0
+}
