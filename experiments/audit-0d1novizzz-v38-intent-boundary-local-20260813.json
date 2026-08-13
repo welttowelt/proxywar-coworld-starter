@@ -1,0 +1,147 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T06:39:00Z",
+  "lane": "0d1novizzz",
+  "arm": "v38-intent-boundary",
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "candidate_source_commit": "6cb3b4ae8fb6f5c88e6d60e22d5d050dc4ba8cfb",
+  "candidate_image_id": "sha256:2f6f38287b13d3c4c752a4f1ea6eab1d48935b50fbba666777b3b898ba9c67af",
+  "parent_source_commit": "f46a9ca241ccbe530457c247ea6fc3e652b75a87",
+  "contract_sha256": "f4f0cab4b23b3f4d4e658f3e69560ceb564602b02f03d3f8143887170c127e94",
+  "failures": [],
+  "required_coalition_roles": [
+    "odin",
+    "v17-control"
+  ],
+  "candidate_image": {
+    "tag": "proxywar-agent-candidate:v38-intent-boundary",
+    "image_id": "sha256:2f6f38287b13d3c4c752a4f1ea6eab1d48935b50fbba666777b3b898ba9c67af",
+    "architecture": "amd64",
+    "os": "linux",
+    "user": "node",
+    "cmd": [
+      "node",
+      "/app/llm-player.mjs"
+    ],
+    "policy_engine": "intent-core",
+    "policy_codename": "ib1",
+    "file_sha256": {
+      "/app/llm-player.mjs": "53689aac90e702828a4ee60ff46ec9fcabbbc9b8d981b683bd729f8338a37838",
+      "/app/intent-controller.mjs": "e4928597d7bb6b478174e67e412f03bdf75151f2df73d4cd553cd3324c2dea9d",
+      "/app/intent-core.mjs": "e79e499067a9bbaffdc76a9ca0ce9c8d71a7a53667acdcdbf8bd7d47b6262575",
+      "/app/strategy-engine.mjs": "b1d519fe675a4a98d1537e5bb1e5946ab67a784e9280d835e4c02e3f3d8acd97"
+    }
+  },
+  "focused_suite": {
+    "tests": 49,
+    "passed": 49,
+    "failed": 0
+  },
+  "full_suite": {
+    "tests": 473,
+    "passed": 467,
+    "failed": 6,
+    "candidate_related_failures": 0,
+    "persistent_unrelated_failures": 6
+  },
+  "launch_attempts": [
+    {
+      "run_id": "v38-intent-boundary-12-20260813T0607Z",
+      "status": "INVOCATION_ERROR_BEFORE_CONTAINER_CREATION",
+      "cause": "combined job packet supplied in the manifest argument position",
+      "cleanup": "supervised lease released and empty output quarantined",
+      "abort_receipt_sha256": "89eb948ada540f82e502ea221b513500ca290e9995083fdff93c885da9e76924"
+    }
+  ],
+  "runs": [
+    {
+      "run_id": "v38-intent-boundary-12-r2-20260813T0631Z",
+      "orientation": "A",
+      "mode": "16-player opening mechanism",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "decision_cap_per_agent": 12,
+      "directory": "/private/tmp/proxywar-v38-intent-boundary-12-r2-20260813T0631Z",
+      "manifest_sha256": "44a9e77adcf84d48edf06fd9aaa78b54f2e956ecd866ec7fa9e6d4f84f63291b",
+      "job_sha256": "f49bc5361dad08cd4438708e7e04a5b32247a1043f8bd019be9debd3718c37b4",
+      "config_sha256": "feff40769589850a939bdd24197047720e93691677350718dd1c9faa234d589b",
+      "results_sha256": "73908ccdc95bfda52ac343df9edd2b5541264f02cf55899f46c865d500312278",
+      "replay_sha256": "e41540a64c1a4b80ccc00f66270a0003e43b690ef34e28bdca8ecda8a53c6afc",
+      "coalition_roles_present": [
+        "odin",
+        "v17-control"
+      ],
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image_id": "sha256:2f6f38287b13d3c4c752a4f1ea6eab1d48935b50fbba666777b3b898ba9c67af"
+          },
+          "control": {
+            "image_id": "sha256:37fb270f0e0019b09c72df75b4bc873ee49ed6052af442c074acd74dd86c7c49"
+          }
+        }
+      },
+      "candidate": {
+        "slot": 0,
+        "score": 0.06146192165349793,
+        "final_tiles": 19198,
+        "alive": true,
+        "decision_count": 13,
+        "accepted": 13,
+        "route_execution_count": 12,
+        "marker_counts": {
+          "ib1": 12,
+          "ixgrw": 12
+        },
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "unexplained_holds": [],
+        "harmful_k1z_actions": [],
+        "unresolved_harmful_targets": [],
+        "symbolic_action_count": 0,
+        "action_counts": {
+          "spawn": 1,
+          "attack": 12
+        }
+      },
+      "scope_boundary": "Constant-grow early-stop mechanism evidence only; no competitive lift is claimed."
+    }
+  ],
+  "checks": {
+    "one_field_contract": true,
+    "intent_family_boundary_reached": true,
+    "delegated_executor_reached": true,
+    "material_gate_reached": true,
+    "symbolic_actions_excluded": true,
+    "k1z_safety": true,
+    "competitive_lift_not_claimed": true,
+    "league_mutation_forbidden": true
+  },
+  "runner_lease_after": {
+    "state": "free",
+    "schema_version": 2
+  },
+  "league_state": {
+    "candidate_uploaded": false,
+    "candidate_submitted": false,
+    "candidate_membership_created": false,
+    "candidate_promoted": false,
+    "v17_champion_preserved": true
+  },
+  "differential_unit_proof": {
+    "path": "experiments/v38/differential-proof-6cb3b4ae.json",
+    "sha256": "e62bdbdd12077470b10806ad62c9a0598b4befda9e8c68061f2242a37b0aeeac",
+    "same_fixture": true,
+    "parent_selected_action_id": "build:Atom Bomb",
+    "candidate_selected_action_id": "expand:terra-nullius:35",
+    "candidate_markers": [
+      "is1g",
+      "ib1",
+      "ixgrw"
+    ]
+  }
+}
