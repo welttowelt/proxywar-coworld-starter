@@ -1,0 +1,64 @@
+{
+  "schema_version": 1,
+  "preregistered_at": "2026-08-13T04:58:00Z",
+  "player": "0d1novizzz",
+  "candidate": "v36-intent-material-gate",
+  "parent": "v35-intent-utility-ranker",
+  "hypothesis": "The one-field planner is viable, but symbolic actions must not compete with material execution. Gating grow, secure, and finish to material action families will eliminate the hosted alliance loop without expanding the planner contract.",
+  "planner_contract": {
+    "keys": [
+      "intent"
+    ],
+    "values": [
+      "grow",
+      "secure",
+      "finish"
+    ],
+    "changed_from_parent": false
+  },
+  "single_variable": {
+    "changed": "Before utility ranking, retain only actions that directly change territory, force, infrastructure, or immediate survival. If none exists, prefer hold over symbolic activity.",
+    "removed_from_normal_ranking": [
+      "alliance_request",
+      "alliance_extend",
+      "break_alliance",
+      "target_player",
+      "embargo",
+      "embargo_all",
+      "embargo_stop",
+      "donate_gold",
+      "donate_troops",
+      "quick_chat",
+      "emoji"
+    ],
+    "unchanged": [
+      "planner prompt and response schema",
+      "intent utility weights",
+      "K1Z no-harm filter",
+      "Bedrock transport",
+      "league champion"
+    ]
+  },
+  "local_acceptance": [
+    "focused intent and integration suites pass",
+    "grow selects material progress instead of alliance when both are legal",
+    "secure selects immediate material defense instead of alliance when both are legal",
+    "symbolic-only menu selects hold when hold is legal",
+    "K1Z no-harm tests remain green",
+    "exact-image bounded 16-player trace has no rejection, fallback, or degradation"
+  ],
+  "hosted_kill_bar": [
+    "any hosted score of zero",
+    "any planner-marked replay decision missing",
+    "any unexplained fallback, degradation, rejection, or parse failure",
+    "any repeated symbolic action loop",
+    "any K1Z harm"
+  ],
+  "promotion_bar": {
+    "automatic_diagnostic_is_sufficient": false,
+    "matched_hosted": "4/4",
+    "separate_validation": "20/20",
+    "final_rci_required": true
+  },
+  "league_mutation_authorized": false
+}
