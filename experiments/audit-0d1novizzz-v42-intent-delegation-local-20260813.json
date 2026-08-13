@@ -13,6 +13,10 @@
   "candidate_coworld_client_hash": "sha256:84eb96e3c7f20634b5f158fb3315b6abbc9aa0278aa6d86e8ffee01dc4b20521",
   "parent_source_commit": "e8ceb516bcdaaaeb06b557228b1a6cf6b73e8c6f",
   "contract_sha256": "b7f079ec825f25eb3ec6e286e36e49605f8694fc326f155be7cab59bfc73f0ce",
+  "required_coalition_roles": [
+    "odin",
+    "v17-control"
+  ],
   "source": {
     "commit": "7cdca3128c32593bace1955fa7c26f3726ef3d5a",
     "parent_commit": "e8ceb516bcdaaaeb06b557228b1a6cf6b73e8c6f",
@@ -149,6 +153,81 @@
         "candidate_log": "8cd88599b526f3d83ce166603901c2db690f7d8e3b9fc77ff1c808ca164a12e0"
       }
     }
+  },
+  "runs": [
+    {
+      "run_id": "v42-intent-delegation-12-r2-20260813T105100Z",
+      "orientation": "A",
+      "mode": "16-player planner-path mechanism",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "decision_cap_per_agent": 12,
+      "directory": "/private/tmp/proxywar-v42-intent-delegation-12-r2-20260813T105100Z",
+      "replay_sha256": "edcb7790d2ed4f6999098fe70c5e69641df2f16453f294b87562846b44742be6",
+      "coalition_roles_present": [
+        "odin",
+        "v17-control"
+      ],
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image_id": "sha256:320f991e833912f9e9295d5597dd6ece88dfc759d19998ec3d4bb03e2b1348a0"
+          },
+          "control": {
+            "image_id": "sha256:37fb270f0e0019b09c72df75b4bc873ee49ed6052af442c074acd74dd86c7c49"
+          }
+        }
+      },
+      "candidate": {
+        "decision_count": 13,
+        "accepted": 13,
+        "route_execution_count": 12,
+        "marker_counts": {
+          "ib2": 12,
+          "ixgrw": 12
+        },
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "unexplained_holds": [],
+        "harmful_k1z_actions": [],
+        "unresolved_harmful_targets": []
+      }
+    }
+  ],
+  "differential_unit_proof": {
+    "schema_version": 1,
+    "arm": "v42-intent-delegation",
+    "same_fixture": true,
+    "verifier": {
+      "evaluator_commit": "fbbbee4562551c9d4df4499c352fa5273e9ed2f7",
+      "path": "experiments/v42/verify-intent-delegation-differential.mjs",
+      "sha256": "1575a63765084fbccd1f12e7b3782612f8c6c15750709be939d0a46d3e41f7cc"
+    },
+    "fixture": {
+      "id": "v42-intent-delegation",
+      "path": "experiments/v42/intent-delegation-fixture.json",
+      "sha256": "13a6861657f53db37195766de02d8ba0931fda1052d7ebfbd9f3d324e3f5768f"
+    },
+    "parent": {
+      "source_commit": "e8ceb516bcdaaaeb06b557228b1a6cf6b73e8c6f",
+      "selected_action_id": "hold"
+    },
+    "candidate": {
+      "source_commit": "7cdca3128c32593bace1955fa7c26f3726ef3d5a",
+      "selected_action_id": "alliance:rival"
+    },
+    "test_command": [
+      "node",
+      "experiments/v42/verify-intent-delegation-differential.mjs",
+      ".",
+      "e8ceb516bcdaaaeb06b557228b1a6cf6b73e8c6f",
+      "7cdca3128c32593bace1955fa7c26f3726ef3d5a",
+      "experiments/v42/intent-delegation-fixture.json",
+      "experiments/v42/differential-proof-7cdca312.json"
+    ],
+    "test_exit_code": 0
   },
   "interpretation": {
     "proved": "The exact corrected image runs the two-intent planner path cleanly. The adapter delegates the full safe menu, and a same-state differential restores one safe inbound alliance that v41 converted to hold while preserving pressure defense and K1Z no-harm.",

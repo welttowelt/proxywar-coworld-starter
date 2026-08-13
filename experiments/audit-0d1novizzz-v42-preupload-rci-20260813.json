@@ -10,7 +10,7 @@
   "candidate_coworld_client_hash": "sha256:84eb96e3c7f20634b5f158fb3315b6abbc9aa0278aa6d86e8ffee01dc4b20521",
   "parent_source_commit": "e8ceb516bcdaaaeb06b557228b1a6cf6b73e8c6f",
   "preregister_sha256": "b7f079ec825f25eb3ec6e286e36e49605f8694fc326f155be7cab59bfc73f0ce",
-  "local_audit_sha256": "4abce79403011d91137fb96669e32300818d98bbd0cd5a841ce89e1429517966",
+  "local_audit_sha256": "2bc05d8e51b0def05d7595207a38d673a3b985c8379d92c447c6305d714d3323",
   "differential_proof_sha256": "8a74ff9f99325d730bd913512d9975364fd1e5a2931b9eee4c518cbe479de725",
   "critique": {
     "strongest_evidence": "v42 deletes 49 and adds four lines in intent-core: the planner prompt, one-key schema, grow/finish vocabulary, refresh cadence, mature executor, and K1Z boundary stay unchanged while both action routers disappear. The same-state verifier changes exactly one case from hold to accepting a safe inbound alliance, preserves pressure defense and K1Z no-harm, focused tests pass 42/42, and the corrected exact-image trace completes 13/13 candidate decisions with twelve pln:*:ixgrw decisions and zero fallback, degradation, rejection, hold, or harmful target.",
