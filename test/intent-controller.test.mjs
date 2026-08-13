@@ -63,6 +63,13 @@ test("accepts only the two planner outcomes", () => {
   }
 });
 
+test("the outcome contract cannot be widened by a caller", () => {
+  const widened = ["grow", "finish", "secure"];
+  assert.equal(normalizeIntentDirective("secure", state, "model", widened), null);
+  assert.equal(parseIntentDirective("secure", state, "model", widened), null);
+  assert.equal(executableIntentPlan({ intent: "secure", model: "model" }, widened), null);
+});
+
 test("parses exactly one bare intent", () => {
   const packet = "grow";
   const expected = { intent: "grow", model: "planner-model" };
@@ -151,14 +158,12 @@ test("outcome plans use the operator refresh cadence", () => {
 
 test("valid intents persist across refresh age and transient refresh errors", () => {
   const plan = { intent: "grow", model: "test" };
-  assert.equal(executableIntentPlan(plan, 3, false), plan);
-  assert.equal(executableIntentPlan(plan, 4, false), plan);
-  assert.equal(executableIntentPlan(plan, 1, true), plan);
-  assert.equal(executableIntentPlan(null, 1, false), null);
+  assert.equal(executableIntentPlan(plan), plan);
+  assert.equal(executableIntentPlan(null), null);
   assert.equal(executableIntentPlan({
     intent: "expand", model: "test",
-  }, 1, false), null);
+  }), null);
   assert.equal(executableIntentPlan({
     intent: "convert", targetID: "player-7", model: "test",
-  }, 1, false), null);
+  }), null);
 });

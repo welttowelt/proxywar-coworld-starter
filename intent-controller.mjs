@@ -3,6 +3,7 @@ import { clean } from "./strategy-engine.mjs";
 export const MIN_INTENT_HORIZON = 2;
 export const MAX_INTENT_HORIZON = 12;
 export const INTENTS = Object.freeze(["grow", "finish"]);
+const LEGACY_INTENTS = Object.freeze(["grow", "convert"]);
 
 const TARGETED_INTENTS = new Set(["convert"]);
 
@@ -12,8 +13,17 @@ function exactKeys(value, expected) {
   return Object.keys(value).sort().join("\0") === expected.join("\0");
 }
 
+function exactIntentSet(value, expected) {
+  return Array.isArray(value) && value.length === expected.length &&
+    expected.every((intent, index) => value[index] === intent);
+}
+
 function usesOutcomeContract(allowedIntents) {
-  return allowedIntents.includes("finish");
+  return exactIntentSet(allowedIntents, INTENTS);
+}
+
+function usesLegacyContract(allowedIntents) {
+  return exactIntentSet(allowedIntents, LEGACY_INTENTS);
 }
 
 function eligibleTarget(state, targetID) {
@@ -36,6 +46,8 @@ export function normalizeIntentDirective(
     if (typeof value !== "string" || !allowedIntents.includes(value)) return null;
     return { intent: value, model: clean(model) || "unknown" };
   }
+
+  if (!usesLegacyContract(allowedIntents)) return null;
 
   if (!value || typeof value !== "object" || Array.isArray(value) ||
       !exactKeys(value, LEGACY_DIRECTIVE_KEYS)) return null;
@@ -133,8 +145,10 @@ export function intentRefreshInterval(plan, configuredMaximum = 8) {
 // Horizon schedules the next planner refresh. The last valid outcome stays in
 // force until the planner replaces it; the executor never silently changes it.
 export function executableIntentPlan(plan, allowedIntents = INTENTS) {
-  const accepted = Array.isArray(allowedIntents) ? allowedIntents : INTENTS;
-  const outcomeContract = usesOutcomeContract(accepted);
+  const outcomeContract = usesOutcomeContract(allowedIntents);
+  const legacyContract = usesLegacyContract(allowedIntents);
+  if (!outcomeContract && !legacyContract) return null;
+  const accepted = outcomeContract ? INTENTS : LEGACY_INTENTS;
   const validShape = plan && accepted.includes(plan.intent) &&
     (outcomeContract
       ? !Object.hasOwn(plan, "targetID") && !Object.hasOwn(plan, "horizon")

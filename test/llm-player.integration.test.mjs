@@ -73,6 +73,7 @@ test("deployed player wiring expands first and converts a weak rival next", asyn
   const child = spawn(process.execPath, [playerPath], {
     env: {
       ...process.env,
+      POLICY_ENGINE: "legacy",
       COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
       AWS_ACCESS_KEY_ID: "test",
       AWS_SECRET_ACCESS_KEY: "test",
@@ -138,6 +139,7 @@ test("deployed player reconnects after an unexpected match socket close", async 
   const child = spawn(process.execPath, [playerPath], {
     env: {
       ...process.env,
+      POLICY_ENGINE: "legacy",
       COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
       AWS_ACCESS_KEY_ID: "test",
       AWS_SECRET_ACCESS_KEY: "test",
@@ -298,6 +300,7 @@ test("deployed player exposes gc1 beside the retained tactical marker", async ()
   const child = spawn(process.execPath, [playerPath], {
     env: {
       ...process.env,
+      POLICY_ENGINE: "legacy",
       COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
       AWS_ACCESS_KEY_ID: "test",
       AWS_SECRET_ACCESS_KEY: "test",
@@ -357,6 +360,7 @@ test("intent-core planner asks only for one outcome", async () => {
   assert.match(doctrine, /SUCCESS:/);
   assert.match(doctrine, /FREEDOM:/);
   assert.match(doctrine, /CAPTAIN_UNDERPANTS_PRODUCTION_DOCTRINE/);
+  assert.match(source, /process\.env\.POLICY_ENGINE \|\| "intent-core"/);
   assert.match(source, /process\.env\.PLAN_MODE === "on"/);
   assert.match(source, /Reply with exactly one word: grow or finish\./);
   assert.doesNotMatch(source, /exactly one key/);
@@ -366,7 +370,7 @@ test("intent-core planner asks only for one outcome", async () => {
   assert.doesNotMatch(source, /preserve strength and improve what you hold/);
   assert.doesNotMatch(source, /turn a clear advantage into a rival's loss/);
   assert.match(source, /"horizon":/);
-  assert.match(source, /max_tokens: POLICY_ENGINE === "intent-core" \? 8 : 64/);
+  assert.match(source, /maxTokens: 8/);
   assert.match(source, /Array\.isArray\(r\?\.content\)/);
   assert.match(source, /\.join\("\\n"\)/);
   assert.doesNotMatch(source, /"focus":/);
@@ -439,6 +443,7 @@ test("a normalized nondegraded intent reaches the deployed MM1 selector", async 
       ...process.env,
       NODE_ENV: "test",
       PLAN_MODE: "on",
+      POLICY_ENGINE: "legacy",
       INTENT_TEST_DIRECTIVE: JSON.stringify({
         intent: "grow",
         targetID: null,
@@ -544,6 +549,7 @@ test("an exact visible convert intent reaches the deployed MM1 selector", async 
       ...process.env,
       NODE_ENV: "test",
       PLAN_MODE: "on",
+      POLICY_ENGINE: "legacy",
       INTENT_TEST_DIRECTIVE: JSON.stringify({
         intent: "convert",
         targetID: "large",
@@ -920,6 +926,7 @@ test("a single transport-framed planner reply reaches the deployed player", asyn
       ...process.env,
       NODE_ENV: "test",
       PLAN_MODE: "on",
+      POLICY_ENGINE: "legacy",
       INTENT_TEST_DIRECTIVE:
         'plan: {"intent":"grow","targetID":null,"horizon":4}',
       COWORLD_PLAYER_WS_URL: `ws://127.0.0.1:${port}`,
