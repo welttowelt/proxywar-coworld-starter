@@ -154,13 +154,24 @@ test("grow keeps a strike outside its action family", () => {
 });
 
 test("grow ranks direct capacity ahead of maintenance upgrades", () => {
-  const selected = decide([upgrade(), build("City"), hold()], "grow");
+  const selected = decide([upgrade(), build("City"), hold()], "grow", {
+    history: [{ actionID: "build:Factory", kind: "build", tileShare: 0.12 }],
+  });
   assert.equal(selected.id, "build:City");
   assert.ok(selected.policyMarkers.includes("ixgrw"));
 });
 
 test("grow preserves an upgrade when no direct grow action exists", () => {
   const selected = decide([upgrade(), hold()], "grow");
+  assert.equal(selected.id, "upgrade:Port:95");
+  assert.ok(selected.policyMarkers.includes("ixgrw"));
+});
+
+test("grow does not force a weak hostile action past maintenance", () => {
+  const selected = decide([upgrade(), attack("rival"), hold()], "grow", {
+    tileShare: 0.01,
+    rivals: [{ id: "rival", name: "rival", tileShare: 0.1, relativeTroopRatio: 0.2 }],
+  });
   assert.equal(selected.id, "upgrade:Port:95");
   assert.ok(selected.policyMarkers.includes("ixgrw"));
 });

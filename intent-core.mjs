@@ -73,7 +73,9 @@ function intentMenu(actions, intent, state) {
     );
   });
   if (intent === "grow") {
-    const direct = matching.filter((action) => action.kind !== "upgrade_structure");
+    const direct = matching.filter((action) =>
+      action.kind === "build" || isNeutral(action)
+    );
     if (direct.length > 0) return direct;
   }
   return matching.length > 0 ? matching : actions;
