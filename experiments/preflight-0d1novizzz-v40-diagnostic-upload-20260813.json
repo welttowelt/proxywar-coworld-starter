@@ -8,7 +8,15 @@
     ],
     "source_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
     "parent_commit": "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
-    "image_id": "sha256:23556ca3bae366a2ada4857132802c95413b86df7cd3a1a394372deb699acac9"
+    "image_id": "sha256:23556ca3bae366a2ada4857132802c95413b86df7cd3a1a394372deb699acac9",
+    "image_identity": {
+      "docker_linux_amd64_id": "sha256:23556ca3bae366a2ada4857132802c95413b86df7cd3a1a394372deb699acac9",
+      "coworld_client_hash": "sha256:72780693f0b6e5165bf6991945b64ee985e39ddb035b844537a5a759e5b40b6b",
+      "hosted_image_id": "img_7fdfca8d-f219-4179-8bf2-a68a2da1f4f4",
+      "hosted_image_digest": "sha256:165ee793bfaf2a1cadbdaf6f7c852d059720b29be39c07da74af4d863ec93ea3",
+      "hosted_status": "ready",
+      "contract": "Coworld 0.1.28 hashes the linux/amd64 Docker config and ordered layer contents. This client hash is a separate fingerprint from Docker's image ID. Upload-policy binds the policy to the image row returned for the client hash."
+    }
   },
   "hypothesis": "Hosted observations use episode-scoped IDs and public runtime names. An absolute identity boundary will preserve the simple grow-or-finish planner while preventing every observed coalition attack.",
   "mechanism": {

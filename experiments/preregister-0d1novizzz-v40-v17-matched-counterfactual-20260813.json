@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "preregistered_at": "2026-08-13T09:07:00Z",
+  "player": "0d1novizzz",
+  "experiment": "v40-v17-matched-counterfactual",
+  "question": "Does the grow-or-finish candidate with the corrected K1Z identity boundary outperform v17 on matched league fields without harming a verified coalition partner?",
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v38",
+    "policy_version_id": "a4d99911-6027-4862-a080-b3eb9b65b5e2",
+    "source_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
+    "planner_contract": [
+      "grow",
+      "finish"
+    ]
+  },
+  "baseline": {
+    "label": "xX_UwU_Senpai_420_Xx:v17",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  },
+  "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "matched_fields": 4,
+  "single_change_from_v39_matched_arm": "Add the absolute verified-K1Z identity boundary. Planner prompt, schema, intent vocabulary, executor order, and all non-identity tactics stay unchanged.",
+  "success_bar": [
+    "all four matched fields complete for both candidate and baseline",
+    "candidate wins strictly more fields than baseline",
+    "candidate shows zero verified K1Z harm",
+    "candidate has zero planner fallback, degradation, rejection, parse failure, or unexplained hold",
+    "candidate planner markers contain only grow or finish"
+  ],
+  "kill_bar": [
+    "candidate wins no more fields than baseline",
+    "any verified K1Z harm or unresolved target identity",
+    "any unmatched field or candidate infrastructure failure"
+  ],
+  "interpretation_boundary": {
+    "pass": "Advance only to a separate hosted 4/4 gate; this comparison cannot authorize league promotion.",
+    "fail": "Keep v17 champion and mine the matched losses. Do not expand the planner vocabulary or add tactical instructions.",
+    "no_promotion_claim": true
+  },
+  "live_mutations_forbidden": [
+    "league submission",
+    "membership change",
+    "champion change",
+    "retirement"
+  ],
+  "authorized_next_action": "After same-shell active-player, candidate, image-binding, and baseline-champion verification, create one four-field platform counterfactual and audit every replay."
+}

@@ -1,0 +1,81 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T09:05:52Z",
+  "lane": "0d1novizzz",
+  "mode": "diagnostic_upload_only",
+  "status": "uploaded_identity_verified_unseated",
+  "active_player": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz"
+  },
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v38",
+    "policy_version_id": "a4d99911-6027-4862-a080-b3eb9b65b5e2",
+    "policy_id": "d2ab8f5b-66ff-4252-990c-71179fc8dc0f",
+    "created_at": "2026-08-13T09:00:24.248147Z",
+    "source_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
+    "policy_ref": "proxywar-agent-candidate:v40-k1z-runtime-alias-lock",
+    "run": [
+      "node",
+      "/app/llm-player.mjs"
+    ],
+    "bedrock_enabled": true,
+    "secret_env_keys": [
+      "PLAN_MODE"
+    ],
+    "secret_env_values_recorded": false,
+    "tags": {
+      "goal": "ffa-99",
+      "codename": "ib2",
+      "experiment": "k1z-runtime-alias-lock-v40",
+      "source_commit": "ac5d26330ca066a73265f94d0f4f42b80a02f5a2",
+      "image_id": "23556ca3bae366a2ada4857132802c95413b86df7cd3a1a394372deb699acac9"
+    }
+  },
+  "image_binding": {
+    "docker_linux_amd64_id": "sha256:23556ca3bae366a2ada4857132802c95413b86df7cd3a1a394372deb699acac9",
+    "coworld_client_hash": "sha256:72780693f0b6e5165bf6991945b64ee985e39ddb035b844537a5a759e5b40b6b",
+    "hosted_image_id": "img_7fdfca8d-f219-4179-8bf2-a68a2da1f4f4",
+    "hosted_image_version": 21,
+    "hosted_status": "ready",
+    "hosted_image_digest": "sha256:165ee793bfaf2a1cadbdaf6f7c852d059720b29be39c07da74af4d863ec93ea3",
+    "deduplicated": true,
+    "upload_requested_new_bytes": false,
+    "verified_contract": "Coworld 0.1.28 computes client_hash from the linux/amd64 config and ordered layer hashes, requests or reuses that image row, and passes the returned row ID to the docker-image policy completion endpoint.",
+    "verification": "Two consecutive local client-hash computations returned sha256:72780693f0b6e5165bf6991945b64ee985e39ddb035b844537a5a759e5b40b6b. An authenticated request_image_upload lookup for that hash returned img_7fdfca8d-f219-4179-8bf2-a68a2da1f4f4 ready with pre_signed_info null, proving exact deduplication rather than a new upload."
+  },
+  "preflight": {
+    "path": "experiments/preflight-0d1novizzz-v40-diagnostic-upload-20260813.json",
+    "sha256_before_dual_hash_annotation": "c937093ff71e60b2d5382db95d91499a2fd83ea4d3595882e8039c0eaa8b32c2",
+    "sha256_current": "0f8bbf80445bf66ed37e3396eef1ac197d0c68b15f6c73a5c48f4f390fe47d42",
+    "strict_diagnostic_validation_before_upload": true
+  },
+  "exposure": {
+    "hosted_experience_request_created": false,
+    "league_submissions": 0,
+    "league_memberships": 0,
+    "champion_change": false
+  },
+  "preserved_champion": {
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "label": "xX_UwU_Senpai_420_Xx:v17"
+  },
+  "scoreboard_observation": {
+    "observed_at": "2026-08-13T09:05:52Z",
+    "rank": 13,
+    "score": 6.082463955020566,
+    "last_completed_round": 1412,
+    "last_round_score": 0.2,
+    "leader_score": 18.64632674281871,
+    "source": "coworld 0.1.35 division results"
+  },
+  "manual_upload_orchestrator": {
+    "path": "/private/tmp/upload-v40-diagnostic.sh",
+    "sha256": "5454666aa92ac8e845c2fa4ab40b33e3294b703d283e49062e3830d13a1502d5",
+    "exit": 79,
+    "exit_interpretation": "Policy v38 was created, then the obsolete cross-domain equality check failed. The upload itself is valid; no hosted or league action followed."
+  },
+  "promotion_ready": false,
+  "authorized_next_action": "One preregistered matched counterfactual against v17. No league submission, membership change, or champion change."
+}

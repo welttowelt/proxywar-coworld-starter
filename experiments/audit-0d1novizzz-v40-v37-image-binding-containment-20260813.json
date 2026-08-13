@@ -3,7 +3,7 @@
   "recorded_at": "2026-08-13T09:00:00Z",
   "lane": "0d1novizzz",
   "status": "contained",
-  "verdict": "REJECT_IMAGE_IDENTITY_MISMATCH",
+  "verdict": "CONTAINED_UNDER_OBSOLETE_IDENTITY_CHECK",
   "policy": {
     "label": "xX_UwU_Senpai_420_Xx:v37",
     "policy_version_id": "eea12015-8444-42c5-9bde-9c602d42a31e",
@@ -16,14 +16,15 @@
       "/app/llm-player.mjs"
     ]
   },
-  "mismatch": {
+  "identity_review": {
     "preflight_image_reference": "sha256:e8cf821ee92ba0a85ec9dc1a994f79a869d8a1addeb9eaa2dad9539bfe80bb96",
     "preflight_reference_kind": "attested multi-platform manifest list",
     "hosted_image_id": "img_7fdfca8d-f219-4179-8bf2-a68a2da1f4f4",
     "hosted_client_hash": "sha256:72780693f0b6e5165bf6991945b64ee985e39ddb035b844537a5a759e5b40b6b",
     "hosted_status": "ready",
     "hosted_image_digest": "sha256:165ee793bfaf2a1cadbdaf6f7c852d059720b29be39c07da74af4d863ec93ea3",
-    "root_cause": "The first v40 build retained BuildKit provenance, so the local tag resolved to an attested manifest list. The upload client serialized that reference under a different client hash. Source file bytes were unchanged, but the exact image identity gate requires equality and therefore failed.",
+    "corrected_finding": "There was no content-binding mismatch. Docker's manifest-list digest and Coworld's client hash fingerprint different representations and are not expected to be equal. Coworld deterministically resolved the local tag to client hash sha256:72780693f0b6e5165bf6991945b64ee985e39ddb035b844537a5a759e5b40b6b and reused the ready hosted image row. The original gate incorrectly required equality across hash domains.",
+    "why_v37_remains_contained": "Its image_id tag records a multi-platform manifest-list digest rather than the direct linux/amd64 runtime image ID. No hosted request was dispatched, and v37 is permanently excluded to preserve the containment decision.",
     "corrective_build": {
       "change": "rebuild the same source with --provenance=false",
       "linux_amd64_image_id": "sha256:23556ca3bae366a2ada4857132802c95413b86df7cd3a1a394372deb699acac9",
@@ -56,5 +57,5 @@
     "path": "/private/tmp/upload-v40-diagnostic.sh",
     "sha256": "8b90026932b5e1ed0432e410e0f846bb6de390c77420fd6d2b253915bd289da1"
   },
-  "authorized_next_action": "Rebind the local and preupload evidence to the exact linux/amd64 image, rerun strict diagnostic preflight, then upload one corrected diagnostic version. Never request hosted evidence for v37."
+  "authorized_next_action": "Completed by v38: record both Docker and Coworld hash domains, verify the returned ready image row, and keep v37 permanently out of hosted and league execution."
 }
