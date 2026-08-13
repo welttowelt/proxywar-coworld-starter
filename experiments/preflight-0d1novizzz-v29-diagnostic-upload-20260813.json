@@ -8,7 +8,9 @@
     ],
     "source_commit": "eeec7ba9686dc00fac7ce2054ac9a60f81750757",
     "parent_commit": "0743674b02c472a4401ba1a8df897b850b8743d5",
-    "image_id": "sha256:c66b5553f159e512e091389ac8e9df6472811eaaab13aed7ddfc7252769f48ef"
+    "image_id": "sha256:c66b5553f159e512e091389ac8e9df6472811eaaab13aed7ddfc7252769f48ef",
+    "uploaded_label": "xX_UwU_Senpai_420_Xx:v27",
+    "policy_version_id": "c71f0e35-f001-4bf5-b2e0-7cb9bd879d79"
   },
   "hypothesis": "Reducing planner output to one intent preserves strategic adaptation while preventing the model from scattering attacks across named rivals; deterministic execution supplies target continuity and safety.",
   "mechanism": {
@@ -34,7 +36,15 @@
       "sha256": "bb31aa2bd901be7104eafe55cfe9e1991ecc5e65ffc250a2ea2c49a7b1c5a25d"
     }
   },
-  "matched_baseline": null,
+  "matched_baseline": {
+    "request_id": "xreq_a1921007-5786-46b1-9636-2fdc4ea89da2",
+    "policy_ref": "xX_UwU_Senpai_420_Xx:v26",
+    "policy_version_id": "b21021db-42bd-4745-99a5-52d0aa1a8684",
+    "same_roster": true,
+    "same_variant": true,
+    "episodes": 4,
+    "wins": 0
+  },
   "diagnostic_only": true,
   "hosted": {
     "criteria": {

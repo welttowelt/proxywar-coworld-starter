@@ -1,0 +1,55 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T00:10:00Z",
+  "lane": "0d1novizzz",
+  "mode": "diagnostic",
+  "status": "completed",
+  "active_player_before": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz"
+  },
+  "active_player_after": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz"
+  },
+  "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "preflight_path": "/Users/olifreuler/proxywar-coworld-starter/experiments/preflight-0d1novizzz-v29-diagnostic-upload-20260813.json",
+  "preflight_sha256": "5bbb16509e03710f9ce4a16f2c1a333868e15843ad449155af604aab4bf76641",
+  "candidate_source_commit": "eeec7ba9686dc00fac7ce2054ac9a60f81750757",
+  "candidate_evidence_commit": "6c3214cb74e3fd3232358b1b2e598b52ace03533",
+  "candidate_image_id": "sha256:c66b5553f159e512e091389ac8e9df6472811eaaab13aed7ddfc7252769f48ef",
+  "candidate_policy_ref": "proxywar-agent-candidate:v29-intent-only",
+  "uploaded_label": "xX_UwU_Senpai_420_Xx:v27",
+  "policy_version_id": "c71f0e35-f001-4bf5-b2e0-7cb9bd879d79",
+  "policy_id": "d2ab8f5b-66ff-4252-990c-71179fc8dc0f",
+  "created_at": "2026-08-13T00:09:29.008787Z",
+  "hosted_image": {
+    "id": "img_a19e47b3-3890-465e-807a-900eed8064a5",
+    "client_hash": "sha256:c66b5553f159e512e091389ac8e9df6472811eaaab13aed7ddfc7252769f48ef",
+    "status": "ready",
+    "image_digest": "sha256:6272c93ac19c53ed12a3dfdff550a47a5968a72bcd6f1c16e3eeddc688bd1054"
+  },
+  "uploaded_tags": {
+    "goal": "ffa-99",
+    "codename": "b0lverk-h0gg",
+    "experiment": "intent-only-v29",
+    "source_commit": "eeec7ba9686dc00fac7ce2054ac9a60f81750757",
+    "image_id": "c66b5553f159e512e091389ac8e9df6472811eaaab13aed7ddfc7252769f48ef"
+  },
+  "run": [
+    "node",
+    "/app/llm-player.mjs"
+  ],
+  "bedrock_enabled": true,
+  "secret_env": [
+    "PLAN_MODE=on"
+  ],
+  "verification_note": "The policy-version lookup verified version 27, source and image tags, and run argv. Image lookup verified the exact client hash is ready. Policy-scoped memberships and submissions returned zero. The active player stayed 0d1novizzz and v17 stayed the sole champion.",
+  "live_mutations": {
+    "upload": true,
+    "hosted_experience_request": false,
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false
+  }
+}
