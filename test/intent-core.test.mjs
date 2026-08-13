@@ -250,6 +250,63 @@ test("grow cannot substitute alliance activity for immediate defense", () => {
   assert.equal(selected.id, "attack:raider:40");
 });
 
+test("grow yields a proactive K1Z request to material progress", () => {
+  const alliance = action(`alliance:${MICKEY_ID}`, "alliance_request", "Ally Mickey", {
+    recipientID: MICKEY_ID,
+    recipientName: "K1Z Mickey Mouse",
+  });
+  const selected = decide([alliance, build(), hold()], "grow", {
+    rivals: [{
+      id: MICKEY_ID,
+      name: "K1Z Mickey Mouse",
+      tileShare: 0.2,
+      relativeTroopRatio: 1,
+    }],
+  });
+  assert.equal(selected.id, "build:Factory");
+  assert.ok(selected.policyMarkers.includes("iax"));
+  assert.ok(selected.policyMarkers.includes("ixgrw"));
+});
+
+test("grow preserves a pending inbound K1Z handshake", () => {
+  const reject = action(`alliance_reject:${MICKEY_ID}`, "alliance_reject", "Reject Mickey", {
+    recipientID: MICKEY_ID,
+    recipientName: "K1Z Mickey Mouse",
+  });
+  const alliance = action(`alliance:${MICKEY_ID}`, "alliance_request", "Ally Mickey", {
+    recipientID: MICKEY_ID,
+    recipientName: "K1Z Mickey Mouse",
+  });
+  const selected = decide([reject, alliance, build(), hold()], "grow", {
+    rivals: [{
+      id: MICKEY_ID,
+      name: "K1Z Mickey Mouse",
+      tileShare: 0.2,
+      relativeTroopRatio: 1,
+    }],
+  });
+  assert.equal(selected.id, alliance.id);
+  assert.ok(selected.policyMarkers.includes("ixgrw"));
+});
+
+test("grow keeps a proactive alliance when no productive alternative exists", () => {
+  const alliance = action(`alliance:${MICKEY_ID}`, "alliance_request", "Ally Mickey", {
+    recipientID: MICKEY_ID,
+    recipientName: "K1Z Mickey Mouse",
+  });
+  const selected = decide([alliance, hold()], "grow", {
+    rivals: [{
+      id: MICKEY_ID,
+      name: "K1Z Mickey Mouse",
+      tileShare: 0.2,
+      relativeTroopRatio: 1,
+    }],
+  });
+  assert.equal(selected.id, alliance.id);
+  assert.ok(!selected.policyMarkers.includes("iax"));
+  assert.ok(selected.policyMarkers.includes("ixgrw"));
+});
+
 test("repeated symbolic pressure yields to a productive action", () => {
   const target = action("target:rival", "target_player", "Target rival", {
     targetID: "rival",

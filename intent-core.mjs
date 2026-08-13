@@ -39,6 +39,25 @@ function intentOf(plan) {
   return INTENTS.has(plan?.intent) ? plan.intent : "grow";
 }
 
+function allianceCounterparty(action) {
+  return {
+    id: clean(action?.metadata?.recipientID ?? action?.metadata?.targetID ?? "")
+      .toLowerCase(),
+    name: clean(action?.metadata?.recipientName ?? action?.metadata?.targetName ?? "")
+      .toLowerCase(),
+  };
+}
+
+function isPendingInboundAlliance(actions, selected) {
+  const counterparty = allianceCounterparty(selected);
+  return actions.some((action) => {
+    if (action?.kind !== "alliance_reject") return false;
+    const pending = allianceCounterparty(action);
+    return (counterparty.id && pending.id === counterparty.id) ||
+      (counterparty.name && pending.name === counterparty.name);
+  });
+}
+
 // The planner chooses one outcome: grow or finish. The complete safe legal
 // menu is delegated to the mature executor, which owns how to express that
 // intent and selects every exact action and target.
@@ -56,7 +75,35 @@ export function chooseIntentCoreAction(actions, state, plan = null, history = []
   // Grow describes the outcome, not a preferred action family. The mature
   // executor already owns growth; only finish changes its strategic mode.
   const executorPlan = intent === "finish" ? { strategicIntent: "finish" } : null;
-  const selected = chooseCaptainUnderpantsRuntimeAction(safe, state, executorPlan, history);
+  let selected = chooseCaptainUnderpantsRuntimeAction(safe, state, executorPlan, history);
+  // Hosted decisions can invalidate a proactive alliance request before it is
+  // applied, turning an otherwise legal response into a fallback hold. Grow
+  // keeps real inbound handshakes immediate, but delegates again without
+  // optional outgoing requests when another productive move is available.
+  if (intent === "grow" && selected.kind === "alliance_request" &&
+      !isPendingInboundAlliance(safe, selected)) {
+    const withoutProactiveAlliance = safe.filter((action) =>
+      action.kind !== "alliance_request"
+    );
+    if (withoutProactiveAlliance.length > 0) {
+      const replacement = chooseCaptainUnderpantsRuntimeAction(
+        withoutProactiveAlliance,
+        state,
+        executorPlan,
+        history,
+      );
+      if (replacement?.kind !== "hold") {
+        selected = {
+          ...replacement,
+          policyMarkers: [...new Set([
+            ...(Array.isArray(replacement.policyMarkers) ? replacement.policyMarkers : []),
+            replacement.policyMarker,
+            "iax",
+          ].filter(Boolean))],
+        };
+      }
+    }
+  }
   const policyMarkers = [...new Set([
     ...(Array.isArray(selected.policyMarkers) ? selected.policyMarkers : []),
     selected.policyMarker,
