@@ -1,0 +1,87 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T01:39:20Z",
+  "lane": "0d1novizzz",
+  "arm": "v31-outcome-intents",
+  "parent": {
+    "arm": "v30-intent-preferences",
+    "source_commit": "35de53ff4cda639a04c6d38e49db18a869b215a5",
+    "hosted_failure_audit": "experiments/audit-0d1novizzz-v30-hosted-stop-20260813.json",
+    "hosted_failure_audit_sha256": "ceefaea954ea4ef7ae7129031be194ba4f3d9f7418c1ba4922696de95910e702",
+    "request_id": "xreq_169c020f-b7cd-4de0-8fbc-97d4b5a397fc",
+    "result": "0/4"
+  },
+  "single_change": "Make the planner and executor share three goal-shaped outcomes: grow, secure, and finish. Classify legal actions by their actual outcome; broad expansion metadata may not turn rival-directed or ambiguous force into growth.",
+  "hypothesis": "A goal-shaped contract will keep the planner strategic while preventing grow or secure from launching force that was mislabeled by action metadata. The executor will remain productive without translating an intent into a rigid move script.",
+  "planner_contract": {
+    "allowed_packets": [
+      {"intent": "grow"},
+      {"intent": "secure"},
+      {"intent": "finish"}
+    ],
+    "grow": "increase territory or economy without harming a visible rival",
+    "secure": "preserve strength and improve the territory already held",
+    "finish": "turn a clear advantage into a rival's loss",
+    "unknown_keys_rejected": true,
+    "target_fields_forbidden": true,
+    "action_fields_forbidden": true,
+    "percentage_fields_forbidden": true,
+    "timing_fields_forbidden": true
+  },
+  "executor_contract": {
+    "neutral_gain": "An attack or boat is neutral only when Terra Nullius is explicit and no visible rival resolves from the action.",
+    "rival_harm": "Any action that resolves a visible rival is finish, regardless of expansion metadata.",
+    "ambiguous_force": "An attack or boat with no explicit neutral target is finish, never grow or secure.",
+    "infrastructure": "Build and structure-upgrade actions are secure.",
+    "preferences": {
+      "grow": ["neutral gain", "infrastructure", "rival force"],
+      "secure": ["infrastructure", "neutral gain", "rival force"],
+      "finish": ["rival force", "neutral gain", "infrastructure"]
+    },
+    "preference_not_instruction": true,
+    "hold": "only when no safe action in the three outcome families exists",
+    "k1z_harm": false
+  },
+  "local_gate": {
+    "same_fixture_differential_required": true,
+    "targeted_attack_with_expansion_metadata_must_not_be_growth": true,
+    "ambiguous_boat_with_expansion_metadata_must_not_be_growth": true,
+    "grow_must_choose_explicit_neutral_gain_over_disguised_force": true,
+    "secure_must_choose_infrastructure_over_disguised_force": true,
+    "finish_must_reach_rival_force": true,
+    "all_three_intent_packets_parse": true,
+    "accepted_rate_pct": 100,
+    "max_fallbacks": 0,
+    "max_degradations": 0,
+    "max_rejections": 0,
+    "max_symbolic_actions": 0,
+    "max_k1z_harm": 0,
+    "competitive_lift_claimed": false
+  },
+  "hosted_gate": {
+    "map": "Asia",
+    "episodes": 4,
+    "matched_parent_request": "xreq_169c020f-b7cd-4de0-8fbc-97d4b5a397fc",
+    "only_odin_replaced": true,
+    "required_wins": 4,
+    "minimum_distinct_intent_markers_across_request": 2,
+    "planner_reason_prefix": "pln:",
+    "max_targeted_or_ambiguous_force_under_grow": 0,
+    "max_targeted_or_ambiguous_force_under_secure": 0,
+    "max_fallbacks": 0,
+    "max_degradations": 0,
+    "max_rejections": 0,
+    "max_parse_failures": 0,
+    "max_symbolic_actions": 0,
+    "max_k1z_harm": 0,
+    "stop_on_any_zero_score": true
+  },
+  "promotion_gate": {
+    "hosted_gate_passed": true,
+    "separate_regression_episodes": 20,
+    "required_regression_wins": 20,
+    "final_rci_required": true,
+    "league_change_allowed_before_all_gates": false
+  },
+  "authorized_next_action": "Implement, test, and locally qualify the goal-shaped intent semantics. No upload, hosted request, submission, membership change, or champion change is authorized by this preregistration alone."
+}
