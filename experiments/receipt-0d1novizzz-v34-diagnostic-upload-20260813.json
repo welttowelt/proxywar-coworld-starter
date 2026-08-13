@@ -1,0 +1,74 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T03:48:00Z",
+  "lane": "0d1novizzz",
+  "mode": "diagnostic",
+  "status": "completed",
+  "active_player_before": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz"
+  },
+  "active_player_after": {
+    "id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863",
+    "name": "0d1novizzz"
+  },
+  "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "preflight_path": "/Users/olifreuler/proxywar-coworld-starter/experiments/preflight-0d1novizzz-v34-diagnostic-upload-20260813.json",
+  "preflight_sha256": "dbff9bf12d2fb74ed90fffad9b702f27587ea3cfab45b87a8982e890dc74313e",
+  "candidate_source_commit": "b71b0d4c857240b56f1aa47df1c76b3a05c28079",
+  "candidate_evidence_commit": "7d197a97",
+  "candidate_image_id": "sha256:649daeb8f7a3c5c374f3ebc96693bef0e652d7892e7a6daf1870e47a8fd438c4",
+  "candidate_policy_ref": "proxywar-agent-candidate:v34-intent-steered-baseline",
+  "uploaded_label": "xX_UwU_Senpai_420_Xx:v31",
+  "policy_version_id": "4303f43e-8bb4-44b9-a89f-d7ce413bf685",
+  "policy_id": "d2ab8f5b-66ff-4252-990c-71179fc8dc0f",
+  "created_at": "2026-08-13T03:45:33.896000Z",
+  "hosted_image": {
+    "id": "img_598b74ac-baf1-4c48-8b92-b99dac106842",
+    "client_hash": "sha256:649daeb8f7a3c5c374f3ebc96693bef0e652d7892e7a6daf1870e47a8fd438c4",
+    "status": "ready",
+    "image_digest": "sha256:8b406fbc60d2ba70d74d159cc7d039a8efb7916685a176b8a299dd6a5542d2c1"
+  },
+  "uploaded_tags": {
+    "goal": "ffa-99",
+    "codename": "b0lverk-h0gg",
+    "experiment": "intent-steered-baseline-v34",
+    "source_commit": "b71b0d4c857240b56f1aa47df1c76b3a05c28079",
+    "image_id": "649daeb8f7a3c5c374f3ebc96693bef0e652d7892e7a6daf1870e47a8fd438c4"
+  },
+  "run": [
+    "node",
+    "/app/llm-player.mjs"
+  ],
+  "bedrock_enabled": true,
+  "secret_env": [
+    "PLAN_MODE=on"
+  ],
+  "verification_note": "Authenticated policy-version lookup verified v31, exact source and image tags, and run argv. Image lookup verified the exact client hash is ready. The active player stayed 0d1novizzz and v17 stayed the sole champion.",
+  "failed_command_disclosure": {
+    "cause": "The first CLI invocation supplied two run tokens as one quoted value and failed client-side validation.",
+    "mutation_occurred": false
+  },
+  "automatic_hosted_request": {
+    "id": "xreq_05b97fd6-d1f8-4d4c-8f09-b02c126abef7",
+    "status_at_receipt": "pending",
+    "episodes": 10,
+    "variant": "tournament-16p-asia",
+    "coworld_version": "0.1.41",
+    "requested": null,
+    "candidate_policy_version_id": "4303f43e-8bb4-44b9-a89f-d7ce413bf685"
+  },
+  "live_mutations": {
+    "upload": true,
+    "automatic_hosted_experience_request": true,
+    "repository_hosted_request_dispatched": false,
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false
+  },
+  "preserved_champion": {
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "label": "xX_UwU_Senpai_420_Xx:v17"
+  }
+}
