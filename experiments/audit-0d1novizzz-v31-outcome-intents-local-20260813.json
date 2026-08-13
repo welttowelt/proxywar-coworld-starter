@@ -1,0 +1,143 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T01:58:57Z",
+  "lane": "0d1novizzz",
+  "arm": "v31-outcome-intents",
+  "verdict": "PASS_MECHANISM_SCREEN",
+  "screen_mode": "mechanism",
+  "competitive_evidence": false,
+  "candidate_source_commit": "72b247776b85ec9cc9f62cef9d574baa7e009af1",
+  "candidate_evidence_commit": "d8c8a3d2092f41fe7c0c85aa9d9d6d24b8798dfc",
+  "parent_source_commit": "35de53ff4cda639a04c6d38e49db18a869b215a5",
+  "candidate_image_id": "sha256:18a4e269591f4e955188a7234afdf232cab7fa085f3a6a270de45322c2f9c34e",
+  "contract_sha256": "67117244421f29627e424aa66ab628b8ffdf4809130168826c09532335f89be1",
+  "image_contract": {
+    "architecture": "amd64",
+    "os": "linux",
+    "user": "node",
+    "cmd": ["node", "/app/llm-player.mjs"],
+    "policy_engine": "intent-core",
+    "policy_codename": "b0lverk-h0gg",
+    "file_sha256": {
+      "/app/llm-player.mjs": "19b50e21bb4a898979291fe16172bdd78ef17191e7d30f83a462387227d94188",
+      "/app/intent-controller.mjs": "1cc9ca2dbc2419e21bdce8bf80643a075f47bc35aeb7758f0700c0e1786be4e8",
+      "/app/intent-core.mjs": "4d2cc4b9e779c0272080f52381724bff1d241d5d2b8cb7603f0b347c5e4d7cdf",
+      "/app/strategy-engine.mjs": "4a5dc56a23371033b9c543e416397b1a18feb5b842d965ba1d23661f528d832a"
+    }
+  },
+  "exact_image_outcome_harness": {
+    "grow": {
+      "packet": {"intent": "grow"},
+      "selected_action_id": "expand:terra-nullius:35",
+      "marker": "ixgrw"
+    },
+    "secure": {
+      "packet": {"intent": "secure"},
+      "selected_action_id": "build:Factory:1",
+      "marker": "ixsec"
+    },
+    "finish": {
+      "packet": {"intent": "finish"},
+      "selected_action_id": "attack:outsider:40",
+      "marker": "ixfin"
+    },
+    "ambiguous_force_boundary": {
+      "offered_action_ids": ["boat:485204:45", "hold"],
+      "grow_selected_action_id": "hold",
+      "secure_selected_action_id": "hold",
+      "finish_selected_action_id": "boat:485204:45"
+    },
+    "finish_without_force": {
+      "packet": {"intent": "finish"},
+      "selected_action_id": "expand:terra-nullius:35",
+      "marker": "ixfin"
+    },
+    "protected_only_selected_action_id": "hold",
+    "offered_k1z_harmful_action": "attack:mickey:50",
+    "selected_k1z_harm": false
+  },
+  "differential_proof": {
+    "path": "experiments/v31/differential-proof-72b24777.json",
+    "sha256": "b32955f21ec28d4c558527112d4b66da1546133e53050df733534b70d9b5758f",
+    "verifier_path": "experiments/v31/verify-differential.mjs",
+    "verifier_sha256": "08af9d2d3e535b091cd822af6b24b33e4bd9dd8cf16e50a78dc85f104e2114c6",
+    "fixture_path": "experiments/v31/differential-fixture.json",
+    "fixture_sha256": "f6e5f2d26f0cf94abf9ad9ac164f11cf2dc2a7d6b9cb34ecdc7a99fb8c008832",
+    "same_board_and_action_menu": true,
+    "equivalent_goal": "increase territory without harming a rival",
+    "parent_selected_action_id": "attack:mickey:50",
+    "candidate_selected_action_id": "expand:terra-nullius:35",
+    "interpretation": "The synthetic adversarial fixture proves that v30 let expansion metadata override rival identity, while v31 resolves the actual outcome and preserves K1Z safety. It is not evidence that v30 harmed K1Z in a hosted episode."
+  },
+  "runs": [
+    {
+      "orientation": "A",
+      "run_id": "v31-outcome-intents-narrow-20260813T0205Z",
+      "coworld_run_id": "coworld-2026-08-13T02-12-01-004Z-dbef1dcd",
+      "game_id": "PWSELHEF",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "directory": "/private/tmp/proxywar-v31-outcome-intents-narrow-20260813T0205Z",
+      "coalition_roles_present": ["odin", "katanasan"],
+      "replay_sha256": "d5aac44bacb71bcb1c7f946c8c777e27dbe66637f6ef617e5b9187ba7132ba7f",
+      "results_sha256": "74ca2a48dd0b2ffde718f55e7bdd13106b2a510dcad5aea5cc4d53a5024a89cd",
+      "config_sha256": "4d61519a877afb1862ef505cd0679bb6b61106c0890860b8b70049b217fc96b8",
+      "resolved_images": {
+        "candidate": {
+          "image": "proxywar-agent-candidate:v31-outcome-intents-narrow",
+          "image_id": "sha256:18a4e269591f4e955188a7234afdf232cab7fa085f3a6a270de45322c2f9c34e"
+        }
+      },
+      "candidate": {
+        "slot": 0,
+        "decision_count": 41,
+        "post_spawn_decisions": 40,
+        "accepted": 41,
+        "rejected": 0,
+        "score": 0.10953811233624561,
+        "final_tiles": 11196,
+        "peak_tiles": 30498,
+        "peak_turn": 1800,
+        "alive": true,
+        "planner_reason_count": 40,
+        "marker_counts": {"ixgrw": 40},
+        "action_counts": {"explicit_neutral_land": 20, "explicit_neutral_boat": 20, "spawn": 1},
+        "objective_counts": {"secure_economy": 40},
+        "targeted_attacks_under_grow": 0,
+        "holds": 0,
+        "fallbacks": 0,
+        "degradations": 0,
+        "rejections": 0,
+        "symbolic_actions": 0,
+        "harmful_k1z_actions": []
+      },
+      "static_fixture_disclosure": "The local wrapper held grow for all 40 post-spawn decisions. v31 selected only explicitly neutral land or boat actions, with no holds or targeted attacks. The 0.1095 score is mechanism evidence in a four-player fixture, not competitive evidence."
+    }
+  ],
+  "failed_launch_disclosure": {
+    "run_id": "v31-outcome-intents-20260813T0148Z",
+    "cause": "The episode bundle was supplied as the manifest argument.",
+    "game_started": false,
+    "candidate_decisions": 0,
+    "mutation": false,
+    "supervisor_result": "The empty output was quarantined and the runner lease was released."
+  },
+  "superseded_local_run_disclosure": {
+    "run_id": "v31-outcome-intents-20260813T0150Z",
+    "image_id": "sha256:6f6a43b343eaea30c07b887c7b30150ed8b1e457e000b29fb65d1526f99c6df9",
+    "status": "completed but superseded before upload",
+    "reason": "The pre-hosted boundary audit found a latent force fallback under grow and secure. The narrowed exact image was rebuilt and the entire screen repeated."
+  },
+  "focused_suite": {"tests": 54, "passed": 54, "failed": 0},
+  "full_suite": {
+    "tests": 475,
+    "passed": 469,
+    "failed": 6,
+    "candidate_related_failures": 0,
+    "persistent_unrelated_failures": 6,
+    "note": "The same known Mickey R8/R9 and inactive RCI failures remained."
+  },
+  "runner_lease_after": {"state": "free", "schema_version": 2},
+  "scope_boundary": "The exact image proves the three one-field outcome intents, strict neutral-versus-rival classification, productive constant-grow execution, and K1Z safety. Only a bounded matched hosted request can test competitive lift; no league change is authorized.",
+  "failures": []
+}
