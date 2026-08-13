@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "preregistered_at": "2026-08-13T08:14:00Z",
+  "player": "0d1novizzz",
+  "candidate": "v40-k1z-runtime-alias-lock",
+  "parent": {
+    "candidate": "v39-two-intents",
+    "source_commit": "10e32f3174ed3e1efab3c1dd1fab58a50ef7e399",
+    "policy_version_id": "7e6a4065-4918-4831-a81f-7217d400e5bf"
+  },
+  "evidence": {
+    "counterfactual_eval_id": "cfeval_423b2528-5c7f-46cf-acaa-51dda04ffd5b",
+    "matched_result": "0-0 across four Pangaea fields",
+    "harmful_land_attacks": 12,
+    "affected_runtime_aliases": ["CYAN HELLSTAR", "SIAN VOIDCROWN"],
+    "affected_policy_versions": [
+      "33e14014-87b4-48f4-8aeb-c165f3a6c8f8",
+      "7ba41bac-137d-4db2-99df-303ff29e2383"
+    ]
+  },
+  "hypothesis": "The current no-harm boundary fails because hosted observations expose episode-scoped player IDs and current public runtime names instead of the canonical K1Z labels. Treating the verified coalition identities and the current Gravity/Katana aliases as absolute no-harm identities will redirect every replay-derived harmful selection without changing the grow-or-finish planner.",
+  "single_change": "Expand the absolute coalition identity set to all verified K1Z canonical names and stable player IDs plus the replay-verified runtime aliases cyan hellstar and sian voidcrown.",
+  "unchanged": [
+    "planner prompt",
+    "planner response schema",
+    "grow and finish vocabulary",
+    "intent action-family boundary",
+    "mature executor ordering",
+    "incoming-pressure behavior for non-K1Z rivals",
+    "league champion"
+  ],
+  "red_gate": [
+    "current Gravity and Katana runtime aliases are attackable under finish",
+    "current conditional coalition protection can be revoked by incoming pressure or late tile share"
+  ],
+  "local_acceptance": [
+    "both runtime aliases remain protected under incoming pressure and tile share above 0.35",
+    "canonical coalition names and stable IDs are absolute no-harm",
+    "a non-K1Z aggressor remains attackable",
+    "focused intent and strategy tests pass",
+    "full-suite delta is zero outside known historical failures",
+    "same-state replay-derived menus redirect all twelve observed harmful selections",
+    "exact-image local run has zero K1Z harm, rejection, fallback, and unexplained hold"
+  ],
+  "hosted_stop_conditions": [
+    "any harmful K1Z action",
+    "any identity ambiguity that cannot be resolved from replay and policy-slot evidence",
+    "any candidate fallback, degradation, rejection, or unexplained hold",
+    "candidate wins no more matched fields than v17"
+  ],
+  "promotion_forbidden_until": [
+    "matched candidate advantage",
+    "hosted 4/4",
+    "separate map-and-seat 20/20",
+    "final RCI"
+  ],
+  "authorized_next_action": "Write the red alias regression, implement the absolute identity expansion, run focused and full tests, and produce a replay-derived same-state proof before any build or upload."
+}
