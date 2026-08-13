@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "recorded_at": "2026-08-13T04:56:00Z",
+  "player": "0d1novizzz",
+  "candidate": {
+    "label": "xX_UwU_Senpai_420_Xx:v32",
+    "policy_version_id": "c01de697-9208-44b1-9fed-5951f1ffbb90",
+    "source_commit": "a5e150c326bd28121ab3cf180015e16595411602",
+    "engine": "intent-core",
+    "experiment": "intent-utility-ranker-v35"
+  },
+  "experience_request": {
+    "id": "xreq_274bc0c8-3349-4ebd-a098-9813e375cba7",
+    "origin": "platform-generated automatic diagnostic",
+    "coworld_version": "0.1.41",
+    "status_at_kill": "running",
+    "running_count": 7,
+    "completed_count": 3,
+    "failed_count": 0
+  },
+  "preregistered_kill_bar": "any hosted score of zero kills v35",
+  "result": {
+    "verdict": "kill",
+    "trigger": "the first three completed hosted episodes all scored zero",
+    "wins": 0,
+    "episodes_completed_at_kill": 3,
+    "planner_marked_post_spawn_decisions": 68,
+    "post_spawn_decisions": 68,
+    "intent_counts": {
+      "grow": 65,
+      "secure": 3,
+      "finish": 0
+    },
+    "action_counts": {
+      "alliance": 33,
+      "attack": 23,
+      "build": 9,
+      "boat": 3,
+      "nuke": 0
+    },
+    "holds": 0,
+    "rejected": 0,
+    "fallbacks": 0,
+    "planner_degraded_decisions": 0
+  },
+  "episodes": [
+    {
+      "episode_request_id": "ereq_1fe2978d-8748-4b0c-b084-65248708f392",
+      "episode_id": "dd962ed0-08c9-40c7-94af-e69cdebc8ab2",
+      "map": "Asia",
+      "seat": 1,
+      "score": 0,
+      "final_tiles": 228,
+      "alive": true,
+      "decisions": 38,
+      "alliance_selections": 24,
+      "replay_sha256": "12ff2dc055bfc5f5c6332bfd56957b1c23ddd8c74f479d2926eaa70a6cb3c7ad"
+    },
+    {
+      "episode_request_id": "ereq_042552ef-b0d3-4955-b851-e72345ea5d56",
+      "episode_id": "01e315f6-f4b3-4375-aa3d-f4ab7b98eb39",
+      "map": "Asia",
+      "seat": 2,
+      "score": 0,
+      "final_tiles": 0,
+      "alive": false,
+      "decisions": 16,
+      "alliance_selections": 6,
+      "replay_sha256": "e1748bb5e77929b04d4088568f5f155eb7559a136a5ef71c380c8d6aacd7316d"
+    },
+    {
+      "episode_request_id": "ereq_fb4128c4-4efd-47d3-ba33-075896bdef8e",
+      "episode_id": "9c026406-8c61-4038-b75a-5c74cb2fff31",
+      "map": "Asia",
+      "seat": 3,
+      "score": 0,
+      "final_tiles": 0,
+      "alive": false,
+      "decisions": 17,
+      "alliance_selections": 3,
+      "replay_sha256": "9d1ca04bf66d8e730fec92e6a9645f649d67f85812b69a9829ef88f93765dd27"
+    }
+  ],
+  "diagnosis": {
+    "planner_transport": "healthy",
+    "intent_contract": "healthy",
+    "executor": "failed",
+    "failure_mode": "grow intent could rank symbolic diplomacy above material progress and cycled alliance targets late in the game",
+    "next_change": "gate each intent to material action families before ranking; grow must not select alliance, chat, donation, embargo, or target-player actions"
+  },
+  "league_mutation": false,
+  "champion_preserved": {
+    "label": "xX_UwU_Senpai_420_Xx:v17",
+    "policy_version_id": "65fab9b8-3eed-4689-a5fb-5a515fa54461",
+    "membership_id": "lpm_487f5bf0-1caf-4ba9-9bff-b4c57dc9f19c"
+  },
+  "promotion_eligible": false
+}
