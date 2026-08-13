@@ -1,0 +1,44 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T01:03:10Z",
+  "lane": "0d1novizzz",
+  "mode": "diagnostic",
+  "status": "completed",
+  "active_player_before": {"id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863", "name": "0d1novizzz"},
+  "active_player_after": {"id": "ply_b3b948ca-f8ff-4e4f-93d7-9d9b8725e863", "name": "0d1novizzz"},
+  "league_id": "league_cb60d526-ecfd-4836-ab3a-81fc6cf7dc42",
+  "preflight_path": "/Users/olifreuler/proxywar-coworld-starter/experiments/preflight-0d1novizzz-v30-diagnostic-upload-20260813.json",
+  "preflight_sha256": "553c020a3ac6ac8ec724317d8a0da6813dcfc5f0b391c33094268ac766663044",
+  "candidate_source_commit": "35de53ff4cda639a04c6d38e49db18a869b215a5",
+  "candidate_evidence_commit": "c3646dfb0a2ad6d38183042685596d2c603a9b32",
+  "candidate_image_id": "sha256:1dc9c0774512a1556a7b803370fd770d59f4e4449127bbad095316c3a4b2fddc",
+  "candidate_policy_ref": "proxywar-agent-candidate:v30-intent-preferences",
+  "uploaded_label": "xX_UwU_Senpai_420_Xx:v28",
+  "policy_version_id": "3cf810f0-16f0-4715-8c06-7d12229f77f2",
+  "policy_id": "d2ab8f5b-66ff-4252-990c-71179fc8dc0f",
+  "created_at": "2026-08-13T01:02:57.858674Z",
+  "hosted_image": {
+    "id": "img_5e8e30d8-e0b5-4870-bb51-7b3d601e24da",
+    "client_hash": "sha256:1dc9c0774512a1556a7b803370fd770d59f4e4449127bbad095316c3a4b2fddc",
+    "status": "ready",
+    "image_digest": "sha256:e9081161b7645ed87906232e12713c1a437bb385875f44cd6e8e942414991f33"
+  },
+  "uploaded_tags": {
+    "goal": "ffa-99",
+    "codename": "b0lverk-h0gg",
+    "experiment": "intent-preferences-v30",
+    "source_commit": "35de53ff4cda639a04c6d38e49db18a869b215a5",
+    "image_id": "1dc9c0774512a1556a7b803370fd770d59f4e4449127bbad095316c3a4b2fddc"
+  },
+  "run": ["node", "/app/llm-player.mjs"],
+  "bedrock_enabled": true,
+  "secret_env": ["PLAN_MODE=on"],
+  "verification_note": "The policy-version lookup verified version 28, source and image tags, and run argv. Image lookup verified the exact client hash is ready. The active player stayed 0d1novizzz and v17 stayed the sole champion.",
+  "live_mutations": {
+    "upload": true,
+    "hosted_experience_request": false,
+    "league_submission": false,
+    "membership_change": false,
+    "champion_change": false
+  }
+}
