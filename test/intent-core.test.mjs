@@ -15,12 +15,17 @@ function action(id, kind, label = id, metadata = {}) {
   return { id, kind, label, metadata, risk: { level: "low" } };
 }
 
-function observation({ rivals = [], incoming = [], tileShare = 0.12 } = {}) {
+function observation({
+  rivals = [],
+  incoming = [],
+  tileShare = 0.12,
+  troopRatio = 1,
+} = {}) {
   return {
     phase: "active",
     ownState: {
       tileShare,
-      troopRatio: 1,
+      troopRatio,
       troops: 1_000_000,
       gold: 500_000,
       borderTiles: 100,
@@ -305,6 +310,61 @@ test("grow keeps a proactive alliance when no productive alternative exists", ()
   assert.equal(selected.id, alliance.id);
   assert.ok(!selected.policyMarkers.includes("iax"));
   assert.ok(selected.policyMarkers.includes("ixgrw"));
+});
+
+test("grow concentrates a healthy near-parity strike before routine maintenance", () => {
+  const selected = decide([
+    attack("rival", 10),
+    attack("rival", 25),
+    build(),
+    hold(),
+  ], "grow", {
+    troopRatio: 1,
+    rivals: [{ id: "rival", name: "rival", tileShare: 0.15, relativeTroopRatio: 0.95 }],
+  });
+  assert.equal(selected.id, "attack:rival:10");
+  assert.ok(selected.policyMarkers.includes("sm1"));
+  assert.ok(selected.policyMarkers.includes("ixgrw"));
+});
+
+test("strike mass preserves immediate pressure defense", () => {
+  const selected = decide([
+    attack("raider", 10),
+    build("City"),
+    hold(),
+  ], "grow", {
+    incoming: ["raider"],
+    troopRatio: 0.7,
+    rivals: [{ id: "raider", name: "raider", tileShare: 0.15, relativeTroopRatio: 0.95 }],
+  });
+  assert.equal(selected.id, "build:City");
+  assert.ok(!selected.policyMarkers.includes("sm1"));
+});
+
+test("strike mass preserves a real inbound handshake over an available strike", () => {
+  const reject = action("alliance_reject:ally", "alliance_reject", "Reject Ally", {
+    recipientID: "ally",
+    recipientName: "Ally",
+  });
+  const alliance = action("alliance:ally", "alliance_request", "Accept Ally", {
+    recipientID: "ally",
+    recipientName: "Ally",
+  });
+  const selected = decide([
+    reject,
+    alliance,
+    attack("rival", 10),
+    build(),
+    hold(),
+  ], "grow", {
+    troopRatio: 1,
+    rivals: [
+      { id: "ally", name: "Ally", tileShare: 0.12, relativeTroopRatio: 1 },
+      { id: "rival", name: "rival", tileShare: 0.15, relativeTroopRatio: 0.95 },
+    ],
+  });
+  assert.equal(selected.id, alliance.id);
+  assert.ok(!selected.policyMarkers.includes("sm1"));
 });
 
 test("repeated symbolic pressure yields to a productive action", () => {

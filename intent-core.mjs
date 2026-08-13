@@ -1,8 +1,10 @@
 import {
   chooseCaptainUnderpantsRuntimeAction,
   clean,
+  incomingThreatCount,
   rivalForAction,
   rivalIsProtected,
+  territoryCollapsing,
 } from "./strategy-engine.mjs";
 
 const INTENTS = new Set(["grow", "finish"]);
@@ -14,6 +16,13 @@ const MARKERS = Object.freeze({
   finish: "ixfin",
 });
 const EXECUTOR_MARKER = "ib2";
+const STRIKE_MASS_DISPLACED_KINDS = new Set([
+  "boat",
+  "build",
+  "upgrade_structure",
+  "target_player",
+  "alliance_request",
+]);
 
 function isNeutral(action) {
   const targetID = clean(action?.metadata?.targetID ?? action?.targetID ?? "");
@@ -58,6 +67,43 @@ function isPendingInboundAlliance(actions, selected) {
   });
 }
 
+function withPolicyMarkers(action, ...markers) {
+  return {
+    ...action,
+    policyMarkers: [...new Set([
+      ...(Array.isArray(action?.policyMarkers) ? action.policyMarkers : []),
+      action?.policyMarker,
+      ...markers,
+    ].filter(Boolean))],
+  };
+}
+
+function strikeMassAction(actions, state, executorPlan, history) {
+  const incoming = incomingThreatCount(state?.self?.incomingAttacks) +
+    (state?.self?.incomingAttackerIDs ?? []).length +
+    (state?.self?.allProtocolAttackerIDs ?? []).length;
+  if (incoming > 0 || territoryCollapsing(state, history) ||
+      !Number.isFinite(state?.self?.troopRatio) || state.self.troopRatio < 0.8) {
+    return null;
+  }
+  const strikes = actions.filter((action) => {
+    if (action?.kind !== "attack" || isNeutral(action) || action.risk?.level === "high") {
+      return false;
+    }
+    const rival = rivalForAction(action, state);
+    return rival && !rivalIsProtected(state, history, rival) &&
+      Number.isFinite(rival.relativeTroopRatio) && rival.relativeTroopRatio >= 0.9;
+  });
+  if (strikes.length === 0) return null;
+  const strike = chooseCaptainUnderpantsRuntimeAction(
+    strikes,
+    state,
+    executorPlan,
+    history,
+  );
+  return strike?.kind === "attack" ? strike : null;
+}
+
 // The planner chooses one outcome: grow or finish. The complete safe legal
 // menu is delegated to the mature executor, which owns how to express that
 // intent and selects every exact action and target.
@@ -93,15 +139,24 @@ export function chooseIntentCoreAction(actions, state, plan = null, history = []
         history,
       );
       if (replacement?.kind !== "hold") {
-        selected = {
-          ...replacement,
-          policyMarkers: [...new Set([
-            ...(Array.isArray(replacement.policyMarkers) ? replacement.policyMarkers : []),
-            replacement.policyMarker,
-            "iax",
-          ].filter(Boolean))],
-        };
+        selected = withPolicyMarkers(replacement, "iax");
       }
+    }
+  }
+  // sm1 is an executor allocation rule, not a planner instruction. When the
+  // seat is healthy and unpressured, a bounded near-parity strike outranks
+  // another routine movement, maintenance, target call, or outgoing request.
+  // The mature executor still chooses the exact offered attack and target.
+  if (STRIKE_MASS_DISPLACED_KINDS.has(selected.kind) &&
+      !(selected.kind === "alliance_request" && isPendingInboundAlliance(safe, selected))) {
+    const strike = strikeMassAction(safe, state, executorPlan, history);
+    if (strike && strike.id !== selected.id) {
+      selected = withPolicyMarkers(
+        strike,
+        ...(Array.isArray(selected.policyMarkers) ? selected.policyMarkers : []),
+        selected.policyMarker,
+        "sm1",
+      );
     }
   }
   const policyMarkers = [...new Set([
