@@ -89,6 +89,37 @@ test("gate audit fails a missed exact opening alliance", () => {
   assert.equal(report.checks.exact_opening_alliance_alignment, false);
 });
 
+test("gate audit reads deduplicated current snapshot replays", () => {
+  const fixture = replay("expand:terra-nullius:10");
+  const decisions = fixture.inlineRunArtifacts["decisions.jsonl"]
+    .trim()
+    .split("\n")
+    .map((line) => JSON.parse(line));
+  delete fixture.inlineRunArtifacts["decisions.jsonl"];
+  fixture.spectatorReplay = {
+    snapshots: [
+      { decisions },
+      { decisions: [...decisions, {
+        sequence: 3,
+        agentID: "defensive-agent-2",
+        turnNumber: 600,
+        profile: "defensive",
+        selectedActionKind: "hold",
+        selectedLegalActionId: "hold",
+        accepted: false,
+        resultReason: "stale action",
+        fallbackUsed: true,
+      }] },
+    ],
+  };
+
+  const audit = auditEpisodeReplay(episode(), fixture);
+  assert.equal(audit.decisions, 3);
+  assert.equal(audit.holds, 1);
+  assert.equal(audit.rejected, 1);
+  assert.equal(audit.fallbacks, 1);
+});
+
 test("a one-decision gate audits the isolated opening without requiring a retry", () => {
   const fixture = replay();
   const decisions = fixture.inlineRunArtifacts["decisions.jsonl"]

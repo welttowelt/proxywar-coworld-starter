@@ -1,0 +1,83 @@
+{
+  "schema_version": 2,
+  "recorded_at": "2026-08-13T02:26:00Z",
+  "lane": "0d1novizzz",
+  "arm": "v32-pure-intent",
+  "parent": {
+    "arm": "v31-outcome-intents",
+    "source_commit": "72b247776b85ec9cc9f62cef9d574baa7e009af1",
+    "policy_version_id": "001b1e0b-0ce1-45f5-9a69-1ae4bf0f5896",
+    "uploaded_label": "xX_UwU_Senpai_420_Xx:v29",
+    "live_evidence_request_id": "xreq_5769cf8e-0fec-414a-ab4c-b1f42f98b34a",
+    "live_evidence_status_at_recording": "running with at least seven completed zero-score episodes"
+  },
+  "user_direction": "Simplify the planner again. Base it on intents, not specific instructions.",
+  "single_change": "Reduce the planner surface to strategic state plus one choice among grow, secure, and finish. Remove action categories, recent move history, rival identity, execution affordances, tactical intent definitions, target language, and the security instruction from the intent planner prompt. The executor and its safety boundary are unchanged.",
+  "hypothesis": "A pure intent call will reduce action-shaped anchoring and avoid v31's observed persistent finish loop while retaining enough state for the planner to change strategic mode.",
+  "planner_contract": {
+    "input": "strategic board state only",
+    "output_packets": [
+      {"intent": "grow"},
+      {"intent": "secure"},
+      {"intent": "finish"}
+    ],
+    "legal_action_menu_visible": false,
+    "recent_action_history_visible": false,
+    "rival_identity_visible": false,
+    "execution_instructions_present": false,
+    "tactical_intent_definitions_present": false,
+    "target_fields_allowed": false,
+    "timing_fields_allowed": false
+  },
+  "unchanged": [
+    "intent packet parser",
+    "grow secure finish executor semantics",
+    "only finish may authorize rival-directed or ambiguous force",
+    "K1Z no-harm boundary",
+    "action ranking and target continuity",
+    "planner refresh cadence"
+  ],
+  "parent_failure_signal": {
+    "episode_request_id": "ereq_bf3f5677-25f4-4442-8dec-4634f813fb1b",
+    "episode_id": "985824c6-5a57-43e2-bbc2-ff047ffaac24",
+    "score": 0,
+    "planner_transport_present": true,
+    "post_spawn_decisions": 31,
+    "finish_decisions": 25,
+    "finish_run_started_turn": 5500,
+    "finish_run_persisted_to_turn": 10600,
+    "finish_run_action_pattern": "one build followed by repeated boats",
+    "holds": 0,
+    "fallbacks": 0,
+    "rejections": 0,
+    "interpretation": "The transport and executor ran cleanly, but the planner became stuck on finish. This is causal evidence for reducing planner context, not competitive evidence for v32."
+  },
+  "local_gate": {
+    "focused_tests_pass": true,
+    "full_suite_has_no_candidate_related_regression": true,
+    "exact_linux_amd64_image_required": true,
+    "all_three_intent_packets_reach_executor": true,
+    "intent_snapshot_contains_no_execution_affordances": true,
+    "zero_k1z_harm": true,
+    "competitive_lift_claimed": false
+  },
+  "hosted_gate": {
+    "episodes": 4,
+    "matched_parent_roster_required": true,
+    "required_wins": 4,
+    "planner_reasons_required": true,
+    "max_finish_run_without_rival_loss": 4,
+    "max_fallbacks": 0,
+    "max_degradations": 0,
+    "max_rejections": 0,
+    "max_k1z_harm": 0,
+    "stop_on_any_zero_score": true
+  },
+  "promotion_gate": {
+    "separate_regression_episodes": 20,
+    "required_regression_wins": 20,
+    "final_rci_required": true,
+    "league_change_allowed_before_all_gates": false
+  },
+  "authorized_next_action": "Build and locally qualify the exact v32 source. After the already-running v31 request finishes and is sealed, one bounded matched four-episode v32 diagnostic may be uploaded and dispatched. No submission, membership, or champion change is authorized before every gate passes."
+}

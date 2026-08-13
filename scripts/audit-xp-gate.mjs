@@ -45,8 +45,31 @@ function slotFromAgentID(agentID) {
 
 function parseDecisions(replay) {
   const raw = replay?.inlineRunArtifacts?.["decisions.jsonl"];
-  if (typeof raw !== "string") throw new Error("replay is missing inline decisions.jsonl");
-  return raw.split("\n").filter(Boolean).map((line) => JSON.parse(line));
+  if (typeof raw === "string") {
+    return raw.split("\n").filter(Boolean).map((line) => JSON.parse(line));
+  }
+
+  const snapshots = replay?.spectatorReplay?.snapshots;
+  if (!Array.isArray(snapshots)) {
+    throw new Error("replay has neither inline decisions.jsonl nor spectator snapshots");
+  }
+  const unique = new Map();
+  for (const snapshot of snapshots) {
+    for (const decision of snapshot?.decisions ?? []) {
+      const key = Number.isInteger(decision?.sequence)
+        ? `sequence:${decision.sequence}`
+        : [decision?.agentID, decision?.turnNumber, decision?.selectedLegalActionId].join("\0");
+      if (unique.has(key)) continue;
+      unique.set(key, {
+        ...decision,
+        result: decision?.result ?? {
+          accepted: decision?.accepted,
+          reason: decision?.resultReason,
+        },
+      });
+    }
+  }
+  return [...unique.values()];
 }
 
 export function auditEpisodeReplay(
