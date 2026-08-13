@@ -4,9 +4,9 @@
   "same_fixture": true,
   "equivalent_goal": "let macro intent steer without replacing mature execution",
   "verifier": {
-    "evaluator_commit": "071762f891bc1d396519e85b8fb6c3f4a6530df5",
+    "evaluator_commit": "64058551621cee601349f7f1cd5f18bfc9c1acc1",
     "path": "experiments/v34/verify-differential.mjs",
-    "sha256": "41e627a8400b3757a4f88552d889fdfedc93f842ef96fdb02b05596323d5ddf0"
+    "sha256": "e8fd17e1d91b5fbdfde9371c97066544077f875abfe2e212cfaeaff80cab9160"
   },
   "fixture": {
     "id": "v34-intent-steers-mature-baseline",
@@ -15,6 +15,7 @@
   },
   "parent": {
     "source_commit": "b0a6b669e1b5877d5b1367f3166714a7b48f9779",
+    "selected_action_id": "hold",
     "diplomacy_selected_action_id": "expand:terra-nullius:35",
     "symbolic_only_selected_action_id": "hold",
     "nuclear_selected_action_id": "attack:leader:40",
@@ -22,6 +23,7 @@
   },
   "candidate": {
     "source_commit": "b71b0d4c857240b56f1aa47df1c76b3a05c28079",
+    "selected_action_id": "target:outsider",
     "diplomacy_selected_action_id": "alliance:mickey",
     "symbolic_only_selected_action_id": "target:outsider",
     "nuclear_selected_action_id": "build:Atom Bomb:1",

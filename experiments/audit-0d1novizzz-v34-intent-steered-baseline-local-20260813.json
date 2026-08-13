@@ -7,6 +7,8 @@
   "screen_mode": "mechanism",
   "competitive_evidence": false,
   "candidate_source_commit": "b71b0d4c857240b56f1aa47df1c76b3a05c28079",
+  "parent_source_commit": "b0a6b669e1b5877d5b1367f3166714a7b48f9779",
+  "contract_sha256": "4bea3f0fe64402dba8091ec9f992f5e73399281a446d4a4ad2cf8b50dacee9c8",
   "preregister_commit": "61bc07a5",
   "preregister_sha256": "4bea3f0fe64402dba8091ec9f992f5e73399281a446d4a4ad2cf8b50dacee9c8",
   "candidate_image_id": "sha256:649daeb8f7a3c5c374f3ebc96693bef0e652d7892e7a6daf1870e47a8fd438c4",
@@ -44,15 +46,15 @@
     "intent_behavior": "soft preference at an already-safe strategic choice point; otherwise exact mature baseline"
   },
   "differential_proof": {
-    "evaluator_commit": "071762f891bc1d396519e85b8fb6c3f4a6530df5",
+    "evaluator_commit": "64058551621cee601349f7f1cd5f18bfc9c1acc1",
     "parent_source_commit": "b0a6b669e1b5877d5b1367f3166714a7b48f9779",
     "candidate_source_commit": "b71b0d4c857240b56f1aa47df1c76b3a05c28079",
     "verifier_path": "experiments/v34/verify-differential.mjs",
-    "verifier_sha256": "41e627a8400b3757a4f88552d889fdfedc93f842ef96fdb02b05596323d5ddf0",
+    "verifier_sha256": "e8fd17e1d91b5fbdfde9371c97066544077f875abfe2e212cfaeaff80cab9160",
     "fixture_path": "experiments/v34/differential-fixture.json",
     "fixture_sha256": "88d98bf53516e74b62b211a3b3d483c975a2c20c5e82d69cc4290b8f0eab2d6a",
     "proof_path": "experiments/v34/differential-proof-b71b0d4c.json",
-    "proof_sha256": "be9391625e7a844a6273f3f5a9b79dda2898715e65fe4e42d6aa9d8d03a498b8",
+    "proof_sha256": "03dbae75eb8ba8f89eea35bfb8874cf5a0df6210ddf0e44e5509c1911592686d",
     "same_fixture_results": {
       "diplomacy": {
         "v33": "expand:terra-nullius:35",
@@ -70,6 +72,45 @@
         "v34": "hold"
       }
     }
+  },
+  "differential_unit_proof": {
+    "schema_version": 2,
+    "arm": "intent-steered-baseline-v34",
+    "same_fixture": true,
+    "equivalent_goal": "let macro intent steer without replacing mature execution",
+    "verifier": {
+      "evaluator_commit": "64058551621cee601349f7f1cd5f18bfc9c1acc1",
+      "path": "experiments/v34/verify-differential.mjs",
+      "sha256": "e8fd17e1d91b5fbdfde9371c97066544077f875abfe2e212cfaeaff80cab9160"
+    },
+    "fixture": {
+      "id": "v34-intent-steers-mature-baseline",
+      "path": "experiments/v34/differential-fixture.json",
+      "sha256": "88d98bf53516e74b62b211a3b3d483c975a2c20c5e82d69cc4290b8f0eab2d6a"
+    },
+    "parent": {
+      "source_commit": "b0a6b669e1b5877d5b1367f3166714a7b48f9779",
+      "selected_action_id": "hold"
+    },
+    "candidate": {
+      "source_commit": "b71b0d4c857240b56f1aa47df1c76b3a05c28079",
+      "selected_action_id": "target:outsider"
+    },
+    "safety": {
+      "offered_k1z_harmful_action": "build:Atom Bomb:mickey",
+      "candidate_selected_action_id": "hold",
+      "candidate_selected_k1z_harm": false
+    },
+    "test_command": [
+      "node",
+      "experiments/v34/verify-differential.mjs",
+      ".",
+      "b0a6b669e1b5877d5b1367f3166714a7b48f9779",
+      "b71b0d4c857240b56f1aa47df1c76b3a05c28079",
+      "experiments/v34/differential-fixture.json",
+      "experiments/v34/differential-proof-b71b0d4c.json"
+    ],
+    "test_exit_code": 0
   },
   "focused_suite": {
     "tests": 182,
@@ -126,6 +167,50 @@
     },
     "comparison_boundary": "The candidate finished ahead of two of three v17-image opponents but behind K1Z katanasan. This four-player constant-grow fixture proves execution reach only and is not a matched competitive comparison."
   },
+  "required_coalition_roles": [
+    "katanasan"
+  ],
+  "runs": [
+    {
+      "orientation": "A",
+      "run_id": "v34-intent-steered-baseline-20260813T0336Z",
+      "coworld_run_id": "coworld-2026-08-13T03-32-47-763Z-3085dde6",
+      "game_id": "PWSELHEF",
+      "map": "Pangaea",
+      "seed": 2026081,
+      "directory": "/private/tmp/proxywar-v34-intent-steered-baseline-20260813T0336Z",
+      "coalition_roles_present": [
+        "odin",
+        "katanasan"
+      ],
+      "replay_sha256": "3dee32d5c655a6d3c28d23582676a842b550745010999061a9c8745341ed4d55",
+      "results_sha256": "62d7a241fc406c4f0a1b87581160ae4f1bf24f8642b6a8746b507dc09f7dfdd5",
+      "config_sha256": "301564246035b4c28fde2753331b1a9b9f4f164f4a3b9a6a5b774d5fd5dc7416",
+      "resolved_images": {
+        "images": {
+          "candidate": {
+            "image": "proxywar-agent-candidate:v34-intent-steered-baseline",
+            "image_id": "sha256:649daeb8f7a3c5c374f3ebc96693bef0e652d7892e7a6daf1870e47a8fd438c4"
+          }
+        }
+      },
+      "candidate": {
+        "decision_count": 41,
+        "accepted": 41,
+        "route_execution_count": 40,
+        "marker_counts": {
+          "ixgrw": 40
+        },
+        "illegal_turns": [],
+        "rejected_turns": [],
+        "fallback_turns": [],
+        "degradation_turns": [],
+        "unexplained_holds": [],
+        "harmful_k1z_actions": [],
+        "unresolved_harmful_targets": []
+      }
+    }
+  ],
   "failed_launch_disclosure": {
     "run_id": "v34-intent-steered-baseline-20260813T0335Z",
     "cause": "The launch wrapper referenced GNU timeout, which is absent on this macOS host, so no game or policy container started.",
@@ -152,4 +237,6 @@
     "schema_version": 2
   },
   "scope_boundary": "v34 is locally qualified as the simplified intent architecture. It is not uploaded, submitted, promoted, or proven competitively."
+  ,
+  "failures": []
 }
